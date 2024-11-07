@@ -6,10 +6,10 @@ from datetime import timedelta
 
 values = dotenv_values()
 
-login_db = values.get("login")
-passwd_db = values.get("password")
-host_db = values.get("dbhost")
-database_name = values.get("database")
+login_db = values.get("LOGIN")
+passwd_db = values.get("PASSWORD")
+host_db = values.get("HOST")
+database_name = values.get("DATABASE")
 
 os.makedirs("Archives", exist_ok=True)
 
