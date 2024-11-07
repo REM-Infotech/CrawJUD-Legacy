@@ -11,7 +11,7 @@ from ...CrawJUD import CrawJUD
 codificacao = "UTF-8"
 mensagens = []
 
-url_socket = dotenv_values().get("HOST")
+url_socket = dotenv_values().get("HOSTNAME")
 
 
 class printbot(CrawJUD):
