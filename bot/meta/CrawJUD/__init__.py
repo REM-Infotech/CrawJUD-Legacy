@@ -68,7 +68,7 @@ class CrawJUD:
 
     """
 
-    @property
+    @classproperty
     def system(self):
         return classproperty._system
 
@@ -76,7 +76,7 @@ class CrawJUD:
     def system(self, system_: str):
         classproperty._system = system_
 
-    @property
+    @classproperty
     def state_or_client(self):
         return classproperty._state_or_client_
 
@@ -84,7 +84,7 @@ class CrawJUD:
     def state_or_client(self, new_s: str):
         classproperty._state_or_client_ = new_s
 
-    @property
+    @classproperty
     def type_log(self):
         return classproperty._type_log
 
@@ -92,7 +92,7 @@ class CrawJUD:
     def type_log(self, new_log: str):
         classproperty._type_log = new_log
 
-    @property
+    @classproperty
     def pid(self) -> int:
         return classproperty._pid
 
@@ -100,7 +100,7 @@ class CrawJUD:
     def pid(self, pid_) -> int:
         classproperty._pid = pid_
 
-    @property
+    @classproperty
     def message(self) -> str:
         return classproperty._message
 
@@ -108,12 +108,12 @@ class CrawJUD:
     def message(self, new_msg: str) -> str:
         classproperty._message = new_msg
 
-    @property
+    @classproperty
     def isStoped(self):
         chk = os.path.exists(os.path.join(self.output_dir_path, f"{self.pid}.flag"))
         return chk
 
-    @property
+    @classproperty
     def driver(self) -> WebDriver:
         return classproperty.drv
 
@@ -121,7 +121,7 @@ class CrawJUD:
     def driver(self, new_drv: WebDriver):
         classproperty.drv = new_drv
 
-    @property
+    @classproperty
     def wait(self) -> WebDriverWait:
         return classproperty.wt
 
@@ -129,7 +129,7 @@ class CrawJUD:
     def wait(self, new_wt: WebDriverWait):
         classproperty.wt = new_wt
 
-    @property
+    @classproperty
     def chr_dir(self):
         return classproperty.user_data_dir
 
@@ -137,7 +137,7 @@ class CrawJUD:
     def chr_dir(self, new_dir: str):
         classproperty.user_data_dir = new_dir
 
-    @property
+    @classproperty
     def output_dir_path(self):
         return classproperty.out_dir
 
@@ -145,7 +145,7 @@ class CrawJUD:
     def output_dir_path(self, new_outdir: str):
         classproperty.out_dir = new_outdir
 
-    @property
+    @classproperty
     def kwrgs(self) -> dict:
         return classproperty.kwrgs_
 
@@ -153,7 +153,7 @@ class CrawJUD:
     def kwrgs(self, new_kwg):
         classproperty.kwrgs_ = new_kwg
 
-    @property
+    @classproperty
     def row(self) -> int:
         return classproperty.row_
 
@@ -161,7 +161,7 @@ class CrawJUD:
     def row(self, new_row: int):
         classproperty.row_ = new_row
 
-    @property
+    @classproperty
     def message_error(self) -> str:
         return classproperty.message_error_
 
@@ -169,7 +169,7 @@ class CrawJUD:
     def message_error(self, nw_m: str) -> str:
         classproperty.message_error_ = nw_m
 
-    @property
+    @classproperty
     def graphicMode(self):
         return classproperty.graphicMode_
 
@@ -177,7 +177,7 @@ class CrawJUD:
     def graphicMode(self, new_graph):
         classproperty.graphicMode_ = new_graph
 
-    @property
+    @classproperty
     def list_args(self):
         return [
             "--ignore-ssl-errors=yes",
@@ -193,7 +193,7 @@ class CrawJUD:
     def list_args(self, new_Args: list[str]):
         classproperty.cr_list_args = new_Args
 
-    @property
+    @classproperty
     def bot_data(self) -> dict:
         return classproperty.bot_data_
 
@@ -201,44 +201,44 @@ class CrawJUD:
     def bot_data(self, new_botdata: dict):
         classproperty.bot_data_ = new_botdata
 
-    @property
+    @classproperty
     def AuthBot(self):
         from ..Utils.auth import AuthBot
 
         return AuthBot()
 
-    @property
+    @classproperty
     def SearchBot(self):
 
         from ..Utils.search import SeachBot
 
         return SeachBot()
 
-    @property
+    @classproperty
     def interact(self):
         from ..Utils.interator import Interact
 
         return Interact()
 
-    @property
+    @classproperty
     def printtext(self):
         from ..Utils.PrintLogs import printbot
 
         return printbot
 
-    @property
+    @classproperty
     def MakeXlsx(self):
         from ..Utils.MakeTemplate import MakeXlsx
 
         return MakeXlsx
 
-    @property
+    @classproperty
     def cities_Amazonas(self):
         from ..Utils.dicionarios import cities_Amazonas
 
         return cities_Amazonas
 
-    @property
+    @classproperty
     def elements(self):
         from ..Utils.elements import ElementsBot
 
