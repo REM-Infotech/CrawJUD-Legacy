@@ -23,8 +23,6 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 class sol_pags(CrawJUD):
 
-    interact = None
-
     def __getattr__(self, nome):
         return super().__getattr__(nome)
 
@@ -144,7 +142,7 @@ class sol_pags(CrawJUD):
                 normalizado_text = self.format_String(item.text)
 
                 if normalizado_text.lower() == namedef.lower():
-                    self.interact.click(item)
+                    item.click()
                     return
 
             raise ErroDeExecucao("Tipo de Pagamento não encontrado")

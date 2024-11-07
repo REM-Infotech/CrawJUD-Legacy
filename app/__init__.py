@@ -54,7 +54,7 @@ def check_allowed_origin(origin: str = "https://google.com"):
     return False
 
 
-io.init_app(app, cors_allowed_origins=check_allowed_origin, async_mode="eventlet")
+io.init_app(app, cors_allowed_origins=check_allowed_origin, async_mode="gevent")
 
 
 class CustomTalisman(Talisman):
