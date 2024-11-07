@@ -43,7 +43,7 @@ allowed_origins = [
 def check_allowed_origin(origin: str = "https://google.com"):
 
     if not origin:
-        origin = f'https://{dotenv_values().get("HOSTNAME")}'
+        origin = f'https://{dotenv_values().get("HOST")}'
 
     for orig in allowed_origins:
         pattern = orig

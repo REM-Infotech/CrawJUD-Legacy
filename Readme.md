@@ -87,7 +87,7 @@ MAIL_DEFAULT_SENDER = ""
 ## SQL Config
 login = ""
 password = ""
-HOST = ""
+dbhost = ""
 database = ""
 
 credentials_dict = '{

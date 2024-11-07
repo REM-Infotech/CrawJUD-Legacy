@@ -33,7 +33,7 @@ class init_database:
             db.create_all()
 
             NAMESERVER = values.get("NAMESERVER")
-            HOST = values.get("HOSTNAME")
+            HOST = values.get("HOST")
 
             if not Servers.query.filter(Servers.name == NAMESERVER).first():
 
