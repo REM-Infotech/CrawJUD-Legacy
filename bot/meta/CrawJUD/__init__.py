@@ -2,7 +2,10 @@ import os
 import time
 import pytz
 import json
+import dotenv
+import random
 import pathlib
+import debugpy
 import platform
 import subprocess
 import unicodedata
@@ -43,6 +46,12 @@ class CrawJUD:
     }
 
     def __init__(self, **kwargs):
+
+        values = dotenv.dotenv_values()
+        debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
+        if debug is True:
+            self.debug()
+
         self.__dict__.update(kwargs)
         self.kwrgs = kwargs
         self.setup()
@@ -58,6 +67,17 @@ class CrawJUD:
                 item = classproperty.kwrgs_.get(nome, None)
 
         return item
+
+    def debug(self):
+
+        import clear
+
+        clear.clear()
+
+        port = random.randint(1111, 9999)
+        print(port)
+        debugpy.listen(("localhost", port))
+        debugpy.wait_for_client()
 
     """
 

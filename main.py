@@ -1,11 +1,17 @@
-from app import app, io
-from dotenv import dotenv_values
 import os
-from time import sleep, time
+from app import io
+from app import app
+
+
+from time import time
+from time import sleep
 from clear import clear
+from dotenv import dotenv_values
 from multiprocessing import Process
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+from app.misc.checkout import checkout_release_tag
 
 values = dotenv_values()
 
@@ -35,10 +41,9 @@ class ChangeHandler(FileSystemEventHandler):
 
 
 def start_flask():
-    port = int(values.get("PORT", 5000))
-    debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
 
-    io.run(app, "0.0.0.0", port=int(port), debug=debug)
+    port = int(values.get("PORT", 5000))
+    io.run(app, port=int(port))
 
 
 def flask_Process():
@@ -84,6 +89,14 @@ def monitor_changes():
 
 if __name__ == "__main__":
     print("Iniciando monitoramento de mudanças e servidor Flask...")
+
+    with open(".version", "r") as f:
+        version = f.read()
+
+    # checkout antes de inicializar
+
+    debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
+    checkout_release_tag(version, debug)
 
     # Inicia o servidor Flask
     flask_server_Process = flask_Process()

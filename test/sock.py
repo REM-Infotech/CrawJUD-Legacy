@@ -7,7 +7,9 @@ io = socketio.Client()
 
 
 class SocketBot:
+
     def __init__(self):
+
         # Registra os eventos na inicialização
         io.on("connect", self.on_connect)
         io.on("disconnect", self.on_disconnect)
