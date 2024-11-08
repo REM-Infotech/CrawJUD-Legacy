@@ -19,7 +19,7 @@ class BaseElementsBot(CrawJUD):
         """### ElementsBot"""
 
     @property
-    def elements(self):
+    def Elements(self):
         """Retorna a configuração de acordo com o estado ou cliente."""
         dados = self.funcs.get(self.system).get(self.state_or_client)
 
