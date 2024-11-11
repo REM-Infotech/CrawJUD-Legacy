@@ -262,7 +262,15 @@ class CrawJUD:
     def elements(self):
         from ..Utils.elements import ElementsBot
 
-        return ElementsBot().elements
+        return ElementsBot().Elements
+
+    @classproperty
+    def vara(self) -> str:
+        return classproperty.vara_
+
+    @vara.setter
+    def vara(self, vara_str: str):
+        classproperty.vara_ = vara_str
 
     def setup(self):
 
