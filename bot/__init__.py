@@ -4,25 +4,20 @@ from app import db, app
 from app.models import ThreadBots
 
 import psutil
-from typing import Union
 import multiprocessing as mp
-
-# Bots
-
-from .scripts.pje import pje
-from .scripts.esaj import esaj
-from .scripts.elaw import elaw
-from .scripts.caixa import caixa
-from .scripts.projudi import projudi
-from .scripts.calculadoras import calculadoras
-
-Hints = Union[pje, esaj, elaw, caixa, projudi, calculadoras]
 
 
 class WorkerThread:
 
     @property
     def BotStarter(self):  # -> Hints:
+
+        from .scripts.pje import pje
+        from .scripts.esaj import esaj
+        from .scripts.elaw import elaw
+        from .scripts.caixa import caixa
+        from .scripts.projudi import projudi
+        from .scripts.calculadoras import calculadoras
 
         systems = {
             "pje": pje,

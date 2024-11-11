@@ -442,9 +442,12 @@ class CrawJUD:
     def append_moves(self) -> None:
 
         if len(self.appends) > 0:
-            self.append_success(
-                self.appends, "Movimentação salva na planilha com sucesso!!"
-            )
+            
+            for append in self.appends:
+            
+                self.append_success(
+                    append, "Movimentação salva na planilha com sucesso!!"
+                )
 
         elif len(self.appends) == 0:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
