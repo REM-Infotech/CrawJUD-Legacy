@@ -38,8 +38,8 @@ class SocketBot:
                         transports=["websocket"],
                     )
                     connected = True
-                except ConnectionError as e:
-                    if "already connected" in str(e):
+                except Exception as e:
+                    if "already connected" in str(e).lower():
                         connected = True
                     else:
                         raise e

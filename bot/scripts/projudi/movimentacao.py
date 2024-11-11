@@ -70,6 +70,11 @@ class movimentacao(CrawJUD):
 
         self.table_moves = None
 
+        list_botdata = list(self.bot_data.items())
+        for key, value in list_botdata:
+            if value is None:
+                self.bot_data.pop(key)
+
         search = self.SearchBot()
 
         if search is not True:
@@ -207,7 +212,9 @@ class movimentacao(CrawJUD):
                 if len(itensmove) < 5:
                     continue
                 data_mov = itensmove[2].text.split(" ")[0]
-                if data_mov == self.bot_data.get("DATA_PUBLICACAO", data_mov):
+                data_mov_xls = self.bot_data.get("DATA_PUBLICACAO", data_mov)
+
+                if data_mov == data_mov_xls:
                     text_mov = itensmove[3].text
                     if palavra_chave.lower() in text_mov.lower():
 
