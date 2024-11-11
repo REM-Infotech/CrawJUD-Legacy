@@ -71,7 +71,7 @@ class proc_parte(CrawJUD):
             with suppress(NoSuchElementException):
                 list_processos = table_processos.find_elements(
                     By.XPATH,
-                    self.elements.list_processos,
+                    './/tr[contains(@class, "odd") or contains(@class, "even")]',
                 )
 
             if list_processos and not self.isStoped:

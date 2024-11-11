@@ -263,7 +263,6 @@ class movimentacao(CrawJUD):
         self.set_page_size()
         self.set_tablemoves()
 
-        data = None
         if len(self.resultados) > 0:
             eventos = [str(self.resultados[0][0])]
 
@@ -287,6 +286,7 @@ class movimentacao(CrawJUD):
                     continue
 
                 data_mov = itensmove[2].text.split(" ")[0]
+                data = self.bot_data.get("DATA_LIMITE", data_mov)
 
                 if len(self.resultados) == 0:
                     data = data_mov

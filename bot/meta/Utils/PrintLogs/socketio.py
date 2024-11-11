@@ -30,12 +30,20 @@ class SocketBot:
         try:
             self.pid = data["pid"]
             if not connected:
-                self.io.connect(
-                    f"https://{url}",
-                    namespaces=["/log"],
-                    transports=["websocket"],
-                )
-                connected = True
+
+                try:
+                    self.io.connect(
+                        f"https://{url}",
+                        namespaces=["/log"],
+                        transports=["websocket"],
+                    )
+                    connected = True
+                except ConnectionError as e:
+                    if "already connected" in str(e):
+                        connected = True
+                    else:
+                        raise e
+
             # Adiciona o 'pid' aos dados e envia a mensagem
             self.io.emit("log_message", data, namespace="/log")
         except (BadNamespaceError, ConnectionError) as e:
