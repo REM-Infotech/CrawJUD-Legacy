@@ -1,5 +1,6 @@
 class classproperty:
 
+    vara_ = ""
     _system = ""
     _state_or_client_ = ""
     _type_log = "info"

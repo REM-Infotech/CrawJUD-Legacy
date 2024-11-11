@@ -2,6 +2,7 @@ from time import sleep
 from contextlib import suppress
 from bot.common.exceptions import ErroDeExecucao
 
+from datetime import datetime
 from ..CrawJUD import CrawJUD
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -113,9 +114,9 @@ class SeachBot(CrawJUD):
                 EC.presence_of_element_located((By.ID, id_consultar))
             )
             self.interact.click(openprocess)
-        
+
         return openprocess is not None
-        
+
     def projudi_search(self) -> None:
 
         def detect_intimacao() -> None:
@@ -183,9 +184,16 @@ class SeachBot(CrawJUD):
                 )
             )
             allprocess.click()
+            data_inicio_xls = self.data_inicio
+            data_fim_xls = self.data_fim
 
-            data_inicio_formatted = self.data_inicio.strftime("%d/%m/%Y")
-            data_fim_formatted = self.data_fim.strftime("%d/%m/%Y")
+            if type(data_inicio_xls) is str:
+                data_inicio_xls = datetime.strptime(data_inicio_xls, "%Y-%m-%d")
+                data_inicio_xls = data_inicio_xls.strftime("%d/%m/%Y")
+
+            if type(data_fim_xls) is str:
+                data_fim_xls = datetime.strptime(data_fim_xls, "%Y-%m-%d")
+                data_fim_xls = data_fim_xls.strftime("%d/%m/%Y")
 
             if self.vara == "TODAS AS COMARCAS":
                 alljudge = WebDriverWait(self.driver, 10).until(
@@ -217,12 +225,12 @@ class SeachBot(CrawJUD):
             data_inicio = self.driver.find_element(
                 By.CSS_SELECTOR, 'input[id="dataInicio"]'
             )
-            data_inicio.send_keys(data_inicio_formatted)
+            data_inicio.send_keys(data_inicio_xls)
 
             data_fim = self.driver.find_element(
                 By.CSS_SELECTOR, 'input[name="dataFim"]'
             )
-            data_fim.send_keys(data_fim_formatted)
+            data_fim.send_keys(data_fim_xls)
 
             if self.polo_parte.lower() == "reu":
                 setréu = self.driver.find_element(

@@ -264,6 +264,14 @@ class CrawJUD:
 
         return ElementsBot().Elements
 
+    @classproperty
+    def vara(self) -> str:
+        return classproperty.vara_
+
+    @vara.setter
+    def vara(self, vara_str: str):
+        classproperty.vara_ = vara_str
+
     def setup(self):
 
         try:
