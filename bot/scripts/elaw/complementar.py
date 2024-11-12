@@ -75,7 +75,7 @@ class complement(CrawJUD):
             self.prt()
             edit_proc_button = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'button[id="dtProcessoResults:0:btnEditar"]')
+                    (By.CSS_SELECTOR, self.elements.botao_editar)
                 )
             )
             edit_proc_button.click()
@@ -88,10 +88,8 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-                css_input_uc = 'textarea[id="j_id_3k_1:j_id_3k_4_2_2_6_9_44_2:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]'
-
                 input_uc: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, css_input_uc))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc))
                 )
                 input_uc.click()
 
@@ -107,7 +105,6 @@ class complement(CrawJUD):
 
             def divisao() -> None:
 
-                elementSelect = 'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]'
                 self.message = "Informando divisão"
                 self.type_log = "log"
                 self.prt()
@@ -115,7 +112,7 @@ class complement(CrawJUD):
                 sleep(0.5)
                 text = str(self.bot_data.get("DIVISAO"))
 
-                self.Select2_ELAW(elementSelect, text)
+                self.Select2_ELAW(self.elements.elementSelect, text)
 
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -129,17 +126,15 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-                css_data_citacao = 'input[id="j_id_3k_1:dataRecebimento_input"]'
-
                 data_citacao: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, css_data_citacao))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao))
                 )
                 self.interact.clear(data_citacao)
                 self.interact.sleep_load('div[id="j_id_3x"]')
                 self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
                 sleep(2)
                 self.driver.execute_script(
-                    f"document.querySelector('{css_data_citacao}').blur()"
+                    f"document.querySelector('{self.elements.css_data_citacao}').blur()"
                 )
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -266,11 +261,9 @@ class complement(CrawJUD):
 
             def desc_objeto() -> None:
 
-                input_descobjeto_css = 'textarea[id="j_id_3k_1:j_id_3k_4_2_2_l_9_44_2:j_id_3k_4_2_2_l_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_l_9_44_3_1_2_2_1_13"]'
-
                 input_descobjeto = self.wait.until(
                     EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, input_descobjeto_css)
+                        (By.CSS_SELECTOR, self.elements.input_descobjeto_css)
                     )
                 )
                 self.interact.click(input_descobjeto)
@@ -280,7 +273,7 @@ class complement(CrawJUD):
                 self.interact.clear(input_descobjeto)
                 self.interact.send_key(input_descobjeto, text)
                 self.driver.execute_script(
-                    f"document.querySelector('{input_descobjeto_css}').blur()"
+                    f"document.querySelector('{self.elements.input_descobjeto_css}').blur()"
                 )
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -344,9 +337,8 @@ class complement(CrawJUD):
     def salvar_tudo(self) -> None:
 
         self.interact.sleep_load('div[id="j_id_3x"]')
-        css_salvar_proc = 'button[id="btnSalvarOpen"]'
         salvartudo: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, css_salvar_proc))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc))
         )
         self.type_log = "log"
         self.message = "Salvando processo novo"
@@ -373,13 +365,12 @@ class complement(CrawJUD):
             return True
 
         elif not wait_confirm_save:
-            div_messageerro_css = 'div[id="messages"]'
             ErroElaw: WebElement | str = None
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (
                     self.wait.until(
                         EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, div_messageerro_css)
+                            (By.CSS_SELECTOR, self.elements.div_messageerro_css)
                         ),
                         message="Erro ao encontrar elemento",
                     )

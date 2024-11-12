@@ -83,7 +83,7 @@ class proc_parte(CrawJUD):
                 with suppress(NoSuchElementException):
                     next_page = self.driver.find_element(
                         By.CLASS_NAME, "navRight"
-                    ).find_element(By.XPATH, './/a[@class="arrowNextOn"]')
+                    ).find_element(By.XPATH, elements.exception_arrow)
 
                 self.type_log = "info"
                 self.append_success(
