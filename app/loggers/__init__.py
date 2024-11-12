@@ -1,7 +1,8 @@
 # Criar loggers personalizados
 import os
 import logging
-from logging.config import DictConfigurator
+from pathlib import Path
+from logging.handlers import RotatingFileHandler
 
 info_logger = None
 warning_logger = None
@@ -10,71 +11,39 @@ error_logger = None
 
 def loggerConfig() -> None:
 
-    path_logs = os.path.join(os.getcwd(), "app", "logs")
-    os.makedirs(path_logs, exist_ok=True)
+    path_logs = Path(os.path.join(os.getcwd(), "app", "logs"))
+    path_logs.mkdir(exist_ok=True)
 
-    config = {
-        "version": 1,
-        "disable_existing_loggers": True,
-        "formatters": {
-            "default": {
-                # "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
-                "format": "[%(asctime)s] %(levelname)s in %(funcName)s: %(message)s",
-            },
-            "detailed": {
-                # "format": "[%(asctime)s] %(levelname)s %(name)s in %(module)s: %(message)s",
-                "format": "[%(asctime)s] %(levelname)s in %(funcName)s: %(message)s",
-            },
-        },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "formatter": "default",
-                "level": "INFO",
-            },
-            "file": {
-                "class": "logging.FileHandler",
-                "filename": "app/logs/flask_app.log",
-                "formatter": "detailed",
-                "level": "DEBUG",
-            },
-            "wsgi": {  # Handler que usa wsgi_errors_stream para logs de erro WSGI
-                "class": "logging.StreamHandler",
-                "stream": "ext://flask.logging.wsgi_errors_stream",
-                "formatter": "default",
-                "level": "INFO",
-            },
-            "socketio_file": {
-                "class": "logging.FileHandler",
-                "filename": "app/logs/socketio.log",
-                "formatter": "detailed",
-                "level": "DEBUG",
-            },
-        },
-        "root": {
-            "level": "DEBUG",
-            "handlers": ["console", "file", "wsgi"],
-        },
-        "loggers": {
-            "flask.app": {
-                "level": "DEBUG",
-                "handlers": ["console", "file", "wsgi"],
-                "propagate": False,
-            },
-            "werkzeug": {
-                "level": "DEBUG",
-                "handlers": ["wsgi", "console"],
-                "propagate": False,
-            },
-            "socketio": {  # Logger específico para flask_socketio
-                "level": "DEBUG",
-                "handlers": ["socketio_file", "wsgi"],
-                "propagate": False,
-            },
-        },
-    }
+    # Configuração do logger principal para a aplicação Flask
+    app_logger = logging.getLogger("flask_app")
+    app_logger.setLevel(logging.DEBUG)  # Nível mínimo de log
+    # Handler de arquivo com rotação
+    file_handler = RotatingFileHandler(
+        os.path.join(path_logs, "flask_app.log"), maxBytes=1000000, backupCount=3
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    )
+    app_logger.addHandler(file_handler)
 
-    DictConfigurator(config).configure()
+    # Desabilitar log no terminal
+    for handler in app_logger.handlers:
+        if isinstance(handler, logging.StreamHandler):
+            app_logger.removeHandler(handler)
+
+    # Configuração do logger para o Flask-SocketIO
+    socketio_logger = logging.getLogger("socketio")
+    socketio_logger.setLevel(logging.DEBUG)
+    # Handler para o Flask-SocketIO (salvando em um arquivo separado)
+    socketio_file_handler = RotatingFileHandler(
+        os.path.join(path_logs, "socketio.log"), maxBytes=1000000, backupCount=3
+    )
+    socketio_file_handler.setLevel(logging.DEBUG)
+    socketio_file_handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    )
+    socketio_logger.addHandler(socketio_file_handler)
 
     global info_logger
     info_logger = logging.getLogger("info_logger")
@@ -84,8 +53,3 @@ def loggerConfig() -> None:
 
     global error_logger
     error_logger = logging.getLogger("error_logger")
-
-    # # Teste de log para verificar se a configuração está funcionando
-    # info_logger.info("This is an info message.")
-    # warning_logger.warning("This is a warning message.")
-    # error_logger.error("This is an error message.")
