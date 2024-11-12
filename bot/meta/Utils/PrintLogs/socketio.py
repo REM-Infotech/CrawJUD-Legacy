@@ -1,4 +1,5 @@
 import socketio
+from time import sleep
 from socketio.exceptions import BadNamespaceError, ConnectionError
 
 connected = False
@@ -25,6 +26,8 @@ class SocketBot:
         self.io.emit("leave", {"pid": "N3T7R9"}, namespace="/log")
 
     def send_message(self, data: dict[str, str | int], url):
+
+        sleep(0.5)
         global connected
 
         try:
@@ -38,8 +41,8 @@ class SocketBot:
                         transports=["websocket"],
                     )
                     connected = True
-                except ConnectionError as e:
-                    if "already connected" in str(e):
+                except Exception as e:
+                    if "already connected" in str(e).lower():
                         connected = True
                     else:
                         raise e
@@ -47,10 +50,16 @@ class SocketBot:
             # Adiciona o 'pid' aos dados e envia a mensagem
             self.io.emit("log_message", data, namespace="/log")
         except (BadNamespaceError, ConnectionError) as e:
-            print(f"Erro de conexão: {e}")
-            connected = False
-            self.io.disconnect()
-            self.send_message(data, url)
+
+            if type(e) is BadNamespaceError:
+                self.io.disconnect()
+                self.io.connect(
+                    f"https://{url}",
+                    namespaces=["/log"],
+                )
+                connected = True
+                self.io.emit("log_message", data, namespace="/log")
+                print(f"Erro de conexão: {e}")
 
     def end_message(self, data: dict, url):
         global connected
