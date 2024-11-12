@@ -11,7 +11,7 @@ from multiprocessing import Process
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from app.misc.checkout import checkout_release_tag
+# from app.misc.checkout import checkout_release_tag
 
 values = dotenv_values()
 

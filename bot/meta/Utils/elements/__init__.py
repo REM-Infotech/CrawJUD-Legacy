@@ -21,7 +21,10 @@ class BaseElementsBot(CrawJUD):
     @property
     def Elements(self):
         """Retorna a configuração de acordo com o estado ou cliente."""
-        dados = self.funcs.get(self.system).get(self.state_or_client)
+        state_or_client = self.state_or_client
+        if " " in state_or_client:
+            state_or_client = state_or_client.split(" ")[0]
+        dados = self.funcs.get(self.system).get(state_or_client)
 
         if not dados:
             raise AttributeError("Estado ou cliente não encontrado.")
