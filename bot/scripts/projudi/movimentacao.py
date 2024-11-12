@@ -103,7 +103,7 @@ class movimentacao(CrawJUD):
         select = Select(
             self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, elements.select_page_size)
+                    (By.CSS_SELECTOR, self.elements.select_page_size)
                 )
             )
         )
@@ -113,18 +113,18 @@ class movimentacao(CrawJUD):
 
         data_inicio: WebElement = self.wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, elements.data_inicio)
+                (By.CSS_SELECTOR, self.elements.data_inicio)
             )
         )
         data_inicio.send_keys(self.bot_data.get("DATA_PUBLICACAO"))
 
         data_fim = self.driver.find_element(
-            By.CSS_SELECTOR, elements.data_fim
+            By.CSS_SELECTOR, self.elements.data_fim
         )
         data_fim.send_keys(self.bot_data.get("DATA_LIMITE"))
 
         filtrar_button = self.driver.find_element(
-            By.CSS_SELECTOR, elements.filtro
+            By.CSS_SELECTOR, self.elements.filtro
         )
         filtrar_button.click()
 
@@ -322,7 +322,7 @@ class movimentacao(CrawJUD):
                         expand = None
                         with suppress(NoSuchElementException):
                             expand = move.find_element(
-                                By.CSS_SELECTOR, elements.element_exception
+                                By.CSS_SELECTOR, self.self.elements.element_exception
                             )
 
                         if expand is None:
@@ -444,5 +444,5 @@ class movimentacao(CrawJUD):
         self.table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
         self.table_moves = self.table_moves.find_elements(
             By.XPATH,
-            elements.table_moves,
+            self.self.elements.table_moves,
         )
