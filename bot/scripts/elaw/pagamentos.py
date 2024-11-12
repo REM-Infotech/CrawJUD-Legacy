@@ -99,7 +99,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        'a[href="#tabViewProcesso:processoValorPagamento"]',
+                        self.elements.valor_apagamento,
                     )
                 )
             )
@@ -109,7 +109,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]',
+                        self.elements.botao_novo_pagamento,
                     )
                 )
             )
@@ -125,17 +125,15 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
             type_itens: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_typeitens))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_typeitens))
             )
             type_itens.click()
 
             sleep(0.5)
 
-            listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'
             list_itens: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, listitens_css))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.listitens_css))
             )
             list_itens = list_itens.find_elements(By.TAG_NAME, "li")
 
@@ -163,9 +161,8 @@ class sol_pags(CrawJUD):
             self.prt()
 
             text = self.bot_data.get("VALOR_GUIA")
-            css_element = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:processoValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]'
             element: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_element))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_element))
             )
 
             sleep(0.5)
@@ -173,21 +170,19 @@ class sol_pags(CrawJUD):
             element.send_keys(Keys.BACKSPACE)
             self.interact.send_key(element, text)
             self.driver.execute_script(
-                f"document.querySelector('{css_element}').blur()"
+                f"document.querySelector('{self.elements.css_element}').blur()"
             )
 
             self.interact.sleep_load('div[id="j_id_2x"]')
 
-            type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo"]'
             div_type_doc: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, type_doc_css))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.type_doc_css))
             )
             div_type_doc.click()
             sleep(0.5)
 
-            list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
             list_type_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, list_type_doc_css))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.list_type_doc_css))
             )
             list_type_doc = list_type_doc.find_elements(By.TAG_NAME, "li")
 
@@ -217,9 +212,8 @@ class sol_pags(CrawJUD):
             for doc in docs:
 
                 doc = self.format_String(doc.upper())
-                inputfilecss = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]'
                 insert_doc: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, inputfilecss))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.inputfilecss))
                 )
                 path_doc = os.path.join(self.output_dir_path, doc)
                 insert_doc.send_keys(path_doc)
@@ -230,9 +224,8 @@ class sol_pags(CrawJUD):
             self.message = "Informando tipo de condenação"
             self.type_log = "log"
             self.prt()
-            css_div_condenacao_type = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
             div_condenacao_type: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_div_condenacao_type))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_div_condenacao_type))
             )
             div_condenacao_type.click()
 
@@ -242,7 +235,7 @@ class sol_pags(CrawJUD):
                 sleep(0.5)
                 sentenca = self.driver.find_element(
                     By.CSS_SELECTOR,
-                    'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_3"]',
+                    self.elements.valor_sentenca,
                 )
                 sentenca.click()
 
@@ -250,7 +243,7 @@ class sol_pags(CrawJUD):
                 sleep(0.5)
                 acordao = self.driver.find_element(
                     By.CSS_SELECTOR,
-                    'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_1"]',
+                    self.elements.valor_acordao,
                 )
                 acordao.click()
 
@@ -260,9 +253,8 @@ class sol_pags(CrawJUD):
 
             desc_pagamento = str(self.bot_data.get("DESC_PAGAMENTO"))
 
-            css_desc_pgto = 'textarea[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoDescription"]'
             desc_pgto: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_desc_pgto))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_desc_pgto))
             )
             desc_pgto.click()
             if "\n" in desc_pagamento:
@@ -274,22 +266,21 @@ class sol_pags(CrawJUD):
             sleep(0.5)
 
             self.driver.execute_script(
-                f"document.querySelector('{css_desc_pgto}').blur()"
+                f"document.querySelector('{self.elements.css_desc_pgto}').blur()"
             )
 
             self.message = "Informando data para pagamento"
             self.type_log = "log"
             self.prt()
 
-            css_data_lancamento = 'input[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoVencData_input"]'
             data_lancamento: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_data_lancamento))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_data))
             )
             data_lancamento.click()
             data_lancamento.send_keys(self.bot_data.get("DATA_LANCAMENTO"))
             data_lancamento.send_keys(Keys.TAB)
             self.driver.execute_script(
-                f"document.querySelector('{css_data_lancamento}').blur()"
+                f"document.querySelector('{self.elements.css_data}').blur()"
             )
 
             self.interact.sleep_load('div[id="j_id_2x"]')
@@ -297,9 +288,8 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            css_inputfavorecido = 'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
             input_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_inputfavorecido))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_inputfavorecido))
             )
             input_favorecido.click()
             input_favorecido.clear()
@@ -313,7 +303,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        'li[class="ui-autocomplete-item ui-autocomplete-list-item ui-corner-all ui-state-highlight"]',
+                        self.elements.resultado_favorecido,
                     )
                 )
             )
@@ -326,22 +316,21 @@ class sol_pags(CrawJUD):
 
             label_forma_pgto = self.driver.find_element(
                 By.CSS_SELECTOR,
-                'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:pvpEFSpgTypeSelectField1CombosCombo"]',
+                self.elements.valor_processo,
             )
             label_forma_pgto.click()
 
             sleep(1)
             boleto = self.driver.find_element(
                 By.CSS_SELECTOR,
-                'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:pvpEFSpgTypeSelectField1CombosCombo_1"]',
+                self.elements.boleto,
             )
             boleto.click()
 
             self.interact.sleep_load('div[id="j_id_2x"]')
 
-            css_cod_bars = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:j_id_2m_1_i_8_1_9_26_1_2_c_2:j_id_2m_1_i_8_1_9_26_1_2_c_5:0:j_id_2m_1_i_8_1_9_26_1_2_c_15:j_id_2m_1_i_8_1_9_26_1_2_c_1v"]'
             campo_cod_barras: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_cod_bars))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_cod_bars))
             )
             campo_cod_barras.click()
             sleep(0.5)
@@ -349,7 +338,7 @@ class sol_pags(CrawJUD):
             cod_barras = str(self.bot_data.get("COD_BARRAS"))
             campo_cod_barras.send_keys(cod_barras.replace("\t", "").replace("\n", ""))
             self.driver.execute_script(
-                f"document.querySelector('{css_cod_bars}').blur()"
+                f"document.querySelector('{self.elements.css_cod_bars}').blur()"
             )
 
             self.interact.sleep_load('div[id="j_id_2x"]')
@@ -357,15 +346,14 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            css_centro_custas = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_9_1_9_26_1_1_1:pvpEFBfieldText"]'
             centro_custas: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_centro_custas))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_centro_custas))
             )
             centro_custas.click()
             centro_custas.send_keys("A906030100")
 
             self.driver.execute_script(
-                f"document.querySelector('{css_centro_custas}').blur()"
+                f"document.querySelector('{self.elements.css_centro_custas}').blur()"
             )
 
             sleep(1)
@@ -373,9 +361,8 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            css_div_conta_debito = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_a_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
             div_conta_debito: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, css_div_conta_debito))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_div_conta_debito))
             )
             div_conta_debito.click()
             sleep(1)
@@ -397,11 +384,9 @@ class sol_pags(CrawJUD):
             self.prt()
 
             valor_doc = self.bot_data.get("VALOR_GUIA").replace(".", ",")
-            valor_guia = (
-                'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
-            )
+            
             element: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, valor_guia))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor_guia))
             )
             element.click()
             element.send_keys(Keys.CONTROL, "a")
@@ -410,24 +395,20 @@ class sol_pags(CrawJUD):
             sleep(0.5)
             element.send_keys(valor_doc)
 
-            css_Valor_guia = (
-                'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
-            )
+            
             self.driver.execute_script(
-                f"document.querySelector('{css_Valor_guia}').blur()"
+                f"document.querySelector('{self.elements.valor_guia}').blur()"
             )
 
             sleep(0.5)
 
-            css_tipo_doc = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo"]'
             list_tipo_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_tipo_doc))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.type_doc_css))
             )
             list_tipo_doc.click()
             sleep(1)
 
-            css_gru = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_35"]'
-            set_gru = self.driver.find_element(By.CSS_SELECTOR, css_gru)
+            set_gru = self.driver.find_element(By.CSS_SELECTOR, self.elements.css_gru)
             set_gru.click()
 
             sleep(2)
@@ -444,7 +425,7 @@ class sol_pags(CrawJUD):
                     EC.presence_of_element_located(
                         (
                             By.CSS_SELECTOR,
-                            'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]',
+                            self.elements.editar_pagamento,
                         )
                     )
                 )
@@ -456,7 +437,7 @@ class sol_pags(CrawJUD):
                         EC.presence_of_element_located(
                             (
                                 By.CSS_SELECTOR,
-                                'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:gedEFileDataTable"]',
+                                self.elements.editar_pagamentofile,
                             )
                         )
                     )
@@ -470,28 +451,25 @@ class sol_pags(CrawJUD):
 
             solicitante = str(self.bot_data.get("SOLICITANTE")).lower()
             if "monitoria" == solicitante or "monitória" == solicitante.lower():
-                desc_pgto_css = 'textarea[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoDescription"]'
                 desc_pgto: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, desc_pgto_css))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_desc_pgto))
                 )
                 desc_pgto.send_keys(self.bot_data.get("DESC_PAGAMENTO"))
                 self.driver.execute_script(
-                    f"document.querySelector('{desc_pgto_css}').blur()"
+                    f"document.querySelector('{self.elements.css_desc_pgto}').blur()"
                 )
 
             self.message = "Informando tipo de guia"
             self.type_log = "log"
             self.prt()
 
-            css_tipocusta = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_4_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-            div_tipo_custa = self.driver.find_element(By.CSS_SELECTOR, css_tipocusta)
+            div_tipo_custa = self.driver.find_element(By.CSS_SELECTOR, self.elements.css_tipocusta)
             div_tipo_custa.click()
             sleep(1)
 
             tipo_guia = str(self.bot_data.get("TIPO_GUIA"))
-            css_listcusta = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_4_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_items"]'
             list_tipo_custa: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_listcusta))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_listcusta))
             )
             list_tipo_custa = list_tipo_custa.find_elements(By.TAG_NAME, "li")
             for item in list_tipo_custa:
@@ -508,37 +486,33 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            css_data_vencimento = 'input[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoVencData_input"]'
             data_vencimento = self.driver.find_element(
-                By.CSS_SELECTOR, css_data_vencimento
+                By.CSS_SELECTOR, self.elements.css_data
             )
             data_vencimento.click()
             data_vencimento.send_keys(self.bot_data.get("DATA_LANCAMENTO"))
             self.driver.execute_script(
-                f"document.querySelector('{css_data_vencimento}').blur()"
+                f"document.querySelector('{self.elements.css_data}').blur()"
             )
             self.interact.sleep_load('div[id="j_id_2x"]')
 
-            css_formapgto = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:pvpEFSpgTypeSelectField1CombosCombo"]'
-            label_forma_pgto = self.driver.find_element(By.CSS_SELECTOR, css_formapgto)
+            label_forma_pgto = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_processo)
             label_forma_pgto.click()
 
             sleep(1)
-            css_boleto = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:pvpEFSpgTypeSelectField1CombosCombo_1"]'
-            boleto = self.driver.find_element(By.CSS_SELECTOR, css_boleto)
+            boleto = self.driver.find_element(By.CSS_SELECTOR, self.elements.boleto)
             boleto.click()
 
             self.interact.sleep_load('div[id="j_id_2x"]')
 
-            css_campo_cod_barras = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:j_id_2m_1_i_8_1_9_26_1_2_c_2:j_id_2m_1_i_8_1_9_26_1_2_c_5:0:j_id_2m_1_i_8_1_9_26_1_2_c_15:j_id_2m_1_i_8_1_9_26_1_2_c_1v"]'
             campo_cod_barras: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_campo_cod_barras))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_cod_bars))
             )
             campo_cod_barras.click()
             sleep(0.5)
             campo_cod_barras.send_keys(self.bot_data.get("COD_BARRAS"))
             self.driver.execute_script(
-                f"document.querySelector('{css_campo_cod_barras}').blur()"
+                f"document.querySelector('{self.elements.css_cod_bars}').blur()"
             )
 
             self.message = "Informando favorecido"
@@ -550,7 +524,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]',
+                        self.elements.css_inputfavorecido,
                     )
                 )
             )
@@ -566,14 +540,13 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        'li[class="ui-autocomplete-item ui-autocomplete-list-item ui-corner-all ui-state-highlight"]',
+                        self.elements.resultado_favorecido,
                     )
                 )
             )
             result_favorecido.click()
-            css_input_favorecido = 'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
             self.driver.execute_script(
-                f"document.querySelector('{css_input_favorecido}').blur()"
+                f"document.querySelector('{self.elements.css_inputfavorecido}').blur()"
             )
 
             self.message = "Informando centro de custas"
@@ -582,35 +555,33 @@ class sol_pags(CrawJUD):
 
             sleep(1)
 
-            css_centro_custas = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_9_1_9_26_1_1_1:pvpEFBfieldText"]'
             centro_custas: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_centro_custas))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_centro_custas))
             )
             centro_custas.click()
             centro_custas.send_keys("A906030100")
 
             self.driver.execute_script(
-                f"document.querySelector('{css_centro_custas}').blur()"
+                f"document.querySelector('{self.elements.css_centro_custas}').blur()"
             )
 
             sleep(1)
 
-            css_conta_debito = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_a_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
             div_conta_debito: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_conta_debito))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito))
             )
             div_conta_debito.click()
             sleep(1)
 
             if "jec" == solicitante:
                 conta_debito = self.driver.find_element(
-                    By.CSS_SELECTOR, 'li[data-label="CUSTAS JUDICIAIS CIVEIS"]'
+                    By.CSS_SELECTOR, self.elements.custas_civis
                 )
                 conta_debito.click()
 
             elif "monitoria" == solicitante or "monitória" == solicitante:
                 conta_debito = self.driver.find_element(
-                    By.CSS_SELECTOR, 'li[data-label="CUSTAS JUDICIAIS - MONITORIAS"]'
+                    By.CSS_SELECTOR, self.elements.custas_monitorias
                 )
                 conta_debito.click()
 
@@ -628,7 +599,7 @@ class sol_pags(CrawJUD):
                 EC.element_to_be_clickable(
                     (
                         By.CSS_SELECTOR,
-                        'button[id="processoValorPagamentoEditForm:btnSalvarProcessoValorPagamento"]',
+                        self.elements.botao_salvar_pagamento,
                     )
                 )
             )
@@ -644,7 +615,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        'a[href="#tabViewProcesso:processoValorPagamento"]',
+                        self.elements.valor_apagamento,
                     )
                 )
             )
@@ -655,7 +626,7 @@ class sol_pags(CrawJUD):
                     EC.presence_of_element_located(
                         (
                             By.CSS_SELECTOR,
-                            'div[id="tabViewProcesso:pvp-dtProcessoValorResults"]',
+                            self.elements.valor_resultado,
                         )
                     )
                 )
@@ -674,7 +645,7 @@ class sol_pags(CrawJUD):
                 if item.text == "Nenhum registro encontrado!":
                     raise ErroDeExecucao("Pagamento não solicitado")
 
-                open_details = item.find_element(By.CSS_SELECTOR, 'button[title="Ver"]')
+                open_details = item.find_element(By.CSS_SELECTOR, self.elements.botao_ver)
                 open_details.click()
 
                 sleep(1)
@@ -690,7 +661,7 @@ class sol_pags(CrawJUD):
 
                 WaitFrame = WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'iframe[title="Valor"]')
+                        (By.CSS_SELECTOR, self.elements.valor)
                     )
                 )
                 self.driver.switch_to.frame(WaitFrame)
@@ -712,7 +683,7 @@ class sol_pags(CrawJUD):
                             EC.presence_of_element_located(
                                 (
                                     By.CSS_SELECTOR,
-                                    r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(5)",
+                                    self.elements.visualizar_tipo_custas,
                                 )
                             )
                         )
@@ -726,7 +697,7 @@ class sol_pags(CrawJUD):
                             EC.presence_of_element_located(
                                 (
                                     By.CSS_SELECTOR,
-                                    r"#processoValorPagamentoView\:j_id_p_1_2_1_2_7_8_4_23_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > tr:nth-child(3)",
+                                    self.elements.visualizar_cod_barras,
                                 )
                             )
                         )
@@ -740,7 +711,7 @@ class sol_pags(CrawJUD):
                             EC.presence_of_element_located(
                                 (
                                     By.CSS_SELECTOR,
-                                    r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)",
+                                    self.elements.visualizar_tipoCondenacao,
                                 )
                             )
                         )

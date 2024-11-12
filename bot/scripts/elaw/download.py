@@ -90,9 +90,8 @@ class download(CrawJUD):
         self.message = "Acessando página de anexos"
         self.type_log = "log"
         self.prt()
-        anexosbutton_css = 'a[href="#tabViewProcesso:files"]'
         anexosbutton: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, anexosbutton_css))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css))
         )
         anexosbutton.click()
         sleep(1.5)
@@ -102,11 +101,8 @@ class download(CrawJUD):
 
     def download_docs(self) -> None:
 
-        css_table_doc = (
-            'tbody[id="tabViewProcesso:gedEFileDataTable:GedEFileViewDt_data"]'
-        )
         table_doc: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, css_table_doc))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc))
         )
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
 
@@ -144,7 +140,7 @@ class download(CrawJUD):
                     self.prt()
 
                     baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
-                        By.CSS_SELECTOR, 'button[title="Baixar"]'
+                        By.CSS_SELECTOR, self.elements.botao_abaixar
                     )
                     baixar.click()
 

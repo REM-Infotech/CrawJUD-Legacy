@@ -16,3 +16,27 @@ class PROJUDI_AM:
     infoproc = 'table[id="informacoesProcessuais"]'
     assunto_proc = 'a[class="definitionAssuntoPrincipal"]'
     resulttable = "resultTable"
+
+    select_page_size = 'select[name="pagerConfigPageSize"]'
+    data_inicio = 'input[id="dataInicialMovimentacaoFiltro"]'
+    data_fim = 'input[id="dataFinalMovimentacaoFiltro"]'
+    filtro = 'input[id="editButton"]'
+    element_exception = 'a[href="javascript://nop/"]'
+    table_moves = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
+
+    exception_arrow = './/a[@class="arrowNextOn"]'
+    
+    input_radio = "input[type='radio']"
+
+    tipo_documento = 'select[id="tipoDocumento"]'
+    descricao_documento = 'select[id="descricaoDocumento"]'
+    includeContent = 'input[id="includeContent"]'
+    border = 'iframe[frameborder="0"][id]'
+    conteudo = '//*[@id="conteudo"]'
+    botao_assinar = 'input[name="assinarButton"]'
+    botao_confirmar = 'input[name="confirmarButton"]'
+    botao_concluir = 'input#editButton[value="Concluir Movimento"]'
+    botao_deletar = 'input[type="button"][name="deleteButton"]'
+    css_containerprogressbar = 'div[id="divProgressBarContainerAssinado"]'
+    css_divprogressbar = 'div[id="divProgressBarAssinado"]'
+    
