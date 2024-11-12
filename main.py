@@ -90,13 +90,9 @@ def monitor_changes():
 if __name__ == "__main__":
     print("Iniciando monitoramento de mudanças e servidor Flask...")
 
-    with open(".version", "r") as f:
-        version = f.read()
-
-    # checkout antes de inicializar
-
-    debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
-    # checkout_release_tag(version, debug)
+    with open(".version", "w") as f:
+        version = checkout_release_tag()
+        f.write(version)
 
     # Inicia o servidor Flask
     flask_server_Process = flask_Process()

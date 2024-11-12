@@ -25,7 +25,7 @@ app.config.from_object(default_config)
 
 db = SQLAlchemy()
 mail = Mail()
-io = SocketIO(logger=True, engineio_logger=True)
+io = SocketIO()
 
 mail.init_app(app)
 db.init_app(app)
@@ -54,7 +54,13 @@ def check_allowed_origin(origin: str = "https://google.com"):
     return False
 
 
-io.init_app(app, cors_allowed_origins=check_allowed_origin, async_mode="gevent")
+io.init_app(
+    app,
+    cors_allowed_origins=check_allowed_origin,
+    async_mode="gevent",
+    ping_interval=25,
+    ping_timeout=10,
+)
 
 
 class CustomTalisman(Talisman):

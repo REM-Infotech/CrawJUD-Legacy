@@ -8,7 +8,8 @@ import platform
 
 from app import app
 from bot import WorkerThread
-from app.misc import GeoLoc, stop_execution
+from ...misc import GeoLoc, stop_execution
+from ...misc.checkout import check_latest
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
@@ -22,6 +23,9 @@ def botlaunch(id: int, system: str, typebot: str):
 
     with app.app_context():
         try:
+
+            if check_latest() is False:
+                raise Exception("Server running outdatest version!")
 
             loc = GeoLoc().region_name
             if request.data:
