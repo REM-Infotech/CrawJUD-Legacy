@@ -58,7 +58,7 @@ class andamentos(CrawJUD):
         search = self.SearchBot()
         if search is True:
             btn_newmove = (
-                'button[id="tabViewProcesso:j_id_i3_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
+                self.elements.botao_andamento
             )
             new_move: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, btn_newmove))
@@ -87,7 +87,7 @@ class andamentos(CrawJUD):
             self.message = "Informando data"
             self.type_log = "log"
             self.prt()
-            css_Data = 'input[id="j_id_2n:j_id_2r_2_9_input"]'
+            css_Data = self.elements.input_data
             campo_data: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, css_Data))
             )
@@ -109,9 +109,8 @@ class andamentos(CrawJUD):
             self.message = "Informando ocorrência"
             self.type_log = "log"
             self.prt()
-            inpt_ocorrencia = 'textarea[id="j_id_2n:txtOcorrenciaAndamento"]'
 
-            ocorrencia = self.driver.find_element(By.CSS_SELECTOR, inpt_ocorrencia)
+            ocorrencia = self.driver.find_element(By.CSS_SELECTOR, self.elements.inpt_ocorrencia)
             text_andamento = (
                 str(self.bot_data.get("OCORRENCIA")).replace("\t", "").replace("\n", "")
             )
@@ -128,9 +127,9 @@ class andamentos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            inpt_obs = 'textarea[id="j_id_2n:txtObsAndamento"]'
+            
 
-            observacao = self.driver.find_element(By.CSS_SELECTOR, inpt_obs)
+            observacao = self.driver.find_element(By.CSS_SELECTOR, self.elements.inpt_obs)
             text_andamento = (
                 str(self.bot_data.get("OBSERVACAO")).replace("\t", "").replace("\n", "")
             )
@@ -152,7 +151,7 @@ class andamentos(CrawJUD):
             self.prt()
             sleep(1)
             self.link = self.driver.current_url
-            save_button = self.driver.find_element(By.ID, "btnSalvarAndamentoProcesso")
+            save_button = self.driver.find_element(By.ID, self.elements.botao_salvar)
             save_button.click()
 
         except Exception as e:

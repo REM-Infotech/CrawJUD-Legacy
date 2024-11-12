@@ -175,7 +175,7 @@ class protocolo(CrawJUD):
 
             elif chk_info:
 
-                radio_item = item.find_element(By.CSS_SELECTOR, "input[type='radio']")
+                radio_item = item.find_element(By.CSS_SELECTOR, elements.input_radio)
                 radio_item.click()
 
                 set_parte = td_partes.find_element(By.TAG_NAME, "input")
@@ -221,7 +221,7 @@ class protocolo(CrawJUD):
             self.prt()
             input_tipo_move: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')
+                    (By.CSS_SELECTOR, elements.tipo_documento)
                 )
             )
             input_tipo_move.click()
@@ -232,7 +232,7 @@ class protocolo(CrawJUD):
 
             input_move_option: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//div[@id="ajaxAuto_descricaoTipoDocumento"]/ul/li')
+                    (By.XPATH, elements.descricao_documento)
                 )
             )
             input_move_option.click()
@@ -248,14 +248,14 @@ class protocolo(CrawJUD):
             self.type_log = "log"
             self.prt()
             button_new_file = self.driver.find_element(
-                By.CSS_SELECTOR, 'input#editButton[value="Adicionar"]'
+                By.CSS_SELECTOR, elements.includeContent
             )
             button_new_file.click()
 
             sleep(2.5)
 
             self.driver.switch_to.frame(
-                self.driver.find_element(By.CSS_SELECTOR, 'iframe[frameborder="0"][id]')
+                self.driver.find_element(By.CSS_SELECTOR, elements.border)
             )
             self.message = f"Enviando arquivo '{file}'"
             self.type_log = "log"
@@ -305,7 +305,7 @@ class protocolo(CrawJUD):
                 By.TAG_NAME, "tr"
             )[0]
             radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(
-                By.CSS_SELECTOR, 'input[type="radio"]'
+                By.CSS_SELECTOR, elements.input_radio
             )
             radiobutton.click()
 
@@ -328,7 +328,7 @@ class protocolo(CrawJUD):
                 self.type_log = "log"
                 self.prt()
                 input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, '//*[@id="conteudo"]'))
+                    EC.presence_of_element_located((By.XPATH, elements.conteudo))
                 )
                 input_file_element.send_keys(
                     f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}"
@@ -377,7 +377,7 @@ class protocolo(CrawJUD):
             password_input.send_keys(senhatoken)
 
             sign_button = self.driver.find_element(
-                By.CSS_SELECTOR, 'input[name="assinarButton"]'
+                By.CSS_SELECTOR, elements.botao_assinar
             )
             sign_button.click()
 
@@ -393,7 +393,7 @@ class protocolo(CrawJUD):
                 raise ErroDeExecucao("Senha Incorreta!")
 
             confirm_button = self.driver.find_element(
-                By.CSS_SELECTOR, 'input#closeButton[value="Confirmar Inclusão"]'
+                By.CSS_SELECTOR, elements.botao_confirmar
             )
             confirm_button.click()
             sleep(1)
@@ -418,7 +418,7 @@ class protocolo(CrawJUD):
             self.driver.find_element(By.ID, self.id_part).click()
 
         finish_button = self.driver.find_element(
-            By.CSS_SELECTOR, 'input#editButton[value="Concluir Movimento"]'
+            By.CSS_SELECTOR, elements.botao_concluir
         )
         finish_button.click()
 
@@ -435,7 +435,7 @@ class protocolo(CrawJUD):
             table_moves[0].screenshot(os.path.join(self.output_dir_path, "tr_0.png"))
 
             expand = table_moves[0].find_element(
-                By.CSS_SELECTOR, 'a[href="javascript://nop/"]'
+                By.CSS_SELECTOR, elements.element_exception
             )
             expand.click()
 
@@ -500,12 +500,12 @@ class protocolo(CrawJUD):
 
                 with suppress(NoSuchElementException, StaleElementReferenceException):
                     radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(
-                        By.CSS_SELECTOR, 'input[type="radio"]'
+                        By.CSS_SELECTOR, elements.input_radio
                     )
                     radiobutton.click()
 
                     delete_file = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[type="button"][name="deleteButton"]'
+                        By.CSS_SELECTOR, elements.botao_deletar
                     )
                     delete_file.click()
 
@@ -524,17 +524,14 @@ class protocolo(CrawJUD):
 
         while True:
 
-            css_containerprogressbar = 'div[id="divProgressBarContainerAssinado"]'
-            css_divprogressbar = 'div[id="divProgressBarAssinado"]'
-
             try:
                 divprogressbar: WebElement = self.wait.until(
                     EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, css_containerprogressbar)
+                        (By.CSS_SELECTOR, elements.css_containerprogressbar)
                     )
                 )
                 divprogressbar = divprogressbar.find_element(
-                    By.CSS_SELECTOR, css_divprogressbar
+                    By.CSS_SELECTOR, elements.css_divprogressbar
                 )
                 sleep(1)
                 try:
