@@ -2,7 +2,6 @@ import os
 import time
 import pytz
 import json
-import dotenv
 import random
 import pathlib
 import debugpy
@@ -46,11 +45,6 @@ class CrawJUD:
     }
 
     def __init__(self, **kwargs):
-
-        values = dotenv.dotenv_values()
-        debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
-        if debug is True:
-            self.debug()
 
         self.__dict__.update(kwargs)
         self.kwrgs = kwargs
@@ -442,9 +436,9 @@ class CrawJUD:
     def append_moves(self) -> None:
 
         if len(self.appends) > 0:
-            
+
             for append in self.appends:
-            
+
                 self.append_success(
                     append, "Movimentação salva na planilha com sucesso!!"
                 )
