@@ -11,7 +11,7 @@ from multiprocessing import Process
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from app.misc.checkout import checkout_release_tag
+# from app.misc.checkout import checkout_release_tag
 
 values = dotenv_values()
 
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     # checkout antes de inicializar
 
     debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
-    checkout_release_tag(version, debug)
+    # checkout_release_tag(version, debug)
 
     # Inicia o servidor Flask
     flask_server_Process = flask_Process()
