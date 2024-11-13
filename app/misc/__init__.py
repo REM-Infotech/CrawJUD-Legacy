@@ -8,9 +8,11 @@ from google.cloud.storage import Client, Bucket
 signed_url_lifetime = 300
 
 import pytz
-from app import db, app
+from app import db
 from datetime import datetime
 from .get_location import GeoLoc
+
+from flask import Flask
 
 __all__ = [GeoLoc]
 
@@ -60,7 +62,7 @@ def bucketGcs(storageClient: Client, bucket_name: str = None) -> Bucket:
     return bucket_obj
 
 
-def stop_execution(pid: str, robot_stop: bool = False) -> int:
+def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
 
     from status import SetStatus
     from app.models import ThreadBots
@@ -107,8 +109,7 @@ def stop_execution(pid: str, robot_stop: bool = False) -> int:
 
             return 200
 
-    except Exception as e:
-        app.logger.error(str(e))
+    except Exception:
         return 500
 
 

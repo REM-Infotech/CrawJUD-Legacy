@@ -51,7 +51,7 @@ def botlaunch(id: int, system: str, typebot: str):
                 system=system,
                 typebot=typebot,
             )
-            is_started = worker_thread.start()
+            is_started = worker_thread.start(app=app)
 
         except Exception as e:
             message = {"error": str(e)}
@@ -65,7 +65,7 @@ def botlaunch(id: int, system: str, typebot: str):
 def stop_bot(user: str, pid: str):
 
     with app.app_context():
-        set_stop = stop_execution(pid, True)
+        set_stop = stop_execution(pid=pid, robot_stop=True, app=app)
 
         if set_stop == 200:
 

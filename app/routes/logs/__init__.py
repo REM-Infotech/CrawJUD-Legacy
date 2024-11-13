@@ -26,6 +26,7 @@ with app.app_context():
             room = data["pid"]
             try:
                 join_room(room)
+                emit("log_message", data, room=room)
             except Exception:
                 emit("log_message", data, room=room)
 
