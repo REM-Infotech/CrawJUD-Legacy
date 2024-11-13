@@ -59,3 +59,5 @@ for paths in [DOCS_PATH, TEMP_PATH, IMAGE_TEMP_PATH, CSV_TEMP_PATH, PDF_TEMP_PAT
 
     if not os.path.exists(paths):
         os.makedirs(paths, exist_ok=True)
+
+GEVENT_SUPPORT = True

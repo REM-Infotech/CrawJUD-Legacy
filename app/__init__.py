@@ -1,6 +1,4 @@
 # Flask imports
-from app.loggers import loggerConfig
-
 from flask import Flask
 from flask_mail import Mail
 from flask_socketio import SocketIO
@@ -10,25 +8,20 @@ from flask_talisman import Talisman
 # Python Imports
 import os
 import re
-from clear import clear
-from dotenv import dotenv_values
+
+from pathlib import Path
 from datetime import timedelta
+from dotenv import dotenv_values
+from importlib import import_module
 
 # APP Imports
 from configs import csp
 from app import default_config
 
-loggerConfig()
-src_path = os.path.join(os.getcwd(), "static")
-app = Flask(__name__, static_folder=src_path)
-app.config.from_object(default_config)
-
-db = SQLAlchemy()
-mail = Mail()
-io = SocketIO()
-
-mail.init_app(app)
-db.init_app(app)
+db = None
+mail = None
+io = None
+app = None
 
 clean_prompt = False
 
@@ -54,15 +47,6 @@ def check_allowed_origin(origin: str = "https://google.com"):
     return False
 
 
-io.init_app(
-    app,
-    cors_allowed_origins=check_allowed_origin,
-    async_mode="gevent",
-    ping_interval=25,
-    ping_timeout=10,
-)
-
-
 class CustomTalisman(Talisman):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -71,36 +55,73 @@ class CustomTalisman(Talisman):
         super().set_headers(response)
 
 
-def init_app():
-    with app.app_context():
+class AppFactory:
 
-        global clean_prompt
-        if clean_prompt is False:
-            clear()
-            clean_prompt = True
+    def create_app(self) -> Flask:
 
-        age = timedelta(days=31).max.seconds
+        global app
+        src_path = os.path.join(os.getcwd(), "static")
+        app = Flask(__name__, static_folder=src_path)
+        app.config.from_object(default_config)
 
-        from app.models import init_database
+        self.init_extensions(app)
 
-        init_database()()
+        import_module("app.routes", __name__)
+        import_module("app.handling", __name__)
 
-        CustomTalisman(
-            app,
-            content_security_policy=csp(),
-            session_cookie_http_only=True,
-            session_cookie_samesite="Lax",
-            strict_transport_security=True,
-            strict_transport_security_max_age=age,
-            x_content_type_options=True,
-            x_xss_protection=True,
-        )
+        return app
+
+    def init_extensions(self, app: Flask):
+
+        with app.app_context():
+            global db, mail, io
+            db = SQLAlchemy()
+            mail = Mail()
+            io = SocketIO(app)
+
+            mail.init_app(app)
+            db.init_app(app)
+            io.init_app(
+                app,
+                cors_allowed_origins=check_allowed_origin,
+                async_mode="gevent",
+                ping_interval=25,
+                ping_timeout=10,
+            )
+
+            CustomTalisman(
+                app,
+                content_security_policy=csp(),
+                session_cookie_http_only=True,
+                session_cookie_samesite="Lax",
+                strict_transport_security=True,
+                strict_transport_security_max_age=timedelta(days=31).max.seconds,
+                x_content_type_options=True,
+            )
+
+            if not Path("is_init.txt").exists():
+
+                with open("is_init.txt", "w") as f:
+                    f.write("True")
+
+                self.init_database(db)
+
+    def init_database(self, db: SQLAlchemy):
+
+        from .models import Servers
+        import platform
+
+        values = dotenv_values()
+        db.create_all()
+
+        NAMESERVER = values.get("NAMESERVER")
+        HOST = values.get("HOSTNAME")
+
+        if not Servers.query.filter(Servers.name == NAMESERVER).first():
+
+            server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
+            db.session.add(server)
+            db.session.commit()
 
 
-from app import routes
-from app import handling
-
-__all__ = [routes, handling]
-
-
-init_app()
+create_app = AppFactory().create_app

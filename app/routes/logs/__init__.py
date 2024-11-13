@@ -1,7 +1,6 @@
 from app import app, db
 from flask import request, abort
 from flask_socketio import emit, join_room, Namespace, leave_room
-from ...loggers import info_logger
 
 from status import SetStatus
 from app.misc import stop_execution
@@ -23,11 +22,10 @@ with app.app_context():
 
         def on_join(self, data: dict[str, str]):
             request
-            info_logger.info("Joined")
+
             room = data["pid"]
             try:
                 join_room(room)
-                info_logger.info(f"Client {request.sid} joined room {room}")
             except Exception:
                 emit("log_message", data, room=room)
 
@@ -43,18 +41,12 @@ with app.app_context():
             stop_execution(pid)
             emit("statusbot", data=data)
 
-        def on_statusbot(self, data: dict):
-            info_logger.info(f"Client {request.sid} stop bot {data["pid"]}")
-
         def on_log_message(self, data: dict[str, str]):
 
             try:
                 pid = data["pid"]
                 data = serverSide(data, pid)
                 emit("log_message", data, room=pid)
-                info_logger.info(
-                    f"Client {request.sid} sended message {data["message"]}"
-                )
 
             except Exception as e:
                 abort(500, description=str(e))
