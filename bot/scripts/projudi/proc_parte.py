@@ -94,7 +94,7 @@ class proc_parte(CrawJUD):
                 if next_page:
                     next_page.click()
                     self.get_process_list()
-                    
+
             if self.driver.title.lower() == "a sessao expirou":
                 super().auth_bot()
 

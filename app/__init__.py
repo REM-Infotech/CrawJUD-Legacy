@@ -9,6 +9,7 @@ from flask_talisman import Talisman
 import os
 import re
 
+
 from pathlib import Path
 from datetime import timedelta
 from dotenv import dotenv_values
@@ -22,6 +23,7 @@ db = None
 mail = None
 io = None
 app = None
+
 
 clean_prompt = False
 
@@ -75,12 +77,11 @@ class AppFactory:
 
         with app.app_context():
             global db, mail, io
-            db = SQLAlchemy()
-            mail = Mail()
+            db = SQLAlchemy(app)
+            mail = Mail(app)
             io = SocketIO(app)
 
             mail.init_app(app)
-            db.init_app(app)
             io.init_app(
                 app,
                 cors_allowed_origins=check_allowed_origin,

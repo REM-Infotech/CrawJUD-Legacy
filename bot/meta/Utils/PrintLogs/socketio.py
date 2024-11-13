@@ -1,18 +1,36 @@
-from app import io
-from app import app
+from socketio import Client
+from time import sleep
+
+io = Client()
 
 
 class SocketBot:
+    def __init__(self):
+        self.connected = False
 
-    def with_context(self, event: str, data: dict):
+    def with_context(self, event: str, data: dict, url: str):
+        url = f"https://{url}"
 
-        with app.app_context():
-            io.emit(event, data, namespace="/log")
+        # Verifica se já está conectado antes de tentar se conectar
+        if not self.connected:
+            io.connect(url, namespaces=["/log"], retry=True)
+            self.connected = True
 
-    def send_message(self, data: dict[str, str | int], url):
+        io.emit(event, data, "/log")
+        sleep(1)
 
-        self.with_context("log_message", data)
+        # Após a emissão, desconecta e define o status
+        io.disconnect()
+        self.connected = False
 
-    def end_message(self, data: dict, url):
+    def send_message(self, data: dict[str, str | int], url: str):
+        try:
+            pass
+        finally:
+            self.with_context("log_message", data, url)
 
-        self.with_context("stop_bot", data)
+    def end_message(self, data: dict, url: str):
+        try:
+            pass
+        finally:
+            self.with_context("stop_bot", data, url)

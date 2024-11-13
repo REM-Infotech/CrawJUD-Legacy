@@ -1,5 +1,5 @@
 from app import app, db
-from flask import request, abort
+from flask import abort
 from flask_socketio import emit, join_room, Namespace, leave_room
 
 from status import SetStatus
@@ -21,25 +21,20 @@ with app.app_context():
             leave_room(room)
 
         def on_join(self, data: dict[str, str]):
-            request
 
             room = data["pid"]
-            try:
-                join_room(room)
-                emit("log_message", data, room=room)
-            except Exception:
-                emit("log_message", data, room=room)
+            join_room(room)
 
-            if StatusStop(room) is True:
-                emit("statusbot", data=data)
+            # if StatusStop(room) is True:
+            #     emit("statusbot", data=data)
 
-            elif stopped_bot(room) is True:
-                stop_execution()
+            # elif stopped_bot(room) is True:
+            #     stop_execution(app, room, True)
 
         def on_stop_bot(self, data: dict[str, str]):
 
             pid = data["pid"]
-            stop_execution(pid)
+            stop_execution(app, pid, True)
             emit("statusbot", data=data)
 
         def on_log_message(self, data: dict[str, str]):
@@ -75,13 +70,13 @@ with app.app_context():
             )
             log_pid = CacheLogs(
                 pid=data["pid"],
-                pos=int(data["pos"]),
+                pos=int(data.get("pos", 0)),
                 total=int(execut.total_rows) - 1,
                 remaining=int(execut.total_rows) - 1,
                 success=0,
                 errors=0,
                 status=execut.status,
-                last_log=data["message"],
+                last_log=data.get("message", None),
             )
             db.session.add(log_pid)
 

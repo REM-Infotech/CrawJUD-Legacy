@@ -65,7 +65,7 @@ def botlaunch(id: int, system: str, typebot: str):
 def stop_bot(user: str, pid: str):
 
     with app.app_context():
-        set_stop = stop_execution(pid=pid, robot_stop=True, app=app)
+        set_stop = stop_execution(app, pid, True)
 
         if set_stop == 200:
 

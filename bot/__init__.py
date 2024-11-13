@@ -47,6 +47,7 @@ class WorkerThread:
                         target=bot,
                         kwargs=self.kwrgs,
                         name=f"{self.display_name} - {pid}",
+                        daemon=False
                     )
                     process.start()
                     process_id = process.ident

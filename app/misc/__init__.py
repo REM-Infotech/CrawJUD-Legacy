@@ -8,7 +8,6 @@ from google.cloud.storage import Client, Bucket
 signed_url_lifetime = 300
 
 import pytz
-from app import db
 from datetime import datetime
 from .get_location import GeoLoc
 
@@ -68,6 +67,7 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
     from app.models import ThreadBots
     from app.models import Executions
     from bot import WorkerThread
+    from app import db
 
     try:
 
