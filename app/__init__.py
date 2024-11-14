@@ -79,17 +79,17 @@ class AppFactory:
             global db, mail, io
             db = SQLAlchemy(app)
             mail = Mail(app)
-            io = SocketIO(app)
+
+            redis_url = "redis://:ed67AwFki0tM@195.35.43.119:6379"
+            io = SocketIO(app, message_queue=redis_url)
 
             mail.init_app(app)
             io.init_app(
                 app,
                 cors_allowed_origins=check_allowed_origin,
-                async_mode="gevent",
                 ping_interval=25,
                 ping_timeout=10,
             )
-
             CustomTalisman(
                 app,
                 content_security_policy=csp(),
