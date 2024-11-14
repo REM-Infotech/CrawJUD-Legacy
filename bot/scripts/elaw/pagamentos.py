@@ -652,7 +652,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        self.elements.valor_apagamento,
+                        self.elements.valor_pagamento,
                     )
                 )
             )
