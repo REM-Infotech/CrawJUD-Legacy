@@ -11,7 +11,7 @@ class PROJUDI_AM:
 
     btn_partes = "#tabItemprefix2"
     btn_infogeral = "#tabItemprefix0"
-    includeContent = "includeContent"
+    includeContent_capa = "includeContent"
 
     infoproc = 'table[id="informacoesProcessuais"]'
     assunto_proc = 'a[class="definitionAssuntoPrincipal"]'
@@ -25,7 +25,7 @@ class PROJUDI_AM:
     table_moves = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
 
     exception_arrow = './/a[@class="arrowNextOn"]'
-    
+
     input_radio = "input[type='radio']"
 
     tipo_documento = 'select[id="tipoDocumento"]'
@@ -39,4 +39,3 @@ class PROJUDI_AM:
     botao_deletar = 'input[type="button"][name="deleteButton"]'
     css_containerprogressbar = 'div[id="divProgressBarContainerAssinado"]'
     css_divprogressbar = 'div[id="divProgressBarAssinado"]'
-    

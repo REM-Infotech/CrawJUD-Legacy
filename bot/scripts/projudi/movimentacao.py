@@ -445,5 +445,5 @@ class movimentacao(CrawJUD):
         self.table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
         self.table_moves = self.table_moves.find_elements(
             By.XPATH,
-            self.self.elements.table_moves,
+            self.elements.table_moves,
         )
