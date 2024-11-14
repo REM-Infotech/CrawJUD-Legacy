@@ -262,8 +262,7 @@ class movimentacao(CrawJUD):
 
         if encontrado is False:
 
-            self.message = "Nenhuma movimentação encontrada"
-            self.append_error([self.bot_data.get("NUMERO_PROCESSO", self.message)])
+            raise ErroDeExecucao("Nenhuma movimentação encontrada")
 
     def get_textodoc(self) -> None:
 
