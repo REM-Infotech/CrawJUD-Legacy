@@ -34,7 +34,7 @@ class SeachBot(CrawJUD):
 
         if src is True:
             self.message = "Processo encontrado!"
-            self.type_log = "info"
+            self.type_log = "log"
             self.prt()
 
         return src

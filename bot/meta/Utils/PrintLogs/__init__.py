@@ -12,11 +12,10 @@ codificacao = "UTF-8"
 mensagens = []
 
 url_socket = dotenv_values().get("HOSTNAME")
+iobot = SocketBot()
 
 
 class printbot(CrawJUD):
-
-    iobot = SocketBot()
 
     def __init__(self):
         """### PrintLogs"""
@@ -80,7 +79,7 @@ class printbot(CrawJUD):
 
         data = {"pid": self.pid, "status": status}
 
-        self.iobot.end_message(data, url_socket)
+        iobot.end_message(data, url_socket)
 
     def socket_message(self, data: dict) -> None:
 
@@ -93,7 +92,7 @@ class printbot(CrawJUD):
             if any(message_stop):
                 data.update({"system": self.system, "typebot": self.typebot})
 
-            self.iobot.send_message(data, url_socket)
+            iobot.send_message(data, url_socket)
 
         except Exception as e:
             print(e)

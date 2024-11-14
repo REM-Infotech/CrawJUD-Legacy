@@ -1,5 +1,4 @@
 from bot.common.selenium_excepts import exeptionsBot
-from app.loggers import error_logger
 
 
 class CrawJUDExceptions(Exception):
@@ -22,7 +21,6 @@ class ErroDeExecucao(CrawJUDExceptions):
 
     def __init__(self, message: str = "Erro ao executar operação", e: Exception = None):
 
-        error_logger.error(str(e) if e is not None else message)
         message_error = ""
         if e:
             exceptBots = exeptionsBot()

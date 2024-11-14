@@ -40,7 +40,7 @@ class cadastro(CrawJUD):
                 break
 
             if self.driver.title.lower() == "a sessao expirou":
-                self.auth(self)
+                super().auth_bot()
 
             try:
                 self.queue()
