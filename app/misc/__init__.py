@@ -8,12 +8,10 @@ from google.cloud.storage import Client, Bucket
 signed_url_lifetime = 300
 
 import pytz
-from app import db, app
 from datetime import datetime
-from app.models import ThreadBots
-from app.models import Executions
-from bot import WorkerThread
 from .get_location import GeoLoc
+
+from flask import Flask
 
 __all__ = [GeoLoc]
 
@@ -63,20 +61,24 @@ def bucketGcs(storageClient: Client, bucket_name: str = None) -> Bucket:
     return bucket_obj
 
 
-def stop_execution(pid: str, robot_stop: bool = False) -> int:
+def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
 
     from status import SetStatus
+    from app.models import ThreadBots
+    from app.models import Executions
+    from bot import WorkerThread
+    from app import db
 
     try:
 
         processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()
 
         if processID:
-            
+
             if robot_stop:
                 processID = int(processID.processID)
                 worker_thread = WorkerThread().stop(processID, pid)
-                
+
                 app.logger.info(worker_thread)
 
             get_info = (
@@ -89,7 +91,7 @@ def stop_execution(pid: str, robot_stop: bool = False) -> int:
             get_info.status = "Finalizado"
             get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
             filename = get_file(pid)
-            
+
             if filename != "":
 
                 get_info.file_output = filename
@@ -107,8 +109,7 @@ def stop_execution(pid: str, robot_stop: bool = False) -> int:
 
             return 200
 
-    except Exception as e:
-        app.logger.error(str(e))
+    except Exception:
         return 500
 
 

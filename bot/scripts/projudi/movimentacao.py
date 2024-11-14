@@ -41,7 +41,7 @@ class movimentacao(CrawJUD):
                 break
 
             if self.driver.title.lower() == "a sessao expirou":
-                self.auth(self)
+                super().auth_bot()
 
             try:
                 self.queue()
@@ -93,8 +93,8 @@ class movimentacao(CrawJUD):
         if self.bot_data.get("DATA_LIMITE"):
             self.extract_with_rangedata()
 
-        elif self.bot_data.get("NOME_MOV"):
-            self.get_textodoc()
+        # elif self.bot_data.get("NOME_MOV"):
+        #     self.get_textodoc()
 
         self.append_moves()
 
@@ -175,10 +175,10 @@ class movimentacao(CrawJUD):
 
                     return match
 
-                checkdoc = checkifdoc(text_mov)
-                if len(checkdoc) > 0:
-                    self.resultados = checkdoc
-                    self.get_textodoc()
+                # checkdoc = checkifdoc(text_mov)
+                # if len(checkdoc) > 0:
+                #     self.resultados = checkdoc
+                #     self.get_textodoc()
 
             data = [
                 self.bot_data.get("NUMERO_PROCESSO"),
@@ -245,10 +245,10 @@ class movimentacao(CrawJUD):
                                 )
                                 return re.findall(padrao, texto)
 
-                            checkdoc = checkifdoc(text_mov)
-                            if len(checkdoc) > 0:
-                                self.resultados = checkdoc
-                                self.get_textodoc()
+                            # checkdoc = checkifdoc(text_mov)
+                            # if len(checkdoc) > 0:
+                            #     self.resultados = checkdoc
+                            #     self.get_textodoc()
 
                         data = [
                             self.bot_data.get("NUMERO_PROCESSO"),
@@ -262,29 +262,29 @@ class movimentacao(CrawJUD):
 
         if encontrado is False:
 
-            self.message = "Nenhuma movimentação encontrada"
-            self.append_error([self.bot_data.get("NUMERO_PROCESSO", self.message)])
+            raise ErroDeExecucao("Nenhuma movimentação encontrada")
 
     def get_textodoc(self) -> None:
 
         self.set_page_size()
         self.set_tablemoves()
 
+        eventos_xls = []
         if len(self.resultados) > 0:
-            eventos = [str(self.resultados[0][0])]
+            eventos_xls = [str(self.resultados[0][0])]
 
             if ") " in str(self.resultados[0][0]):
-                eventos = [str(self.resultados[0][0]).split(") ")[1]]
+                eventos_xls = [str(self.resultados[0][0]).split(") ")[1]]
 
         if self.bot_data.get("NOME_MOV"):
 
-            eventos = [self.bot_data.get("NOME_MOV")]
+            eventos_xls = [self.bot_data.get("NOME_MOV")]
             if "," in self.bot_data.get("NOME_MOV"):
-                eventos = (
+                eventos_xls = (
                     str(self.bot_data.get("NOME_MOV")).replace(", ", ",").split(",")
                 )
 
-        for evento in eventos:
+        for evento in eventos_xls:
             for move in self.table_moves:
                 move: WebElement = move
                 itensmove = move.find_elements(By.TAG_NAME, "td")
@@ -390,6 +390,7 @@ class movimentacao(CrawJUD):
                             ).upper() == "NÃO" and not self.bot_data.get(
                                 "NOME_MOV", None
                             ):
+                                sleep(1)
                                 os.remove(path_pdf)
 
                             data = [

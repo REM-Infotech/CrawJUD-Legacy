@@ -1,10 +1,10 @@
 import os
 from flask import has_app_context
-from app import db, app
+from app import db
 from app.models import ThreadBots
 
-import psutil
-import multiprocessing as mp
+from flask import Flask
+import threading
 
 
 class WorkerThread:
@@ -35,22 +35,22 @@ class WorkerThread:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
-    def start(self) -> int:
+    def start(self, app: Flask) -> int:
 
         try:
 
-            bot = self.BotStarter
-            pid = os.path.basename(self.path_args.replace(".json", ""))
-            process = mp.Process(
-                target=bot,
-                kwargs=self.kwrgs,
-                name=f"{self.display_name} - {pid}",
-            )
-            process.start()
-            process_id = process.ident
-
             if has_app_context():
                 with app.app_context():
+                    bot = self.BotStarter
+                    pid = os.path.basename(self.path_args.replace(".json", ""))
+                    process = threading.Thread(
+                        target=bot,
+                        kwargs=self.kwrgs,
+                        name=f"{self.display_name} - {pid}",
+                        daemon=False
+                    )
+                    process.start()
+                    process_id = process.ident
 
                     # Salva o ID no "banco de dados"
                     add_thread = ThreadBots(pid=pid, processID=process_id)
@@ -58,8 +58,7 @@ class WorkerThread:
                     db.session.commit()
                     return 200
 
-        except Exception as e:
-            print(e)
+        except Exception:
             return 500
 
     def stop(self, processID: int, pid: str) -> None:
@@ -67,17 +66,16 @@ class WorkerThread:
         try:
 
             sinalizacao = f"{pid}.flag"
-            processo = psutil.Process(processID)
             path_flag = os.path.join(os.getcwd(), "Temp", pid, sinalizacao)
             with open(path_flag, "w") as f:
                 f.write("Encerrar processo")
 
-            processo.wait(60)
+            for thread in threading.enumerate():
+                if thread.ident == processID:
+                    thread.join(30)
+                    break
 
             return f"Process {processID} stopped!"
 
-        except psutil.TimeoutExpired:
+        except Exception:
             return "O processo não foi encerrado dentro do tempo limite"
-
-        except psutil.NoSuchProcess:
-            return f"Process {processID} stopped!"
