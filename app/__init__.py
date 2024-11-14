@@ -80,8 +80,8 @@ class AppFactory:
             db = SQLAlchemy(app)
             mail = Mail(app)
 
-            redis_url = "redis://:ed67AwFki0tM@195.35.43.119:6379"
-            io = SocketIO(app, message_queue=redis_url)
+            # redis_url = "redis://:ed67AwFki0tM@195.35.43.119:6379"
+            io = SocketIO(app, async_mode=None)  # Desabilitando async_mode
 
             mail.init_app(app)
             io.init_app(

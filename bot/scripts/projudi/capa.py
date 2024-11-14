@@ -78,14 +78,14 @@ class capa(CrawJUD):
 
         try:
             includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent
+                By.ID, self.elements.includeContent_capa
             )
         except Exception:
             time.sleep(3)
             self.driver.refresh()
             time.sleep(1)
             includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent
+                By.ID, self.elements.includeContent_capa
             )
 
         tablePoloAtivo = includeContent.find_elements(
@@ -137,14 +137,14 @@ class capa(CrawJUD):
 
         try:
             includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent
+                By.ID, self.elements.includeContent_capa
             )
         except Exception:
             time.sleep(3)
             self.driver.refresh()
             time.sleep(1)
             includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent
+                By.ID, self.elements.includeContent_capa
             )
 
         includeContent = includeContent.find_element(By.CLASS_NAME, "form")
@@ -213,14 +213,14 @@ class capa(CrawJUD):
 
         try:
             includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent
+                By.ID, self.elements.includeContent_capa
             )
         except Exception:
             time.sleep(3)
             self.driver.refresh()
             time.sleep(1)
             includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent
+                By.ID, self.elements.includeContent_capa
             )
 
         includeContent = includeContent.find_element(
