@@ -97,7 +97,7 @@ class sol_pags(CrawJUD):
                 EC.presence_of_element_located(
                     (
                         By.CSS_SELECTOR,
-                        self.elements.valor_apagamento,
+                        self.elements.valor_pagamento,
                     )
                 )
             )
@@ -124,14 +124,18 @@ class sol_pags(CrawJUD):
             self.prt()
 
             type_itens: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_typeitens))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_typeitens)
+                )
             )
             type_itens.click()
 
             sleep(0.5)
 
             list_itens: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.listitens_css))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.listitens_css)
+                )
             )
             list_itens = list_itens.find_elements(By.TAG_NAME, "li")
 
@@ -174,13 +178,17 @@ class sol_pags(CrawJUD):
             self.interact.sleep_load('div[id="j_id_2x"]')
 
             div_type_doc: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.type_doc_css))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.type_doc_css)
+                )
             )
             div_type_doc.click()
             sleep(0.5)
 
             list_type_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.list_type_doc_css))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.list_type_doc_css)
+                )
             )
             list_type_doc = list_type_doc.find_elements(By.TAG_NAME, "li")
 
@@ -211,7 +219,9 @@ class sol_pags(CrawJUD):
 
                 doc = self.format_String(doc.upper())
                 insert_doc: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.inputfilecss))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.inputfilecss)
+                    )
                 )
                 path_doc = os.path.join(self.output_dir_path, doc)
                 insert_doc.send_keys(path_doc)
@@ -223,7 +233,9 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
             div_condenacao_type: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_div_condenacao_type))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.css_div_condenacao_type)
+                )
             )
             div_condenacao_type.click()
 
@@ -252,7 +264,9 @@ class sol_pags(CrawJUD):
             desc_pagamento = str(self.bot_data.get("DESC_PAGAMENTO"))
 
             desc_pgto: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_desc_pgto))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.css_desc_pgto)
+                )
             )
             desc_pgto.click()
             if "\n" in desc_pagamento:
@@ -287,7 +301,9 @@ class sol_pags(CrawJUD):
             self.prt()
 
             input_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_inputfavorecido))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.css_inputfavorecido)
+                )
             )
             input_favorecido.click()
             input_favorecido.clear()
@@ -328,7 +344,9 @@ class sol_pags(CrawJUD):
             self.interact.sleep_load('div[id="j_id_2x"]')
 
             campo_cod_barras: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_cod_bars))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.css_cod_bars)
+                )
             )
             campo_cod_barras.click()
             sleep(0.5)
@@ -345,7 +363,9 @@ class sol_pags(CrawJUD):
             self.prt()
 
             centro_custas: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_centro_custas))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.css_centro_custas)
+                )
             )
             centro_custas.click()
             centro_custas.send_keys("A906030100")
@@ -360,7 +380,9 @@ class sol_pags(CrawJUD):
             self.prt()
 
             div_conta_debito: WebElement = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_div_conta_debito))
+                EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, self.elements.css_div_conta_debito)
+                )
             )
             div_conta_debito.click()
             sleep(1)
@@ -382,9 +404,11 @@ class sol_pags(CrawJUD):
             self.prt()
 
             valor_doc = self.bot_data.get("VALOR_GUIA").replace(".", ",")
-            
+
             element: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor_guia))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.valor_guia)
+                )
             )
             element.click()
             element.send_keys(Keys.CONTROL, "a")
@@ -393,7 +417,6 @@ class sol_pags(CrawJUD):
             sleep(0.5)
             element.send_keys(valor_doc)
 
-            
             self.driver.execute_script(
                 f"document.querySelector('{self.elements.valor_guia}').blur()"
             )
@@ -401,7 +424,9 @@ class sol_pags(CrawJUD):
             sleep(0.5)
 
             list_tipo_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.type_doc_css))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.type_doc_css)
+                )
             )
             list_tipo_doc.click()
             sleep(1)
@@ -450,7 +475,9 @@ class sol_pags(CrawJUD):
             solicitante = str(self.bot_data.get("SOLICITANTE")).lower()
             if "monitoria" == solicitante or "monitória" == solicitante.lower():
                 desc_pgto: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_desc_pgto))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.css_desc_pgto)
+                    )
                 )
                 desc_pgto.send_keys(self.bot_data.get("DESC_PAGAMENTO"))
                 self.driver.execute_script(
@@ -461,13 +488,17 @@ class sol_pags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            div_tipo_custa = self.driver.find_element(By.CSS_SELECTOR, self.elements.css_tipocusta)
+            div_tipo_custa = self.driver.find_element(
+                By.CSS_SELECTOR, self.elements.css_tipocusta
+            )
             div_tipo_custa.click()
             sleep(1)
 
             tipo_guia = str(self.bot_data.get("TIPO_GUIA"))
             list_tipo_custa: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_listcusta))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_listcusta)
+                )
             )
             list_tipo_custa = list_tipo_custa.find_elements(By.TAG_NAME, "li")
             for item in list_tipo_custa:
@@ -494,7 +525,9 @@ class sol_pags(CrawJUD):
             )
             self.interact.sleep_load('div[id="j_id_2x"]')
 
-            label_forma_pgto = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_processo)
+            label_forma_pgto = self.driver.find_element(
+                By.CSS_SELECTOR, self.elements.valor_processo
+            )
             label_forma_pgto.click()
 
             sleep(1)
@@ -504,7 +537,9 @@ class sol_pags(CrawJUD):
             self.interact.sleep_load('div[id="j_id_2x"]')
 
             campo_cod_barras: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_cod_bars))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_cod_bars)
+                )
             )
             campo_cod_barras.click()
             sleep(0.5)
@@ -554,7 +589,9 @@ class sol_pags(CrawJUD):
             sleep(1)
 
             centro_custas: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_centro_custas))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_centro_custas)
+                )
             )
             centro_custas.click()
             centro_custas.send_keys("A906030100")
@@ -566,7 +603,9 @@ class sol_pags(CrawJUD):
             sleep(1)
 
             div_conta_debito: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_div_conta_debito)
+                )
             )
             div_conta_debito.click()
             sleep(1)
@@ -643,7 +682,9 @@ class sol_pags(CrawJUD):
                 if item.text == "Nenhum registro encontrado!":
                     raise ErroDeExecucao("Pagamento não solicitado")
 
-                open_details = item.find_element(By.CSS_SELECTOR, self.elements.botao_ver)
+                open_details = item.find_element(
+                    By.CSS_SELECTOR, self.elements.botao_ver
+                )
                 open_details.click()
 
                 sleep(1)
@@ -652,7 +693,7 @@ class sol_pags(CrawJUD):
                     EC.presence_of_element_located(
                         (
                             By.CSS_SELECTOR,
-                            f'div[id="tabViewProcesso:pvp-dtProcessoValorResults:{pos}:pvp-pgBotoesValoresPagamentoBtnVer_dlg"]'
+                            f'div[id="tabViewProcesso:pvp-dtProcessoValorResults:{pos}:pvp-pgBotoesValoresPagamentoBtnVer_dlg"]',
                         )
                     )
                 ).find_element(By.TAG_NAME, "a")
