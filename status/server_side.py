@@ -1,10 +1,10 @@
-from app import app, db
-
 from status import SetStatus
-from app.models import CacheLogs, Executions
 
 
 def serverSide(data: dict[str, str], pid: str):
+
+    from app import app, db
+    from app.models import CacheLogs, Executions
 
     data_type = data.get("type", "success")
     data_graphic = data.get("graphicMode", "doughnut")
@@ -90,6 +90,9 @@ def serverSide(data: dict[str, str], pid: str):
 
 def StatusStop(pid: str):
 
+    from app import db
+    from app.models import Executions
+
     execut = db.session.query(Executions).filter(Executions.pid == pid).first()
     if not execut:
         execut = False
@@ -101,6 +104,8 @@ def StatusStop(pid: str):
 
 
 def stopped_bot(pid: str):
+
+    from app.models import CacheLogs
 
     checks = []
     log_pid = CacheLogs.query.filter(CacheLogs.pid == pid).first()

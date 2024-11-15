@@ -1,33 +1,43 @@
 # from time import sleep
 from socketio import Client
-from status.server_side import serverSide
-
+from time import sleep
 sio = Client()
 
 
 class SocketBot:
     def __init__(self):
         self.connected = False
-        self.first_log = 0
+        self.tries = 0
 
     def with_context(self, event: str, data: dict, url: str):
 
-        data = serverSide(data, data["pid"])
-        url = f"https://{url}"
+        try:
+            url = f"https://{url}"
 
-        """Verifica se já está conectado antes de tentar se conectar"""
-        if not self.connected:
-            sio.connect(url, namespaces=["/log"], retry=True)
-            self.connected = True
+            """Verifica se já está conectado antes de tentar se conectar"""
+            if not self.connected:
+                sio.connect(url, namespaces=["/log"], retry=True)
+                self.connected = True
 
-        sio.connect(url, namespace="/log")
-        sio.emit(event, data)
+            sio.emit(event, data, namespace="/log")
+            sio.sleep(0.25)
 
-        sio.sleep(0.25)
+            """Após a emissão, desconecta e define o status"""
+            sio.disconnect()
+            self.connected = False
+            self.tries = 0
+        except Exception as e:
+            print(e)
+            try:
+                sio.disconnect()
+                self.connected = False
+            except Exception as e:
+                print(e)
 
-        """Após a emissão, desconecta e define o status"""
-        sio.disconnect()
-        self.connected = False
+            sleep(2)
+            if not self.tries == 5:
+                self.tries += 1
+                self.with_context(event, data, url)
 
         # with app.app_context():
         #     io.emit(event, data, namespace="/log")

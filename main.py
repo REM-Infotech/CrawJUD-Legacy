@@ -1,6 +1,7 @@
 from importlib import import_module
 from app import create_app
 from clear import clear
+
 checkout = import_module("app.misc.checkout", __name__)
 
 if __name__ == "__main__":
@@ -12,4 +13,5 @@ if __name__ == "__main__":
 
     app = create_app()
     from app import io
+
     io.run(app, port=8000)
