@@ -1,10 +1,12 @@
 import os
-from flask import has_app_context
-from app import db
-from app.models import ThreadBots
+import psutil
+import pathlib
+import multiprocessing as mp
+
 
 from flask import Flask
-import threading
+from flask import has_app_context
+from flask_sqlalchemy import SQLAlchemy
 
 
 class WorkerThread:
@@ -35,19 +37,20 @@ class WorkerThread:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
-    def start(self, app: Flask) -> int:
+    def start(self, app: Flask, db: SQLAlchemy) -> int:
 
         try:
+            from app.models import ThreadBots
 
             if has_app_context():
                 with app.app_context():
                     bot = self.BotStarter
                     pid = os.path.basename(self.path_args.replace(".json", ""))
-                    process = threading.Thread(
+                    process = mp.Process(
                         target=bot,
                         kwargs=self.kwrgs,
                         name=f"{self.display_name} - {pid}",
-                        daemon=False
+                        daemon=False,
                     )
                     process.start()
                     process_id = process.ident
@@ -66,16 +69,24 @@ class WorkerThread:
         try:
 
             sinalizacao = f"{pid}.flag"
-            path_flag = os.path.join(os.getcwd(), "Temp", pid, sinalizacao)
-            with open(path_flag, "w") as f:
-                f.write("Encerrar processo")
+            path_flag = pathlib.Path(
+                os.path.join(os.getcwd(), "Temp", pid, sinalizacao)
+            )
 
-            for thread in threading.enumerate():
-                if thread.ident == processID:
-                    thread.join(30)
-                    break
+            Process = psutil.Process(processID)
+
+            if Process.is_running():
+                if not path_flag.exists():
+                    with open(str(path_flag), "w") as f:
+                        f.write("Encerrar processo")
 
             return f"Process {processID} stopped!"
 
-        except Exception:
+        except psutil.TimeoutExpired:
             return "O processo não foi encerrado dentro do tempo limite"
+
+        except psutil.NoSuchProcess:
+            return f"Process {processID} stopped!"
+
+        except Exception as e:
+            return str(e)

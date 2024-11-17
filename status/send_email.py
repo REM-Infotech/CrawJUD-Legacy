@@ -4,13 +4,16 @@ from flask import current_app
 from dotenv import dotenv_values
 
 from app import mail
-from app.models import Users, Executions
 
 app = current_app
 values = dotenv_values()
 
 
-def email_start(execution: Executions) -> None:
+def email_start(execution: None) -> None:
+
+    from app.models import Users, Executions
+
+    execution: Executions = execution
 
     with app.app_context():
         mail.connect()
@@ -61,11 +64,14 @@ def email_start(execution: Executions) -> None:
         mail.send(msg)
 
 
-def email_stop(execution: Executions) -> None:
+def email_stop(execution: None) -> None:
 
+    from app.models import Users, Executions
+
+    execution: Executions = execution
     with app.app_context():
         mail.connect()
-        
+
     admins: list[str] = []
     pid = execution.pid
     usr: Users = execution.user

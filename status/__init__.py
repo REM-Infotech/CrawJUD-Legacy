@@ -16,7 +16,6 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from openpyxl.worksheet.worksheet import Worksheet
 
-from app.models import Users, BotsCrawJUD, Executions, LicensesUsers
 
 from .makefile import makezip
 from .upload_zip import enviar_arquivo_para_gcs
@@ -61,6 +60,8 @@ class SetStatus:
         )
 
     def start_bot(self) -> tuple[str, str]:
+
+        from app.models import Users, BotsCrawJUD, Executions, LicensesUsers
 
         path_pid = os.path.join(app.config["TEMP_PATH"], self.pid)
         os.makedirs(path_pid, exist_ok=True)
@@ -149,6 +150,7 @@ class SetStatus:
         return (path_args, bt.display_name)
 
     def botstop(self) -> str:
+        from app.models import Executions
 
         try:
             srv = platform.system() in ("Windows")
