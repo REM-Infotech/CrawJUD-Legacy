@@ -34,12 +34,7 @@ class SocketBot:
                 self.connected = False
             except Exception as e:
                 print(e)
-
-            sleep(2)
-            if not self.tries == 5:
-                self.tries += 1
-                self.with_context(event, data, url)
-
+                
         # with app.app_context():
         #     io.emit(event, data, namespace="/log")
 
