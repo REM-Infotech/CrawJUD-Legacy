@@ -82,10 +82,7 @@ class sol_pags(CrawJUD):
                 self.append_success(self.confirm_save())
 
             elif search is not True:
-                self.message = "Processo não encontrado!"
-                self.type_log = "error"
-                self.prt()
-                self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
+                raise ErroDeExecucao("Processo não encontrado!")
 
         except Exception as e:
             raise ErroDeExecucao(e=e)

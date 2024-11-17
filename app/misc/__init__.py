@@ -66,7 +66,6 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
     from status import SetStatus
     from app.models import ThreadBots
     from app.models import Executions
-    from bot import WorkerThread
     from app import db
 
     try:
@@ -74,12 +73,6 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
         processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()
 
         if processID:
-
-            if robot_stop:
-                processID = int(processID.processID)
-                worker_thread = WorkerThread().stop(processID, pid)
-
-                app.logger.info(worker_thread)
 
             get_info = (
                 db.session.query(Executions).filter(Executions.pid == pid).first()

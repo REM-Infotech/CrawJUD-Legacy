@@ -1,6 +1,7 @@
 # from time import sleep
 from socketio import Client
 from time import sleep
+
 sio = Client()
 
 
@@ -53,3 +54,4 @@ class SocketBot:
             pass
         finally:
             self.with_context("stop_bot", data, url)
+            self.with_context("statusbot", {}, url)

@@ -6,10 +6,9 @@ import json
 import pathlib
 import platform
 
-from app import app
 from bot import WorkerThread
-from ...misc import GeoLoc, stop_execution
-from ...misc.checkout import check_latest
+from ..misc import GeoLoc, stop_execution
+from ..misc.checkout import check_latest
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
@@ -17,6 +16,8 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 @bot.route("/bot/<id>/<system>/<typebot>", methods=["POST"])
 def botlaunch(id: int, system: str, typebot: str):
+
+    from app import app, db
 
     message = {"success": "success"}
     from status import SetStatus
@@ -51,7 +52,7 @@ def botlaunch(id: int, system: str, typebot: str):
                 system=system,
                 typebot=typebot,
             )
-            is_started = worker_thread.start(app=app)
+            is_started = worker_thread.start(app, db)
 
         except Exception as e:
             message = {"error": str(e)}
@@ -63,6 +64,8 @@ def botlaunch(id: int, system: str, typebot: str):
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
 def stop_bot(user: str, pid: str):
+
+    from app import app
 
     with app.app_context():
         set_stop = stop_execution(app, pid, True)
