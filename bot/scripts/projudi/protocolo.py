@@ -260,7 +260,8 @@ class protocolo(CrawJUD):
 
             file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
             self.message = "Inserindo Petição/Anexos..."
-            self.prt.print_log("log", self.message)
+            self.type_log = "log"
+            self.prt()
             button_new_file = self.driver.find_element(
                 By.CSS_SELECTOR, 'input#editButton[value="Adicionar"]'
             )
