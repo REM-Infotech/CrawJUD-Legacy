@@ -218,6 +218,7 @@ class protocolo(CrawJUD):
             if alert:
                 alert.accept()
 
+            """ Corrigir elements """
             self.message = "Informando tipo de protocolo..."
             self.type_log = "log"
             self.prt()
@@ -238,7 +239,7 @@ class protocolo(CrawJUD):
                 )
             )
             input_move_option.click()
-            input_move_option.click()
+            """ Corrigir elements """
 
         except Exception as e:
             raise ErroDeExecucao(e=e)
@@ -246,12 +247,22 @@ class protocolo(CrawJUD):
     def add_new_file(self) -> None:
 
         try:
+            """PARA CORRIGIR"""
+            # file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
+            # self.message = "Inserindo Petição/Anexos..."
+            # self.type_log = "log"
+            # self.prt()
+            # button_new_file = self.driver.find_element(
+            #     By.CSS_SELECTOR, self.elements.includeContent
+            # )
+            # button_new_file.click()
+            """ PARA CORRIGIR """
+
             file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
             self.message = "Inserindo Petição/Anexos..."
-            self.type_log = "log"
-            self.prt()
+            self.prt.print_log("log", self.message)
             button_new_file = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.includeContent
+                By.CSS_SELECTOR, 'input#editButton[value="Adicionar"]'
             )
             button_new_file.click()
 
@@ -395,8 +406,16 @@ class protocolo(CrawJUD):
             if check_password != "":
                 raise ErroDeExecucao("Senha Incorreta!")
 
+            """ PARA CORRIGIR """
+            # confirm_button = self.driver.find_element(
+            #     By.CSS_SELECTOR, self.elements.botao_confirmar
+            # )
+            # confirm_button.click()
+            # sleep(1)
+            """ PARA CORRIGIR """
+
             confirm_button = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.botao_confirmar
+                By.CSS_SELECTOR, 'input#closeButton[value="Confirmar Inclusão"]'
             )
             confirm_button.click()
             sleep(1)
