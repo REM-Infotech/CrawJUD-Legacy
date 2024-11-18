@@ -362,7 +362,7 @@ class protocolo(CrawJUD):
             )
 
             for pos, file in enumerate(checkfiles):
-                numbertipo = pos
+                numbertipo = pos + 1
                 sleep(0.75)
                 try:
                     type_file = self.driver.find_element(By.ID, f"tipo{numbertipo}")
