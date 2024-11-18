@@ -30,6 +30,7 @@ class PROJUDI_AM:
 
     tipo_documento = 'select[id="tipoDocumento"]'
     descricao_documento = 'select[id="descricaoDocumento"]'
+    descricao_documento_xpath = '//div[@id="ajaxAuto_descricaoTipoDocumento"]/ul/li'
     includeContent = 'input[id="includeContent"]'
     border = 'iframe[frameborder="0"][id]'
     conteudo = '//*[@id="conteudo"]'

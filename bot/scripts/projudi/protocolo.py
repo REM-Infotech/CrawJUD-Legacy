@@ -175,7 +175,9 @@ class protocolo(CrawJUD):
 
             elif chk_info:
 
-                radio_item = item.find_element(By.CSS_SELECTOR, self.elements.input_radio)
+                radio_item = item.find_element(
+                    By.CSS_SELECTOR, self.elements.input_radio
+                )
                 radio_item.click()
 
                 set_parte = td_partes.find_element(By.TAG_NAME, "input")
@@ -221,7 +223,7 @@ class protocolo(CrawJUD):
             self.prt()
             input_tipo_move: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.tipo_documento)
+                    (By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')
                 )
             )
             input_tipo_move.click()
@@ -232,9 +234,10 @@ class protocolo(CrawJUD):
 
             input_move_option: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, self.elements.descricao_documento)
+                    (By.XPATH, '//div[@id="ajaxAuto_descricaoTipoDocumento"]/ul/li')
                 )
             )
+            input_move_option.click()
             input_move_option.click()
 
         except Exception as e:
