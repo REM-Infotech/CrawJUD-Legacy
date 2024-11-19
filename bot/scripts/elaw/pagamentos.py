@@ -217,7 +217,7 @@ class sol_pags(CrawJUD):
                 doc = self.format_String(doc.upper())
                 insert_doc: WebElement = self.wait.until(
                     EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.inputfilecss)
+                        (By.CSS_SELECTOR, self.elements.editar_pagamento)
                     )
                 )
                 path_doc = os.path.join(self.output_dir_path, doc)

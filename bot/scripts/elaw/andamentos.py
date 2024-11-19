@@ -127,8 +127,6 @@ class andamentos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            
-
             observacao = self.driver.find_element(By.CSS_SELECTOR, self.elements.inpt_obs)
             text_andamento = (
                 str(self.bot_data.get("OBSERVACAO")).replace("\t", "").replace("\n", "")
@@ -151,7 +149,7 @@ class andamentos(CrawJUD):
             self.prt()
             sleep(1)
             self.link = self.driver.current_url
-            save_button = self.driver.find_element(By.ID, self.elements.botao_salvar)
+            save_button = self.driver.find_element(By.ID, self.elements.botao_salvar_andamento)
             save_button.click()
 
         except Exception as e:

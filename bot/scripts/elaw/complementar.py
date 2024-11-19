@@ -75,7 +75,7 @@ class complement(CrawJUD):
             self.prt()
             edit_proc_button = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.botao_editar)
+                    (By.CSS_SELECTOR, self.elements.botao_editar_complementar)
                 )
             )
             edit_proc_button.click()
