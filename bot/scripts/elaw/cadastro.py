@@ -66,18 +66,18 @@ class cadastro(CrawJUD):
         self.bot_data = self.elawFormats(self.bot_data)
         search = self.SearchBot()
 
+        # if search is True:
+
+        #     self.append_success(
+        #         [
+        #             self.bot_data.get("NUMERO_PROCESSO"),
+        #             "Processo já cadastrado!",
+        #             self.pid,
+        #         ]
+        #     )
+
+        # elif search is not True:
         if search is True:
-
-            self.append_success(
-                [
-                    self.bot_data.get("NUMERO_PROCESSO"),
-                    "Processo já cadastrado!",
-                    self.pid,
-                ]
-            )
-
-        elif search is not True:
-
             self.message = "Processo não encontrado, inicializando cadastro..."
             self.type_log = "log"
             self.prt()
@@ -427,7 +427,7 @@ class cadastro(CrawJUD):
             self.interact.send_key(other_location, Keys.ENTER)
 
     def acao_proc(self) -> None:
-        
+
         self.message = "Informando ação do processo"
         self.type_log = "log"
         self.prt()
@@ -515,7 +515,6 @@ class cadastro(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        
         input_select_adv: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv))
         )
@@ -540,7 +539,6 @@ class cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        
         campo_adv: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_adv)),
             message="Erro ao encontrar elemento",
@@ -592,7 +590,6 @@ class cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        
         valor_causa: WebElement = self.wait.until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
             message="Erro ao encontrar elemento",
@@ -614,13 +611,13 @@ class cadastro(CrawJUD):
         self.prt()
 
     def escritorio_externo(self) -> None:
-        
+
         self.message = "Informando Escritório Externo"
         self.type_log = "log"
         self.prt()
 
         div_escritrorioexterno: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.escritrorioexterno)),
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.escritrorio_externo)),
             message="Erro ao encontrar elemento",
         )
         div_escritrorioexterno.click()
@@ -635,7 +632,7 @@ class cadastro(CrawJUD):
         self.prt()
 
     def tipo_contingencia(self) -> None:
-        
+
         text = "Passiva"
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
             text = "Ativa"
@@ -691,7 +688,7 @@ class cadastro(CrawJUD):
             sleep(0.5)
             continuebutton: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.bota_continuar)
+                    (By.CSS_SELECTOR, self.elements.botao_continuar)
                 ),
                 message="Erro ao encontrar elemento",
             )
@@ -840,7 +837,7 @@ class cadastro(CrawJUD):
             self.driver.execute_script(
                 f"document.querySelector('{self.elements.css_name_parte}').blur()"
             )
-            
+
             save_parte: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_save_button)),
                 message="Erro ao encontrar elemento",

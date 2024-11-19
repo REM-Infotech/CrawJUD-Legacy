@@ -74,7 +74,7 @@ class provisao(CrawJUD):
             self.prt()
             # module = "get_valores_proc"
             get_valores = self.get_valores_proc()
-            
+
             edit_button: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit))
             )

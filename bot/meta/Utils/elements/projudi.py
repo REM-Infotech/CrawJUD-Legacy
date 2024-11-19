@@ -28,13 +28,13 @@ class PROJUDI_AM:
 
     input_radio = "input[type='radio']"
 
-    tipo_documento = 'select[id="tipoDocumento"]'
-    descricao_documento = 'select[id="descricaoDocumento"]'
-    includeContent = 'input[id="includeContent"]'
+    tipo_documento = 'input[name="descricaoTipoDocumento"]'
+    descricao_documento = 'div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)'
+    includeContent = 'input#editButton[value="Adicionar"]'
     border = 'iframe[frameborder="0"][id]'
     conteudo = '//*[@id="conteudo"]'
     botao_assinar = 'input[name="assinarButton"]'
-    botao_confirmar = 'input[name="confirmarButton"]'
+    botao_confirmar = 'input#closeButton[value="Confirmar Inclusão"]'
     botao_concluir = 'input#editButton[value="Concluir Movimento"]'
     botao_deletar = 'input[type="button"][name="deleteButton"]'
     css_containerprogressbar = 'div[id="divProgressBarContainerAssinado"]'
