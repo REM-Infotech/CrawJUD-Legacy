@@ -33,7 +33,7 @@ SQLALCHEMY_POOL_RECYCLE = 1800  # Tempo (em segundos) para reciclar as conexões
 SQLALCHEMY_POOL_PRE_PING = True  # Verificar a saúde da conexão antes de usá-la
 
 SQLALCHEMY_DATABASE_URI = (
-    f"postgresql+psycopg2://{login_db}:{passwd_db}@{host_db}:5432/{database_name}"
+    f"postgresql+psycopg2://{login_db}:{passwd_db}@{host_db}/{database_name}"
 )
 SQLALCHEMY_BINDS = {"cachelogs": "sqlite:///cachelogs.db"}
 SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
