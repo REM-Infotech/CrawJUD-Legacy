@@ -733,7 +733,7 @@ class cadastro(CrawJUD):
 
             # sleep(0.5)
             """ CORRIGIR """
-            
+
             sleep(0.5)
             continuebutton: WebElement = self.wait.until(
                 EC.presence_of_element_located(
