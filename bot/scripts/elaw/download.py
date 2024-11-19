@@ -140,7 +140,7 @@ class download(CrawJUD):
                     self.prt()
 
                     baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
-                        By.CSS_SELECTOR, self.elements.botao_abaixar
+                        By.CSS_SELECTOR, self.elements.botao_baixar
                     )
                     baixar.click()
 

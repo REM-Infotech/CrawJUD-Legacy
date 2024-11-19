@@ -11,6 +11,15 @@ class AME:
     url_busca = ""
     btn_busca = ""
 
+    # ANDAMENTOS
+    botao_andamento = (
+        'button[id="tabViewProcesso:j_id_i3_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
+    )
+    input_data = 'input[id="j_id_2n:j_id_2r_2_9_input"]'
+    inpt_ocorrencia = 'textarea[id="j_id_2n:txtOcorrenciaAndamento"]'
+    inpt_obs = 'textarea[id="j_id_2n:txtObsAndamento"]'
+    botao_salvar_andamento = "btnSalvarAndamentoProcesso"
+
     # Robô Lançar Audiências
     switch_pautaAndamento = 'a[href="#tabViewProcesso:agendamentosAndamentos"]'
     btn_NovaAudiencia = 'button[id="tabViewProcesso:novaAudienciaBtn"]'
@@ -21,42 +30,7 @@ class AME:
         'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
     )
 
-    # Robô cadastros
-    numero_processo = "input[id='j_id_3k_1:j_id_3k_4_2_2_2_9_f_2:txtNumeroMask']"
-
-    # For Selectors
-    estado_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboEstadoVara_input']"
-    comarca_input = (
-        "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboComarcaVara_input']"
-    )
-    foro_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboForoTribunal_input']"
-    vara_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboVara_input']"
-    tipo_empresa_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_4_9_2_5_input']"
-    fase_input = 'select[id="j_id_3k_1:processoFaseCombo_input"]'
-    provimento_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]'
-    fato_gerador_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_9_44_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]'
-    objeto_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"]'
-    empresa_input = "select[id='j_id_3k_1:comboClientProcessoParte_input']"
-    tipo_parte_contraria_input = (
-        "select[id='j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_m_input']"
-    )
-
-    css_table_tipo_doc = (
-        'table[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:tipoDocumentoInput"]'
-    )
-    css_campo_doc = 'input[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:cpfCnpjInput"]'
-    css_search_button = (
-        'button[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_f"]'
-    )
-
-    botao_andamento = (
-        'button[id="tabViewProcesso:j_id_i3_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
-    )
-    input_data = 'input[id="j_id_2n:j_id_2r_2_9_input"]'
-    inpt_ocorrencia = 'textarea[id="j_id_2n:txtOcorrenciaAndamento"]'
-    inpt_obs = 'textarea[id="j_id_2n:txtObsAndamento"]'
-    botao_salvar = "btnSalvarAndamentoProcesso"
-
+    # CADASTRO
     botao_novo = 'button[id="btnNovo"]'
     css_label_area = 'div[id="comboArea"]'
     elemento = 'div[id="comboArea_panel"]'
@@ -65,6 +39,25 @@ class AME:
     css_button = 'button[id="btnContinuar"]'
     css_esfera_judge = 'div[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito"]'
     combo_rito = 'div[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_panel"]'
+    estado_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboEstadoVara_input']"
+    comarca_input = (
+        "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboComarcaVara_input']"
+    )
+    foro_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboForoTribunal_input']"
+    vara_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboVara_input']"
+    numero_processo = "input[id='j_id_3k_1:j_id_3k_4_2_2_2_9_f_2:txtNumeroMask']"
+    empresa_input = "select[id='j_id_3k_1:comboClientProcessoParte_input']"
+    tipo_empresa_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_4_9_2_5_input']"
+    tipo_parte_contraria_input = (
+        "select[id='j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_m_input']"
+    )
+    css_table_tipo_doc = (
+        'table[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:tipoDocumentoInput"]'
+    )
+    css_campo_doc = 'input[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:cpfCnpjInput"]'
+    css_search_button = (
+        'button[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_f"]'
+    )
     css_div_select_opt = 'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]'
     select_field = 'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
     css_other_location = 'input[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_c:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_f:0:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]'
@@ -79,7 +72,7 @@ class AME:
     css_input_adv = 'input[id="j_id_3k_1:autoCompleteLawyerOutraParte_input"]'
     css_check_adv = r"#j_id_3k_1\:autoCompleteLawyerOutraParte_panel > ul > li.ui-autocomplete-item.ui-autocomplete-list-item.ui-corner-all.ui-state-highlight"
     css_valor_causa = 'input[id="j_id_3k_1:amountCase_input"]'
-    escritrorioexterno = 'div[id="j_id_3k_1:comboEscritorio"]'
+    escritrorio_externo = 'div[id="j_id_3k_1:comboEscritorio"]'
     combo_escritorio = 'div[id="j_id_3k_1:comboEscritorio_panel"]'
     contingencia = (
         'div[id="j_id_3k_1:j_id_3k_4_2_2_s_9_n_1:processoContingenciaTipoCombo"]'
@@ -110,15 +103,24 @@ class AME:
         'table[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
     )
     div_messageerro_css = 'div[id="messages"]'
-    botao_editar = 'button[id="dtProcessoResults:0:btnEditar"]'
+
+    # COMPLEMENTAR
+    botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
     css_input_uc = 'textarea[id="j_id_3k_1:j_id_3k_4_2_2_6_9_44_2:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]'
     elementSelect = 'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]'
     css_data_citacao = 'input[id="j_id_3k_1:dataRecebimento_input"]'
+    fase_input = 'select[id="j_id_3k_1:processoFaseCombo_input"]'
+    provimento_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]'
+    fato_gerador_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_9_44_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]'
     input_descobjeto_css = 'textarea[id="j_id_3k_1:j_id_3k_4_2_2_l_9_44_2:j_id_3k_4_2_2_l_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_l_9_44_3_1_2_2_1_13"]'
+    objeto_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"]'
 
+    # DOWNLOAD
     anexosbutton_css = 'a[href="#tabViewProcesso:files"]'
     css_table_doc = 'tbody[id="tabViewProcesso:gedEFileDataTable:GedEFileViewDt_data"]'
-    botao_abaixar = 'button[title="Baixar"]'
+    botao_baixar = 'button[title="Baixar"]'
+
+    # PAGAMENTOS
     valor_pagamento = 'a[href="#tabViewProcesso:processoValorPagamento"]'
     botao_novo_pagamento = (
         'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]'
@@ -130,9 +132,9 @@ class AME:
     css_element = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:processoValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]'
     type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo"]'
     list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
-    inputfilecss = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]'
+    editar_pagamento = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]'
     css_div_condenacao_type = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-    valor_setenca = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_3"]'
+    valor_sentenca = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_3"]'
     valor_acordao = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_3_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_1"]'
     css_desc_pgto = 'textarea[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoDescription"]'
     css_data = 'input[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoVencData_input"]'
@@ -147,7 +149,6 @@ class AME:
     css_div_conta_debito = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_a_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
     valor_guia = 'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
     css_gru = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_35"]'
-    editar_pagamento = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]'
     editar_pagamentofile = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:gedEFileDataTable"]'
     css_tipocusta = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_4_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
     css_listcusta = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_4_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo_items"]'
@@ -163,11 +164,12 @@ class AME:
     visualizar_cod_barras = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_7_8_4_23_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > tr:nth-child(3)"
     visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"
 
+    # PROVISIONAMENTO
     css_btn_edit = (
         'button[id="tabViewProcesso:j_id_i3_c_1_5_2:processoValoresEditarBtn"]'
     )
-    table_valores_css = 'tbody[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70:viewValoresCustomeDt_data"]'
     ver_valores = 'a[href="#tabViewProcesso:valores"]'
+    table_valores_css = 'tbody[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70:viewValoresCustomeDt_data"]'
     value_provcss = 'div[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70:viewValoresCustomeDt:0:j_id_i3_c_1_5_7e:0:j_id_i3_c_1_5_7m"]'
     div_tipo_obj_css = 'div[id="selectManyObjetoAdicionarList"]'
     itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
