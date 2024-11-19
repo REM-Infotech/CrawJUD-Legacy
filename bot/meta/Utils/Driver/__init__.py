@@ -4,7 +4,6 @@ import requests
 import platform
 import zipfile
 
-from clear import clear
 from pathlib import Path
 from functools import partial
 from urllib.request import urlopen
@@ -69,7 +68,6 @@ class GetDriver:
 
     def __call__(self) -> str:
 
-        clear()
         with Live(self.progress_group):
             with ThreadPoolExecutor() as pool:
                 self.ConfigBar(pool)

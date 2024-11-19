@@ -175,7 +175,9 @@ class protocolo(CrawJUD):
 
             elif chk_info:
 
-                radio_item = item.find_element(By.CSS_SELECTOR, self.elements.input_radio)
+                radio_item = item.find_element(
+                    By.CSS_SELECTOR, self.elements.input_radio
+                )
                 radio_item.click()
 
                 set_parte = td_partes.find_element(By.TAG_NAME, "input")
@@ -216,12 +218,13 @@ class protocolo(CrawJUD):
             if alert:
                 alert.accept()
 
+            """ Corrigir elements """
             self.message = "Informando tipo de protocolo..."
             self.type_log = "log"
             self.prt()
             input_tipo_move: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.tipo_documento)
+                    (By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')
                 )
             )
             input_tipo_move.click()
@@ -232,10 +235,11 @@ class protocolo(CrawJUD):
 
             input_move_option: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, self.elements.descricao_documento)
+                    (By.CSS_SELECTOR, 'div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)')
                 )
             )
             input_move_option.click()
+            """ Corrigir elements """
 
         except Exception as e:
             raise ErroDeExecucao(e=e)
@@ -243,12 +247,23 @@ class protocolo(CrawJUD):
     def add_new_file(self) -> None:
 
         try:
+            """PARA CORRIGIR"""
+            # file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
+            # self.message = "Inserindo Petição/Anexos..."
+            # self.type_log = "log"
+            # self.prt()
+            # button_new_file = self.driver.find_element(
+            #     By.CSS_SELECTOR, self.elements.includeContent
+            # )
+            # button_new_file.click()
+            """ PARA CORRIGIR """
+
             file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
             self.message = "Inserindo Petição/Anexos..."
             self.type_log = "log"
             self.prt()
             button_new_file = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.includeContent
+                By.CSS_SELECTOR, 'input#editButton[value="Adicionar"]'
             )
             button_new_file.click()
 
@@ -347,7 +362,7 @@ class protocolo(CrawJUD):
             )
 
             for pos, file in enumerate(checkfiles):
-                numbertipo = pos
+                numbertipo = pos + 1
                 sleep(0.75)
                 try:
                     type_file = self.driver.find_element(By.ID, f"tipo{numbertipo}")
@@ -392,8 +407,16 @@ class protocolo(CrawJUD):
             if check_password != "":
                 raise ErroDeExecucao("Senha Incorreta!")
 
+            """ PARA CORRIGIR """
+            # confirm_button = self.driver.find_element(
+            #     By.CSS_SELECTOR, self.elements.botao_confirmar
+            # )
+            # confirm_button.click()
+            # sleep(1)
+            """ PARA CORRIGIR """
+
             confirm_button = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.botao_confirmar
+                By.CSS_SELECTOR, 'input#closeButton[value="Confirmar Inclusão"]'
             )
             confirm_button.click()
             sleep(1)

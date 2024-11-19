@@ -512,9 +512,12 @@ class CrawJUD:
 
     def finalize_execution(self) -> None:
 
+        window_handles = self.driver.window_handles
         self.row = self.row + 1
-        self.driver.delete_all_cookies()
-        self.driver.close()
+        if len(window_handles) > 0:
+
+            self.driver.delete_all_cookies()
+            self.driver.close()
 
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
@@ -608,6 +611,9 @@ class CrawJUD:
             driver = webdriver.Chrome(
                 service=Service(path_chrome), options=chrome_options
             )
+
+            driver.maximize_window()
+
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()
 
