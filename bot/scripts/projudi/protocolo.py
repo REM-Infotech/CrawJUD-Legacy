@@ -235,7 +235,7 @@ class protocolo(CrawJUD):
 
             input_move_option: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//div[@id="ajaxAuto_descricaoTipoDocumento"]/ul/li')
+                    (By.CSS_SELECTOR, 'div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)')
                 )
             )
             input_move_option.click()
