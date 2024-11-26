@@ -1,4 +1,4 @@
-from dotenv import dotenv_values
+from dotenv import dotenv_values as values
 from app import create_app
 from clear import clear
 
@@ -6,7 +6,7 @@ if __name__ == "__main__":
 
     clear()
 
-    debug = dotenv_values().get("DEBUG", "False").lower() in ("true")
+    debug = values().get("DEBUG", "False").lower() in ("true")
     if not debug:
         with open(".version", "w") as f:
             from app.misc.checkout import checkout_release_tag
@@ -14,19 +14,30 @@ if __name__ == "__main__":
             version = checkout_release_tag()
             f.write(version)
 
-        print("=======================================================\n")
-        print("Executando servidor Flask")
-        print(f" * Versão: {version}")
-        print(" * Porta: 8000")
-        print("\n=======================================================")
+        print(
+            f"""
+=======================================================
 
+            Executando servidor Flask
+            * Versão: {version}
+            * Porta: 8000
+
+=======================================================
+              """
+        )
     elif debug:
-        print("=======================================================\n")
-        print("Executando servidor Flask")
-        print(" * Porta: 8000")
-        print("\n=======================================================")
+        print(
+            """
+=======================================================
+
+            Executando servidor Flask
+            * Porta: 8000
+
+=======================================================
+              """
+        )
 
     app = create_app()
     from app import io
 
-    io.run(app, port=8000)
+    io.run(app, port=values().get("PORT", "8000"))

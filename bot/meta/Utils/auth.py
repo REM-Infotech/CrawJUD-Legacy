@@ -52,13 +52,15 @@ class AuthBot(CrawJUD):
                 )
                 loginopt = loginopt.find_elements(By.TAG_NAME, "option")
 
+                item = None
+
                 try:
                     item = next(
                         filter(lambda item: loginuser in item.text, loginopt), None
                     )
 
                 except Exception as e:
-                    print(e)
+                    raise e
                 if item:
                     try:
 

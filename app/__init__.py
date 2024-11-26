@@ -90,6 +90,14 @@ class AppFactory:
                 ping_interval=25,
                 ping_timeout=10,
             )
+
+            if not Path("is_init.txt").exists():
+
+                with open("is_init.txt", "w") as f:
+                    f.write("True")
+
+                self.init_database(db)
+
             CustomTalisman(
                 app,
                 content_security_policy=csp(),
@@ -99,13 +107,6 @@ class AppFactory:
                 strict_transport_security_max_age=timedelta(days=31).max.seconds,
                 x_content_type_options=True,
             )
-
-            if not Path("is_init.txt").exists():
-
-                with open("is_init.txt", "w") as f:
-                    f.write("True")
-
-                self.init_database(db)
 
     def init_database(self, db: SQLAlchemy):
 

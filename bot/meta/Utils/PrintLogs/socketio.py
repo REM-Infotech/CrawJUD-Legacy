@@ -16,27 +16,31 @@ class SocketBot:
             url = f"https://{url}"
 
             """Verifica se já está conectado antes de tentar se conectar"""
-            if not self.connected:
-                sio.connect(url, namespaces=["/log"], retry=True)
-                self.connected = True
+            self.connect_emit(event, data, url)
 
-            sio.emit(event, data, namespace="/log")
-            sio.sleep(0.25)
-
-            """Após a emissão, desconecta e define o status"""
-            sio.disconnect()
-            self.connected = False
-            self.tries = 0
         except Exception as e:
             print(e)
             try:
-                sio.disconnect()
                 self.connected = False
+                sio.disconnect()
+                sleep(0.25)
+                self.connect_emit(event, data, url)
+
             except Exception as e:
                 print(e)
-                
+                sleep(0.25)
+                self.connect_emit(event, data, url)
+
         # with app.app_context():
         #     io.emit(event, data, namespace="/log")
+
+    def connect_emit(self, event: str, data: dict, url: str):
+
+        if not self.connected:
+            sio.connect(url, namespaces=["/log"])
+            self.connected = True
+
+        sio.emit(event, data, namespace="/log")
 
     def send_message(self, data: dict[str, str | int], url: str):
         try:
