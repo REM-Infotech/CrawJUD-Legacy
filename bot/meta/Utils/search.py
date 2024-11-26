@@ -115,7 +115,12 @@ class SeachBot(CrawJUD):
             )
             self.interact.click(openprocess)
 
-        return openprocess is not None
+        check_process = None
+        with suppress(NoSuchElementException, TimeoutException):
+            check_process = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno"))
+            )
+        return check_process is None
 
     def projudi_search(self) -> None:
 

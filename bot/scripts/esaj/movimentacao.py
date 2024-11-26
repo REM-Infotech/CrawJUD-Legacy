@@ -56,10 +56,14 @@ class movimentacao(CrawJUD):
         try:
             self.appends = []
             self.resultados = []
+            search = bool(self.SearchBot())
 
-            self.SearchBot()
-            self.get_moves()
-            self.append_moves()
+            if search is True:
+                self.get_moves()
+                self.append_moves()
+
+            elif search is False:
+                raise ErroDeExecucao("Processo não encontrado!")
 
         except Exception as e:
             raise ErroDeExecucao(e=e)

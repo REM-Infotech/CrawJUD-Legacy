@@ -1,5 +1,6 @@
 class classproperty:
 
+    path_accepted_ = ""
     vara_ = ""
     _system = ""
     _state_or_client_ = ""

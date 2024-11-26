@@ -93,8 +93,8 @@ class movimentacao(CrawJUD):
         if self.bot_data.get("DATA_LIMITE"):
             self.extract_with_rangedata()
 
-        # elif self.bot_data.get("NOME_MOV"):
-        #     self.get_textodoc()
+        elif self.bot_data.get("NOME_MOV"):
+            self.get_textodoc()
 
         self.append_moves()
 
@@ -112,20 +112,14 @@ class movimentacao(CrawJUD):
     def extract_with_rangedata(self) -> None:
 
         data_inicio: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.data_inicio)
-            )
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.data_inicio))
         )
         data_inicio.send_keys(self.bot_data.get("DATA_PUBLICACAO"))
 
-        data_fim = self.driver.find_element(
-            By.CSS_SELECTOR, self.elements.data_fim
-        )
+        data_fim = self.driver.find_element(By.CSS_SELECTOR, self.elements.data_fim)
         data_fim.send_keys(self.bot_data.get("DATA_LIMITE"))
 
-        filtrar_button = self.driver.find_element(
-            By.CSS_SELECTOR, self.elements.filtro
-        )
+        filtrar_button = self.driver.find_element(By.CSS_SELECTOR, self.elements.filtro)
         filtrar_button.click()
 
         self.set_page_size()
@@ -175,10 +169,10 @@ class movimentacao(CrawJUD):
 
                     return match
 
-                # checkdoc = checkifdoc(text_mov)
-                # if len(checkdoc) > 0:
-                #     self.resultados = checkdoc
-                #     self.get_textodoc()
+                checkdoc = checkifdoc(text_mov)
+                if len(checkdoc) > 0:
+                    self.resultados = checkdoc
+                    self.get_textodoc()
 
             data = [
                 self.bot_data.get("NUMERO_PROCESSO"),
@@ -204,6 +198,10 @@ class movimentacao(CrawJUD):
             palavras_chave = str(self.bot_data.get("PALAVRA_CHAVE")).split(",")
 
         for palavra_chave in palavras_chave:
+
+            self.message = f'Buscando movimentações que contenham "{palavra_chave}"'
+            self.type_log = "info"
+            self.prt()
 
             for move in self.table_moves:
                 move: WebElement = move
@@ -245,10 +243,10 @@ class movimentacao(CrawJUD):
                                 )
                                 return re.findall(padrao, texto)
 
-                            # checkdoc = checkifdoc(text_mov)
-                            # if len(checkdoc) > 0:
-                            #     self.resultados = checkdoc
-                            #     self.get_textodoc()
+                            checkdoc = checkifdoc(text_mov)
+                            if len(checkdoc) > 0:
+                                self.resultados = checkdoc
+                                self.get_textodoc()
 
                         data = [
                             self.bot_data.get("NUMERO_PROCESSO"),
@@ -285,6 +283,11 @@ class movimentacao(CrawJUD):
                 )
 
         for evento in eventos_xls:
+
+            self.message = f'Bucando documentos de movimentações com termo "{evento}"'
+            self.type_log = "info"
+            self.prt()
+
             for move in self.table_moves:
                 move: WebElement = move
                 itensmove = move.find_elements(By.TAG_NAME, "td")
@@ -322,7 +325,7 @@ class movimentacao(CrawJUD):
                         expand = None
                         with suppress(NoSuchElementException):
                             expand = move.find_element(
-                                By.CSS_SELECTOR, self.self.elements.element_exception
+                                By.CSS_SELECTOR, self.elements.element_exception
                             )
 
                         if expand is None:
@@ -335,12 +338,8 @@ class movimentacao(CrawJUD):
                                 movimentador,
                                 qualificacao_movimentador,
                             ]
-                            self.append_success(
-                                data,
-                                message=f"Movimentação SEQ.{
-                                    seq} adicionado na planilha!",
-                            )
-                            break
+                            self.appends.append(data)
+                            continue
 
                         expandattrib = expand.get_attribute("class")
                         id_tr = expandattrib.replace("linkArquivos", "row")
@@ -354,7 +353,9 @@ class movimentacao(CrawJUD):
                         if style_expand == "display: none;":
 
                             expand.click()
-                            sleep(0.5)
+                            while table_docs.get_attribute("style") == "display: none;":
+                                sleep(0.25)
+
                             table_docs: WebElement = self.wait.until(
                                 EC.presence_of_element_located(
                                     (By.CSS_SELECTOR, css_tr)
@@ -383,7 +384,7 @@ class movimentacao(CrawJUD):
                                     sleep(0.01)
 
                             shutil.move(old_pdf, path_pdf)
-                            text_mov = self.openfile(path_pdf)
+                            text_mov = self.gpt_chat(self.openfile(path_pdf))
 
                             if str(
                                 self.bot_data.get("TRAZER_DOC", "NÃO")
@@ -418,27 +419,6 @@ class movimentacao(CrawJUD):
                     pass
 
         return pagescontent
-
-    # def gpt_chat(self, text_mov: str) -> str:
-
-    #     try:
-
-    #         client = self.client()
-
-    #         completion = client.chat.completions.create(
-    #         model="gpt-3.5-turbo",
-    #         messages=[
-    #             {"role": "system", "content": "Você é expert em análise juridica, você sabe identificar dispotivos de sentença e decisões interlocutórias"},
-    #             {"role": "user", "content": f":Poderia extrair o dispositivo desse texto aqui? {text_mov} Eu quero unicamente o texto, sem você falando qualquer coisa"},
-    #             {"role": "user", "content": "Eu quero o texto ipsis litteris, sem resumos seus"}
-    #         ]
-    #         )
-
-    #         text = completion.choices[0].message.content
-    #         return text
-    #     except Exception as e:
-    #         print(e)
-    #         return text_mov
 
     def set_tablemoves(self) -> None:
 
