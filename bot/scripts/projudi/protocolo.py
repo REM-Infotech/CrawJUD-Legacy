@@ -6,18 +6,12 @@ from time import sleep
 from typing import Type
 
 from PIL import Image
-
-""" Imports do Projeto """
-
-
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
     TimeoutException,
 )
 from selenium.webdriver.common.alert import Alert
-
-# Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC

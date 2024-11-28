@@ -1,5 +1,3 @@
-""" Imports do Projeto """
-
 import platform
 import re
 import time

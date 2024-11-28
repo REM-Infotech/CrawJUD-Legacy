@@ -15,9 +15,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
-# Selenium Imports
-
-
 type_doc = {11: "cpf", 14: "cnpj"}
 
 

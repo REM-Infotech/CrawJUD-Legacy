@@ -8,8 +8,6 @@ from time import sleep
 
 from pytz import timezone
 from selenium.common.exceptions import TimeoutException
-
-# Selenium Imports
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement

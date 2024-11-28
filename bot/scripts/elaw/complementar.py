@@ -4,8 +4,6 @@ from contextlib import suppress
 from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-
-# Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC

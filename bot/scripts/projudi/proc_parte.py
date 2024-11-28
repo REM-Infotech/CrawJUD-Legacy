@@ -3,8 +3,6 @@ import time
 from contextlib import suppress
 
 from selenium.common.exceptions import NoSuchElementException
-
-# Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 

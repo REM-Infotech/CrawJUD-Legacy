@@ -17,8 +17,6 @@ from cryptography.hazmat.backends import default_backend
 from dotenv import load_dotenv
 from openai import OpenAI
 from pandas import Timestamp
-
-# Selenium Imports
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service

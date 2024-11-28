@@ -1,5 +1,3 @@
-""" Imports do Projeto """
-
 import time
 from datetime import datetime
 

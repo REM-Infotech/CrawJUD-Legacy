@@ -3,10 +3,7 @@ import time
 from contextlib import suppress
 from time import sleep
 
-""" Imports do Projeto """
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-
-# Selenium Imports
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement

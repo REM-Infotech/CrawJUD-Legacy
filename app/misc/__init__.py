@@ -1,20 +1,17 @@
 import json
 import random
 import string
-
-from dotenv import dotenv_values
-from google.cloud.storage import Bucket, Client
-from google.oauth2.service_account import Credentials
-
-signed_url_lifetime = 300
-
 from datetime import datetime
 
 import pytz
+from dotenv import dotenv_values
 from flask import Flask
+from google.cloud.storage import Bucket, Client
+from google.oauth2.service_account import Credentials
 
 from .get_location import GeoLoc
 
+signed_url_lifetime = 300
 __all__ = [GeoLoc]
 
 
