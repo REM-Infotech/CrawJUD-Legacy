@@ -1,20 +1,20 @@
 import os
 import re
-import time
 import shutil
+import time
 from time import sleep
-from bot.meta.CrawJUD import CrawJUD
-from ...meta.Utils.count_doc import count_doc
 
-
-from bot.common.exceptions import ErroDeExecucao
-
+from PyPDF2 import PdfReader
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from PyPDF2 import PdfReader
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
+
+from ...meta.Utils.count_doc import count_doc
 
 
 class emissao(CrawJUD):

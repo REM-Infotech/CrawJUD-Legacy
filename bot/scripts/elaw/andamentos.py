@@ -3,13 +3,14 @@
 import time
 from time import sleep
 
-from bot.meta.CrawJUD import CrawJUD
-from bot.common.exceptions import ErroDeExecucao
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 
 class andamentos(CrawJUD):
@@ -57,9 +58,7 @@ class andamentos(CrawJUD):
 
         search = self.SearchBot()
         if search is True:
-            btn_newmove = (
-                self.elements.botao_andamento
-            )
+            btn_newmove = self.elements.botao_andamento
             new_move: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, btn_newmove))
             )
@@ -110,7 +109,9 @@ class andamentos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            ocorrencia = self.driver.find_element(By.CSS_SELECTOR, self.elements.inpt_ocorrencia)
+            ocorrencia = self.driver.find_element(
+                By.CSS_SELECTOR, self.elements.inpt_ocorrencia
+            )
             text_andamento = (
                 str(self.bot_data.get("OCORRENCIA")).replace("\t", "").replace("\n", "")
             )
@@ -127,7 +128,9 @@ class andamentos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            observacao = self.driver.find_element(By.CSS_SELECTOR, self.elements.inpt_obs)
+            observacao = self.driver.find_element(
+                By.CSS_SELECTOR, self.elements.inpt_obs
+            )
             text_andamento = (
                 str(self.bot_data.get("OBSERVACAO")).replace("\t", "").replace("\n", "")
             )
@@ -149,7 +152,9 @@ class andamentos(CrawJUD):
             self.prt()
             sleep(1)
             self.link = self.driver.current_url
-            save_button = self.driver.find_element(By.ID, self.elements.botao_salvar_andamento)
+            save_button = self.driver.find_element(
+                By.ID, self.elements.botao_salvar_andamento
+            )
             save_button.click()
 
         except Exception as e:

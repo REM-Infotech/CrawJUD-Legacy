@@ -1,30 +1,29 @@
 import os
-import time
 import pathlib
-from PIL import Image
+import time
+from contextlib import suppress
 from time import sleep
 from typing import Type
-from contextlib import suppress
 
+from PIL import Image
 
 """ Imports do Projeto """
 
 
-from bot.common.exceptions import ErroDeExecucao
-
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
+from selenium.webdriver.common.alert import Alert
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.alert import Alert
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    TimeoutException,
-    StaleElementReferenceException,
-)
+from selenium.webdriver.support.wait import WebDriverWait
 
+from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
 
@@ -235,7 +234,10 @@ class protocolo(CrawJUD):
 
             input_move_option: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)')
+                    (
+                        By.CSS_SELECTOR,
+                        "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)",
+                    )
                 )
             )
             input_move_option.click()

@@ -1,6 +1,8 @@
-from flask import request, jsonify
-from app import app
 import json
+
+from flask import jsonify, request
+
+from app import app
 
 from ..misc.checkout import checkout_release_tag
 

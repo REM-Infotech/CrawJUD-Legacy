@@ -3,11 +3,11 @@ from ...CrawJUD import CrawJUD
 
 class BaseElementsBot(CrawJUD):
 
-    from .properties import Configuracao
-    from .esaj import ESAJ_AM
-    from .projudi import PROJUDI_AM
     from .elaw import AME
+    from .esaj import ESAJ_AM
     from .pje import PJE_AM
+    from .projudi import PROJUDI_AM
+    from .properties import Configuracao
 
     funcs = {
         "esaj": {"AM": ESAJ_AM},

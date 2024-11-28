@@ -2,21 +2,22 @@
 
 import os
 import time
-from time import sleep
 from contextlib import suppress
-
-from bot.meta.CrawJUD import CrawJUD
-from pytz import timezone
-from bot.common.exceptions import ErroDeExecucao
 from datetime import datetime
+from time import sleep
+
+from pytz import timezone
+from selenium.common.exceptions import TimeoutException
 
 # Selenium Imports
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 

@@ -2,13 +2,13 @@ import os
 import time
 from contextlib import suppress
 
+from selenium.common.exceptions import NoSuchElementException
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from bot.common.exceptions import ErroDeExecucao
-from selenium.common.exceptions import NoSuchElementException
 
+from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
 

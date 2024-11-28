@@ -1,17 +1,19 @@
 import json
 import random
 import string
+
 from dotenv import dotenv_values
+from google.cloud.storage import Bucket, Client
 from google.oauth2.service_account import Credentials
-from google.cloud.storage import Client, Bucket
 
 signed_url_lifetime = 300
 
-import pytz
 from datetime import datetime
-from .get_location import GeoLoc
 
+import pytz
 from flask import Flask
+
+from .get_location import GeoLoc
 
 __all__ = [GeoLoc]
 
@@ -63,10 +65,9 @@ def bucketGcs(storageClient: Client, bucket_name: str = None) -> Bucket:
 
 def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
 
-    from status import SetStatus
-    from app.models import ThreadBots
-    from app.models import Executions
     from app import db
+    from app.models import Executions, ThreadBots
+    from status import SetStatus
 
     try:
 

@@ -1,8 +1,10 @@
-from uuid import uuid4
 from datetime import datetime
+from uuid import uuid4
+
 import bcrypt
-from app import db
 import pytz
+
+from app import db
 
 salt = bcrypt.gensalt()
 

@@ -2,14 +2,13 @@ import re
 import time
 from datetime import datetime
 
-
 """ Imports do Projeto """
 
 
-from bot.common.exceptions import ErroDeExecucao
-
 # Selenium Imports
 from selenium.webdriver.common.by import By
+
+from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
 

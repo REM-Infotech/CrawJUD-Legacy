@@ -1,22 +1,21 @@
 import os
 import time
+from contextlib import suppress
+from datetime import datetime
 from time import sleep
 from typing import Type
-from datetime import datetime
-from contextlib import suppress
 
-
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import (
-    TimeoutException,
-    NoSuchElementException,
-    StaleElementReferenceException,
-)
 
-from bot.meta.CrawJUD import CrawJUD
 from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 
 class pauta(CrawJUD):

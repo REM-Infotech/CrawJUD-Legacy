@@ -1,4 +1,5 @@
 from typing import Union
+
 from .tjdft import tjdft
 
 Hints = Union[tjdft]

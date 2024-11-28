@@ -2,17 +2,18 @@
 
 import os
 import time
-from time import sleep
 from contextlib import suppress
-from bot.meta.CrawJUD import CrawJUD
-from bot.common.exceptions import ErroDeExecucao
+from time import sleep
+
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 # Selenium Imports
 
@@ -645,7 +646,9 @@ class cadastro(CrawJUD):
         self.prt()
 
         div_escritrorioexterno: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.escritrorio_externo)),
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.escritrorio_externo)
+            ),
             message="Erro ao encontrar elemento",
         )
         div_escritrorioexterno.click()

@@ -1,23 +1,21 @@
 """ calculadoras.tjdft """
 
+import base64
 import os
 import time
-
-
-import base64
-from time import sleep
 from contextlib import suppress
-from bot.meta.CrawJUD import CrawJUD
+from time import sleep
 
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.print_page_options import PrintOptions
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ErroDeExecucao
-from selenium.webdriver.common.print_page_options import PrintOptions
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support import expected_conditions as EC
+from bot.meta.CrawJUD import CrawJUD
 
 cookieaceito = []
 

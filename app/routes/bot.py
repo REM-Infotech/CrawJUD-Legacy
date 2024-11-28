@@ -1,12 +1,12 @@
-from flask import Blueprint, request, jsonify, make_response
-
-import os
-
 import json
+import os
 import pathlib
 import platform
 
+from flask import Blueprint, jsonify, make_response, request
+
 from bot import WorkerThread
+
 from ..misc import GeoLoc, stop_execution
 from ..misc.checkout import check_latest
 

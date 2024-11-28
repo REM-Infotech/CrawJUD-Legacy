@@ -1,10 +1,10 @@
 from typing import Union
 
+from .busca_pags import busca_pags
 from .capa import capa
 from .emissao import emissao
-from .protocolo import protocolo
-from .busca_pags import busca_pags
 from .movimentacao import movimentacao
+from .protocolo import protocolo
 
 Hints = Union[capa, protocolo, busca_pags, emissao, movimentacao]
 

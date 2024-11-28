@@ -1,6 +1,6 @@
 # Função para atualizar para a tag da nova release
-from github import Github
 from dotenv import dotenv_values
+from github import Github
 
 config_vals = dotenv_values()
 

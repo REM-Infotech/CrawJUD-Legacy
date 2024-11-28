@@ -1,13 +1,14 @@
 import time
-from time import sleep
 from datetime import datetime
-from bot.meta.CrawJUD import CrawJUD
-from bot.common.exceptions import ErroDeExecucao
+from time import sleep
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 
 class movimentacao(CrawJUD):

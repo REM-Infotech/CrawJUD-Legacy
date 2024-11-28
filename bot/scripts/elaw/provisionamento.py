@@ -1,22 +1,19 @@
 import os
 import time
-from time import sleep
 from contextlib import suppress
-
+from time import sleep
 
 """ Imports do Projeto """
-from bot.meta.CrawJUD import CrawJUD
-
-
-from bot.common.exceptions import ErroDeExecucao
-
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 # Selenium Imports
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -76,7 +73,9 @@ class provisao(CrawJUD):
             get_valores = self.get_valores_proc()
 
             edit_button: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_btn_edit)
+                )
             )
             edit_button.click()
             provisao = (
@@ -119,14 +118,14 @@ class provisao(CrawJUD):
     def get_valores_proc(self) -> str:
 
         get_valores: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.ver_valores)
-            )
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores))
         )
         get_valores.click()
 
         check_exists_provisao: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.table_valores_css)
+            )
         )
         check_exists_provisao = check_exists_provisao.find_elements(By.TAG_NAME, "tr")
 
@@ -135,7 +134,9 @@ class provisao(CrawJUD):
 
             valueprovisao = item.find_elements(By.TAG_NAME, "td")[0].text
             with suppress(NoSuchElementException):
-                valueprovisao = item.find_element(By.CSS_SELECTOR, self.elements.value_provcss).text
+                valueprovisao = item.find_element(
+                    By.CSS_SELECTOR, self.elements.value_provcss
+                ).text
 
             if "-" in valueprovisao or valueprovisao == "Nenhum registro encontrado!":
                 return valueprovisao
@@ -146,14 +147,18 @@ class provisao(CrawJUD):
 
         try:
             div_tipo_obj: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.div_tipo_obj_css)
+                )
             )
 
             div_tipo_obj.click()
 
             item_obj_div: WebElement = (
                 self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.itens_obj_div_css))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.itens_obj_div_css)
+                    )
                 )
                 .find_element(By.TAG_NAME, "ul")
                 .find_elements(By.TAG_NAME, "li")[0]
@@ -186,7 +191,9 @@ class provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
             campo_valor_dml = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_val_inpt)
+                )
             )
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
@@ -206,7 +213,9 @@ class provisao(CrawJUD):
                 f"document.getElementById('{id_campo_valor_dml}').blur()"
             )
 
-            expand_filter_risk = self.driver.find_element(By.CSS_SELECTOR, self.elements.css_risk)
+            expand_filter_risk = self.driver.find_element(
+                By.CSS_SELECTOR, self.elements.css_risk
+            )
             expand_filter_risk.click()
 
             div_filter_risk = self.driver.find_element(
@@ -261,7 +270,9 @@ class provisao(CrawJUD):
                     )
                     self.interact.sleep_load('div[id="j_id_2z"]')
 
-                    DataJuros = self.driver.find_element(By.CSS_SELECTOR, self.elements.DataJurosCss)
+                    DataJuros = self.driver.find_element(
+                        By.CSS_SELECTOR, self.elements.DataJurosCss
+                    )
                     css_data = DataJuros.get_attribute("id")
                     self.interact.clear(DataJuros)
                     self.interact.send_key(
@@ -302,7 +313,9 @@ class provisao(CrawJUD):
     def save_changes(self) -> None:
 
         self.interact.sleep_load('div[id="j_id_2z"]')
-        salvar = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_salvar_id)
+        salvar = self.driver.find_element(
+            By.CSS_SELECTOR, self.elements.botao_salvar_id
+        )
         salvar.click()
 
         check_provisao_atualizada = None

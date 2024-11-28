@@ -1,11 +1,12 @@
-from typing import Union
-from clear import clear
 import logging
+from typing import Union
+
+from clear import clear
 
 from .capa import capa
-from .protocolo import protocolo
-from .proc_parte import proc_parte
 from .movimentacao import movimentacao
+from .proc_parte import proc_parte
+from .protocolo import protocolo
 
 Hints = Union[capa, protocolo, proc_parte, movimentacao]
 

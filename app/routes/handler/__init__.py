@@ -1,7 +1,8 @@
-from app import app
+from dotenv import dotenv_values
 from flask import redirect
 from werkzeug.exceptions import HTTPException
-from dotenv import dotenv_values
+
+from app import app
 
 
 @app.errorhandler(HTTPException)

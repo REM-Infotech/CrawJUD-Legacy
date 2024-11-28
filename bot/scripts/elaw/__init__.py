@@ -1,13 +1,12 @@
 from typing import Union
 
-from .download import download
-from .cadastro import cadastro
-from .pagamentos import sol_pags
 from .andamentos import andamentos
-from .complementar import complement
-from .provisionamento import provisao
 from .audiencia import audiencia as prazos
-
+from .cadastro import cadastro
+from .complementar import complement
+from .download import download
+from .pagamentos import sol_pags
+from .provisionamento import provisao
 
 Hints = Union[download, cadastro, sol_pags, andamentos, complement, provisao, prazos]
 

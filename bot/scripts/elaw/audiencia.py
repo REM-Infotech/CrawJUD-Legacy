@@ -1,18 +1,14 @@
 import os
 import time
 
-
 """ Imports do Projeto """
-from bot.meta.CrawJUD import CrawJUD
-
-
-from bot.common.exceptions import ErroDeExecucao
-
-
 # Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 
 class audiencia(CrawJUD):

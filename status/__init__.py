@@ -1,25 +1,22 @@
-from app import db
-from app import app
-
-import os
 import json
-import pytz
-
-import pathlib
 import logging
+import os
+import pathlib
 import platform
-import openpyxl
 import unicodedata
-
 from datetime import datetime
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import FileStorage
-from openpyxl.worksheet.worksheet import Worksheet
 
+import openpyxl
+import pytz
+from openpyxl.worksheet.worksheet import Worksheet
+from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
+
+from app import app, db
 
 from .makefile import makezip
+from .send_email import email_start, email_stop
 from .upload_zip import enviar_arquivo_para_gcs
-from .send_email import email_stop, email_start
 
 url_cache = []
 
@@ -61,7 +58,7 @@ class SetStatus:
 
     def start_bot(self) -> tuple[str, str]:
 
-        from app.models import Users, BotsCrawJUD, Executions, LicensesUsers
+        from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
         path_pid = os.path.join(app.config["TEMP_PATH"], self.pid)
         os.makedirs(path_pid, exist_ok=True)

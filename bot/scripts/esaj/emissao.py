@@ -1,20 +1,23 @@
 """ Imports do Projeto """
 
-from bot.meta.CrawJUD import CrawJUD
-from ...meta.Utils.count_doc import count_doc
-import time
-import requests
 import platform
-from PyPDF2 import PdfReader
 import re
-from time import sleep
+import time
 from contextlib import suppress
-from bot.common.exceptions import ErroDeExecucao
+from time import sleep
+
+import requests
+from PyPDF2 import PdfReader
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import TimeoutException
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
+
+from ...meta.Utils.count_doc import count_doc
 
 type_docscss = {
     "custas_iniciais": {

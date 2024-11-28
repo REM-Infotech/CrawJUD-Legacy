@@ -1,7 +1,8 @@
-from app import db
+from datetime import datetime
 
 import pytz
-from datetime import datetime
+
+from app import db
 
 
 class BotsCrawJUD(db.Model):

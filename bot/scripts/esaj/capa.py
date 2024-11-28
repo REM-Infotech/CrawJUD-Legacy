@@ -1,16 +1,17 @@
 import time
-from time import sleep
 from contextlib import suppress
+from time import sleep
 
-from bot.common.exceptions import ErroDeExecucao
-from bot.meta.CrawJUD import CrawJUD
+from selenium.common.exceptions import TimeoutException
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 
 class capa(CrawJUD):

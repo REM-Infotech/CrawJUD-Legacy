@@ -1,12 +1,14 @@
-import os
-import pytz
 import logging
-from tqdm import tqdm
-from time import sleep
+import os
 from datetime import datetime
-from .socketio import SocketBot
+from time import sleep
+
+import pytz
 from dotenv import dotenv_values
+from tqdm import tqdm
+
 from ...CrawJUD import CrawJUD
+from .socketio import SocketBot
 
 codificacao = "UTF-8"
 mensagens = []

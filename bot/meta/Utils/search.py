@@ -1,15 +1,16 @@
-from time import sleep
 from contextlib import suppress
-from bot.common.exceptions import ErroDeExecucao
-
 from datetime import datetime
-from ..CrawJUD import CrawJUD
+from time import sleep
+
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
+
+from bot.common.exceptions import ErroDeExecucao
+
+from ..CrawJUD import CrawJUD
 
 
 class SeachBot(CrawJUD):

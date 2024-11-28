@@ -1,23 +1,22 @@
 # Flask imports
+# Python Imports
+import os
+import re
+from datetime import timedelta
+from importlib import import_module
+from pathlib import Path
+
+from dotenv import dotenv_values
 from flask import Flask
 from flask_mail import Mail
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 
-# Python Imports
-import os
-import re
-
-
-from pathlib import Path
-from datetime import timedelta
-from dotenv import dotenv_values
-from importlib import import_module
+from app import default_config
 
 # APP Imports
 from configs import csp
-from app import default_config
 
 db = None
 mail = None
@@ -110,8 +109,9 @@ class AppFactory:
 
     def init_database(self, db: SQLAlchemy):
 
-        from .models import Servers
         import platform
+
+        from .models import Servers
 
         values = dotenv_values()
         db.create_all()

@@ -1,23 +1,22 @@
 """ Imports do Projeto """
 
-import re
 import os
-import time
+import re
 import shutil
+import time
+from contextlib import suppress
 from time import sleep
 
-from contextlib import suppress
-
 from PyPDF2 import PdfReader
+from selenium.common.exceptions import NoSuchElementException
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.remote.webelement import WebElement
-from bot.common.exceptions import ErroDeExecucao
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import Select
 
+from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
 

@@ -1,5 +1,6 @@
 import os
-from app.misc import storageClient, bucketGcs
+
+from app.misc import bucketGcs, storageClient
 
 
 def enviar_arquivo_para_gcs(zip_file: str) -> bool:

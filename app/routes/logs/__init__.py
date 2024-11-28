@@ -1,9 +1,9 @@
-from app import app, io
 from flask import abort
+from flask_socketio import emit, join_room, leave_room, send
 
+from app import app, io
 from app.misc import stop_execution
 from status.server_side import serverSide
-from flask_socketio import emit, join_room, leave_room, send
 
 
 @io.on("connect", namespace="/log")
@@ -45,9 +45,9 @@ def on_stop_bot(data: dict[str, str]):
 @io.on("terminate_bot", namespace="/log")
 def on_terminate_bot(data: dict[str, str]):
 
-    from bot import WorkerThread
-    from app.models import ThreadBots
     from app import db
+    from app.models import ThreadBots
+    from bot import WorkerThread
 
     pid = data["pid"]
 

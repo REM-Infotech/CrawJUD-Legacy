@@ -1,11 +1,9 @@
-import os
-import psutil
-import pathlib
 import multiprocessing as mp
+import os
+import pathlib
 
-
-from flask import Flask
-from flask import has_app_context
+import psutil
+from flask import Flask, has_app_context
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -14,12 +12,12 @@ class WorkerThread:
     @property
     def BotStarter(self):  # -> Hints:
 
-        from .scripts.pje import pje
-        from .scripts.esaj import esaj
-        from .scripts.elaw import elaw
         from .scripts.caixa import caixa
-        from .scripts.projudi import projudi
         from .scripts.calculadoras import calculadoras
+        from .scripts.elaw import elaw
+        from .scripts.esaj import esaj
+        from .scripts.pje import pje
+        from .scripts.projudi import projudi
 
         systems = {
             "pje": pje,

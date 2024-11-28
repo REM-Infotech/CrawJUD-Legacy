@@ -29,7 +29,7 @@ class PROJUDI_AM:
     input_radio = "input[type='radio']"
 
     tipo_documento = 'input[name="descricaoTipoDocumento"]'
-    descricao_documento = 'div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)'
+    descricao_documento = "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)"
     includeContent = 'input#editButton[value="Adicionar"]'
     border = 'iframe[frameborder="0"][id]'
     conteudo = '//*[@id="conteudo"]'

@@ -1,12 +1,14 @@
 """ Imports do Projeto """
 
-from bot.meta.CrawJUD import CrawJUD
 import time
-import pytz
 from datetime import datetime
+
+import pytz
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+
+from bot.meta.CrawJUD import CrawJUD
 
 
 class busca_pags(CrawJUD):

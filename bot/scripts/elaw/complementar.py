@@ -1,17 +1,18 @@
 import os
 import time
-from time import sleep
 from contextlib import suppress
-from bot.meta.CrawJUD import CrawJUD
-from bot.common.exceptions import ErroDeExecucao
+from time import sleep
 
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -89,7 +90,9 @@ class complement(CrawJUD):
                 self.prt()
 
                 input_uc: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.css_input_uc)
+                    )
                 )
                 input_uc.click()
 
@@ -127,7 +130,9 @@ class complement(CrawJUD):
                 self.prt()
 
                 data_citacao: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.css_data_citacao)
+                    )
                 )
                 self.interact.clear(data_citacao)
                 self.interact.sleep_load('div[id="j_id_3x"]')
@@ -338,7 +343,9 @@ class complement(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_salvar_proc)
+            )
         )
         self.type_log = "log"
         self.message = "Salvando processo novo"

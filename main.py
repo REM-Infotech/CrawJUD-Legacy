@@ -1,6 +1,7 @@
-from dotenv import dotenv_values as values
-from app import create_app
 from clear import clear
+from dotenv import dotenv_values as values
+
+from app import create_app
 
 if __name__ == "__main__":
 

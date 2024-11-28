@@ -1,4 +1,4 @@
-from ..misc import storageClient, bucketGcs
+from ..misc import bucketGcs, storageClient
 
 
 def get_file(pid: str) -> str:

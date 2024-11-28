@@ -1,18 +1,18 @@
 import os
-import string
 import pathlib
 import platform
+import string
 import subprocess
-from time import sleep
 from contextlib import suppress
+from time import sleep
 
-from ..CrawJUD import CrawJUD
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import Select, WebDriverWait
+
+from ..CrawJUD import CrawJUD
 
 if platform.system() == "Windows":
     from pywinauto import Application

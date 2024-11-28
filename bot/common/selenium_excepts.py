@@ -1,13 +1,23 @@
 from selenium.common.exceptions import (
-    TimeoutException, StaleElementReferenceException,
-    NoSuchElementException, ElementNotInteractableException,
-    ElementClickInterceptedException)
+    ElementClickInterceptedException,
+    ElementNotInteractableException,
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 
 
 def webdriver_exepts() -> list[Exception]:
 
-    return [TimeoutException, StaleElementReferenceException, NoSuchElementException,
-            ElementNotInteractableException, ElementClickInterceptedException, ValueError, Exception]
+    return [
+        TimeoutException,
+        StaleElementReferenceException,
+        NoSuchElementException,
+        ElementNotInteractableException,
+        ElementClickInterceptedException,
+        ValueError,
+        Exception,
+    ]
 
 
 def exeptionsBot() -> dict[Exception, str]:
@@ -19,6 +29,5 @@ def exeptionsBot() -> dict[Exception, str]:
         ElementNotInteractableException: "Não foi possível interagir com o elemento",
         ElementClickInterceptedException: "Click interceptado",
         ValueError: "Erro de informação",
-        Exception: "Erros diversos"
-
+        Exception: "Erros diversos",
     }

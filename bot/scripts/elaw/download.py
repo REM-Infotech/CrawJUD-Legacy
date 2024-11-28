@@ -1,17 +1,17 @@
 """ Crawler ELAW Baixa Documentos"""
 
 import os
-import time
 import shutil
+import time
 from time import sleep
-from bot.meta.CrawJUD import CrawJUD
-from bot.common.exceptions import ErroDeExecucao
-
 
 # Selenium Imports
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+
+from bot.common.exceptions import ErroDeExecucao
+from bot.meta.CrawJUD import CrawJUD
 
 
 class download(CrawJUD):
@@ -91,7 +91,9 @@ class download(CrawJUD):
         self.type_log = "log"
         self.prt()
         anexosbutton: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.anexosbutton_css)
+            )
         )
         anexosbutton.click()
         sleep(1.5)
@@ -102,7 +104,9 @@ class download(CrawJUD):
     def download_docs(self) -> None:
 
         table_doc: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_table_doc)
+            )
         )
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
 

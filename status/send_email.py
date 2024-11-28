@@ -1,7 +1,6 @@
-from flask_mail import Message
-from flask import current_app
-
 from dotenv import dotenv_values
+from flask import current_app
+from flask_mail import Message
 
 from app import mail
 
@@ -11,7 +10,7 @@ values = dotenv_values()
 
 def email_start(execution: None) -> None:
 
-    from app.models import Users, Executions
+    from app.models import Executions, Users
 
     execution: Executions = execution
 
@@ -66,7 +65,7 @@ def email_start(execution: None) -> None:
 
 def email_stop(execution: None) -> None:
 
-    from app.models import Users, Executions
+    from app.models import Executions, Users
 
     execution: Executions = execution
     with app.app_context():

@@ -1,29 +1,28 @@
 import os
-import shutil
-import requests
 import platform
+import shutil
 import zipfile
-
-from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
 from functools import partial
+from pathlib import Path
 from urllib.request import urlopen
 
-from rich.live import Live
+import requests
 from rich.console import Group
+from rich.live import Live
 from rich.panel import Panel
 from rich.progress import (
-    TimeElapsedColumn,
+    BarColumn,
+    DownloadColumn,
     Progress,
     TaskID,
     TextColumn,
-    BarColumn,
-    DownloadColumn,
-    TransferSpeedColumn,
+    TimeElapsedColumn,
     TimeRemainingColumn,
+    TransferSpeedColumn,
 )
-from .getchromeVer import chrome_ver
 
-from concurrent.futures import ThreadPoolExecutor
+from .getchromeVer import chrome_ver
 
 
 class GetDriver:

@@ -1,6 +1,7 @@
 # from time import sleep
-from socketio import Client
 from time import sleep
+
+from socketio import Client
 
 sio = Client()
 
