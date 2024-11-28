@@ -15,7 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
-type_doc = {11: "cpf", 14: "cnpj"}
+type_doc = {11: "cpf", 15: "cnpj"}
 
 
 class cadastro(CrawJUD):
