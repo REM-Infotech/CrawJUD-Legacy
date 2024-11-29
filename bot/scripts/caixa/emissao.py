@@ -4,7 +4,7 @@ import shutil
 import time
 from time import sleep
 
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
