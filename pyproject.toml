@@ -4,6 +4,7 @@ version = "8.0.0"
 description = "CrawJUD API para execução de bots"
 authors = ["Robotz213 <nicholasazs213@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
