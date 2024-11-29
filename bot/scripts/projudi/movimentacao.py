@@ -5,7 +5,7 @@ import time
 from contextlib import suppress
 from time import sleep
 
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
