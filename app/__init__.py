@@ -12,7 +12,7 @@ from flask_mail import Mail
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
-
+from redis_flask import FlaskRedis
 from app import default_config
 
 # APP Imports
@@ -34,7 +34,7 @@ allowed_origins = [
 ]
 
 
-def check_allowed_origin(origin: str = "https://google.com"):
+def check_allowed_origin(origin="https://google.com"):
 
     if not origin:
         origin = f'https://{dotenv_values().get("HOSTNAME")}'
@@ -61,6 +61,8 @@ class AppFactory:
     def create_app(self) -> Flask:
 
         global app
+
+        # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
         src_path = os.path.join(os.getcwd(), "static")
         app = Flask(__name__, static_folder=src_path)
         app.config.from_object(default_config)
@@ -75,7 +77,10 @@ class AppFactory:
     def init_extensions(self, app: Flask):
 
         with app.app_context():
-            global db, mail, io
+            global db, mail, io, redis
+
+            redis = FlaskRedis()
+            redis.init_app(app)
             db = SQLAlchemy(app)
             mail = Mail(app)
 
