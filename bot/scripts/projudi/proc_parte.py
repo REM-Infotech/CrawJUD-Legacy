@@ -23,8 +23,9 @@ class proc_parte(CrawJUD):
         self.graphicMode = "bar"
         while not self.isStoped:
 
-            if self.driver.title.lower() == "a sessao expirou":
-                super().auth_bot()
+            with suppress(Exception):
+                if self.driver.title.lower() == "a sessao expirou":
+                    super().auth_bot()
 
             try:
                 self.queue()
@@ -54,8 +55,9 @@ class proc_parte(CrawJUD):
                 if search is True:
                     self.get_process_list()
 
-                if self.driver.title.lower() == "a sessao expirou":
-                    super().auth_bot()
+                with suppress(Exception):
+                    if self.driver.title.lower() == "a sessao expirou":
+                        super().auth_bot()
 
         except Exception as e:
             raise ErroDeExecucao(e=e)
@@ -93,8 +95,9 @@ class proc_parte(CrawJUD):
                     next_page.click()
                     self.get_process_list()
 
-            if self.driver.title.lower() == "a sessao expirou":
-                super().auth_bot()
+            with suppress(Exception):
+                if self.driver.title.lower() == "a sessao expirou":
+                    super().auth_bot()
 
         except Exception as e:
             raise e

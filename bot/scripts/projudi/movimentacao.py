@@ -35,8 +35,9 @@ class movimentacao(CrawJUD):
             if self.isStoped:
                 break
 
-            if self.driver.title.lower() == "a sessao expirou":
-                super().auth_bot()
+            with suppress(Exception):
+                if self.driver.title.lower() == "a sessao expirou":
+                    super().auth_bot()
 
             try:
                 self.queue()
