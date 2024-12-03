@@ -366,7 +366,9 @@ class CrawJUD(classproperty):
             list_args = self.list_args
 
             chrome_options = Options()
-            self.chr_dir = str(os.path.join(os.getcwd(), "Temp", self.pid, "chrome"))
+            self.chr_dir = str(
+                os.path.join(pathlib.Path(__file__).cwd(), "Temp", self.pid, "chrome")
+            )
 
             if os.getlogin() != "root" or platform.system() != "Linux":
                 list_args.remove("--no-sandbox")
@@ -374,7 +376,13 @@ class CrawJUD(classproperty):
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
                 self.path_accepted = str(
-                    os.path.join(os.getcwd(), "Browser", state, self.username, "chrome")
+                    os.path.join(
+                        pathlib.Path(__file__).cwd(),
+                        "Browser",
+                        state,
+                        self.username,
+                        "chrome",
+                    )
                 )
                 path_exist = os.path.exists(self.path_accepted)
                 if path_exist:

@@ -50,9 +50,13 @@ class GetDriver:
 
     progress_group = Group(Panel(Group(current_app_progress, progress)))
 
-    def __init__(self, destination: str = os.path.join(os.getcwd()), **kwrgs):
+    def __init__(
+        self, destination: str = os.path.join(pathlib.Path(__file__).cwd()), **kwrgs
+    ):
 
-        self.file_path: str = os.path.join(os.getcwd(), "webdriver", "chromedriver")
+        self.file_path: str = os.path.join(
+            pathlib.Path(__file__).cwd(), "webdriver", "chromedriver"
+        )
         self.file_path += self.code_ver
 
         self.fileN = os.path.basename(self.file_path)

@@ -1,4 +1,6 @@
 import os
+import pathlib
+
 
 from app.misc import bucketGcs, storageClient
 
@@ -6,7 +8,8 @@ from app.misc import bucketGcs, storageClient
 def enviar_arquivo_para_gcs(zip_file: str) -> bool:
 
     try:
-        path_output = os.path.join(os.getcwd(), zip_file)
+
+        path_output = os.path.join(pathlib.Path(__file__).absolute(), zip_file)
 
         if os.path.exists(path_output):
             arquivo_local = path_output
@@ -19,7 +22,7 @@ def enviar_arquivo_para_gcs(zip_file: str) -> bool:
         # Faz o upload do arquivo local para o objeto Blob
         blob.upload_from_filename(arquivo_local)
 
-        return True
+        return os.path.basename(zip_file)
 
     except Exception as e:
         raise e

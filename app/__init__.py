@@ -2,6 +2,8 @@
 # Python Imports
 import os
 import re
+import pathlib
+import pathlib
 from datetime import timedelta
 from importlib import import_module
 from pathlib import Path
@@ -64,7 +66,7 @@ class AppFactory:
         global app
 
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
-        src_path = os.path.join(os.getcwd(), "static")
+        src_path = os.path.join(pathlib.Path(__file__).cwd(), "static")
         app = Flask(__name__, static_folder=src_path)
         app.config.from_object(default_config)
 

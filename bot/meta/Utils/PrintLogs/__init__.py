@@ -2,7 +2,7 @@ import logging
 import os
 from datetime import datetime
 from time import sleep
-
+import pathlib
 import pytz
 from dotenv import dotenv_values
 from tqdm import tqdm
@@ -59,7 +59,10 @@ class printbot(CrawJUD):
 
         try:
             savelog = os.path.join(
-                os.getcwd(), "Temp", self.pid, f"LogFile - PID {self.pid}.txt"
+                pathlib.Path(__file__).cwd(),
+                "Temp",
+                self.pid,
+                f"LogFile - PID {self.pid}.txt",
             )
             with open(savelog, "a") as f:
                 for mensagem in self.list_messages:

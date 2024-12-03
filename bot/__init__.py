@@ -68,7 +68,7 @@ class WorkerThread:
 
             sinalizacao = f"{pid}.flag"
             path_flag = pathlib.Path(
-                os.path.join(os.getcwd(), "Temp", pid, sinalizacao)
+                os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid, sinalizacao)
             )
 
             Process = psutil.Process(processID)

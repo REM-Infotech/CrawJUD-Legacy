@@ -1,13 +1,13 @@
 import os
 import shutil
-
+import pathlib
 import psutil
 from psutil import Process
 
 
 def DelCache(pid=None):
 
-    for root, dirs, files in os.walk(os.path.join(os.getcwd())):
+    for root, dirs, files in os.walk(os.path.join(pathlib.Path(__file__).cwd())):
 
         if pid in root:
 

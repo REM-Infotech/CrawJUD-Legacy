@@ -157,7 +157,7 @@ class SetStatus:
             if all([srv, sys, typebot]):
 
                 json_args = os.path.join(
-                    os.getcwd(), "Temp", self.pid, f"{self.pid}.json"
+                    pathlib.Path(__file__).cwd(), "Temp", self.pid, f"{self.pid}.json"
                 )
                 with open(json_args, "rb") as f:
                     arg = json.load(f)["login"]

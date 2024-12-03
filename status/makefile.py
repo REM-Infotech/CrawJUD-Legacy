@@ -1,14 +1,14 @@
 import os
 import zipfile
 from datetime import datetime
-
+import pathlib
 import pytz
 
 
 def makezip(pid: str) -> str:
 
     file_paths = []
-    temp_path = os.path.join(os.getcwd(), "Temp", pid)
+    temp_path = os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid)
     for root, dirs, files in os.walk(temp_path):
         for file in files:
 

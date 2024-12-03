@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 from uuid import uuid4
-
+import pathlib
 from dotenv import dotenv_values
 
 values = dotenv_values()
@@ -47,13 +47,13 @@ PERMANENT_SESSION_LIFETIME = timedelta(days=31).max.seconds
 SECRET_KEY = str(uuid4())
 
 # File paths config
-PDF_PATH = os.path.join(os.getcwd(), "PDF")
-DOCS_PATH = os.path.join(os.getcwd(), "Docs")
-TEMP_PATH = os.path.join(os.getcwd(), "Temp")
+PDF_PATH = os.path.join(pathlib.Path(__file__).cwd(), "PDF")
+DOCS_PATH = os.path.join(pathlib.Path(__file__).cwd(), "Docs")
+TEMP_PATH = os.path.join(pathlib.Path(__file__).cwd(), "Temp")
 IMAGE_TEMP_PATH = os.path.join(TEMP_PATH, "IMG")
 CSV_TEMP_PATH = os.path.join(TEMP_PATH, "csv")
 PDF_TEMP_PATH = os.path.join(TEMP_PATH, "pdf")
-SRC_IMG_PATH = os.path.join(os.getcwd(), "app", "src", "assets", "img")
+SRC_IMG_PATH = os.path.join(pathlib.Path(__file__).cwd(), "app", "src", "assets", "img")
 
 for paths in [DOCS_PATH, TEMP_PATH, IMAGE_TEMP_PATH, CSV_TEMP_PATH, PDF_TEMP_PATH]:
 

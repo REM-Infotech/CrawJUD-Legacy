@@ -4,7 +4,7 @@ import os
 import time
 from contextlib import suppress
 from time import sleep
-
+import pathlib
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -924,7 +924,9 @@ class cadastro(CrawJUD):
     def print_comprovante(self) -> None:
 
         name_comprovante = f'Comprovante Cadastro - {self.bot_data.get("NUMERO_PROCESSO")} - PID {self.pid}.png'
-        savecomprovante = os.path.join(os.getcwd(), "Temp", self.pid, name_comprovante)
+        savecomprovante = os.path.join(
+            pathlib.Path(__file__).cwd(), "Temp", self.pid, name_comprovante
+        )
         self.driver.get_screenshot_as_file(savecomprovante)
         self.append_success(
             [self.bot_data.get("NUMERO_PROCESSO"), name_comprovante, self.pid]
