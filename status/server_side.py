@@ -1,8 +1,54 @@
+from flask import Flask
+
+from redis_flask import Redis
 from status import SetStatus
 
 
-def serverSide(data: dict[str, str], pid: str):
-    from app import redis_client
+def load_cache(pid: str, app: Flask):
+
+    log_pid: dict[str, str | int] = {}
+    list_cached: list[dict[str, str | int]] = []
+
+    redis_client: Redis = app.extensions["redis"]
+    redis_key = f"*{pid}*"
+
+    get_cache: list | None = redis_client.keys(redis_key)
+    if get_cache:
+
+        list_cache: list[str] = list(get_cache)
+        for cache in list_cache:
+            k_process, k_pid, k_pos, k_value = cache.split(":")
+            cached = [{"pid": k_pid, "pos": int(k_value)}]
+
+            list_cached.extend(cached)
+
+        get_cache: list[dict[str, str | int]] = sorted(
+            list_cached, key=lambda x: x.get("pos"), reverse=True
+        )
+
+        for item in get_cache:
+
+            pos = item["pos"]
+            redis_key = f"process:{pid}:pos:{pos}"
+            logs_pid = redis_client.hgetall(redis_key)
+
+            log_pid = dict(logs_pid)
+
+            if "total" not in log_pid:
+                continue
+
+            if "last_log" in log_pid:
+                log_pid.update({"message": log_pid.get("last_log")})
+                log_pid.pop("last_log")
+
+            break
+
+    return log_pid
+
+
+def serverSide(data: dict[str, str], pid: str, app: Flask):
+
+    redis_client: Redis = app.extensions["redis"]
 
     data_type = data.get("type", "success")
     data_graphic = data.get("graphicMode", "doughnut")
@@ -22,13 +68,13 @@ def serverSide(data: dict[str, str], pid: str):
         ).botstop()
 
     # Chave única para o processo no Redis
-    redis_key = f"process:{data_pid}"
+    redis_key = f"process:{data_pid}:pos:{data_pos}"
 
     # Carregar dados do processo do Redis
     log_pid = redis_client.hgetall(redis_key)
 
     # Caso não exista, inicializar o registro
-    if not log_pid:
+    if not log_pid and int(data_pos) == 0:
         log_pid = {
             "pid": data_pid,
             "pos": data_pos,
@@ -37,14 +83,36 @@ def serverSide(data: dict[str, str], pid: str):
             "success": 0,
             "errors": 0,
             "status": "Iniciado",
-            "last_log": data_message,
+            "message": data_message,
         }
         redis_client.hset(redis_key, mapping=log_pid)
 
     # Atualizar informações existentes
-    else:
+    elif data_pos > 0:
+
+        if not log_pid:
+
+            if data_pos > 1:
+                # Chave única para o processo no Redis
+                redis_key_tmp = f"process:{data_pid}:pos:{data_pos - 1}"
+
+                # Carregar dados do processo do Redis
+                log_pid = redis_client.hgetall(redis_key_tmp)
+
+            elif data_pos == 1:
+                log_pid = {
+                    "pid": data_pid,
+                    "pos": data_pos,
+                    "total": data.get("total", 100),  # Defina um valor padrão ou ajuste
+                    "remaining": data.get("total", 100),  # Igual ao total no início
+                    "success": 0,
+                    "errors": 0,
+                    "status": "Iniciado",
+                    "message": data_message,
+                }
+
         log_pid["pos"] = data_pos
-        if data_type in ["success", "info"] and data_graphic != "doughnut":
+        if data_type in ["success", "info"] and data_graphic == "doughnut":
             log_pid["remaining"] = int(log_pid["remaining"]) - 1
             log_pid["success"] = int(log_pid["success"]) + 1
         elif data_type == "error":
@@ -54,7 +122,7 @@ def serverSide(data: dict[str, str], pid: str):
                 log_pid["errors"] = log_pid["total"]
                 log_pid["remaining"] = 0
 
-        log_pid["last_log"] = data_message
+        log_pid["message"] = data_message
         redis_client.hset(redis_key, mapping=log_pid)
 
     # Atualizar o dicionário de saída
@@ -67,7 +135,7 @@ def serverSide(data: dict[str, str], pid: str):
             "success": log_pid["success"],
             "errors": log_pid["errors"],
             "status": log_pid["status"],
-            "last_log": log_pid["last_log"],
+            "message": log_pid["message"],
         }
     )
 

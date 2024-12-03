@@ -12,11 +12,12 @@ from flask_mail import Mail
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
-from redis_flask import FlaskRedis
+
 from app import default_config
 
 # APP Imports
 from configs import csp
+from redis_flask import Redis
 
 db = None
 mail = None
@@ -67,20 +68,19 @@ class AppFactory:
         app = Flask(__name__, static_folder=src_path)
         app.config.from_object(default_config)
 
-        self.init_extensions(app)
+        io = self.init_extensions(app)
 
         import_module("app.routes", __name__)
         import_module("app.handling", __name__)
 
-        return app
+        return app, io
 
-    def init_extensions(self, app: Flask):
+    def init_extensions(self, app: Flask) -> SocketIO:
 
         with app.app_context():
             global db, mail, io, redis
 
-            redis = FlaskRedis()
-            redis.init_app(app)
+            redis = Redis(app)
             db = SQLAlchemy(app)
             mail = Mail(app)
 
@@ -111,6 +111,7 @@ class AppFactory:
                 strict_transport_security_max_age=timedelta(days=31).max.seconds,
                 x_content_type_options=True,
             )
+        return io
 
     def init_database(self, db: SQLAlchemy):
 
