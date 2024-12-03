@@ -5,7 +5,6 @@ import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from urllib.request import urlopen
 
 import requests
 from rich.console import Group
@@ -107,7 +106,7 @@ class GetDriver:
 
         # Verifica no endpoint qual a versão disponivel do WebDriver
         url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
-        results = requests.get(url_chromegit)
+        results = requests.get(url_chromegit, timeout=60)
         chrome_version = results.text
 
         system = platform.system().replace("dows", "").lower()
@@ -117,7 +116,7 @@ class GetDriver:
 
         os_sys = f"{system}{arch}"
         # Baixa o WebDriver conforme disponivel no repositório
-        url_driver = "https://storage.googleapis.com/chrome-for-testing-public/"
+        url_driver = "storage.googleapis.com/chrome-for-testing-public/"
 
         set_URL = [chrome_version, os_sys, os_sys]
         for pos, item in enumerate(set_URL):
@@ -133,15 +132,15 @@ class GetDriver:
     def copy_url(self, task_id: TaskID, url: str, path: str) -> None:
         """Copy data from a url to a local file."""
 
-        response = urlopen(url)
+        response = requests.get(url, stream=True, timeout=60)
 
         # This will break if the response doesn't contain content length
-        self.progress.update(task_id, total=int(response.info()["Content-length"]))
+        self.progress.update(task_id, total=int(response.headers["Content-length"]))
 
         with open(path.replace(".exe", ".zip"), "wb") as dest_file:
 
             self.progress.start_task(task_id)
-            for data in iter(partial(response.read, 32768), b""):
+            for data in iter(partial(response.raw.read, 32768), b""):
 
                 dest_file.write(data)
                 self.progress.update(task_id, advance=len(data))
