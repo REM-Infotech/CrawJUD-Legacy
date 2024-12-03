@@ -47,6 +47,7 @@ pygithub = "^2.5.0"
 eventlet = "^0.38.0"
 openai = "^1.55.1"
 redis = "^5.2.0"
+redis-flask = "0.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
