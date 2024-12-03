@@ -125,14 +125,11 @@ class movimentacao(CrawJUD):
                 if termo.lower() in mov.lower():
                     data_mov = td_tr[0].text
 
-                    try:
+                    with suppress(Exception):
                         if type(data_mov) is str:
                             data_mov = datetime.strptime(
                                 data_mov.replace("/", "-"), "%d-%m-%Y"
                             )
-
-                    except Exception:
-                        pass
 
                     name_mov = mov.split("\n")[0]
                     text_mov = td_tr[2].find_element(By.TAG_NAME, "span").text

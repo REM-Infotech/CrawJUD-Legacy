@@ -279,7 +279,8 @@ class capa(CrawJUD):
             ]
             try:
                 self.append_success(processo_data)
-            except Exception:
-                pass
+
+            except Exception as e:
+                raise e
 
         return processo_data
