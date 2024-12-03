@@ -1,5 +1,6 @@
 import os
 import time
+from contextlib import suppress
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -28,8 +29,9 @@ class audiencia(CrawJUD):
             if self.isStoped:
                 break
 
-            if self.driver.title.lower() == "a sessao expirou":
-                super().auth_bot()
+            with suppress(Exception):
+                if self.driver.title.lower() == "a sessao expirou":
+                    super().auth_bot()
 
             try:
                 self.queue()
