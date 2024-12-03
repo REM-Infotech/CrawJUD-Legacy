@@ -1,7 +1,6 @@
 import os
 import pathlib
 
-
 from app.misc import bucketGcs, storageClient
 
 

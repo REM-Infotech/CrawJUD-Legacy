@@ -1,9 +1,8 @@
 # Flask imports
 # Python Imports
 import os
+import pathlib
 import re
-import pathlib
-import pathlib
 from datetime import timedelta
 from importlib import import_module
 from pathlib import Path

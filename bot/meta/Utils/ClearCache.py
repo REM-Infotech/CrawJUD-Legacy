@@ -1,6 +1,7 @@
 import os
-import shutil
 import pathlib
+import shutil
+
 import psutil
 from psutil import Process
 

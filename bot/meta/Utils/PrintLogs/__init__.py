@@ -1,8 +1,9 @@
 import logging
 import os
+import pathlib
 from datetime import datetime
 from time import sleep
-import pathlib
+
 import pytz
 from dotenv import dotenv_values
 from tqdm import tqdm

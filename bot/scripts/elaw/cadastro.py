@@ -1,10 +1,11 @@
 """ Crawler ELAW Cadastro"""
 
 import os
+import pathlib
 import time
 from contextlib import suppress
 from time import sleep
-import pathlib
+
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
