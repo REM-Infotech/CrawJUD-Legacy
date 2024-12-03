@@ -88,9 +88,12 @@ def serverSide(data: dict[str, str], pid: str, app: Flask):
         redis_client.hset(redis_key, mapping=log_pid)
 
     # Atualizar informações existentes
-    elif data_pos > 0:
+    elif data_pos > 0 or data["message"] != log_pid["message"]:
 
         if not log_pid:
+
+            if data_pos == data_pos + 2:
+                data_pos -= 1
 
             if data_pos > 1:
                 # Chave única para o processo no Redis
@@ -111,10 +114,19 @@ def serverSide(data: dict[str, str], pid: str, app: Flask):
                     "message": data_message,
                 }
 
+        type_S1 = data_type == "success"
+        type_S2 = data_type == "info"
+        type_S3 = data_graphic != "doughnut"
+
+        typeSuccess = type_S1 or type_S2 and type_S3
+
         log_pid["pos"] = data_pos
-        if data_type in ["success", "info"] and data_graphic == "doughnut":
+
+        if typeSuccess:
             log_pid["remaining"] = int(log_pid["remaining"]) - 1
-            log_pid["success"] = int(log_pid["success"]) + 1
+            if "fim da execução" not in data_message.lower():
+                log_pid["success"] = int(log_pid["success"]) + 1
+
         elif data_type == "error":
             log_pid["remaining"] = int(log_pid["remaining"]) - 1
             log_pid["errors"] = int(log_pid["errors"]) + 1
