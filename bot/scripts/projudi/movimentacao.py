@@ -407,12 +407,10 @@ class movimentacao(CrawJUD):
             # Read PDF
             pagescontent = ""
             for page in read.pages:
-                try:
+                with suppress(Exception):
                     text = page.extract_text()
                     remove_n_space = text.replace("\n", " ")
                     pagescontent = pagescontent + remove_n_space
-                except Exception:
-                    pass
 
         return pagescontent
 

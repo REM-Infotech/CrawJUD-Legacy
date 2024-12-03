@@ -419,14 +419,12 @@ class emissao(CrawJUD):
         for page in read.pages:
             text = page.extract_text()
 
-            try:
+            with suppress(Exception):
                 # Use a expressão regular para encontrar números
                 numeros = re.findall(pattern, text)
 
                 # Adicione os números encontrados à lista
                 numeros_encontrados.extend(numeros)
-            except Exception:
-                pass
 
         # Imprima os números encontrados
         for numero in numeros_encontrados:

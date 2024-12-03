@@ -283,7 +283,7 @@ class emissao(CrawJUD):
 
     def downloadpdf(self, link_pdf):
 
-        response = requests.get(link_pdf)
+        response = requests.get(link_pdf, timeout=60)
 
         self.nomearquivo = f"{self.tipodoc} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.nomeparte} - {self.pid}.pdf"
 

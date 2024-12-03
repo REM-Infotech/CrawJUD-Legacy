@@ -75,16 +75,20 @@ class busca_pags(CrawJUD):
 
     def page_custas(self) -> None:
 
-        divcustaspagas: WebElement = self.wait.until(
+        divcustaspagas: list[WebElement] = self.wait.until(
             EC.presence_of_all_elements_located((By.TAG_NAME, "div"))
         )
         total = 0
         for divcorreta in divcustaspagas:
-            try:
+
+            nomediv = None
+
+            with suppress(Exception):
                 nomediv = divcorreta.find_element(
                     By.CLASS_NAME, "tituloGridCustas"
                 ).text
-            except Exception:
+
+            if nomediv is None:
                 continue
 
             if "Lista de custas pagas" in nomediv:
