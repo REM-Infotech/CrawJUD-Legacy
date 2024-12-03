@@ -1,6 +1,7 @@
 """ Crawler ELAW Andamentos"""
 
 import time
+from contextlib import suppress
 from time import sleep
 
 from selenium.webdriver import Keys
@@ -32,8 +33,9 @@ class andamentos(CrawJUD):
             if self.isStoped:
                 break
 
-            if self.driver.title.lower() == "a sessao expirou":
-                super().auth_bot()
+            with suppress(Exception):
+                if self.driver.title.lower() == "a sessao expirou":
+                    super().auth_bot()
 
             try:
                 self.queue()
