@@ -41,6 +41,7 @@ is_init.txt
 pip-log.txt
 pip-delete-this-directory.txt
 
+redis_flask/
 bandit_results.html
 # Unit test / coverage reports
 htmlcov/
