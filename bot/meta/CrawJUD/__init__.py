@@ -258,7 +258,7 @@ class CrawJUD:
         elif len(self.appends) == 0:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    def append_success(self, data, message=None, fileN: str = None):
+    def append_success(self, data, message: str = None, fileN: str = None):
 
         if not message:
             message = "Execução do processo efetuada com sucesso!"
