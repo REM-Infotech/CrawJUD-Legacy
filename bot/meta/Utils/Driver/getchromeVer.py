@@ -2,7 +2,7 @@ import platform
 
 if platform.system() == "Windows":
     import winreg
-import subprocess
+from os import popen
 
 inst_OS: dict[str, dict[str, list]] = {
     "DARWIN": {
@@ -17,25 +17,19 @@ class ChromeVersion:
     def get_chrome_version(self):
         """Gets the Chrome version."""
 
+        cmd = "/usr/bin/google-chrome --version"
         system = platform.system()
         if system == "Windows":
             # Try registry key.
             key_path = r"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome"
             return self.traverse_registry_tree(keypath=key_path).get("Version")
 
-        path = [inst_OS.get(system).get("PATH")]
-        cmd = path.extend(["--version"])
-        result = str(
-            subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                shell=True,
-            )
-            .strip("Google Chrome ")
-            .strip()
-        )
+        path = inst_OS.get(system).get("PATH")
+        cmd = path + " --version"
+        result = popen(cmd).read()
+        if result:
+            result = str(result.strip("Google Chrome ").strip())
+
         return result
 
     def traverse_registry_tree(self, keypath: str) -> dict[str, str]:
