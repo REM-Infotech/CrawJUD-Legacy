@@ -15,11 +15,11 @@ if __name__ == "__main__":
 
     debug = values().get("DEBUG", "False").lower() in ("true")
     print(
-        """
+        f"""
 =======================================================
 
             Executando servidor Flask
-            * Porta: 8000
+            * Porta: {int(values().get("PORT", "8000"))}
 
 =======================================================
               """
