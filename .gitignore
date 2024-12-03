@@ -41,6 +41,7 @@ is_init.txt
 pip-log.txt
 pip-delete-this-directory.txt
 
+bandit_results.html
 # Unit test / coverage reports
 htmlcov/
 .tox/
