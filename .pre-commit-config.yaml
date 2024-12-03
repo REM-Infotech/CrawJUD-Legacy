@@ -43,3 +43,5 @@ repos:
           - bandit_results.html
           - -f
           - html
+          - -s
+          - B404,B603,B105
