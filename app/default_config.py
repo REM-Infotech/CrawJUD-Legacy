@@ -59,3 +59,8 @@ for paths in [DOCS_PATH, TEMP_PATH, IMAGE_TEMP_PATH, CSV_TEMP_PATH, PDF_TEMP_PAT
 
     if not os.path.exists(paths):
         os.makedirs(paths, exist_ok=True)
+
+REDIS_HOST = values.get("REDIS_HOST")
+REDIS_PORT = int(values.get("REDIS_PORT"))
+REDIS_DB = int(values.get("REDIS_DB"))
+REDIS_PASSWORD = values.get("REDIS_PASSWORD")
