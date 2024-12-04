@@ -5,6 +5,7 @@ from contextlib import suppress
 from time import sleep
 from typing import Type
 
+import dotenv
 from PIL import Image
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -19,6 +20,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
+
+dotenv.load_dotenv()
 
 
 class protocolo(CrawJUD):
@@ -134,11 +137,14 @@ class protocolo(CrawJUD):
 
             td_partes = table_partes[pos + 1].find_element(By.TAG_NAME, "td")
 
-            if "Advogado já representa essa parte" in td_partes:
-                return True
+            if os.getenv("DEBUG", "False").lower() in ("false", "f", "0"):
+                if "Advogado já representa essa parte" in td_partes.text:
+                    return True
 
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").upper()
-            chk_info = td_partes.text.upper() == parte_peticao
+            chk_info = (td_partes.text.upper() == parte_peticao.upper()) or (
+                parte_peticao.upper() in td_partes.text.upper()
+            )
             if "\n" in td_partes.text:
                 partes = td_partes.text.split("\n")
                 for enum, parte in enumerate(partes):
