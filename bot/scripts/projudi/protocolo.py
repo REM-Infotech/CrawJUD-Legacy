@@ -133,6 +133,10 @@ class protocolo(CrawJUD):
         for pos, item in enumerate(table_partes):
 
             td_partes = table_partes[pos + 1].find_element(By.TAG_NAME, "td")
+
+            if "Advogado já representa essa parte" in td_partes:
+                return True
+
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").upper()
             chk_info = td_partes.text.upper() == parte_peticao
             if "\n" in td_partes.text:
