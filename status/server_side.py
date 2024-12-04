@@ -123,9 +123,12 @@ def serverSide(data: dict[str, str], pid: str, app: Flask):
         log_pid["pos"] = data_pos
 
         if typeSuccess:
-            log_pid["remaining"] = int(log_pid["remaining"]) - 1
-            if "fim da execução" not in data_message.lower():
-                log_pid["success"] = int(log_pid["success"]) + 1
+
+            if log_pid.get("remaining") and log_pid.get("success"):
+
+                log_pid["remaining"] = int(log_pid["remaining"]) - 1
+                if "fim da execução" not in data_message.lower():
+                    log_pid["success"] = int(log_pid["success"]) + 1
 
         elif data_type == "error":
             log_pid["remaining"] = int(log_pid["remaining"]) - 1
