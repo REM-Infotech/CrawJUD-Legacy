@@ -2,9 +2,10 @@ import os
 import time
 from contextlib import suppress
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from urllib3.exceptions import MaxRetryError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -60,7 +61,35 @@ class proc_parte(CrawJUD):
                         super().auth_bot()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+
+            old_message = None
+            check_window = any(
+                [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+            )
+            if check_window:
+
+                with suppress(Exception):
+                    super().DriverLaunch(
+                        message="Webdriver encerrado inesperadamente, reinicializando..."
+                    )
+
+                    old_message = self.message
+
+                    super().auth_bot()
+
+            if old_message is None:
+                old_message = self.message
+            message_error = str(e)
+
+            self.type_log = "error"
+            self.message_error = f"{message_error}. | Operação: {old_message}"
+            self.prt()
+
+            self.bot_data.update({"MOTIVO_ERRO": self.message_error})
+            self.append_error(self.bot_data)
+
+            self.message_error = None
+            self.queue()
 
     def get_process_list(self) -> None:
 
@@ -100,7 +129,7 @@ class proc_parte(CrawJUD):
                     super().auth_bot()
 
         except Exception as e:
-            raise e
+            raise ErroDeExecucao(e=e)
 
     def use_list_process(self, list_processos: list[WebElement]):
 

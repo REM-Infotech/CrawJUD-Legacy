@@ -2,9 +2,11 @@ from selenium.common.exceptions import (
     ElementClickInterceptedException,
     ElementNotInteractableException,
     NoSuchElementException,
+    NoSuchWindowException,
     StaleElementReferenceException,
     TimeoutException,
 )
+from urllib3.exceptions import MaxRetryError
 
 
 def webdriver_exepts() -> list[Exception]:
@@ -17,6 +19,8 @@ def webdriver_exepts() -> list[Exception]:
         ElementClickInterceptedException,
         ValueError,
         Exception,
+        NoSuchWindowException,
+        MaxRetryError,
     ]
 
 
