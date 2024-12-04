@@ -14,6 +14,7 @@ database_name = values.get("DATABASE")
 
 os.makedirs("Archives", exist_ok=True)
 
+
 # FLASK-MAIL CONFIG
 MAIL_SERVER = values["MAIL_SERVER"]
 MAIL_PORT = int(values["MAIL_PORT"])
@@ -24,7 +25,8 @@ MAIL_PASSWORD = values["MAIL_PASSWORD"]
 MAIL_DEFAULT_SENDER = values["MAIL_DEFAULT_SENDER"]
 
 # SQLALCHEMY CONFIG
-debug = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
+DEBUG = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
+TESTING = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
 
 # SqlAlchemy config
 SQLALCHEMY_POOL_SIZE = 30  # Número de conexões na pool
