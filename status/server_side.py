@@ -92,15 +92,15 @@ def serverSide(data: dict[str, str], pid: str, app: Flask):
 
         if not log_pid:
 
-            if data_pos == data_pos + 2:
-                data_pos -= 1
-
             if data_pos > 1:
                 # Chave única para o processo no Redis
                 redis_key_tmp = f"process:{data_pid}:pos:{data_pos - 1}"
 
                 # Carregar dados do processo do Redis
                 log_pid = redis_client.hgetall(redis_key_tmp)
+                if not log_pid:
+                    redis_key_tmp = f"process:{data_pid}:pos:{data_pos - 2}"
+                    log_pid = redis_client.hgetall(redis_key_tmp)
 
             elif data_pos == 1:
                 log_pid = {

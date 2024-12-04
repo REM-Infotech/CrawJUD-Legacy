@@ -1,4 +1,4 @@
-from bot.common.selenium_excepts import exeptionsBot
+from bot.common.selenium_excepts import exeptionsBot, webdriver_exepts
 
 
 class CrawJUDExceptions(Exception):
@@ -8,12 +8,18 @@ class CrawJUDExceptions(Exception):
         super().__init__(message)
         self.message = message
 
+    def __instancecheck__(instance) -> bool:
+        return instance in webdriver_exepts()
+
 
 class ItemNaoEcontrado(CrawJUDExceptions):
     """Exceção para quando um recurso não é encontrado."""
 
     def __init__(self, message="Item não encontrado"):
         super().__init__(message)
+
+    def __instancecheck__(self, instance) -> bool:
+        return super().__instancecheck__(instance)
 
 
 class ErroDeExecucao(CrawJUDExceptions):
@@ -34,3 +40,6 @@ class ErroDeExecucao(CrawJUDExceptions):
             message = message_error
 
         super().__init__(message)
+
+    def __instancecheck__(self, instance) -> bool:
+        return super().__instancecheck__(instance)

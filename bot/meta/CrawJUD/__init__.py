@@ -356,10 +356,10 @@ class CrawJUD(classproperty):
         self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
         self.prt()
 
-    def DriverLaunch(self) -> WebDriver:
+    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> WebDriver:
 
         try:
-            self.message = "Inicializando WebDriver"
+            self.message = message
             self.type_log = "log"
             self.prt()
 
@@ -420,10 +420,25 @@ class CrawJUD(classproperty):
                 ),
             }
 
+            path_chrome = None
             chrome_options.add_experimental_option("prefs", chrome_prefs)
             pid_path = pathlib.Path(self.path_args).parent.resolve()
             getdriver = GetDriver(destination=pid_path)
-            path_chrome = os.path.join(pid_path, getdriver())
+
+            abs_pidpath = pathlib.Path(pid_path).absolute()
+
+            if message != "Inicializando WebDriver":
+
+                version = getdriver.code_ver
+                chrome_name = f"chromedriver{version}"
+                if platform.system() == "Windows":
+                    chrome_name += ".exe"
+
+                if pathlib.Path(os.path.join(abs_pidpath, chrome_name)).exists():
+                    path_chrome = os.path.join(pid_path, chrome_name)
+
+            if path_chrome is None:
+                path_chrome = os.path.join(pid_path, getdriver())
 
             driver = webdriver.Chrome(
                 service=Service(path_chrome), options=chrome_options

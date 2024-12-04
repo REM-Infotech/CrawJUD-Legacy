@@ -9,6 +9,7 @@ import dotenv
 from PIL import Image
 from selenium.common.exceptions import (
     NoSuchElementException,
+    NoSuchWindowException,
     StaleElementReferenceException,
     TimeoutException,
 )
@@ -17,6 +18,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from urllib3.exceptions import MaxRetryError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -52,7 +54,23 @@ class protocolo(CrawJUD):
 
             except Exception as e:
 
-                old_message = self.message
+                old_message = None
+                check_window = any(
+                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                )
+                if check_window:
+
+                    with suppress(Exception):
+                        super().DriverLaunch(
+                            message="Webdriver encerrado inesperadamente, reinicializando..."
+                        )
+
+                        old_message = self.message
+
+                        super().auth_bot()
+
+                if old_message is None:
+                    old_message = self.message
                 message_error = str(e)
 
                 self.type_log = "error"

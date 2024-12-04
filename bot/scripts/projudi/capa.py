@@ -3,7 +3,9 @@ import time
 from contextlib import suppress
 from datetime import datetime
 
+from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.common.by import By
+from urllib3.exceptions import MaxRetryError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -37,7 +39,24 @@ class capa(CrawJUD):
 
             except Exception as e:
 
-                old_message = self.message
+                old_message = None
+                check_window = any(
+                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                )
+                if check_window:
+
+                    with suppress(Exception):
+                        super().DriverLaunch(
+                            message="Webdriver encerrado inesperadamente, reinicializando..."
+                        )
+
+                        old_message = self.message
+
+                        super().auth_bot()
+
+                if old_message is None:
+                    old_message = self.message
+
                 message_error = str(e)
 
                 self.type_log = "error"
