@@ -1,7 +1,10 @@
 import os
+from typing import Union
 
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
+
+Numbers = Union[int, float, complex]
 
 
 class classproperty:
@@ -187,11 +190,11 @@ class classproperty:
         classproperty.cr_list_args = new_Args
 
     @property
-    def bot_data(self) -> dict:
+    def bot_data(self) -> dict[str, str | Numbers]:
         return classproperty.bot_data_
 
     @bot_data.setter
-    def bot_data(self, new_botdata: dict):
+    def bot_data(self, new_botdata: dict[str, str | Numbers]):
         classproperty.bot_data_ = new_botdata
 
     @property
