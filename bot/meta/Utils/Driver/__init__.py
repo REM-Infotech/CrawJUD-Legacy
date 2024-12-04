@@ -137,7 +137,7 @@ class GetDriver:
     def copy_url(self, task_id: TaskID, url: str, path: str) -> None:
         """Copy data from a url to a local file."""
 
-        response = requests.get(url, stream=True, timeout=60)
+        response = requests.get(f"https://{url}", stream=True, timeout=60)
 
         # This will break if the response doesn't contain content length
         self.progress.update(task_id, total=int(response.headers["Content-length"]))

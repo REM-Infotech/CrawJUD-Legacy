@@ -8,7 +8,10 @@ def enviar_arquivo_para_gcs(zip_file: str) -> bool:
 
     try:
 
-        path_output = os.path.join(pathlib.Path(__file__).absolute(), zip_file)
+        arquivo_local = ""
+        objeto_destino = ""
+
+        path_output = os.path.join(pathlib.Path(__file__).cwd(), zip_file)
 
         if os.path.exists(path_output):
             arquivo_local = path_output
