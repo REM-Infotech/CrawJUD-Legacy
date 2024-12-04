@@ -24,8 +24,8 @@ def botlaunch(id: int, system: str, typebot: str):
 
     with app.app_context():
         try:
-
-            if check_latest() is False:
+            all_debug = all([app.debug, app.testing])
+            if check_latest() is False and all_debug is False:
                 raise Exception("Server running outdatest version!")
 
             loc = GeoLoc().region_name
