@@ -93,7 +93,7 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
             elif filename == "":
                 get_info.file_output = SetStatus(
                     usr=user, pid=pid, system=system, typebot=typebot
-                ).botstop()
+                ).botstop(db, app)
                 db.session.commit()
                 db.session.close()
                 return 200

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from redis_flask import Redis
 from status import SetStatus
@@ -48,6 +49,7 @@ def load_cache(pid: str, app: Flask):
 
 def serverSide(data: dict[str, str], pid: str, app: Flask):
 
+    db: SQLAlchemy = app.extensions["sqlachemy"]
     redis_client: Redis = app.extensions["redis"]
 
     data_type = data.get("type", "success")
@@ -65,7 +67,7 @@ def serverSide(data: dict[str, str], pid: str, app: Flask):
             pid=pid,
             system=data_system,
             typebot=data_system,
-        ).botstop()
+        ).botstop(db, app)
 
     # Chave única para o processo no Redis
     redis_key = f"process:{data_pid}:pos:{data_pos}"

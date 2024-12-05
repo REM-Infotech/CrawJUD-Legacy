@@ -45,7 +45,7 @@ def botlaunch(id: int, system: str, typebot: str):
                     raise Exception("Este servidor não pode executar este robô!")
 
                 start_rb = SetStatus(data_bot, request.files, id, system, typebot)
-                path_args, display_name = start_rb.start_bot()
+                path_args, display_name = start_rb.start_bot(app, db)
                 worker_thread = WorkerThread(
                     path_args=path_args,
                     display_name=display_name,
