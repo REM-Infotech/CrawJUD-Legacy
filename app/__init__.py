@@ -2,7 +2,6 @@
 # Python Imports
 import os
 import pathlib
-import re
 from datetime import timedelta
 from importlib import import_module
 from pathlib import Path
@@ -17,7 +16,7 @@ from flask_talisman import Talisman
 from app import default_config
 
 # APP Imports
-from configs import csp
+from configs import check_allowed_origin
 from redis_flask import Redis
 
 db = None
@@ -28,130 +27,12 @@ app = None
 
 clean_prompt = False
 
-allowed_origins = [
-    r"https:\/\/.*\.nicholas\.dev\.br",
-    r"https:\/\/.*\.robotz\.dev",
-    r"https:\/\/.*\.rhsolutions\.info",
-    r"https:\/\/.*\.rhsolut\.com\.br",
-]
-
-
-def check_allowed_origin(origin="https://google.com"):
-
-    if not origin:
-        origin = f'https://{dotenv_values().get("HOSTNAME")}'
-
-    for orig in allowed_origins:
-        pattern = orig
-        matchs = re.match(pattern, origin)
-        if matchs:
-            return True
-
-    return False
-
-
-class CustomTalisman(Talisman):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def set_headers(self, response):
-        super().set_headers(response)
-
 
 class AppFactory:
 
-    def create_test_app(self) -> tuple[Flask, SocketIO]:
-
-        global app
-
-        # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
-        src_path = os.path.join(pathlib.Path(__file__).cwd(), "static")
-        app = Flask(__name__, static_folder=src_path)
-        app.config.from_object(default_config)
-
-        io = self.init_extensions(app)
-
-        import_module("app.routes", __name__)
-        import_module("app.handling", __name__)
-
-        return app, io, db
-
-    def create_app(self) -> tuple[Flask, SocketIO]:
-
-        global app
-
-        # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
-        src_path = os.path.join(pathlib.Path(__file__).cwd(), "static")
-        app = Flask(__name__, static_folder=src_path)
-        app.config.from_object(default_config)
-
-        io = self.init_extensions(app)
-
-        import_module("app.routes", __name__)
-        import_module("app.handling", __name__)
-
-        return app, io
-
-    def init_extensions(self, app: Flask) -> SocketIO:
-
-        with app.app_context():
-            global db, mail, io, redis
-
-            redis = Redis(app)
-            db = SQLAlchemy()
-            db.init_app(app)
-            mail = Mail(app)
-
-            io = SocketIO(app, async_mode="eventlet")
-
-            mail.init_app(app)
-            io.init_app(
-                app,
-                cors_allowed_origins=check_allowed_origin,
-                ping_interval=25,
-                ping_timeout=10,
-            )
-
-            if not Path("is_init.txt").exists():
-
-                with open("is_init.txt", "w") as f:
-                    f.write("True")
-
-                self.init_database(db)
-
-            CustomTalisman(
-                app,
-                content_security_policy=csp(),
-                session_cookie_http_only=True,
-                session_cookie_samesite="Lax",
-                strict_transport_security=True,
-                strict_transport_security_max_age=timedelta(days=31).max.seconds,
-                x_content_type_options=True,
-            )
-        return io
-
-    def init_database(self, db: SQLAlchemy):
-
-        import platform
-
-        from .models import Servers
-
-        values = dotenv_values()
-        db.create_all()
-
-        NAMESERVER = values.get("NAMESERVER")
-        HOST = values.get("HOSTNAME")
-
-        if not Servers.query.filter(Servers.name == NAMESERVER).first():
-
-            server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
-            db.session.add(server)
-            db.session.commit()
-
-
-class AppTestFactory:
-
     csp_ = {}
+
+    testing = False
 
     @property
     def csp(self):
@@ -161,8 +42,14 @@ class AppTestFactory:
     def csp(self, new_csp: dict):
         self.csp_ = new_csp
 
-    def set_csp(self, srvs):
+    def __init__(self, testing: bool = False):
+        self.testing = testing
 
+    def set_csp(self):
+
+        from .models import Servers
+
+        srvs = Servers.query.all()
         csp_vars = {
             "default-src": ["'self'"],
             "script-src": [
@@ -221,7 +108,7 @@ class AppTestFactory:
 
         self.csp = csp_vars
 
-    def create_app(self) -> tuple[Flask, SocketIO, SQLAlchemy]:
+    def create_app(self) -> tuple[Flask, SocketIO] | Flask:
 
         global app
 
@@ -230,32 +117,77 @@ class AppTestFactory:
         app = Flask(__name__, static_folder=src_path)
         app.config.from_object(default_config)
 
-        io, db = self.init_extensions(app)
+        if self.testing is False:
 
-        import_module("app.routes", __name__)
-        import_module("app.handling", __name__)
+            with app.app_context():
+                self.init_database(app)
+                self.init_mail(app)
+                self.init_redis(app)
 
-        return app, io, db
+                self.set_csp()
 
-    def init_extensions(self, app: Flask) -> tuple[SocketIO, SQLAlchemy]:
+                self.init_talisman(app)
+                self.init_socket(app)
+                self.init_routes(app)
 
+                return app, io
+
+        return app
+
+    def init_routes(self, app: Flask):
         with app.app_context():
-            global db, mail, io, redis
+            import_module("app.routes", __name__)
+            import_module("app.handling", __name__)
 
-            redis = Redis(app)
+    def init_talisman(self, app: Flask):
+
+        global tslm
+        tslm = Talisman(
+            app,
+            content_security_policy=self.csp,
+            session_cookie_http_only=True,
+            session_cookie_samesite="Lax",
+            strict_transport_security=True,
+            strict_transport_security_max_age=timedelta(days=31).max.seconds,
+            x_content_type_options=True,
+        )
+        return tslm
+
+    def init_socket(self, app: Flask):
+
+        global io
+        io = SocketIO(app, async_mode="eventlet")
+        io.init_app(
+            app,
+            cors_allowed_origins=check_allowed_origin,
+            ping_interval=25,
+            ping_timeout=10,
+        )
+
+        return io
+
+    def init_mail(self, app):
+
+        global mail
+
+        mail = Mail(app)
+        mail.init_app(app)
+
+    def init_redis(self, app: Flask):
+
+        global redis
+
+        redis = Redis(app)
+        return redis
+
+    def init_database(self, app: Flask):
+
+        import platform
+
+        global db
+        with app.app_context():
             db = SQLAlchemy()
             db.init_app(app)
-            mail = Mail(app)
-
-            io = SocketIO(app, async_mode="eventlet")
-
-            mail.init_app(app)
-            io.init_app(
-                app,
-                cors_allowed_origins=check_allowed_origin,
-                ping_interval=25,
-                ping_timeout=10,
-            )
 
             if not Path("is_init.txt").exists():
 
@@ -272,38 +204,24 @@ class AppTestFactory:
                     self.init_database(db)
                     f.write("True")
 
-            CustomTalisman(
-                app,
-                content_security_policy=self.csp,
-                session_cookie_http_only=True,
-                session_cookie_samesite="Lax",
-                strict_transport_security=True,
-                strict_transport_security_max_age=timedelta(days=31).max.seconds,
-                x_content_type_options=True,
-            )
-        return io, db
+            from .models import Servers
 
-    def init_database(self, db: SQLAlchemy):
+            values = dotenv_values()
+            db.create_all()
 
-        import platform
+            NAMESERVER = values.get("NAMESERVER")
+            HOST = values.get("HOSTNAME")
 
-        from .models import Servers
+            if not Servers.query.filter(Servers.name == NAMESERVER).first():
 
-        values = dotenv_values()
-        db.create_all()
+                server = Servers(
+                    name=NAMESERVER, address=HOST, system=platform.system()
+                )
+                db.session.add(server)
+                db.session.commit()
 
-        NAMESERVER = values.get("NAMESERVER")
-        HOST = values.get("HOSTNAME")
-
-        if not Servers.query.filter(Servers.name == NAMESERVER).first():
-
-            server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
-            db.session.add(server)
-            db.session.commit()
-
-        servers = Servers.query.all()
-        self.set_csp(servers)
+            return db
 
 
 create_app = AppFactory().create_app
-create_test_app = AppTestFactory().create_app
+create_test_app = AppFactory(testing=True).create_app

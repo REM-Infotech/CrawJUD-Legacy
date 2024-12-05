@@ -1,25 +1,35 @@
 import pytest
 from flask import Flask
-from flask.testing import FlaskClient
 from werkzeug.datastructures import FileStorage
 
-from app import create_test_app
+from app import AppTestFactory
+
+factory = AppTestFactory()
+create_test_app = factory.create_app
+create_db = factory.init_database
+create_socket = factory.init_socket
+create_mail = factory.init_mail
+create_redis = factory.init_redis
+create_routes = factory.init_routes
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app():
     """Cria uma instância do aplicativo Flask para testes."""
-    app, _, db = create_test_app()
+    app = create_test_app()
     app.config["TESTING"] = True
+    create_socket(app)
+    create_db(app)
+    create_redis(app)
+    create_mail(app)
+    create_routes(app)
 
-    with app.app_context():
-        db.create_all()  # Cria as tabelas necessárias para os testes
-        yield app
-        db.session.remove()
+    yield app
 
 
 @pytest.fixture()
 def client(app: Flask):
+
     return app.test_client()
 
 
@@ -28,12 +38,12 @@ def runner(app: Flask):
     return app.test_cli_runner()
 
 
-@pytest.fixture()
-def socketio_client(client: FlaskClient):
-    _, io = create_test_app()
-    socketio = io.test_client(app, flask_test_client=client)
-    yield socketio
-    socketio.disconnect()
+# @pytest.fixture()
+# def socketio_client(client: FlaskClient):
+#     _, io = create_test_app()
+#     socketio = io.test_client(app, flask_test_client=client)
+#     yield socketio
+#     socketio.disconnect()
 
 
 @pytest.fixture()
