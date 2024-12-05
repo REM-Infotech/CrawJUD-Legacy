@@ -8,11 +8,11 @@ from datetime import datetime
 
 import openpyxl
 import pytz
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from openpyxl.worksheet.worksheet import Worksheet
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
-
-from app import app, db
 
 from .makefile import makezip
 from .send_email import email_start, email_stop
@@ -33,6 +33,7 @@ class SetStatus:
         usr: str = None,
         pid: str = None,
         status: str = "Finalizado",
+        **kwargs,
     ) -> str:
 
         self.form = form
@@ -56,7 +57,7 @@ class SetStatus:
             )
         )
 
-    def start_bot(self) -> tuple[str, str]:
+    def start_bot(self, app: Flask, db: SQLAlchemy) -> tuple[str, str]:
 
         from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
@@ -139,14 +140,14 @@ class SetStatus:
         db.session.commit()
 
         try:
-            email_start(execut)
+            email_start(execut, app)
 
         except Exception as e:
-            logging.error(f"Exception: {e}", exc_info=True)
+            raise e
 
         return (path_args, bt.display_name)
 
-    def botstop(self) -> str:
+    def botstop(self, db: SQLAlchemy, app: Flask) -> str:
         from app.models import Executions
 
         try:
@@ -174,7 +175,7 @@ class SetStatus:
             execution = Executions.query.filter(Executions.pid == self.pid).first()
 
             try:
-                email_stop(execution)
+                email_stop(execution, app)
             except Exception as e:
                 logging.error(f"Exception: {e}", exc_info=True)
 
