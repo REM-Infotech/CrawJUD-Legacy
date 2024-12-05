@@ -39,9 +39,12 @@ repos:
         types: [python]
         require_serial: true
         args:
+          - "-c"
+          - "pyproject.toml"
           - -o
           - bandit_results.html
           - -f
           - html
           - -s
           - B404,B603,B105,B605
+        additional_dependencies: ["bandit[toml]"]
