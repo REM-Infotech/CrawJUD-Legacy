@@ -1,3 +1,8 @@
+import re
+
+from dotenv import dotenv_values
+
+
 def csp() -> dict[str]:
 
     from app.models import Servers
@@ -60,3 +65,22 @@ def csp() -> dict[str]:
             csp_vars.get("connect-src").append(f"wss://{srv.address}")
 
     return csp_vars
+
+
+def check_allowed_origin(origin="https://google.com"):
+    allowed_origins = [
+        r"https:\/\/.*\.nicholas\.dev\.br",
+        r"https:\/\/.*\.robotz\.dev",
+        r"https:\/\/.*\.rhsolutions\.info",
+        r"https:\/\/.*\.rhsolut\.com\.br",
+    ]
+    if not origin:
+        origin = f'https://{dotenv_values().get("HOSTNAME")}'
+
+    for orig in allowed_origins:
+        pattern = orig
+        matchs = re.match(pattern, origin)
+        if matchs:
+            return True
+
+    return False
