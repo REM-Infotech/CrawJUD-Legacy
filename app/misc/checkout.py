@@ -1,6 +1,7 @@
 # Função para atualizar para a tag da nova release
 from dotenv import dotenv_values
 from github import Github
+from github.Auth import Token
 
 config_vals = dotenv_values()
 
@@ -11,7 +12,8 @@ USER_GITHUB = config_vals.get("USER_GITHUB", "")
 
 def checkout_release_tag() -> str:
 
-    github = Github(GITHUB_API_TOKEN)
+    token_github = Token(GITHUB_API_TOKEN)
+    github = Github(auth=token_github)
     repo = github.get_repo(REPO_NAME)
     releases = repo.get_releases()
     latest_release = sorted(

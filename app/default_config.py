@@ -26,7 +26,6 @@ MAIL_DEFAULT_SENDER = values["MAIL_DEFAULT_SENDER"]
 
 # SQLALCHEMY CONFIG
 DEBUG = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
-TESTING = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
 
 # SqlAlchemy config
 SQLALCHEMY_POOL_SIZE = 30  # Número de conexões na pool

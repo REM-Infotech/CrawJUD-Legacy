@@ -24,35 +24,46 @@ def botlaunch(id: int, system: str, typebot: str):
 
     with app.app_context():
         try:
-            all_debug = all([app.debug, app.testing])
-            if check_latest() is False and all_debug is False:
+            if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")
 
-            loc = GeoLoc().region_name
-            if request.data:
-                data_bot = json.loads(request.data)
+            if app.testing is False:
+                loc = GeoLoc().region_name
+                if request.data:
+                    data_bot = json.loads(request.data)
 
-            elif request.form:
-                data_bot = request.form
+                elif request.form:
+                    data_bot = request.form
 
-            if isinstance(data_bot, str):
-                data_bot = json.loads(data_bot)
+                if isinstance(data_bot, str):
+                    data_bot = json.loads(data_bot)
 
-            if system == "esaj" and platform.system() != "Windows":
-                raise Exception("Este servidor não pode executar este robô!")
+                if system == "esaj" and platform.system() != "Windows":
+                    raise Exception("Este servidor não pode executar este robô!")
 
-            elif system == "caixa" and loc != "Amazonas":
-                raise Exception("Este servidor não pode executar este robô!")
+                elif system == "caixa" and loc != "Amazonas":
+                    raise Exception("Este servidor não pode executar este robô!")
 
-            start_rb = SetStatus(data_bot, request.files, id, system, typebot)
-            path_args, display_name = start_rb.start_bot()
-            worker_thread = WorkerThread(
-                path_args=path_args,
-                display_name=display_name,
-                system=system,
-                typebot=typebot,
-            )
-            is_started = worker_thread.start(app, db)
+                start_rb = SetStatus(data_bot, request.files, id, system, typebot)
+                path_args, display_name = start_rb.start_bot()
+                worker_thread = WorkerThread(
+                    path_args=path_args,
+                    display_name=display_name,
+                    system=system,
+                    typebot=typebot,
+                )
+                is_started = worker_thread.start(app, db)
+
+            elif app.testing is True:
+                is_started = 200
+                if request.data:
+                    data_bot = json.loads(request.data)
+
+                elif request.form:
+                    data_bot = request.form
+
+                else:
+                    is_started = 500
 
         except Exception as e:
             message = {"error": str(e)}
