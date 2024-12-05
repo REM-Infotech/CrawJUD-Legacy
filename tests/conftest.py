@@ -2,9 +2,8 @@ import pytest
 from flask import Flask
 from werkzeug.datastructures import FileStorage
 
-from app import AppTestFactory
+from app import create_test_app as factory
 
-factory = AppTestFactory()
 create_test_app = factory.create_app
 create_db = factory.init_database
 create_socket = factory.init_socket

@@ -224,4 +224,4 @@ class AppFactory:
 
 
 create_app = AppFactory().create_app
-create_test_app = AppFactory(testing=True).create_app
+create_test_app = AppFactory(testing=True)
