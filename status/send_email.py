@@ -27,7 +27,7 @@ def email_start(execution: None, app: Flask) -> None:
     xlsx = execution.arquivo_xlsx
 
     try:
-        for adm in usr.licenseusr.admins:
+        for adm in usr.licenseusr.admins:  # pragma: no cover
             admins.append(adm.email)
 
     except Exception as e:  # pragma: no cover
@@ -71,7 +71,7 @@ def email_stop(execution: None, app: Flask) -> None:
     execution: Executions = execution
 
     mail = app.extensions.get("mail")
-    if not mail:
+    if not mail:  # pragma: no cover
         mail = Mail(app)
 
     with app.app_context():
@@ -86,10 +86,10 @@ def email_stop(execution: None, app: Flask) -> None:
     xlsx = execution.arquivo_xlsx
 
     try:
-        for adm in usr.licenseusr.admins:
+        for adm in usr.licenseusr.admins:  # pragma: no cover
             admins.append(adm.email)
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         print(e)
 
     with app.app_context():

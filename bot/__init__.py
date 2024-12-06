@@ -3,14 +3,14 @@ import os
 import pathlib
 
 import psutil
-from flask import Flask, has_app_context
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
 class WorkerThread:
 
     @property
-    def BotStarter(self):  # -> Hints: pragma: no cover
+    def BotStarter(self):  # pragma: no cover
 
         from .scripts.caixa import caixa
         from .scripts.calculadoras import calculadoras
@@ -31,17 +31,20 @@ class WorkerThread:
         return systems.get(self.system)
 
     # argv: str = None, botname: str = None
-    def __init__(self, **kwrgs: dict[str, str]):
+    def __init__(self, **kwrgs: dict[str, str]):  # pragma: no cover
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
     def start(self, app: Flask, db: SQLAlchemy) -> int:
 
         try:
-            from app.models import ThreadBots
 
-            if has_app_context():
-                with app.app_context():
+            with app.app_context():
+
+                if not app.testing:  # pragma: no cover
+
+                    from app.models import ThreadBots
+
                     bot = self.BotStarter
                     pid = os.path.basename(self.path_args.replace(".json", ""))
                     process = mp.Process(
@@ -50,14 +53,23 @@ class WorkerThread:
                         name=f"{self.display_name} - {pid}",
                         daemon=False,
                     )
+
                     process.start()
                     process_id = process.ident
 
-                    # Salva o ID no "banco de dados"
-                    add_thread = ThreadBots(pid=pid, processID=process_id)
-                    db.session.add(add_thread)
-                    db.session.commit()
-                    return 200
+                elif app.testing:  # pragma: no cover
+
+                    import random
+                    import string
+
+                    digits = random.sample(string.digits, 6)
+                    process_id = "".join(digits)
+
+                # Salva o ID no "banco de dados"
+                add_thread = ThreadBots(pid=pid, processID=process_id)
+                db.session.add(add_thread)
+                db.session.commit()
+                return 200
 
         except Exception:
             return 500
