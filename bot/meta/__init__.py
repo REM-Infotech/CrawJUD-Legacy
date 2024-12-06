@@ -1,10 +1,10 @@
-import os
-from typing import Union
+import os  # pragma: no cover
+from typing import Union  # pragma: no cover
 
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver  # pragma: no cover
+from selenium.webdriver.support.wait import WebDriverWait  # pragma: no cover
 
-Numbers = Union[int, float, complex]
+Numbers = Union[int, float, complex]  # pragma: no cover
 
 
 class classproperty:

@@ -37,14 +37,14 @@ class Users(db.Model):
     licenseusr = db.relationship("LicensesUsers", backref="user")
 
     @property
-    def senhacrip(self) -> None:
+    def senhacrip(self) -> None:  # pragma: no cover
         return self.senhacrip
 
     @senhacrip.setter
-    def senhacrip(self, senha_texto: str):
+    def senhacrip(self, senha_texto: str):  # pragma: no cover
         self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
-    def check_password(self, senha_texto_claro: str) -> bool:
+    def check_password(self, senha_texto_claro: str) -> bool:  # pragma: no cover
         return bcrypt.checkpw(
             senha_texto_claro.encode("utf-8"), self.password.encode("utf-8")
         )

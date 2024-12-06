@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 from datetime import timedelta
 from uuid import uuid4
 
@@ -59,8 +60,9 @@ SRC_IMG_PATH = os.path.join(pathlib.Path(__file__).cwd(), "app", "src", "assets"
 
 for paths in [DOCS_PATH, TEMP_PATH, IMAGE_TEMP_PATH, CSV_TEMP_PATH, PDF_TEMP_PATH]:
 
-    if not os.path.exists(paths):
-        os.makedirs(paths, exist_ok=True)
+    if pathlib.Path(paths).exists():
+        shutil.rmtree(paths)
+        pathlib.Path(paths).mkdir(exist_ok=True)
 
 REDIS_HOST = values.get("REDIS_HOST")
 REDIS_PORT = int(values.get("REDIS_PORT"))

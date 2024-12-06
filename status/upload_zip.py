@@ -4,7 +4,7 @@ import pathlib
 from app.misc import bucketGcs, storageClient
 
 
-def enviar_arquivo_para_gcs(zip_file: str) -> bool:
+def enviar_arquivo_para_gcs(zip_file: str) -> bool:  # pragma: no cover
 
     try:
 

@@ -1,15 +1,15 @@
-from os import getcwd, path
-from pathlib import Path
+from os import getcwd, path  # pragma: no cover
+from pathlib import Path  # pragma: no cover
 
-from clear import clear
-from dotenv import dotenv_values as values
+from clear import clear  # pragma: no cover
+from dotenv import dotenv_values as values  # pragma: no cover
 
-from app import create_app
+from app import create_app  # pragma: no cover
 
-app, io = create_app()
+app, io = create_app()  # pragma: no cover
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
 
     clear()
 

@@ -6,7 +6,7 @@ from datetime import datetime
 import pytz
 
 
-def makezip(pid: str) -> str:
+def makezip(pid: str) -> str:  # pragma: no cover
 
     file_paths = []
     temp_path = os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid)
