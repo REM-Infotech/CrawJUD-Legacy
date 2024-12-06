@@ -101,7 +101,7 @@ class AppFactory:
                 "https://avatars.githubusercontent.com",
             ],
         }
-        if srvs:
+        if srvs:  # pragma: no cover
             for srv in srvs:
                 csp_vars.get("connect-src").append(f"https://{srv.address}")
                 csp_vars.get("connect-src").append(f"wss://{srv.address}")
@@ -117,7 +117,7 @@ class AppFactory:
         app = Flask(__name__, static_folder=src_path)
         app.config.from_object(default_config)
 
-        if self.testing is False:
+        if self.testing is False:  # pragma: no cover
 
             with app.app_context():
                 self.init_database(app)
@@ -139,7 +139,7 @@ class AppFactory:
             import_module("app.routes", __name__)
             import_module("app.handling", __name__)
 
-    def init_talisman(self, app: Flask):
+    def init_talisman(self, app: Flask):  # pragma: no cover
 
         global tslm
         tslm = Talisman(

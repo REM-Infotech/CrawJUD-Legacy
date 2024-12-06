@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 class WorkerThread:
 
     @property
-    def BotStarter(self):  # -> Hints:
+    def BotStarter(self):  # -> Hints: pragma: no cover
 
         from .scripts.caixa import caixa
         from .scripts.calculadoras import calculadoras

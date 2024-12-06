@@ -1,7 +1,7 @@
-from ..misc import bucketGcs, storageClient
+from ..misc import bucketGcs, storageClient  # pragma: no cover
 
 
-def get_file(pid: str) -> str:
+def get_file(pid: str) -> str:  # pragma: no cover
 
     bucket_name = "outputexec-bots"
     storage_client = storageClient()

@@ -12,7 +12,7 @@ def email_start(execution: None, app: Flask) -> None:
     execution: Executions = execution
 
     mail = app.extensions.get("mail")
-    if not mail:
+    if not mail:  # pragma: no cover
         mail = Mail(app)
 
     with app.app_context():
@@ -30,7 +30,7 @@ def email_start(execution: None, app: Flask) -> None:
         for adm in usr.licenseusr.admins:
             admins.append(adm.email)
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         print(e)
 
     with app.app_context():

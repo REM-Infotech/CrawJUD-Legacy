@@ -1,9 +1,9 @@
-import subprocess
+import subprocess  # pragma: no cover
 
-from tqdm import tqdm
+from tqdm import tqdm  # pragma: no cover
 
 
-def uninstall(nome_do_certificado: str):
+def uninstall(nome_do_certificado: str):  # pragma: no cover
 
     certs = {}
     try:

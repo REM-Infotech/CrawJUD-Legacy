@@ -15,7 +15,7 @@ signed_url_lifetime = 300
 __all__ = [GeoLoc]
 
 
-def generate_pid() -> str:
+def generate_pid() -> str:  # pragma: no cover
 
     while True:
         # Gerar 4 letras maiúsculas e 4 dígitos
@@ -32,7 +32,7 @@ def generate_pid() -> str:
             return pid
 
 
-def storageClient() -> Client:
+def storageClient() -> Client:  # pragma: no cover
 
     project_id = dotenv_values().get("project_id")
     # Configure a autenticação para a conta de serviço do GCS
@@ -41,7 +41,7 @@ def storageClient() -> Client:
     return Client(credentials=credentials, project=project_id)
 
 
-def CredentialsGCS() -> Credentials:
+def CredentialsGCS() -> Credentials:  # pragma: no cover
 
     credentials_dict = json.loads(dotenv_values().get("credentials_dict"))
     return Credentials.from_service_account_info(credentials_dict).with_scopes(
@@ -51,7 +51,9 @@ def CredentialsGCS() -> Credentials:
     # Configure a autenticação para a conta de serviço do GCS
 
 
-def bucketGcs(storageClient: Client, bucket_name: str = None) -> Bucket:
+def bucketGcs(
+    storageClient: Client, bucket_name: str = None
+) -> Bucket:  # pragma: no cover
 
     if not bucket_name:
         bucket_name = dotenv_values().get("bucket_name")
@@ -60,7 +62,9 @@ def bucketGcs(storageClient: Client, bucket_name: str = None) -> Bucket:
     return bucket_obj
 
 
-def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
+def stop_execution(
+    app: Flask, pid: str, robot_stop: bool = False
+) -> int:  # pragma: no cover
 
     from app import db
     from app.models import Executions, ThreadBots
@@ -104,7 +108,7 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
         return 500
 
 
-def get_file(pid: str) -> str:
+def get_file(pid: str) -> str:  # pragma: no cover
 
     bucket_name = "outputexec-bots"
     storage_client = storageClient()

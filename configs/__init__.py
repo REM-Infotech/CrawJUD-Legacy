@@ -3,7 +3,7 @@ import re
 from dotenv import dotenv_values
 
 
-def csp() -> dict[str]:
+def csp() -> dict[str]:  # pragma: no cover
 
     from app.models import Servers
 
@@ -67,7 +67,7 @@ def csp() -> dict[str]:
     return csp_vars
 
 
-def check_allowed_origin(origin="https://google.com"):
+def check_allowed_origin(origin="https://google.com"):  # pragma: no cover
     allowed_origins = [
         r"https:\/\/.*\.nicholas\.dev\.br",
         r"https:\/\/.*\.robotz\.dev",

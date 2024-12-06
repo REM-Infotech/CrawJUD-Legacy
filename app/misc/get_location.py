@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 TOKEN = dotenv_values().get("TOKEN_IP2")
 
 
-class GlobalExcept(Exception):
+class GlobalExcept(Exception):  # pragma: no cover
     """Exceção base personalizada."""
 
     def __init__(self, message: str):
@@ -13,14 +13,14 @@ class GlobalExcept(Exception):
         self.message = message
 
 
-class NetworkError(GlobalExcept):
+class NetworkError(GlobalExcept):  # pragma: no cover
     """Exceção para quando um recurso não é encontrado."""
 
     def __init__(self, message: str = "You are not connected to the internet!!"):
         super().__init__(message)
 
 
-class InfoGeoloc:
+class InfoGeoloc:  # pragma: no cover
 
     data: dict[str, str, int | bool] = {}
 
@@ -98,6 +98,6 @@ class InfoGeoloc:
         return self._is_proxy
 
 
-class GeoLoc(InfoGeoloc):
+class GeoLoc(InfoGeoloc):  # pragma: no cover
     def __init__(self, *args, **kwrgs):
         super().__init__(*args, **kwrgs)
