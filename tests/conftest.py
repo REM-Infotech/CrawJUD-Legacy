@@ -1,5 +1,6 @@
 import pytest
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import FileStorage
 
 from app import create_test_app as factory
@@ -24,6 +25,10 @@ def app():
     create_routes(app)
 
     yield app
+
+    with app.app_context():
+        db: SQLAlchemy = app.extensions.get("sqlalchemy")
+        db.drop_all()
 
 
 @pytest.fixture()
@@ -60,7 +65,7 @@ def args_bot():
             "files": {basename: (basename, f)},
             "data": {
                 "pid": "V2A5G1",
-                "user": "robotz213",
+                "user": "test",
                 "xlsx": basename,
                 "username": "test",
                 "password": "test",
@@ -79,6 +84,8 @@ def args_statusbot():
     from os import path
     from pathlib import Path
 
+    from app.misc import generate_pid
+
     xls_Test = path.join(Path(__file__).parent.resolve(), "archives", "xls_.xlsx")
     basename = path.basename(xls_Test)
     with Path(xls_Test).open("rb") as f:
@@ -91,7 +98,7 @@ def args_statusbot():
             "typebot": "capa",
             "files": {basename: f},
             "form": {
-                "pid": "V2A5G1",
+                "pid": generate_pid(),
                 "user": "robotz213",
                 "xlsx": basename,
                 "username": "test",

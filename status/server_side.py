@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
 from redis_flask import Redis
+
 from status import SetStatus
 
 

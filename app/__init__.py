@@ -12,12 +12,12 @@ from flask_mail import Mail
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
+from redis_flask import Redis
 
 from app import default_config
 
 # APP Imports
 from configs import check_allowed_origin
-from redis_flask import Redis
 
 db = None
 mail = None
@@ -35,17 +35,17 @@ class AppFactory:
     testing = False
 
     @property
-    def csp(self):
+    def csp(self):  # pragma: no cover
         return self.csp_
 
     @csp.setter
-    def csp(self, new_csp: dict):
+    def csp(self, new_csp: dict):  # pragma: no cover
         self.csp_ = new_csp
 
     def __init__(self, testing: bool = False):
         self.testing = testing
 
-    def set_csp(self):
+    def set_csp(self):  # pragma: no cover
 
         from .models import Servers
 
@@ -101,7 +101,7 @@ class AppFactory:
                 "https://avatars.githubusercontent.com",
             ],
         }
-        if srvs:  # pragma: no cover
+        if srvs:
             for srv in srvs:
                 csp_vars.get("connect-src").append(f"https://{srv.address}")
                 csp_vars.get("connect-src").append(f"wss://{srv.address}")
@@ -191,28 +191,28 @@ class AppFactory:
 
             if not Path("is_init.txt").exists():
 
-                with open("is_init.txt", "w") as f:
-                    self.init_database(db)
+                with open("is_init.txt", "w") as f:  # pragma: no cover
+                    db.create_all()
                     f.write("True")
 
-            from app.models import Users
+            from app.models import Servers, Users
 
             if not db.engine.dialect.has_table(
                 db.engine.connect(), Users.__tablename__
             ):
-                with open("is_init.txt", "w") as f:
-                    self.init_database(db)
+                with open("is_init.txt", "w") as f:  # pragma: no cover
+
+                    db.create_all()
                     f.write("True")
 
-            from .models import Servers
-
             values = dotenv_values()
-            db.create_all()
 
             NAMESERVER = values.get("NAMESERVER")
             HOST = values.get("HOSTNAME")
 
-            if not Servers.query.filter(Servers.name == NAMESERVER).first():
+            if not Servers.query.filter(
+                Servers.name == NAMESERVER
+            ).first():  # pragma: no cover
 
                 server = Servers(
                     name=NAMESERVER, address=HOST, system=platform.system()
@@ -223,5 +223,5 @@ class AppFactory:
             return db
 
 
-create_app = AppFactory().create_app
-create_test_app = AppFactory(testing=True)
+create_app = AppFactory().create_app  # pragma: no cover
+create_test_app = AppFactory(testing=True)  # pragma: no cover

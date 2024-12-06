@@ -76,7 +76,7 @@ def botlaunch(id: int, system: str, typebot: str):
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
 def stop_bot(user: str, pid: str):
 
-    from app import app
+    from flask import current_app as app
 
     with app.app_context():
         set_stop = stop_execution(app, pid, True)

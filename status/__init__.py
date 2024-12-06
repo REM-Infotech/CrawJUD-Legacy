@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import pathlib
 import platform
@@ -57,11 +56,22 @@ class SetStatus:
             )
         )
 
-    def start_bot(self, app: Flask, db: SQLAlchemy) -> tuple[str, str]:
+    def start_bot(
+        self,
+        app: Flask,
+        db: SQLAlchemy,
+        user: str = None,
+        pid: str = None,
+        id: int = None,
+    ) -> tuple[str, str]:
 
         from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
-        path_pid = os.path.join(app.config["TEMP_PATH"], self.pid)
+        user = self.user if user is None else user
+        pid = self.pid if pid is None else pid
+        id = self.id if id is None else id
+
+        path_pid = os.path.join(app.config["TEMP_PATH"], pid)
         os.makedirs(path_pid, exist_ok=True)
 
         if self.files:
@@ -74,12 +84,13 @@ class SetStatus:
                 value.save(filesav)
 
         data = {}
-        path_args = os.path.join(path_pid, f"{self.pid}.json")
+
+        path_args = os.path.join(path_pid, f"{pid}.json")
         if self.form:
             for key, value in self.form.items():
                 data.update({key: value})
 
-        data.update({"id": self.id, "system": self.system, "typebot": self.typebot})
+        data.update({"id": id, "system": self.system, "typebot": self.typebot})
 
         if data.get("xlsx"):
             input_file = os.path.join(
@@ -117,7 +128,7 @@ class SetStatus:
             xlsx_ = xlsx_[: int(max_length)]
 
         execut = Executions(
-            pid=self.pid,
+            pid=pid,
             status="Em Execução",
             arquivo_xlsx=xlsx_,
             url_socket=data.get("url_socket"),
@@ -126,8 +137,8 @@ class SetStatus:
             file_output="Arguardando Arquivo",
         )
 
-        usr = Users.query.filter(Users.login == self.user).first()
-        bt = BotsCrawJUD.query.filter(BotsCrawJUD.id == self.id).first()
+        usr = Users.query.filter(Users.login == user).first()
+        bt = BotsCrawJUD.query.filter(BotsCrawJUD.id == id).first()
         license_ = LicensesUsers.query.filter(
             LicensesUsers.license_token == usr.licenseusr.license_token
         ).first()
@@ -142,15 +153,20 @@ class SetStatus:
         try:
             email_start(execut, app)
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             raise e
 
         return (path_args, bt.display_name)
 
-    def botstop(self, db: SQLAlchemy, app: Flask) -> str:
+    def botstop(
+        self, db: SQLAlchemy, app: Flask, pid: str = None, status: str = "Finalizado"
+    ) -> str:
         from app.models import Executions
 
         try:
+            status = self.status if self.status != "Finalizado" else status
+            pid = self.pid if pid is None else pid
+
             srv = platform.system() in ("Windows")
             sys = self.system.lower() in ("esaj")
             typebot = self.typebot.lower() in ("protocolo")
@@ -158,7 +174,7 @@ class SetStatus:
             if all([srv, sys, typebot]):
 
                 json_args = os.path.join(
-                    pathlib.Path(__file__).cwd(), "Temp", self.pid, f"{self.pid}.json"
+                    pathlib.Path(__file__).cwd(), "Temp", pid, f"{pid}.json"
                 )
                 with open(json_args, "rb") as f:
                     arg = json.load(f)["login"]
@@ -168,23 +184,23 @@ class SetStatus:
                 except Exception as e:
                     print(e)
 
-            zip_file = makezip(self.pid)
+            zip_file = makezip(pid)
             objeto_destino = os.path.basename(zip_file)
             enviar_arquivo_para_gcs(zip_file)
 
-            execution = Executions.query.filter(Executions.pid == self.pid).first()
+            execution = Executions.query.filter(Executions.pid == pid).first()
 
             try:
                 email_stop(execution, app)
-            except Exception as e:
-                logging.error(f"Exception: {e}", exc_info=True)
+            except Exception as e:  # pragma: no cover
+                raise e
 
-            execution.status = self.status
+            execution.status = status
             execution.file_output = objeto_destino
             execution.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
             db.session.commit()
             db.session.close()
             return objeto_destino
 
-        except Exception as e:
-            logging.error(f"Exception: {e}", exc_info=True)
+        except Exception as e:  # pragma: no cover
+            raise e

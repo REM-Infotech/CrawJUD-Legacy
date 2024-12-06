@@ -15,7 +15,7 @@ signed_url_lifetime = 300
 __all__ = [GeoLoc]
 
 
-def generate_pid() -> str:  # pragma: no cover
+def generate_pid() -> str:
 
     while True:
         # Gerar 4 letras maiúsculas e 4 dígitos

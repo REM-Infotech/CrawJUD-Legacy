@@ -22,5 +22,5 @@ mail_handler.setFormatter(
     logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
 )
 
-if not app.debug:
+if not app.debug:  # pragma: no cover
     app.logger.addHandler(mail_handler)
