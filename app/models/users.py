@@ -36,14 +36,6 @@ class Users(db.Model):
     licenseus_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     licenseusr = db.relationship("LicensesUsers", backref="user")
 
-    def __init__(
-        self, login: str = None, nome_usuario: str = None, email: str = None
-    ) -> None:
-
-        self.login = login
-        self.nome_usuario = nome_usuario
-        self.email = email
-
     @property
     def senhacrip(self) -> None:
         return self.senhacrip
