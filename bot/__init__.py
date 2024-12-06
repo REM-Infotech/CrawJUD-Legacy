@@ -79,15 +79,18 @@ class WorkerThread:
         try:
 
             sinalizacao = f"{pid}.flag"
-            path_flag = pathlib.Path(
-                os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid, sinalizacao)
-            )
+
+            _flag = os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid, sinalizacao)
+            path_flag = pathlib.Path(_flag)
 
             Process = psutil.Process(processID)
 
             if Process.is_running():
                 if not path_flag.exists():
-                    with open(str(path_flag), "w") as f:
+
+                    path_flag.parent.resolve().mkdir(parents=True, exist_ok=True)
+
+                    with open(str(_flag), "w") as f:
                         f.write("Encerrar processo")
 
             return f"Process {processID} stopped!"
