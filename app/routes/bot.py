@@ -85,5 +85,5 @@ def stop_bot(user: str, pid: str):
 
             return jsonify({"Encerrado!": "Sucesso"}), set_stop
 
-        elif set_stop != 200:
+        elif set_stop != 200:  # pragma: no cover
             return jsonify({"mensagem": "erro"}), set_stop

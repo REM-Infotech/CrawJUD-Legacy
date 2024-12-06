@@ -16,7 +16,7 @@ def enviar_arquivo_para_gcs(zip_file: str) -> bool:  # pragma: no cover
         if os.path.exists(path_output):
             arquivo_local = path_output
             objeto_destino = os.path.basename(path_output)
-        bucket = bucketGcs(storageClient(), "outputexec-bots")
+        bucket = bucketGcs(storageClient())
 
         # Cria um objeto Blob no bucket
         blob = bucket.blob(objeto_destino)

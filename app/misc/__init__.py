@@ -32,7 +32,7 @@ def generate_pid() -> str:
             return pid
 
 
-def storageClient() -> Client:  # pragma: no cover
+def storageClient() -> Client:
 
     project_id = dotenv_values().get("project_id")
     # Configure a autenticação para a conta de serviço do GCS
@@ -41,7 +41,7 @@ def storageClient() -> Client:  # pragma: no cover
     return Client(credentials=credentials, project=project_id)
 
 
-def CredentialsGCS() -> Credentials:  # pragma: no cover
+def CredentialsGCS() -> Credentials:
 
     credentials_dict = json.loads(dotenv_values().get("credentials_dict"))
     return Credentials.from_service_account_info(credentials_dict).with_scopes(
@@ -51,20 +51,15 @@ def CredentialsGCS() -> Credentials:  # pragma: no cover
     # Configure a autenticação para a conta de serviço do GCS
 
 
-def bucketGcs(
-    storageClient: Client, bucket_name: str = None
-) -> Bucket:  # pragma: no cover
+def bucketGcs(storageClient: Client) -> Bucket:
 
-    if not bucket_name:
-        bucket_name = dotenv_values().get("bucket_name")
+    bucket_name = dotenv_values().get("bucket_name")
 
     bucket_obj = storageClient.bucket(bucket_name)
     return bucket_obj
 
 
-def stop_execution(
-    app: Flask, pid: str, robot_stop: bool = False
-) -> int:  # pragma: no cover
+def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
 
     from app import db
     from app.models import Executions, ThreadBots
@@ -87,14 +82,14 @@ def stop_execution(
             get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
             filename = get_file(pid)
 
-            if filename != "":
+            if filename != "":  # pragma: no cover
 
                 get_info.file_output = filename
                 db.session.commit()
                 db.session.close()
                 return 200
 
-            elif filename == "":
+            elif filename == "":  # pragma: no cover
                 get_info.file_output = SetStatus(
                     usr=user, pid=pid, system=system, typebot=typebot
                 ).botstop(db, app)
@@ -102,27 +97,26 @@ def stop_execution(
                 db.session.close()
                 return 200
 
-            return 200
+            return 200  # pragma: no cover
 
-    except Exception:
+    except Exception:  # pragma: no cover
         return 500
 
 
-def get_file(pid: str) -> str:  # pragma: no cover
+def get_file(pid: str) -> str:
 
-    bucket_name = "outputexec-bots"
     storage_client = storageClient()
 
     # Obtém o bucket
-    bucket = bucketGcs(storage_client, bucket_name)
+    bucket = bucketGcs(storage_client)
 
     arquivo = ""
 
     for blob in bucket.list_blobs():
 
-        blobnames = str(blob.name)
-        if "/" in blobnames:
-            blobnames = blobnames.split("/")[1]
+        blobnames = (
+            str(blob.name).split("/")[1] if "/" in str(blob.name) else str(blob.name)
+        )
 
         if pid in blobnames:
             arquivo = blobnames
