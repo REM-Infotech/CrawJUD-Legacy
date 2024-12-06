@@ -91,8 +91,3 @@ class ThreadBots(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pid = db.Column(db.String(length=12), nullable=False)
     processID = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, pid: str = None, processID: int = 0) -> None:
-
-        self.pid = pid
-        self.processID = processID
