@@ -1,7 +1,6 @@
 import json
 import os
 import pathlib
-import platform
 import unicodedata
 from datetime import datetime
 
@@ -159,7 +158,13 @@ class SetStatus:
         return (path_args, bt.display_name)
 
     def botstop(
-        self, db: SQLAlchemy, app: Flask, pid: str = None, status: str = "Finalizado"
+        self,
+        db: SQLAlchemy,
+        app: Flask,
+        pid: str = None,
+        status: str = "Finalizado",
+        system: str = None,
+        typebot: str = None,
     ) -> str:
         from app.models import Executions
 
@@ -167,22 +172,25 @@ class SetStatus:
             status = self.status if self.status != "Finalizado" else status
             pid = self.pid if pid is None else pid
 
-            srv = platform.system() in ("Windows")
-            sys = self.system.lower() in ("esaj")
-            typebot = self.typebot.lower() in ("protocolo")
+            system = self.system if system is None else system
+            typebot = self.typebot if typebot is None else typebot
 
-            if all([srv, sys, typebot]):
+            # chk_srv = platform.system() == "Windows"
+            # chk_sys = system.lower() == "esaj"
+            # chk_typebot = typebot.lower() == "protocolo"
 
-                json_args = os.path.join(
-                    pathlib.Path(__file__).cwd(), "Temp", pid, f"{pid}.json"
-                )
-                with open(json_args, "rb") as f:
-                    arg = json.load(f)["login"]
+            # if all([chk_srv, chk_sys, chk_typebot]):
 
-                try:
-                    self.uninstall(arg)
-                except Exception as e:
-                    print(e)
+            #     json_args = os.path.join(
+            #         pathlib.Path(__file__).cwd(), "Temp", pid, f"{pid}.json"
+            #     )
+            #     with open(json_args, "rb") as f:
+            #         arg = json.load(f)["login"]
+
+            #     try:
+            #         self.uninstall(arg)
+            #     except Exception as e:
+            #         print(e)
 
             zip_file = makezip(pid)
             objeto_destino = os.path.basename(zip_file)

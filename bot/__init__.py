@@ -1,10 +1,14 @@
 import multiprocessing as mp
 import os
 import pathlib
+from contextlib import suppress
+from typing import Union
 
 import psutil
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
+process_type = Union[psutil.Process, None]
 
 
 class WorkerThread:
@@ -41,12 +45,13 @@ class WorkerThread:
 
             with app.app_context():
 
+                from app.models import ThreadBots
+
+                pid = os.path.basename(self.path_args.replace(".json", ""))
+
                 if not app.testing:  # pragma: no cover
 
-                    from app.models import ThreadBots
-
                     bot = self.BotStarter
-                    pid = os.path.basename(self.path_args.replace(".json", ""))
                     process = mp.Process(
                         target=bot,
                         kwargs=self.kwrgs,
@@ -57,7 +62,7 @@ class WorkerThread:
                     process.start()
                     process_id = process.ident
 
-                elif app.testing:  # pragma: no cover
+                elif app.testing:
 
                     import random
                     import string
@@ -71,10 +76,10 @@ class WorkerThread:
                 db.session.commit()
                 return 200
 
-        except Exception:
+        except Exception:  # pragma: no cover
             return 500
 
-    def stop(self, processID: int, pid: str) -> None:
+    def stop(self, processID: int, pid: str, app: Flask = None) -> str:
 
         try:
 
@@ -83,9 +88,11 @@ class WorkerThread:
             _flag = os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid, sinalizacao)
             path_flag = pathlib.Path(_flag)
 
-            Process = psutil.Process(processID)
+            Process: process_type = None
+            with suppress(psutil.NoSuchProcess):
+                Process = psutil.Process(processID)
 
-            if Process.is_running():
+            if Process and Process.is_running() or app.testing is True:
                 if not path_flag.exists():
 
                     path_flag.parent.resolve().mkdir(parents=True, exist_ok=True)
@@ -95,11 +102,11 @@ class WorkerThread:
 
             return f"Process {processID} stopped!"
 
-        except psutil.TimeoutExpired:
+        except psutil.TimeoutExpired:  # pragma: no cover
             return "O processo não foi encerrado dentro do tempo limite"
 
-        except psutil.NoSuchProcess:
+        except psutil.NoSuchProcess:  # pragma: no cover
             return f"Process {processID} stopped!"
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return str(e)

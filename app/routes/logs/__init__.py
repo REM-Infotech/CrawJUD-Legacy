@@ -59,7 +59,7 @@ def on_terminate_bot(data: dict[str, str]):
 
         if processID:
             processID = int(processID.processID)
-            WorkerThread().stop(processID, pid)
+            WorkerThread().stop(processID, pid, app)
 
     except Exception as e:
         print(e)
@@ -69,9 +69,11 @@ def on_terminate_bot(data: dict[str, str]):
 def on_log_message(data: dict[str, str]):
 
     try:
-        pid = data["pid"]
-        data = serverSide(data, pid, app)
-        emit("log_message", data, room=pid)
+
+        if data:
+            pid = data["pid"]
+            data = serverSide(data, pid, app)
+            emit("log_message", data, room=pid)
 
     except Exception as e:
         abort(500, description=str(e))

@@ -1,5 +1,7 @@
 import pytest
 from flask import Flask
+from flask.testing import FlaskClient
+from flask_socketio import SocketIO, SocketIOTestClient
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import FileStorage
 
@@ -119,3 +121,13 @@ def SetStatus(args_statusbot: dict[str, str]):
 
     setstatus = SetStatus(**args_statusbot)
     yield setstatus
+
+
+@pytest.fixture(scope="function")
+def io(app: Flask, client: FlaskClient):
+
+    io: SocketIO = app.extensions["socketio"]
+    socketio_client = SocketIOTestClient(app, io, flask_test_client=client)
+    socketio_client.connect("/log")
+    yield socketio_client
+    socketio_client.disconnect()
