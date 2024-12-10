@@ -2,7 +2,7 @@ from flask_socketio import emit, join_room, leave_room, send
 
 from app import app, io
 from app.misc import stop_execution
-from status.server_side import load_cache, serverSide
+from status.server_side import FormatMessage, load_cache
 
 
 @io.on("connect", namespace="/log")
@@ -69,7 +69,7 @@ def on_log_message(data: dict[str, str]):
         pid = data["pid"]
 
         if "message" in data:
-            data = serverSide(data, pid, app)
+            data = FormatMessage(data, pid, app)
             emit("log_message", data, room=pid)
 
         send("message received!")
