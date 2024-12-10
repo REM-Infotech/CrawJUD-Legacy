@@ -1,10 +1,14 @@
-import os  # pragma: no cover
-from typing import Union  # pragma: no cover
+from __future__ import annotations
 
-from selenium.webdriver.remote.webdriver import WebDriver  # pragma: no cover
-from selenium.webdriver.support.wait import WebDriverWait  # pragma: no cover
+import os
+from typing import Dict, Union
 
-Numbers = Union[int, float, complex]  # pragma: no cover
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+
+Numbers = Union[int, float, complex]
+TypeValues = Union[str, Numbers, list, tuple]
+SubDict = Dict[str, Union[TypeValues, Numbers]]
 
 
 class classproperty:
@@ -28,6 +32,14 @@ class classproperty:
     wt = None
     elmnt = None
     interact_ = None
+
+    from .Utils.auth import AuthBot as AuthBot_
+    from .Utils.dicionarios import cities_Amazonas as cities_Amazonas_
+    from .Utils.elements import ElementsBot as ElementsBot_
+    from .Utils.interator import Interact as Interact_
+    from .Utils.MakeTemplate import MakeXlsx as MakeXlsx_
+    from .Utils.PrintLogs import printbot
+    from .Utils.search import SeachBot as SearchBot_
 
     def __init__(cls, fget=None, fset=None, fdel=None):
         cls.fget = fget
@@ -65,15 +77,15 @@ class classproperty:
         cls.fdel(instance.__class__)
 
     @property
-    def system(self):
+    def system(self) -> str:
         return classproperty._system
 
     @system.setter
-    def system(self, system_: str):
+    def system(self, system_: str) -> str:
         classproperty._system = system_
 
     @property
-    def state_or_client(self):
+    def state_or_client(self) -> str:
         return classproperty._state_or_client_
 
     @state_or_client.setter
@@ -81,7 +93,7 @@ class classproperty:
         classproperty._state_or_client_ = new_s
 
     @property
-    def type_log(self):
+    def type_log(self) -> str:
         return classproperty._type_log
 
     @type_log.setter
@@ -105,7 +117,7 @@ class classproperty:
         classproperty._message = new_msg
 
     @property
-    def isStoped(self):
+    def isStoped(self) -> bool:
         chk = os.path.exists(os.path.join(self.output_dir_path, f"{self.pid}.flag"))
         return chk
 
@@ -126,7 +138,7 @@ class classproperty:
         classproperty.wt = new_wt
 
     @property
-    def chr_dir(self):
+    def chr_dir(self) -> str:
         return classproperty.user_data_dir
 
     @chr_dir.setter
@@ -134,7 +146,7 @@ class classproperty:
         classproperty.user_data_dir = new_dir
 
     @property
-    def output_dir_path(self):
+    def output_dir_path(self) -> str:
         return classproperty.out_dir
 
     @output_dir_path.setter
@@ -142,11 +154,11 @@ class classproperty:
         classproperty.out_dir = new_outdir
 
     @property
-    def kwrgs(self) -> dict:
+    def kwrgs(self) -> Dict[str, Union[TypeValues, SubDict]]:
         return classproperty.kwrgs_
 
     @kwrgs.setter
-    def kwrgs(self, new_kwg):
+    def kwrgs(self, new_kwg) -> Dict[str, Union[TypeValues, SubDict]]:
         classproperty.kwrgs_ = new_kwg
 
     @property
@@ -166,7 +178,7 @@ class classproperty:
         classproperty.message_error_ = nw_m
 
     @property
-    def graphicMode(self):
+    def graphicMode(self) -> str:
         return classproperty.graphicMode_
 
     @graphicMode.setter
@@ -174,7 +186,7 @@ class classproperty:
         classproperty.graphicMode_ = new_graph
 
     @property
-    def list_args(self):
+    def list_args(self) -> list[str]:
         return [
             "--ignore-ssl-errors=yes",
             "--ignore-certificate-errors",
@@ -190,7 +202,7 @@ class classproperty:
         classproperty.cr_list_args = new_Args
 
     @property
-    def bot_data(self) -> dict[str, str | Numbers]:
+    def bot_data(self) -> Dict[str, Union[TypeValues, SubDict]]:
         return classproperty.bot_data_
 
     @bot_data.setter
@@ -198,47 +210,39 @@ class classproperty:
         classproperty.bot_data_ = new_botdata
 
     @property
-    def AuthBot(self):
-        from .Utils.auth import AuthBot
+    def AuthBot(self) -> AuthBot_:
 
-        return AuthBot()
-
-    @property
-    def SearchBot(self):
-
-        from .Utils.search import SeachBot
-
-        return SeachBot()
+        return classproperty.AuthBot_()
 
     @property
-    def interact(self):
-        from .Utils.interator import Interact
+    def SearchBot(self) -> SearchBot_:
 
-        return Interact()
+        return classproperty.SearchBot_()
 
     @property
-    def printtext(self):
-        from .Utils.PrintLogs import printbot
+    def interact(self) -> Interact_:
 
-        return printbot
+        return classproperty.Interact_()
+
+    @property
+    def printtext(self) -> printbot:
+
+        return classproperty.printbot()
 
     @property
     def MakeXlsx(self):
-        from .Utils.MakeTemplate import MakeXlsx
 
-        return MakeXlsx
+        return classproperty.MakeXlsx_
 
     @property
     def cities_Amazonas(self):
-        from .Utils.dicionarios import cities_Amazonas
 
-        return cities_Amazonas
+        return classproperty.cities_Amazonas_
 
     @property
     def elements(self):
-        from .Utils.elements import ElementsBot
 
-        return ElementsBot().Elements
+        return classproperty.ElementsBot_().Elements
 
     @property
     def vara(self) -> str:
@@ -249,7 +253,7 @@ class classproperty:
         classproperty.vara_ = vara_str
 
     @property
-    def path_accepted(self):
+    def path_accepted(self) -> str:
         return classproperty.path_accepted_
 
     @path_accepted.setter
