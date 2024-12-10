@@ -37,6 +37,8 @@ def app():
     yield app
 
     with app.app_context():
+
+        app.debug = False
         db: SQLAlchemy = app.extensions.get("sqlalchemy")
         db.drop_all()
 
@@ -47,9 +49,9 @@ def client(app: Flask):
     return app.test_client()
 
 
-@pytest.fixture()
-def runner(app: Flask):
-    return app.test_cli_runner()
+# @pytest.fixture()
+# def runner(app: Flask):
+#     return app.test_cli_runner()
 
 
 # @pytest.fixture()
