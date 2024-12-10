@@ -1,4 +1,3 @@
-from flask import abort
 from flask_socketio import emit, join_room, leave_room, send
 
 from app import app, io
@@ -8,18 +7,19 @@ from status.server_side import load_cache, serverSide
 
 @io.on("connect", namespace="/log")
 def on_connect():
-    emit("connected!")
+    send("connected!")
 
 
 @io.on("disconnect", namespace="/log")
 def on_disconnect():
-    emit("disconnected!")
+    send("disconnected!")
 
 
 @io.on("leave", namespace="/log")
 def on_leave(data):
     room = data["pid"]
     leave_room(room)
+    send(f"Leaving Room '{room}'")
 
 
 @io.on("join", namespace="/log")
@@ -30,11 +30,7 @@ def on_join(data: dict[str, str]):
 
     data = load_cache(room, app)
     emit("log_message", data, room=room)
-    # if StatusStop(room) is True:
-    #     emit("statusbot", data=data)
-
-    # elif stopped_bot(room) is True:
-    #     stop_execution(app, room, True)
+    send(f"Joinned room! Room: {room}")
 
 
 @io.on("stop_bot", namespace="/log")
@@ -42,6 +38,7 @@ def on_stop_bot(data: dict[str, str]):
 
     pid = data["pid"]
     stop_execution(app, pid)
+    send("Bot stopped!")
 
 
 @io.on("terminate_bot", namespace="/log")
@@ -51,18 +48,17 @@ def on_terminate_bot(data: dict[str, str]):
     from app.models import ThreadBots
     from bot import WorkerThread
 
-    pid = data["pid"]
-
     try:
-
+        pid = data["pid"]
         processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
 
         if processID:
             processID = int(processID.processID)
             WorkerThread().stop(processID, pid, app)
+            send("Bot stopped!")
 
-    except Exception as e:
-        print(e)
+    except Exception:
+        send("Failed to stop bot!")
 
 
 @io.on("log_message", namespace="/log")
@@ -70,13 +66,16 @@ def on_log_message(data: dict[str, str]):
 
     try:
 
-        if data:
-            pid = data["pid"]
+        pid = data["pid"]
+
+        if "message" in data:
             data = serverSide(data, pid, app)
             emit("log_message", data, room=pid)
 
-    except Exception as e:
-        abort(500, description=str(e))
+        send("message received!")
+
+    except Exception:
+        send("failed to receive message")
 
 
 @io.on("statusbot", namespace="/log")

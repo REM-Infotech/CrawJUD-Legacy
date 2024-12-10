@@ -159,32 +159,32 @@ def serverSide(data: dict[str, str], pid: str, app: Flask):
     return data
 
 
-def StatusStop(pid: str):
+# def StatusStop(pid: str):
 
-    from app import db
-    from app.models import Executions
+#     from app import db
+#     from app.models import Executions
 
-    execut = db.session.query(Executions).filter(Executions.pid == pid).first()
-    if not execut:
-        execut = False
+#     execut = db.session.query(Executions).filter(Executions.pid == pid).first()
+#     if not execut:
+#         execut = False
 
-    elif execut:
-        execut = str(execut.status) != "Em Execução"
+#     elif execut:
+#         execut = str(execut.status) != "Em Execução"
 
-    return execut
+#     return execut
 
 
-def stopped_bot(pid: str):
+# def stopped_bot(pid: str):
 
-    from app.models import CacheLogs
+#     from app.models import CacheLogs
 
-    checks = []
-    log_pid = CacheLogs.query.filter(CacheLogs.pid == pid).first()
-    check1 = log_pid is not None
-    checks.append(check1)
-    if check1:
-        check2 = str(log_pid.status) == "Finalizado"
-        checks.append(check2)
+#     checks = []
+#     log_pid = CacheLogs.query.filter(CacheLogs.pid == pid).first()
+#     check1 = log_pid is not None
+#     checks.append(check1)
+#     if check1:
+#         check2 = str(log_pid.status) == "Finalizado"
+#         checks.append(check2)
 
-    allchecks = all(checks)
-    return allchecks
+#     allchecks = all(checks)
+#     return allchecks

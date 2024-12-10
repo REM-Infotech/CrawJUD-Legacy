@@ -97,7 +97,7 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
                 db.session.close()
                 return 200
 
-            return 200  # pragma: no cover
+        return 200  # pragma: no cover
 
     except Exception:  # pragma: no cover
         return 500
