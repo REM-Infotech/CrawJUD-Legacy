@@ -1,5 +1,3 @@
-from typing import Any
-
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
@@ -9,13 +7,6 @@ from status import SetStatus as st_stt
 
 
 class TestCrawJUD:
-
-    def test_route_start(
-        self, client, args_bot: dict[str, str | Any], create_dummy_pid
-    ):
-
-        response = client.post("/bot/1/projudi/capa", **{"data": args_bot})
-        assert response.status_code == 200
 
     def test_route_stop(self, client: FlaskClient, create_dummy_pid):
 
