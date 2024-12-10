@@ -47,7 +47,7 @@ def load_cache(pid: str, app: Flask):
     return log_pid
 
 
-def serverSide(data: dict[str, str], pid: str, app: Flask):
+def FormatMessage(data: dict[str, str], pid: str, app: Flask):
 
     db: SQLAlchemy = app.extensions["sqlachemy"]
     redis_client: Redis = app.extensions["redis"]
