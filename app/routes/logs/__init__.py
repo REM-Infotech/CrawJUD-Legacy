@@ -74,7 +74,8 @@ def on_log_message(data: dict[str, str]):
 
         send("message received!")
 
-    except Exception:
+    except Exception as e:
+        print(e)
         send("failed to receive message")
 
 

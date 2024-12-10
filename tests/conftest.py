@@ -79,6 +79,8 @@ def args_bot():
     from os import path
     from pathlib import Path
 
+    from app.misc import generate_pid
+
     xls_Test = path.join(Path(__file__).parent.resolve(), "archives", "xls_.xlsx")
     basename = path.basename(xls_Test)
     with Path(xls_Test).open("rb") as f:
@@ -87,7 +89,7 @@ def args_bot():
             "url": "https://",
             "files": {basename: (basename, f)},
             "data": {
-                "pid": "V2A5G1",
+                "pid": generate_pid(),
                 "user": "test",
                 "xlsx": basename,
                 "username": "test",
