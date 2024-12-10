@@ -13,23 +13,23 @@ SubDict = Dict[str, Union[TypeValues, Numbers]]
 
 class classproperty:
 
-    path_accepted_ = ""
-    vara_ = ""
-    _system = ""
-    _state_or_client_ = ""
-    _type_log = "info"
-    _message = ""
-    _pid = 0
-    kwrgs_ = {}
-    row_ = 0
-    message_error_ = ""
-    bot_data_ = {}
-    graphicMode_ = "doughnut"
-    out_dir = ""
-    user_data_dir = ""
-    cr_list_args = [""]
-    drv = None
-    wt = None
+    path_accepted_: str
+    vara_: str
+    _system: str
+    _state_or_client_: str
+    _type_log: str = "info"
+    _message: str
+    _pid: str
+    kwrgs_: Dict[str, Union[TypeValues, SubDict]]
+    row_: int = 0
+    message_error_: str
+    bot_data_: Dict[str, Union[TypeValues, SubDict]]
+    graphicMode_: str = "doughnut"
+    out_dir: str
+    user_data_dir: str
+    cr_list_args: list[str]
+    drv: WebDriver
+    wt: WebDriverWait
     elmnt = None
     interact_ = None
 
@@ -122,7 +122,7 @@ class classproperty:
         return chk
 
     @property
-    def driver(self) -> WebDriver:
+    def driver(self):
         return classproperty.drv
 
     @driver.setter
