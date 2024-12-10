@@ -45,7 +45,14 @@ def app():
 
 @pytest.fixture()
 def client(app: Flask):
+    """Cliente Flask
 
+    Args:
+        app (Flask): App Flask
+
+    Returns:
+        FlaskClient: Cliente Flask
+    """
     return app.test_client()
 
 
@@ -64,7 +71,11 @@ def client(app: Flask):
 
 @pytest.fixture()
 def args_bot():
+    """Argumentos Bot (Sem pós-formatação)
 
+    Yields:
+        dict: Argumentos de inicialização bots
+    """
     from os import path
     from pathlib import Path
 
@@ -92,6 +103,11 @@ def args_bot():
 
 @pytest.fixture()
 def args_statusbot():
+    """Argumentos de Bot com formatação pós POST
+
+    Yields:
+        dict: Dicionario com argumentos
+    """
 
     from os import path
     from pathlib import Path
@@ -126,7 +142,14 @@ def args_statusbot():
 
 @pytest.fixture()
 def SetStatus(args_statusbot: dict[str, str]):
+    """Instância da classe "Setstatus"
 
+    Args:
+        args_statusbot (dict[str, str]): argumentos de inicialização com formatação "pós POST"
+
+    Yields:
+        SetStatus: Classe "SetStatus"
+    """
     from status import SetStatus
 
     setstatus = SetStatus(**args_statusbot)
@@ -135,7 +158,15 @@ def SetStatus(args_statusbot: dict[str, str]):
 
 @pytest.fixture(scope="function")
 def io(app: Flask, client: FlaskClient):
+    """Cliente do SocketIO
 
+    Args:
+        app (Flask): Aplicação Flask
+        client (FlaskClient): Cliente Flask
+
+    Yields:
+        SocketIOTestClient: Cliente Socketio
+    """
     io: SocketIO = app.extensions["socketio"]
     socketio_client = SocketIOTestClient(app, io, flask_test_client=client)
     socketio_client.connect("/log")
@@ -145,7 +176,17 @@ def io(app: Flask, client: FlaskClient):
 
 @pytest.fixture(scope="function")
 def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
+    """
+    Instânciamento de Usuário, Licença e Execução "Dummy"
+    Retorna Usuario e PID para testes
 
+    Args:
+        app (Flask): App flask
+        args_bot (dict[str, str  |  Any]): argumentos bots
+
+    Yields:
+        user, pid (tuple[str, str]): Usuário e PID criados
+    """
     import random
     import string
 
