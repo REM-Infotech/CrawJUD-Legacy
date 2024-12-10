@@ -131,7 +131,7 @@ class AppFactory:
                 self.set_csp()
 
                 self.init_talisman(app)
-                self.init_socket(app)
+                io = self.init_socket(app)
                 self.init_routes(app)
 
                 return app, io
