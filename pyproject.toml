@@ -70,4 +70,4 @@ profile = "black" # Garante compatibilidade com Black
 line_length = 88  # O mesmo limite de linha do Black
 
 [tool.bandit]
-exclude_dirs = ["tests"]
+exclude_dirs = ["tests", ".venv"]
