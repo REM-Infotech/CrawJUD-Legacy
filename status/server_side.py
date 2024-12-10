@@ -49,7 +49,7 @@ def load_cache(pid: str, app: Flask):
 
 def FormatMessage(data: dict[str, str], pid: str, app: Flask):
 
-    db: SQLAlchemy = app.extensions["sqlachemy"]
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
     redis_client: Redis = app.extensions["redis"]
 
     data_type = data.get("type", "success")
@@ -90,9 +90,9 @@ def FormatMessage(data: dict[str, str], pid: str, app: Flask):
         redis_client.hset(redis_key, mapping=log_pid)
 
     # Atualizar informações existentes
-    elif data_pos > 0 or data["message"] != log_pid["message"]:
+    elif data_pos > 0 or data["message"] != log_pid["message"] or "pid" not in data:
 
-        if not log_pid:
+        if not log_pid or "pid" not in data:
 
             if data_pos > 1:
                 # Chave única para o processo no Redis
@@ -103,13 +103,24 @@ def FormatMessage(data: dict[str, str], pid: str, app: Flask):
                 if not log_pid:
                     redis_key_tmp = f"process:{data_pid}:pos:{data_pos - 2}"
                     log_pid = redis_client.hgetall(redis_key_tmp)
+                    if not log_pid:
+                        log_pid = {
+                            "pid": data_pid,
+                            "pos": data_pos,
+                            "total": data.get("total", 100),
+                            "remaining": data.get("total", 100),
+                            "success": 0,
+                            "errors": 0,
+                            "status": "Iniciado",
+                            "message": data_message,
+                        }
 
             elif data_pos == 1:
                 log_pid = {
                     "pid": data_pid,
                     "pos": data_pos,
-                    "total": data.get("total", 100),  # Defina um valor padrão ou ajuste
-                    "remaining": data.get("total", 100),  # Igual ao total no início
+                    "total": data.get("total", 100),
+                    "remaining": data.get("total", 100),
                     "success": 0,
                     "errors": 0,
                     "status": "Iniciado",
