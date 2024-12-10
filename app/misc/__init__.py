@@ -7,6 +7,7 @@ import pytz
 from dotenv import dotenv_values
 from flask import Flask
 from google.cloud.storage import Bucket, Client
+from google.cloud.storage.blob import Blob
 from google.oauth2.service_account import Credentials
 
 from .get_location import GeoLoc
@@ -82,7 +83,7 @@ def stop_execution(
             user = get_info.user.login
             get_info.status = "Finalizado"
             get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-            filename = get_file(pid)
+            filename = get_file(pid, app)
 
             if filename != "":  # pragma: no cover
 
@@ -106,7 +107,7 @@ def stop_execution(
         return {"message": str(e)}, 500
 
 
-def get_file(pid: str) -> str:
+def get_file(pid: str, app: Flask) -> str:
 
     storage_client = storageClient()
 
@@ -114,14 +115,18 @@ def get_file(pid: str) -> str:
     bucket = bucketGcs(storage_client)
 
     arquivo = ""
-
-    for blob in bucket.list_blobs():
+    list_blobs: list[Blob] = list(bucket.list_blobs())
+    for blob in list_blobs:
 
         blobnames = (
             str(blob.name).split("/")[1] if "/" in str(blob.name) else str(blob.name)
         )
-
+        arquivo = blobnames if pid in blobnames else ""
         if pid in blobnames:
             arquivo = blobnames
+
+            if app.testing:
+                blob.delete()
+            break
 
     return arquivo
