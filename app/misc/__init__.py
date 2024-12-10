@@ -59,7 +59,9 @@ def bucketGcs(storageClient: Client) -> Bucket:
     return bucket_obj
 
 
-def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
+def stop_execution(
+    app: Flask, pid: str, robot_stop: bool = False
+) -> tuple[dict[str, str], int]:
 
     from app import db
     from app.models import Executions, ThreadBots
@@ -87,7 +89,6 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
                 get_info.file_output = filename
                 db.session.commit()
                 db.session.close()
-                return 200
 
             elif filename == "":  # pragma: no cover
                 get_info.file_output = SetStatus(
@@ -95,12 +96,14 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> int:
                 ).botstop(db, app)
                 db.session.commit()
                 db.session.close()
-                return 200
 
-        return 200  # pragma: no cover
+        elif not processID:
+            raise Exception("Execution not found!")
 
-    except Exception:  # pragma: no cover
-        return 500
+        return {"message": "bot stopped!"}, 200
+
+    except Exception as e:
+        return {"message": str(e)}, 500
 
 
 def get_file(pid: str) -> str:
