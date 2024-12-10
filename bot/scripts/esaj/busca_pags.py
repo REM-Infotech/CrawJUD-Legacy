@@ -16,6 +16,7 @@ class busca_pags(CrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
+        super().setup()
         super().auth_bot()
         self.datetimeNOW = datetime.now(pytz.timezone("America/Manaus")).strftime(
             "%d-%m-%Y"

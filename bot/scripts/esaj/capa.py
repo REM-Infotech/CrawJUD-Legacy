@@ -17,6 +17,7 @@ class capa(CrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
+        super().setup()
         super().auth_bot()
         self.start_time = time.perf_counter()
 

@@ -25,6 +25,7 @@ class complement(CrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
+        super().setup()
         super().auth_bot()
 
         from clear import clear
