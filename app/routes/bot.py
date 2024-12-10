@@ -24,7 +24,8 @@ def botlaunch(id: int, system: str, typebot: str):
 
     with app.app_context():
         try:
-            if check_latest() is False and app.debug is False:  # pragma: no cover
+            app.testing
+            if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")
 
             if app.testing is False:  # pragma: no cover
