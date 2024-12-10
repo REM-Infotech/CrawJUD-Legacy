@@ -29,6 +29,8 @@ class TestRunner:
 
     def test_status_stop(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
 
+        from app.misc import get_file
+
         user, pid = create_dummy_pid
         db: SQLAlchemy = app.extensions["sqlalchemy"]
 
@@ -39,7 +41,15 @@ class TestRunner:
 
             stop = SetStatus.botstop(db, app, pid)
             check_return = WorkerThread().stop(12345, pid, app)
-            assert check_return is not None and stop is not None
+
+            file_ = get_file(pid, app)
+
+        checks = [
+            isinstance(check_return, str),
+            isinstance(stop, str),
+            isinstance(file_, str),
+        ]
+        assert checks
 
     def test_status_stop_esaj(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
 

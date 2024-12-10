@@ -20,13 +20,13 @@ class NetworkError(GlobalExcept):  # pragma: no cover
         super().__init__(message)
 
 
-class InfoGeoloc:  # pragma: no cover
+class InfoGeoloc:
 
     data: dict[str, str, int | bool] = {}
 
     def __init__(self):
         ip_external = ip.external()
-        if not ip_external:
+        if not ip_external:  # pragma: no cover
             raise NetworkError()
 
         get_geoloc = self.IP2Location(ip_external)
@@ -36,7 +36,7 @@ class InfoGeoloc:  # pragma: no cover
     def __getattr__(self, name: str) -> str:
 
         item = self.data.get(name, None)
-        if not item:
+        if not item:  # pragma: no cover
             raise AttributeError(
                 f"Atributo '{name}' não encontrado na classe '{self.__class__.__name__}'"
             )
@@ -51,53 +51,53 @@ class InfoGeoloc:  # pragma: no cover
 
     @property
     def ip(self) -> str:
-        return self._ip
+        return self._ip  # pragma: no cover
 
     @property
     def country_code(self) -> str:
-        return self._country_code
+        return self._country_code  # pragma: no cover
 
     @property
     def country_name(self) -> str:
-        return self._country_name
+        return self._country_name  # pragma: no cover
 
     @property
     def region_name(self) -> str:
-        return self._region_name
+        return self._region_name  # pragma: no cover
 
     @property
     def city_name(self) -> str:
-        return self._city_name
+        return self._city_name  # pragma: no cover
 
     @property
     def latitude(self) -> str:
-        return self._latitude
+        return self._latitude  # pragma: no cover
 
     @property
     def longitude(self) -> str:
-        return self._longitude
+        return self._longitude  # pragma: no cover
 
     @property
     def zip_code(self) -> str:
-        return self._zip_code
+        return self._zip_code  # pragma: no cover
 
     @property
     def time_zone(self) -> str:
-        return self._time_zone
+        return self._time_zone  # pragma: no cover
 
     @property
     def asn(self) -> str:
-        return self._asn
+        return self._asn  # pragma: no cover
 
     @property
     def as_name(self) -> str:
-        return self._as_name
+        return self._as_name  # pragma: no cover
 
     @property
     def is_proxy(self) -> bool:
-        return self._is_proxy
+        return self._is_proxy  # pragma: no cover
 
 
-class GeoLoc(InfoGeoloc):  # pragma: no cover
+class GeoLoc(InfoGeoloc):
     def __init__(self, *args, **kwrgs):
         super().__init__(*args, **kwrgs)

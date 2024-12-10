@@ -24,11 +24,14 @@ def botlaunch(id: int, system: str, typebot: str):
 
     with app.app_context():
         try:
+            obj = GeoLoc()
+            loc = obj.region_name
+
             if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")
 
             if app.testing is False:  # pragma: no cover
-                loc = GeoLoc().region_name
+
                 if request.data:
                     data_bot = json.loads(request.data)
 
@@ -56,16 +59,14 @@ def botlaunch(id: int, system: str, typebot: str):
 
             elif app.testing is True:
                 is_started = 200
-                if request.data:
-                    data_bot = json.loads(request.data)  # pragma: no cover
 
-                elif request.form:
-                    data_bot = request.form
+                request_data = request.data
+                request_form = request.form
 
-                else:
-                    is_started = 500
+                data_bot = request_data if request_data else request_form
+                is_started = 200 if data_bot else 500
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             message = {"error": str(e)}
             is_started = 500
 
