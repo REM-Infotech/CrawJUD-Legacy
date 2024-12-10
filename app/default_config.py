@@ -25,9 +25,6 @@ MAIL_USERNAME = values["MAIL_USERNAME"]
 MAIL_PASSWORD = values["MAIL_PASSWORD"]
 MAIL_DEFAULT_SENDER = values["MAIL_DEFAULT_SENDER"]
 
-# SQLALCHEMY CONFIG
-DEBUG = values.get("DEBUG", "False").lower() in ("true", "1", "t", "y", "yes")
-
 # SqlAlchemy config
 SQLALCHEMY_POOL_SIZE = 30  # Número de conexões na pool
 SQLALCHEMY_MAX_OVERFLOW = 10  # Número de conexões extras além da pool_size
