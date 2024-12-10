@@ -1,19 +1,48 @@
 from typing import Any
 
+from flask import Flask
+from flask.testing import FlaskClient
 
-def test_client_flask(client, app, args_bot: dict[str, str | Any], create_dummy_pid):
+
+def test_client_flask(
+    client: FlaskClient, app: Flask, args_bot: dict[str, str | Any], create_dummy_pid
+):
+    """
+    Teste De Rotas API.
+
+    Args:
+        client (FlaskClient): Cliente de testes Flask
+        app (Flask): App Flask
+
+    """
+    user, pid = create_dummy_pid
     response_index = client.get("/")
+    botstop_error = client.post(f"/stop/{user}/123456")
+    botstop_success = client.post(f"/stop/{user}/{pid}")
+
     response_bot_error = client.post("/bot/1/projudi/capa")
 
     app.debug = True
     response_bot_sucess = client.post("/bot/1/projudi/capa", **{"data": args_bot})
 
     chk_index = response_index.status_code == 302
-
     chk_bot_error = response_bot_error.status_code == 500
-
     chk_bot_success = response_bot_sucess.status_code == 200
 
-    responses = all([chk_index, chk_bot_error, chk_bot_success])
+    chk_botstop_error = botstop_error.status_code == 500
+    chk_botstop_success = botstop_success.status_code == 200
+
+    responses = all(
+        [
+            chk_index,
+            chk_bot_error,
+            chk_bot_success,
+            chk_botstop_error,
+            chk_botstop_success,
+        ]
+    )
 
     assert responses
+
+
+print(test_client_flask.__doc__)

@@ -1,19 +1,11 @@
 from flask import Flask
-from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 
 from bot import WorkerThread
 from status import SetStatus as st_stt
 
 
-class TestCrawJUD:
-
-    def test_route_stop(self, client: FlaskClient, create_dummy_pid):
-
-        user, pid = create_dummy_pid
-
-        response = client.post(f"/stop/{user}/{pid}")
-        assert response.status_code == 200
+class TestRunner:
 
     def test_status_start(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
 
