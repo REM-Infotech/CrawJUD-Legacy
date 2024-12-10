@@ -24,7 +24,6 @@ def botlaunch(id: int, system: str, typebot: str):
 
     with app.app_context():
         try:
-            app.testing
             if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")
 
@@ -80,11 +79,6 @@ def stop_bot(user: str, pid: str):
     from flask import current_app as app
 
     with app.app_context():
-        set_stop = stop_execution(app, pid, True)
+        args, code = stop_execution(app, pid, True)
 
-        if set_stop == 200:
-
-            return jsonify({"Encerrado!": "Sucesso"}), set_stop
-
-        elif set_stop != 200:  # pragma: no cover
-            return jsonify({"mensagem": "erro"}), set_stop
+        return jsonify(args), code
