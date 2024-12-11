@@ -104,7 +104,8 @@ def stop_execution(
         return {"message": "bot stopped!"}, 200
 
     except Exception as e:
-        return {"message": str(e)}, 500
+        app.logger.error("An error occurred: %s", str(e))
+        return {"message": "An internal error has occurred!"}, 500
 
 
 def get_file(pid: str, app: Flask) -> str:
