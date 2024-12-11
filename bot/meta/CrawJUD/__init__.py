@@ -50,7 +50,6 @@ class CrawJUD(classproperty):
 
         self.__dict__.update(kwargs)
         self.kwrgs = kwargs
-        self.setup()
 
     def __getattr__(self, nome: str) -> TypeHint:
 
@@ -367,7 +366,7 @@ class CrawJUD(classproperty):
 
             chrome_options = Options()
             self.chr_dir = str(
-                os.path.join(pathlib.Path(__file__).cwd(), "Temp", self.pid, "chrome")
+                os.path.join(pathlib.Path(__file__).cwd(), "exec", self.pid, "chrome")
             )
 
             if os.getlogin() != "root" or platform.system() != "Linux":

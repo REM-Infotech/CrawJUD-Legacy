@@ -6,7 +6,8 @@ class PROJUDI_AM:
     btn_entrar = "#btEntrar"
     chk_login = 'iframe[name="userMainFrame"]'
 
-    url_busca = "https://projudi.tjam.jus.br/projudi/processo/buscaProcessosQualquerInstancia.do?actionType=pesquisar"
+    consultaproc_grau1 = "https://projudi.tjam.jus.br/projudi/processo/buscaProcessosQualquerInstancia.do?actionType=pesquisar"
+    consultaproc_grau2 = ""
     btn_busca = ""
 
     btn_partes = "#tabItemprefix2"

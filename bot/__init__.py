@@ -85,7 +85,7 @@ class WorkerThread:
 
             sinalizacao = f"{pid}.flag"
 
-            _flag = os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid, sinalizacao)
+            _flag = os.path.join(pathlib.Path(__file__).cwd(), "exec", pid, sinalizacao)
             path_flag = pathlib.Path(_flag)
 
             Process: process_type = None

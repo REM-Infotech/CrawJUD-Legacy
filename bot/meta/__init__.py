@@ -13,33 +13,25 @@ SubDict = Dict[str, Union[TypeValues, Numbers]]
 
 class classproperty:
 
-    path_accepted_: str
-    vara_: str
-    _system: str
-    _state_or_client_: str
+    path_accepted_: str = ""
+    vara_: str = ""
+    _system: str = ""
+    _state_or_client_: str = ""
     _type_log: str = "info"
-    _message: str
-    _pid: str
-    kwrgs_: Dict[str, Union[TypeValues, SubDict]]
+    _message: str = ""
+    _pid: str = ""
+    kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
     row_: int = 0
-    message_error_: str
-    bot_data_: Dict[str, Union[TypeValues, SubDict]]
+    message_error_: str = ""
+    bot_data_: Dict[str, Union[TypeValues, SubDict]] = {}
     graphicMode_: str = "doughnut"
-    out_dir: str
-    user_data_dir: str
-    cr_list_args: list[str]
-    drv: WebDriver
-    wt: WebDriverWait
+    out_dir: str = ""
+    user_data_dir: str = ""
+    cr_list_args: list[str] = []
+    drv: WebDriver = None
+    wt: WebDriverWait = None
     elmnt = None
     interact_ = None
-
-    from .Utils.auth import AuthBot as AuthBot_
-    from .Utils.dicionarios import cities_Amazonas as cities_Amazonas_
-    from .Utils.elements import ElementsBot as ElementsBot_
-    from .Utils.interator import Interact as Interact_
-    from .Utils.MakeTemplate import MakeXlsx as MakeXlsx_
-    from .Utils.PrintLogs import printbot
-    from .Utils.search import SeachBot as SearchBot_
 
     def __init__(cls, fget=None, fset=None, fdel=None):
         cls.fget = fget
@@ -77,15 +69,15 @@ class classproperty:
         cls.fdel(instance.__class__)
 
     @property
-    def system(self) -> str:
+    def system(self):
         return classproperty._system
 
     @system.setter
-    def system(self, system_: str) -> str:
+    def system(self, system_: str):
         classproperty._system = system_
 
     @property
-    def state_or_client(self) -> str:
+    def state_or_client(self):
         return classproperty._state_or_client_
 
     @state_or_client.setter
@@ -93,7 +85,7 @@ class classproperty:
         classproperty._state_or_client_ = new_s
 
     @property
-    def type_log(self) -> str:
+    def type_log(self):
         return classproperty._type_log
 
     @type_log.setter
@@ -117,12 +109,12 @@ class classproperty:
         classproperty._message = new_msg
 
     @property
-    def isStoped(self) -> bool:
+    def isStoped(self):
         chk = os.path.exists(os.path.join(self.output_dir_path, f"{self.pid}.flag"))
         return chk
 
     @property
-    def driver(self):
+    def driver(self) -> WebDriver:
         return classproperty.drv
 
     @driver.setter
@@ -138,7 +130,7 @@ class classproperty:
         classproperty.wt = new_wt
 
     @property
-    def chr_dir(self) -> str:
+    def chr_dir(self):
         return classproperty.user_data_dir
 
     @chr_dir.setter
@@ -146,7 +138,7 @@ class classproperty:
         classproperty.user_data_dir = new_dir
 
     @property
-    def output_dir_path(self) -> str:
+    def output_dir_path(self):
         return classproperty.out_dir
 
     @output_dir_path.setter
@@ -154,11 +146,11 @@ class classproperty:
         classproperty.out_dir = new_outdir
 
     @property
-    def kwrgs(self) -> Dict[str, Union[TypeValues, SubDict]]:
+    def kwrgs(self) -> dict:
         return classproperty.kwrgs_
 
     @kwrgs.setter
-    def kwrgs(self, new_kwg) -> Dict[str, Union[TypeValues, SubDict]]:
+    def kwrgs(self, new_kwg):
         classproperty.kwrgs_ = new_kwg
 
     @property
@@ -178,7 +170,7 @@ class classproperty:
         classproperty.message_error_ = nw_m
 
     @property
-    def graphicMode(self) -> str:
+    def graphicMode(self):
         return classproperty.graphicMode_
 
     @graphicMode.setter
@@ -186,7 +178,7 @@ class classproperty:
         classproperty.graphicMode_ = new_graph
 
     @property
-    def list_args(self) -> list[str]:
+    def list_args(self):
         return [
             "--ignore-ssl-errors=yes",
             "--ignore-certificate-errors",
@@ -202,7 +194,7 @@ class classproperty:
         classproperty.cr_list_args = new_Args
 
     @property
-    def bot_data(self) -> Dict[str, Union[TypeValues, SubDict]]:
+    def bot_data(self) -> dict[str, str | Numbers]:
         return classproperty.bot_data_
 
     @bot_data.setter
@@ -210,39 +202,47 @@ class classproperty:
         classproperty.bot_data_ = new_botdata
 
     @property
-    def AuthBot(self) -> AuthBot_:
+    def AuthBot(self):
+        from .Utils.auth import AuthBot
 
-        return classproperty.AuthBot_()
-
-    @property
-    def SearchBot(self) -> SearchBot_:
-
-        return classproperty.SearchBot_()
+        return AuthBot()
 
     @property
-    def interact(self) -> Interact_:
+    def SearchBot(self):
 
-        return classproperty.Interact_()
+        from .Utils.search import SeachBot
+
+        return SeachBot()
 
     @property
-    def printtext(self) -> printbot:
+    def interact(self):
+        from .Utils.interator import Interact
 
-        return classproperty.printbot()
+        return Interact()
+
+    @property
+    def printtext(self):
+        from .Utils.PrintLogs import printbot
+
+        return printbot
 
     @property
     def MakeXlsx(self):
+        from .Utils.MakeTemplate import MakeXlsx
 
-        return classproperty.MakeXlsx_
+        return MakeXlsx
 
     @property
     def cities_Amazonas(self):
+        from .Utils.dicionarios import cities_Amazonas
 
-        return classproperty.cities_Amazonas_
+        return cities_Amazonas
 
     @property
     def elements(self):
+        from .Utils.elements import ElementsBot
 
-        return classproperty.ElementsBot_().Elements
+        return ElementsBot().Elements
 
     @property
     def vara(self) -> str:
@@ -253,7 +253,7 @@ class classproperty:
         classproperty.vara_ = vara_str
 
     @property
-    def path_accepted(self) -> str:
+    def path_accepted(self):
         return classproperty.path_accepted_
 
     @path_accepted.setter

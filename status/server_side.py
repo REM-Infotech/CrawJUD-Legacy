@@ -38,7 +38,7 @@ def load_cache(pid: str, app: Flask):
             if "total" not in log_pid:  # pragma: no cover
                 continue
 
-            log_pid.update({"message": log_pid.get("last_log")})
+            log_pid.update({"message": log_pid.get("last_log", log_pid.get("message"))})
             break  # pragma: no cover
 
     return log_pid

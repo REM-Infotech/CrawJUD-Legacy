@@ -9,7 +9,7 @@ import pytz
 def makezip(pid: str) -> str:  # pragma: no cover
 
     file_paths = []
-    temp_path = os.path.join(pathlib.Path(__file__).cwd(), "Temp", pid)
+    temp_path = os.path.join(pathlib.Path(__file__).cwd(), "exec", pid)
     for root, dirs, files in os.walk(temp_path):
         for file in files:
 
@@ -24,11 +24,11 @@ def makezip(pid: str) -> str:  # pragma: no cover
 
                     barra = "\\" if "\\" in other_folder[1] else "/"
                     other_folder = other_folder[1].replace(barra, "")
-                    file_path = os.path.join("Temp", pid, other_folder, file)
+                    file_path = os.path.join("exec", pid, other_folder, file)
                     file_paths.append(file_path)
 
                 elif len(other_folder) == 1:
-                    file_path = os.path.join("Temp", pid, file)
+                    file_path = os.path.join("exec", pid, file)
                     file_paths.append(file_path)
 
     # Empacotar os arquivos em um arquivo zip para facilitar o envio

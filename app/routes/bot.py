@@ -32,11 +32,10 @@ def botlaunch(id: int, system: str, typebot: str):
 
             if app.testing is False:  # pragma: no cover
 
-                if request.data:
-                    data_bot = json.loads(request.data)
+                request_data = request.data
+                request_form = request.form
 
-                elif request.form:
-                    data_bot = request.form
+                data_bot = request_data if request_data else request_form
 
                 if isinstance(data_bot, str):
                     data_bot = json.loads(data_bot)
@@ -58,12 +57,6 @@ def botlaunch(id: int, system: str, typebot: str):
                 is_started = worker_thread.start(app, db)
 
             elif app.testing is True:
-                is_started = 200
-
-                request_data = request.data
-                request_form = request.form
-
-                data_bot = request_data if request_data else request_form
                 is_started = 200 if data_bot else 500
 
         except Exception as e:

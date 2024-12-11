@@ -61,7 +61,7 @@ class printbot(CrawJUD):
         try:
             savelog = os.path.join(
                 pathlib.Path(__file__).cwd(),
-                "Temp",
+                "exec",
                 self.pid,
                 f"LogFile - PID {self.pid}.txt",
             )

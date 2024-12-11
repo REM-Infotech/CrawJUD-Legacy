@@ -1,8 +1,8 @@
 import json
-import os
-import pathlib
 import unicodedata
 from datetime import datetime
+from os import path
+from pathlib import Path
 
 import openpyxl
 import pytz
@@ -70,8 +70,8 @@ class SetStatus:
         pid = self.pid if pid is None else pid
         id = self.id if id is None else id
 
-        path_pid = os.path.join(app.config["TEMP_PATH"], pid)
-        os.makedirs(path_pid, exist_ok=True)
+        path_pid = Path(path.join(Path(__file__).cwd(), "exec", pid))
+        path_pid.mkdir(parents=True, exist_ok=True)
 
         if self.files:
             for f, value in self.files.items():
@@ -79,12 +79,12 @@ class SetStatus:
                 if "xlsx" not in f or app.testing is True:
                     f = self.format_String(f)
 
-                filesav = os.path.join(path_pid, f)
+                filesav = path.join(path_pid, f)
                 value.save(filesav)
 
         data = {}
 
-        path_args = os.path.join(path_pid, f"{pid}.json")
+        path_args = path.join(path_pid, f"{pid}.json")
         if self.form:
             for key, value in self.form.items():
                 data.update({key: value})
@@ -92,10 +92,8 @@ class SetStatus:
         data.update({"id": id, "system": self.system, "typebot": self.typebot})
 
         if data.get("xlsx"):
-            input_file = os.path.join(
-                pathlib.Path(path_args).parent.resolve(), data["xlsx"]
-            )
-            if os.path.exists(input_file):
+            input_file = path.join(path_pid, data["xlsx"])
+            if path.exists(input_file):
                 wb = openpyxl.load_workbook(filename=input_file)
                 ws: Worksheet = wb.active
                 rows = ws.max_row
@@ -181,8 +179,8 @@ class SetStatus:
 
             # if all([chk_srv, chk_sys, chk_typebot]):
 
-            #     json_args = os.path.join(
-            #         pathlib.Path(__file__).cwd(), "Temp", pid, f"{pid}.json"
+            #     json_args = path.join(
+            #         pathlib.Path(__file__).cwd(), "exec", pid, f"{pid}.json"
             #     )
             #     with open(json_args, "rb") as f:
             #         arg = json.load(f)["login"]
@@ -193,7 +191,7 @@ class SetStatus:
             #         print(e)
 
             zip_file = makezip(pid)
-            objeto_destino = os.path.basename(zip_file)
+            objeto_destino = path.basename(zip_file)
             enviar_arquivo_para_gcs(zip_file)
 
             execution = Executions.query.filter(Executions.pid == pid).first()

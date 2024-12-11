@@ -55,11 +55,14 @@ CSV_TEMP_PATH = os.path.join(TEMP_PATH, "csv")
 PDF_TEMP_PATH = os.path.join(TEMP_PATH, "pdf")
 SRC_IMG_PATH = os.path.join(pathlib.Path(__file__).cwd(), "app", "src", "assets", "img")
 
+
 for paths in [DOCS_PATH, TEMP_PATH, IMAGE_TEMP_PATH, CSV_TEMP_PATH, PDF_TEMP_PATH]:
+    paths = pathlib.Path(paths)
 
     if pathlib.Path(paths).exists():
+
         shutil.rmtree(paths)
-        pathlib.Path(paths).mkdir(exist_ok=True)
+        paths.mkdir(exist_ok=True)
 
 REDIS_HOST = values.get("REDIS_HOST")
 REDIS_PORT = int(values.get("REDIS_PORT"))
