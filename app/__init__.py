@@ -199,10 +199,10 @@ class AppFactory:
                     db.create_all()
                     f.write("True")
 
-            from app.models import Servers, Users
+            from app.models import Servers, ThreadBots
 
             if not db.engine.dialect.has_table(
-                db.engine.connect(), Users.__tablename__
+                db.engine.connect(), ThreadBots.__tablename__
             ):
                 with open("is_init.txt", "w") as f:  # pragma: no cover
 

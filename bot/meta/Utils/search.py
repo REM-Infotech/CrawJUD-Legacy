@@ -79,7 +79,14 @@ class SeachBot(CrawJUD):
 
     def esaj_search(self) -> None:
 
-        grau = int(self.bot_data.get("GRAU", "1").replace("º", ""))
+        grau = self.bot_data.get("GRAU", 1)
+
+        if isinstance(grau, str):
+            if "º" in grau:
+                grau = grau.replace("º", "").replace(" ", "")
+
+            grau = int(grau)
+
         if grau == 1:
 
             self.driver.get(self.elements.consultaproc_grau1)
@@ -118,10 +125,49 @@ class SeachBot(CrawJUD):
 
         check_process = None
         with suppress(NoSuchElementException, TimeoutException):
-            check_process = self.wait.until(
+            check_process = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno"))
             )
-        return check_process is None
+
+        # Retry 1
+        if not check_process:
+            with suppress(NoSuchElementException, TimeoutException):
+                check_process: WebElement = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]')
+                    )
+                )
+
+                if check_process:
+                    check_process = (
+                        check_process.find_element(By.TAG_NAME, "ul")
+                        .find_elements(By.TAG_NAME, "li")[0]
+                        .find_element(By.TAG_NAME, "a")
+                    )
+
+                    url_proc = check_process.get_attribute("href")
+                    self.driver.get(url_proc)
+
+        # Retry 2
+        if not check_process:
+            with suppress(NoSuchElementException, TimeoutException):
+                check_process: WebElement = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located(
+                        (
+                            By.CSS_SELECTOR,
+                            'div.modal__process-choice > input[type="radio"]',
+                        )
+                    )
+                )
+
+                if check_process:
+                    check_process.click()
+                    btEnviarIncidente = self.driver.find_element(
+                        By.CSS_SELECTOR, 'input[name="btEnviarIncidente"]'
+                    )
+                    btEnviarIncidente.click()
+
+        return check_process is not None
 
     def projudi_search(self) -> None:
 
@@ -130,7 +176,18 @@ class SeachBot(CrawJUD):
             if "intimacaoAdvogado.do" in self.driver.current_url:
                 raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
 
-        self.driver.get(self.elements.url_busca)
+        grau = int(self.bot_data.get("GRAU", "1").replace("º", ""))
+        if grau == 1:
+
+            self.driver.get(self.elements.consultaproc_grau1)
+
+        elif grau == 2:
+
+            self.driver.get(self.elements.consultaproc_grau2)
+
+        elif not grau or grau != 1 or grau != 2:
+
+            raise ErroDeExecucao("Informar instancia!")
 
         inputproc = None
         enterproc = None

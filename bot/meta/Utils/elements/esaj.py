@@ -20,6 +20,19 @@ class ESAJ_AM:
     id_valor = "valorAcaoProcesso"
     data_processual = "dataHoraDistribuicaoProcesso"
     classe_processual = '//*[@id="classeProcesso"]/span'
+
+    sumary_header_1 = 'div[class="unj-entity-header__summary"] > div[class="container"] > div[class="row"]'
+    rows_sumary_ = 'div[class^="col-"]'
+
+    numproc = "unj-larger-1"
+    statusproc = "unj-tag"
+
+    nameitemsumary = "unj-label"
+    valueitemsumary = "line-clamp__2"
+    rows_sumary_
+
+    sumary_header_2 = "div#maisDetalhes > div.row"
+
     selecao_processual = '//*[@id="secaoProcesso"]/span'
     orgao_processual = '//*[@id="orgaoJulgadorProcesso"]'
     status_processual = 'span[id="situacaoProcesso"]'
