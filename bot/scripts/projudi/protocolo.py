@@ -105,19 +105,24 @@ class protocolo(CrawJUD):
         self.sign_files()
         self.finish_move()
 
-        confirm_protocol = self.confirm_protocol()
-        if not confirm_protocol:
+        debug = os.getenv("DEBUG", "False").lower() == "true"
+        data = [{"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"), "tested": "true"}]
 
-            if self.set_parte() is not True:
-                raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
-
-            self.finish_move()
+        if debug is False:
             confirm_protocol = self.confirm_protocol()
             if not confirm_protocol:
-                raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
 
-        data = self.screenshot_sucesso()
-        data.append(confirm_protocol)
+                if self.set_parte() is not True:
+                    raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
+
+                self.finish_move()
+                confirm_protocol = self.confirm_protocol()
+                if not confirm_protocol:
+                    raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
+
+            data = self.screenshot_sucesso()
+            data.append(confirm_protocol)
+
         self.append_success(data)
 
     def confirm_protocol(self) -> str | None:
@@ -471,7 +476,7 @@ class protocolo(CrawJUD):
         )
         finish_button.click()
 
-    def screenshot_sucesso(self) -> None:
+    def screenshot_sucesso(self):
 
         try:
 
