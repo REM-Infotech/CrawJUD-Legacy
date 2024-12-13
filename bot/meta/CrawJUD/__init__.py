@@ -14,8 +14,10 @@ import pandas as pd
 import pytz
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
-from dotenv import load_dotenv
 from openai import OpenAI
+from openai._streaming import Stream
+from openai.types.chat.chat_completion import ChatCompletion
+from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
 from pandas import Timestamp
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -25,6 +27,11 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from tenacity import (  # for exponential backoff
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 from werkzeug.utils import secure_filename
 
 from ...common.exceptions import ErroDeExecucao
@@ -71,11 +78,6 @@ class CrawJUD(classproperty):
     Com o property eu construo e deixo salvo estado dela
 
     """
-
-    def client(self):
-
-        load_dotenv()
-        return OpenAI()
 
     def setup(self):
 
@@ -583,14 +585,19 @@ class CrawJUD(classproperty):
             self.driver.execute_script(command)
             self.driver.execute_script(command2)
 
+    @retry(wait=wait_random_exponential(min=4, max=30), stop=stop_after_attempt(6))
+    def completion_with_backoff(
+        self, *args, **kwargs
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
+
+        client: OpenAI = self.client()
+        return client.chat.completions.create(*args, **kwargs)
+
     def gpt_chat(self, text_mov: str) -> str:
 
         try:
-
-            client = self.client()
-
-            completion = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+            completion = self.completion_with_backoff(
+                model="gpt-4o-mini",
                 messages=[
                     {
                         "role": "system",

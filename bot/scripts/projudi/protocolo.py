@@ -106,7 +106,9 @@ class protocolo(CrawJUD):
         self.finish_move()
 
         debug = os.getenv("DEBUG", "False").lower() == "true"
-        data = [{"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"), "tested": "true"}]
+        data = [
+            {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"), "tested": "true"}
+        ]
 
         if debug is False:
             confirm_protocol = self.confirm_protocol()
@@ -489,7 +491,7 @@ class protocolo(CrawJUD):
             table_moves[0].screenshot(os.path.join(self.output_dir_path, "tr_0.png"))
 
             expand = table_moves[0].find_element(
-                By.CSS_SELECTOR, self.elements.element_exception
+                By.CSS_SELECTOR, self.elements.expand_btn_projudi
             )
             expand.click()
 

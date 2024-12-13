@@ -24,14 +24,14 @@ def webdriver_exepts() -> list[Exception]:
     ]
 
 
-def exeptionsBot() -> dict[Exception, str]:
+def exceptionsBot() -> dict[str, str]:
 
     return {
-        TimeoutException: "Falha ao encontrar elemento",
-        StaleElementReferenceException: "Erro ao encontrar referencia do elemento",
-        NoSuchElementException: "Elemento não encontrado",
-        ElementNotInteractableException: "Não foi possível interagir com o elemento",
-        ElementClickInterceptedException: "Click interceptado",
-        ValueError: "Erro de informação",
-        Exception: "Erros diversos",
+        "TimeoutException": "Falha ao encontrar elemento",
+        "StaleElementReferenceException": "Erro ao encontrar referencia do elemento",
+        "NoSuchElementException": "Elemento não encontrado",
+        "ElementNotInteractableException": "Não foi possível interagir com o elemento",
+        "ElementClickInterceptedException": "Click interceptado",
+        "ValueError": "Erro de informação",
+        "Exception": "Erros diversos",
     }
