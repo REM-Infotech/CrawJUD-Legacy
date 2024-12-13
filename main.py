@@ -16,12 +16,12 @@ if __name__ == "__main__":  # pragma: no cover
     debug = values().get("DEBUG", "False").lower() in ("true")
     print(
         f"""
-=======================================================
+============================================================
 
-            Executando servidor Flask
-            * Porta: {int(values().get("PORT", "8000"))}
+        Executando servidor Flask
+        * Porta: {int(values().get("PORT", "8000"))}
 
-=======================================================
+============================================================
               """
     )
 

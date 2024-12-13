@@ -1,17 +1,23 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime, timedelta
 from typing import Dict, Union
 
+from dotenv import load_dotenv
+from openai import OpenAI
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-Numbers = Union[int, float, complex]
+Numbers = Union[int, float, complex, datetime, timedelta]
 TypeValues = Union[str, Numbers, list, tuple]
 SubDict = Dict[str, Union[TypeValues, Numbers]]
 
 
 class classproperty:
+
+    load_dotenv()
+    client_ = OpenAI()
 
     path_accepted_: str = ""
     vara_: str = ""
@@ -67,6 +73,11 @@ class classproperty:
             raise AttributeError("deleter não definido")
         # Chamando o método deleter como um método de classe
         cls.fdel(instance.__class__)
+
+    @property
+    def client(self) -> OpenAI:
+
+        return self.client_
 
     @property
     def system(self):

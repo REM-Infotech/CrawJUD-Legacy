@@ -22,7 +22,7 @@ class PROJUDI_AM:
     data_inicio = 'input[id="dataInicialMovimentacaoFiltro"]'
     data_fim = 'input[id="dataFinalMovimentacaoFiltro"]'
     filtro = 'input[id="editButton"]'
-    element_exception = 'a[href="javascript://nop/"]'
+    expand_btn_projudi = 'a[href="javascript://nop/"]'
     table_moves = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
 
     exception_arrow = './/a[@class="arrowNextOn"]'

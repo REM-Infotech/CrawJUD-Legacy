@@ -48,6 +48,7 @@ eventlet = "^0.38.0"
 openai = "^1.55.1"
 redis = "^5.2.0"
 redis-flask = "0.0.2"
+tenacity = "^9.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
