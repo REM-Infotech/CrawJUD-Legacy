@@ -32,7 +32,7 @@ def test_client_flask(
     chk_botstop_error = botstop_error.status_code == 500
     chk_botstop_success = botstop_success.status_code == 200
 
-    responses = all(
+    assert all(
         [
             chk_index,
             chk_bot_error,
@@ -41,8 +41,6 @@ def test_client_flask(
             chk_botstop_success,
         ]
     )
-
-    assert responses
 
 
 print(test_client_flask.__doc__)

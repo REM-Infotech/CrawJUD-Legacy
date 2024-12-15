@@ -81,7 +81,9 @@ def args_bot():
 
     from app.misc import generate_pid
 
-    xls_Test = path.join(Path(__file__).parent.resolve(), "archives", "xls_.xlsx")
+    xls_Test = path.join(
+        Path(__file__).parent.resolve(), "archives_for_test", "xls_.xlsx"
+    )
     basename = path.basename(xls_Test)
     with Path(xls_Test).open("rb") as f:
 
@@ -116,7 +118,9 @@ def args_statusbot():
 
     from app.misc import generate_pid
 
-    xls_Test = path.join(Path(__file__).parent.resolve(), "archives", "xls_.xlsx")
+    xls_Test = path.join(
+        Path(__file__).parent.resolve(), "archives_for_test", "xls_.xlsx"
+    )
     basename = path.basename(xls_Test)
     with Path(xls_Test).open("rb") as f:
 
