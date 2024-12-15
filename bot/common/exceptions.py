@@ -5,7 +5,7 @@ class CrawJUDExceptions(Exception):
     """Exceção base personalizada."""
 
     _errmsg: str = ""
-    _except_captured: Exception = None
+    _except_captured = Exception
 
     @property
     def message_err(self):
@@ -29,7 +29,7 @@ class CrawJUDExceptions(Exception):
         if e:
 
             name_Except = e.__class__.__name__
-            message_error = str(exceptionsBot.get(name_Except))
+            message_error = str(exceptionsBot().get(name_Except))
 
         if message_error:
             message = message_error
@@ -39,6 +39,13 @@ class CrawJUDExceptions(Exception):
 
         if isinstance(message, Exception):
             self.except_captured = message
+
+            name_Except = message.__class__.__name__
+            message_error = exceptionsBot().get(name_Except)
+
+            if message_error is None:
+                message = "Erro interno, contactar suporte"
+
             self.message_err = str(message)
 
         super().__init__(message)
@@ -46,7 +53,7 @@ class CrawJUDExceptions(Exception):
     def __str__(self):
         return self.message_err
 
-    def __instancecheck__(self, instance) -> bool:
+    def __instancecheck__(self, instance: Exception) -> bool:
 
         check_except = instance in webdriver_exepts() or isinstance(
             instance, type(self.except_captured)
@@ -60,8 +67,11 @@ class ItemNaoEcontrado(CrawJUDExceptions):
     def __init__(self, message="Item não encontrado"):
         super().__init__(message)
 
-    def __instancecheck__(self, instance) -> bool:
+    def __instancecheck__(self, instance: Exception) -> bool:
         return super().__instancecheck__(instance)
+
+    def __str__(self):
+        return super().__str__()
 
 
 class ErroDeExecucao(CrawJUDExceptions):
@@ -70,7 +80,7 @@ class ErroDeExecucao(CrawJUDExceptions):
     def __init__(self, message: str = "Erro ao executar operação", e: Exception = None):
         super().__init__(message, e)
 
-    def __instancecheck__(self, instance) -> bool:
+    def __instancecheck__(self, instance: Exception) -> bool:
         return super().__instancecheck__(instance)
 
     def __str__(self):
