@@ -19,6 +19,9 @@ class classproperty:
     load_dotenv()
     client_ = OpenAI()
 
+    appends_ = []
+    another_append_ = []
+
     path_accepted_: str = ""
     vara_: str = ""
     _system: str = ""
@@ -73,6 +76,22 @@ class classproperty:
             raise AttributeError("deleter não definido")
         # Chamando o método deleter como um método de classe
         cls.fdel(instance.__class__)
+
+    @property
+    def appends(self):
+        return self.appends_
+
+    @appends.setter
+    def appends(self, new_appends: list):
+        self.appends_ = new_appends
+
+    @property
+    def another_append(self):
+        return self.another_append_
+
+    @another_append.setter
+    def another_append(self, new_another_append: list):
+        self.another_append_ = new_another_append
 
     @property
     def client(self) -> OpenAI:

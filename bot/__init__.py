@@ -110,3 +110,23 @@ class WorkerThread:
 
         except Exception as e:  # pragma: no cover
             return str(e)
+
+    def check_status(self, processID: int) -> str:  # pragma: no cover
+
+        try:
+
+            Process = psutil.Process(processID)
+
+            if Process:
+                return "Process running!"
+
+            return f"Process {processID} stopped!"
+
+        except psutil.TimeoutExpired:  # pragma: no cover
+            return "O processo não foi encerrado dentro do tempo limite"
+
+        except psutil.NoSuchProcess:  # pragma: no cover
+            return f"Process {processID} stopped!"
+
+        except Exception as e:  # pragma: no cover
+            return str(e)
