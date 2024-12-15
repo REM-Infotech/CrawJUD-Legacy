@@ -37,13 +37,21 @@ class CrawJUDExceptions(Exception):
         self.message_err = message
         self.except_captured = e
 
+        if isinstance(message, Exception):
+            self.except_captured = message
+            self.message_err = str(message)
+
         super().__init__(message)
 
     def __str__(self):
         return self.message_err
 
-    def __instancecheck__(instance) -> bool:
-        return instance in webdriver_exepts()
+    def __instancecheck__(self, instance) -> bool:
+
+        check_except = instance in webdriver_exepts() or isinstance(
+            instance, type(self.except_captured)
+        )
+        return check_except
 
 
 class ItemNaoEcontrado(CrawJUDExceptions):

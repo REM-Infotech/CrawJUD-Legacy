@@ -2,12 +2,14 @@ import json
 import os
 import pathlib
 import platform
+import re
 import shutil
 import ssl
 import subprocess
 import time
 import unicodedata
 from datetime import datetime
+from difflib import SequenceMatcher
 from typing import Dict, List, Union
 
 import pandas as pd
@@ -15,9 +17,10 @@ import pytz
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from openai import OpenAI
-from openai._streaming import Stream
-from openai.types.chat.chat_completion import ChatCompletion
-from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
+
+# from openai._streaming import Stream
+# from openai.types.chat.chat_completion import ChatCompletion
+# from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
 from pandas import Timestamp
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -27,11 +30,12 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from tenacity import (  # for exponential backoff
-    retry,
-    stop_after_attempt,
-    wait_random_exponential,
-)
+
+# from tenacity import (  # for exponential backoff
+#     retry,
+#     stop_after_attempt,
+#     wait_random_exponential,
+# )
 from werkzeug.utils import secure_filename
 
 from ...common.exceptions import ErroDeExecucao
@@ -265,23 +269,28 @@ class CrawJUD(classproperty):
             message = "Execução do processo efetuada com sucesso!"
 
         def save_info(data: list[dict[str, str]]):
-            if not self.path:
-                self.path = os.path.join(
+
+            output_success = self.path
+
+            chk_not_path = output_success is None or output_success == ""
+
+            if fileN is not None or chk_not_path:
+                output_success = os.path.join(
                     pathlib.Path(self.path).parent.resolve(), fileN
                 )
 
-            if not os.path.exists(self.path):
+            if not os.path.exists(output_success):
                 df = pd.DataFrame(data)
                 df = df.to_dict(orient="records")
 
-            elif os.path.exists(self.path):
+            elif os.path.exists(output_success):
 
-                df = pd.read_excel(self.path)
+                df = pd.read_excel(output_success)
                 df = df.to_dict(orient="records")
                 df.extend(data)
 
             new_data = pd.DataFrame(df)
-            new_data.to_excel(self.path, index=False)
+            new_data.to_excel(output_success, index=False)
 
         typeD = type(data) is list and all(isinstance(item, dict) for item in data)
 
@@ -324,6 +333,19 @@ class CrawJUD(classproperty):
         new_data = pd.DataFrame(df)
         new_data.to_excel(self.path_erro, index=False)
 
+    # Verificar o arquivo mais recente no diretório
+    def get_recent(self, folder: str):
+        files = [os.path.join(folder, f) for f in os.listdir(folder)]
+        files = [f for f in files if os.path.isfile(f)]
+        files = list(
+            filter(
+                lambda x: ".pdf" in x.lower() and ".crdownload" not in x.lower(),
+                files,
+            )
+        )
+        files.sort(key=lambda x: os.path.getctime(x), reverse=True)
+        return files[0] if files else None
+
     def format_String(self, string: str) -> str:
 
         return secure_filename(
@@ -335,6 +357,39 @@ class CrawJUD(classproperty):
                 ]
             )
         )
+
+    def normalizar_nome(self, word: str):
+        """
+
+        ### (function) def normalizar_nome(self, word: str) -> str
+
+        Função para normalizar os nomes (removendo caracteres especiais)
+        Remove espaços, substitui "_" e "-" por nada, e converte para minúsculas
+
+        Args:
+            word (str): palavra a ser 'normalizada'
+
+        Returns:
+            str: nome normalizado
+        """
+        #
+        return re.sub(r"[\s_\-]", "", word).lower()
+
+    def similaridade(self, word1: str, word2: str):
+        """
+        ### similaridade
+
+        Função para comparar similaridade
+
+
+        Args:
+            word1 (str): Palavra 1
+            word2 (str): Palavra 2
+
+        Returns:
+            float: porcentagem de similaridade
+        """
+        return SequenceMatcher(None, word1, word2).ratio()
 
     def finalize_execution(self) -> None:
 
@@ -585,18 +640,13 @@ class CrawJUD(classproperty):
             self.driver.execute_script(command)
             self.driver.execute_script(command2)
 
-    @retry(wait=wait_random_exponential(min=4, max=30), stop=stop_after_attempt(6))
-    def completion_with_backoff(
-        self, *args, **kwargs
-    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
-
-        client: OpenAI = self.client()
-        return client.chat.completions.create(*args, **kwargs)
-
     def gpt_chat(self, text_mov: str) -> str:
 
         try:
-            completion = self.completion_with_backoff(
+
+            time.sleep(5)
+            client: OpenAI = self.client
+            completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
                     {
@@ -653,4 +703,4 @@ class CrawJUD(classproperty):
             return text
         except Exception as e:
             print(e)
-            return text_mov
+            raise e

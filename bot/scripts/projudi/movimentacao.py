@@ -106,12 +106,14 @@ class movimentacao(CrawJUD):
             self.setup_config()
 
             if len(self.appends) > 0:
+                self.type_log = "log"
                 self.append_success(self.appends)
 
             if len(self.another_append) > 0:
 
                 for data, msg, fileN in self.another_append:
-                    self.append_success(data, msg, fileN)
+                    self.append_success([data], msg, fileN)
+
         except Exception as e:
             raise ErroDeExecucao(e)
 
@@ -276,30 +278,43 @@ class movimentacao(CrawJUD):
         self.kword = keyword
         move_filter = list(filter(self.filter_moves, self.table_moves))
 
-        message_ = ["Buscando movimentações que contenham os argumentos: "]
+        message_ = [
+            "\n====================================================\n",
+            "Buscando movimentações que contenham os argumentos: ",
+        ]
 
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
 
-        message_.append(f'\n"PALAVRA_CHAVE: {keyword}"')
+        message_.append(f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>')
         if data_inicio:
-            message_.append(f'\n"DATA_INICIO: {data_inicio}"')
-        if data_fim:
-            message_.append(f'\n"DATA_FIM: {data_fim}"')
-
-        message_.append("\n\nArgumentos Adicionais: ")
-        args = list(self.bot_data.items())
-        for key, value in args:
-
-            _add_msg = f"\n - {key}: {value} "
-            _msg_ = (
-                _add_msg
-                if key not in ("DATA_INICIO", "DATA_FIM", "PALAVRA_CHAVE")
-                else ""
+            message_.append(
+                f'\nDATA_INICIO: <span class="fw-bold">{data_inicio}</span>'
             )
+        if data_fim:
+            message_.append(f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>')
 
-            if _msg_ != "":
-                message_.append(_msg_)
+        args = list(self.bot_data.items())
+        pos = 0
+        for pos, row in enumerate(args):
+            key, value = row
+
+            _add_msg = f"   - {key}: {value} "
+            _msg_ = _add_msg
+
+            if "\n\nArgumentos Adicionais: \n" not in message_:
+                message_.append("\n\nArgumentos Adicionais: \n")
+
+            if key not in ["TRAZER_PDF", "TRAZER_TEOR", "USE_GPT", "DOC_SEPARADO"]:
+                continue
+
+            if key not in message_:
+                message_.append(f"{_msg_}\n")
+
+        if pos + 1 == len(args):
+
+            _msg_ += "\n====================================================\n"
+            message_.append(_msg_)
 
         self.message = "".join(message_)
 
@@ -309,6 +324,10 @@ class movimentacao(CrawJUD):
         """ Checagens dentro do Loop de movimentações """
 
         def check_others(text_mov: str):
+
+            save_another_file = (
+                str(self.bot_data.get("DOC_SEPARADO", "NÃO")).upper() == "SIM"
+            )
 
             mov = ""
             mov_chk = False
@@ -328,7 +347,7 @@ class movimentacao(CrawJUD):
 
             use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
 
-            return (mov_chk, trazer_teor, mov, use_gpt)
+            return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
 
         """ Iteração dentro das movimentações filtradas """
         for move in move_filter:
@@ -340,7 +359,9 @@ class movimentacao(CrawJUD):
             data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
 
             """ Outros Checks """
-            mov_chk, trazerteor, mov_name, use_gpt = check_others(text_mov)
+            mov_chk, trazerteor, mov_name, use_gpt, save_another_file = check_others(
+                text_mov
+            )
 
             nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
             movimentador = itensmove[4].text
@@ -360,10 +381,10 @@ class movimentacao(CrawJUD):
                 if mov_chk:
                     move_doct = self.getAnotherMoveWithDoc(mov_name)
                     for sub_mov in move_doct:
-                        mov_texdoc = self.getdocmove(sub_mov, True)
+                        mov_texdoc = self.getdocmove(sub_mov, save_another_file)
 
                 elif self.movecontainsdoc(move):
-                    mov_texdoc = self.getdocmove(move)
+                    mov_texdoc = self.getdocmove(move, save_another_file)
 
                 if mov_texdoc is not None and mov_texdoc != "":
                     if use_gpt is True:
@@ -455,29 +476,53 @@ class movimentacao(CrawJUD):
                 EC.presence_of_element_located((By.CSS_SELECTOR, css_tr))
             )
 
+        text_doc_1 = ""
+
         rows = table_docs.find_elements(By.TAG_NAME, "tr")
         for pos, docs in enumerate(rows):
-            doc = docs.find_elements(By.TAG_NAME, "td")[4]
-            link_doc = doc.find_element(By.TAG_NAME, "a")
-            name_pdf = self.format_String(str(link_doc.text))
 
-            url = link_doc.get_attribute("href")
             nomearquivo = (
                 f"{self.bot_data.get('NUMERO_PROCESSO')}",
                 f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
             )
-            old_pdf = os.path.join(self.output_dir_path, name_pdf)
             path_pdf = os.path.join(self.output_dir_path, "".join(nomearquivo))
 
-            if not os.path.exists(path_pdf):
+            if os.path.exists(path_pdf):
+                continue
 
-                self.driver.get(url)
-                while True:
-                    if os.path.exists(old_pdf):
-                        break
-                    sleep(0.01)
+            doc = docs.find_elements(By.TAG_NAME, "td")[4]
+            link_doc = doc.find_element(By.TAG_NAME, "a")
+            name_pdf = self.format_String(str(link_doc.text))
+            old_pdf = Path(os.path.join(self.output_dir_path), name_pdf)
+            url = link_doc.get_attribute("href")
+
+            self.driver.get(url)
+            while True:
+
+                recent_folder = self.get_recent(self.output_dir_path)
+                file_recent = ""
+
+                if recent_folder is not None:
+                    file_recent = os.path.basename(recent_folder)
+
+                grau_similaridade = self.similaridade(name_pdf, file_recent)
+
+                if grau_similaridade > 0.8:
+                    old_pdf = recent_folder
+
+                    if Path(old_pdf).exists() is False:
+                        continue
+
+                    break
+
+                elif old_pdf.exists():
+                    old_pdf = str(old_pdf)
+                    break
+
+                sleep(0.5)
 
             shutil.move(old_pdf, path_pdf)
+
             text_mov = self.openfile(path_pdf)
 
             if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO":
@@ -491,7 +536,7 @@ class movimentacao(CrawJUD):
                 "Texto da movimentação": text_mov,
                 "Nome peticionante": movimentador,
                 "Classiicação Peticionante": qualificacao_movimentador,
-                "Nome Arquivo (Caso Tenha)": nomearquivo,
+                "Nome Arquivo (Caso Tenha)": "".join(nomearquivo),
             }
             if save_in_anotherfile is True:
 
@@ -508,7 +553,10 @@ class movimentacao(CrawJUD):
                     )
                 )
 
-            return text_mov
+            if pos == 0:
+                text_doc_1 = text_mov
+
+        return text_doc_1
 
     def openfile(self, path_pdf: str) -> str:
 

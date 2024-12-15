@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from flask_socketio import emit, join_room, leave_room, send
+from pytz import timezone
 
 from app import app, io
 from app.misc import stop_execution
@@ -29,6 +32,38 @@ def on_join(data: dict[str, str]):
     join_room(room)
 
     data = load_cache(room, app)
+    try:  # pragma: no cover
+
+        from app import db
+        from app.models import ThreadBots
+        from bot import WorkerThread
+
+        pid = room
+        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+
+        if processID:
+            processID = int(processID.processID)
+            message = WorkerThread().check_status(processID)
+
+            if message == f"Process {processID} stopped!":
+                stop_execution(app, pid)
+                data.update(
+                    {
+                        "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
+                            pid=pid,
+                            type_log="success",
+                            row=0,
+                            dateTime=datetime.now(timezone("America/Manaus")).strftime(
+                                "%H:%M:%S"
+                            ),
+                            log="fim da execução",
+                        )
+                    }
+                )
+
+    except Exception:  # pragma: no cover
+        send("Failed to check bot has stopped")
+
     emit("log_message", data, room=room)
     send(f"Joinned room! Room: {room}")
 
