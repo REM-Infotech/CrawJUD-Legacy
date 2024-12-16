@@ -17,7 +17,7 @@ SubDict = Dict[str, Union[TypeValues, Numbers]]
 class classproperty:
 
     load_dotenv()
-    client_ = OpenAI()
+    OpenAI_client = OpenAI()
 
     appends_ = []
     another_append_ = []
@@ -94,9 +94,9 @@ class classproperty:
         self.another_append_ = new_another_append
 
     @property
-    def client(self) -> OpenAI:
+    def OpenAI_client(self) -> OpenAI:
 
-        return self.client_
+        return self.OpenAI_client_
 
     @property
     def system(self):

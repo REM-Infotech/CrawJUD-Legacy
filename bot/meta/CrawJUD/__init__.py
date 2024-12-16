@@ -645,7 +645,7 @@ class CrawJUD(classproperty):
         try:
 
             time.sleep(5)
-            client: OpenAI = self.client
+            client: OpenAI = self.OpenAI_client
             completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
