@@ -1,3 +1,5 @@
+## Descrição
+
 ## Tipo de mudança
 
 - [ ] Bugfix (alteração ininterrupta que corrige um problema)
@@ -6,7 +8,6 @@
 - [ ] Release (nova versão do aplicativo - somente para produção)
 - [ ] Refatorar (Refatoramento de código)
 - [ ] Documentation (alterações na documentação)
-
 
 ## Checklist
 
