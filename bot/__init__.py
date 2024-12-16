@@ -44,7 +44,7 @@ class WorkerThread:
         try:
 
             with app.app_context():
-                print("Iniciando processo")
+
                 from app.models import ThreadBots
 
                 pid = os.path.basename(self.path_args.replace(".json", ""))
