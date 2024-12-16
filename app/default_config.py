@@ -68,3 +68,5 @@ REDIS_HOST = values.get("REDIS_HOST")
 REDIS_PORT = int(values.get("REDIS_PORT"))
 REDIS_DB = int(values.get("REDIS_DB"))
 REDIS_PASSWORD = values.get("REDIS_PASSWORD")
+
+WEBHOOK_SECRET = values.get("WEBHOOK_SECRET")

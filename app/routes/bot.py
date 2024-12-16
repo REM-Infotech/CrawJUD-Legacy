@@ -1,7 +1,9 @@
+import importlib
 import json
 import os
 import pathlib
 import platform
+import sys
 
 from flask import Blueprint, jsonify, make_response, request
 
@@ -14,6 +16,13 @@ path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
+def reload_module(module_name: str):
+    if module_name in sys.modules:
+        importlib.reload(sys.modules[module_name])
+    else:
+        importlib.import_module(module_name)
+
+
 @bot.route("/bot/<id>/<system>/<typebot>", methods=["POST"])
 def botlaunch(id: int, system: str, typebot: str):
 
@@ -21,6 +30,8 @@ def botlaunch(id: int, system: str, typebot: str):
 
     message = {"success": "success"}
     from status import SetStatus
+
+    reload_module("bot")
 
     with app.app_context():
         try:

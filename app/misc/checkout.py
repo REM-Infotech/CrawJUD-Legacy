@@ -16,6 +16,12 @@ def checkout_release_tag() -> str:
     github = Github(auth=token_github)
     repo = github.get_repo(REPO_NAME)
     releases = repo.get_releases()
+
+    debug = config_vals.get("DEBUG", "False").lower() in ("true")
+
+    if debug is False:
+        releases = list(filter(lambda release: "stable" in release.tag_name, releases))
+
     latest_release = sorted(
         releases, key=lambda release: release.created_at, reverse=True
     )[0]
