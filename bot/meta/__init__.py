@@ -17,7 +17,7 @@ SubDict = Dict[str, Union[TypeValues, Numbers]]
 class classproperty:
 
     load_dotenv()
-    OpenAI_client = OpenAI()
+    OpenAI_client_ = OpenAI()
 
     appends_ = []
     another_append_ = []

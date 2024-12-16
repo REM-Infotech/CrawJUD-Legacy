@@ -227,7 +227,7 @@ class movimentacao(CrawJUD):
             )
 
         def text_check(text_mov: str) -> bool:
-            """text_check Verificação de palavra chave
+            """text_check `Verificação de palavra chave`
 
             Filtro de movimentações por palavra chave
 
@@ -326,7 +326,7 @@ class movimentacao(CrawJUD):
         def check_others(text_mov: str):
 
             save_another_file = (
-                str(self.bot_data.get("DOC_SEPARADO", "NÃO")).upper() == "SIM"
+                str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
             )
 
             mov = ""
