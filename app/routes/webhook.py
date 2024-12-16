@@ -2,10 +2,13 @@ import hashlib
 import hmac
 import json
 import logging
+from os import path
 from pathlib import Path
 
 from flask import Blueprint, abort, current_app, jsonify, request
 from git import Repo
+
+from ..misc.checkout import checkout_release_tag
 
 wh = Blueprint("webhook", __package__)
 
@@ -59,6 +62,11 @@ def github_webhook():
 def update_servers(tag: str):
 
     checkout_release(tag)
+
+    path_fileversion = Path(path.join(Path(__file__).cwd(), ".version"))
+
+    with path_fileversion.open("w") as f:
+        f.write(checkout_release_tag())
 
 
 def verify_signature(payload_body, secret_token: str, signature_header: str):
