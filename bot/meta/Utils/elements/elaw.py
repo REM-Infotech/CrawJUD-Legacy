@@ -30,6 +30,13 @@ class AME:
         'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
     )
 
+    tipo_polo = "".join(
+        [
+            'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_',
+            '9_44_3_1_2_2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
+        ]
+    )
+
     # CADASTRO
     botao_novo = 'button[id="btnNovo"]'
     css_label_area = 'div[id="comboArea"]'
@@ -74,9 +81,7 @@ class AME:
     css_valor_causa = 'input[id="j_id_3k_1:amountCase_input"]'
     escritrorio_externo = 'div[id="j_id_3k_1:comboEscritorio"]'
     combo_escritorio = 'div[id="j_id_3k_1:comboEscritorio_panel"]'
-    contingencia = (
-        'div[id="j_id_3k_1:j_id_3k_4_2_2_s_9_n_1:processoContingenciaTipoCombo"]'
-    )
+    contingencia = "select[id='j_id_3k_1:j_id_3k_4_2_2_s_9_n_1:processoContingenciaTipoCombo_input']"
     contigencia_panel = (
         'div[id="j_id_3k_1:j_id_3k_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     )

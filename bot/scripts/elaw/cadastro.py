@@ -685,24 +685,26 @@ class cadastro(CrawJUD):
 
     def tipo_contingencia(self) -> None:
 
-        text = "Passiva"
-        if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
-            text = "Ativa"
-
         self.message = "Informando contingenciamento"
         self.type_log = "log"
         self.prt()
 
-        div_contingencia: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.contingencia)
-            ),
-            message="Erro ao encontrar elemento",
-        )
-        div_contingencia.click()
-        sleep(1)
+        elementSelect = self.elements.contingencia
 
-        self.interact.select_item(self.elements.contigencia_panel, text)
+        text = ["Passiva", "Passivo"]
+        if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
+            text = ["Ativa", "Ativo"]
+
+        self.Select2_ELAW(elementSelect, text[0])
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        elementSelect = self.elements.tipo_polo
+
+        text = ["Passiva", "Passivo"]
+        if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
+            text = ["Ativa", "Ativo"]
+
+        self.Select2_ELAW(elementSelect, text[1])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Contingenciamento informado!"
