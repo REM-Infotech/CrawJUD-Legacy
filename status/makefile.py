@@ -2,6 +2,8 @@ import os
 import pathlib
 import zipfile
 from datetime import datetime
+from os import path
+from pathlib import Path
 
 import pytz
 
@@ -9,32 +11,22 @@ import pytz
 def makezip(pid: str) -> str:  # pragma: no cover
 
     file_paths = []
-    temp_path = os.path.join(pathlib.Path(__file__).cwd(), "exec", pid)
-    for root, dirs, files in os.walk(temp_path):
-        for file in files:
-
-            if pid in file:
-
-                if ".json" in file:
-                    continue
-
-                other_folder = root.split(pid)
-
-                if len(other_folder) > 1:
-
-                    barra = "\\" if "\\" in other_folder[1] else "/"
-                    other_folder = other_folder[1].replace(barra, "")
-                    file_path = os.path.join("exec", pid, other_folder, file)
-                    file_paths.append(file_path)
-
-                elif len(other_folder) == 1:
-                    file_path = os.path.join("exec", pid, file)
-                    file_paths.append(file_path)
+    exec_path = Path(path.join(pathlib.Path(__file__).cwd(), "exec", pid))
+    files = [str(f) for f in exec_path.iterdir() if f.is_file()]
+    files_subfolders = [
+        path.join(f, file)
+        for f in [str(f) for f in exec_path.iterdir() if f.is_dir()]
+        for file in Path(f).iterdir()
+        if Path(file).is_file()
+    ]
+    file_paths.extend(files)
+    file_paths.extend(files_subfolders)
 
     # Empacotar os arquivos em um arquivo zip para facilitar o envio
     zip_file = f"Archives/PID {pid} {datetime.now(pytz.timezone('America/Manaus')).strftime('%d-%m-%Y-%H.%M')}.zip"
     with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
         for file in file_paths:
-            zipf.write(file)
+            arcname = os.path.relpath(file, os.path.join("exec", pid))
+            zipf.write(file, arcname=arcname)
 
     return zip_file

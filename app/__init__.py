@@ -15,7 +15,7 @@ from flask_talisman import Talisman
 from redis_flask import Redis
 
 # APP Imports
-from configs import check_allowed_origin
+from configs import Configurator, check_allowed_origin
 
 db = None
 mail = None
@@ -113,11 +113,9 @@ class AppFactory:
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
         src_path = os.path.join(pathlib.Path(__file__).cwd(), "static")
 
-        from app import default_config, default_config_test
+        config_obj = Configurator().get_configurator()
 
         app = Flask(__name__, static_folder=src_path)
-
-        config_obj = default_config if self.testing is False else default_config_test
 
         app.config.from_object(config_obj)
 
