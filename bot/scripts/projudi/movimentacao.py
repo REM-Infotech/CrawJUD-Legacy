@@ -241,10 +241,11 @@ class movimentacao(CrawJUD):
                 chk is True
                 for chk in [
                     keyword == "*",
-                    keyword == text_mov,
+                    keyword.lower() == text_mov.split("\n")[0].lower(),
                     keyword.lower() == text_mov.lower(),
-                    keyword in text_mov.lower(),
-                    (keyword.lower() in word.lower() for word in text_mov.split(" ")),
+                    keyword.lower() in text_mov.lower(),
+                    self.similaridade(keyword.lower(), text_mov.split("\n")[0].lower())
+                    > 0.8,
                 ]
             )
 

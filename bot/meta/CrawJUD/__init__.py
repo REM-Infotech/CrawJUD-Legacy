@@ -74,15 +74,6 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return item
 
-    """
-
-    Esse umzilhão de property aqui é pra evitar a construção
-    de um monte de classe toda vez que eu precisar dela.
-
-    Com o property eu construo e deixo salvo estado dela
-
-    """
-
     def setup(self):
 
         try:

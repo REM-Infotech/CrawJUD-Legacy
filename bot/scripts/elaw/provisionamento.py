@@ -106,29 +106,18 @@ class provisao(CrawJUD):
             )
 
             chk_getvals1 = get_valores == "Contém valores"
-            not_possible = provisao != "possível"
+            possible = provisao == "possível"
+
+            if chk_getvals1 and possible:
+                raise ErroDeExecucao('Provisão "Possível" já inserida')
+
             if get_valores == "Nenhum registro encontrado!":
 
                 # module = "add_new_valor"
                 self.add_new_valor()
 
-                # module = "set_valores"
-                self.set_valores()
-
-                self.save_changes()
-
-            elif "-" in get_valores or chk_getvals1 and not_possible:
-
-                # module = "set_valores"
-                self.set_valores()
-                self.save_changes()
-
-            elif get_valores == "Contém valores" and provisao == "possível":
-
-                self.message = 'Provisão "Possível" já inserida'
-                self.type_log = "error"
-                self.prt()
-                self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
+            self.set_valores()
+            self.save_changes()
 
         if search is not True:
             self.message = "Processo não encontrado!"
@@ -164,7 +153,7 @@ class provisao(CrawJUD):
 
         return "Contém valores"
 
-    def add_new_valor(self) -> None | Exception:
+    def add_new_valor(self):
 
         try:
             div_tipo_obj: WebElement = self.wait.until(
@@ -198,7 +187,7 @@ class provisao(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao("Não foi possivel atualizar provisão", e=e)
 
-    def set_valores(self) -> None | Exception:
+    def set_valores(self):
 
         try:
             editar_pedido: WebElement = self.wait.until(
@@ -220,19 +209,26 @@ class provisao(CrawJUD):
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
 
-            valor_informar = str(self.bot_data.get("VALOR_ATUALIZACAO"))
+            valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
 
-            if "," in valor_informar:
-                sleep(0.25)
-                campo_valor_dml.send_keys(f"{valor_informar}")
-            elif "," not in valor_informar:
-                sleep(0.25)
-                campo_valor_dml.send_keys(f"{valor_informar}{','}")
+            if isinstance(valor_informar, int):
+                valor_informar = str(valor_informar) + ",00"
+
+            elif isinstance(valor_informar, float):
+                valor_informar = "{:.2f}".format(valor_informar).replace(".", ",")
+
+            campo_valor_dml.send_keys(valor_informar)
 
             id_campo_valor_dml = campo_valor_dml.get_attribute("id")
             self.driver.execute_script(
                 f"document.getElementById('{id_campo_valor_dml}').blur()"
             )
+        except Exception as e:
+            raise e
+
+    def set_risk(self):
+
+        try:
 
             expand_filter_risk = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.css_risk
@@ -266,43 +262,52 @@ class provisao(CrawJUD):
 
             self.interact.sleep_load('div[id="j_id_2z"]')
 
+        except Exception as e:
+            raise e
+
+    def informar_datas(self):
+
+        try:
+
+            self.message = "Alterando datas de correção base e juros"
+            self.type_log = "log"
+            self.prt()
+            if self.bot_data.get("DATA_ATUALIZACAO"):
+
+                DataCorrecao = self.driver.find_element(
+                    By.CSS_SELECTOR, self.elements.DataCorrecaoCss
+                )
+                css_DataCorrecao = DataCorrecao.get_attribute("id")
+                self.interact.clear(DataCorrecao)
+                self.interact.send_key(
+                    DataCorrecao, self.bot_data.get("DATA_ATUALIZACAO")
+                )
+
+                self.driver.execute_script(
+                    f"document.getElementById('{css_DataCorrecao}').blur()"
+                )
+                self.interact.sleep_load('div[id="j_id_2z"]')
+
+                DataJuros = self.driver.find_element(
+                    By.CSS_SELECTOR, self.elements.DataJurosCss
+                )
+                css_data = DataJuros.get_attribute("id")
+                self.interact.clear(DataJuros)
+                self.interact.send_key(DataJuros, self.bot_data.get("DATA_ATUALIZACAO"))
+                self.driver.execute_script(
+                    f"document.getElementById('{css_data}').blur()"
+                )
+                self.interact.sleep_load('div[id="j_id_2z"]')
+
+        except Exception as e:
+            raise e
+
+    def informar_motivo(self):
+
+        try:
             try_salvar = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.botao_salvar_id
             )
-
-            if str(self.bot_data.get("PROVISAO")).lower() != "possível":
-
-                self.message = "Alterando datas de correção base e juros"
-                self.type_log = "log"
-                self.prt()
-                if self.bot_data.get("DATA_ATUALIZACAO"):
-
-                    DataCorrecao = self.driver.find_element(
-                        By.CSS_SELECTOR, self.elements.DataCorrecaoCss
-                    )
-                    css_DataCorrecao = DataCorrecao.get_attribute("id")
-                    self.interact.clear(DataCorrecao)
-                    self.interact.send_key(
-                        DataCorrecao, self.bot_data.get("DATA_ATUALIZACAO")
-                    )
-
-                    self.driver.execute_script(
-                        f"document.getElementById('{css_DataCorrecao}').blur()"
-                    )
-                    self.interact.sleep_load('div[id="j_id_2z"]')
-
-                    DataJuros = self.driver.find_element(
-                        By.CSS_SELECTOR, self.elements.DataJurosCss
-                    )
-                    css_data = DataJuros.get_attribute("id")
-                    self.interact.clear(DataJuros)
-                    self.interact.send_key(
-                        DataJuros, self.bot_data.get("DATA_ATUALIZACAO")
-                    )
-                    self.driver.execute_script(
-                        f"document.getElementById('{css_data}').blur()"
-                    )
-                    self.interact.sleep_load('div[id="j_id_2z"]')
 
             sleep(1)
             try_salvar.click()
@@ -329,7 +334,7 @@ class provisao(CrawJUD):
             )
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise e
 
     def save_changes(self) -> None:
 
