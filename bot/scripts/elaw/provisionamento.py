@@ -149,6 +149,7 @@ class provisao(CrawJUD):
                 calls.append(self.informar_datas)
 
         calls.append(self.set_risk)
+        calls.append(self.informar_motivo)
 
         return calls
 
