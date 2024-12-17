@@ -136,6 +136,7 @@ class provisao(CrawJUD):
         if get_valores == "Nenhum registro encontrado!":
 
             calls.append(self.add_new_valor)
+            calls.append(self.edit_valor)
             calls.append(self.set_valores)
             calls.append(self.informar_datas)
 
