@@ -2,6 +2,7 @@ import os
 import pathlib
 import time
 from contextlib import suppress
+from datetime import datetime
 from time import sleep
 
 from selenium.common.exceptions import (
@@ -84,46 +85,71 @@ class provisao(CrawJUD):
 
         # module = "search_processo"
 
-        search = self.SearchBot()
-        if search is True:
+        try:
+            search = self.SearchBot()
+            if search is True:
 
-            self.type_log = "log"
-            self.message = "Processo encontrado! Informando valores..."
-            self.prt()
-            # module = "get_valores_proc"
-            get_valores = self.get_valores_proc()
+                self.type_log = "log"
+                self.message = "Processo encontrado! Informando valores..."
+                self.prt()
 
-            edit_button: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.css_btn_edit)
-                )
+                calls = self.setup_calls()
+
+                for call in calls:
+                    call()
+
+                self.save_changes()
+
+            if search is False:
+                raise ErroDeExecucao("Processo não encontrado!")
+
+        except Exception as e:
+            raise e
+
+    def setup_calls(self):
+
+        calls = []
+
+        # module = "get_valores_proc"
+        get_valores = self.get_valores_proc()
+
+        provisao = (
+            str(self.bot_data.get("PROVISAO"))
+            .replace("possivel", "possível")
+            .replace("provavel", "provável")
+            .lower()
+        )
+
+        chk_getvals1 = get_valores == "Contém valores"
+        possible = provisao == "possível"
+
+        if chk_getvals1 and possible:
+            raise ErroDeExecucao('Provisão "Possível" já inserida')
+
+        edit_button: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_btn_edit)
             )
-            edit_button.click()
-            provisao = (
-                str(self.bot_data.get("PROVISAO"))
-                .replace("possivel", "possível")
-                .lower()
-            )
+        )
+        edit_button.click()
 
-            chk_getvals1 = get_valores == "Contém valores"
-            possible = provisao == "possível"
+        if get_valores == "Nenhum registro encontrado!":
 
-            if chk_getvals1 and possible:
-                raise ErroDeExecucao('Provisão "Possível" já inserida')
+            calls.append(self.add_new_valor)
+            calls.append(self.set_valores)
+            calls.append(self.informar_datas)
 
-            if get_valores == "Nenhum registro encontrado!":
+        elif get_valores == "Contém valores":
 
-                # module = "add_new_valor"
-                self.add_new_valor()
+            calls.append(self.edit_valor)
 
-            self.set_valores()
-            self.save_changes()
+            if provisao == "provável" or provisao == "possível":
+                calls.append(self.set_valores)
+                calls.append(self.informar_datas)
 
-        if search is not True:
-            self.message = "Processo não encontrado!"
-            self.type_log = "error"
-            self.prt()
-            self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
+        calls.append(self.set_risk)
+
+        return calls
 
     def get_valores_proc(self) -> str:
 
@@ -187,15 +213,18 @@ class provisao(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao("Não foi possivel atualizar provisão", e=e)
 
+    def edit_valor(self):
+
+        editar_pedido: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.botao_editar)
+            )
+        )
+        editar_pedido.click()
+
     def set_valores(self):
 
         try:
-            editar_pedido: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.botao_editar)
-                )
-            )
-            editar_pedido.click()
 
             self.message = "Informando valores"
             self.type_log = "log"
@@ -230,6 +259,10 @@ class provisao(CrawJUD):
 
         try:
 
+            self.message = "Alterando risco"
+            self.type_log = "log"
+            self.prt()
+
             expand_filter_risk = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.css_risk
             )
@@ -241,13 +274,15 @@ class provisao(CrawJUD):
             )
             filter_risk = div_filter_risk.find_elements(By.TAG_NAME, "li")
 
-            self.message = "Alterando risco"
-            self.type_log = "log"
-            self.prt()
             for item in filter_risk:
 
                 # label_risco = self.driver.find_element(By.CSS_SELECTOR, 'label[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_label"]').text.lower()
-                provisao_from_xlsx = str(self.bot_data.get("PROVISAO")).lower()
+                provisao_from_xlsx = (
+                    str(self.bot_data.get("PROVISAO"))
+                    .lower()
+                    .replace("possivel", "possível")
+                    .replace("provavel", "provável")
+                )
 
                 provisao = item.text.lower()
                 if provisao == provisao_from_xlsx:
@@ -272,32 +307,49 @@ class provisao(CrawJUD):
             self.message = "Alterando datas de correção base e juros"
             self.type_log = "log"
             self.prt()
-            if self.bot_data.get("DATA_ATUALIZACAO"):
+
+            def set_dataCorrecao(dataBaseCorrecao: str):
 
                 DataCorrecao = self.driver.find_element(
                     By.CSS_SELECTOR, self.elements.DataCorrecaoCss
                 )
                 css_DataCorrecao = DataCorrecao.get_attribute("id")
                 self.interact.clear(DataCorrecao)
-                self.interact.send_key(
-                    DataCorrecao, self.bot_data.get("DATA_ATUALIZACAO")
-                )
+                self.interact.send_key(DataCorrecao, dataBaseCorrecao)
 
                 self.driver.execute_script(
                     f"document.getElementById('{css_DataCorrecao}').blur()"
                 )
                 self.interact.sleep_load('div[id="j_id_2z"]')
 
+            def set_DataJuros(dataBaseJuros: str):
+
                 DataJuros = self.driver.find_element(
                     By.CSS_SELECTOR, self.elements.DataJurosCss
                 )
                 css_data = DataJuros.get_attribute("id")
                 self.interact.clear(DataJuros)
-                self.interact.send_key(DataJuros, self.bot_data.get("DATA_ATUALIZACAO"))
+                self.interact.send_key(DataJuros, dataBaseJuros)
                 self.driver.execute_script(
                     f"document.getElementById('{css_data}').blur()"
                 )
                 self.interact.sleep_load('div[id="j_id_2z"]')
+
+            dataBaseCorrecao = self.bot_data.get("DATA_BASE_CORRECAO")
+            dataBaseJuros = self.bot_data.get("DATA_BASE_JUROS")
+            if dataBaseCorrecao is not None:
+
+                if isinstance(dataBaseCorrecao, datetime):
+                    dataBaseCorrecao = dataBaseCorrecao.strftime("%d/%m/%Y")
+
+                set_dataCorrecao(dataBaseCorrecao)
+
+            if dataBaseJuros is not None:
+
+                if isinstance(dataBaseJuros, datetime):
+                    dataBaseJuros = dataBaseJuros.strftime("%d/%m/%Y")
+
+                set_DataJuros(dataBaseJuros)
 
         except Exception as e:
             raise e
@@ -326,7 +378,7 @@ class provisao(CrawJUD):
                 )
             )
             informar_motivo.send_keys(
-                f"Atualização de provisão - {self.bot_data.get('OBSERVACAO')}"
+                self.bot_data.get("OBSERVACAO", "Atualização de provisão")
             )
             id_informar_motivo = informar_motivo.get_attribute("id")
             self.driver.execute_script(
