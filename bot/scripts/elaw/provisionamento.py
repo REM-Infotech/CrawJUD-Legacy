@@ -140,7 +140,7 @@ class provisao(CrawJUD):
             calls.append(self.set_valores)
             calls.append(self.informar_datas)
 
-        elif get_valores == "Contém valores":
+        elif get_valores == "Contém valores" or get_valores == "-":
 
             calls.append(self.edit_valor)
 
