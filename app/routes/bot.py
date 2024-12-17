@@ -6,6 +6,7 @@ import platform
 import sys
 
 from flask import Blueprint, jsonify, make_response, request
+from flask_sqlalchemy import SQLAlchemy
 
 from bot import WorkerThread
 
@@ -79,11 +80,19 @@ def botlaunch(id: int, system: str, typebot: str):
 
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
-def stop_bot(user: str, pid: str):
+def stop_bot(user: str, pid: str):  # pragma: no cover
 
     from flask import current_app as app
 
-    with app.app_context():
-        args, code = stop_execution(app, pid, True)
+    from app.models import Executions
 
-        return jsonify(args), code
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
+    query = db.session.query(Executions).filter(Executions.pid == pid).first()
+    if query:
+        pid = query.pid
+        with app.app_context():
+            args, code = stop_execution(app, pid, True)
+
+            return jsonify(args), code
+
+    return jsonify({"error": "PID não encontrado"}), 404
