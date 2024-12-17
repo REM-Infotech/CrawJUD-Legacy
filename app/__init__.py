@@ -3,7 +3,6 @@
 import os
 import pathlib
 from datetime import timedelta
-from importlib import import_module
 from pathlib import Path
 
 from dotenv import dotenv_values
@@ -137,9 +136,10 @@ class AppFactory:
         return app
 
     def init_routes(self, app: Flask):
-        with app.app_context():
-            import_module("app.routes", __name__)
-            import_module("app.handling", __name__)
+
+        from app.routes import register_routes
+
+        register_routes(app)
 
     def init_talisman(self, app: Flask):  # pragma: no cover
 

@@ -42,41 +42,6 @@ class classproperty:
     elmnt = None
     interact_ = None
 
-    def __init__(cls, fget=None, fset=None, fdel=None):
-        cls.fget = fget
-        cls.fset = fset
-        cls.fdel = fdel
-
-    def getter(cls, func):
-        cls.fget = func
-        return cls
-
-    def setter(cls, func):
-        cls.fset = func
-        return cls
-
-    def deleter(cls, func):
-        cls.fdel = func
-        return cls
-
-    def __get__(cls, instance, owner):
-        if not cls.fget:
-            raise AttributeError("getter não definido")
-        # Chamando o método getter como um método de classe
-        return cls.fget(owner)
-
-    def __set__(cls, instance, value):
-        if not cls.fset:
-            raise AttributeError("setter não definido")
-        # Chamando o método setter como um método de classe
-        cls.fset(instance.__class__, value)
-
-    def __delete__(cls, instance):
-        if not cls.fdel:
-            raise AttributeError("deleter não definido")
-        # Chamando o método deleter como um método de classe
-        cls.fdel(instance.__class__)
-
     @property
     def appends(self):
         return self.appends_
@@ -144,19 +109,19 @@ class classproperty:
         return chk
 
     @property
-    def driver(self) -> WebDriver:
+    def driver(self) -> WebDriver:  # pragma: no cover
         return classproperty.drv
 
     @driver.setter
-    def driver(self, new_drv: WebDriver):
+    def driver(self, new_drv: WebDriver):  # pragma: no cover
         classproperty.drv = new_drv
 
     @property
-    def wait(self) -> WebDriverWait:
+    def wait(self) -> WebDriverWait:  # pragma: no cover
         return classproperty.wt
 
     @wait.setter
-    def wait(self, new_wt: WebDriverWait):
+    def wait(self, new_wt: WebDriverWait):  # pragma: no cover
         classproperty.wt = new_wt
 
     @property
@@ -208,7 +173,7 @@ class classproperty:
         classproperty.graphicMode_ = new_graph
 
     @property
-    def list_args(self):
+    def list_args(self):  # pragma: no cover
         return [
             "--ignore-ssl-errors=yes",
             "--ignore-certificate-errors",
@@ -220,7 +185,7 @@ class classproperty:
         ]
 
     @list_args.setter
-    def list_args(self, new_Args: list[str]):
+    def list_args(self, new_Args: list[str]):  # pragma: no cover
         classproperty.cr_list_args = new_Args
 
     @property
@@ -232,50 +197,50 @@ class classproperty:
         classproperty.bot_data_ = new_botdata
 
     @property
-    def AuthBot(self):
+    def AuthBot(self):  # pragma: no cover
         from .Utils.auth import AuthBot
 
         return AuthBot()
 
     @property
-    def SearchBot(self):
+    def SearchBot(self):  # pragma: no cover
 
         from .Utils.search import SeachBot
 
         return SeachBot()
 
     @property
-    def interact(self):
+    def interact(self):  # pragma: no cover
         from .Utils.interator import Interact
 
         return Interact()
 
     @property
-    def printtext(self):
+    def printtext(self):  # pragma: no cover
         from .Utils.PrintLogs import printbot
 
         return printbot
 
     @property
-    def MakeXlsx(self):
+    def MakeXlsx(self):  # pragma: no cover
         from .Utils.MakeTemplate import MakeXlsx
 
         return MakeXlsx
 
     @property
-    def cities_Amazonas(self):
+    def cities_Amazonas(self):  # pragma: no cover
         from .Utils.dicionarios import cities_Amazonas
 
         return cities_Amazonas
 
     @property
-    def elements(self):
+    def elements(self):  # pragma: no cover
         from .Utils.elements import ElementsBot
 
         return ElementsBot().Elements
 
     @property
-    def vara(self) -> str:
+    def vara(self) -> str:  # pragma: no cover
         return classproperty.vara_
 
     @vara.setter

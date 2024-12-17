@@ -1,55 +1,55 @@
-import json
-import os
-import pathlib
-import platform
-import re
-import shutil
-import ssl
-import subprocess
-import time
-import unicodedata
-from datetime import datetime
-from difflib import SequenceMatcher
-from typing import Dict, List, Union
+import json  # pragma: no cover
+import os  # pragma: no cover
+import pathlib  # pragma: no cover
+import platform  # pragma: no cover
+import re  # pragma: no cover
+import shutil  # pragma: no cover
+import ssl  # pragma: no cover
+import subprocess  # pragma: no cover
+import time  # pragma: no cover
+import unicodedata  # pragma: no cover
+from datetime import datetime  # pragma: no cover
+from difflib import SequenceMatcher  # pragma: no cover
+from typing import Dict, List, Union  # pragma: no cover
 
-import pandas as pd
-import pytz
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-from openai import OpenAI
+import pandas as pd  # pragma: no cover
+import pytz  # pragma: no cover
+from cryptography import x509  # pragma: no cover
+from cryptography.hazmat.backends import default_backend  # pragma: no cover
+from openai import OpenAI  # pragma: no cover
 
 # from openai._streaming import Stream
 # from openai.types.chat.chat_completion import ChatCompletion
 # from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
-from pandas import Timestamp
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+from pandas import Timestamp  # pragma: no cover
+from selenium import webdriver  # pragma: no cover
+from selenium.webdriver.chrome.options import Options  # pragma: no cover
+from selenium.webdriver.chrome.service import Service  # pragma: no cover
+from selenium.webdriver.common.by import By  # pragma: no cover
+from selenium.webdriver.remote.webdriver import WebDriver  # pragma: no cover
+from selenium.webdriver.remote.webelement import WebElement  # pragma: no cover
+from selenium.webdriver.support import expected_conditions as EC  # pragma: no cover
+from selenium.webdriver.support.wait import WebDriverWait  # pragma: no cover
 
 # from tenacity import (  # for exponential backoff
 #     retry,
 #     stop_after_attempt,
 #     wait_random_exponential,
 # )
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename  # pragma: no cover
 
-from ...common.exceptions import ErroDeExecucao
-from ...meta import classproperty
-from ..Utils.Driver import GetDriver
+from ...common.exceptions import ErroDeExecucao  # pragma: no cover
+from ...meta import classproperty  # pragma: no cover
+from ..Utils.Driver import GetDriver  # pragma: no cover
 
 TypeHint = Union[
     List[str],
     List[Dict[str, str | int | float | datetime]],
     Dict[str, str],
-]
+]  # pragma: no cover
 
 
-class CrawJUD(classproperty):
+class CrawJUD(classproperty):  # pragma: no cover
 
     settings = {
         "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],

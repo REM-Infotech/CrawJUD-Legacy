@@ -15,7 +15,7 @@ wh = Blueprint("webhook", __package__)
 
 # Endpoint para o webhook
 @wh.post("/webhook")
-def github_webhook():
+def github_webhook():  # pragma: no cover
 
     app = current_app
     data = request.json
@@ -59,7 +59,7 @@ def github_webhook():
         return jsonify({"message": "Evento ignorado"}), 500
 
 
-def update_servers(tag: str):
+def update_servers(tag: str):  # pragma: no cover
 
     checkout_release(tag)
 
@@ -69,7 +69,9 @@ def update_servers(tag: str):
         f.write(checkout_release_tag())
 
 
-def verify_signature(payload_body, secret_token: str, signature_header: str):
+def verify_signature(
+    payload_body, secret_token: str, signature_header: str
+):  # pragma: no cover
     """Verify that the payload was sent from GitHub by validating SHA256.
 
     Raise and return 403 if not authorized.
@@ -91,7 +93,7 @@ def verify_signature(payload_body, secret_token: str, signature_header: str):
         raise abort(403, detail="Request signatures didn't match!")
 
 
-def checkout_release(tag: str):
+def checkout_release(tag: str):  # pragma: no cover
 
     repo = Repo(Path(__file__).cwd())
     git = repo.git

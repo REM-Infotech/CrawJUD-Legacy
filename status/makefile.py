@@ -12,6 +12,10 @@ def makezip(pid: str) -> str:  # pragma: no cover
 
     file_paths = []
     exec_path = Path(path.join(pathlib.Path(__file__).cwd(), "exec", pid))
+
+    if not exec_path.exists():
+        exec_path.mkdir()
+
     files = [str(f) for f in exec_path.iterdir() if f.is_file()]
     files_subfolders = [
         path.join(f, file)

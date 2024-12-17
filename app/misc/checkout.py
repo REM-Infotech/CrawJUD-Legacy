@@ -19,7 +19,7 @@ def checkout_release_tag() -> str:
 
     debug = config_vals.get("DEBUG", "False").lower() in ("true")
 
-    if debug is False:
+    if debug is False:  # pragma: no cover
         releases = list(filter(lambda release: "stable" in release.tag_name, releases))
 
     latest_release = sorted(

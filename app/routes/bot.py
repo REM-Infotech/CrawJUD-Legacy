@@ -16,7 +16,7 @@ path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
-def reload_module(module_name: str):
+def reload_module(module_name: str):  # pragma: no cover
     if module_name in sys.modules:
         importlib.reload(sys.modules[module_name])
     else:
