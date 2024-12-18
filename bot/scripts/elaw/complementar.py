@@ -23,7 +23,7 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 class complement(CrawJUD):
 
-    def __init__(self, **kwrgs) -> None:
+    def __init__(self, **kwrgs):
         super().__init__(**kwrgs)
         super().setup()
         super().auth_bot()
@@ -35,7 +35,7 @@ class complement(CrawJUD):
 
         self.start_time = time.perf_counter()
 
-    def execution(self) -> None:
+    def execution(self):
 
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -86,7 +86,7 @@ class complement(CrawJUD):
 
         self.finalize_execution()
 
-    def queue(self) -> None:
+    def queue(self):
 
         search = self.SearchBot()
         self.bot_data = self.elawFormats(self.bot_data)
@@ -121,7 +121,7 @@ class complement(CrawJUD):
                 self.type_log = "info"
                 self.prt()
 
-            def unidade_consumidora() -> None:
+            def unidade_consumidora():
 
                 self.message = "Informando unidade consumidora"
                 self.type_log = "log"
@@ -144,7 +144,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def divisao() -> None:
+            def divisao():
 
                 self.message = "Informando divisão"
                 self.type_log = "log"
@@ -161,7 +161,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def data_citacao() -> None:
+            def data_citacao():
 
                 self.message = "Informando data de citação"
                 self.type_log = "log"
@@ -185,7 +185,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def estado() -> None:
+            def estado():
                 """Declaração dos CSS em variáveis"""
 
                 key = "ESTADO"
@@ -203,7 +203,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def comarca() -> None:
+            def comarca():
                 """Declaração dos CSS em variáveis"""
 
                 text = str(self.bot_data.get("COMARCA"))
@@ -220,7 +220,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def foro() -> None:
+            def foro():
                 """Declaração dos CSS em variáveis"""
 
                 elementSelect = self.elements.foro_input
@@ -237,7 +237,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def vara() -> None:
+            def vara():
                 """Declaração dos CSS em variáveis"""
 
                 text = self.bot_data.get("VARA")
@@ -254,7 +254,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def fase() -> None:
+            def fase():
                 """Declaração dos CSS em variáveis"""
                 elementSelect = self.elements.fase_input
                 text = self.bot_data.get("FASE")
@@ -270,7 +270,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def provimento() -> None:
+            def provimento():
                 """Declaração dos CSS em variáveis"""
                 text = self.bot_data.get("PROVIMENTO")
                 elementSelect = self.elements.provimento_input
@@ -286,7 +286,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def fato_gerador() -> None:
+            def fato_gerador():
                 """Declaração dos CSS em variáveis"""
                 self.message = "Informando fato gerador"
                 self.type_log = "log"
@@ -302,7 +302,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
-            def desc_objeto() -> None:
+            def desc_objeto():
 
                 input_descobjeto = self.wait.until(
                     EC.presence_of_element_located(
@@ -320,7 +320,7 @@ class complement(CrawJUD):
                 )
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
-            def objeto() -> None:
+            def objeto():
                 """Declaração dos CSS em variáveis"""
                 self.message = "Informando objeto do processo"
                 self.type_log = "log"
@@ -334,6 +334,34 @@ class complement(CrawJUD):
 
                 self.message = "Objeto do processo informado!"
                 self.type_log = "log"
+                self.prt()
+
+            def tipo_empresa():
+
+                self.message = "Informando contingenciamento"
+                self.type_log = "log"
+                self.prt()
+
+                elementSelect = self.elements.contingencia
+
+                text = ["Passiva", "Passivo"]
+                if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
+                    text = ["Ativa", "Ativo"]
+
+                self.Select2_ELAW(elementSelect, text[0])
+                self.interact.sleep_load('div[id="j_id_3x"]')
+
+                elementSelect = self.elements.tipo_polo
+
+                text = ["Passiva", "Passivo"]
+                if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
+                    text = ["Ativa", "Ativo"]
+
+                self.Select2_ELAW(elementSelect, text[1])
+                self.interact.sleep_load('div[id="j_id_3x"]')
+
+                self.message = "Contingenciamento informado!"
+                self.type_log = "info"
                 self.prt()
 
             start_time = time.perf_counter()
@@ -386,7 +414,7 @@ class complement(CrawJUD):
         elif search is not True:
             raise ErroDeExecucao("Processo não encontrado!")
 
-    def salvar_tudo(self) -> None:
+    def salvar_tudo(self):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
