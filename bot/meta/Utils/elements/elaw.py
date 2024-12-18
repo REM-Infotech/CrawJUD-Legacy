@@ -44,7 +44,10 @@ class AME:
     comboAreaSub_css = 'div[id="comboAreaSub"]'
     elemento_ComboAreaSub = 'div[id="comboAreaSub_panel"]'
     css_button = 'button[id="btnContinuar"]'
-    css_esfera_judge = 'div[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito"]'
+
+    label_esfera = 'label[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_label"]'
+
+    css_esfera_judge = 'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_input"]'
     combo_rito = 'div[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_panel"]'
     estado_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboEstadoVara_input']"
     comarca_input = (

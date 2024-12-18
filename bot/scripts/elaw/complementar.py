@@ -105,6 +105,22 @@ class complement(CrawJUD):
 
             lista1 = list(self.bot_data.keys())
 
+            def esfera():
+
+                elementSelect = self.elements.css_esfera_judge
+                text = "Judicial"
+
+                self.message = "Informando esfera do processo"
+                self.type_log = "log"
+                self.prt()
+
+                self.Select2_ELAW(elementSelect, text)
+                self.interact.sleep_load('div[id="j_id_3x"]')
+
+                self.message = "Esfera Informada!"
+                self.type_log = "info"
+                self.prt()
+
             def unidade_consumidora() -> None:
 
                 self.message = "Informando unidade consumidora"
@@ -322,6 +338,15 @@ class complement(CrawJUD):
 
             start_time = time.perf_counter()
             class_itens = list(locals().items())
+
+            check_esfera = self.wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.label_esfera)
+                )
+            )
+
+            if check_esfera.text == "Selecione":
+                esfera()
 
             for item in lista1:
                 check_column = self.bot_data.get(item.upper())
