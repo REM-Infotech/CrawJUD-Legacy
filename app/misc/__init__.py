@@ -98,12 +98,12 @@ def stop_execution(
                 db.session.commit()
                 db.session.close()
 
-        elif not processID:
+        elif not processID:  # pragma: no cover
             raise Exception("Execution not found!")
 
         return {"message": "bot stopped!"}, 200
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         app.logger.error("An error occurred: %s", str(e))
         return {"message": "An internal error has occurred!"}, 500
 

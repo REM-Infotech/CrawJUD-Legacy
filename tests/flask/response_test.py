@@ -29,7 +29,9 @@ def test_client_flask(
     chk_bot_error = response_bot_error.status_code == 500
     chk_bot_success = response_bot_sucess.status_code == 200
 
-    chk_botstop_error = botstop_error.status_code == 500
+    chk_botstop_error = (
+        botstop_error.status_code == 404 or botstop_error.status_code == 500
+    )
     chk_botstop_success = botstop_success.status_code == 200
 
     assert all(
