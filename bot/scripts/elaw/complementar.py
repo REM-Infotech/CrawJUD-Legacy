@@ -3,6 +3,7 @@ import pathlib
 import time
 from contextlib import suppress
 from time import sleep
+from typing import Callable
 
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -106,6 +107,16 @@ class complement(CrawJUD):
             lista1 = list(self.bot_data.keys())
 
             def esfera():
+                """
+                Selects the judicial sphere for the process.
+                This function performs the following steps:
+                1. Sets the element selector for the judicial sphere.
+                2. Sets the text to "Judicial".
+                3. Logs the message "Informando esfera do processo" with type "log".
+                4. Calls the Select2_ELAW method to select the judicial sphere.
+                5. Waits for the loading of the specified div element.
+                6. Logs the message "Esfera Informada!" with type "info".
+                """
 
                 elementSelect = self.elements.css_esfera_judge
                 text = "Judicial"
@@ -119,70 +130,6 @@ class complement(CrawJUD):
 
                 self.message = "Esfera Informada!"
                 self.type_log = "info"
-                self.prt()
-
-            def unidade_consumidora():
-
-                self.message = "Informando unidade consumidora"
-                self.type_log = "log"
-                self.prt()
-
-                input_uc: WebElement = self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.css_input_uc)
-                    )
-                )
-                input_uc.click()
-
-                self.interact.clear(input_uc)
-
-                self.interact.send_key(
-                    input_uc, self.bot_data.get("UNIDADE_CONSUMIDORA")
-                )
-
-                self.message = "Unidade consumidora informada!"
-                self.type_log = "log"
-                self.prt()
-
-            def divisao():
-
-                self.message = "Informando divisão"
-                self.type_log = "log"
-                self.prt()
-
-                sleep(0.5)
-                text = str(self.bot_data.get("DIVISAO"))
-
-                self.Select2_ELAW(self.elements.elementSelect, text)
-
-                self.interact.sleep_load('div[id="j_id_3x"]')
-
-                self.message = "Divisão informada!"
-                self.type_log = "log"
-                self.prt()
-
-            def data_citacao():
-
-                self.message = "Informando data de citação"
-                self.type_log = "log"
-                self.prt()
-
-                data_citacao: WebElement = self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.css_data_citacao)
-                    )
-                )
-                self.interact.clear(data_citacao)
-                self.interact.sleep_load('div[id="j_id_3x"]')
-                self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
-                sleep(2)
-                self.driver.execute_script(
-                    f"document.querySelector('{self.elements.css_data_citacao}').blur()"
-                )
-                self.interact.sleep_load('div[id="j_id_3x"]')
-
-                self.message = "Data de citação informada!"
-                self.type_log = "log"
                 self.prt()
 
             def estado():
@@ -254,6 +201,89 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
 
+            def unidade_consumidora():
+                """
+                Handles the process of informing the consumer unit in the web application.
+                This function performs the following steps:
+                1. Logs the start of the process.
+                2. Waits for the input field for the consumer unit to be present in the DOM.
+                3. Clicks on the input field.
+                4. Clears any existing text in the input field.
+                5. Sends the consumer unit data to the input field.
+                6. Logs the completion of the process.
+                Attributes:
+                    self.message (str): Message to be logged.
+                    self.type_log (str): Type of log to be recorded.
+                    self.elements.css_input_uc (str): CSS selector for the consumer unit input field.
+                    self.bot_data (dict): Dictionary containing the consumer unit data.
+                    self.prt(): Method to print/log messages.
+                    self.wait.until(): Method to wait until a condition is met.
+                    self.interact.clear(): Method to clear the input field.
+                    self.interact.send_key(): Method to send keys to the input field.
+                """
+
+                self.message = "Informando unidade consumidora"
+                self.type_log = "log"
+                self.prt()
+
+                input_uc: WebElement = self.wait.until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.css_input_uc)
+                    )
+                )
+                input_uc.click()
+
+                self.interact.clear(input_uc)
+
+                self.interact.send_key(
+                    input_uc, self.bot_data.get("UNIDADE_CONSUMIDORA")
+                )
+
+                self.message = "Unidade consumidora informada!"
+                self.type_log = "log"
+                self.prt()
+
+            def divisao():
+
+                self.message = "Informando divisão"
+                self.type_log = "log"
+                self.prt()
+
+                sleep(0.5)
+                text = str(self.bot_data.get("DIVISAO"))
+
+                self.Select2_ELAW(self.elements.elementSelect, text)
+
+                self.interact.sleep_load('div[id="j_id_3x"]')
+
+                self.message = "Divisão informada!"
+                self.type_log = "log"
+                self.prt()
+
+            def data_citacao():
+
+                self.message = "Informando data de citação"
+                self.type_log = "log"
+                self.prt()
+
+                data_citacao: WebElement = self.wait.until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, self.elements.css_data_citacao)
+                    )
+                )
+                self.interact.clear(data_citacao)
+                self.interact.sleep_load('div[id="j_id_3x"]')
+                self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
+                sleep(2)
+                self.driver.execute_script(
+                    f"document.querySelector('{self.elements.css_data_citacao}').blur()"
+                )
+                self.interact.sleep_load('div[id="j_id_3x"]')
+
+                self.message = "Data de citação informada!"
+                self.type_log = "log"
+                self.prt()
+
             def fase():
                 """Declaração dos CSS em variáveis"""
                 elementSelect = self.elements.fase_input
@@ -284,6 +314,46 @@ class complement(CrawJUD):
 
                 self.message = "Provimento antecipatório informado!"
                 self.type_log = "log"
+                self.prt()
+
+            def valor_causa(self) -> None:
+                """
+                Fills in the value of the cause in a web form.
+                This method performs the following steps:
+                1. Logs the start of the process.
+                2. Waits for the element representing the value of the cause to be clickable.
+                3. Clicks on the element, clears any existing text, and inputs the new value.
+                4. Executes a JavaScript command to remove focus from the input field.
+                5. Waits for a specific loading element to disappear.
+                6. Logs the completion of the process.
+                Raises:
+                    TimeoutException: If the element is not found within the specified wait time.
+                """
+
+                self.message = "Informando valor da causa"
+                self.type_log = "log"
+                self.prt()
+
+                valor_causa: WebElement = self.wait.until(
+                    EC.element_to_be_clickable(
+                        (By.CSS_SELECTOR, self.elements.css_valor_causa)
+                    ),
+                    message="Erro ao encontrar elemento",
+                )
+
+                valor_causa.click()
+                sleep(0.5)
+                valor_causa.clear()
+
+                self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
+                self.driver.execute_script(
+                    f"document.querySelector('{self.elements.css_valor_causa}').blur()"
+                )
+
+                self.interact.sleep_load('div[id="j_id_3x"]')
+
+                self.message = "Valor da causa informado!"
+                self.type_log = "info"
                 self.prt()
 
             def fato_gerador():
@@ -380,7 +450,7 @@ class complement(CrawJUD):
                 check_column = self.bot_data.get(item.upper())
 
                 if check_column:
-                    func = None
+                    func: Callable[[], None] = None
 
                     for name, func in class_itens:
                         if name.lower() == item.lower():
@@ -397,6 +467,7 @@ class complement(CrawJUD):
             self.message = (
                 f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
             )
+
             self.type_log = "log"
             self.prt()
 
