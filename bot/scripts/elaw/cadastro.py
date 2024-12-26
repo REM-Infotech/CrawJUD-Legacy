@@ -206,20 +206,14 @@ class cadastro(CrawJUD):
 
     def info_localizacao(self) -> None:
 
+        elementSelect = self.elements.css_esfera_judge
+        text = "Judicial"
+
         self.message = "Informando esfera do processo"
         self.type_log = "log"
         self.prt()
 
-        set_esfera_judge: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_esfera_judge)
-            ),
-            message="Erro ao encontrar elemento",
-        )
-        set_esfera_judge.click()
-        sleep(0.5)
-
-        self.interact.select_item(self.elements.combo_rito, "Judicial")
+        self.Select2_ELAW(elementSelect, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Esfera Informada!"
