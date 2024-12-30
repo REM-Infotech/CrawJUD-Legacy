@@ -68,8 +68,18 @@ class AME:
     css_search_button = (
         'button[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_f"]'
     )
-    css_div_select_opt = 'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]'
-    select_field = 'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
+    css_div_select_opt = "".join(
+        (
+            'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4',
+            '_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]',
+        )
+    )
+    select_field = "".join(
+        (
+            'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44',
+            '_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]',
+        )
+    )
     css_other_location = "".join(
         (
             'input[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:',
@@ -86,7 +96,12 @@ class AME:
         'input[id="j_id_3k_1:comboAdvogadoResponsavelProcesso_filter"]'
     )
     css_input_adv = 'input[id="j_id_3k_1:autoCompleteLawyerOutraParte_input"]'
-    css_check_adv = r"#j_id_3k_1\:autoCompleteLawyerOutraParte_panel > ul > li.ui-autocomplete-item.ui-autocomplete-list-item.ui-corner-all.ui-state-highlight"
+    css_check_adv = "".join(
+        (
+            r"#j_id_3k_1\:autoCompleteLawyerOutraParte_panel > ul > li.ui-autocomplete-item.",
+            "ui-autocomplete-list-item.ui-corner-all.ui-state-highlight",
+        )
+    )
     css_valor_causa = 'input[id="j_id_3k_1:amountCase_input"]'
     escritrorio_externo = 'div[id="j_id_3k_1:comboEscritorio"]'
     combo_escritorio = 'div[id="j_id_3k_1:comboEscritorio_panel"]'
@@ -96,7 +111,12 @@ class AME:
     )
     css_add_adv = 'button[id="j_id_3k_1:lawyerOutraParteNovoButtom"]'
     xpath = '//*[@id="j_id_3k_1:lawyerOutraParteNovoButtom_dlg"]/div[2]/iframe'
-    css_naoinfomadoc = "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div > div.ui-radiobutton-box.ui-widget.ui-corner-all.ui-state-default"
+    css_naoinfomadoc = "".join(
+        (
+            "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >",
+            " div.ui-radiobutton-box.ui-widget.ui-corner-all.ui-state-default",
+        )
+    )
     botao_continuar = 'button[id="j_id_1e"]'
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
     salvarcss = 'button[id="lawyerOutraParteButtom"]'
@@ -158,7 +178,13 @@ class AME:
     resultado_favorecido = 'li[class="ui-autocomplete-item ui-autocomplete-list-item ui-corner-all ui-state-highlight"]'
     valor_processo = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:pvpEFSpgTypeSelectField1CombosCombo"]'
     boleto = 'li[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:pvpEFSpgTypeSelectField1CombosCombo_1"]'
-    css_cod_bars = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:j_id_2m_1_i_8_1_9_26_1_2_c_2:j_id_2m_1_i_8_1_9_26_1_2_c_5:0:j_id_2m_1_i_8_1_9_26_1_2_c_15:j_id_2m_1_i_8_1_9_26_1_2_c_1v"]'
+    css_cod_bars = "".join(
+        (
+            'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:',
+            "j_id_2m_1_i_8_1_9_26_1_2_c_2:j_id_2m_1_i_8_1_9_26_1_2_c_5:0:",
+            'j_id_2m_1_i_8_1_9_26_1_2_c_15:j_id_2m_1_i_8_1_9_26_1_2_c_1v"]',
+        )
+    )
     css_centro_custas = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_9_1_9_26_1_1_1:pvpEFBfieldText"]'
     css_div_conta_debito = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_a_1_9_26_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
     valor_guia = 'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
@@ -175,7 +201,12 @@ class AME:
     botao_ver = 'button[title="Ver"]'
     valor = 'iframe[title="Valor"]'
     visualizar_tipo_custas = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(5)"
-    visualizar_cod_barras = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_7_8_4_23_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > tr:nth-child(3)"
+    visualizar_cod_barras = "".join(
+        (
+            r"#processoValorPagamentoView\:j_id_p_1_2_1_2_7_8_4_23_1\:j_id_p_1_2_1_",
+            r"2_7_8_4_23_2_1_2_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > tr:nth-child(3)",
+        )
+    )
     visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"
 
     # PROVISIONAMENTO

@@ -16,7 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError, ProtocolError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -55,7 +55,12 @@ class cadastro(CrawJUD):
 
                 old_message = None
                 check_window = any(
-                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                    ext is True
+                    for ext in [
+                        isinstance(e, NoSuchWindowException),
+                        isinstance(e, MaxRetryError),
+                        isinstance(e.except_captured, ProtocolError),
+                    ]
                 )
                 if check_window:
 
@@ -85,70 +90,74 @@ class cadastro(CrawJUD):
 
     def queue(self) -> None:
 
-        self.bot_data = self.elawFormats(self.bot_data)
-        search = self.SearchBot()
+        try:
+            self.bot_data = self.elawFormats(self.bot_data)
+            search = self.SearchBot()
 
-        if search is True:
+            if search is True:
 
-            self.append_success(
-                [
-                    self.bot_data.get("NUMERO_PROCESSO"),
-                    "Processo já cadastrado!",
-                    self.pid,
-                ]
-            )
+                self.append_success(
+                    [
+                        self.bot_data.get("NUMERO_PROCESSO"),
+                        "Processo já cadastrado!",
+                        self.pid,
+                    ]
+                )
 
-        elif search is not True:
+            elif search is not True:
 
-            self.message = "Processo não encontrado, inicializando cadastro..."
-            self.type_log = "log"
-            self.prt()
+                self.message = "Processo não encontrado, inicializando cadastro..."
+                self.type_log = "log"
+                self.prt()
 
-            btn_newproc = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.botao_novo
-            )
-            btn_newproc.click()
+                btn_newproc = self.driver.find_element(
+                    By.CSS_SELECTOR, self.elements.botao_novo
+                )
+                btn_newproc.click()
 
-            start_time = time.perf_counter()
+                start_time = time.perf_counter()
 
-            self.area_direito()
-            self.subarea_direito()
-            self.next_page()
-            self.info_localizacao()
-            self.informa_estado()
-            self.informa_comarca()
-            self.informa_foro()
-            self.informa_vara()
-            self.informa_proceso()
-            self.informa_empresa()
-            self.set_classe_empresa()
-            self.parte_contraria()
-            self.uf_proc()
-            self.acao_proc()
-            self.advogado_responsavel()
-            self.adv_parte_contraria()
-            self.data_distribuicao()
-            self.info_valor_causa()
-            self.escritorio_externo()
-            self.tipo_contingencia()
+                self.area_direito()
+                self.subarea_direito()
+                self.next_page()
+                self.info_localizacao()
+                self.informa_estado()
+                self.informa_comarca()
+                self.informa_foro()
+                self.informa_vara()
+                self.informa_proceso()
+                self.informa_empresa()
+                self.set_classe_empresa()
+                self.parte_contraria()
+                self.uf_proc()
+                self.acao_proc()
+                self.advogado_responsavel()
+                self.adv_parte_contraria()
+                self.data_distribuicao()
+                self.info_valor_causa()
+                self.escritorio_externo()
+                self.tipo_contingencia()
 
-            end_time = time.perf_counter()
-            execution_time = end_time - start_time
-            calc = execution_time / 60
-            splitcalc = str(calc).split(".")
-            minutes = int(splitcalc[0])
-            seconds = int(float(f"0.{splitcalc[1]}") * 60)
+                end_time = time.perf_counter()
+                execution_time = end_time - start_time
+                calc = execution_time / 60
+                splitcalc = str(calc).split(".")
+                minutes = int(splitcalc[0])
+                seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
-            self.message = (
-                f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-            )
-            self.type_log = "log"
-            self.prt()
+                self.message = (
+                    f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
+                )
+                self.type_log = "log"
+                self.prt()
 
-            self.salvar_tudo()
+                self.salvar_tudo()
 
-            if self.confirm_save() is True:
-                self.print_comprovante()
+                if self.confirm_save() is True:
+                    self.print_comprovante()
+
+        except Exception as e:
+            raise ErroDeExecucao(e=e)
 
     def area_direito(self) -> None:
         """Declaração dos CSS em variáveis"""

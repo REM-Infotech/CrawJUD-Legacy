@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError, ProtocolError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -47,7 +47,12 @@ class andamentos(CrawJUD):
 
                 old_message = None
                 check_window = any(
-                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                    ext is True
+                    for ext in [
+                        isinstance(e, NoSuchWindowException),
+                        isinstance(e, MaxRetryError),
+                        isinstance(e.except_captured, ProtocolError),
+                    ]
                 )
                 if check_window:
 
@@ -77,28 +82,32 @@ class andamentos(CrawJUD):
 
     def queue(self) -> None:
 
-        search = self.SearchBot()
-        if search is True:
-            btn_newmove = self.elements.botao_andamento
-            new_move: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, btn_newmove))
-            )
-            new_move.click()
+        try:
+            search = self.SearchBot()
+            if search is True:
+                btn_newmove = self.elements.botao_andamento
+                new_move: WebElement = self.wait.until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, btn_newmove))
+                )
+                new_move.click()
 
-            self.info_data()
-            self.info_ocorrencia()
-            self.info_observacao()
+                self.info_data()
+                self.info_ocorrencia()
+                self.info_observacao()
 
-            if self.bot_data.get("ANEXOS", None):
-                self.add_anexo()
+                if self.bot_data.get("ANEXOS", None):
+                    self.add_anexo()
 
-            self.save_andamento()
+                self.save_andamento()
 
-        elif search is not True:
-            self.message = "Processo não encontrado!"
-            self.type_log = "error"
-            self.prt()
-            self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
+            elif search is not True:
+                self.message = "Processo não encontrado!"
+                self.type_log = "error"
+                self.prt()
+                self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
+
+        except Exception as e:
+            raise ErroDeExecucao(e=e)
 
     def info_data(self) -> None:
 

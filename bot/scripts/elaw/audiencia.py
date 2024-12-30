@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError, ProtocolError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -43,7 +43,12 @@ class audiencia(CrawJUD):
 
                 old_message = None
                 check_window = any(
-                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                    ext is True
+                    for ext in [
+                        isinstance(e, NoSuchWindowException),
+                        isinstance(e, MaxRetryError),
+                        isinstance(e.except_captured, ProtocolError),
+                    ]
                 )
                 if check_window:
 
@@ -73,43 +78,47 @@ class audiencia(CrawJUD):
 
     def queue(self) -> None:
 
-        search = self.SearchBot()
-        if not search:
-            self.message = "Buscando Processo"
-            raise ErroDeExecucao("Não Encontrado!")
+        try:
+            search = self.SearchBot()
+            if not search:
+                self.message = "Buscando Processo"
+                raise ErroDeExecucao("Não Encontrado!")
 
-        comprovante = ""
-        self.data_Concat = (
-            f'{self.bot_data["DATA_AUDIENCIA"]} {self.bot_data["HORA_AUDIENCIA"]}'
-        )
-        self.message = "Processo Encontrado!"
-        self.type_log = "log"
-        self.prt()
-
-        self.TablePautas()
-        chk_lancamento = self.CheckLancamento()
-
-        if chk_lancamento:
-            self.message = "Já existe lançamento para esta pauta"
-            self.type_log = "info"
-            chk_lancamento.update(
-                {"MENSAGEM_COMCLUSAO": "REGISTROS ANTERIORES EXISTENTES!"}
+            comprovante = ""
+            self.data_Concat = (
+                f'{self.bot_data["DATA_AUDIENCIA"]} {self.bot_data["HORA_AUDIENCIA"]}'
             )
+            self.message = "Processo Encontrado!"
+            self.type_log = "log"
+            self.prt()
 
-            comprovante = chk_lancamento
+            self.TablePautas()
+            chk_lancamento = self.CheckLancamento()
 
-        if not comprovante:
-            self.NovaPauta()
-            self.save_Prazo()
-            comprovante = self.CheckLancamento()
-            if not comprovante:
-                raise ErroDeExecucao(
-                    "Não foi possível comprovar lançamento, verificar manualmente"
+            if chk_lancamento:
+                self.message = "Já existe lançamento para esta pauta"
+                self.type_log = "info"
+                chk_lancamento.update(
+                    {"MENSAGEM_COMCLUSAO": "REGISTROS ANTERIORES EXISTENTES!"}
                 )
 
-            self.message = "Pauta lançada!"
+                comprovante = chk_lancamento
 
-        self.append_success([comprovante], self.message)
+            if not comprovante:
+                self.NovaPauta()
+                self.save_Prazo()
+                comprovante = self.CheckLancamento()
+                if not comprovante:
+                    raise ErroDeExecucao(
+                        "Não foi possível comprovar lançamento, verificar manualmente"
+                    )
+
+                self.message = "Pauta lançada!"
+
+            self.append_success([comprovante], self.message)
+
+        except Exception as e:
+            raise ErroDeExecucao(e=e)
 
     def TablePautas(self) -> None:
 

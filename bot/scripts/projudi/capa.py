@@ -5,7 +5,7 @@ from datetime import datetime
 
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.common.by import By
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError, ProtocolError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -42,7 +42,12 @@ class capa(CrawJUD):
 
                 old_message = None
                 check_window = any(
-                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                    ext is True
+                    for ext in [
+                        isinstance(e, NoSuchWindowException),
+                        isinstance(e, MaxRetryError),
+                        isinstance(e.except_captured, ProtocolError),
+                    ]
                 )
                 if check_window:
 
@@ -73,14 +78,18 @@ class capa(CrawJUD):
 
     def queue(self) -> None:
 
-        search = self.SearchBot()
+        try:
+            search = self.SearchBot()
 
-        if search is not True:
-            raise ErroDeExecucao("Processo não encontrado!")
+            if search is not True:
+                raise ErroDeExecucao("Processo não encontrado!")
 
-        self.driver.refresh()
-        data = self.get_process_informations()
-        self.append_success(data, "Informações do processo extraidas com sucesso!")
+            self.driver.refresh()
+            data = self.get_process_informations()
+            self.append_success(data, "Informações do processo extraidas com sucesso!")
+
+        except Exception as e:
+            raise ErroDeExecucao(e=e)
 
     def get_process_informations(self) -> list:
 

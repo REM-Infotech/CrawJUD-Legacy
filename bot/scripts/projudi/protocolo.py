@@ -18,7 +18,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError, ProtocolError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -57,7 +57,12 @@ class protocolo(CrawJUD):
 
                 old_message = None
                 check_window = any(
-                    [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
+                    ext is True
+                    for ext in [
+                        isinstance(e, NoSuchWindowException),
+                        isinstance(e, MaxRetryError),
+                        isinstance(e.except_captured, ProtocolError),
+                    ]
                 )
                 if check_window:
 
@@ -87,45 +92,52 @@ class protocolo(CrawJUD):
 
     def queue(self) -> None:
 
-        search = self.SearchBot()
+        try:
+            search = self.SearchBot()
 
-        if search is not True:
-            raise ErroDeExecucao("Processo não encontrado!")
+            if search is not True:
+                raise ErroDeExecucao("Processo não encontrado!")
 
-        self.add_new_move()
+            self.add_new_move()
 
-        if self.set_parte() is not True:
-            raise ErroDeExecucao("Não foi possível selecionar parte")
+            if self.set_parte() is not True:
+                raise ErroDeExecucao("Não foi possível selecionar parte")
 
-        self.add_new_file()
-        if self.bot_data.get("ANEXOS", None) is not None:
-            self.more_files()
+            self.add_new_file()
+            if self.bot_data.get("ANEXOS", None) is not None:
+                self.more_files()
 
-        self.set_file_principal()
-        self.sign_files()
-        self.finish_move()
+            self.set_file_principal()
+            self.sign_files()
+            self.finish_move()
 
-        debug = os.getenv("DEBUG", "False").lower() == "true"
-        data = [
-            {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"), "tested": "true"}
-        ]
+            debug = os.getenv("DEBUG", "False").lower() == "true"
+            data = [
+                {
+                    "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
+                    "tested": "true",
+                }
+            ]
 
-        if debug is False:
-            confirm_protocol = self.confirm_protocol()
-            if not confirm_protocol:
-
-                if self.set_parte() is not True:
-                    raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
-
-                self.finish_move()
+            if debug is False:
                 confirm_protocol = self.confirm_protocol()
                 if not confirm_protocol:
-                    raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
 
-            data = self.screenshot_sucesso()
-            data.append(confirm_protocol)
+                    if self.set_parte() is not True:
+                        raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
 
-        self.append_success(data)
+                    self.finish_move()
+                    confirm_protocol = self.confirm_protocol()
+                    if not confirm_protocol:
+                        raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
+
+                data = self.screenshot_sucesso()
+                data.append(confirm_protocol)
+
+            self.append_success(data)
+
+        except Exception as e:
+            raise ErroDeExecucao(e=e)
 
     def confirm_protocol(self) -> str | None:
 
