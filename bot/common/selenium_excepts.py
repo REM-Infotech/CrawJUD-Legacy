@@ -6,7 +6,7 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
     TimeoutException,
 )
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError, ProtocolError
 
 
 def webdriver_exepts() -> list[Exception]:
@@ -21,6 +21,7 @@ def webdriver_exepts() -> list[Exception]:
         Exception,
         NoSuchWindowException,
         MaxRetryError,
+        ProtocolError,
     ]
 
 

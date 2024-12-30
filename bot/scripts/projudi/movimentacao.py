@@ -9,12 +9,11 @@ from time import sleep
 from typing import Any
 
 from pypdf import PdfReader
-from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
-from urllib3.exceptions import MaxRetryError, ProtocolError
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -50,24 +49,17 @@ class movimentacao(CrawJUD):
             except Exception as e:
 
                 old_message = None
-                check_window = any(
-                    ext is True
-                    for ext in [
-                        isinstance(e, NoSuchWindowException),
-                        isinstance(e, MaxRetryError),
-                        isinstance(e.except_captured, ProtocolError),
-                    ]
-                )
-                if check_window:
+                windows = self.driver.window_handles
 
+                if len(windows) == 0:
                     with suppress(Exception):
                         super().DriverLaunch(
                             message="Webdriver encerrado inesperadamente, reinicializando..."
                         )
 
-                        old_message = self.message
+                    old_message = self.message
 
-                        super().auth_bot()
+                    super().auth_bot()
 
                 if old_message is None:
                     old_message = self.message

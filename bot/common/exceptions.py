@@ -2,62 +2,37 @@ from bot.common.selenium_excepts import exceptionsBot, webdriver_exepts
 
 
 class CrawJUDExceptions(Exception):
-    """Exceção base personalizada."""
 
-    _errmsg: str = ""
-    _except_captured = Exception
+    message_: str = None
 
     @property
-    def message_err(self):
-        return self._errmsg
+    def message(self):
+        return self.message_
 
-    @message_err.setter
-    def message_err(self, new_msg: str):
-        self._errmsg = new_msg
+    @message.setter
+    def message(self, message: str):
+        self.message_ = message
 
-    @property
-    def except_captured(self):
-        return self._except_captured
+    def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
 
-    @except_captured.setter
-    def except_captured(self, excep_capt: Exception):
-        self._except_captured = excep_capt
+        self.message = message
 
-    def __init__(self, message: str, e: Exception = None):
+        if isinstance(e, ErroDeExecucao):
+            self.message = e.message
 
-        message_error = None
-        if e:
+        elif message is None:
+            self.message = exceptionsBot().get(
+                e.__class__.__name__, e.__class__.__name__
+            )
 
-            name_Except = e.__class__.__name__
-            message_error = str(exceptionsBot().get(name_Except))
-
-        if message_error:
-            message = message_error
-
-        self.message_err = message
-        self.except_captured = e
-
-        if isinstance(message, Exception):
-            self.except_captured = message
-
-            name_Except = message.__class__.__name__
-            message_error = exceptionsBot().get(name_Except)
-
-            if message_error is None:
-                message = "Erro interno, contactar suporte"
-
-            self.message_err = str(message)
-
-        super().__init__(message)
+        super().__init__(self.message)
 
     def __str__(self):
-        return self.message_err
+        return self.message
 
     def __instancecheck__(self, instance: Exception) -> bool:
 
-        check_except = instance in webdriver_exepts() or isinstance(
-            instance, type(self.except_captured)
-        )
+        check_except = instance in webdriver_exepts()
         return check_except
 
 
@@ -75,10 +50,22 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
 
 class ErroDeExecucao(CrawJUDExceptions):
-    """Exceção para quando um recurso não é encontrado."""
+    """
+    Exception raised for errors that occur during the execution of CrawJUD bots.
+    This exception is a subclass of CrawJUDExceptions and is intended to be used
+    for handling execution-related errors specifically.
+    Methods
+    -------
+    __init__(*args, **kwargs)
+        Initializes the exception with optional arguments.
+    __instancecheck__(instance: Exception) -> bool
+        Checks if the given instance is an instance of this exception.
+    __str__()
+        Returns a string representation of the exception.
+    """
 
-    def __init__(self, message: str = "Erro ao executar operação", e: Exception = None):
-        super().__init__(message, e)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def __instancecheck__(self, instance: Exception) -> bool:
         return super().__instancecheck__(instance)
