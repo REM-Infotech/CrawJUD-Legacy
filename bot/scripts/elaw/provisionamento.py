@@ -258,8 +258,10 @@ class provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            expand_filter_risk = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.css_risk
+            expand_filter_risk = self.wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, self.elements.css_risk)
+                )
             )
             expand_filter_risk.click()
 

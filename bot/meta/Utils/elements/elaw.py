@@ -215,7 +215,12 @@ class AME:
     )
     ver_valores = 'a[href="#tabViewProcesso:valores"]'
     table_valores_css = 'tbody[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70:viewValoresCustomeDt_data"]'
-    value_provcss = 'div[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70:viewValoresCustomeDt:0:j_id_i3_c_1_5_7e:0:j_id_i3_c_1_5_7m"]'
+    value_provcss = "".join(
+        (
+            'div[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70',
+            ':viewValoresCustomeDt:0:j_id_i3_c_1_5_7e:0:j_id_i3_c_1_5_7m"]',
+        )
+    )
     div_tipo_obj_css = 'div[id="selectManyObjetoAdicionarList"]'
     itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
     checkbox = 'div[class="ui-chkbox ui-widget"]'
