@@ -70,7 +70,13 @@ class AME:
     )
     css_div_select_opt = 'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]'
     select_field = 'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
-    css_other_location = 'input[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_c:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_f:0:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]'
+    css_other_location = "".join(
+        (
+            'input[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:',
+            "j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_c:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_f:0:j",
+            '_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]',
+        )
+    )
     comboProcessoTipo = 'div[id="j_id_3k_1:comboProcessoTipo"]'
     filtro_processo = 'input[id="j_id_3k_1:comboProcessoTipo_filter"]'
     css_data_distribuicao = 'input[id="j_id_3k_1:dataDistribuicao_input"]'

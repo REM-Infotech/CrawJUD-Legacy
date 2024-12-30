@@ -451,8 +451,9 @@ class complement(CrawJUD):
 
                 esfera_xls = self.bot_data.get("ESFERA")
 
-                if check_esfera.text.lower() != esfera_xls.lower():
-                    esfera(esfera_xls)
+                if esfera_xls:
+                    if check_esfera.text.lower() != esfera_xls.lower():
+                        esfera(esfera_xls)
 
                 for item in lista1:
                     check_column = self.bot_data.get(item.upper())
