@@ -107,20 +107,21 @@ class complement(CrawJUD):
 
                 lista1 = list(self.bot_data.keys())
 
-                def esfera():
+                def esfera(text: str = "Judicial"):
                     """
-                    Selects the judicial sphere for the process.
+                    Handles the selection of the judicial sphere in the process.
                     This function performs the following steps:
-                    1. Sets the element selector for the judicial sphere.
+                    1. Selects the judicial sphere element.
                     2. Sets the text to "Judicial".
-                    3. Logs the message "Informando esfera do processo" with type "log".
-                    4. Calls the Select2_ELAW method to select the judicial sphere.
+                    3. Logs the message "Informando esfera do processo".
+                    4. Calls the Select2_ELAW method to select the element.
                     5. Waits for the loading of the specified div element.
-                    6. Logs the message "Esfera Informada!" with type "info".
+                    6. Logs the message "Esfera Informada!".
+                    Returns:
+                        None
                     """
 
                     elementSelect = self.elements.css_esfera_judge
-                    text = "Judicial"
 
                     self.message = "Informando esfera do processo"
                     self.type_log = "log"
@@ -451,7 +452,7 @@ class complement(CrawJUD):
                 esfera_xls = self.bot_data.get("ESFERA")
 
                 if check_esfera.text.lower() != esfera_xls.lower():
-                    esfera()
+                    esfera(esfera_xls)
 
                 for item in lista1:
                     check_column = self.bot_data.get(item.upper())
