@@ -99,6 +99,22 @@ class provisao(CrawJUD):
         except Exception as e:
             raise e
 
+    def chk_risk(self):
+        """
+        Checks the risk label on the webpage and selects the appropriate risk type if the label indicates "Risco Quebrado".
+        This method waits for the risk label element to be present on the webpage. If the label's text is "Risco Quebrado",
+        it selects the risk type "Risco" from a dropdown menu.
+        """
+
+        label_risk = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.type_risk_label)
+            )
+        )
+
+        if label_risk.text == "Risco Quebrado":
+            self.Select2_ELAW(self.elements.type_risk_select, "Risco")
+
     def setup_calls(self):
 
         calls = []
@@ -130,12 +146,14 @@ class provisao(CrawJUD):
 
             calls.append(self.add_new_valor)
             calls.append(self.edit_valor)
+            calls.append(self.chk_risk)
             calls.append(self.set_valores)
             calls.append(self.informar_datas)
 
         elif get_valores == "Contém valores" or get_valores == "-":
 
             calls.append(self.edit_valor)
+            calls.append(self.chk_risk)
 
             if provisao == "provável" or provisao == "possível":
                 calls.append(self.set_valores)

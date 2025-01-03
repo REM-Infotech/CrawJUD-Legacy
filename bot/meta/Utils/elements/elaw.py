@@ -235,3 +235,6 @@ class AME:
         'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataJuros_input"]'
     )
     texto_motivo = 'textarea[id="j_id_2m:j_id_2p_2e:j_id_2p_2i_8:j_id_2p_2i_j"]'
+
+    type_risk_label = 'label[id="j_id_2m:provisaoTipoPedidoCombo_label"]'
+    type_risk_select = 'select[id="j_id_2m:provisaoTipoPedidoCombo_input"]'

@@ -33,4 +33,3 @@ if __name__ == "__main__":  # pragma: no cover
             f.write(checkout_release_tag())
 
     reload_app = io.run(app, port=int(values().get("PORT", "8000")))
-    reload_app
