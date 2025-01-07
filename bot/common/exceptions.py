@@ -22,7 +22,7 @@ class CrawJUDExceptions(Exception):
 
         elif message is None:
             self.message = exceptionsBot().get(
-                e.__class__.__name__, e.__class__.__name__
+                e.__class__.__name__, "".join(getattr(e, "args", ["Erro Interno"]))
             )
 
         super().__init__(self.message)

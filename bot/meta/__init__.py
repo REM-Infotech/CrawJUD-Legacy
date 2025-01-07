@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timedelta
-from typing import Dict, Union
+from typing import Callable, Dict, Union
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -43,19 +43,19 @@ class classproperty:
     interact_ = None
 
     @property
-    def appends(self):
+    def appends(self) -> list:
         return self.appends_
 
     @appends.setter
-    def appends(self, new_appends: list):
+    def appends(self, new_appends: list) -> None:
         self.appends_ = new_appends
 
     @property
-    def another_append(self):
+    def another_append(self) -> list:
         return self.another_append_
 
     @another_append.setter
-    def another_append(self, new_another_append: list):
+    def another_append(self, new_another_append: list) -> None:
         self.another_append_ = new_another_append
 
     @property
@@ -64,27 +64,27 @@ class classproperty:
         return self.OpenAI_client_
 
     @property
-    def system(self):
+    def system(self) -> str:
         return classproperty._system
 
     @system.setter
-    def system(self, system_: str):
+    def system(self, system_: str) -> None:
         classproperty._system = system_
 
     @property
-    def state_or_client(self):
+    def state_or_client(self) -> str:
         return classproperty._state_or_client_
 
     @state_or_client.setter
-    def state_or_client(self, new_s: str):
+    def state_or_client(self, new_s: str) -> None:
         classproperty._state_or_client_ = new_s
 
     @property
-    def type_log(self):
+    def type_log(self) -> str:
         return classproperty._type_log
 
     @type_log.setter
-    def type_log(self, new_log: str):
+    def type_log(self, new_log: str) -> None:
         classproperty._type_log = new_log
 
     @property
@@ -104,7 +104,7 @@ class classproperty:
         classproperty._message = new_msg
 
     @property
-    def isStoped(self):
+    def isStoped(self) -> bool:
         chk = os.path.exists(os.path.join(self.output_dir_path, f"{self.pid}.flag"))
         return chk
 
@@ -113,7 +113,7 @@ class classproperty:
         return classproperty.drv
 
     @driver.setter
-    def driver(self, new_drv: WebDriver):  # pragma: no cover
+    def driver(self, new_drv: WebDriver) -> None:  # pragma: no cover
         classproperty.drv = new_drv
 
     @property
@@ -121,23 +121,23 @@ class classproperty:
         return classproperty.wt
 
     @wait.setter
-    def wait(self, new_wt: WebDriverWait):  # pragma: no cover
+    def wait(self, new_wt: WebDriverWait) -> None:  # pragma: no cover
         classproperty.wt = new_wt
 
     @property
-    def chr_dir(self):
+    def chr_dir(self) -> str:
         return classproperty.user_data_dir
 
     @chr_dir.setter
-    def chr_dir(self, new_dir: str):
+    def chr_dir(self, new_dir: str) -> None:
         classproperty.user_data_dir = new_dir
 
     @property
-    def output_dir_path(self):
+    def output_dir_path(self) -> str:
         return classproperty.out_dir
 
     @output_dir_path.setter
-    def output_dir_path(self, new_outdir: str):
+    def output_dir_path(self, new_outdir: str) -> None:
         classproperty.out_dir = new_outdir
 
     @property
@@ -145,7 +145,7 @@ class classproperty:
         return classproperty.kwrgs_
 
     @kwrgs.setter
-    def kwrgs(self, new_kwg):
+    def kwrgs(self, new_kwg) -> None:
         classproperty.kwrgs_ = new_kwg
 
     @property
@@ -153,7 +153,7 @@ class classproperty:
         return classproperty.row_
 
     @row.setter
-    def row(self, new_row: int):
+    def row(self, new_row: int) -> None:
         classproperty.row_ = new_row
 
     @property
@@ -165,15 +165,15 @@ class classproperty:
         classproperty.message_error_ = nw_m
 
     @property
-    def graphicMode(self):
+    def graphicMode(self) -> str:
         return classproperty.graphicMode_
 
     @graphicMode.setter
-    def graphicMode(self, new_graph):
+    def graphicMode(self, new_graph) -> None:
         classproperty.graphicMode_ = new_graph
 
     @property
-    def list_args(self):  # pragma: no cover
+    def list_args(self) -> list[str]:  # pragma: no cover
         return [
             "--ignore-ssl-errors=yes",
             "--ignore-certificate-errors",
@@ -185,7 +185,7 @@ class classproperty:
         ]
 
     @list_args.setter
-    def list_args(self, new_Args: list[str]):  # pragma: no cover
+    def list_args(self, new_Args: list[str]) -> None:  # pragma: no cover
         classproperty.cr_list_args = new_Args
 
     @property
@@ -193,7 +193,7 @@ class classproperty:
         return classproperty.bot_data_
 
     @bot_data.setter
-    def bot_data(self, new_botdata: dict[str, str | Numbers]):
+    def bot_data(self, new_botdata: dict[str, str | Numbers]) -> None:
         classproperty.bot_data_ = new_botdata
 
     @property
@@ -228,7 +228,7 @@ class classproperty:
         return MakeXlsx
 
     @property
-    def cities_Amazonas(self):  # pragma: no cover
+    def cities_Amazonas(self) -> Callable[[], dict[str, str]]:  # pragma: no cover
         from .Utils.dicionarios import cities_Amazonas
 
         return cities_Amazonas
@@ -244,13 +244,13 @@ class classproperty:
         return classproperty.vara_
 
     @vara.setter
-    def vara(self, vara_str: str):
+    def vara(self, vara_str: str) -> None:
         classproperty.vara_ = vara_str
 
     @property
-    def path_accepted(self):
+    def path_accepted(self) -> str:
         return classproperty.path_accepted_
 
     @path_accepted.setter
-    def path_accepted(self, new_path: str):
+    def path_accepted(self, new_path: str) -> None:
         classproperty.path_accepted_ = new_path

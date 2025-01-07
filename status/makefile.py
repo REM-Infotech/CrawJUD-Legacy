@@ -4,6 +4,7 @@ import zipfile
 from datetime import datetime
 from os import path
 from pathlib import Path
+from shutil import rmtree
 
 import pytz
 
@@ -11,17 +12,29 @@ import pytz
 def makezip(pid: str) -> str:  # pragma: no cover
 
     file_paths = []
-    exec_path = Path(path.join(pathlib.Path(__file__).cwd(), "exec", pid))
+    exec_path = (
+        Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec").joinpath(pid)
+    )
+
+    for root, dirs, files in exec_path.walk():
+        if "chrome" in str(root) and root.is_dir():
+            rmtree(root, ignore_errors=True)
+
+        elif "chrome" in str(root) and root.is_file():
+            root.unlink()
+
+        elif "json" in root.suffix or "flag" in root.suffix:
+            root.unlink()
 
     if not exec_path.exists():
         exec_path.mkdir()
 
-    files = [str(f) for f in exec_path.iterdir() if f.is_file()]
+    files = [str(f) for f in exec_path.iterdir() if f.is_file() and pid in f.stem]
     files_subfolders = [
         path.join(f, file)
-        for f in [str(f) for f in exec_path.iterdir() if f.is_dir()]
+        for f in [str(f) for f in exec_path.iterdir() if f.is_dir() and pid in f.stem]
         for file in Path(f).iterdir()
-        if Path(file).is_file()
+        if Path(file).is_file() and pid in Path(file).stem
     ]
     file_paths.extend(files)
     file_paths.extend(files_subfolders)

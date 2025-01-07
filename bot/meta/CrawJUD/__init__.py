@@ -6,6 +6,7 @@ import re  # pragma: no cover
 import shutil  # pragma: no cover
 import ssl  # pragma: no cover
 import subprocess  # pragma: no cover
+import threading
 import time  # pragma: no cover
 import unicodedata  # pragma: no cover
 from datetime import datetime  # pragma: no cover
@@ -57,7 +58,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         "version": 2,
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
 
         self.__dict__.update(kwargs)
         self.kwrgs = kwargs
@@ -74,7 +75,23 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return item
 
-    def setup(self):
+    def setup(self) -> None:
+        """
+        Sets up the bot by loading configuration from a JSON file, initializing various attributes,
+        and preparing the environment for the bot to run.
+        This method performs the following steps:
+        1. Loads configuration from a JSON file specified by `self.path_args`.
+        2. Sets attributes based on the loaded configuration.
+        3. Initializes logging and output directory paths.
+        4. Prepares a list of arguments for the system.
+        5. Installs certificates if `self.name_cert` is specified.
+        6. Creates Excel files for logging successes and errors.
+        7. Parses date strings into datetime objects if `self.xlsx` is not specified.
+        8. Sets the state or client attribute.
+        9. Launches the driver.
+        Raises:
+            Exception: If any error occurs during the setup process, it logs the error and raises the exception.
+        """
 
         try:
             with open(self.path_args, "rb") as f:
@@ -141,7 +158,17 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.end_prt("Falha ao iniciar")
             raise e
 
-    def auth_bot(self):
+    def auth_bot(self) -> None:
+        """
+        Authenticates the bot using the specified login method.
+        This method checks if the bot is logged in using the provided authentication method.
+        If the login is successful, it logs a success message.
+        If the login fails, it quits the driver, logs an error message, and raises an exception.
+        Returns:
+            None
+        Raises:
+            Exception: If the login fails.
+        """
 
         if self.login_method:
             chk_logged = self.AuthBot.auth()
@@ -167,9 +194,24 @@ class CrawJUD(classproperty):  # pragma: no cover
     def prt(self) -> None:
 
         print_bot = self.printtext()
-        print_bot.print_msg()
+        thread_printbot = threading.Thread(
+            target=print_bot.print_msg, name="printbot {}".format(self.pid)
+        )
+        thread_printbot.start()
 
     def dataFrame(self) -> list[dict[str, str]]:
+        """
+        Converts an Excel file to a list of dictionaries with formatted data.
+        This method reads an Excel file specified by the instance's path arguments,
+        processes the data by formatting dates and floats, and returns the data as
+        a list of dictionaries.
+        Returns:
+            list[dict[str, str]]: A list of dictionaries where each dictionary
+            represents a row in the Excel file with formatted data.
+        Raises:
+            FileNotFoundError: If the specified Excel file does not exist.
+            ValueError: If there is an issue reading the Excel file.
+        """
 
         input_file = os.path.join(
             pathlib.Path(self.path_args).parent.resolve().__str__(), str(self.xlsx)
@@ -203,6 +245,19 @@ class CrawJUD(classproperty):  # pragma: no cover
         return vars_df
 
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
+        """
+        Formats the given data dictionary according to specific rules.
+        Args:
+            data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
+        Returns:
+            dict[str, str]: The formatted dictionary.
+        Rules:
+            - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
+            - If the key is "COMARCA", update "CAPITAL_INTERIOR" based on the value using the cities_Amazonas method.
+            - If the key is "DATA_LIMITE" and "DATA_INICIO" is not present, set "DATA_INICIO" to the value of "DATA_LIMITE".
+            - If the value is an integer or float, format it to two decimal places and replace the decimal point with a comma.
+            - If the key is "CNPJ_FAVORECIDO" and its value is empty, set it to "04.812.509/0001-90".
+        """
 
         data_listed = list(data.items())
         for key, value in data_listed:
@@ -231,6 +286,13 @@ class CrawJUD(classproperty):  # pragma: no cover
         return data
 
     def calc_time(self) -> list:
+        """
+        Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
+        Returns:
+            list: A list containing two integers:
+                - minutes (int): The number of minutes of the elapsed time.
+                - seconds (int): The number of seconds of the elapsed time.
+        """
 
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
@@ -242,6 +304,14 @@ class CrawJUD(classproperty):  # pragma: no cover
         return [minutes, seconds]
 
     def append_moves(self) -> None:
+        """
+        Appends movements to the spreadsheet if there are any movements to append.
+        This method checks if there are any movements stored in the `self.appends` list.
+        If there are, it iterates over each movement and calls the `self.append_success`
+        method to save the movement to the spreadsheet with a success message.
+        Raises:
+            ErroDeExecucao: If no movements are found in the `self.appends` list.
+        """
 
         if len(self.appends) > 0:
 
