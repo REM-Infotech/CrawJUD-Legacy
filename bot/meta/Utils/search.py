@@ -1,6 +1,7 @@
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
+from typing import Dict
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -15,13 +16,17 @@ from ..CrawJUD import CrawJUD
 
 class SeachBot(CrawJUD):
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def __getattr__(self, nome):
+    def __getattr__(
+        self, nome
+    ) -> (
+        EC.List[str] | EC.List[Dict[str, str | int | float | datetime]] | Dict[str, str]
+    ):
         return super().__getattr__(nome)
 
-    def __call__(self):
+    def __call__(self) -> bool:
 
         self.message = (
             f'Buscando processos pelo nome "{self.parte_name}"'
@@ -171,145 +176,79 @@ class SeachBot(CrawJUD):
 
     def projudi_search(self) -> None:
 
-        def detect_intimacao() -> None:
+        self.driver.get(self.elements.url_busca)
 
-            if "intimacaoAdvogado.do" in self.driver.current_url:
-                raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
+        if self.typebot != "proc_parte":
 
-        grau = int(self.bot_data.get("GRAU", "1").replace("º", ""))
-        if grau == 1:
+            returns = self.search_proc()
 
-            self.driver.get(self.elements.consultaproc_grau1)
+        if self.typebot == "proc_parte":
+            returns = self.search_proc_parte()
 
-        elif grau == 2:
+        return returns
 
-            self.driver.get(self.elements.consultaproc_grau2)
-
-        elif not grau or grau != 1 or grau != 2:
-
-            raise ErroDeExecucao("Informar instancia!")
+    def search_proc(self) -> bool:
 
         inputproc = None
         enterproc = None
         allowacess = None
 
-        if self.typebot != "proc_parte":
+        grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
 
-            with suppress(TimeoutException):
-                inputproc: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso"))
-                )
+        def detect_intimacao() -> None:
 
-            if inputproc:
-                inputproc.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
-                consultar = self.driver.find_element(By.CSS_SELECTOR, "#pesquisar")
-                consultar.click()
+            if "intimacaoAdvogado.do" in self.driver.current_url:
+                raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
 
-                with suppress(TimeoutException):
-                    enterproc: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CLASS_NAME, "link"))
-                    )
+        def get_link_grau2() -> str | None:
+            with suppress(Exception, TimeoutException, NoSuchElementException):
 
-                if enterproc:
-                    enterproc.click()
-
-                    detect_intimacao()
-
-                    with suppress(TimeoutException, NoSuchElementException):
-
-                        allowacess = self.driver.find_element(
-                            By.CSS_SELECTOR, "#habilitacaoProvisoriaButton"
+                info_proc = self.wait.until(
+                    EC.presence_of_all_elements_located(
+                        (
+                            By.CSS_SELECTOR,
+                            "table#informacoesProcessuais > tbody > tr > td > a",
                         )
-
-                    if allowacess:
-                        allowacess.click()
-                        sleep(1)
-
-                        confirmterms = self.driver.find_element(
-                            By.CSS_SELECTOR, "#termoAceito"
-                        )
-                        confirmterms.click()
-                        sleep(1)
-
-                        save = self.driver.find_element(By.CSS_SELECTOR, "#saveButton")
-                        save.click()
-
-                    return True
-
-                elif not enterproc:
-                    return False
-
-        if self.typebot == "proc_parte":
-
-            allprocess = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')
-                )
-            )
-            allprocess.click()
-            data_inicio_xls = self.data_inicio
-            data_fim_xls = self.data_fim
-
-            if type(data_inicio_xls) is str:
-                data_inicio_xls = datetime.strptime(data_inicio_xls, "%Y-%m-%d")
-                data_inicio_xls = data_inicio_xls.strftime("%d/%m/%Y")
-
-            if type(data_fim_xls) is str:
-                data_fim_xls = datetime.strptime(data_fim_xls, "%Y-%m-%d")
-                data_fim_xls = data_fim_xls.strftime("%d/%m/%Y")
-
-            if self.vara == "TODAS AS COMARCAS":
-                alljudge = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'input[name="pesquisarTodos"]')
                     )
                 )
-                alljudge.click()
 
-            elif self.vara != "TODAS AS COMARCAS":
-                search_vara = self.driver.find_element(By.ID, "descricaoVara")
-                search_vara.click()
-                search_vara.send_keys(self.vara)
-                sleep(3)
-                vara_option = self.driver.find_element(
-                    By.ID, "ajaxAuto_descricaoVara"
-                ).find_elements(By.TAG_NAME, "li")[0]
-                vara_option.click()
+                info_proc = list(
+                    filter(
+                        lambda x: "Clique aqui para visualizar os recursos relacionados"
+                        in x.text,
+                        info_proc,
+                    )
+                )[-1]
 
-            sleep(3)
-            input_parte = self.driver.find_element(
-                By.CSS_SELECTOR, 'input[name="nomeParte"]'
-            )
-            input_parte.send_keys(self.parte_name)
+                return info_proc.get_attribute("href")
 
-            cpfcnpj = self.driver.find_element(By.CSS_SELECTOR, 'input[name="cpfCnpj"]')
-            cpfcnpj.send_keys(self.doc_parte)
+            with suppress(TimeoutException, NoSuchElementException):
 
-            data_inicio = self.driver.find_element(
-                By.CSS_SELECTOR, 'input[id="dataInicio"]'
-            )
-            data_inicio.send_keys(data_inicio_xls)
-
-            data_fim = self.driver.find_element(
-                By.CSS_SELECTOR, 'input[name="dataFim"]'
-            )
-            data_fim.send_keys(data_fim_xls)
-
-            if self.polo_parte.lower() == "reu":
-                setréu = self.driver.find_element(
-                    By.CSS_SELECTOR, 'input[value="promovido"]'
+                info_proc = (
+                    self.wait.until(
+                        EC.presence_of_element_located(
+                            (By.CSS_SELECTOR, "table#informacoesProcessuais")
+                        )
+                    )
+                    .find_element(By.TAG_NAME, "tbody")
+                    .find_elements(By.TAG_NAME, "tr")[4]
+                    .find_elements(By.TAG_NAME, "td")[1]
+                    .find_element(By.TAG_NAME, "a")
                 )
-                setréu.click()
 
-            elif self.polo_parte.lower() == "autor":
-                setautor = self.driver.find_element(
-                    By.CSS_SELECTOR, 'input[value="promovente"'
-                )
-                setautor.click()
+                return info_proc.get_attribute("href")
 
-            procenter = self.driver.find_element(By.ID, "pesquisar")
-            procenter.click()
-            sleep(3)
+            return None
+
+        with suppress(TimeoutException):
+            inputproc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso"))
+            )
+
+        if inputproc:
+            inputproc.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
+            consultar = self.driver.find_element(By.CSS_SELECTOR, "#pesquisar")
+            consultar.click()
 
             with suppress(TimeoutException):
                 enterproc: WebElement = self.wait.until(
@@ -317,6 +256,117 @@ class SeachBot(CrawJUD):
                 )
 
             if enterproc:
+
+                enterproc.click()
+                to_grau2 = get_link_grau2()
+
+                detect_intimacao()
+
+                with suppress(TimeoutException, NoSuchElementException):
+
+                    allowacess = self.driver.find_element(
+                        By.CSS_SELECTOR, "#habilitacaoProvisoriaButton"
+                    )
+
+                if allowacess:
+                    allowacess.click()
+                    sleep(1)
+
+                    confirmterms = self.driver.find_element(
+                        By.CSS_SELECTOR, "#termoAceito"
+                    )
+                    confirmterms.click()
+                    sleep(1)
+
+                    save = self.driver.find_element(By.CSS_SELECTOR, "#saveButton")
+                    save.click()
+
+                if grau == 2 and to_grau2:
+                    self.driver.get(to_grau2)
+
                 return True
 
-            return False
+            elif not enterproc:
+                return False
+
+        return False
+
+    def search_proc_parte(self) -> bool:
+
+        allprocess = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')
+            )
+        )
+        allprocess.click()
+        data_inicio_xls = self.data_inicio
+        data_fim_xls = self.data_fim
+
+        if type(data_inicio_xls) is str:
+            data_inicio_xls = datetime.strptime(data_inicio_xls, "%Y-%m-%d")
+            data_inicio_xls = data_inicio_xls.strftime("%d/%m/%Y")
+
+        if type(data_fim_xls) is str:
+            data_fim_xls = datetime.strptime(data_fim_xls, "%Y-%m-%d")
+            data_fim_xls = data_fim_xls.strftime("%d/%m/%Y")
+
+        if self.vara == "TODAS AS COMARCAS":
+            alljudge = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, 'input[name="pesquisarTodos"]')
+                )
+            )
+            alljudge.click()
+
+        elif self.vara != "TODAS AS COMARCAS":
+            search_vara = self.driver.find_element(By.ID, "descricaoVara")
+            search_vara.click()
+            search_vara.send_keys(self.vara)
+            sleep(3)
+            vara_option = self.driver.find_element(
+                By.ID, "ajaxAuto_descricaoVara"
+            ).find_elements(By.TAG_NAME, "li")[0]
+            vara_option.click()
+
+        sleep(3)
+        input_parte = self.driver.find_element(
+            By.CSS_SELECTOR, 'input[name="nomeParte"]'
+        )
+        input_parte.send_keys(self.parte_name)
+
+        cpfcnpj = self.driver.find_element(By.CSS_SELECTOR, 'input[name="cpfCnpj"]')
+        cpfcnpj.send_keys(self.doc_parte)
+
+        data_inicio = self.driver.find_element(
+            By.CSS_SELECTOR, 'input[id="dataInicio"]'
+        )
+        data_inicio.send_keys(data_inicio_xls)
+
+        data_fim = self.driver.find_element(By.CSS_SELECTOR, 'input[name="dataFim"]')
+        data_fim.send_keys(data_fim_xls)
+
+        if self.polo_parte.lower() == "reu":
+            setréu = self.driver.find_element(
+                By.CSS_SELECTOR, 'input[value="promovido"]'
+            )
+            setréu.click()
+
+        elif self.polo_parte.lower() == "autor":
+            setautor = self.driver.find_element(
+                By.CSS_SELECTOR, 'input[value="promovente"'
+            )
+            setautor.click()
+
+        procenter = self.driver.find_element(By.ID, "pesquisar")
+        procenter.click()
+        sleep(3)
+
+        with suppress(TimeoutException):
+            enterproc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "link"))
+            )
+
+        if enterproc:
+            return True
+
+        return False

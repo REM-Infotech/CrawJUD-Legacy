@@ -4,6 +4,7 @@ from contextlib import suppress
 from datetime import datetime
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
@@ -84,13 +85,56 @@ class capa(CrawJUD):
 
     def get_process_informations(self) -> list:
 
+        def format_vl_causa(valorDaCausa: str) -> float | str:
+            if "¤" in valorDaCausa:
+                valorDaCausa = valorDaCausa.replace("¤", "")
+
+            pattern = r"(?<!\S)(?:US\$[\s]?|R\$[\s]?|[\$]?)\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?(?!\S)"
+            matches = re.findall(pattern, valorDaCausa)
+            if len(matches) > 0:
+
+                def convert_to_float(value):
+                    # Remover símbolos de moeda e espaços
+                    value = re.sub(r"[^\d.,]", "", value)
+
+                    # Identificar se o formato é BRL (com vírgula para decimais) ou USD (com ponto para decimais)
+                    if "," in value and "." in value:
+                        # Assumir formato USD se houver tanto ',' quanto '.'
+                        parts = value.split(".")
+                        if len(parts[-1]) == 2:
+                            value = value.replace(",", "")
+                        elif not len(parts[-1]) == 2:
+                            value = value.replace(".", "").replace(",", ".")
+                    elif "," in value:
+                        # Assumir formato BRL
+                        value = value.replace(".", "").replace(",", ".")
+                    elif "." in value:
+                        # Assumir formato USD
+                        value = value.replace(",", "")
+
+                    return float(value)
+
+                return convert_to_float(matches[0])
+
+            return valorDaCausa
+
+        process_info = {}
+
+        process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
+
         self.message = (
             f"Obtendo informações do processo {self.bot_data.get('NUMERO_PROCESSO')}..."
         )
         self.type_log = "log"
         self.prt()
 
-        btn_partes = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_partes)
+        btn_partes = self.elements.btn_partes
+        grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
+        if grau == 2:
+
+            btn_partes = btn_partes.replace("2", "1")
+
+        btn_partes = self.driver.find_element(By.CSS_SELECTOR, btn_partes)
         btn_partes.click()
 
         try:
@@ -105,220 +149,111 @@ class capa(CrawJUD):
                 By.ID, self.elements.includeContent_capa
             )
 
-        tablePoloAtivo = includeContent.find_elements(
+        result_table = includeContent.find_elements(
             By.CLASS_NAME, self.elements.resulttable
-        )[0]
-        nomePoloAtivo = (
-            tablePoloAtivo.find_element(By.XPATH, ".//tbody")
-            .find_elements(By.XPATH, ".//tr")[0]
-            .find_elements(By.XPATH, ".//td")[1]
-            .text.replace("(citação online)", "")
         )
 
-        if " representado" in nomePoloAtivo:
-            nomePoloAtivo = str(nomePoloAtivo.split(" representado")[0])
+        for pos, parte_info in enumerate(result_table):
 
-        cpfPoloAtivo = (
-            tablePoloAtivo.find_element(By.XPATH, ".//tbody")
-            .find_elements(By.XPATH, ".//tr")[0]
-            .find_elements(By.XPATH, ".//td")[3]
-            .text
-        )
-        advPoloAtivo = (
-            tablePoloAtivo.find_element(By.XPATH, ".//tbody")
-            .find_elements(By.XPATH, ".//tr")[0]
-            .find_elements(By.XPATH, ".//td")[5]
-            .text
-        )
+            h4_name = list(
+                filter(
+                    lambda x: x.text != "" and x is not None,
+                    includeContent.find_elements(By.TAG_NAME, "h4"),
+                )
+            )
+            tipo_parte = self.format_String(h4_name[pos].text).replace(" ", "_").upper()
 
-        tablePoloPassivo = includeContent.find_elements(
-            By.CLASS_NAME, self.elements.resulttable
-        )[1]
-        nomePoloPassivo = (
-            tablePoloPassivo.find_element(By.XPATH, ".//tbody")
-            .find_elements(By.XPATH, ".//tr")[0]
-            .find_elements(By.XPATH, ".//td")[1]
-            .text.replace("(citação online)", "")
-        )
-        cpfPoloPassivo = (
-            tablePoloPassivo.find_element(By.XPATH, ".//tbody")
-            .find_elements(By.XPATH, ".//tr")[0]
-            .find_elements(By.XPATH, ".//td")[3]
-            .text
-        )
+            nome_colunas = []
+
+            for column in parte_info.find_element(By.TAG_NAME, "thead").find_elements(
+                By.TAG_NAME, "th"
+            ):
+                nome_colunas.append(column.text.upper())
+
+            for parte in parte_info.find_element(By.TAG_NAME, "tbody").find_elements(
+                By.XPATH, self.elements.table_moves
+            ):
+
+                for pos_, nome_coluna in enumerate(nome_colunas):
+
+                    key = "_".join(
+                        (
+                            self.format_String(nome_coluna).replace(" ", "_").upper(),
+                            tipo_parte,
+                        )
+                    )
+                    value = parte.find_elements(By.TAG_NAME, "td")[pos_].text
+
+                    if value:
+                        if "\n" in value:
+                            value = " | ".join(value.split("\n"))
+                            continue
+
+                        process_info.update({key: value})
 
         btn_infogeral = self.driver.find_element(
             By.CSS_SELECTOR, self.elements.btn_infogeral
         )
         btn_infogeral.click()
 
-        try:
-            includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent_capa
-            )
-        except Exception:
-            time.sleep(3)
-            self.driver.refresh()
-            time.sleep(1)
-            includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent_capa
-            )
+        includeContent: list[WebElement] = []
 
-        includeContent = includeContent.find_element(By.CLASS_NAME, "form")
-
-        area_direito = str(
-            includeContent.find_elements(By.XPATH, ".//tr")[0]
-            .find_elements(By.XPATH, ".//td")[4]
-            .text
+        includeContent.append(
+            self.driver.find_element(By.CSS_SELECTOR, "#recursoForm > fieldset > .form")
+        )
+        includeContent.append(
+            self.driver.find_element(By.CSS_SELECTOR, "#tabprefix0 > fieldset > .form")
         )
 
-        if area_direito.lower() == "juizado especial cível":
-
-            area_direito = (
-                area_direito.lower()
-                .replace("juizado especial cível", "juizado especial")
-                .capitalize()
+        for incl in includeContent:
+            itens = list(
+                filter(
+                    lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
+                    incl.find_element(By.TAG_NAME, "tbody").find_elements(
+                        By.TAG_NAME, "tr"
+                    ),
+                )
             )
 
-        foro = str(
-            includeContent.find_elements(By.XPATH, ".//tr")[1]
-            .find_elements(By.XPATH, ".//td")[4]
-            .text
-        )
+            for item in itens:
 
-        comarca = foro
+                labels = item.find_elements(By.CSS_SELECTOR, 'td[class="label"]')
+                values = item.find_elements(By.CSS_SELECTOR, 'td[nowrap="nowrap"]')
 
-        if "je cível" in foro.lower():
+                for pos, label in enumerate(labels):
 
-            foro = foro.lower().replace("je cível", "cível").capitalize()
+                    if pos + 1 != len(values):
+                        continue
 
-        if " da comarca de " in foro:
-            comarca = foro.split(" da comarca de ")[1]
+                    not_formated_label = label.text
+                    label_text = (
+                        self.format_String(label.text).upper().replace(" ", "_")
+                    )
+                    value_text = values[labels.index(label)].text
 
-        if "cível" in comarca.lower():
+                    if label_text == "VALOR_DA_CAUSA":
+                        value_text = format_vl_causa(value_text)
 
-            comarca = comarca.split(" - ")[0].capitalize()
+                    elif "DATA" in label_text or "DISTRIBUICAO" in label_text:
 
-        data_distribuicao = (
-            includeContent.find_elements(By.XPATH, ".//tr")[2]
-            .find_elements(By.XPATH, ".//td")[1]
-            .text
-        )
+                        if " às " in value_text:
+                            value_text = value_text.split(" às ")[0]
 
-        if " às " in data_distribuicao:
-            data_distribuicao = data_distribuicao.split(" às ")[0]
-            data_distribuicao = datetime.strptime(data_distribuicao, "%d/%m/%Y")
+                        value_text = datetime.strptime(value_text, "%d/%m/%Y")
 
-        infoproc = self.driver.find_element(By.CSS_SELECTOR, self.elements.infoproc)
-        tablestatusproc = infoproc.find_element(By.TAG_NAME, "tbody").find_elements(
-            By.TAG_NAME, "tr"
-        )[0]
+                    elif not_formated_label != value_text:
+                        process_info.update({label_text: value_text.upper()})
 
-        try:
-            statusproc = tablestatusproc.find_elements(By.TAG_NAME, "td")[1].text
-        except Exception:
-            statusproc = "Não Consta"
+            # try:
+            #     includeContent = self.driver.find_element(
+            #         By.ID, self.elements.includeContent_capa
+            #     )
+            # except Exception:
+            #     time.sleep(3)
+            #     self.driver.refresh()
+            #     time.sleep(1)
+            #     includeContent = self.driver.find_element(
+            #         By.ID, self.elements.includeContent_capa
+            #     )
 
-        # try:
-        #     juizproc = (
-        #         includeContent.find_elements(By.XPATH, ".//tr")[2]
-        #         .find_elements(By.XPATH, ".//td")[4]
-        #         .text
-        #     )
-        # except Exception:
-        #     juizproc = "Não Consta"
-
-        try:
-            includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent_capa
-            )
-        except Exception:
-            time.sleep(3)
-            self.driver.refresh()
-            time.sleep(1)
-            includeContent = self.driver.find_element(
-                By.ID, self.elements.includeContent_capa
-            )
-
-        includeContent = includeContent.find_element(
-            By.CLASS_NAME, "form"
-        ).find_elements(By.TAG_NAME, "tr")
-
-        for it in includeContent:
-
-            get_label = it.find_elements(By.TAG_NAME, "td")[0].text
-
-            if get_label == "Valor da Causa:":
-
-                valorDaCausa = str(it.find_elements(By.TAG_NAME, "td")[1].text)
-                break
-
-        # assunto_proc = self.driver.find_element(
-        #     By.CSS_SELECTOR, self.elements.assunto_proc
-        # ).text.split(" - ")[1]
-
-        if "¤" in valorDaCausa:
-            valorDaCausa = valorDaCausa.replace("¤", "")
-
-        pattern = r"(?<!\S)(?:US\$[\s]?|R\$[\s]?|[\$]?)\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?(?!\S)"
-        matches = re.findall(pattern, valorDaCausa)
-        if len(matches) > 0:
-
-            def convert_to_float(value):
-                # Remover símbolos de moeda e espaços
-                value = re.sub(r"[^\d.,]", "", value)
-
-                # Identificar se o formato é BRL (com vírgula para decimais) ou USD (com ponto para decimais)
-                if "," in value and "." in value:
-                    # Assumir formato USD se houver tanto ',' quanto '.'
-                    parts = value.split(".")
-                    if len(parts[-1]) == 2:
-                        value = value.replace(",", "")
-                    elif not len(parts[-1]) == 2:
-                        value = value.replace(".", "").replace(",", ".")
-                elif "," in value:
-                    # Assumir formato BRL
-                    value = value.replace(".", "").replace(",", ".")
-                elif "." in value:
-                    # Assumir formato USD
-                    value = value.replace(",", "")
-
-                return float(value)
-
-            valorDaCausa = convert_to_float(matches[0])
-
-        vara = foro.split(" ")[0]
-        if "vara única" in foro.lower():
-            vara = foro.split(" da ")[0]
-
-        if " - " in advPoloAtivo:
-
-            # get_oab = advPoloAtivo.split(" - ")[0]
-            advPoloAtivo = advPoloAtivo.split(" - ")[1]
-
-        # elif advPoloAtivo == "Parte sem advogado":
-        #     get_oab = ""
-
-        processo_data = [
-            self.bot_data.get("NUMERO_PROCESSO"),
-            area_direito,
-            "Geral",
-            "Amazonas",
-            comarca,
-            foro,
-            vara,
-            data_distribuicao,
-            nomePoloAtivo,
-            "Autor",
-            cpfPoloAtivo,
-            nomePoloPassivo,
-            "réu",
-            cpfPoloPassivo,
-            statusproc,
-            "Liliane Da Silva Roque",
-            advPoloAtivo,
-            "Fonseca Melo e Viana Advogados Associados",
-            valorDaCausa,
-        ]
-
-        return processo_data
+        return [process_info]
