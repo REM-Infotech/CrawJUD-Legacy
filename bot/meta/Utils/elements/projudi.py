@@ -6,7 +6,12 @@ class PROJUDI_AM:
     btn_entrar = "#btEntrar"
     chk_login = 'iframe[name="userMainFrame"]'
 
-    url_busca = "https://projudi.tjam.jus.br/projudi/processo/buscaProcessosQualquerInstancia.do?actionType=pesquisar"
+    url_busca = "".join(
+        (
+            "https://projudi.tjam.jus.br/projudi/processo/",
+            "buscaProcessosQualquerInstancia.do?actionType=pesquisar",
+        )
+    )
     btn_busca = ""
 
     btn_partes = "#tabItemprefix2"
@@ -23,6 +28,13 @@ class PROJUDI_AM:
     filtro = 'input[id="editButton"]'
     expand_btn_projudi = 'a[href="javascript://nop/"]'
     table_moves = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
+
+    agua = ""
+
+    primeira_instform1 = '#processoForm > fieldset > table[style="width:100%"]'
+    primeira_instform2 = "#tabprefix0 > #container > #includeContent > fieldset > .form"
+
+    segunda_instform = "#recursoForm > fieldset > .form"
 
     exception_arrow = './/a[@class="arrowNextOn"]'
 

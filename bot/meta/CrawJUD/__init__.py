@@ -666,7 +666,7 @@ class CrawJUD(classproperty):  # pragma: no cover
                 record.get(key).update({str(pos): value})
         return record
 
-    def Select2_ELAW(self, elementSelect: str, to_Search: str):
+    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
 
         selector: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect))
@@ -765,3 +765,14 @@ class CrawJUD(classproperty):  # pragma: no cover
         except Exception as e:
             print(e)
             raise e
+
+    def text_is_a_date(self, text: str) -> bool:
+
+        # Regex para verificar se o texto pode ser uma data (opcional)
+        date_like_pattern = (
+            r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"  # Exemplo: 2023-01-08 ou 08/01/2023
+        )
+        if re.search(date_like_pattern, text):
+            return True
+        else:
+            return False
