@@ -222,22 +222,6 @@ class SeachBot(CrawJUD):
 
                 return info_proc.get_attribute("href")
 
-            with suppress(TimeoutException, NoSuchElementException):
-
-                info_proc = (
-                    self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, "table#informacoesProcessuais")
-                        )
-                    )
-                    .find_element(By.TAG_NAME, "tbody")
-                    .find_elements(By.TAG_NAME, "tr")[4]
-                    .find_elements(By.TAG_NAME, "td")[1]
-                    .find_element(By.TAG_NAME, "a")
-                )
-
-                return info_proc.get_attribute("href")
-
             return None
 
         with suppress(TimeoutException):
