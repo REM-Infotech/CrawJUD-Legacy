@@ -112,7 +112,7 @@ class movimentacao(CrawJUD):
                     self.append_success([data], msg, fileN)
 
         except Exception as e:
-            raise ErroDeExecucao(e)
+            raise ErroDeExecucao(e=e)
 
     def set_page_size(self) -> None:
 
