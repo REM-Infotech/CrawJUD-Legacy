@@ -31,7 +31,7 @@ class PROJUDI_AM:
 
     agua = ""
 
-    primeira_instform1 = '#processoForm > fieldset > table[style="width:100%"]'
+    primeira_instform1 = "#informacoesProcessuais"
     primeira_instform2 = "#tabprefix0 > #container > #includeContent > fieldset > .form"
 
     segunda_instform = "#recursoForm > fieldset > .form"

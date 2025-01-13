@@ -166,7 +166,10 @@ class capa(CrawJUD):
                     labels = list(
                         filter(
                             lambda x: x.text.strip() != "",
-                            item.find_elements(By.CSS_SELECTOR, 'td[class="label"]'),
+                            item.find_elements(
+                                By.CSS_SELECTOR,
+                                "td.label, td.labelRadio > label",
+                            ),
                         )
                     )
                     # para teste
@@ -177,25 +180,31 @@ class capa(CrawJUD):
                         filter(
                             lambda x: x.text.strip() != ""
                             and not x.get_attribute("class"),
-                            item.find_elements(By.CSS_SELECTOR, "td"),
+                            item.find_elements(By.TAG_NAME, "td"),
                         )
                     )
 
                     for pos, label in enumerate(labels):
 
-                        if pos + 1 != len(values):
+                        if len(labels) != len(values):
                             continue
 
                         not_formated_label = label.text
                         label_text = (
                             self.format_String(label.text).upper().replace(" ", "_")
                         )
-                        value_text = values[labels.index(label)].text
+
+                        indice = labels.index(label)
+                        value_text = values[indice].text
 
                         if label_text == "VALOR_DA_CAUSA":
                             value_text = format_vl_causa(value_text)
 
-                        elif "DATA" in label_text or "DISTRIBUICAO" in label_text:
+                        elif (
+                            "DATA" in label_text
+                            or "DISTRIBUICAO" in label_text
+                            or "AUTUACAO" in label_text
+                        ):
 
                             if " às " in value_text:
                                 value_text = value_text.split(" às ")[0]
