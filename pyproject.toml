@@ -49,7 +49,8 @@ openai = "^1.55.1"
 redis = "^5.2.0"
 redis-flask = "0.0.2"
 tenacity = "^9.0.0"
-
+memory-profiler = "^0.61.0"
+matplotlib = "^3.10.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.1"
@@ -62,6 +63,7 @@ debugpy = "^1.8.9"
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
+
 
 [build-system]
 requires = ["poetry-core"]

@@ -7,13 +7,16 @@ from typing import Union
 import psutil
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from memory_profiler import profile
 
 process_type = Union[psutil.Process, None]
+
+fp = open("memory_profiler.log", "+w")
 
 
 class WorkerThread:
 
-    @property
+    @profile(stream=fp)
     def BotStarter(self):  # pragma: no cover
 
         from .scripts.caixa import caixa
@@ -39,6 +42,7 @@ class WorkerThread:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
+    @profile
     def start(self, app: Flask, db: SQLAlchemy) -> int:
 
         try:
@@ -51,7 +55,7 @@ class WorkerThread:
 
                 if not app.testing:  # pragma: no cover
 
-                    bot = self.BotStarter
+                    bot = self.BotStarter()
                     process = mp.Process(
                         target=bot,
                         kwargs=self.kwrgs,

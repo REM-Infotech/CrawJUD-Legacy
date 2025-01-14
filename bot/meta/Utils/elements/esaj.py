@@ -1,4 +1,7 @@
-class ESAJ_AM:
+from .properties import Configuracao
+
+
+class ESAJ_AM(Configuracao):
     get_page_custas_pagas = 'button[class="btn btn-secondary btn-space linkConsultaSG"]'
 
     consultaproc_grau1 = "https://consultasaj.tjam.jus.br/cpopg/open.do"

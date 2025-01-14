@@ -5,8 +5,7 @@ import platform  # pragma: no cover
 import re  # pragma: no cover
 import shutil  # pragma: no cover
 import ssl  # pragma: no cover
-import subprocess  # pragma: no cover
-import threading
+import subprocess
 import time  # pragma: no cover
 import unicodedata  # pragma: no cover
 from datetime import datetime  # pragma: no cover
@@ -17,6 +16,7 @@ import pandas as pd  # pragma: no cover
 import pytz  # pragma: no cover
 from cryptography import x509  # pragma: no cover
 from cryptography.hazmat.backends import default_backend  # pragma: no cover
+from memory_profiler import profile
 from openai import OpenAI  # pragma: no cover
 
 # from openai._streaming import Stream
@@ -49,6 +49,8 @@ TypeHint = Union[
     Dict[str, str],
 ]  # pragma: no cover
 
+fp = open("crawjud_profiler.log", "w+")
+
 
 class CrawJUD(classproperty):  # pragma: no cover
 
@@ -75,6 +77,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return item
 
+    @profile(stream=fp)
     def setup(self) -> None:
         """
         Sets up the bot by loading configuration from a JSON file, initializing various attributes,
@@ -150,55 +153,72 @@ class CrawJUD(classproperty):  # pragma: no cover
         except Exception as e:
 
             self.row = 0
-            self.message = "Falha ao iniciar. Informe a mensagem de erro ao suporte"
+            self.message = "Falha ao iniciar"
             self.type_log = "error"
             self.prt()
-            self.message_error = str(e)
-            self.prt()
             self.end_prt("Falha ao iniciar")
+            self.driver.quit()
             raise e
 
+    @profile(stream=fp)
     def auth_bot(self) -> None:
-        """
-        Authenticates the bot using the specified login method.
-        This method checks if the bot is logged in using the provided authentication method.
-        If the login is successful, it logs a success message.
-        If the login fails, it quits the driver, logs an error message, and raises an exception.
-        Returns:
-            None
-        Raises:
-            Exception: If the login fails.
-        """
 
-        if self.login_method:
-            chk_logged = self.AuthBot.auth()
-            if chk_logged is True:
+        try:
+            """
+            Authenticates the bot using the specified login method.
+            This method checks if the bot is logged in using the provided authentication method.
+            If the login is successful, it logs a success message.
+            If the login fails, it quits the driver, logs an error message, and raises an exception.
+            Returns:
+                None
+            Raises:
+                Exception: If the login fails.
+            """
 
-                self.message = "Login efetuado com sucesso!"
-                self.type_log = "log"
-                self.prt()
+            if self.login_method:
+                chk_logged = self.AuthBot.auth()
+                if chk_logged is True:
 
-            elif chk_logged is False:
+                    self.message = "Login efetuado com sucesso!"
+                    self.type_log = "log"
+                    self.prt()
 
-                self.driver.quit()
-                self.message = "Erro ao realizar login"
-                self.type_log = "error"
-                self.prt()
-                raise Exception(self.message)
+                elif chk_logged is False:
 
+                    self.driver.quit()
+                    self.message = "Erro ao realizar login"
+                    self.type_log = "error"
+                    self.prt()
+                    raise Exception(message=self.message)
+
+        except Exception as e:
+
+            print(e)
+            self.row = 0
+            self.message = "Erro ao realizar login"
+            self.type_log = "error"
+
+            self.prt()
+            self.end_prt("Falha ao iniciar")
+            self.driver.quit()
+            raise e
+
+    @profile(stream=fp)
     def end_prt(self, status: str) -> None:
 
         print_bot = self.printtext()
         print_bot.end_bot(status)
 
+    @profile(stream=fp)
     def prt(self) -> None:
 
-        print_bot = self.printtext()
-        thread_printbot = threading.Thread(
-            target=print_bot.print_msg, name="printbot {}".format(self.pid)
-        )
-        thread_printbot.start()
+        self.printtext().print_msg()
+        # thread_printbot = threading.Thread(
+        #     target=print_bot, name="printbot {}".format(self.pid)
+        # )
+        # thread_printbot.start()
 
+    @profile(stream=fp)
     def dataFrame(self) -> list[dict[str, str]]:
         """
         Converts an Excel file to a list of dictionaries with formatted data.
@@ -244,6 +264,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return vars_df
 
+    @profile(stream=fp)
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
         """
         Formats the given data dictionary according to specific rules.
@@ -285,6 +306,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return data
 
+    @profile(stream=fp)
     def calc_time(self) -> list:
         """
         Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
@@ -303,6 +325,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return [minutes, seconds]
 
+    @profile(stream=fp)
     def append_moves(self) -> None:
         """
         Appends movements to the spreadsheet if there are any movements to append.
@@ -324,6 +347,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         elif len(self.appends) == 0:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
+    @profile(stream=fp)
     def append_success(self, data, message: str = None, fileN: str = None):
 
         if not message:
@@ -380,6 +404,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.message = message
             self.prt()
 
+    @profile(stream=fp)
     def append_error(self, data: dict[str, str] = None):
 
         if not os.path.exists(self.path_erro):
@@ -394,7 +419,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         new_data = pd.DataFrame(df)
         new_data.to_excel(self.path_erro, index=False)
 
-    # Verificar o arquivo mais recente no diretório
+    @profile(stream=fp)
     def get_recent(self, folder: str):
         files = [os.path.join(folder, f) for f in os.listdir(folder)]
         files = [f for f in files if os.path.isfile(f)]
@@ -407,6 +432,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
 
+    @profile(stream=fp)
     def format_String(self, string: str) -> str:
 
         return secure_filename(
@@ -419,6 +445,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             )
         )
 
+    @profile(stream=fp)
     def normalizar_nome(self, word: str):
         """
 
@@ -436,6 +463,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         #
         return re.sub(r"[\s_\-]", "", word).lower()
 
+    @profile(stream=fp)
     def similaridade(self, word1: str, word2: str):
         """
         ### similaridade
@@ -452,6 +480,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         """
         return SequenceMatcher(None, word1, word2).ratio()
 
+    @profile(stream=fp)
     def finalize_execution(self) -> None:
 
         window_handles = self.driver.window_handles
@@ -473,6 +502,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
         self.prt()
 
+    @profile(stream=fp)
     def DriverLaunch(self, message: str = "Inicializando WebDriver") -> WebDriver:
 
         try:
@@ -578,6 +608,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         except Exception as e:
             raise e
 
+    @profile(stream=fp)
     def install_cert(self) -> None:
 
         installed = self.is_pfx_certificate_installed(self.name_cert.split(".pfx")[0])
@@ -612,6 +643,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             except subprocess.CalledProcessError as e:
                 raise e
 
+    @profile(stream=fp)
     def is_pfx_certificate_installed(
         self, cert_subject_name: str, store_name: str = "MY"
     ):
@@ -640,6 +672,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return False
 
+    @profile(stream=fp)
     def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
 
         records = []
@@ -654,6 +687,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return records
 
+    @profile(stream=fp)
     def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
 
         record = {}
@@ -666,6 +700,7 @@ class CrawJUD(classproperty):  # pragma: no cover
                 record.get(key).update({str(pos): value})
         return record
 
+    @profile(stream=fp)
     def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
 
         selector: WebElement = self.wait.until(
@@ -701,6 +736,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.driver.execute_script(command)
             self.driver.execute_script(command2)
 
+    @profile(stream=fp)
     def gpt_chat(self, text_mov: str) -> str:
 
         try:
@@ -766,6 +802,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             print(e)
             raise e
 
+    @profile(stream=fp)
     def text_is_a_date(self, text: str) -> bool:
 
         # Regex para verificar se o texto pode ser uma data (opcional)

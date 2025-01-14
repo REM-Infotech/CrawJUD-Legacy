@@ -507,14 +507,9 @@ class complement(CrawJUD):
         self.prt()
         salvartudo.click()
 
-    def print_comprovante(self) -> str:
+    def validar_campos(self):
 
-        name_comprovante = f'Comprovante Cadastro - {self.bot_data.get("NUMERO_PROCESSO")} - PID {self.pid}.png'
-        savecomprovante = os.path.join(
-            pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
-        )
-        self.driver.get_screenshot_as_file(savecomprovante)
-        return name_comprovante
+        pass
 
     def confirm_save(self) -> bool:
 
@@ -558,3 +553,12 @@ class complement(CrawJUD):
         #     except Exception as e:
         #         self.message = "Processo Não cadastrado"
         #         raise ErroDeExecucao(self.message)
+
+    def print_comprovante(self) -> str:
+
+        name_comprovante = f'Comprovante Cadastro - {self.bot_data.get("NUMERO_PROCESSO")} - PID {self.pid}.png'
+        savecomprovante = os.path.join(
+            pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
+        )
+        self.driver.get_screenshot_as_file(savecomprovante)
+        return name_comprovante

@@ -1,38 +1,36 @@
+from importlib import import_module
+from typing import Union
+
 from ...CrawJUD import CrawJUD
+from .elaw import ELAW_AME
+from .esaj import ESAJ_AM
+from .pje import PJE_AM
+from .projudi import PROJUDI_AM
 
 
 class BaseElementsBot(CrawJUD):
 
-    from .elaw import AME
-    from .esaj import ESAJ_AM
-    from .pje import PJE_AM
-    from .projudi import PROJUDI_AM
-    from .properties import Configuracao
+    # system = ""
+    # state_or_client = ""
 
-    funcs = {
-        "esaj": {"AM": ESAJ_AM},
-        "projudi": {"AM": PROJUDI_AM},
-        "elaw": {"AME": AME},
-    }
-
-    def __init__(self, *args, **kwrgs):
+    def __init__(self, *args, **kwrgs) -> None:
         """### ElementsBot"""
 
-    @property
-    def Elements(self):
-        """Retorna a configuração de acordo com o estado ou cliente."""
         state_or_client = self.state_or_client
-        if " " in state_or_client:
-            state_or_client = state_or_client.split(" ")[0]
-        dados = self.funcs.get(self.system).get(state_or_client)
 
-        if not dados:
-            raise AttributeError("Estado ou cliente não encontrado.")
+        self.objeto: Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM] = getattr(
+            import_module(f".{self.system.lower()}", __package__),
+            f"{self.system.upper()}_{state_or_client.upper()}",
+        )
 
-        return self.Configuracao(dados.__dict__)
+    @property
+    def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:
+        """Retorna a configuração de acordo com o estado ou cliente."""
+
+        return self.objeto
 
 
 class ElementsBot(BaseElementsBot):
 
-    def __init__(self, *args, **kwrgs):
+    def __init__(self, *args, **kwrgs) -> None:
         BaseElementsBot.__init__(self, *args, **kwrgs)

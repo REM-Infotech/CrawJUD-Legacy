@@ -1,4 +1,7 @@
-class PJE_AM:
+from .properties import Configuracao
+
+
+class PJE_AM(Configuracao):
     url_login: str = "https://pje.trt11.jus.br/primeirograu/login.seam"
     chk_login: str = "https://pje.trt11.jus.br/pjekz/painel/usuario-externo"
 
