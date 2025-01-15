@@ -3,7 +3,7 @@ import pathlib
 import time
 from contextlib import suppress
 from time import sleep
-from typing import Callable
+from typing import Callable, List
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -23,12 +23,6 @@ class complement(CrawJUD):
         super().__init__(**kwrgs)
         super().setup()
         super().auth_bot()
-
-        from clear import clear
-
-        clear()
-        print(self.__dict__.items())
-
         self.start_time = time.perf_counter()
 
     def execution(self):
@@ -444,6 +438,19 @@ class complement(CrawJUD):
 
                 esfera_xls = self.bot_data.get("ESFERA")
 
+                campos_obrigatorios: List[str] = [
+                    "estado",
+                    "comarca",
+                    "foro",
+                    "vara",
+                    "divisao",
+                    "fase",
+                    "provimento",
+                    "fato_gerador",
+                    "objeto",
+                    "tipo_empresa",
+                ]
+
                 if esfera_xls:
                     if check_esfera.text.lower() != esfera_xls.lower():
                         esfera(esfera_xls)
@@ -466,12 +473,10 @@ class complement(CrawJUD):
                 minutes = int(splitcalc[0])
                 seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
-                self.message = (
-                    f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-                )
+                self.validar_campos(campos_obrigatorios)
 
-                self.type_log = "log"
-                self.prt()
+                self.validar_advogado()
+                self.validar_advs_participantes()
 
                 self.salvar_tudo()
 
@@ -487,6 +492,12 @@ class complement(CrawJUD):
                     ],
                     self.message,
                 )
+                self.message = (
+                    f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
+                )
+
+                self.type_log = "log"
+                self.prt()
 
             elif search is not True:
                 raise ErroDeExecucao("Processo não encontrado!")
@@ -494,7 +505,7 @@ class complement(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e)
 
-    def salvar_tudo(self):
+    def salvar_tudo(self) -> None:
 
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
@@ -507,9 +518,131 @@ class complement(CrawJUD):
         self.prt()
         salvartudo.click()
 
-    def validar_campos(self):
+    def validar_campos(self, campos_obrigatorios: List[str]) -> None:
 
-        pass
+        self.message = "Validando campos obrigatórios"
+        self.type_log = "log"
+        self.prt()
+
+        for campo in campos_obrigatorios:
+            try:
+
+                campo_validar = self.elements.dict_campos_validar.get(campo)
+                command = f"return $('{campo_validar}').text()"
+                element = self.driver.execute_script(command)
+
+                if not element or element.lower() == "selecione":
+                    raise ErroDeExecucao(message=f"Campo {campo} não preenchido")
+
+            except Exception as e:
+                raise ErroDeExecucao(e=e)
+
+        campos_nao_obrigatorios: List[str] = [
+            "tipo_entrada",
+            "acao",
+            "escritorio",
+            "classificacao",
+            "toi_criado",
+            "nota_tecnica",
+            "liminar",
+        ]
+
+        self.messae = "Campos obrigatorios validados"
+        self.type_log = "info"
+        self.prt()
+
+        sleep(0.5)
+
+        self.message = "Validando campos não obrigatórios"
+        self.type_log = "log"
+        self.prt()
+        for campo in campos_nao_obrigatorios:
+
+            try:
+                campo_validar = self.elements.dict_campos_validar.get(campo)
+                command = f"return $('{campo_validar}').text()"
+                element = self.driver.execute_script(command)
+
+                if not element or element.lower() == "selecione":
+                    raise ErroDeExecucao(message=f'Campo "{campo}" não preenchido')
+                    # self.message = f'Campo "{campo}" não preenchido'
+                    # self.type_log = "info"
+                    # self.prt()
+
+                self.message = f'Campo "{campo}"| Texto: {element}'
+                self.type_log = "info"
+                self.prt()
+
+            except ErroDeExecucao as e:
+
+                try:
+                    message = e.message
+
+                except Exception as e:
+                    message = str(e)
+
+                self.message = message
+                self.type_log = "info"
+                self.prt()
+
+        self.message = "Campos não obrigatórios validados"
+        self.type_log = "info"
+        self.prt()
+
+    def validar_advogado(self) -> None:
+
+        self.message = "Validando advogado responsável"
+        self.type_log = "log"
+        self.prt()
+
+        campo_validar = self.elements.dict_campos_validar.get("advogado_interno")
+        command = f"return $('{campo_validar}').text()"
+        element = self.driver.execute_script(command)
+
+        if not element or element.lower() == "selecione":
+            raise ValueError(message='Campo "advogado_interno" não preenchido')
+
+        self.message = f'Campo "advogado_interno" | Texto: {element}'
+        self.type_log = "info"
+        self.prt()
+
+    def validar_advs_participantes(self) -> None:
+
+        data_bot = self.bot_data
+        if data_bot.get("ADVOGADO_INTERNO") is None or (
+            not data_bot.get("ADVOGADO_INTERNO").strip()
+        ):
+            raise ErroDeExecucao(message="Necessário advogado interno para validação!")
+
+        self.message = "Validando advogados participantes"
+        self.type_log = "log"
+        self.prt()
+
+        tb_Advs = self.driver.find_element(By.CSS_SELECTOR, self.elements.tb_advs_resp)
+
+        not_adv = None
+        with suppress(NoSuchElementException):
+            tr_not_adv = self.elements.tr_not_adv
+            not_adv = tb_Advs.find_element(By.CSS_SELECTOR, tr_not_adv)
+
+        if not_adv is not None:
+            raise ErroDeExecucao(message="Sem advogados participantes!")
+
+        advs = tb_Advs.find_elements(By.TAG_NAME, "tr")
+
+        for adv in advs:
+            advogado = adv.find_element(By.TAG_NAME, "td").text
+            if advogado.lower() == data_bot.get("ADVOGADO_INTERNO").lower():
+                break
+
+        else:
+            raise ErroDeExecucao(
+                message="Advogado responsável não encontrado na lista de advogados participantes!"
+            )
+
+        self.message = "Advogados participantes validados"
+        self.type_log = "info"
+        self.prt()
 
     def confirm_save(self) -> bool:
 
