@@ -3,26 +3,26 @@ import time
 from contextlib import suppress
 from datetime import datetime
 
-from memory_profiler import profile
+# from memory_profiler import profile
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
-fp = open("memory_profiler_capa_projudi.log", "+w")
+# fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
 class capa(CrawJUD):
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
         super().setup()
         super().auth_bot()
         self.start_time = time.perf_counter()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def execution(self) -> None:
 
         frame = self.dataFrame()
@@ -73,7 +73,7 @@ class capa(CrawJUD):
 
         self.finalize_execution()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def queue(self) -> None:
 
         try:
@@ -89,7 +89,7 @@ class capa(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e)
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def get_process_informations(self) -> list:
 
         try:

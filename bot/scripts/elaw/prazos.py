@@ -10,7 +10,7 @@ from bot.common.exceptions import ErroDeExecucao
 from bot.meta.CrawJUD import CrawJUD
 
 
-class audiencia(CrawJUD):
+class prazos(CrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)

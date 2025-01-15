@@ -16,8 +16,6 @@ import pandas as pd  # pragma: no cover
 import pytz  # pragma: no cover
 from cryptography import x509  # pragma: no cover
 from cryptography.hazmat.backends import default_backend  # pragma: no cover
-from memory_profiler import profile
-from openai import OpenAI  # pragma: no cover
 
 # from openai._streaming import Stream
 # from openai.types.chat.chat_completion import ChatCompletion
@@ -43,13 +41,18 @@ from ...common.exceptions import ErroDeExecucao  # pragma: no cover
 from ...meta import classproperty  # pragma: no cover
 from ..Utils.Driver import GetDriver  # pragma: no cover
 
+# from memory_profiler import profile
+
+# from openai import OpenAI  # pragma: no cover
+
+
 TypeHint = Union[
     List[str],
     List[Dict[str, str | int | float | datetime]],
     Dict[str, str],
 ]  # pragma: no cover
 
-fp = open("crawjud_profiler.log", "w+")
+# fp = open("crawjud_profiler.log", "w+")
 
 
 class CrawJUD(classproperty):  # pragma: no cover
@@ -77,7 +80,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return item
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def setup(self) -> None:
         """
         Sets up the bot by loading configuration from a JSON file, initializing various attributes,
@@ -160,7 +163,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.driver.quit()
             raise e
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def auth_bot(self) -> None:
 
         try:
@@ -203,13 +206,13 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.driver.quit()
             raise e
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def end_prt(self, status: str) -> None:
 
         print_bot = self.printtext()
         print_bot.end_bot(status)
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def prt(self) -> None:
 
         self.printtext().print_msg()
@@ -218,7 +221,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         # )
         # thread_printbot.start()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def dataFrame(self) -> list[dict[str, str]]:
         """
         Converts an Excel file to a list of dictionaries with formatted data.
@@ -264,7 +267,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return vars_df
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
         """
         Formats the given data dictionary according to specific rules.
@@ -306,7 +309,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return data
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def calc_time(self) -> list:
         """
         Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
@@ -325,7 +328,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return [minutes, seconds]
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def append_moves(self) -> None:
         """
         Appends movements to the spreadsheet if there are any movements to append.
@@ -347,7 +350,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         elif len(self.appends) == 0:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def append_success(self, data, message: str = None, fileN: str = None):
 
         if not message:
@@ -404,7 +407,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.message = message
             self.prt()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def append_error(self, data: dict[str, str] = None):
 
         if not os.path.exists(self.path_erro):
@@ -419,7 +422,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         new_data = pd.DataFrame(df)
         new_data.to_excel(self.path_erro, index=False)
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def get_recent(self, folder: str):
         files = [os.path.join(folder, f) for f in os.listdir(folder)]
         files = [f for f in files if os.path.isfile(f)]
@@ -432,7 +435,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def format_String(self, string: str) -> str:
 
         return secure_filename(
@@ -445,7 +448,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             )
         )
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def normalizar_nome(self, word: str):
         """
 
@@ -463,7 +466,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         #
         return re.sub(r"[\s_\-]", "", word).lower()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def similaridade(self, word1: str, word2: str):
         """
         ### similaridade
@@ -480,7 +483,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         """
         return SequenceMatcher(None, word1, word2).ratio()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def finalize_execution(self) -> None:
 
         window_handles = self.driver.window_handles
@@ -488,7 +491,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         if len(window_handles) > 0:
 
             self.driver.delete_all_cookies()
-            self.driver.close()
+            self.driver.quit()
 
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
@@ -502,7 +505,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
         self.prt()
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def DriverLaunch(self, message: str = "Inicializando WebDriver") -> WebDriver:
 
         try:
@@ -608,7 +611,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         except Exception as e:
             raise e
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def install_cert(self) -> None:
 
         installed = self.is_pfx_certificate_installed(self.name_cert.split(".pfx")[0])
@@ -643,7 +646,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             except subprocess.CalledProcessError as e:
                 raise e
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def is_pfx_certificate_installed(
         self, cert_subject_name: str, store_name: str = "MY"
     ):
@@ -672,7 +675,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return False
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
 
         records = []
@@ -687,7 +690,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return records
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
 
         record = {}
@@ -700,7 +703,7 @@ class CrawJUD(classproperty):  # pragma: no cover
                 record.get(key).update({str(pos): value})
         return record
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
 
         selector: WebElement = self.wait.until(
@@ -736,13 +739,13 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.driver.execute_script(command)
             self.driver.execute_script(command2)
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def gpt_chat(self, text_mov: str) -> str:
 
         try:
 
             time.sleep(5)
-            client: OpenAI = self.OpenAI_client
+            client = self.OpenAI_client
             completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
@@ -802,7 +805,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             print(e)
             raise e
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def text_is_a_date(self, text: str) -> bool:
 
         # Regex para verificar se o texto pode ser uma data (opcional)

@@ -18,6 +18,9 @@ class BaseElementsBot(CrawJUD):
 
         state_or_client = self.state_or_client
 
+        if " - " in state_or_client:
+            state_or_client = state_or_client.split(" - ")[0]
+
         self.objeto: Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM] = getattr(
             import_module(f".{self.system.lower()}", __package__),
             f"{self.system.upper()}_{state_or_client.upper()}",

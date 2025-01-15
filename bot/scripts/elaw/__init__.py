@@ -1,29 +1,30 @@
-from typing import Union
+from importlib import import_module
+from typing import Any
 
-from .andamentos import andamentos
-from .audiencia import audiencia as prazos
-from .cadastro import cadastro
-from .complementar import complement
-from .download import download
-from .pagamentos import sol_pags
-from .provisionamento import provisao
+# from .andamentos import andamentos
+# from .prazos import prazos
+# from .cadastro import cadastro
+# from .complementar import complement
+# from .download import download
+# from .pagamentos import sol_pags
+# from .provisionamento import provisao
 
-Hints = Union[download, cadastro, sol_pags, andamentos, complement, provisao, prazos]
+# Hints = Union[download, cadastro, sol_pags, andamentos, complement, provisao, prazos]
 
 
 class elaw:
 
-    bots = {
-        "download": download,
-        "cadastro": cadastro,
-        "sol_pags": sol_pags,
-        "andamentos": andamentos,
-        "complement": complement,
-        "provisao": provisao,
-        "prazos": prazos,
-    }
+    # bots = {
+    #     "download": download,
+    #     "cadastro": cadastro,
+    #     "sol_pags": sol_pags,
+    #     "andamentos": andamentos,
+    #     "complement": complement,
+    #     "provisao": provisao,
+    #     "prazos": prazos,
+    # }
 
-    def __init__(self, **kwrgs):
+    def __init__(self, **kwrgs) -> None:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
@@ -34,9 +35,14 @@ class elaw:
             raise e
 
     @property
-    def Bot(self) -> Hints:
+    def Bot(self) -> Any:
 
-        rb = self.bots.get(self.typebot)
+        rb = getattr(
+            import_module(f".{self.typebot.lower()}", __package__),
+            self.typebot.lower(),
+        )
+
+        # rb = self.bots.get(self.typebot)
         if not rb:
             raise AttributeError("Robô não encontrado!!")
 

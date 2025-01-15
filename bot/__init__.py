@@ -2,47 +2,36 @@ import multiprocessing as mp
 import os
 import pathlib
 from contextlib import suppress
+from importlib import import_module
 from typing import Union
 
 import psutil
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from memory_profiler import profile
+
+# from memory_profiler import profile
 
 process_type = Union[psutil.Process, None]
 
-fp = open("memory_profiler.log", "+w")
+# fp = open("memory_profiler.log", "+w")
 
 
 class WorkerThread:
 
-    @profile(stream=fp)
+    # @profile(stream=fp)
     def BotStarter(self):  # pragma: no cover
 
-        from .scripts.caixa import caixa
-        from .scripts.calculadoras import calculadoras
-        from .scripts.elaw import elaw
-        from .scripts.esaj import esaj
-        from .scripts.pje import pje
-        from .scripts.projudi import projudi
-
-        systems = {
-            "pje": pje,
-            "esaj": esaj,
-            "elaw": elaw,
-            "caixa": caixa,
-            "projudi": projudi,
-            "calculadoras": calculadoras,
-        }
-
-        return systems.get(self.system)
+        return getattr(
+            import_module(f".scripts.{self.system}", __package__),
+            self.system,
+        )
 
     # argv: str = None, botname: str = None
     def __init__(self, **kwrgs: dict[str, str]):  # pragma: no cover
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
-    @profile
+    # @profile
     def start(self, app: Flask, db: SQLAlchemy) -> int:
 
         try:
