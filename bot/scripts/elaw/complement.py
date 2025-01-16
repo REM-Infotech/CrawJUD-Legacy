@@ -3,7 +3,7 @@ import pathlib
 import time
 from contextlib import suppress
 from time import sleep
-from typing import Callable, List
+from typing import Callable, List, Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -16,16 +16,39 @@ from bot.meta.CrawJUD import CrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
+campos_obrigatorios: List[str] = [
+    "estado",
+    "comarca",
+    "foro",
+    "vara",
+    "divisao",
+    "fase",
+    "provimento",
+    "fato_gerador",
+    "objeto",
+    "tipo_empresa",
+]
+
+campos_nao_obrigatorios: List[str] = [
+    "tipo_entrada",
+    "acao",
+    "escritorio",
+    "classificacao",
+    "toi_criado",
+    "nota_tecnica",
+    "liminar",
+]
+
 
 class complement(CrawJUD):
 
-    def __init__(self, **kwrgs):
+    def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
         super().setup()
         super().auth_bot()
         self.start_time = time.perf_counter()
 
-    def execution(self):
+    def execution(self) -> None:
 
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -74,7 +97,7 @@ class complement(CrawJUD):
 
         self.finalize_execution()
 
-    def queue(self):
+    def queue(self) -> None:
 
         try:
             search = self.SearchBot()
@@ -94,341 +117,7 @@ class complement(CrawJUD):
 
                 lista1 = list(self.bot_data.keys())
 
-                def esfera(text: str = "Judicial"):
-                    """
-                    Handles the selection of the judicial sphere in the process.
-                    This function performs the following steps:
-                    1. Selects the judicial sphere element.
-                    2. Sets the text to "Judicial".
-                    3. Logs the message "Informando esfera do processo".
-                    4. Calls the Select2_ELAW method to select the element.
-                    5. Waits for the loading of the specified div element.
-                    6. Logs the message "Esfera Informada!".
-                    Returns:
-                        None
-                    """
-
-                    elementSelect = self.elements.css_esfera_judge
-
-                    self.message = "Informando esfera do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Esfera Informada!"
-                    self.type_log = "info"
-                    self.prt()
-
-                def estado():
-                    """Declaração dos CSS em variáveis"""
-
-                    key = "ESTADO"
-                    elementSelect = self.elements.estado_input
-                    text = str(self.bot_data.get(key, None))
-
-                    self.message = "Informando estado do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Estado do processo informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def comarca():
-                    """Declaração dos CSS em variáveis"""
-
-                    text = str(self.bot_data.get("COMARCA"))
-                    elementSelect = self.elements.comarca_input
-
-                    self.message = "Informando comarca do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Comarca do processo informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def foro():
-                    """Declaração dos CSS em variáveis"""
-
-                    elementSelect = self.elements.foro_input
-                    text = str(self.bot_data.get("FORO"))
-
-                    self.message = "Informando foro do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Foro do processo informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def vara():
-                    """Declaração dos CSS em variáveis"""
-
-                    text = self.bot_data.get("VARA")
-                    elementSelect = self.elements.vara_input
-
-                    self.message = "Informando vara do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Vara do processo informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def unidade_consumidora():
-                    """
-                    Handles the process of informing the consumer unit in the web application.
-                    This function performs the following steps:
-                    1. Logs the start of the process.
-                    2. Waits for the input field for the consumer unit to be present in the DOM.
-                    3. Clicks on the input field.
-                    4. Clears any existing text in the input field.
-                    5. Sends the consumer unit data to the input field.
-                    6. Logs the completion of the process.
-                    Attributes:
-                        self.message (str): Message to be logged.
-                        self.type_log (str): Type of log to be recorded.
-                        self.elements.css_input_uc (str): CSS selector for the consumer unit input field.
-                        self.bot_data (dict): Dictionary containing the consumer unit data.
-                        self.prt(): Method to print/log messages.
-                        self.wait.until(): Method to wait until a condition is met.
-                        self.interact.clear(): Method to clear the input field.
-                        self.interact.send_key(): Method to send keys to the input field.
-                    """
-
-                    self.message = "Informando unidade consumidora"
-                    self.type_log = "log"
-                    self.prt()
-
-                    input_uc: WebElement = self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, self.elements.css_input_uc)
-                        )
-                    )
-                    input_uc.click()
-
-                    self.interact.clear(input_uc)
-
-                    self.interact.send_key(
-                        input_uc, self.bot_data.get("UNIDADE_CONSUMIDORA")
-                    )
-
-                    self.message = "Unidade consumidora informada!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def divisao():
-
-                    self.message = "Informando divisão"
-                    self.type_log = "log"
-                    self.prt()
-
-                    sleep(0.5)
-                    text = str(self.bot_data.get("DIVISAO"))
-
-                    self.Select2_ELAW(self.elements.elementSelect, text)
-
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Divisão informada!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def data_citacao():
-
-                    self.message = "Informando data de citação"
-                    self.type_log = "log"
-                    self.prt()
-
-                    data_citacao: WebElement = self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, self.elements.css_data_citacao)
-                        )
-                    )
-                    self.interact.clear(data_citacao)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-                    self.interact.send_key(
-                        data_citacao, self.bot_data.get("DATA_CITACAO")
-                    )
-                    sleep(2)
-                    self.driver.execute_script(
-                        f"document.querySelector('{self.elements.css_data_citacao}').blur()"
-                    )
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Data de citação informada!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def fase():
-                    """Declaração dos CSS em variáveis"""
-                    elementSelect = self.elements.fase_input
-                    text = self.bot_data.get("FASE")
-
-                    self.message = "Informando fase do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Fase informada!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def provimento():
-                    """Declaração dos CSS em variáveis"""
-                    text = self.bot_data.get("PROVIMENTO")
-                    elementSelect = self.elements.provimento_input
-
-                    self.message = "Informando provimento antecipatório"
-                    self.type_log = "log"
-                    self.prt()
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Provimento antecipatório informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def valor_causa(self) -> None:
-                    """
-                    Fills in the value of the cause in a web form.
-                    This method performs the following steps:
-                    1. Logs the start of the process.
-                    2. Waits for the element representing the value of the cause to be clickable.
-                    3. Clicks on the element, clears any existing text, and inputs the new value.
-                    4. Executes a JavaScript command to remove focus from the input field.
-                    5. Waits for a specific loading element to disappear.
-                    6. Logs the completion of the process.
-                    Raises:
-                        TimeoutException: If the element is not found within the specified wait time.
-                    """
-
-                    self.message = "Informando valor da causa"
-                    self.type_log = "log"
-                    self.prt()
-
-                    valor_causa: WebElement = self.wait.until(
-                        EC.element_to_be_clickable(
-                            (By.CSS_SELECTOR, self.elements.css_valor_causa)
-                        ),
-                        message="Erro ao encontrar elemento",
-                    )
-
-                    valor_causa.click()
-                    sleep(0.5)
-                    valor_causa.clear()
-
-                    self.interact.send_key(
-                        valor_causa, self.bot_data.get("VALOR_CAUSA")
-                    )
-                    self.driver.execute_script(
-                        f"document.querySelector('{self.elements.css_valor_causa}').blur()"
-                    )
-
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Valor da causa informado!"
-                    self.type_log = "info"
-                    self.prt()
-
-                def fato_gerador():
-                    """Declaração dos CSS em variáveis"""
-                    self.message = "Informando fato gerador"
-                    self.type_log = "log"
-                    self.prt()
-
-                    elementSelect = self.elements.fato_gerador_input
-                    text = self.bot_data.get("FATO_GERADOR")
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Fato gerador informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def desc_objeto():
-
-                    input_descobjeto = self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, self.elements.input_descobjeto_css)
-                        )
-                    )
-                    self.interact.click(input_descobjeto)
-
-                    text = self.bot_data.get("DESC_OBJETO")
-
-                    self.interact.clear(input_descobjeto)
-                    self.interact.send_key(input_descobjeto, text)
-                    self.driver.execute_script(
-                        f"document.querySelector('{self.elements.input_descobjeto_css}').blur()"
-                    )
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                def objeto():
-                    """Declaração dos CSS em variáveis"""
-                    self.message = "Informando objeto do processo"
-                    self.type_log = "log"
-                    self.prt()
-
-                    elementSelect = self.elements.objeto_input
-                    text = self.bot_data.get("OBJETO")
-
-                    self.Select2_ELAW(elementSelect, text)
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Objeto do processo informado!"
-                    self.type_log = "log"
-                    self.prt()
-
-                def tipo_empresa():
-
-                    self.message = "Informando contingenciamento"
-                    self.type_log = "log"
-                    self.prt()
-
-                    elementSelect = self.elements.contingencia
-
-                    text = ["Passiva", "Passivo"]
-                    if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
-                        text = ["Ativa", "Ativo"]
-
-                    self.Select2_ELAW(elementSelect, text[0])
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    elementSelect = self.elements.tipo_polo
-
-                    text = ["Passiva", "Passivo"]
-                    if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
-                        text = ["Ativa", "Ativo"]
-
-                    self.Select2_ELAW(elementSelect, text[1])
-                    self.interact.sleep_load('div[id="j_id_3x"]')
-
-                    self.message = "Contingenciamento informado!"
-                    self.type_log = "info"
-                    self.prt()
-
                 start_time = time.perf_counter()
-                class_itens = list(locals().items())
 
                 check_esfera = self.wait.until(
                     EC.presence_of_element_located(
@@ -438,33 +127,20 @@ class complement(CrawJUD):
 
                 esfera_xls = self.bot_data.get("ESFERA")
 
-                campos_obrigatorios: List[str] = [
-                    "estado",
-                    "comarca",
-                    "foro",
-                    "vara",
-                    "divisao",
-                    "fase",
-                    "provimento",
-                    "fato_gerador",
-                    "objeto",
-                    "tipo_empresa",
-                ]
-
                 if esfera_xls:
                     if check_esfera.text.lower() != esfera_xls.lower():
-                        esfera(esfera_xls)
+                        complement.esfera(self, esfera_xls)
 
                 for item in lista1:
                     check_column = self.bot_data.get(item.upper())
 
                     if check_column:
-                        func: Callable[[], None] = None
+                        func: Callable[[], None] = getattr(
+                            complement, item.lower(), None
+                        )
 
-                        for name, func in class_itens:
-                            if name.lower() == item.lower():
-                                func()
-                                break
+                        if func:
+                            func(self)
 
                 end_time = time.perf_counter()
                 execution_time = end_time - start_time
@@ -475,23 +151,22 @@ class complement(CrawJUD):
 
                 self.validar_campos(campos_obrigatorios)
 
-                self.validar_advogado()
                 self.validar_advs_participantes()
 
-                self.salvar_tudo()
+                # self.salvar_tudo()
 
-                if self.confirm_save() is True:
-                    name_comprovante = self.print_comprovante()
-                    self.message = "Processo salvo com sucesso!"
+                # if self.confirm_save() is True:
+                #     name_comprovante = self.print_comprovante()
+                #     self.message = "Processo salvo com sucesso!"
 
-                self.append_success(
-                    [
-                        self.bot_data.get("NUMERO_PROCESSO"),
-                        self.message,
-                        name_comprovante,
-                    ],
-                    self.message,
-                )
+                # self.append_success(
+                #     [
+                #         self.bot_data.get("NUMERO_PROCESSO"),
+                #         self.message,
+                #         name_comprovante,
+                #     ],
+                #     self.message,
+                # )
                 self.message = (
                     f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
                 )
@@ -524,6 +199,8 @@ class complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
+        message_campo: List[str] = []
+
         for campo in campos_obrigatorios:
             try:
 
@@ -534,28 +211,23 @@ class complement(CrawJUD):
                 if not element or element.lower() == "selecione":
                     raise ErroDeExecucao(message=f"Campo {campo} não preenchido")
 
+                message_campo.append(
+                    f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
+                )
+
             except Exception as e:
                 raise ErroDeExecucao(e=e)
 
-        campos_nao_obrigatorios: List[str] = [
-            "tipo_entrada",
-            "acao",
-            "escritorio",
-            "classificacao",
-            "toi_criado",
-            "nota_tecnica",
-            "liminar",
-        ]
-
-        self.messae = "Campos obrigatorios validados"
-        self.type_log = "info"
-        self.prt()
-
         sleep(0.5)
 
-        self.message = "Validando campos não obrigatórios"
+        message_campo.append('<p class="fw-bold">Campos obrigatórios validados!</p>')
+
+        self.message = "".join(message_campo)
         self.type_log = "log"
         self.prt()
+
+        message_campo: List[str] = []
+
         for campo in campos_nao_obrigatorios:
 
             try:
@@ -569,9 +241,9 @@ class complement(CrawJUD):
                     # self.type_log = "info"
                     # self.prt()
 
-                self.message = f'Campo "{campo}"| Texto: {element}'
-                self.type_log = "info"
-                self.prt()
+                message_campo.append(
+                    f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
+                )
 
             except ErroDeExecucao as e:
 
@@ -585,11 +257,14 @@ class complement(CrawJUD):
                 self.type_log = "info"
                 self.prt()
 
-        self.message = "Campos não obrigatórios validados"
+        message_campo.append(
+            '<p class="fw-bold">Campos não obrigatórios validados!</p>'
+        )
+        self.message = "".join(message_campo)
         self.type_log = "info"
         self.prt()
 
-    def validar_advogado(self) -> None:
+    def validar_advogado(self) -> str:
 
         self.message = "Validando advogado responsável"
         self.type_log = "log"
@@ -600,18 +275,22 @@ class complement(CrawJUD):
         element = self.driver.execute_script(command)
 
         if not element or element.lower() == "selecione":
-            raise ValueError(message='Campo "advogado_interno" não preenchido')
+            raise ErroDeExecucao(message='Campo "Advogado Responsável" não preenchido')
 
-        self.message = f'Campo "advogado_interno" | Texto: {element}'
+        self.message = f'Campo "Advogado Responsável" | Texto: {element}'
         self.type_log = "info"
         self.prt()
+
+        sleep(0.5)
+
+        return element
 
     def validar_advs_participantes(self) -> None:
 
         data_bot = self.bot_data
-        if data_bot.get("ADVOGADO_INTERNO") is None or (
-            not data_bot.get("ADVOGADO_INTERNO").strip()
-        ):
+        adv_name = data_bot.get("ADVOGADO_INTERNO", self.validar_advogado())
+
+        if not adv_name.strip():
             raise ErroDeExecucao(message="Necessário advogado interno para validação!")
 
         self.message = "Validando advogados participantes"
@@ -632,7 +311,7 @@ class complement(CrawJUD):
 
         for adv in advs:
             advogado = adv.find_element(By.TAG_NAME, "td").text
-            if advogado.lower() == data_bot.get("ADVOGADO_INTERNO").lower():
+            if advogado.lower() == adv_name.lower():
                 break
 
         else:
@@ -695,3 +374,345 @@ class complement(CrawJUD):
         )
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante
+
+    @classmethod
+    def esfera(cls, self: Self, text: str = "Judicial") -> None:
+        """
+        Handles the selection of the judicial sphere in the process.
+        This function performs the following steps:
+        1. Selects the judicial sphere element.
+        2. Sets the text to "Judicial".
+        3. Logs the message "Informando esfera do processo".
+        4. Calls the Select2_ELAW method to select the element.
+        5. Waits for the loading of the specified div element.
+        6. Logs the message "Esfera Informada!".
+        Returns:
+            None
+        """
+
+        elementSelect = self.elements.css_esfera_judge
+
+        self.message = "Informando esfera do processo"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Esfera Informada!"
+        self.type_log = "info"
+        self.prt()
+
+    @classmethod
+    def estado(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+
+        key = "ESTADO"
+        elementSelect = self.elements.estado_input
+        text = str(self.bot_data.get(key, None))
+
+        self.message = "Informando estado do processo"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Estado do processo informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def comarca(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+
+        text = str(self.bot_data.get("COMARCA"))
+        elementSelect = self.elements.comarca_input
+
+        self.message = "Informando comarca do processo"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Comarca do processo informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def foro(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+
+        elementSelect = self.elements.foro_input
+        text = str(self.bot_data.get("FORO"))
+
+        self.message = "Informando foro do processo"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Foro do processo informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def vara(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+
+        text = self.bot_data.get("VARA")
+        elementSelect = self.elements.vara_input
+
+        self.message = "Informando vara do processo"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Vara do processo informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def unidade_consumidora(cls, self: Self) -> None:
+        """
+        Handles the process of informing the consumer unit in the web application.
+        This function performs the following steps:
+        1. Logs the start of the process.
+        2. Waits for the input field for the consumer unit to be present in the DOM.
+        3. Clicks on the input field.
+        4. Clears any existing text in the input field.
+        5. Sends the consumer unit data to the input field.
+        6. Logs the completion of the process.
+        Attributes:
+            self.message (str): Message to be logged.
+            self.type_log (str): Type of log to be recorded.
+            self.elements.css_input_uc (str): CSS selector for the consumer unit input field.
+            self.bot_data (dict): Dictionary containing the consumer unit data.
+            self.prt(): Method to print/log messages.
+            self.wait.until(): Method to wait until a condition is met.
+            self.interact.clear(): Method to clear the input field.
+            self.interact.send_key(): Method to send keys to the input field.
+        """
+
+        self.message = "Informando unidade consumidora"
+        self.type_log = "log"
+        self.prt()
+
+        input_uc: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_input_uc)
+            )
+        )
+        input_uc.click()
+
+        self.interact.clear(input_uc)
+
+        self.interact.send_key(input_uc, self.bot_data.get("UNIDADE_CONSUMIDORA"))
+
+        self.message = "Unidade consumidora informada!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def divisao(cls, self: Self) -> None:
+
+        self.message = "Informando divisão"
+        self.type_log = "log"
+        self.prt()
+
+        sleep(0.5)
+        text = str(self.bot_data.get("DIVISAO"))
+
+        self.Select2_ELAW(self.elements.elementSelect, text)
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Divisão informada!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def data_citacao(cls, self: Self) -> None:
+
+        self.message = "Informando data de citação"
+        self.type_log = "log"
+        self.prt()
+
+        data_citacao: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_data_citacao)
+            )
+        )
+        self.interact.clear(data_citacao)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
+        sleep(2)
+        self.driver.execute_script(
+            f"document.querySelector('{self.elements.css_data_citacao}').blur()"
+        )
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Data de citação informada!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def fase(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+        elementSelect = self.elements.fase_input
+        text = self.bot_data.get("FASE")
+
+        self.message = "Informando fase do processo"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Fase informada!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def provimento(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+        text = self.bot_data.get("PROVIMENTO")
+        elementSelect = self.elements.provimento_input
+
+        self.message = "Informando provimento antecipatório"
+        self.type_log = "log"
+        self.prt()
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Provimento antecipatório informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def valor_causa(cls, self: Self) -> None:
+        """
+        Fills in the value of the cause in a web form.
+        This method performs the following steps:
+        1. Logs the start of the process.
+        2. Waits for the element representing the value of the cause to be clickable.
+        3. Clicks on the element, clears any existing text, and inputs the new value.
+        4. Executes a JavaScript command to remove focus from the input field.
+        5. Waits for a specific loading element to disappear.
+        6. Logs the completion of the process.
+        Raises:
+            TimeoutException: If the element is not found within the specified wait time.
+        """
+
+        self.message = "Informando valor da causa"
+        self.type_log = "log"
+        self.prt()
+
+        valor_causa: WebElement = self.wait.until(
+            EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, self.elements.css_valor_causa)
+            ),
+            message="Erro ao encontrar elemento",
+        )
+
+        valor_causa.click()
+        sleep(0.5)
+        valor_causa.clear()
+
+        self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
+        self.driver.execute_script(
+            f"document.querySelector('{self.elements.css_valor_causa}').blur()"
+        )
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Valor da causa informado!"
+        self.type_log = "info"
+        self.prt()
+
+    @classmethod
+    def fato_gerador(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+        self.message = "Informando fato gerador"
+        self.type_log = "log"
+        self.prt()
+
+        elementSelect = self.elements.fato_gerador_input
+        text = self.bot_data.get("FATO_GERADOR")
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Fato gerador informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def desc_objeto(cls, self: Self) -> None:
+
+        input_descobjeto = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.input_descobjeto_css)
+            )
+        )
+        self.interact.click(input_descobjeto)
+
+        text = self.bot_data.get("DESC_OBJETO")
+
+        self.interact.clear(input_descobjeto)
+        self.interact.send_key(input_descobjeto, text)
+        self.driver.execute_script(
+            f"document.querySelector('{self.elements.input_descobjeto_css}').blur()"
+        )
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+    @classmethod
+    def objeto(cls, self: Self) -> None:
+        """Declaração dos CSS em variáveis"""
+        self.message = "Informando objeto do processo"
+        self.type_log = "log"
+        self.prt()
+
+        elementSelect = self.elements.objeto_input
+        text = self.bot_data.get("OBJETO")
+
+        self.Select2_ELAW(elementSelect, text)
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Objeto do processo informado!"
+        self.type_log = "log"
+        self.prt()
+
+    @classmethod
+    def tipo_empresa(cls, self: Self) -> None:
+
+        self.message = "Informando contingenciamento"
+        self.type_log = "log"
+        self.prt()
+
+        elementSelect = self.elements.contingencia
+
+        text = ["Passiva", "Passivo"]
+        if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
+            text = ["Ativa", "Ativo"]
+
+        self.Select2_ELAW(elementSelect, text[0])
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        elementSelect = self.elements.tipo_polo
+
+        text = ["Passiva", "Passivo"]
+        if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
+            text = ["Ativa", "Ativo"]
+
+        self.Select2_ELAW(elementSelect, text[1])
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Contingenciamento informado!"
+        self.type_log = "info"
+        self.prt()
