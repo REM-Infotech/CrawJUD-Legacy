@@ -223,7 +223,9 @@ class complement(CrawJUD):
         # self.type_log = "log"
         # self.prt()
 
-        validar: Dict[str, str] = {}
+        validar: Dict[str, str] = {
+            "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")
+        }
         message_campo: List[str] = []
 
         for campo in campos_validar:
@@ -244,7 +246,7 @@ class complement(CrawJUD):
                 )
                 validar.update({campo.upper(): element})
 
-            except ErroDeExecucao as e:
+            except Exception as e:
 
                 try:
                     message = e.message
@@ -258,7 +260,7 @@ class complement(CrawJUD):
                 self.type_log = "info"
                 self.prt()
 
-        self.append_validarcampos(validar)
+        self.append_validarcampos([validar])
         message_campo.append('<p class="fw-bold">Campos validados!</p>')
         self.message = "".join(message_campo)
         self.type_log = "info"
