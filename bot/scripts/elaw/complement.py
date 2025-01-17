@@ -254,7 +254,7 @@ class complement(CrawJUD):
                 except Exception as e:
                     message = str(e)
 
-                validar.update([{campo: message}])
+                validar.update({campo: message})
 
                 self.message = message
                 self.type_log = "info"
