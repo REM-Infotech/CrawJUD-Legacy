@@ -291,6 +291,9 @@ class CrawJUD(classproperty):  # pragma: no cover
         data_listed = list(data.items())
         for key, value in data_listed:
 
+            if not value.strip():
+                data.pop(key)
+
             if key.upper() == "TIPO_EMPRESA":
                 data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
                 if value.upper() == "RÉU":
