@@ -22,7 +22,11 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 
-from .getchromeVer import chrome_ver
+try:
+    from getchromeVer import chrome_ver
+
+except ModuleNotFoundError:
+    from .getchromeVer import chrome_ver
 
 
 class GetDriver:
@@ -53,16 +57,26 @@ class GetDriver:
 
     def __init__(
         self, destination: str = os.path.join(pathlib.Path(__file__).cwd()), **kwrgs
-    ):
+    ) -> None:
 
-        self.file_path: str = os.path.join(
-            pathlib.Path(__file__).cwd(), "webdriver", "chromedriver"
+        new_stem = f"chromedriver{self.code_ver}.zip"
+        self.file_path = (
+            pathlib.Path(__file__)
+            .parent.cwd()
+            .resolve()
+            .joinpath("webdriver")
+            .joinpath("chromedriver")
+            .with_stem(new_stem)
         )
-        self.file_path += self.code_ver
 
-        self.fileN = os.path.basename(self.file_path)
-        if self.code_ver not in self.fileN:
-            self.fileN += self.code_ver
+        if platform.system() == "Linux":
+            self.file_path = self.file_path.with_suffix("")
+            self.fileN = self.file_path.name
+
+        elif platform.system() == "Windows":
+
+            self.file_path = self.file_path.with_suffix(".exe")
+            self.fileN = self.file_path.name
 
         for key, value in list(kwrgs.items()):
             setattr(self, key, value)
@@ -86,18 +100,14 @@ class GetDriver:
             "download", filename=self.fileN.upper(), start=False
         )
 
-        if platform.system() == "Windows":
-            self.fileN += ".exe"
-            self.file_path += ".exe"
-
         self.destination = os.path.join(self.destination, self.fileN)
         root_path = str(Path(self.file_path).parent.resolve())
         if not os.path.exists(self.file_path):
 
             if not os.path.exists(root_path):
                 os.makedirs(root_path)
-
-            pool.submit(self.copy_url, task_id, self.getUrl(), self.file_path)
+            url = self.getUrl()
+            pool.submit(self.copy_url, task_id, url, self.file_path)
 
         elif os.path.exists(root_path):
             if os.path.exists(self.file_path):
@@ -132,17 +142,21 @@ class GetDriver:
 
             url_driver += f"{item}/"
 
+        with open("is_init.txt", "w") as f:
+            f.write(url_driver)
+
         return url_driver
 
-    def copy_url(self, task_id: TaskID, url: str, path: str) -> None:
+    def copy_url(self, task_id: TaskID, url: str, path: Path) -> None:
         """Copy data from a url to a local file."""
 
+        zip_name = path.with_name(f"{path.name}.zip")
         response = requests.get(f"https://{url}", stream=True, timeout=60)
-
+        # input("teste")
         # This will break if the response doesn't contain content length
         self.progress.update(task_id, total=int(response.headers["Content-length"]))
 
-        with open(path.replace(".exe", ".zip"), "wb") as dest_file:
+        with open(zip_name, "wb") as dest_file:
 
             self.progress.start_task(task_id)
             for data in iter(partial(response.raw.read, 32768), b""):
@@ -150,31 +164,34 @@ class GetDriver:
                 dest_file.write(data)
                 self.progress.update(task_id, advance=len(data))
 
+        # input(str("member"))
         # Extract the zip file
-        with zipfile.ZipFile(path.replace(".exe", ".zip"), "r") as zip_ref:
+
+        with zipfile.ZipFile(zip_name, "r") as zip_ref:
 
             # Extract each file directly into the subfolder
             for member in zip_ref.namelist():
+                # input(str(member))
+                self.progress.print(member)
+                self.progress.update(task_id)
 
-                not_Cr1 = member.split("/")[1].lower() == "chromedriver.exe"
-                not_Cr2 = member.split("/")[1].lower() == "chromedriver"
+                not_Cr1 = member.split("/")[-1].lower() == "chromedriver.exe"
+                not_Cr2 = member.split("/")[-1].lower() == "chromedriver"
 
                 if not_Cr1 or not_Cr2:
 
                     # Get the original file name without any directory structure
-                    extracted_path = zip_ref.extract(member, os.path.dirname(path))
-
+                    dir_name = os.path.dirname(path)
+                    extracted_path = zip_ref.extract(member, dir_name)
+                    base_name = os.path.basename(extracted_path)
                     # If the extracted path has directories, move the file directly into the subfolder
-                    if os.path.basename(extracted_path) and os.path.isdir(
-                        extracted_path
-                    ):
+                    chk = base_name and os.path.isdir(extracted_path)
+                    if chk:
                         continue
 
-                    shutil.move(
-                        extracted_path, os.path.join(os.path.dirname(path), self.fileN)
-                    )
+                    shutil.move(extracted_path, path)
 
-        os.remove(path.replace(".exe", ".zip"))
+        zip_name.unlink()
         self.current_app_progress.update(
             self.current_task_id, description="[bold green] ChromeDriver Baixado!"
         )

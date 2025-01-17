@@ -160,7 +160,10 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.type_log = "error"
             self.prt()
             self.end_prt("Falha ao iniciar")
-            self.driver.quit()
+
+            if self.driver:
+                self.driver.quit()
+
             raise e
 
     # @profile(stream=fp)
@@ -203,7 +206,9 @@ class CrawJUD(classproperty):  # pragma: no cover
 
             self.prt()
             self.end_prt("Falha ao iniciar")
-            self.driver.quit()
+            if self.driver:
+                self.driver.quit()
+
             raise e
 
     # @profile(stream=fp)
@@ -520,7 +525,10 @@ class CrawJUD(classproperty):  # pragma: no cover
                 os.path.join(pathlib.Path(__file__).cwd(), "exec", self.pid, "chrome")
             )
 
-            if os.getlogin() != "root" or platform.system() != "Linux":
+            user = os.environ.get(
+                "USER", os.environ.get("LOGNAME", os.environ.get("USERNAME", "root"))
+            )
+            if user != "root" or platform.system() != "Linux":
                 list_args.remove("--no-sandbox")
 
             if platform.system() == "Windows" and self.login_method == "cert":
