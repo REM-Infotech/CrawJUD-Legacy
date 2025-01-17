@@ -417,7 +417,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
     # @profile(stream=fp)
 
-    def append_validarcampos(self, data: Dict[str, str]) -> None:
+    def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
 
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
         planilha_validar = (
@@ -430,7 +430,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         elif os.path.exists(planilha_validar):
             df = pd.read_excel(planilha_validar)
             df = df.to_dict(orient="records")
-            df.extend([data])
+            df.extend(data)
 
         new_data = pd.DataFrame(df)
         new_data.to_excel(planilha_validar, index=False)
