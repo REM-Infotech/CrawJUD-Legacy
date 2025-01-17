@@ -16,7 +16,7 @@ from bot.meta.CrawJUD import CrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
-campos_obrigatorios: List[str] = [
+campos_validar: List[str] = [
     "estado",
     "comarca",
     "foro",
@@ -27,9 +27,6 @@ campos_obrigatorios: List[str] = [
     "fato_gerador",
     "objeto",
     "tipo_empresa",
-]
-
-campos_nao_obrigatorios: List[str] = [
     "tipo_entrada",
     "acao",
     "escritorio",
@@ -149,24 +146,24 @@ class complement(CrawJUD):
                 minutes = int(splitcalc[0])
                 seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
-                self.validar_campos(campos_obrigatorios)
+                self.validar_campos()
 
                 self.validar_advs_participantes()
 
-                # self.salvar_tudo()
+                self.salvar_tudo()
 
-                # if self.confirm_save() is True:
-                #     name_comprovante = self.print_comprovante()
-                #     self.message = "Processo salvo com sucesso!"
+                if self.confirm_save() is True:
+                    name_comprovante = self.print_comprovante()
+                    self.message = "Processo salvo com sucesso!"
 
-                # self.append_success(
-                #     [
-                #         self.bot_data.get("NUMERO_PROCESSO"),
-                #         self.message,
-                #         name_comprovante,
-                #     ],
-                #     self.message,
-                # )
+                self.append_success(
+                    [
+                        self.bot_data.get("NUMERO_PROCESSO"),
+                        self.message,
+                        name_comprovante,
+                    ],
+                    self.message,
+                )
                 self.message = (
                     f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
                 )
@@ -193,42 +190,42 @@ class complement(CrawJUD):
         self.prt()
         salvartudo.click()
 
-    def validar_campos(self, campos_obrigatorios: List[str]) -> None:
+    def validar_campos(self) -> None:
 
-        self.message = "Validando campos obrigatórios"
+        self.message = "Validando campos"
         self.type_log = "log"
         self.prt()
 
+        # message_campo: List[str] = []
+
+        # for campo in campos_obrigatorios:
+        #     try:
+
+        #         campo_validar = self.elements.dict_campos_validar.get(campo)
+        #         command = f"return $('{campo_validar}').text()"
+        #         element = self.driver.execute_script(command)
+
+        #         if not element or element.lower() == "selecione":
+        #             raise ErroDeExecucao(message=f"Campo {campo} não preenchido")
+
+        #         message_campo.append(
+        #             f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
+        #         )
+
+        #     except Exception as e:
+        #         raise ErroDeExecucao(e=e)
+
+        # sleep(0.5)
+
+        # message_campo.append('<p class="fw-bold">Campos obrigatórios validados!</p>')
+
+        # self.message = "".join(message_campo)
+        # self.type_log = "log"
+        # self.prt()
+
         message_campo: List[str] = []
 
-        for campo in campos_obrigatorios:
-            try:
-
-                campo_validar = self.elements.dict_campos_validar.get(campo)
-                command = f"return $('{campo_validar}').text()"
-                element = self.driver.execute_script(command)
-
-                if not element or element.lower() == "selecione":
-                    raise ErroDeExecucao(message=f"Campo {campo} não preenchido")
-
-                message_campo.append(
-                    f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
-                )
-
-            except Exception as e:
-                raise ErroDeExecucao(e=e)
-
-        sleep(0.5)
-
-        message_campo.append('<p class="fw-bold">Campos obrigatórios validados!</p>')
-
-        self.message = "".join(message_campo)
-        self.type_log = "log"
-        self.prt()
-
-        message_campo: List[str] = []
-
-        for campo in campos_nao_obrigatorios:
+        for campo in campos_validar:
 
             try:
                 campo_validar = self.elements.dict_campos_validar.get(campo)
@@ -257,9 +254,7 @@ class complement(CrawJUD):
                 self.type_log = "info"
                 self.prt()
 
-        message_campo.append(
-            '<p class="fw-bold">Campos não obrigatórios validados!</p>'
-        )
+        message_campo.append('<p class="fw-bold">Campos validados!</p>')
         self.message = "".join(message_campo)
         self.type_log = "info"
         self.prt()
