@@ -4,10 +4,10 @@ from typing import Any
 # from .andamentos import andamentos
 # from .prazos import prazos
 # from .cadastro import cadastro
-# from .complementar import complement
+# from .complement import complement
 # from .download import download
-# from .pagamentos import sol_pags
-# from .provisionamento import provisao
+# from .sol_pag import sol_pags
+# from .provisao import provisao
 
 # Hints = Union[download, cadastro, sol_pags, andamentos, complement, provisao, prazos]
 
