@@ -3,7 +3,7 @@ import pathlib
 import time
 from contextlib import suppress
 from time import sleep
-from typing import Callable, List, Self
+from typing import Callable, Dict, List, Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -223,12 +223,13 @@ class complement(CrawJUD):
         # self.type_log = "log"
         # self.prt()
 
+        validar: Dict[str, str] = {}
         message_campo: List[str] = []
 
         for campo in campos_validar:
 
             try:
-                campo_validar = self.elements.dict_campos_validar.get(campo)
+                campo_validar: str = self.elements.dict_campos_validar.get(campo)
                 command = f"return $('{campo_validar}').text()"
                 element = self.driver.execute_script(command)
 
@@ -241,6 +242,7 @@ class complement(CrawJUD):
                 message_campo.append(
                     f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
                 )
+                validar.update({campo.upper(): element})
 
             except ErroDeExecucao as e:
 
@@ -250,10 +252,13 @@ class complement(CrawJUD):
                 except Exception as e:
                     message = str(e)
 
+                validar.update({campo: message})
+
                 self.message = message
                 self.type_log = "info"
                 self.prt()
 
+        self.append_validarcampos(validar)
         message_campo.append('<p class="fw-bold">Campos validados!</p>')
         self.message = "".join(message_campo)
         self.type_log = "info"
