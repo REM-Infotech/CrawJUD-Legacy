@@ -1,10 +1,10 @@
 # Flask imports
 # Python Imports
-import os
 import pathlib
 from datetime import timedelta
 from pathlib import Path
 
+from celery import Celery
 from dotenv import dotenv_values
 from flask import Flask
 from flask_mail import Mail
@@ -14,7 +14,7 @@ from flask_talisman import Talisman
 from redis_flask import Redis
 
 # APP Imports
-from configs import Configurator, check_allowed_origin
+from .utils import check_allowed_origin, make_celery
 
 db = None
 mail = None
@@ -24,129 +24,61 @@ app = None
 
 clean_prompt = False
 
+objects_config = {
+    "development": "app.config.DevelopmentConfig",
+    "production": "app.config.ProductionConfig",
+    "testing": "app.config.TestingConfig",
+}
+
 
 class AppFactory:
 
-    csp_ = {}
-
-    testing = False
-
-    @property
-    def csp(self):  # pragma: no cover
-        return self.csp_
-
-    @csp.setter
-    def csp(self, new_csp: dict):  # pragma: no cover
-        self.csp_ = new_csp
-
-    def __init__(self, testing: bool = False):
-        self.testing = testing
-
-    def set_csp(self):  # pragma: no cover
-
-        from .models import Servers
-
-        srvs = Servers.query.all()
-        csp_vars = {
-            "default-src": ["'self'"],
-            "script-src": [
-                "'self'",
-                "https://cdn.jsdelivr.net",
-                "https://cdnjs.cloudflare.com",
-                "https://cdn.datatables.net",
-                "https://unpkg.com",
-                "https://code.jquery.com",
-                "https://use.fontawesome.com",
-                "",
-                "'unsafe-inline'",
-            ],
-            "style-src": [
-                "'self'",
-                "https://cdn.jsdelivr.net",
-                "https://cdnjs.cloudflare.com",
-                "https://cdn.datatables.net",
-                "https://unpkg.com",
-                "https://github.com",
-                "https://avatars.githubusercontent.com",
-                "'unsafe-inline'",
-            ],
-            "img-src": [
-                "'self'",
-                "data:",
-                "https://cdn.jsdelivr.net",
-                "https://cdnjs.cloudflare.com",
-                "https://cdn.datatables.net",
-                "https://unpkg.com",
-                "https://cdn-icons-png.flaticon.com",
-                "https://github.com",
-                "https://domain.cliente.com",
-                "https://avatars.githubusercontent.com",
-            ],
-            "connect-src": [
-                "'self'",
-                "https://cdn.jsdelivr.net",
-                "https://cdnjs.cloudflare.com",
-                "https://cdn.datatables.net",
-                "https://github.com",
-                "https://unpkg.com",
-                "https://avatars.githubusercontent.com",
-            ],
-            "frame-src": [
-                "'self'",
-                "https://domain.cliente.com",
-                "https://github.com",
-                "https://avatars.githubusercontent.com",
-            ],
-        }
-        if srvs:
-            for srv in srvs:
-                csp_vars.get("connect-src").append(f"https://{srv.address}")
-                csp_vars.get("connect-src").append(f"wss://{srv.address}")
-
-        self.csp = csp_vars
-
-    def create_app(self) -> tuple[Flask, SocketIO] | Flask:
+    def create_app(self) -> tuple[Flask, SocketIO, Celery]:
 
         global app
 
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
-        src_path = os.path.join(pathlib.Path(__file__).cwd(), "static")
-
-        config_obj = Configurator().get_configurator()
+        src_path = pathlib.Path(__file__).cwd().resolve().joinpath("static")
 
         app = Flask(__name__, static_folder=src_path)
 
-        app.config.from_object(config_obj)
+        env_ambient = dotenv_values(".env")["AMBIENT_CONFIG"]
+        ambient = objects_config[env_ambient]
+        app.config.from_object(ambient)
 
-        if self.testing is False:  # pragma: no cover
+        celery = make_celery(app)
+        celery.set_default()
+        app.extensions["celery"] = celery
+
+        celery.autodiscover_tasks(["app.tasks"])
+
+        if app.testing is False:  # pragma: no cover
 
             with app.app_context():
                 self.init_database(app)
                 self.init_mail(app)
                 self.init_redis(app)
 
-                self.set_csp()
-
                 self.init_talisman(app)
                 io = self.init_socket(app)
                 self.init_routes(app)
 
-                return app, io
+                return app, io, celery
 
-        return app
+        return app, io, celery
 
-    def init_routes(self, app: Flask):
+    def init_routes(self, app: Flask) -> None:
 
         from app.routes import register_routes
 
         register_routes(app)
 
-    def init_talisman(self, app: Flask):  # pragma: no cover
+    def init_talisman(self, app: Flask) -> Talisman:  # pragma: no cover
 
         global tslm
         tslm = Talisman(
             app,
-            content_security_policy=self.csp,
+            content_security_policy=app.config["CSP"],
             session_cookie_http_only=True,
             session_cookie_samesite="Lax",
             strict_transport_security=True,
@@ -155,7 +87,7 @@ class AppFactory:
         )
         return tslm
 
-    def init_socket(self, app: Flask):
+    def init_socket(self, app: Flask) -> SocketIO:
 
         global io
         io = SocketIO(app, async_mode="eventlet")
@@ -168,21 +100,21 @@ class AppFactory:
 
         return io
 
-    def init_mail(self, app):
+    def init_mail(self, app) -> None:
 
         global mail
 
         mail = Mail(app)
         mail.init_app(app)
 
-    def init_redis(self, app: Flask):
+    def init_redis(self, app: Flask) -> Redis:
 
         global redis
 
         redis = Redis(app)
         return redis
 
-    def init_database(self, app: Flask):
+    def init_database(self, app: Flask) -> SQLAlchemy:
 
         import platform
 
@@ -226,4 +158,3 @@ class AppFactory:
 
 
 create_app = AppFactory().create_app  # pragma: no cover
-create_test_app = AppFactory(testing=True)  # pragma: no cover
