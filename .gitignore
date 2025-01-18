@@ -28,7 +28,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.vscode/
 pybind11/
 /*.json
 MODIFIED.MOD
