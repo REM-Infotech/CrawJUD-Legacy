@@ -20,7 +20,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "main.celery_app",
+        "app.__main__.celery",
         "worker",
         "-E",
         "--loglevel",
@@ -37,7 +37,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "main.celery_app",
+        "app.__main__.celery",
         "beat",
         "--loglevel",
         "INFO",

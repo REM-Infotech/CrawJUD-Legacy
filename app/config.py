@@ -156,6 +156,7 @@ class ProductionConfig(Config):
             "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
             "task_ignore_result": True,
+            "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
         }
 
@@ -210,6 +211,7 @@ class DevelopmentConfig(Config):
             "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
             "task_ignore_result": True,
+            "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
         }
 
@@ -264,6 +266,7 @@ class TestingConfig(Config):
             "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
             "task_ignore_result": True,
+            "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
         }
 
