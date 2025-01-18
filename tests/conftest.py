@@ -1,5 +1,4 @@
 from datetime import datetime
-from os import path
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -235,7 +234,11 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
         def _bots(license_user: LicensesUsers):
 
             df = pd.read_excel(
-                path.join(Path(__file__).cwd(), "configs", "export.xlsx")
+                Path(__file__)
+                .cwd()
+                .resolve()
+                .joinpath("configs")
+                .joinpath("export.xlsx")
             )
             df.columns = df.columns.str.lower()
             bot_info = None
