@@ -1,4 +1,8 @@
-# Flask imports
+# noqa: E402
+import eventlet
+
+eventlet.monkey_patch(socket=True)
+
 # Python Imports
 import pathlib
 from datetime import timedelta
@@ -16,9 +20,10 @@ from redis_flask import Redis
 # APP Imports
 from .utils import check_allowed_origin, make_celery
 
-db = None
-mail = None
-io = None
+mail = Mail()
+tslm = Talisman()
+db = SQLAlchemy()
+io = SocketIO(async_mode="eventlet")
 app = None
 
 
@@ -75,8 +80,7 @@ class AppFactory:
 
     def init_talisman(self, app: Flask) -> Talisman:  # pragma: no cover
 
-        global tslm
-        tslm = Talisman(
+        tslm.init_app(
             app,
             content_security_policy=app.config["CSP"],
             session_cookie_http_only=True,
@@ -89,8 +93,6 @@ class AppFactory:
 
     def init_socket(self, app: Flask) -> SocketIO:
 
-        global io
-        io = SocketIO(app, async_mode="eventlet")
         io.init_app(
             app,
             cors_allowed_origins=check_allowed_origin,
@@ -102,9 +104,6 @@ class AppFactory:
 
     def init_mail(self, app) -> None:
 
-        global mail
-
-        mail = Mail(app)
         mail.init_app(app)
 
     def init_redis(self, app: Flask) -> Redis:
@@ -120,7 +119,7 @@ class AppFactory:
 
         global db
         with app.app_context():
-            db = SQLAlchemy()
+
             db.init_app(app)
 
             if not Path("is_init.txt").exists():

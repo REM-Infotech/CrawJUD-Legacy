@@ -1,13 +1,11 @@
-import multiprocessing as mp
 import os
 import pathlib
 from contextlib import suppress
 from importlib import import_module
-from typing import Union
+from typing import Callable, Union
 
 import psutil
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
 # from memory_profiler import profile
 
@@ -19,7 +17,8 @@ process_type = Union[psutil.Process, None]
 class WorkerThread:
 
     # @profile(stream=fp)
-    def BotStarter(self):  # pragma: no cover
+    @property
+    def BotStarter(self) -> Callable[[], None]:  # pragma: no cover
 
         return getattr(
             import_module(f".scripts.{self.system}", __package__),
@@ -32,45 +31,14 @@ class WorkerThread:
         self.__dict__.update(kwrgs)
 
     # @profile
-    def start(self, app: Flask, db: SQLAlchemy) -> int:
+    def start(self) -> None:
 
         try:
 
-            with app.app_context():
+            self.BotStarter(**self.kwrgs)
 
-                from app.models import ThreadBots
-
-                pid = os.path.basename(self.path_args.replace(".json", ""))
-
-                if not app.testing:  # pragma: no cover
-
-                    bot = self.BotStarter()
-                    process = mp.Process(
-                        target=bot,
-                        kwargs=self.kwrgs,
-                        name=f"{self.display_name} - {pid}",
-                        daemon=False,
-                    )
-
-                    process.start()
-                    process_id = process.ident
-
-                elif app.testing:
-
-                    import random
-                    import string
-
-                    digits = random.sample(string.digits, 6)
-                    process_id = "".join(digits)
-
-                # Salva o ID no "banco de dados"
-                add_thread = ThreadBots(pid=pid, processID=process_id)
-                db.session.add(add_thread)
-                db.session.commit()
-                return 200
-
-        except Exception:  # pragma: no cover
-            return 500
+        except Exception as e:
+            raise e
 
     def stop(self, processID: int, pid: str, app: Flask = None) -> str:
 

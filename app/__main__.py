@@ -1,20 +1,24 @@
+import eventlet  # noqa: E402
+
+eventlet.monkey_patch(socket=True)  # noqa: E402
+
 import subprocess  # pragma: no cover
 from os import getcwd, path  # pragma: no cover
 from pathlib import Path
 from platform import system
 
-from clear import clear  # pragma: no cover
+# from clear import clear  # pragma: no cover
 from dotenv import dotenv_values as values  # pragma: no cover
 
 from app import create_app  # pragma: no cover
 
+# clear()
 app, io, celery = create_app()  # pragma: no cover
 
 
 if __name__ == "__main__":  # pragma: no cover
 
-    clear()
-
+    app.app_context().push()
     debug = values().get("DEBUG", "False").lower() in ("true")
     hostname = values().get("SERVER_HOSTNAME", "127.0.0.1")
     print(

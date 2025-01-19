@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python Debugger: Module",
+      "name": "Python: Run Flask app",
       "type": "debugpy",
       "request": "launch",
       "module": "app",
@@ -25,6 +25,8 @@
         "-E",
         "--loglevel",
         "INFO",
+        "-P",
+        "eventlet",
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },

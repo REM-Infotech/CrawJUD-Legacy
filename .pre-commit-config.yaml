@@ -13,10 +13,10 @@ repos:
 
   # 3. Faz linting e correções adicionais no final
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.0
+    rev: v0.9.2
     hooks:
       - id: ruff
-        args: ["--fix"]
+        args: ["--fix", "--ignore", "E402"]
 
   - repo: https://github.com/PyCQA/flake8
     rev: 7.1.1
@@ -24,11 +24,11 @@ repos:
       - id: flake8
         args:
           - --max-line-length=88
-          - --ignore=E203,W503,E501
+          - --ignore=E203,W503,E501, E402
 
   # bandit linter
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.0
+    rev: 1.8.2
     hooks:
       - id: bandit
         name: bandit

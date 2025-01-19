@@ -1,3 +1,7 @@
+import eventlet  # noqa: E402
+
+eventlet.monkey_patch(socket=True)  # noqa: E402
+
 import hashlib
 import hmac
 import json

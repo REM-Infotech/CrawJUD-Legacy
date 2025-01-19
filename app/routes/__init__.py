@@ -1,3 +1,7 @@
+import eventlet  # noqa: E402
+
+eventlet.monkey_patch(socket=True)  # noqa: E402
+
 from importlib import import_module
 
 from dotenv import dotenv_values

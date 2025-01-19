@@ -1,3 +1,7 @@
+import eventlet  # noqa: E402
+
+eventlet.monkey_patch(socket=True)  # noqa: E402
+
 import secrets
 from datetime import timedelta
 from pathlib import Path
