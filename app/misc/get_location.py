@@ -1,14 +1,11 @@
-import eventlet
+from gevent import monkey
 
-eventlet.monkey_patch(socket=True)
+monkey.patch_all(aggressive=False)
 
-from importlib import import_module
 
 import FindMyIP as ip
 import httpx
 from dotenv import dotenv_values
-
-import_module("trio")
 
 TOKEN = dotenv_values().get("TOKEN_IP2")
 

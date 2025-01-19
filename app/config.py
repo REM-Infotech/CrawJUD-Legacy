@@ -1,6 +1,6 @@
-import eventlet
+from gevent import monkey
 
-eventlet.monkey_patch(socket=True)
+monkey.patch_all(aggressive=False)
 
 import secrets
 from datetime import timedelta

@@ -13,5 +13,5 @@ services:
         context: .
 
     hostname: crawjudbot_app
-    command: .venv/bin/python -m celery -A app.__main__.celery worker -E --loglevel INFO -P eventlet
+    command: .venv/bin/python -m celery -A app.__main__.celery worker -E --loglevel INFO -P gevent
 
