@@ -41,6 +41,8 @@
         "beat",
         "--loglevel",
         "INFO",
+        "--scheduler",
+        "job.FlaskSchedule.DatabaseScheduler"
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
