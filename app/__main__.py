@@ -54,6 +54,9 @@ def version_file() -> None:
             f.write(checkout_release_tag())
 
 
+if system().lower() == "linux":
+    start_vnc()
+
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
@@ -65,9 +68,6 @@ if __name__ == "__main__":  # pragma: no cover
 
     debug = values().get("DEBUG", "False").lower() in ("true")
     hostname = values().get("SERVER_HOSTNAME", "127.0.0.1")
-
-    if system().lower() == "linux":
-        start_vnc()
 
     version_file()
 

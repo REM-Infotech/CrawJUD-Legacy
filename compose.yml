@@ -1,17 +1,45 @@
 version: '3.9'
 services:
   app:
+
     build:
       context: .
-    hostname: crawjudbot_app
-    command: .venv/bin/python -m app
+
+    volumes:
+      - .:/crawjudbot_app
+      - crawjudbot_exec:/crawjudbot_app/exec
+      - crawjudbot_archives:/crawjudbot_app/Archives
 
     ports:
       - 8000:8000
+
+    hostname: crawjudbot_app
+    command: python3 -m app
+
   celery:
+
     build:
         context: .
 
-    hostname: crawjudbot_app
-    command: .venv/bin/python -m celery -A app.__main__.celery worker -E --loglevel INFO -P gevent
+    volumes:
+      - .:/crawjudbot_app
+      - crawjudbot_exec:/crawjudbot_app/exec
+      - crawjudbot_archives:/crawjudbot_app/Archives
 
+    hostname: crawjudbot_app
+    command: python3 -m celery -A app.__main__.celery worker -E --loglevel INFO -P eventlet
+
+volumes:
+  crawjudbot_exec:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./exec
+
+  crawjudbot_archives:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./Archives

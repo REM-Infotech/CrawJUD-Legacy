@@ -54,7 +54,7 @@ class WorkerThread:
                 .joinpath(f"{pid}.flag")
             )
 
-            path_flag.parent.resolve().mkdir(exist_ok=True, mode=775)
+            path_flag.parent.resolve().mkdir(exist_ok=True, mode=0o775)
 
             with path_flag.open("w") as f:
                 f.write("Encerrar processo")

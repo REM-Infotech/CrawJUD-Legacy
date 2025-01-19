@@ -105,7 +105,7 @@ class GetDriver:
         if not os.path.exists(self.file_path):
 
             if not os.path.exists(root_path):
-                os.makedirs(root_path, mode=775)
+                os.makedirs(root_path, mode=0o775)
             url = self.getUrl()
             pool.submit(self.copy_url, task_id, url, self.file_path)
 
@@ -156,7 +156,7 @@ class GetDriver:
         # This will break if the response doesn't contain content length
         self.progress.update(task_id, total=int(response.headers["Content-length"]))
 
-        with open(zip_name, "wb") as dest_file:
+        with zip_name.open("wb") as dest_file:
 
             self.progress.start_task(task_id)
             for data in iter(partial(response.raw.read, 32768), b""):
@@ -190,6 +190,7 @@ class GetDriver:
                         continue
 
                     shutil.move(extracted_path, path)
+                    path.chmod(0o775)
 
         zip_name.unlink()
         self.current_app_progress.update(

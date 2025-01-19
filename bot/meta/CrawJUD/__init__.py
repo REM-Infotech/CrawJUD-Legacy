@@ -1,6 +1,5 @@
 import json  # pragma: no cover
-import os  # pragma: no cover
-import pathlib  # pragma: no cover
+import os
 import platform  # pragma: no cover
 import re  # pragma: no cover
 import shutil  # pragma: no cover
@@ -10,6 +9,7 @@ import time  # pragma: no cover
 import unicodedata  # pragma: no cover
 from datetime import datetime  # pragma: no cover
 from difflib import SequenceMatcher  # pragma: no cover
+from pathlib import Path
 from typing import Dict, List, Union  # pragma: no cover
 
 import pandas as pd  # pragma: no cover
@@ -80,6 +80,17 @@ class CrawJUD(classproperty):  # pragma: no cover
 
         return item
 
+    def set_permissions_recursive(self, path: Path, permissions: int = 0o775):
+        # Converte o caminho para um objeto Path, caso ainda não seja
+        path = Path(path)
+
+        # Define a permissão para o próprio diretório
+        path.chmod(permissions)
+
+        # Itera sobre todos os arquivos e diretórios dentro da pasta
+        for item in path.rglob("*"):  # rglob percorre recursivamente
+            item.chmod(permissions)
+
     # @profile(stream=fp)
     def setup(self) -> None:
         """
@@ -112,9 +123,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             self.type_log = str("log")
             self.prt()
 
-            self.output_dir_path = (
-                pathlib.Path(self.path_args).parent.resolve().__str__()
-            )
+            self.output_dir_path = Path(self.path_args).parent.resolve().__str__()
             # time.sleep(10)
             self.list_args = [
                 "--ignore-ssl-errors=yes",
@@ -152,6 +161,8 @@ class CrawJUD(classproperty):  # pragma: no cover
 
             self.state_or_client = self.state if self.state is not None else self.client
             self.DriverLaunch()
+
+            self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:
 
@@ -242,7 +253,7 @@ class CrawJUD(classproperty):  # pragma: no cover
         """
 
         input_file = os.path.join(
-            pathlib.Path(self.path_args).parent.resolve().__str__(), str(self.xlsx)
+            Path(self.path_args).parent.resolve().__str__(), str(self.xlsx)
         )
 
         df = pd.read_excel(input_file)
@@ -371,9 +382,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             chk_not_path = output_success is None or output_success == ""
 
             if fileN is not None or chk_not_path:
-                output_success = os.path.join(
-                    pathlib.Path(self.path).parent.resolve(), fileN
-                )
+                output_success = os.path.join(Path(self.path).parent.resolve(), fileN)
 
             if not os.path.exists(output_success):
                 df = pd.DataFrame(data)
@@ -420,9 +429,7 @@ class CrawJUD(classproperty):  # pragma: no cover
     def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
 
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
-        planilha_validar = (
-            pathlib.Path(self.path).parent.resolve().joinpath(nomeplanilha)
-        )
+        planilha_validar = Path(self.path).parent.resolve().joinpath(nomeplanilha)
         if not os.path.exists(planilha_validar):
             df = pd.DataFrame(data)
             df = df.to_dict(orient="records")
@@ -544,7 +551,7 @@ class CrawJUD(classproperty):  # pragma: no cover
 
             chrome_options = Options()
             self.chr_dir = str(
-                os.path.join(pathlib.Path(__file__).cwd(), "exec", self.pid, "chrome")
+                os.path.join(Path(__file__).cwd(), "exec", self.pid, "chrome")
             )
 
             user = os.environ.get(
@@ -557,7 +564,7 @@ class CrawJUD(classproperty):  # pragma: no cover
                 state = str(self.state)
                 self.path_accepted = str(
                     os.path.join(
-                        pathlib.Path(__file__).cwd(),
+                        Path(__file__).cwd(),
                         "Browser",
                         state,
                         self.username,
@@ -574,13 +581,13 @@ class CrawJUD(classproperty):  # pragma: no cover
                             print(e)
 
                 elif not path_exist:
-                    os.makedirs(self.path_accepted, exist_ok=True, mode=775)
+                    os.makedirs(self.path_accepted, exist_ok=True, mode=0o775)
 
             chrome_options.add_argument(f"user-data-dir={self.chr_dir}")
             for argument in list_args:
                 chrome_options.add_argument(argument)
 
-            this_path = pathlib.Path(__file__).parent.resolve().__str__()
+            this_path = Path(__file__).parent.resolve().__str__()
             path_extensions = os.path.join(this_path, "extensions")
             for root, dirs, files in os.walk(path_extensions):
                 for file_ in files:
@@ -602,10 +609,10 @@ class CrawJUD(classproperty):  # pragma: no cover
 
             path_chrome = None
             chrome_options.add_experimental_option("prefs", chrome_prefs)
-            pid_path = pathlib.Path(self.path_args).parent.resolve()
+            pid_path = Path(self.path_args).parent.resolve()
             getdriver = GetDriver(destination=pid_path)
 
-            abs_pidpath = pathlib.Path(pid_path).absolute()
+            abs_pidpath = Path(pid_path).absolute()
 
             if message != "Inicializando WebDriver":
 
@@ -614,11 +621,13 @@ class CrawJUD(classproperty):  # pragma: no cover
                 if platform.system() == "Windows":
                     chrome_name += ".exe"
 
-                if pathlib.Path(os.path.join(abs_pidpath, chrome_name)).exists():
-                    path_chrome = os.path.join(pid_path, chrome_name)
+                if Path(os.path.join(abs_pidpath, chrome_name)).exists():
+                    path_chrome = Path(pid_path).parent.resolve().joinpath(chrome_name)
 
             if path_chrome is None:
-                path_chrome = os.path.join(pid_path, getdriver())
+                path_chrome = Path(pid_path).parent.resolve().joinpath(getdriver())
+
+            path_chrome.chmod(0o775)
 
             driver = webdriver.Chrome(
                 service=Service(path_chrome), options=chrome_options
