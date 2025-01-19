@@ -79,8 +79,8 @@ RUN pip install --no-cache-dir poetry
 # Criar diretório de trabalho e copiar arquivos
 WORKDIR /crawjud_backend
 
-# Instalar dependências
-RUN poetry config virtualenvs.in-project true && poetry install --no-root
+# # Instalar dependências
+# RUN poetry config virtualenvs.in-project true && poetry install --no-root
 
 EXPOSE 8000
 
