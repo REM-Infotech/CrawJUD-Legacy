@@ -54,8 +54,8 @@ class Config(object):
 
     TEMP_PATH: Type[Path] = Path(__file__).cwd().resolve().joinpath("temp")
     ARCHIVES: Type[Path] = Path(__file__).cwd().resolve().joinpath("Archives")
-    TEMP_PATH.mkdir(exist_ok=True)
-    ARCHIVES.mkdir(exist_ok=True)
+    TEMP_PATH.mkdir(exist_ok=True, mode=775)
+    ARCHIVES.mkdir(exist_ok=True, mode=775)
 
     WEBHOOK_SECRET: Type[str] = ""
 

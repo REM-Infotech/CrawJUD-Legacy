@@ -1,9 +1,7 @@
-import importlib
 import json
 import os
 import pathlib
 import platform
-import sys
 from typing import Type
 
 from celery import Task
@@ -18,13 +16,6 @@ path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
-def reload_module(module_name: str) -> None:  # pragma: no cover
-    if module_name in sys.modules:
-        importlib.reload(sys.modules[module_name])
-    else:
-        importlib.import_module(module_name)
-
-
 @bot.route("/bot/<id>/<system>/<typebot>", methods=["POST"])
 def botlaunch(id: int, system: str, typebot: str) -> Response:
 
@@ -32,8 +23,6 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
     message = {"success": "success"}
     from status import SetStatus
-
-    reload_module("bot")
 
     is_started = 200
 

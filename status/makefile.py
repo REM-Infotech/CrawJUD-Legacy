@@ -16,6 +16,7 @@ def makezip(pid: str) -> str:  # pragma: no cover
         Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec").joinpath(pid)
     )
 
+    exec_path.mkdir(mode=775, exist_ok=True)
     for root, dirs, files in exec_path.walk():
         if "chrome" in str(root) and root.is_dir():
             rmtree(root, ignore_errors=True)
@@ -25,9 +26,6 @@ def makezip(pid: str) -> str:  # pragma: no cover
 
         elif "json" in root.suffix or "flag" in root.suffix:
             root.unlink()
-
-    if not exec_path.exists():
-        exec_path.mkdir()
 
     files = [str(f) for f in exec_path.iterdir() if f.is_file() and pid in f.stem]
     files_subfolders = [

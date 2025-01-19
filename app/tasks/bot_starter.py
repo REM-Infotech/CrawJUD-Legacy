@@ -1,6 +1,9 @@
 import eventlet  # noqa: E402
 
 eventlet.monkey_patch(socket=True)  # noqa: E402
+import importlib
+import sys
+
 from celery import shared_task
 
 from bot import WorkerThread
@@ -9,6 +12,11 @@ from bot import WorkerThread
 
 
 # from pathlib import Path
+def reload_module(module_name: str) -> None:  # pragma: no cover
+    if module_name in sys.modules:
+        importlib.reload(sys.modules[module_name])
+    else:
+        importlib.import_module(module_name)
 
 
 @shared_task(ignore_result=False)
@@ -23,6 +31,7 @@ def init_bot(
 
     try:
 
+        reload_module("bot")
         worker_thread = WorkerThread(
             path_args=path_args,
             display_name=display_name,
