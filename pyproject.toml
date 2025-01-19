@@ -51,6 +51,7 @@ redis-flask = "0.0.2"
 tenacity = "^9.0.0"
 memory-profiler = "^0.61.0"
 matplotlib = "^3.10.0"
+celery = "^5.4.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.1"
