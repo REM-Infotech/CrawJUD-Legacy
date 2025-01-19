@@ -10,5 +10,5 @@ services:
   celery:
     build:
         context: .
-    command: .venv/bin/python -m celery -A app.__main__.celery -E worker -B --loglevel=info -P eventlet
+    command: .venv/bin/python -m celery -A app.__main__.celery worker --loglevel INFO -P eventlet
 
