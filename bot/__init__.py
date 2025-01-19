@@ -1,10 +1,11 @@
-import os
 import pathlib
-from contextlib import suppress
+
+# from contextlib import suppress
 from importlib import import_module
 from typing import Callable, Union
 
 import psutil
+from celery.result import AsyncResult
 from flask import Flask
 
 # from memory_profiler import profile
@@ -44,22 +45,31 @@ class WorkerThread:
 
         try:
 
-            sinalizacao = f"{pid}.flag"
+            path_flag = (
+                pathlib.Path(__file__)
+                .cwd()
+                .resolve()
+                .joinpath("exec")
+                .joinpath(pid)
+                .joinpath(f"{pid}.flag")
+            )
 
-            _flag = os.path.join(pathlib.Path(__file__).cwd(), "exec", pid, sinalizacao)
-            path_flag = pathlib.Path(_flag)
+            path_flag.parent.resolve().mkdir(exist_ok=True, mode=775)
 
-            Process: process_type = None
-            with suppress(psutil.NoSuchProcess):
-                Process = psutil.Process(processID)
+            with path_flag.open("w") as f:
+                f.write("Encerrar processo")
 
-            if Process and Process.is_running() or app.testing is True:
-                if not path_flag.exists():
+            # Process: process_type = None
+            # with suppress(psutil.NoSuchProcess):
+            #     Process = psutil.Process(processID)
 
-                    path_flag.parent.resolve().mkdir(parents=True, exist_ok=True)
+            # if Process and Process.is_running() or app.testing is True:
+            #     if not path_flag.exists():
 
-                    with open(str(_flag), "w") as f:
-                        f.write("Encerrar processo")
+            #         path_flag.parent.resolve().mkdir(parents=True, exist_ok=True)
+
+            #         with open(str(_flag), "w") as f:
+            #             f.write("Encerrar processo")
 
             return f"Process {processID} stopped!"
 
@@ -72,16 +82,18 @@ class WorkerThread:
         except Exception as e:  # pragma: no cover
             return str(e)
 
-    def check_status(self, processID: int) -> str:  # pragma: no cover
+    def check_status(self, processID: str) -> str:  # pragma: no cover
 
         try:
 
-            Process = psutil.Process(processID)
+            Process = AsyncResult(processID)
+            if Process.status == "SUCCESS":
+                return f"Process {processID} stopped!"
 
-            if Process:
-                return "Process running!"
+            elif Process.status == "FAILURE":
+                return "Erro ao inicializar robô"
 
-            return f"Process {processID} stopped!"
+            return "Process running!"
 
         except psutil.TimeoutExpired:  # pragma: no cover
             return "O processo não foi encerrado dentro do tempo limite"

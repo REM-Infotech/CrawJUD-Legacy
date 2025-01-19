@@ -42,7 +42,7 @@ def on_join(data: dict[str, str]):
         processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
 
         if processID:
-            processID = int(processID.processID)
+            processID = processID.processID
             message = WorkerThread().check_status(processID)
 
             if message == f"Process {processID} stopped!":
@@ -60,6 +60,12 @@ def on_join(data: dict[str, str]):
                         )
                     }
                 )
+            elif message == "Erro ao inicializar robô":
+
+                data = FormatMessage(
+                    {"type": "error", "pid": room, "message": message}, room, app
+                )
+                stop_execution(app, pid)
 
     except Exception:  # pragma: no cover
         send("Failed to check bot has stopped")
@@ -88,7 +94,7 @@ def on_terminate_bot(data: dict[str, str]):
         processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
 
         if processID:
-            processID = int(processID.processID)
+            processID = str(processID.processID)
             WorkerThread().stop(processID, pid, app)
             send("Bot stopped!")
 

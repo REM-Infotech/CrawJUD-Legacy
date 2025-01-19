@@ -151,7 +151,7 @@ class SetStatus:
             email_start(execut, app)
 
         except Exception as e:  # pragma: no cover
-            raise e
+            print(e)
 
         return (path_args, bt.display_name)
 

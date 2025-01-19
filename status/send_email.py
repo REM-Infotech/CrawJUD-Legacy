@@ -11,9 +11,7 @@ def email_start(execution: None, app: Flask) -> None:
 
     execution: Executions = execution
 
-    mail = app.extensions.get("mail")
-    if not mail:  # pragma: no cover
-        mail = Mail(app)
+    mail = Mail(app)
 
     with app.app_context():
         mail.connect()

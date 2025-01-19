@@ -26,7 +26,7 @@
         "--loglevel",
         "INFO",
         "-P",
-        "eventlet",
+        "solo",
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },

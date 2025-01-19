@@ -44,7 +44,7 @@ def load_cache(pid: str, app: Flask):
     return log_pid
 
 
-def FormatMessage(data: dict[str, str], pid: str, app: Flask):
+def FormatMessage(data: dict[str, str] = {}, pid: str = None, app: Flask = None):
 
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
