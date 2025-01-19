@@ -80,6 +80,6 @@ WORKDIR /crawjud_backend
 
 COPY pyproject.toml ./
 
-RUN poetry config virtualenvs.in-project true && poetry install
+RUN poetry config virtualenvs.in-project true && poetry install --without dev
 
 COPY . /crawjud_backend/
