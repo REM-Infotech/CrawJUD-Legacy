@@ -2,6 +2,7 @@ import json
 import os
 import pathlib
 import platform
+import traceback
 from typing import Type
 
 from celery import Task
@@ -85,7 +86,8 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
                 is_started = 200 if data_bot else 500
 
         except Exception as e:  # pragma: no cover
-            print(e)
+
+            print(traceback.format_exc())
             message = {"error": str(e)}
             is_started: Type[int] = 500
 

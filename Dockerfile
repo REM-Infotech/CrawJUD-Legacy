@@ -76,14 +76,9 @@ RUN mkdir -p ~/.vnc \
 # Instalar Poetry
 RUN pip install --no-cache-dir poetry
 
-# Criar diretório de trabalho e copiar arquivos
 WORKDIR /crawjud_backend
-ADD . /crawjud_backend/
-# # Instalar dependências
+COPY pyproject.toml ./
 
 RUN poetry config virtualenvs.in-project true && poetry install
 
-EXPOSE 8000
-
-# # Comando padrão
-CMD ["ls", "-l"]
+ADD . /crawjud_backend/

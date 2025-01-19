@@ -14,5 +14,5 @@ services:
         context: .
     volumes:
       - .:/crawjud_backend
-    command: .venv/bin/python -m celery -A app.__main__.celery worker --loglevel INFO -P eventlet
+    command: .venv/bin/python -m celery -A app.__main__.celery worker -E --loglevel INFO -P eventlet
 
