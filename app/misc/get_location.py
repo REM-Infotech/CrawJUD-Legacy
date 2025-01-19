@@ -1,6 +1,14 @@
+import eventlet
+
+eventlet.monkey_patch(socket=True)
+
+from importlib import import_module
+
 import FindMyIP as ip
 import httpx
 from dotenv import dotenv_values
+
+import_module("trio")
 
 TOKEN = dotenv_values().get("TOKEN_IP2")
 
@@ -44,9 +52,12 @@ class InfoGeoloc:
         return item
 
     def IP2Location(self, ip: str) -> dict[str, str] | None:
-        data = httpx.get(
-            "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
-        )
+
+        with httpx.Client() as client:
+            data = client.get(
+                "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
+            )
+
         return data.json()
 
     @property

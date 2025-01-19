@@ -1,16 +1,12 @@
-from typing import Dict
-
-import eventlet  # noqa: E402
-
-eventlet.monkey_patch(socket=True)  # noqa: E402
-
 import hashlib
 import hmac
 import json
 import logging
 from os import path
 from pathlib import Path
+from typing import Dict
 
+import eventlet
 from dotenv import dotenv_values
 from flask import (
     Blueprint,
@@ -24,6 +20,9 @@ from flask import (
 from git import Repo
 
 from ..misc.checkout import checkout_release_tag
+
+eventlet.monkey_patch(socket=True)
+
 
 wh = Blueprint("webhook", __package__)
 

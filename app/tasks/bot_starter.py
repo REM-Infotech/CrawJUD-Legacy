@@ -1,6 +1,6 @@
-import eventlet  # noqa: E402
+import eventlet
 
-eventlet.monkey_patch(socket=True)  # noqa: E402
+eventlet.monkey_patch(socket=True)
 import importlib
 import sys
 
