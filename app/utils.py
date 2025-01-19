@@ -1,8 +1,7 @@
 # noqa: E402
-from gevent import monkey
+import eventlet
 
-monkey.patch_all(aggressive=False)
-
+eventlet.monkey_patch()
 
 import re
 from typing import Any

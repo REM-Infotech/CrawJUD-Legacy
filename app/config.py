@@ -1,7 +1,6 @@
-from gevent import monkey
+import eventlet
 
-monkey.patch_all(aggressive=False)
-
+eventlet.monkey_patch()
 import secrets
 from datetime import timedelta
 from pathlib import Path

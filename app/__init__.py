@@ -1,7 +1,7 @@
 # noqa: E402
-from gevent import monkey
+import eventlet
 
-monkey.patch_all(aggressive=False)
+eventlet.monkey_patch()
 
 
 # Python Imports
@@ -24,7 +24,7 @@ from .utils import check_allowed_origin, make_celery
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
-io = SocketIO(async_mode="gevent")
+io = SocketIO(async_mode="eventlet")
 app = None
 
 

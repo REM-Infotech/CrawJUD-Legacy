@@ -1,7 +1,6 @@
-from gevent import monkey
+import eventlet
 
-monkey.patch_all(aggressive=False)
-
+eventlet.monkey_patch()
 import signal
 import subprocess  # pragma: no cover
 import sys

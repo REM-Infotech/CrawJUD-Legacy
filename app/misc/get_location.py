@@ -1,11 +1,12 @@
-from gevent import monkey
+import eventlet
 
-monkey.patch_all(aggressive=False)
+eventlet.monkey_patch()
 
+import json
 
 import FindMyIP as ip
-import httpx
 from dotenv import dotenv_values
+from tornado.httpclient import HTTPClient
 
 TOKEN = dotenv_values().get("TOKEN_IP2")
 
@@ -50,12 +51,11 @@ class InfoGeoloc:
 
     def IP2Location(self, ip: str) -> dict[str, str] | None:
 
-        with httpx.Client() as client:
-            data = client.get(
-                "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
-            )
-
-        return data.json()
+        client = HTTPClient()
+        data = client.fetch(
+            "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
+        )
+        return json.loads(data.body.decode("utf-8"))
 
     @property
     def ip(self) -> str:
