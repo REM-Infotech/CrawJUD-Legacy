@@ -75,12 +75,12 @@ RUN mkdir -p ~/.vnc \
 
 # Instalar Poetry
 RUN pip install --no-cache-dir poetry
+RUN poetry config virtualenvs.in-project true && poetry install --no-root
 
 # Criar diretório de trabalho e copiar arquivos
 WORKDIR /crawjud_backend
 ADD . /crawjud_backend/
 # # Instalar dependências
-RUN poetry config virtualenvs.in-project true && poetry install --no-root
 
 EXPOSE 8000
 
