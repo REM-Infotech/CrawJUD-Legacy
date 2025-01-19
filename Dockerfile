@@ -81,7 +81,7 @@ WORKDIR /crawjud_backend
 ADD . /crawjud_backend/
 # # Instalar dependências
 
-RUN poetry config virtualenvs.create false && poetry install --no-root
+RUN poetry config virtualenvs.in-project true && poetry install --no-root
 
 EXPOSE 8000
 
