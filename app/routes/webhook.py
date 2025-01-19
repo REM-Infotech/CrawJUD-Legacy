@@ -1,3 +1,5 @@
+from typing import Dict
+
 import eventlet  # noqa: E402
 
 eventlet.monkey_patch(socket=True)  # noqa: E402
@@ -9,7 +11,16 @@ import logging
 from os import path
 from pathlib import Path
 
-from flask import Blueprint, abort, current_app, jsonify, request
+from dotenv import dotenv_values
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    jsonify,
+    make_response,
+    request,
+)
 from git import Repo
 
 from ..misc.checkout import checkout_release_tag
@@ -19,7 +30,7 @@ wh = Blueprint("webhook", __package__)
 
 # Endpoint para o webhook
 @wh.post("/webhook")
-def github_webhook():  # pragma: no cover
+def github_webhook() -> Response:  # pragma: no cover
 
     app = current_app
     data = request.json
@@ -55,15 +66,17 @@ def github_webhook():  # pragma: no cover
             # Alterna para a tag da nova release
             update_servers(f"refs/tags/{ref}")
 
-        return jsonify({"message": "Release processada e atualizada"}), 200
+        return make_response(
+            jsonify({"message": "Release processada e atualizada"}), 200
+        )
 
     except Exception as e:
 
         logging.exception(str(e))
-        return jsonify({"message": "Evento ignorado"}), 500
+        return make_response(jsonify({"message": "Evento ignorado"}), 500)
 
 
-def update_servers(tag: str):  # pragma: no cover
+def update_servers(tag: str) -> None:  # pragma: no cover
 
     checkout_release(tag)
 
@@ -74,8 +87,10 @@ def update_servers(tag: str):  # pragma: no cover
 
 
 def verify_signature(
-    payload_body, secret_token: str, signature_header: str
-):  # pragma: no cover
+    payload_body: Dict[str, str] = None,
+    secret_token: str = None,
+    signature_header: str = None,
+) -> None:  # pragma: no cover
     """Verify that the payload was sent from GitHub by validating SHA256.
 
     Raise and return 403 if not authorized.
@@ -97,9 +112,28 @@ def verify_signature(
         raise abort(403, detail="Request signatures didn't match!")
 
 
-def checkout_release(tag: str):  # pragma: no cover
+def checkout_release(tag: str) -> None:  # pragma: no cover
 
-    repo = Repo(Path(__file__).cwd())
+    values = dotenv_values()
+
+    user_git = values.get("USER_GITHUB")
+    token_git = values.get("GITHUB_API_TOKEN")
+    repo_git = values.get("REPO_NAME")
+
+    repo_remote = "".join(
+        ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
+    )
+
+    git_path = Path(__file__).cwd().resolve().joinpath(".git").exists()
+    if not git_path:
+
+        repo = Repo.init(Path(__file__).cwd())
+        origin = repo.create_remote("origin", repo_remote)
+        origin.fetch()
+
+    elif git_path:
+        repo = Repo(Path(__file__).cwd().resolve())
+
     git = repo.git
     git.fetch("--all", "--tags")
     git.checkout(tag)
