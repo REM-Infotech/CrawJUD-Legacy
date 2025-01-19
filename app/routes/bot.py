@@ -5,22 +5,25 @@ import platform
 from typing import Type
 
 from celery import Task
-from flask import Blueprint, Response, jsonify, make_response, request
+from celery.schedules import crontab
+from flask import Blueprint, Response
+from flask import current_app as app
+from flask import jsonify, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 
 from ..misc import GeoLoc, stop_execution
 from ..misc.checkout import check_latest
+from ..models import ScheduleModel
 from ..tasks import init_bot as bot_starter
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
-@bot.route("/bot/<id>/<system>/<typebot>", methods=["POST"])
+@bot.post("/bot/<id>/<system>/<typebot>")
 def botlaunch(id: int, system: str, typebot: str) -> Response:
 
-    from app import app, db
-
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
     from status import SetStatus
 
@@ -109,30 +112,40 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
     return make_response(jsonify({"error": "PID não encontrado"}), 404)
 
 
-# @bot.route("/periodics_runs")
-# def list_processos() -> Response:
+@bot.post("/periodic_bot/<id>/<system>/<typebot>")
+def periodic_bot(id: int, system: str, typebot: str) -> Response:
 
-#     from ..tasks import seach_intimacao
+    from status import SetStatus
 
-#     # celery: Celery = app.extensions["celery"]
-#     result = seach_intimacao.delay("teste")
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
 
-#     db: SQLAlchemy = app.extensions["sqlalchemy"]
+    request_data = request.data
+    request_form = request.form
 
-#     kwargs = {}
-#     cron = crontab(
-#         minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*"
-#     )
-#     schedule_str = f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month} {cron._orig_month_of_year} {cron._orig_day_of_week}"
+    data_bot = request_data if request_data else request_form
 
-#     task_name = "app.tasks.search_.seach_intimacao"
-#     args = json.dumps(["teste"])
-#     kwargs = json.dumps(kwargs)
+    if isinstance(data_bot, str):  # pragma: no cover
+        data_bot = json.loads(data_bot)
 
-#     new_schedule = ScheduleModel(
-#         task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs
-#     )
-#     db.session.add(new_schedule)
-#     db.session.commit()
+    # cron = crontab(
+    #     minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*"
+    # )
 
-#     return jsonify({"result": result.id})
+    cron = crontab(**data_bot.get("CRONTAB_ARGS"))
+
+    start_rb = SetStatus(data_bot, request.files, id, system, typebot)
+    path_args, display_name = start_rb.start_bot(app, db)
+
+    schedule_str = f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month} {cron._orig_month_of_year} {cron._orig_day_of_week}"
+
+    task_name = "app.tasks.bot_starter.init_bot"
+    args = json.dumps([path_args, display_name, system, typebot])
+    kwargs = json.dumps({})
+
+    new_schedule = ScheduleModel(
+        task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs
+    )
+    db.session.add(new_schedule)
+    db.session.commit()
+
+    return make_response(jsonify({"success": "success"}))

@@ -1,7 +1,8 @@
-from app.models.bots import BotsCrawJUD, CacheLogs, Credentials, Executions, ThreadBots
-from app.models.secondaries import admins, execution_bots
-from app.models.srv import Servers
-from app.models.users import LicensesUsers, Users
+from .bots import BotsCrawJUD, CacheLogs, Credentials, Executions, ThreadBots
+from .schedule import ScheduleModel
+from .secondaries import admins, execution_bots
+from .srv import Servers
+from .users import LicensesUsers, Users
 
 __all__ = [
     admins,
@@ -14,4 +15,5 @@ __all__ = [
     CacheLogs,
     ThreadBots,
     Servers,
+    ScheduleModel,
 ]
