@@ -264,7 +264,7 @@ class AuthBot(CrawJUD):
             target_directory = os.path.join(
                 pathlib.Path(accepted_dir).parent.resolve(), "chrome"
             )
-            os.makedirs(target_directory, exist_ok=True)
+            os.makedirs(target_directory, exist_ok=True, mode=775)
             source_directory = self.chr_dir
 
             try:

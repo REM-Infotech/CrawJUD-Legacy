@@ -574,7 +574,7 @@ class CrawJUD(classproperty):  # pragma: no cover
                             print(e)
 
                 elif not path_exist:
-                    os.makedirs(self.path_accepted, exist_ok=True)
+                    os.makedirs(self.path_accepted, exist_ok=True, mode=775)
 
             chrome_options.add_argument(f"user-data-dir={self.chr_dir}")
             for argument in list_args:

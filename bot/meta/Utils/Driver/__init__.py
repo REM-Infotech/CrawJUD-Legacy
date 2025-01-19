@@ -105,7 +105,7 @@ class GetDriver:
         if not os.path.exists(self.file_path):
 
             if not os.path.exists(root_path):
-                os.makedirs(root_path)
+                os.makedirs(root_path, mode=775)
             url = self.getUrl()
             pool.submit(self.copy_url, task_id, url, self.file_path)
 
