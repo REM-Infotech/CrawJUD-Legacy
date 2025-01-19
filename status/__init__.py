@@ -3,6 +3,7 @@ import unicodedata
 from datetime import datetime
 from os import path
 from pathlib import Path
+from typing import Dict
 
 import openpyxl
 import pytz
@@ -23,8 +24,8 @@ class SetStatus:
 
     def __init__(
         self,
-        form: dict[str, str] = {},
-        files: dict[str, FileStorage] = {},
+        form: Dict[str, str] = {},
+        files: Dict[str, FileStorage] = {},
         id: int = 0,
         system: str = None,
         typebot: str = None,
