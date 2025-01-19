@@ -1,4 +1,7 @@
-FROM python:3
+FROM python:latest
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
 # Atualizar pacotes e configurar locales
 RUN apt-get update && apt-get install -y locales \
@@ -18,6 +21,7 @@ ENV LC_ALL=pt_BR.UTF-8
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
+    git \
     tightvncserver \
     libx11-6 \
     libxext6 \
@@ -74,12 +78,11 @@ RUN pip install --no-cache-dir poetry
 
 # Criar diretório de trabalho e copiar arquivos
 WORKDIR /crawjud_backend
-ADD . /crawjud_backend
 
 # Instalar dependências
 RUN poetry config virtualenvs.in-project true && poetry install --no-root
 
 EXPOSE 8000
 
-# Comando padrão
-CMD ["poetry", "run", "python", "-m", "app"]
+# # Comando padrão
+# CMD ["poetry", "run", "python", "-m", "app"]
