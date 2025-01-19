@@ -77,8 +77,9 @@ RUN mkdir -p ~/.vnc \
 RUN pip install --no-cache-dir poetry
 
 WORKDIR /crawjud_backend
+
 COPY pyproject.toml ./
 
 RUN poetry config virtualenvs.in-project true && poetry install
 
-ADD . /crawjud_backend/
+COPY . /crawjud_backend/

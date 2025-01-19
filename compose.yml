@@ -5,7 +5,7 @@ services:
       context: .
     volumes:
       - .:/crawjud_backend
-    command: python -m app
+    command: .venv/bin/python -m app
 
     ports:
       - 8000:8000
