@@ -3,8 +3,6 @@ services:
   app:
     build:
       context: .
-    volumes:
-      - .:/crawjud_backend
     command: .venv/bin/python -m app
 
     ports:
@@ -12,7 +10,5 @@ services:
   celery:
     build:
         context: .
-    volumes:
-      - .:/crawjud_backend
     command: .venv/bin/python -m celery -A app.__main__.celery -E worker -B --loglevel=info -P eventlet
 
