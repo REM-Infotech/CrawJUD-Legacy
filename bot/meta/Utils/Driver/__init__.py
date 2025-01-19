@@ -167,6 +167,7 @@ class GetDriver:
         # input(str("member"))
         # Extract the zip file
 
+        zip_name.chmod(0o775)
         with zipfile.ZipFile(zip_name, "r") as zip_ref:
 
             # Extract each file directly into the subfolder
