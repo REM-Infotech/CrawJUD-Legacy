@@ -22,10 +22,11 @@ class Configurator:
         class ConfigObject:
 
             values = dotenv_values(self.env_file)
-            login_db = values.get("LOGIN")
-            passwd_db = values.get("PASSWORD")
-            host_db = values.get("HOST")
-            database_name = values.get("DATABASE")
+            login_db = values.get("DATABASE_USER")
+            passwd_db = values.get("DATABASE_PASSWORD")
+            host_db = values.get("DATABASE_HOST")
+            port_db = values.get("DATABASE_PORT")
+            database_name = values.get("DATABASE_SCHEMA")
 
             os.makedirs("Archives", exist_ok=True)
 
@@ -49,7 +50,7 @@ class Configurator:
                 True  # Verificar a saúde da conexão antes de usá-la
             )
 
-            SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{login_db}:{passwd_db}@{host_db}/{database_name}"
+            SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{login_db}:{passwd_db}@{host_db}:{port_db}/{database_name}"
             SQLALCHEMY_BINDS = {"cachelogs": "sqlite:///cachelogs.db"}
             SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
             SQLALCHEMY_TRACK_MODIFICATIONS = False

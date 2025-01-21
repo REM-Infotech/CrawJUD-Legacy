@@ -11,7 +11,6 @@ from flask_sqlalchemy import SQLAlchemy
 from bot import WorkerThread
 
 from ..misc import GeoLoc, stop_execution
-from ..misc.checkout import check_latest
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
@@ -47,8 +46,8 @@ def botlaunch(id: int, system: str, typebot: str):
             if isinstance(data_bot, str):  # pragma: no cover
                 data_bot = json.loads(data_bot)
 
-            if check_latest() is False and app.debug is False:  # pragma: no cover
-                raise Exception("Server running outdatest version!")
+            # if check_latest() is False and app.debug is False:  # pragma: no cover
+            #     raise Exception("Server running outdatest version!")
 
             if app.testing is False:  # pragma: no cover
 
