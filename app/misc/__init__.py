@@ -10,10 +10,11 @@ from google.cloud.storage import Bucket, Client
 from google.cloud.storage.blob import Blob
 from google.oauth2.service_account import Credentials
 
+from .checkout import check_latest
 from .get_location import GeoLoc
 
 signed_url_lifetime = 300
-__all__ = [GeoLoc]
+__all__ = [GeoLoc, check_latest]
 
 
 def generate_pid() -> str:

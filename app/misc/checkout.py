@@ -1,32 +1,44 @@
 # Função para atualizar para a tag da nova release
+from pathlib import Path
+
 from dotenv import dotenv_values
-from github import Github
-from github.Auth import Token
+from git import Repo
 
-config_vals = dotenv_values()
-
-GITHUB_API_TOKEN = config_vals.get("GITHUB_API_TOKEN", "")
-REPO_NAME = config_vals.get("REPO_NAME", "")
-USER_GITHUB = config_vals.get("USER_GITHUB", "")
+# from github import Github
+# from github.Auth import Token
 
 
 def checkout_release_tag() -> str:
 
-    token_github = Token(GITHUB_API_TOKEN)
-    github = Github(auth=token_github)
-    repo = github.get_repo(REPO_NAME)
-    releases = repo.get_releases()
+    values = dotenv_values()
 
-    debug = config_vals.get("DEBUG", "False").lower() in ("true")
+    user_git = values.get("USER_GITHUB")
+    token_git = values.get("GITHUB_API_TOKEN")
+    repo_git = values.get("REPO_NAME")
 
-    if debug is False:  # pragma: no cover
-        releases = list(filter(lambda release: "stable" in release.tag_name, releases))
+    repo_remote = "".join(
+        ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
+    )
 
-    latest_release = sorted(
-        releases, key=lambda release: release.created_at, reverse=True
-    )[0]
+    git_path = Path(__file__).cwd().resolve().joinpath(".git").exists()
+    if not git_path:
 
-    return latest_release.tag_name
+        repo = Repo.init(Path(__file__).cwd())
+        origin = repo.create_remote("origin", repo_remote)
+        origin.fetch()
+
+    elif git_path:
+        repo = Repo(Path(__file__).cwd().resolve())
+
+    git = repo.git
+    git.fetch("--all", "--tags")
+    releases_tag = (
+        git.ls_remote("--tags", "--sort=committerdate")
+        .split("\n")[-1]
+        .split("tags/")[-1]
+    )
+
+    return releases_tag
 
 
 def check_latest() -> bool:
