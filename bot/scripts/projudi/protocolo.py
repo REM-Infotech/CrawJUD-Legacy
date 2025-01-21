@@ -473,11 +473,15 @@ class protocolo(CrawJUD):
         self.type_log = "log"
         self.prt()
         return_cmd = False
-        with suppress(JavascriptException):
-            cmd2 = f"return document.getElementById('{self.id_part}').checked"
-            return_cmd = self.driver.execute_script(cmd2)
-        if return_cmd is False:
-            self.driver.find_element(By.ID, self.id_part).click()
+
+        id_parte = self.id_part
+
+        if id_parte:
+            with suppress(JavascriptException):
+                cmd2 = f"return document.getElementById('{self.id_part}').checked"
+                return_cmd = self.driver.execute_script(cmd2)
+            if return_cmd is False:
+                self.driver.find_element(By.ID, self.id_part).click()
 
         finish_button = self.driver.find_element(
             By.CSS_SELECTOR, self.elements.botao_concluir
