@@ -8,6 +8,7 @@ from typing import Type
 import dotenv
 from PIL import Image
 from selenium.common.exceptions import (
+    JavascriptException,
     NoSuchElementException,
     StaleElementReferenceException,
     TimeoutException,
@@ -167,9 +168,9 @@ class protocolo(CrawJUD):
 
             td_partes = table_partes[pos + 1].find_element(By.TAG_NAME, "td")
 
-            if os.getenv("DEBUG", "False").lower() in ("false", "f", "0"):
-                if "Advogado já representa essa parte" in td_partes.text:
-                    return True
+            # if os.getenv("DEBUG", "False").lower() in ("false", "f", "0"):
+            if "Advogado já representa essa parte" in td_partes.text:
+                return True
 
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").upper()
             chk_info = (td_partes.text.upper() == parte_peticao.upper()) or (
@@ -471,11 +472,16 @@ class protocolo(CrawJUD):
         self.message = f'Concluindo peticionamento do processo {self.bot_data.get("NUMERO_PROCESSO")}'
         self.type_log = "log"
         self.prt()
+        return_cmd = False
 
-        cmd2 = f"return document.getElementById('{self.id_part}').checked"
-        return_cmd = self.driver.execute_script(cmd2)
-        if return_cmd is False:
-            self.driver.find_element(By.ID, self.id_part).click()
+        id_parte = self.id_part
+
+        if id_parte:
+            with suppress(JavascriptException):
+                cmd2 = f"return document.getElementById('{self.id_part}').checked"
+                return_cmd = self.driver.execute_script(cmd2)
+            if return_cmd is False:
+                self.driver.find_element(By.ID, self.id_part).click()
 
         finish_button = self.driver.find_element(
             By.CSS_SELECTOR, self.elements.botao_concluir
