@@ -28,27 +28,27 @@ if __name__ == "__main__":  # pragma: no cover
               """
     )
 
-    if system().lower() == "linux":
-        try:
-            # Executa o comando com verificação de erro
-            subprocess.run(
-                [
-                    "tightvncserver",
-                    ":99",
-                    "-geometry",
-                    "1600x900",
-                    "-depth",
-                    "24",
-                    "-rfbport",
-                    "5999",
-                ],
-                check=True,  # Lança exceção se o comando falhar
-            )
-            print("TightVNC iniciado com sucesso!")
-        except subprocess.CalledProcessError as e:
+    # if system().lower() == "linux":
+    #     try:
+    #         # Executa o comando com verificação de erro
+    #         subprocess.run(
+    #             [
+    #                 "tightvncserver",
+    #                 ":99",
+    #                 "-geometry",
+    #                 "1600x900",
+    #                 "-depth",
+    #                 "24",
+    #                 "-rfbport",
+    #                 "5999",
+    #             ],
+    #             check=True,  # Lança exceção se o comando falhar
+    #         )
+    #         print("TightVNC iniciado com sucesso!")
+    #     except subprocess.CalledProcessError as e:
 
-            print(f"Erro ao iniciar o TightVNC: {e}")
-            raise e
+    #         print(f"Erro ao iniciar o TightVNC: {e}")
+    #         raise e
 
     version_Path = Path(path.join(getcwd(), ".version"))
     if version_Path.exists() is False:
