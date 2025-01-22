@@ -24,4 +24,4 @@ services:
       - .:/crawjudbot_app
 
     hostname: crawjudbot_app
-    command: python3 -m celery -A app.__main__.celery worker -E --loglevel INFO -P eventlet --autoscale=50,3
+    command: python3 -m celery -A app.run.celery worker -E --loglevel INFO -P eventlet --autoscale=50,3
