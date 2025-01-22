@@ -5,12 +5,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 # Atualizar pacotes e configurar locales
 RUN apt-get update && apt-get install -y locales \
-    && \
-    sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
-    && \
-    dpkg-reconfigure --frontend=noninteractive locales \
-    && \
-    apt-get clean
+  && \
+  sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
+  && \
+  dpkg-reconfigure --frontend=noninteractive locales \
+  && \
+  apt-get clean
 
 ENV USER root
 ENV TERM xterm
@@ -19,40 +19,40 @@ ENV LC_ALL=pt_BR.UTF-8
 
 # Instalar Chrome, TightVNCServer, i3 e dependências
 RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    git \
-    tightvncserver \
-    libx11-6 \
-    libxext6 \
-    libxrender1 \
-    libxtst6 \
-    libxi6 \
-    fonts-liberation \
-    xfonts-base \
-    xfonts-75dpi \
-    i3 \
-    --no-install-recommends && \
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && \
-    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && \
-    apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && \
-    apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+  wget \
+  gnupg \
+  git \
+  tightvncserver \
+  libx11-6 \
+  libxext6 \
+  libxrender1 \
+  libxtst6 \
+  libxi6 \
+  fonts-liberation \
+  xfonts-base \
+  xfonts-75dpi \
+  i3 \
+  --no-install-recommends && \
+  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+  && \
+  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+  && \
+  apt-get update \
+  && apt-get install -y google-chrome-stable \
+  && \
+  apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Configurar o TightVNCServer no display :99 com resolução 1600x900 e proporção 16:9
 RUN mkdir -p ~/.vnc \
-    && \
-    echo "password" | vncpasswd -f > ~/.vnc/passwd \
-    && \
-    chmod 600 ~/.vnc/passwd \
-    && \
-    echo -e "#!/bin/bash\nxrdb $HOME/.Xresources\ni3" > ~/.vnc/xstartup \
-    && \
-    chmod +x ~/.vnc/xstartup
+  && \
+  echo "password" | vncpasswd -f > ~/.vnc/passwd \
+  && \
+  chmod 600 ~/.vnc/passwd \
+  && \
+  echo -e "#!/bin/bash\nxrdb $HOME/.Xresources\ni3" > ~/.vnc/xstartup \
+  && \
+  chmod +x ~/.vnc/xstartup
 #     && \
 #    tightvncserver :99 -geometry 1600x900 -depth 24 -rfbport 5999
 
@@ -78,8 +78,7 @@ RUN pip install --no-cache-dir poetry
 
 WORKDIR /crawjudbot_app
 
-COPY pyproject.toml ./
+COPY pyproject.toml poetry.lock ./
 
 RUN poetry config virtualenvs.create false && poetry install --without dev
 
-COPY . /crawjudbot_app/

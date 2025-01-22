@@ -1,4 +1,5 @@
 version: '3.9'
+name: CrawJUD-Bots
 services:
   app:
 
@@ -7,8 +8,6 @@ services:
 
     volumes:
       - .:/crawjudbot_app
-      - crawjudbot_exec:/crawjudbot_app/exec
-      - crawjudbot_archives:/crawjudbot_app/Archives
 
     ports:
       - 8000:8000
@@ -23,23 +22,6 @@ services:
 
     volumes:
       - .:/crawjudbot_app
-      - crawjudbot_exec:/crawjudbot_app/exec
-      - crawjudbot_archives:/crawjudbot_app/Archives
 
     hostname: crawjudbot_app
-    command: python3 -m celery -A app.__main__.celery worker -E --loglevel INFO -P eventlet --autoscale=10,0
-
-volumes:
-  crawjudbot_exec:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./exec
-
-  crawjudbot_archives:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./Archives
+    command: python3 -m celery -A app.__main__.celery worker -E --loglevel INFO -P eventlet --autoscale=50,3
