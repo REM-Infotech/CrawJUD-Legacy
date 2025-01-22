@@ -130,15 +130,13 @@ class complement(CrawJUD):
                         complement.esfera(self, esfera_xls)
 
                 for item in lista1:
-                    check_column = self.bot_data.get(item.upper())
+                    # check_column = self.bot_data.get(item.upper())
 
-                    if check_column:
-                        func: Callable[[], None] = getattr(
-                            complement, item.lower(), None
-                        )
+                    # if check_column:
+                    func: Callable[[], None] = getattr(complement, item.lower(), None)
 
-                        if func:
-                            func(self)
+                    if func and item.lower() != esfera_xls.lower():
+                        func(self)
 
                 end_time = time.perf_counter()
                 execution_time = end_time - start_time
