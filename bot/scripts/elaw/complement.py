@@ -135,7 +135,7 @@ class complement(CrawJUD):
                     # if check_column:
                     func: Callable[[], None] = getattr(complement, item.lower(), None)
 
-                    if func and item.lower() != esfera_xls.lower():
+                    if func and item.lower() != "ESFERA":
                         func(self)
 
                 end_time = time.perf_counter()
