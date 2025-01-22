@@ -161,6 +161,13 @@ class sol_pags(CrawJUD):
                     item.click()
                     return
 
+                elif "_" in normalizado_text:
+                    normalizado_text = normalizado_text.split("_")
+                    for norm in normalizado_text:
+                        if norm.lower() == namedef.lower():
+                            item.click()
+                            return
+
             raise ErroDeExecucao("Tipo de Pagamento não encontrado")
 
         except Exception as e:

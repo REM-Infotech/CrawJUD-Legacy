@@ -57,4 +57,6 @@ if __name__ == "__main__":  # pragma: no cover
         with open(".version", "w") as f:
             f.write(checkout_release_tag())
 
-    reload_app = io.run(app, host=hostname, port=int(values().get("PORT", "8000")))
+    reload_app = io.run(
+        app, host=hostname, port=int(values().get("PORT", "8000")), log_output=True
+    )
