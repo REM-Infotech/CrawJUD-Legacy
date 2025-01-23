@@ -1,6 +1,3 @@
-import eventlet
-
-eventlet.monkey_patch()
 import secrets
 from datetime import timedelta
 from pathlib import Path

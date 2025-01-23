@@ -1,6 +1,3 @@
-import eventlet
-
-eventlet.monkey_patch()
 from importlib import import_module
 
 from dotenv import dotenv_values

@@ -1,17 +1,14 @@
-import eventlet
-
-eventlet.monkey_patch()
 import signal
-import subprocess  # pragma: no cover
+import subprocess
 import sys
-from os import getcwd, path  # pragma: no cover
+from os import getcwd, path, getenv
 from pathlib import Path
 from platform import system
 
-# from clear import clear  # pragma: no cover
-from dotenv import dotenv_values as values  # pragma: no cover
+# from clear import clear
+from dotenv import dotenv_values as values
 
-from app import create_app  # pragma: no cover
+from app import create_app
 
 # clear()
 
@@ -54,15 +51,15 @@ def version_file() -> None:
             f.write(checkout_release_tag())
 
 
-if system().lower() == "linux":
+if system().lower() == "linux" and getenv("DOCKER_CONTEXT", None):
     start_vnc()
 
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
-app, io, celery = create_app()  # pragma: no cover
+app, io, _ = create_app()
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
 
     app.app_context().push()
 

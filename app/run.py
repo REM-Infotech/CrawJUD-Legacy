@@ -1,17 +1,17 @@
 import eventlet
+
 eventlet.monkey_patch()
 
 import signal
 import subprocess
 import sys
-from os import getcwd, path
-from pathlib import Path
+
+from os import getenv
 from platform import system
 
 # from clear import clear
-from dotenv import dotenv_values as values
-
 from app import create_app
+
 
 def handle_exit() -> None:
     sys.exit(0)
@@ -38,11 +38,11 @@ def start_vnc() -> None:
     except Exception as e:
         print(e)
 
-if system().lower() == "linux":
+
+if system().lower() == "linux" and getenv("DOCKER_CONTEXT", None):
     start_vnc()
 
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
 app, io, celery = create_app()
-

@@ -1,9 +1,3 @@
-# noqa: E402
-import eventlet
-
-eventlet.monkey_patch()
-
-
 # Python Imports
 import pathlib
 from datetime import timedelta
@@ -24,7 +18,7 @@ from .utils import check_allowed_origin, make_celery
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
-io = SocketIO(async_mode="eventlet")
+io = SocketIO(async_mode="threading")
 app = None
 
 

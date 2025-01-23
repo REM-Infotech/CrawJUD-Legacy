@@ -1,8 +1,3 @@
-# noqa: E402
-import eventlet
-
-eventlet.monkey_patch()
-
 import re
 from typing import Any
 

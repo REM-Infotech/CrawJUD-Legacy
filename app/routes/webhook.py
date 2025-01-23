@@ -1,6 +1,3 @@
-import eventlet
-
-eventlet.monkey_patch()
 import hashlib
 import hmac
 import json
