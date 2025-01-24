@@ -32,7 +32,7 @@ class tjdft(CrawJUD):
         #     setattr(PropertiesCrawJUD, key, value)
 
         CrawJUD.setup()
-        CrawJUD.auth_bot()
+        self.auth_bot()
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
@@ -49,7 +49,7 @@ class tjdft(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
             try:
                 self.queue()
@@ -67,7 +67,7 @@ class tjdft(CrawJUD):
 
                     old_message = self.message
 
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
                 if old_message is None:
                     old_message = self.message
