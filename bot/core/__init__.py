@@ -101,7 +101,7 @@ class CrawJUD(PropertiesCrawJUD):
                 "--disable-blink-features=AutomationControlled",
                 "--kiosk-printing",
             ]
-            cls.system_bot
+            cls.system
             if cls.name_cert:
 
                 cls.install_cert()

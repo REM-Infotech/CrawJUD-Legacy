@@ -16,10 +16,9 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
 
 
-class pauta(PropertiesCrawJUD):
+class pauta(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)

@@ -21,12 +21,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
+
 
 dotenv.load_dotenv()
 
 
-class protocolo(PropertiesCrawJUD):
+class protocolo(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)

@@ -12,11 +12,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
-from ...Utils.count_doc import count_doc
+from ...Utils import OtherUtils
 
 
-class emissor(PropertiesCrawJUD):
+class emissor(CrawJUD):
+
+    count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
@@ -275,7 +276,7 @@ class emissor(PropertiesCrawJUD):
         self.message = "Informando tipo de documento do autor"
         self.type_log = "log"
         self.prt()
-        doct_type = count_doc(self.bot_data.get("CPF_CNPJ_AUTOR"))
+        doct_type = self.count_doc(self.bot_data.get("CPF_CNPJ_AUTOR"))
 
         if not doct_type:
             return
@@ -323,7 +324,7 @@ class emissor(PropertiesCrawJUD):
 
         campo_nome_reu.send_keys(self.bot_data.get("REU", contraria))
 
-        doct_type = count_doc(self.bot_data.get("CPF_CNPJ_REU"))
+        doct_type = self.count_doc(self.bot_data.get("CPF_CNPJ_REU"))
 
         self.interact.wait_caixa()
         doctype_reu = self.driver.find_element(

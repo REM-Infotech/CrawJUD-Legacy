@@ -9,10 +9,9 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
 
 
-class busca_pags(PropertiesCrawJUD):
+class busca_pags(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)

@@ -87,11 +87,11 @@ class BasePropertiesCrawJUD:
         self.another_append_ = new_another_append
 
     @property
-    def system_bot(self) -> Type[str]:
+    def system(self) -> Type[str]:
         return self.systembot
 
-    @system_bot.setter
-    def system_bot(self, systembot: Type[str]) -> None:
+    @system.setter
+    def system(self, systembot: Type[str]) -> None:
         self.systembot = systembot
 
     @property
@@ -115,7 +115,7 @@ class BasePropertiesCrawJUD:
         return self.pid_
 
     @pid.setter
-    def pid(self, pid_) -> int:
+    def pid(self, pid_: Type[str]) -> int:
         self.pid_ = pid_
 
     @property

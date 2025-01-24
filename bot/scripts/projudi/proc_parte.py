@@ -9,10 +9,9 @@ from urllib3.exceptions import MaxRetryError
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
 
 
-class proc_parte(PropertiesCrawJUD):
+class proc_parte(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)

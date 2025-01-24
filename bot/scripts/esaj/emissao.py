@@ -14,8 +14,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
-from ...Utils import count_doc
+
+from ...Utils import OtherUtils
 
 type_docscss = {
     "custas_iniciais": {
@@ -45,7 +45,9 @@ type_docscss = {
 }
 
 
-class emissao(PropertiesCrawJUD):
+class emissao(CrawJUD):
+
+    count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
@@ -155,7 +157,7 @@ class emissao(PropertiesCrawJUD):
         nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
         elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
-            count_doc(self.bot_data.get("CPF_CNPJ"))
+            self.count_doc(self.bot_data.get("CPF_CNPJ"))
         )
         set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
         set_doc.click()
@@ -207,7 +209,7 @@ class emissao(PropertiesCrawJUD):
             nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
             elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
-                count_doc(self.bot_data.get("CPF_CNPJ"))
+                self.count_doc(self.bot_data.get("CPF_CNPJ"))
             )
 
             set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])

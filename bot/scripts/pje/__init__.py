@@ -1,7 +1,7 @@
 import logging
 import traceback
 from importlib import import_module
-
+from typing import Any
 from .common import StartError
 
 
@@ -20,7 +20,7 @@ class pje:
             raise StartError(traceback.format_exc())
 
     @property
-    def Bot(self):
+    def Bot(self) -> Any:
 
         rb = getattr(
             import_module(f".{self.typebot.lower()}", __package__),

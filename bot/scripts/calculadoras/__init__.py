@@ -1,12 +1,9 @@
 import logging
 import traceback
 from importlib import import_module
-from typing import Union
 
+from typing import Any
 from ...common import StartError
-from .tjdft import tjdft
-
-Hints = Union[tjdft]
 
 
 class calculadoras:
@@ -24,7 +21,7 @@ class calculadoras:
             raise StartError(traceback.format_exc())
 
     @property
-    def Bot(self):
+    def Bot(self) -> Any:
 
         rb = getattr(
             import_module(f".{self.typebot.lower()}", __package__),

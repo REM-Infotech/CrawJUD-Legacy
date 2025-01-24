@@ -14,7 +14,7 @@ class MakeXlsx(PropertiesCrawJUD):
 
         lista_colunas: List[str] = getattr(
             listas,
-            f"{cls.system_bot}_{cls.typebot}",
+            f"{cls.system}_{cls.typebot}",
             getattr(listas, cls.typebot, None),
         )
         # Criar um novo workbook e uma planilha

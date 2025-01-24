@@ -16,15 +16,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
+
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class sol_pags(PropertiesCrawJUD):
-
-    def __getattr__(self, nome):
-        return super().__getattr__(nome)
+class sol_pags(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
