@@ -115,8 +115,6 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
 
 def version_file() -> None:
 
-    from git_py import _release_tag, checkout_release
-
     version_Path = Path(__file__).cwd().joinpath(".version")
     version_ = None
 
