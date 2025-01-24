@@ -1,61 +1,59 @@
-import json  # pragma: no cover
+import json
 import os
-import platform  # pragma: no cover
-import re  # pragma: no cover
-import shutil  # pragma: no cover
-import ssl  # pragma: no cover
+import platform
+import re
+import shutil
+import ssl
 import subprocess
-import time  # pragma: no cover
-import unicodedata  # pragma: no cover
-from datetime import datetime  # pragma: no cover
-from difflib import SequenceMatcher  # pragma: no cover
+import time
+import unicodedata
+from datetime import datetime
+from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Dict, List, Union  # pragma: no cover
+from typing import Dict, List, Self, Union
 
-import pandas as pd  # pragma: no cover
-import pytz  # pragma: no cover
-from cryptography import x509  # pragma: no cover
-from cryptography.hazmat.backends import default_backend  # pragma: no cover
+import pandas as pd
+import pytz
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
 
 # from openai._streaming import Stream
 # from openai.types.chat.chat_completion import ChatCompletion
 # from openai.types.chat.chat_completion_chunk import ChatCompletionChunk
-from pandas import Timestamp  # pragma: no cover
-from selenium import webdriver  # pragma: no cover
-from selenium.webdriver.chrome.options import Options  # pragma: no cover
-from selenium.webdriver.chrome.service import Service  # pragma: no cover
-from selenium.webdriver.common.by import By  # pragma: no cover
-from selenium.webdriver.remote.webdriver import WebDriver  # pragma: no cover
-from selenium.webdriver.remote.webelement import WebElement  # pragma: no cover
-from selenium.webdriver.support import expected_conditions as EC  # pragma: no cover
-from selenium.webdriver.support.wait import WebDriverWait  # pragma: no cover
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 # from tenacity import (  # for exponential backoff
 #     retry,
 #     stop_after_attempt,
 #     wait_random_exponential,
 # )
-from werkzeug.utils import secure_filename  # pragma: no cover
+from werkzeug.utils import secure_filename
 
-from ..common.exceptions import ErroDeExecucao  # pragma: no cover
 from ..meta import PropertiesCrawJUD
-from ..Utils.Driver import GetDriver  # pragma: no cover
+from ..Utils.Driver import GetDriver
 
 # from memory_profiler import profile
 
-# from openai import OpenAI  # pragma: no cover
+# from openai import OpenAI
 
 
 TypeHint = Union[
     List[str],
     List[Dict[str, str | int | float | datetime]],
     Dict[str, str],
-]  # pragma: no cover
+]
 
 # fp = open("crawjud_profiler.log", "w+")
 
 
-class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
+class CrawJUD(PropertiesCrawJUD):
 
     settings = {
         "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
@@ -80,7 +78,8 @@ class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
 
         return item
 
-    def set_permissions_recursive(self, path: Path, permissions: int = 0o775):
+    @classmethod
+    def set_permissions_recursive(path: Path, permissions: int = 0o775):
         # Converte o caminho para um objeto Path, caso ainda não seja
         path = Path(path)
 
@@ -91,8 +90,8 @@ class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
         for item in path.rglob("*"):  # rglob percorre recursivamente
             item.chmod(permissions)
 
-    # @profile(stream=fp)
-    def setup(self) -> None:
+    @classmethod
+    def setup(cls, self: Self) -> None:
         """
         Sets up the bot by loading configuration from a JSON file, initializing various attributes,
         and preparing the environment for the bot to run.
@@ -162,7 +161,7 @@ class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
             self.state_or_client = self.state if self.state is not None else self.client
             self.DriverLaunch()
 
-            self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
+            cls.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:
 
@@ -179,9 +178,9 @@ class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
 
     # @profile(stream=fp)
     @classmethod
-    def auth_bot(self) -> None:
+    def auth_bot(cls, self: Self) -> None:
 
-        # from ..Utils import A
+        from ..Utils import AuthBot
 
         try:
             """
@@ -196,7 +195,7 @@ class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
             """
 
             if self.login_method:
-                chk_logged = self.AuthBot.auth()
+                chk_logged = AuthBot.auth()
                 if chk_logged is True:
 
                     self.message = "Login efetuado com sucesso!"
@@ -239,193 +238,6 @@ class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
         #     target=print_bot, name="printbot {}".format(self.pid)
         # )
         # thread_printbot.start()
-
-    # @profile(stream=fp)
-    def dataFrame(self) -> list[dict[str, str]]:
-        """
-        Converts an Excel file to a list of dictionaries with formatted data.
-        This method reads an Excel file specified by the instance's path arguments,
-        processes the data by formatting dates and floats, and returns the data as
-        a list of dictionaries.
-        Returns:
-            list[dict[str, str]]: A list of dictionaries where each dictionary
-            represents a row in the Excel file with formatted data.
-        Raises:
-            FileNotFoundError: If the specified Excel file does not exist.
-            ValueError: If there is an issue reading the Excel file.
-        """
-
-        input_file = os.path.join(
-            Path(self.path_args).parent.resolve().__str__(), str(self.xlsx)
-        )
-
-        df = pd.read_excel(input_file)
-        df.columns = df.columns.str.upper()
-
-        for col in df.columns.to_list():
-            df[col] = df[col].apply(
-                lambda x: (
-                    x.strftime("%d/%m/%Y")
-                    if type(x) is datetime or type(x) is Timestamp
-                    else x
-                )
-            )
-
-        for col in df.select_dtypes(include=["float"]).columns.to_list():
-            df[col] = df[col].apply(lambda x: "{:.2f}".format(x).replace(".", ","))
-
-        vars_df = []
-
-        df_dicted = df.to_dict(orient="records")
-        for item in df_dicted:
-            for key, value in item.items():
-                if str(value) == "nan":
-                    item.update({key: None})
-
-            vars_df.append(item)
-
-        return vars_df
-
-    # @profile(stream=fp)
-    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
-        """
-        Formats the given data dictionary according to specific rules.
-        Args:
-            data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
-        Returns:
-            dict[str, str]: The formatted dictionary.
-        Rules:
-            - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
-            - If the key is "COMARCA", update "CAPITAL_INTERIOR" based on the value using the cities_Amazonas method.
-            - If the key is "DATA_LIMITE" and "DATA_INICIO" is not present, set "DATA_INICIO" to the value of "DATA_LIMITE".
-            - If the value is an integer or float, format it to two decimal places and replace the decimal point with a comma.
-            - If the key is "CNPJ_FAVORECIDO" and its value is empty, set it to "04.812.509/0001-90".
-        """
-
-        data_listed = list(data.items())
-        for key, value in data_listed:
-
-            if not value.strip():
-                data.pop(key)
-
-            if key.upper() == "TIPO_EMPRESA":
-                data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
-                if value.upper() == "RÉU":
-                    data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
-
-            elif key.upper() == "COMARCA":
-                set_locale = self.cities_Amazonas().get(value, None)
-                if not set_locale:
-                    set_locale = "Outro Estado"
-
-                data.update({"CAPITAL_INTERIOR": set_locale})
-
-            elif key == "DATA_LIMITE" and not data.get("DATA_INICIO"):
-                data.update({"DATA_INICIO": value})
-
-            elif type(value) is int or type(value) is float:
-                data.update({key: "{:.2f}".format(value).replace(".", ",")})
-
-            elif key == "CNPJ_FAVORECIDO" and not value:
-                data.update({key: "04.812.509/0001-90"})
-
-        return data
-
-    # @profile(stream=fp)
-    def calc_time(self) -> list:
-        """
-        Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
-        Returns:
-            list: A list containing two integers:
-                - minutes (int): The number of minutes of the elapsed time.
-                - seconds (int): The number of seconds of the elapsed time.
-        """
-
-        end_time = time.perf_counter()
-        execution_time = end_time - self.start_time
-        calc = execution_time / 60
-        splitcalc = str(calc).split(".")
-        minutes = int(splitcalc[0])
-        seconds = int(float(f"0.{splitcalc[1]}") * 60)
-
-        return [minutes, seconds]
-
-    # @profile(stream=fp)
-    def append_moves(self) -> None:
-        """
-        Appends movements to the spreadsheet if there are any movements to append.
-        This method checks if there are any movements stored in the `self.appends` list.
-        If there are, it iterates over each movement and calls the `self.append_success`
-        method to save the movement to the spreadsheet with a success message.
-        Raises:
-            ErroDeExecucao: If no movements are found in the `self.appends` list.
-        """
-
-        if len(self.appends) > 0:
-
-            for append in self.appends:
-
-                self.append_success(
-                    append, "Movimentação salva na planilha com sucesso!!"
-                )
-
-        elif len(self.appends) == 0:
-            raise ErroDeExecucao("Nenhuma Movimentação encontrada")
-
-    # @profile(stream=fp)
-    def append_success(self, data, message: str = None, fileN: str = None):
-
-        if not message:
-            message = "Execução do processo efetuada com sucesso!"
-
-        def save_info(data: list[dict[str, str]]):
-
-            output_success = self.path
-
-            chk_not_path = output_success is None or output_success == ""
-
-            if fileN is not None or chk_not_path:
-                output_success = os.path.join(Path(self.path).parent.resolve(), fileN)
-
-            if not os.path.exists(output_success):
-                df = pd.DataFrame(data)
-                df = df.to_dict(orient="records")
-
-            elif os.path.exists(output_success):
-
-                df = pd.read_excel(output_success)
-                df = df.to_dict(orient="records")
-                df.extend(data)
-
-            new_data = pd.DataFrame(df)
-            new_data.to_excel(output_success, index=False)
-
-        typeD = type(data) is list and all(isinstance(item, dict) for item in data)
-
-        if not typeD:
-
-            data2 = {}
-
-            for item in self.name_colunas:
-                data2.update({item: ""})
-
-            for item in data:
-                for key, value in list(data2.items()):
-                    if not value:
-                        data2.update({key: item})
-                        break
-
-            data.clear()
-            data.append(data2)
-
-        save_info(data)
-
-        if message:
-            if self.type_log == "log":
-                self.type_log = "success"
-
-            self.message = message
-            self.prt()
 
     # @profile(stream=fp)
 

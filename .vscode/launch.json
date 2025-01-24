@@ -32,6 +32,8 @@
         "-E",
         "--loglevel",
         "INFO",
+        "-P",
+        "threads",
         "--autoscale=50,3"
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",

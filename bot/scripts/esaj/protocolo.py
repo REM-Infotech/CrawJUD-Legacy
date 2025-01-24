@@ -29,7 +29,7 @@ class protocolo(PropertiesCrawJUD):
 
     def execution(self) -> None:
 
-        frame = self.dataFrame()
+        frame = CrawJUD.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
