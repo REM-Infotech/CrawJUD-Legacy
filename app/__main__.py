@@ -1,15 +1,15 @@
 import signal
 import subprocess
 import sys
-from os import getcwd, path, getenv, environ
-from pathlib import Path
-from platform import system
 import traceback
+from os import environ, getenv
+from platform import system
+from typing import Dict
 
 # from clear import clear
 from dotenv import load_dotenv
 
-from app import create_app
+from git_py import version_file
 
 load_dotenv()
 
@@ -43,58 +43,42 @@ def start_vnc() -> None:
         app.logger.exception(err)
 
 
-def version_file() -> None:
-
-    version_Path = Path(path.join(getcwd(), ".version"))
-    if version_Path.exists() is False:
-        from app.misc.checkout import checkout_release_tag
-
-        with open(".version", "w") as f:
-            f.write(checkout_release_tag())
-
-
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
-app, io, _ = create_app()
 
 if __name__ == "__main__":
+    from app import create_app
 
-    args_run = {}
+    app, io, _ = create_app()
+
+    args_run: Dict[str, str | int | bool] = {}
     app.app_context().push()
 
     debug = values("DEBUG", "False").lower() in ("true")
 
+    hostname = (
+        values("SERVER_HOSTNAME", "127.0.0.1")
+        if getenv("DOCKER_CONTEXT", None)
+        else "127.0.0.1"
+    )
+
+    unsafe_werkzeug = getenv("DOCKER_CONTEXT", None) is None or (
+        getenv("DEBUG", "False").lower() == "true"
+    )
+    port = int(values("PORT", "8000"))
     version_file()
-    hostname = "127.0.0.1"
     if system().lower() == "linux":
         start_vnc()
 
-        args_run = {
-            "app": app,
-            "host": hostname,
-            "port": int(values("PORT", "8000")),
-            "log_output": True,
-            "allow_unsafe_werkzeug": True,
-        }
+    args_run = {
+        "host": hostname,
+        "port": port,
+        "log_output": True,
+        "allow_unsafe_werkzeug": unsafe_werkzeug,
+    }
 
-        if getenv("DOCKER_CONTEXT", None):
-
-            hostname = values("SERVER_HOSTNAME", "127.0.0.1")
-            args_run = {
-                "app": app,
-                "host": hostname,
-                "port": int(values("PORT", "8000")),
-                "log_output": True,
-            }
-
-    elif system().lower() == "windows":
-        args_run = {
-            "app": app,
-            "host": hostname,
-            "port": int(values("PORT", "8000")),
-            "log_output": True,
-            "allow_unsafe_werkzeug": True,
-        }
-
-    reload_app = io.run(**args_run)
+    try:
+        io.run(app, **args_run)
+    except (KeyboardInterrupt, TypeError):
+        sys.exit(0)

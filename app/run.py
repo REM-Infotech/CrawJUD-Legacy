@@ -1,15 +1,9 @@
-import eventlet
-
-eventlet.monkey_patch()
-
 import signal
 import subprocess
 import sys
-
 from os import getenv
 from platform import system
 
-# from clear import clear
 from app import create_app
 
 

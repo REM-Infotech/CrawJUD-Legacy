@@ -1,8 +1,9 @@
 # Python Imports
 import pathlib
 from datetime import timedelta
-from pathlib import Path
 from os import getenv
+from pathlib import Path
+
 from celery import Celery
 from dotenv import dotenv_values
 from flask import Flask

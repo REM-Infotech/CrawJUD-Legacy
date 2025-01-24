@@ -2,11 +2,8 @@ import hashlib
 import hmac
 import json
 import logging
-from os import path
-from pathlib import Path
 from typing import Dict
 
-from dotenv import dotenv_values
 from flask import (
     Blueprint,
     Response,
@@ -16,9 +13,8 @@ from flask import (
     make_response,
     request,
 )
-from git import Repo
 
-from ..misc.checkout import checkout_release_tag
+from ..misc import update_servers
 
 wh = Blueprint("webhook", __package__)
 
@@ -71,16 +67,6 @@ def github_webhook() -> Response:  # pragma: no cover
         return make_response(jsonify({"message": "Evento ignorado"}), 500)
 
 
-def update_servers(tag: str) -> None:  # pragma: no cover
-
-    checkout_release(tag)
-
-    path_fileversion = Path(path.join(Path(__file__).cwd(), ".version"))
-
-    with path_fileversion.open("w") as f:
-        f.write(checkout_release_tag())
-
-
 def verify_signature(
     payload_body: Dict[str, str] = None,
     secret_token: str = None,
@@ -105,30 +91,3 @@ def verify_signature(
     expected_signature = "sha256=" + hash_object.hexdigest()
     if not hmac.compare_digest(expected_signature, signature_header):
         raise abort(403, detail="Request signatures didn't match!")
-
-
-def checkout_release(tag: str) -> None:  # pragma: no cover
-
-    values = dotenv_values()
-
-    user_git = values.get("USER_GITHUB")
-    token_git = values.get("GITHUB_API_TOKEN")
-    repo_git = values.get("REPO_NAME")
-
-    repo_remote = "".join(
-        ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
-    )
-
-    git_path = Path(__file__).cwd().resolve().joinpath(".git").exists()
-    if not git_path:
-
-        repo = Repo.init(Path(__file__).cwd())
-        origin = repo.create_remote("origin", repo_remote)
-        origin.fetch()
-
-    elif git_path:
-        repo = Repo(Path(__file__).cwd().resolve())
-
-    git = repo.git
-    git.fetch("--all", "--tags")
-    git.checkout(tag)

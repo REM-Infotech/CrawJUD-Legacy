@@ -12,8 +12,7 @@ from flask import current_app as app
 from flask import jsonify, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 
-from ..misc import GeoLoc, stop_execution
-from ..misc.checkout import check_latest
+from ..misc import GeoLoc, check_latest, stop_execution
 from ..models import ScheduleModel
 from ..tasks import init_bot as bot_starter
 
