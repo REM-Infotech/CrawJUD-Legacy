@@ -84,7 +84,7 @@ class sol_pags(PropertiesCrawJUD):
     def queue(self) -> None:
 
         try:
-            search = self.SearchBot()
+            search = self.search_bot()
 
             if search is True:
 

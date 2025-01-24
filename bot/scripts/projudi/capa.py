@@ -16,7 +16,6 @@ from ...shared import PropertiesCrawJUD
 
 class capa(CrawJUD):
 
-    # @profile(stream=fp)
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -28,7 +27,6 @@ class capa(CrawJUD):
         CrawJUD.auth_bot()
         self.start_time = time.perf_counter()
 
-    # @profile(stream=fp)
     def execution(self) -> None:
 
         frame = self.dataFrame()
@@ -79,11 +77,10 @@ class capa(CrawJUD):
 
         self.finalize_execution()
 
-    # @profile(stream=fp)
     def queue(self) -> None:
 
         try:
-            search = self.SearchBot()
+            search = self.search_bot()
 
             if search is not True:
                 raise ErroDeExecucao("Processo não encontrado!")
@@ -95,7 +92,6 @@ class capa(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e)
 
-    # @profile(stream=fp)
     def get_process_informations(self) -> list:
 
         try:

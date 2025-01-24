@@ -92,7 +92,7 @@ class movimentacao(PropertiesCrawJUD):
                 if value is None:
                     self.bot_data.pop(key)
 
-            search = self.SearchBot()
+            search = self.search_bot()
 
             if search is not True:
                 raise ErroDeExecucao(message="Processo não encontrado!")

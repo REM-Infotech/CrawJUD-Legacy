@@ -87,7 +87,7 @@ class protocolo(PropertiesCrawJUD):
     def queue(self) -> None:
 
         try:
-            search = self.SearchBot()
+            search = self.search_bot()
 
             if search is not True:
                 raise ErroDeExecucao("Processo não encontrado!")

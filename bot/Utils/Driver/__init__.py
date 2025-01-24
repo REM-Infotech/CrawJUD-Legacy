@@ -1,3 +1,4 @@
+import json
 import os
 import pathlib
 import platform
@@ -6,6 +7,7 @@ import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
+from typing import List
 
 import requests
 from rich.console import Group
@@ -21,6 +23,14 @@ from rich.progress import (
     TimeRemainingColumn,
     TransferSpeedColumn,
 )
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+
+from ...shared import PropertiesCrawJUD
+from ..PrintLogs import printbot
 
 try:
     from getchromeVer import chrome_ver
@@ -29,10 +39,143 @@ except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
 
+class DriverBot(PropertiesCrawJUD):
+    prt = printbot.print_msg
+
+    list_args_ = [
+        "--ignore-ssl-errors=yes",
+        "--ignore-certificate-errors",
+        "--display=:99",
+        "--window-size=1600,900",
+        "--no-sandbox",
+        "--disable-blink-features=AutomationControlled",
+        "--kiosk-printing",
+    ]
+
+    @property
+    def list_args(self) -> List[str]:
+        return self.list_args_
+
+    @list_args.setter
+    def list_args(self, new_Args: list[str]) -> None:
+        self.list_args_ = new_Args
+
+    @classmethod
+    def DriverLaunch(cls, message: str = "Inicializando WebDriver") -> WebDriver:
+
+        try:
+            cls.message = message
+            cls.type_log = "log"
+            cls.prt()
+
+            list_args = cls.list_args
+
+            chrome_options = Options()
+            cls.chr_dir = str(
+                os.path.join(Path(__file__).cwd(), "exec", cls.pid, "chrome")
+            )
+
+            user = os.environ.get(
+                "USER", os.environ.get("LOGNAME", os.environ.get("USERNAME", "root"))
+            )
+            if user != "root" or platform.system() != "Linux":
+                list_args.remove("--no-sandbox")
+
+            if platform.system() == "Windows" and cls.login_method == "cert":
+                state = str(cls.state)
+                cls.path_accepted = str(
+                    os.path.join(
+                        Path(__file__).cwd(),
+                        "Browser",
+                        state,
+                        cls.username,
+                        "chrome",
+                    )
+                )
+                path_exist = os.path.exists(cls.path_accepted)
+                if path_exist:
+
+                    for root, dirs, files in os.walk(cls.path_accepted):
+                        try:
+                            shutil.copytree(root, cls.chr_dir)
+                        except Exception as e:
+                            print(e)
+
+                elif not path_exist:
+                    os.makedirs(cls.path_accepted, exist_ok=True, mode=0o775)
+
+            chrome_options.add_argument(f"user-data-dir={cls.chr_dir}")
+            for argument in list_args:
+                chrome_options.add_argument(argument)
+
+            this_path = Path(__file__).parent.resolve().__str__()
+            path_extensions = os.path.join(this_path, "extensions")
+            for root, dirs, files in os.walk(path_extensions):
+                for file_ in files:
+                    if ".crx" in file_:
+                        path_plugin = os.path.join(root, file_)
+                        chrome_options.add_extension(path_plugin)
+
+            chrome_prefs = {
+                "download.prompt_for_download": False,
+                "plugins.always_open_pdf_externally": True,
+                "profile.default_content_settings.popups": 0,
+                "printing.print_preview_sticky_settings.appState": json.dumps(
+                    cls.settings
+                ),
+                "download.default_directory": "{}".format(
+                    os.path.join(cls.output_dir_path)
+                ),
+            }
+
+            path_chrome = None
+            chrome_options.add_experimental_option("prefs", chrome_prefs)
+            pid_path = Path(cls.path_args).parent.resolve()
+            getdriver = SetupDriver(destination=pid_path)
+
+            abs_pidpath = Path(pid_path).absolute()
+
+            if message != "Inicializando WebDriver":
+
+                version = getdriver.code_ver
+                chrome_name = f"chromedriver{version}"
+                if platform.system() == "Windows":
+                    chrome_name += ".exe"
+
+                if Path(os.path.join(abs_pidpath, chrome_name)).exists():
+                    path_chrome = Path(pid_path).parent.resolve().joinpath(chrome_name)
+
+            if path_chrome is None:
+                path_chrome = Path(pid_path).parent.resolve().joinpath(getdriver())
+
+            path_chrome.chmod(0o777, follow_symlinks=True)
+
+            driver = webdriver.Chrome(
+                service=Service(path_chrome), options=chrome_options
+            )
+
+            # driver.maximize_window()
+
+            wait = WebDriverWait(driver, 20, 0.01)
+            driver.delete_all_cookies()
+
+            cls.driver = driver
+            cls.wait = wait
+
+            cls.message = "WebDriver inicializado"
+            cls.type_log = "log"
+            cls.prt()
+
+            return driver
+
+        except Exception as e:
+            raise e
+
+
 class SetupDriver:
 
     @property
-    def code_ver(self):
+    def code_ver(self) -> str:
         return ".".join(chrome_ver().split(".")[:-1])
 
     progress = Progress(

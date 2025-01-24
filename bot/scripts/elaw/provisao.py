@@ -80,7 +80,7 @@ class provisao(PropertiesCrawJUD):
         # module = "search_processo"
 
         try:
-            search = self.SearchBot()
+            search = self.search_bot()
             if search is True:
 
                 self.type_log = "log"

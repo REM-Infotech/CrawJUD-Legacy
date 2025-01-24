@@ -81,7 +81,7 @@ class cadastro(PropertiesCrawJUD):
 
         try:
             self.bot_data = self.elawFormats(self.bot_data)
-            search = self.SearchBot()
+            search = self.search_bot()
 
             if search is True:
 

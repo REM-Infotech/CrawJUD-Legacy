@@ -75,7 +75,7 @@ class andamentos(PropertiesCrawJUD):
     def queue(self) -> None:
 
         try:
-            search = self.SearchBot()
+            search = self.search_bot()
             if search is True:
                 btn_newmove = self.elements.botao_andamento
                 new_move: WebElement = self.wait.until(

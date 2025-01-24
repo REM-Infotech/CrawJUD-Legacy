@@ -71,7 +71,7 @@ class prazos(PropertiesCrawJUD):
     def queue(self) -> None:
 
         try:
-            search = self.SearchBot()
+            search = self.search_bot()
             if not search:
                 self.message = "Buscando Processo"
                 raise ErroDeExecucao("Não Encontrado!")

@@ -1,17 +1,6 @@
 class listas:
 
-    def __init__(self) -> None:
-        pass
-
-    def __call__(self, name_list: str) -> list[str]:
-
-        self.lista = getattr(self, name_list, None)
-        list = None
-        if self.lista:
-            list = self.lista()
-
-        return list
-
+    @property
     def emissor_sucesso(self) -> list[str]:
         return [
             "Descrição do Prazo",
@@ -24,6 +13,7 @@ class listas:
             "Nome Documento",
         ]
 
+    @property
     def esaj_guias_emissao_sucesso(self) -> list[str]:
         return [
             "Tipo Guia",
@@ -36,6 +26,7 @@ class listas:
             "Nome Documento",
         ]
 
+    @property
     def capa_sucesso(self) -> list[str]:
 
         return [
@@ -59,6 +50,7 @@ class listas:
             "VALOR_CAUSA",
         ]
 
+    @property
     def movimentacao_sucesso(self) -> list[str]:
 
         return [
@@ -69,6 +61,7 @@ class listas:
             "Classiicação Peticionante",
         ]
 
+    @property
     def sols_pag_sucesso(self) -> list[str]:
 
         return [
@@ -79,14 +72,17 @@ class listas:
             "COMPROVANTE_2",
         ]
 
+    @property
     def sucesso(self) -> list[str]:
 
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE"]
 
+    @property
     def protocolo_sucesso(self) -> list[str]:
 
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE", "ID_PROTOCOLO"]
 
+    @property
     def erro(self) -> list[str]:
 
         return ["MOTIVO_ERRO"]

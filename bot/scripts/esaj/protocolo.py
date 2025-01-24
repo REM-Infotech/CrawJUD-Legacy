@@ -78,7 +78,7 @@ class protocolo(PropertiesCrawJUD):
     def queue(self) -> None:
 
         try:
-            self.SearchBot()
+            self.search_bot()
             self.init_protocolo()
             self.set_tipo_protocolo()
             self.set_subtipo_protocolo()

@@ -73,7 +73,7 @@ class capa(PropertiesCrawJUD):
     def queue(self) -> None:
 
         try:
-            self.SearchBot()
+            self.search_bot()
             self.append_success(self.get_process_informations())
 
         except Exception as e:

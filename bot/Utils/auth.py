@@ -23,7 +23,7 @@ class AuthBot(PropertiesCrawJUD):
     @classmethod
     def auth(cls) -> bool:
 
-        to_call = getattr(AuthBot, f"{cls.system.lower()}_auth")
+        to_call = getattr(AuthBot, f"{cls.system_bot.lower()}_auth")
         if to_call:
             return to_call()
 

@@ -54,7 +54,7 @@ class proc_parte(PropertiesCrawJUD):
         try:
             for vara in self.varas:
                 self.vara: str = vara
-                search = self.SearchBot()
+                search = self.search_bot()
                 if search is True:
                     self.get_process_list()
 

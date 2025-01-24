@@ -74,7 +74,7 @@ class movimentacao(PropertiesCrawJUD):
         try:
             self.appends = []
             self.resultados = []
-            search = bool(self.SearchBot())
+            search = bool(self.search_bot())
 
             if search is True:
                 self.get_moves()

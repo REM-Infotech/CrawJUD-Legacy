@@ -96,7 +96,7 @@ class printbot(PropertiesCrawJUD):
         try:
 
             if any(message_stop):
-                data.update({"system": cls.system, "typebot": cls.typebot})
+                data.update({"system": cls.system_bot, "typebot": cls.typebot})
 
             iobot.send_message(data, url_socket)
 
