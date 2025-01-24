@@ -18,8 +18,8 @@ from ...Utils.count_doc import count_doc
 
 class emissor(PropertiesCrawJUD):
 
-    def __init__(self, **kwrgs) -> None:
-        super().__init__(**kwrgs)
+    def __init__(self, *args, **kwrgs) -> None:
+        super().__init__(*args, **kwrgs)
         CrawJUD.setup()
 
         self.start_time = time.perf_counter()

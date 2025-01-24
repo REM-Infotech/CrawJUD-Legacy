@@ -10,7 +10,7 @@ import unicodedata
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Dict, List, Self, Union
+from typing import Dict, List
 
 import pandas as pd
 import pytz
@@ -23,10 +23,7 @@ from cryptography.hazmat.backends import default_backend
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 # from tenacity import (  # for exponential backoff
@@ -37,18 +34,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 from werkzeug.utils import secure_filename
 
 from ..shared import PropertiesCrawJUD
-from ..Utils.Driver import GetDriver
+from ..Utils import OtherUtils, SetupDriver, printbot
 
 # from memory_profiler import profile
 
 # from openai import OpenAI
 
-
-TypeHint = Union[
-    List[str],
-    List[Dict[str, str | int | float | datetime]],
-    Dict[str, str],
-]
 
 # fp = open("crawjud_profiler.log", "w+")
 
@@ -60,23 +51,6 @@ class CrawJUD(PropertiesCrawJUD):
         "selectedDestinationId": "Save as PDF",
         "version": 2,
     }
-
-    def __init__(self, **kwargs) -> None:
-
-        self.__dict__.update(kwargs)
-        self.kwrgs = kwargs
-
-    def __getattr__(self, nome: str) -> TypeHint:
-
-        item = self.kwrgs.get(nome, None)
-
-        if not item:
-            item = CrawJUD.__dict__.get(nome, None)
-
-            if not item:
-                item = PropertiesCrawJUD.kwrgs_.get(nome, None)
-
-        return item
 
     @classmethod
     def set_permissions_recursive(path: Path, permissions: int = 0o775):
@@ -91,18 +65,18 @@ class CrawJUD(PropertiesCrawJUD):
             item.chmod(permissions)
 
     @classmethod
-    def setup(cls, self: Self) -> None:
+    def setup(cls) -> None:
         """
         Sets up the bot by loading configuration from a JSON file, initializing various attributes,
         and preparing the environment for the bot to run.
         This method performs the following steps:
-        1. Loads configuration from a JSON file specified by `self.path_args`.
+        1. Loads configuration from a JSON file specified by `cls.path_args`.
         2. Sets attributes based on the loaded configuration.
         3. Initializes logging and output directory paths.
         4. Prepares a list of arguments for the system.
-        5. Installs certificates if `self.name_cert` is specified.
+        5. Installs certificates if `cls.name_cert` is specified.
         6. Creates Excel files for logging successes and errors.
-        7. Parses date strings into datetime objects if `self.xlsx` is not specified.
+        7. Parses date strings into datetime objects if `cls.xlsx` is not specified.
         8. Sets the state or client attribute.
         9. Launches the driver.
         Raises:
@@ -110,21 +84,21 @@ class CrawJUD(PropertiesCrawJUD):
         """
 
         try:
-            with open(self.path_args, "rb") as f:
+            with open(cls.path_args, "rb") as f:
                 json_f: dict[str, str | int] = json.load(f)
 
-                self.kwrgs = json_f
+                cls.kwrgs = json_f
 
                 for key, value in json_f.items():
-                    setattr(self, key, value)
+                    setattr(cls, key, value)
 
-            self.message = str("Inicializando robô")
-            self.type_log = str("log")
-            self.prt()
+            cls.message = str("Inicializando robô")
+            cls.type_log = str("log")
+            cls.prt()
 
-            self.output_dir_path = Path(self.path_args).parent.resolve().__str__()
+            cls.output_dir_path = Path(cls.path_args).parent.resolve().__str__()
             # time.sleep(10)
-            self.list_args = [
+            cls.list_args = [
                 "--ignore-ssl-errors=yes",
                 "--ignore-certificate-errors",
                 "--display=:99",
@@ -133,52 +107,52 @@ class CrawJUD(PropertiesCrawJUD):
                 "--disable-blink-features=AutomationControlled",
                 "--kiosk-printing",
             ]
-            self.system
-            if self.name_cert:
+            cls.system
+            if cls.name_cert:
 
-                self.install_cert()
+                cls.install_cert()
 
             time_xlsx = datetime.now(pytz.timezone("America/Manaus")).strftime(
                 "%d-%m-%y"
             )
 
-            namefile = f"Sucessos - PID {self.pid} {time_xlsx}.xlsx"
-            self.path = f"{self.output_dir_path}/{namefile}"
+            namefile = f"Sucessos - PID {cls.pid} {time_xlsx}.xlsx"
+            cls.path = f"{cls.output_dir_path}/{namefile}"
 
-            namefile_erro = f"Erros - PID {self.pid} {time_xlsx}.xlsx"
-            self.path_erro = f"{self.output_dir_path}/{namefile_erro}"
+            namefile_erro = f"Erros - PID {cls.pid} {time_xlsx}.xlsx"
+            cls.path_erro = f"{cls.output_dir_path}/{namefile_erro}"
 
-            self.name_colunas = self.MakeXlsx("sucesso", self.typebot).make_output(
-                self.path
+            cls.name_colunas = cls.MakeXlsx("sucesso", cls.typebot).make_output(
+                cls.path
             )
-            self.MakeXlsx("erro", self.typebot).make_output(self.path_erro)
+            cls.MakeXlsx("erro", cls.typebot).make_output(cls.path_erro)
 
-            if not self.xlsx:
+            if not cls.xlsx:
 
-                self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
-                self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
+                cls.data_inicio = datetime.strptime(cls.data_inicio, "%Y-%m-%d")
+                cls.data_fim = datetime.strptime(cls.data_fim, "%Y-%m-%d")
 
-            self.state_or_client = self.state if self.state is not None else self.client
-            self.DriverLaunch()
+            cls.state_or_client = cls.state if cls.state is not None else cls.client
+            cls.DriverLaunch()
 
-            cls.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
+            cls.set_permissions_recursive(Path(cls.output_dir_path).parent.resolve())
 
         except Exception as e:
 
-            self.row = 0
-            self.message = "Falha ao iniciar"
-            self.type_log = "error"
-            self.prt()
-            self.end_prt("Falha ao iniciar")
+            cls.row = 0
+            cls.message = "Falha ao iniciar"
+            cls.type_log = "error"
+            cls.prt()
+            cls.end_prt("Falha ao iniciar")
 
-            if self.driver:
-                self.driver.quit()
+            if cls.driver:
+                cls.driver.quit()
 
             raise e
 
     # @profile(stream=fp)
     @classmethod
-    def auth_bot(cls, self: Self) -> None:
+    def auth_bot(cls) -> None:
 
         from ..Utils import AuthBot
 
@@ -194,57 +168,63 @@ class CrawJUD(PropertiesCrawJUD):
                 Exception: If the login fails.
             """
 
-            if self.login_method:
+            if cls.login_method:
                 chk_logged = AuthBot.auth()
                 if chk_logged is True:
 
-                    self.message = "Login efetuado com sucesso!"
-                    self.type_log = "log"
-                    self.prt()
+                    cls.message = "Login efetuado com sucesso!"
+                    cls.type_log = "log"
+                    cls.prt()
 
                 elif chk_logged is False:
 
-                    self.driver.quit()
-                    self.message = "Erro ao realizar login"
-                    self.type_log = "error"
-                    self.prt()
-                    raise Exception(message=self.message)
+                    cls.driver.quit()
+                    cls.message = "Erro ao realizar login"
+                    cls.type_log = "error"
+                    cls.prt()
+                    raise Exception(message=cls.message)
 
         except Exception as e:
 
             print(e)
-            self.row = 0
-            self.message = "Erro ao realizar login"
-            self.type_log = "error"
+            cls.row = 0
+            cls.message = "Erro ao realizar login"
+            cls.type_log = "error"
 
-            self.prt()
-            self.end_prt("Falha ao iniciar")
-            if self.driver:
-                self.driver.quit()
+            cls.prt()
+            cls.end_prt("Falha ao iniciar")
+            if cls.driver:
+                cls.driver.quit()
 
             raise e
 
     # @profile(stream=fp)
-    def end_prt(self, status: str) -> None:
+    @classmethod
+    def end_prt(cls, status: str) -> None:
 
-        print_bot = self.printtext()
+        print_bot = cls.printtext()
         print_bot.end_bot(status)
 
-    # @profile(stream=fp)
-    def prt(self) -> None:
+    @classmethod
+    def prt(cls) -> None:
 
-        self.printtext().print_msg()
+        graphic = cls.graphicMode_
+        cls.graphicMode = graphic
+        printbot.print_msg()
         # thread_printbot = threading.Thread(
-        #     target=print_bot, name="printbot {}".format(self.pid)
+        #     target=print_bot, name="printbot {}".format(cls.pid)
         # )
         # thread_printbot.start()
 
+    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
+        OtherUtils.select2elaw(elementSelect, to_Search)
+
     # @profile(stream=fp)
 
-    def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
+    def append_validarcampos(cls, data: List[Dict[str, str]]) -> None:
 
-        nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
-        planilha_validar = Path(self.path).parent.resolve().joinpath(nomeplanilha)
+        nomeplanilha = f"CAMPOS VALIDADOS PID {cls.pid}.xlsx"
+        planilha_validar = Path(cls.path).parent.resolve().joinpath(nomeplanilha)
         if not os.path.exists(planilha_validar):
             df = pd.DataFrame(data)
             df = df.to_dict(orient="records")
@@ -257,22 +237,22 @@ class CrawJUD(PropertiesCrawJUD):
         new_data = pd.DataFrame(df)
         new_data.to_excel(planilha_validar, index=False)
 
-    def append_error(self, data: dict[str, str] = None):
+    def append_error(cls, data: dict[str, str] = None):
 
-        if not os.path.exists(self.path_erro):
+        if not os.path.exists(cls.path_erro):
             df = pd.DataFrame(data)
             df = df.to_dict(orient="records")
 
-        elif os.path.exists(self.path_erro):
-            df = pd.read_excel(self.path_erro)
+        elif os.path.exists(cls.path_erro):
+            df = pd.read_excel(cls.path_erro)
             df = df.to_dict(orient="records")
             df.extend([data])
 
         new_data = pd.DataFrame(df)
-        new_data.to_excel(self.path_erro, index=False)
+        new_data.to_excel(cls.path_erro, index=False)
 
     # @profile(stream=fp)
-    def get_recent(self, folder: str):
+    def get_recent(cls, folder: str):
         files = [os.path.join(folder, f) for f in os.listdir(folder)]
         files = [f for f in files if os.path.isfile(f)]
         files = list(
@@ -285,7 +265,7 @@ class CrawJUD(PropertiesCrawJUD):
         return files[0] if files else None
 
     # @profile(stream=fp)
-    def format_String(self, string: str) -> str:
+    def format_String(cls, string: str) -> str:
 
         return secure_filename(
             "".join(
@@ -298,10 +278,10 @@ class CrawJUD(PropertiesCrawJUD):
         )
 
     # @profile(stream=fp)
-    def normalizar_nome(self, word: str):
+    def normalizar_nome(cls, word: str):
         """
 
-        ### (function) def normalizar_nome(self, word: str) -> str
+        ### (function) def normalizar_nome(cls, word: str) -> str
 
         Função para normalizar os nomes (removendo caracteres especiais)
         Remove espaços, substitui "_" e "-" por nada, e converte para minúsculas
@@ -316,7 +296,7 @@ class CrawJUD(PropertiesCrawJUD):
         return re.sub(r"[\s_\-]", "", word).lower()
 
     # @profile(stream=fp)
-    def similaridade(self, word1: str, word2: str):
+    def similaridade(cls, word1: str, word2: str):
         """
         ### similaridade
 
@@ -333,40 +313,40 @@ class CrawJUD(PropertiesCrawJUD):
         return SequenceMatcher(None, word1, word2).ratio()
 
     # @profile(stream=fp)
-    def finalize_execution(self) -> None:
+    def finalize_execution(cls) -> None:
 
-        window_handles = self.driver.window_handles
-        self.row = self.row + 1
+        window_handles = cls.driver.window_handles
+        cls.row = cls.row + 1
         if len(window_handles) > 0:
 
-            self.driver.delete_all_cookies()
-            self.driver.quit()
+            cls.driver.delete_all_cookies()
+            cls.driver.quit()
 
         end_time = time.perf_counter()
-        execution_time = end_time - self.start_time
+        execution_time = end_time - cls.start_time
         calc = execution_time / 60
         minutes = int(calc)
         seconds = int((calc - minutes) * 60)
 
-        self.end_prt("Finalizado")
+        cls.end_prt("Finalizado")
 
-        self.type_log = "success"
-        self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
-        self.prt()
+        cls.type_log = "success"
+        cls.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
+        cls.prt()
 
-    # @profile(stream=fp)
-    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> WebDriver:
+    @classmethod
+    def DriverLaunch(cls, message: str = "Inicializando WebDriver") -> WebDriver:
 
         try:
-            self.message = message
-            self.type_log = "log"
-            self.prt()
+            cls.message = message
+            cls.type_log = "log"
+            cls.prt()
 
-            list_args = self.list_args
+            list_args = cls.list_args
 
             chrome_options = Options()
-            self.chr_dir = str(
-                os.path.join(Path(__file__).cwd(), "exec", self.pid, "chrome")
+            cls.chr_dir = str(
+                os.path.join(Path(__file__).cwd(), "exec", cls.pid, "chrome")
             )
 
             user = os.environ.get(
@@ -375,30 +355,30 @@ class CrawJUD(PropertiesCrawJUD):
             if user != "root" or platform.system() != "Linux":
                 list_args.remove("--no-sandbox")
 
-            if platform.system() == "Windows" and self.login_method == "cert":
-                state = str(self.state)
-                self.path_accepted = str(
+            if platform.system() == "Windows" and cls.login_method == "cert":
+                state = str(cls.state)
+                cls.path_accepted = str(
                     os.path.join(
                         Path(__file__).cwd(),
                         "Browser",
                         state,
-                        self.username,
+                        cls.username,
                         "chrome",
                     )
                 )
-                path_exist = os.path.exists(self.path_accepted)
+                path_exist = os.path.exists(cls.path_accepted)
                 if path_exist:
 
-                    for root, dirs, files in os.walk(self.path_accepted):
+                    for root, dirs, files in os.walk(cls.path_accepted):
                         try:
-                            shutil.copytree(root, self.chr_dir)
+                            shutil.copytree(root, cls.chr_dir)
                         except Exception as e:
                             print(e)
 
                 elif not path_exist:
-                    os.makedirs(self.path_accepted, exist_ok=True, mode=0o775)
+                    os.makedirs(cls.path_accepted, exist_ok=True, mode=0o775)
 
-            chrome_options.add_argument(f"user-data-dir={self.chr_dir}")
+            chrome_options.add_argument(f"user-data-dir={cls.chr_dir}")
             for argument in list_args:
                 chrome_options.add_argument(argument)
 
@@ -415,17 +395,17 @@ class CrawJUD(PropertiesCrawJUD):
                 "plugins.always_open_pdf_externally": True,
                 "profile.default_content_settings.popups": 0,
                 "printing.print_preview_sticky_settings.appState": json.dumps(
-                    self.settings
+                    cls.settings
                 ),
                 "download.default_directory": "{}".format(
-                    os.path.join(self.output_dir_path)
+                    os.path.join(cls.output_dir_path)
                 ),
             }
 
             path_chrome = None
             chrome_options.add_experimental_option("prefs", chrome_prefs)
-            pid_path = Path(self.path_args).parent.resolve()
-            getdriver = GetDriver(destination=pid_path)
+            pid_path = Path(cls.path_args).parent.resolve()
+            getdriver = SetupDriver(destination=pid_path)
 
             abs_pidpath = Path(pid_path).absolute()
 
@@ -442,7 +422,7 @@ class CrawJUD(PropertiesCrawJUD):
             if path_chrome is None:
                 path_chrome = Path(pid_path).parent.resolve().joinpath(getdriver())
 
-            path_chrome.chmod(0o775)
+            path_chrome.chmod(0o777, follow_symlinks=True)
 
             driver = webdriver.Chrome(
                 service=Service(path_chrome), options=chrome_options
@@ -453,33 +433,33 @@ class CrawJUD(PropertiesCrawJUD):
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()
 
-            self.driver = driver
-            self.wait = wait
+            cls.driver = driver
+            cls.wait = wait
 
-            self.message = "WebDriver inicializado"
-            self.type_log = "log"
-            self.prt()
+            cls.message = "WebDriver inicializado"
+            cls.type_log = "log"
+            cls.prt()
 
             return driver
 
         except Exception as e:
             raise e
 
-    # @profile(stream=fp)
-    def install_cert(self) -> None:
+    @classmethod
+    def install_cert(cls) -> None:
 
-        installed = self.is_pfx_certificate_installed(self.name_cert.split(".pfx")[0])
+        installed = cls.is_pfx_certificate_installed(cls.name_cert.split(".pfx")[0])
 
         if installed is False:
 
-            path_cert = str(os.path.join(self.output_dir_path, self.name_cert))
+            path_cert = str(os.path.join(cls.output_dir_path, cls.name_cert))
             comando = [
                 "certutil",
                 "-importpfx",
                 "-user",
                 "-f",
                 "-p",
-                self.token,
+                cls.token,
                 "-silent",
                 path_cert,
             ]
@@ -493,17 +473,18 @@ class CrawJUD(PropertiesCrawJUD):
                     stderr=subprocess.PIPE,
                 )
 
-                self.message = str(resultado.stdout)
-                self.type_log = str("log")
-                self.prt()
+                cls.message = str(resultado.stdout)
+                cls.type_log = str("log")
+                cls.prt()
 
             except subprocess.CalledProcessError as e:
                 raise e
 
     # @profile(stream=fp)
+    @classmethod
     def is_pfx_certificate_installed(
-        self, cert_subject_name: str, store_name: str = "MY"
-    ):
+        cls, cert_subject_name: str, store_name: str = "MY"
+    ) -> bool:
         """
         Verifica se um certificado PFX específico está instalado no repositório 'MY'.
 
@@ -530,7 +511,7 @@ class CrawJUD(PropertiesCrawJUD):
         return False
 
     # @profile(stream=fp)
-    def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
+    def group_date_all(cls, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
 
         records = []
         for vara, dates in data.items():
@@ -545,7 +526,7 @@ class CrawJUD(PropertiesCrawJUD):
         return records
 
     # @profile(stream=fp)
-    def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
+    def group_keys(cls, data: list[dict[str, str]]) -> dict[str, str]:
 
         record = {}
         for pos, entry in enumerate(data):
@@ -558,48 +539,14 @@ class CrawJUD(PropertiesCrawJUD):
         return record
 
     # @profile(stream=fp)
-    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
-
-        selector: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect))
-        )
-
-        items = selector.find_elements(By.TAG_NAME, "option")
-        opt_itens: dict[str, str] = {}
-
-        elementsSelecting = elementSelect.replace("'", "'")
-        if '"' in elementsSelecting:
-            elementsSelecting = elementSelect.replace('"', "'")
-
-        for item in items:
-
-            value_item = item.get_attribute("value")
-            cms = f"{elementsSelecting} > option[value='{value_item}']"
-            text_item = self.driver.execute_script(f'return $("{cms}").text();')
-
-            opt_itens.update({text_item.upper(): value_item})
-
-        value_opt = opt_itens.get(to_Search.upper())
-
-        if value_opt:
-
-            command = f"$('{elementSelect}').val(['{value_opt}']);"
-            command2 = f"$('{elementSelect}').trigger('change');"
-
-            if "'" in elementSelect:
-                command = f"$(\"{elementSelect}\").val(['{value_opt}']);"
-                command2 = f"$(\"{elementSelect}\").trigger('change');"
-
-            self.driver.execute_script(command)
-            self.driver.execute_script(command2)
 
     # @profile(stream=fp)
-    def gpt_chat(self, text_mov: str) -> str:
+    def gpt_chat(cls, text_mov: str) -> str:
 
         try:
 
             time.sleep(5)
-            client = self.OpenAI_client
+            client = cls.OpenAI_client
             completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
@@ -660,7 +607,7 @@ class CrawJUD(PropertiesCrawJUD):
             raise e
 
     # @profile(stream=fp)
-    def text_is_a_date(self, text: str) -> bool:
+    def text_is_a_date(cls, text: str) -> bool:
 
         # Regex para verificar se o texto pode ser uma data (opcional)
         date_like_pattern = (

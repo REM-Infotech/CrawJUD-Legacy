@@ -2,7 +2,8 @@ import signal
 import threading as th
 from importlib import import_module
 from pathlib import Path
-from typing import Callable, Union
+from time import sleep
+from typing import Callable, Dict, Tuple, Union
 
 import psutil
 from celery import shared_task
@@ -14,21 +15,18 @@ process_type = Union[psutil.Process, None]
 
 class BotThread(th.Thread):
 
-    def join(self):
+    def join(self) -> None:
         th.Thread.join(self)
-        # Since join() returns in caller thread
-        # we re-raise the caught exception
-        # if any was caught
         if self.exc_bot:
             raise self.exc_bot
 
-    def run(self):
+    def run(self) -> None:
 
         self.exc_bot: Exception = None
 
         try:
             self._target(*self._args, **self._kwargs)
-        except Exception as e:
+        except BaseException as e:
             self.exc_bot = e
 
 
@@ -50,7 +48,7 @@ class WorkerThread:
             )
 
             process.start()
-
+            sleep(2)
             pid = Path(path_args).stem
 
             if not process.is_alive():
@@ -86,16 +84,33 @@ class WorkerThread:
         display_name: str,
         system: str,
         typebot: str,
-        *args,
-        **kwrgs,
-    ):  # pragma: no cover
+        *args: Tuple[str],
+        **kwargs: Dict[str, str],
+    ) -> None:
         try:
-            bot_: Callable[[], None] = getattr(
-                import_module(f".scripts.{system}", __package__),
-                system,
+
+            display_name_ = (
+                args[0] if args else kwargs.pop("display_name", display_name)
+            )
+            path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
+            system_ = args[2] if args else kwargs.pop("system", system)
+            typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
+
+            kwargs.update({"display_name": display_name})
+
+            bot_: Callable[..., None] = getattr(
+                import_module(f".scripts.{system_}", __package__),
+                system_,
             )
 
-            bot_(**kwrgs)
+            bot_(
+                **{
+                    "display_name": display_name_,
+                    "path_args": path_args_,
+                    "typebot": typebot_,
+                    "system": system_,
+                }
+            )
 
         except Exception as e:
             raise e

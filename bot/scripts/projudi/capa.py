@@ -14,11 +14,16 @@ from ...shared import PropertiesCrawJUD
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
-class capa(PropertiesCrawJUD):
+class capa(CrawJUD):
 
     # @profile(stream=fp)
-    def __init__(self, **kwrgs) -> None:
-        super().__init__(**kwrgs)
+    def __init__(self, *args, **kwrgs) -> None:
+        super().__init__(*args, **kwrgs)
+
+        PropertiesCrawJUD.kwrgs = kwrgs
+        for key, value in list(kwrgs.items()):
+            setattr(PropertiesCrawJUD, key, value)
+
         CrawJUD.setup()
         CrawJUD.auth_bot()
         self.start_time = time.perf_counter()

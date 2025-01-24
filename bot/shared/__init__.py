@@ -1,19 +1,16 @@
 from __future__ import annotations
 
 import os
-import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Union
+from typing import Any, Dict, List, Type, Union
 
-# from memory_profiler import profile
-import pandas as pd
 from dotenv import load_dotenv
-from pandas import Timestamp
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ..common import ErroDeExecucao
+# from memory_profiler import profile
+
 
 Numbers = Union[int, float, complex, datetime, timedelta]
 TypeValues = Union[str, Numbers, list, tuple]
@@ -23,31 +20,57 @@ SubDict = Dict[str, Union[TypeValues, Numbers]]
 
 load_dotenv()
 
+TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
+
 
 class BasePropertiesCrawJUD:
 
+    def __init__(self, *args, **kwrgs) -> None:
+        """Base class for all scripts"""
+
     appends_ = []
     another_append_ = []
-
-    path_accepted_: str = ""
-    vara_: str = ""
-    _system: str = ""
-    _state_or_client_: str = ""
-    _type_log: str = "info"
-    _message: str = ""
-    _pid: str = ""
+    path_args_: Type[str] = ""
+    path_accepted_: Type[str] = ""
+    vara_: Type[str] = ""
+    _system: Type[str] = ""
+    _state_or_client_: Type[str] = ""
+    _type_log: Type[str] = "info"
+    _message: Type[str] = ""
+    _pid: Type[str] = ""
     kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
     row_: int = 0
-    message_error_: str = ""
+    message_error_: Type[str] = ""
     bot_data_: Dict[str, Union[TypeValues, SubDict]] = {}
-    graphicMode_: str = "doughnut"
-    out_dir: str = ""
-    user_data_dir: str = ""
+    graphicMode_: Type[str] = "doughnut"
+    out_dir: Type[str] = ""
+    user_data_dir: Type[str] = ""
     cr_list_args: list[str] = []
     drv: WebDriver = None
     wt: WebDriverWait = None
     elmnt = None
     interact_ = None
+    path_: Path = None
+
+    @property
+    def path(self) -> Path:
+        return self.path_
+
+    @path.setter
+    def path(self, new_path: Path):
+
+        if not isinstance(new_path, Path):
+            raise ValueError("Path must be a Path object")
+
+        self.path_ = new_path
+
+    @property
+    def path_args(self) -> str:
+        return self.path_args_
+
+    @path_args.setter
+    def path_args(self, new_path: Type[str]):
+        self.path_args_ = new_path
 
     @property
     # @profile(stream=fp)
@@ -71,12 +94,12 @@ class BasePropertiesCrawJUD:
 
     @property
     # @profile(stream=fp)
-    def system(self):
+    def system(self) -> str:
         return self._system
 
     @system.setter
     # @profile(stream=fp)
-    def system(self, system_: str):
+    def system(self, system_: Type[str]):
         self._system = system_
 
     @property
@@ -86,7 +109,7 @@ class BasePropertiesCrawJUD:
 
     @state_or_client.setter
     # @profile(stream=fp)
-    def state_or_client(self, new_s: str):
+    def state_or_client(self, new_s: Type[str]):
         self._state_or_client_ = new_s
 
     @property
@@ -96,7 +119,7 @@ class BasePropertiesCrawJUD:
 
     @type_log.setter
     # @profile(stream=fp)
-    def type_log(self, new_log: str):
+    def type_log(self, new_log: Type[str]):
         self._type_log = new_log
 
     @property
@@ -116,7 +139,7 @@ class BasePropertiesCrawJUD:
 
     @message.setter
     # @profile(stream=fp)
-    def message(self, new_msg: str) -> str:
+    def message(self, new_msg: Type[str]) -> str:
         self._message = new_msg
 
     @property
@@ -152,7 +175,7 @@ class BasePropertiesCrawJUD:
 
     @chr_dir.setter
     # @profile(stream=fp)
-    def chr_dir(self, new_dir: str):
+    def chr_dir(self, new_dir: Type[str]):
         self.user_data_dir = new_dir
 
     @property
@@ -162,7 +185,7 @@ class BasePropertiesCrawJUD:
 
     @output_dir_path.setter
     # @profile(stream=fp)
-    def output_dir_path(self, new_outdir: str):
+    def output_dir_path(self, new_outdir: Type[str]):
         self.out_dir = new_outdir
 
     @property
@@ -172,8 +195,11 @@ class BasePropertiesCrawJUD:
 
     @kwrgs.setter
     # @profile(stream=fp)
-    def kwrgs(self, new_kwg):
+    def kwrgs(self, new_kwg: Dict[str, Any]):
         self.kwrgs_ = new_kwg
+
+        for key, value in list(new_kwg.items()):
+            setattr(self, key, value)
 
     @property
     # @profile(stream=fp)
@@ -192,12 +218,12 @@ class BasePropertiesCrawJUD:
 
     @message_error.setter
     # @profile(stream=fp)
-    def message_error(self, nw_m: str) -> str:
+    def message_error(self, nw_m: Type[str]) -> str:
         self.message_error_ = nw_m
 
     @property
     # @profile(stream=fp)
-    def graphicMode(self):
+    def graphicMode(self) -> str:
         return self.graphicMode_
 
     @graphicMode.setter
@@ -240,7 +266,7 @@ class BasePropertiesCrawJUD:
 
     @vara.setter
     # @profile(stream=fp)
-    def vara(self, vara_str: str):
+    def vara(self, vara_str: Type[str]):
         self.vara_ = vara_str
 
     @property
@@ -250,196 +276,138 @@ class BasePropertiesCrawJUD:
 
     @path_accepted.setter
     # @profile(stream=fp)
-    def path_accepted(self, new_path: str):
+    def path_accepted(self, new_path: Type[str]):
         self.path_accepted_ = new_path
 
-    def dataFrame(self) -> list[dict[str, str]]:
-        """
-        Converts an Excel file to a list of dictionaries with formatted data.
-        This method reads an Excel file specified by the instance's path arguments,
-        processes the data by formatting dates and floats, and returns the data as
-        a list of dictionaries.
-        Returns:
-            list[dict[str, str]]: A list of dictionaries where each dictionary
-            represents a row in the Excel file with formatted data.
-        Raises:
-            FileNotFoundError: If the specified Excel file does not exist.
-            ValueError: If there is an issue reading the Excel file.
-        """
+    @property
+    def nomes_colunas(self) -> List[str]:
 
-        input_file = os.path.join(
-            Path(self.path_args).parent.resolve().__str__(), str(self.xlsx)
-        )
-
-        df = pd.read_excel(input_file)
-        df.columns = df.columns.str.upper()
-
-        for col in df.columns.to_list():
-            df[col] = df[col].apply(
-                lambda x: (
-                    x.strftime("%d/%m/%Y")
-                    if type(x) is datetime or type(x) is Timestamp
-                    else x
-                )
-            )
-
-        for col in df.select_dtypes(include=["float"]).columns.to_list():
-            df[col] = df[col].apply(lambda x: "{:.2f}".format(x).replace(".", ","))
-
-        vars_df = []
-
-        df_dicted = df.to_dict(orient="records")
-        for item in df_dicted:
-            for key, value in item.items():
-                if str(value) == "nan":
-                    item.update({key: None})
-
-            vars_df.append(item)
-
-        return vars_df
-
-    # @profile(stream=fp)
-    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
-        """
-        Formats the given data dictionary according to specific rules.
-        Args:
-            data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
-        Returns:
-            dict[str, str]: The formatted dictionary.
-        Rules:
-            - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
-            - If the key is "COMARCA", update "CAPITAL_INTERIOR" based on the value using the cities_Amazonas method.
-            - If the key is "DATA_LIMITE" and "DATA_INICIO" is not present, set "DATA_INICIO" to the value of "DATA_LIMITE".
-            - If the value is an integer or float, format it to two decimal places and replace the decimal point with a comma.
-            - If the key is "CNPJ_FAVORECIDO" and its value is empty, set it to "04.812.509/0001-90".
-        """
-
-        data_listed = list(data.items())
-        for key, value in data_listed:
-
-            if not value.strip():
-                data.pop(key)
-
-            if key.upper() == "TIPO_EMPRESA":
-                data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
-                if value.upper() == "RÉU":
-                    data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
-
-            elif key.upper() == "COMARCA":
-                set_locale = self.cities_Amazonas().get(value, None)
-                if not set_locale:
-                    set_locale = "Outro Estado"
-
-                data.update({"CAPITAL_INTERIOR": set_locale})
-
-            elif key == "DATA_LIMITE" and not data.get("DATA_INICIO"):
-                data.update({"DATA_INICIO": value})
-
-            elif type(value) is int or type(value) is float:
-                data.update({key: "{:.2f}".format(value).replace(".", ",")})
-
-            elif key == "CNPJ_FAVORECIDO" and not value:
-                data.update({key: "04.812.509/0001-90"})
-
-        return data
-
-    # @profile(stream=fp)
-    def calc_time(self) -> list:
-        """
-        Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
-        Returns:
-            list: A list containing two integers:
-                - minutes (int): The number of minutes of the elapsed time.
-                - seconds (int): The number of seconds of the elapsed time.
-        """
-
-        end_time = time.perf_counter()
-        execution_time = end_time - self.start_time
-        calc = execution_time / 60
-        splitcalc = str(calc).split(".")
-        minutes = int(splitcalc[0])
-        seconds = int(float(f"0.{splitcalc[1]}") * 60)
-
-        return [minutes, seconds]
-
-    # @profile(stream=fp)
-    def append_moves(self) -> None:
-        """
-        Appends movements to the spreadsheet if there are any movements to append.
-        This method checks if there are any movements stored in the `self.appends` list.
-        If there are, it iterates over each movement and calls the `self.append_success`
-        method to save the movement to the spreadsheet with a success message.
-        Raises:
-            ErroDeExecucao: If no movements are found in the `self.appends` list.
-        """
-
-        if len(self.appends) > 0:
-
-            for append in self.appends:
-
-                self.append_success(
-                    append, "Movimentação salva na planilha com sucesso!!"
-                )
-
-        elif len(self.appends) == 0:
-            raise ErroDeExecucao("Nenhuma Movimentação encontrada")
-
-    # @profile(stream=fp)
-    def append_success(self, data, message: str = None, fileN: str = None):
-
-        if not message:
-            message = "Execução do processo efetuada com sucesso!"
-
-        def save_info(data: list[dict[str, str]]):
-
-            output_success = self.path
-
-            chk_not_path = output_success is None or output_success == ""
-
-            if fileN is not None or chk_not_path:
-                output_success = os.path.join(Path(self.path).parent.resolve(), fileN)
-
-            if not os.path.exists(output_success):
-                df = pd.DataFrame(data)
-                df = df.to_dict(orient="records")
-
-            elif os.path.exists(output_success):
-
-                df = pd.read_excel(output_success)
-                df = df.to_dict(orient="records")
-                df.extend(data)
-
-            new_data = pd.DataFrame(df)
-            new_data.to_excel(output_success, index=False)
-
-        typeD = type(data) is list and all(isinstance(item, dict) for item in data)
-
-        if not typeD:
-
-            data2 = {}
-
-            for item in self.name_colunas:
-                data2.update({item: ""})
-
-            for item in data:
-                for key, value in list(data2.items()):
-                    if not value:
-                        data2.update({key: item})
-                        break
-
-            data.clear()
-            data.append(data2)
-
-        save_info(data)
-
-        if message:
-            if self.type_log == "log":
-                self.type_log = "success"
-
-            self.message = message
-            self.prt()
+        all_fields = [
+            "NOME_PARTE",
+            "PORTAL",
+            "FORO",
+            "CLASSE",
+            "NOME_INTERESSADO",
+            "CPF_CNPJ_AUTOR",
+            "CPF_CNPJ_REU",
+            "VIA_CONDENACAO",
+            "TIPO_INTERESSADO",
+            "PRAZO_PGTO",
+            "AUTOR",
+            "REU",
+            "TRIBUNAL",
+            "COMARCA",
+            "VARA",
+            "AGENCIA",
+            "TIPO_ACAO",
+            "VALOR_CALCULADO",
+            "TEXTO_DESC",
+            "DATA_PGTO",
+            "NOME_CUSTOM",
+            "TIPO_PROTOCOLO",
+            "SUBTIPO_PROTOCOLO",
+            "TIPO_ARQUIVO",
+            "PETICAO_PRINCIPAL",
+            "ANEXOS",
+            "TIPO_ANEXOS",
+            "TIPO_BUSCA",
+            "TERMOS",
+            "DATA_FILTRO",
+            "QTD_SEQUENCIA",
+            "NUMERO_PROCESSO",
+            "AREA_DIREITO",
+            "SUBAREA_DIREITO",
+            "ESTADO",
+            "DATA_DISTRIBUICAO",
+            "PARTE_CONTRARIA",
+            "TIPO_PARTE_CONTRARIA",
+            "DOC_PARTE_CONTRARIA",
+            "EMPRESA",
+            "TIPO_EMPRESA",
+            "DOC_EMPRESA",
+            "UNIDADE_CONSUMIDORA",
+            "CAPITAL_INTERIOR",
+            "DIVISAO",
+            "ACAO",
+            "DATA_CITACAO",
+            "OBJETO",
+            "PROVIMENTO",
+            "ADVOGADO_INTERNO",
+            "ADV_PARTE_CONTRARIA",
+            "FATO_GERADOR",
+            "ESCRITORIO_EXTERNO",
+            "VALOR_CAUSA",
+            "FASE",
+            "PROVISAO",
+            "DATA_ATUALIZACAO",
+            "VALOR_ATUALIZACAO",
+            "OBSERVACAO",
+            "TIPO_ANDAMENTO",
+            "DATA",
+            "OCORRENCIA",
+            "OBSERVACAO",
+            "ANEXOS",
+            "TIPO_ANEXOS",
+            "TIPO_GUIA",
+            "VALOR_GUIA",
+            "DATA_LANCAMENTO",
+            "TIPO_PAGAMENTO",
+            "SOLICITANTE",
+            "TIPO_CONDENACAO",
+            "COD_BARRAS",
+            "DOC_GUIA",
+            "DOC_CALCULO",
+            "LOCALIZACAO",
+            "CNPJ_FAVORECIDO",
+            "PARTE_PETICIONANTE",
+            "GRAU",
+            "DATA_PUBLICACAO",
+            "PALAVRA_CHAVE",
+            "TRAZER_DOC",
+            "INTIMADO",
+            "TRAZER_TEOR",
+            "DATA_LIMITE",
+            "NOME_MOV",
+            "CIDADE_ESTADO",
+            "ESFERA",
+            "REQUERENTE",
+            "REQUERIDO",
+            "JUROS_PARTIR",
+            "DATA_INCIDENCIA",
+            "VALOR_CALCULO",
+            "DATA_CALCULO",
+            "MULTA_PERCENTUAL",
+            "MULTA_DATA",
+            "MULTA_VALOR",
+            "PERCENT_MULTA_475J",
+            "HONORARIO_SUCUMB_PERCENT",
+            "HONORARIO_SUCUMB_DATA",
+            "HONORARIO_SUCUMB_VALOR",
+            "HONORARIO_SUCUMB_PARTIR",
+            "JUROS_PERCENT",
+            "HONORARIO_CUMPRIMENTO_PERCENT",
+            "HONORARIO_CUMPRIMENTO_DATA",
+            "HONORARIO_CUMPRIMENTO_VALOR",
+            "HONORARIO_CUMPRIMENTO_PARTIR",
+            "CUSTAS_DATA",
+            "CUSTAS_VALOR",
+            "DESC_PAGAMENTO",
+            "DESC_OBJETO",
+        ]
+        return all_fields
 
 
 class PropertiesCrawJUD(BasePropertiesCrawJUD):
-    def __init__(self, *args, **kwrgs) -> None:
-        super().__init__(*args, **kwrgs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.__dict__.update(kwargs)
+        self.kwrgs = kwargs
+
+    def __getattr__(self, nome: Type[str]) -> TypeHint:
+        super_cls = super()
+        item = self.kwrgs.get(nome, None)
+
+        if not item:
+            item = getattr(super_cls, nome, None)
+
+        return item

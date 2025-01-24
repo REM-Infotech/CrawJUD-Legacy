@@ -14,8 +14,8 @@ from ...shared import PropertiesCrawJUD
 
 class busca_pags(PropertiesCrawJUD):
 
-    def __init__(self, **kwrgs) -> None:
-        super().__init__(**kwrgs)
+    def __init__(self, *args, **kwrgs) -> None:
+        super().__init__(*args, **kwrgs)
         CrawJUD.setup()
         CrawJUD.auth_bot()
         self.datetimeNOW = datetime.now(pytz.timezone("America/Manaus")).strftime(

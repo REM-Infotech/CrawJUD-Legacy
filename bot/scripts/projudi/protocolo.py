@@ -28,8 +28,8 @@ dotenv.load_dotenv()
 
 class protocolo(PropertiesCrawJUD):
 
-    def __init__(self, **kwrgs) -> None:
-        super().__init__(**kwrgs)
+    def __init__(self, *args, **kwrgs) -> None:
+        super().__init__(*args, **kwrgs)
         CrawJUD.setup()
         CrawJUD.auth_bot()
         self.start_time = time.perf_counter()
