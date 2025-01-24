@@ -6,6 +6,7 @@ from os import getenv
 from pathlib import Path
 
 from celery import Celery
+from clear import clear
 from dotenv import dotenv_values
 from flask import Flask
 from flask_mail import Mail
@@ -40,6 +41,8 @@ objects_config = {
     "testing": "app.config.TestingConfig",
 }
 
+clear()
+
 
 class AppFactory:
 
@@ -60,7 +63,7 @@ class AppFactory:
         celery.set_default()
         app.extensions["celery"] = celery
 
-        celery.autodiscover_tasks(["app.tasks"])
+        celery.autodiscover_tasks(["bot"])
 
         if app.testing is False:  # pragma: no cover
 

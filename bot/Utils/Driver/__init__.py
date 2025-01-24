@@ -29,7 +29,7 @@ except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
 
-class GetDriver:
+class SetupDriver:
 
     @property
     def code_ver(self):

@@ -1,14 +1,14 @@
 from importlib import import_module
 from typing import Union
 
-from ...CrawJUD import CrawJUD
+from ...meta import PropertiesCrawJUD
 from .elaw import ELAW_AME
 from .esaj import ESAJ_AM
 from .pje import PJE_AM
 from .projudi import PROJUDI_AM
 
 
-class BaseElementsBot(CrawJUD):
+class BaseElementsBot(PropertiesCrawJUD):
 
     # system = ""
     # state_or_client = ""

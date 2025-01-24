@@ -12,10 +12,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ItemNaoEcontrado
 
-from ..CrawJUD import CrawJUD
+from ..meta import PropertiesCrawJUD
 
 
-class Interact(CrawJUD):
+class Interact(PropertiesCrawJUD):
 
     def __init__(self):
         """Interact Page"""

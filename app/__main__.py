@@ -1,7 +1,8 @@
 import signal
 import subprocess
 import sys
-import traceback
+
+# import traceback
 from os import environ, getenv
 from platform import system
 from typing import Dict
@@ -39,8 +40,9 @@ def start_vnc() -> None:
         )
         print("TightVNC iniciado com sucesso!")
     except Exception:
-        err = traceback.format_exc()
-        app.logger.exception(err)
+        # err = traceback.format_exc()
+        # app.logger.exception(err)
+        ...
 
 
 signal.signal(signal.SIGTERM, handle_exit)
@@ -81,4 +83,15 @@ if __name__ == "__main__":
     try:
         io.run(app, **args_run)
     except (KeyboardInterrupt, TypeError):
+
+        if system().lower() == "linux":
+
+            try:
+                subprocess.run(["tightvncserver", "-kill", ":99"])
+
+            except Exception:
+                # err = traceback.format_exc()
+                # app.logger.exception(err)
+                ...
+
         sys.exit(0)

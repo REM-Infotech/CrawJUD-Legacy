@@ -8,7 +8,7 @@ import pytz
 from dotenv import dotenv_values
 from tqdm import tqdm
 
-from ...CrawJUD import CrawJUD
+from ....resource import PropertiesCrawJUD
 from .socketio import SocketBot
 
 codificacao = "UTF-8"
@@ -18,7 +18,7 @@ url_socket = dotenv_values().get("HOSTNAME")
 iobot = SocketBot()
 
 
-class printbot(CrawJUD):
+class printbot(PropertiesCrawJUD):
 
     def __init__(self):
         """### PrintLogs"""

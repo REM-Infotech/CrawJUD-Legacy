@@ -8,15 +8,17 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 
 from bot.common.exceptions import ErroDeExecucao
-from bot.meta.CrawJUD import CrawJUD
+
+from ...CrawJUD import CrawJUD
+from ...meta import PropertiesCrawJUD
 
 
-class busca_pags(CrawJUD):
+class busca_pags(PropertiesCrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
-        super().setup()
-        super().auth_bot()
+        CrawJUD.setup()
+        CrawJUD.auth_bot()
         self.datetimeNOW = datetime.now(pytz.timezone("America/Manaus")).strftime(
             "%d-%m-%Y"
         )
@@ -36,7 +38,7 @@ class busca_pags(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    super().auth_bot()
+                    CrawJUD.auth_bot()
 
             try:
                 self.queue()
@@ -54,7 +56,7 @@ class busca_pags(CrawJUD):
 
                     old_message = self.message
 
-                    super().auth_bot()
+                    CrawJUD.auth_bot()
 
                 if old_message is None:
                     old_message = self.message

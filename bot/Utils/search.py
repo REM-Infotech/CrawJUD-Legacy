@@ -11,10 +11,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ErroDeExecucao
 
-from ..CrawJUD import CrawJUD
+from ..meta import PropertiesCrawJUD
 
 
-class SeachBot(CrawJUD):
+class SeachBot(PropertiesCrawJUD):
 
     def __init__(self) -> None:
         pass

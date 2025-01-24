@@ -39,4 +39,4 @@ if system().lower() == "linux" and getenv("DOCKER_CONTEXT", None):
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
-app, io, celery = create_app()
+_, __, app = create_app()

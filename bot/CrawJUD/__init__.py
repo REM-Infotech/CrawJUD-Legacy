@@ -37,8 +37,8 @@ from selenium.webdriver.support.wait import WebDriverWait  # pragma: no cover
 # )
 from werkzeug.utils import secure_filename  # pragma: no cover
 
-from ...common.exceptions import ErroDeExecucao  # pragma: no cover
-from ...meta import classproperty  # pragma: no cover
+from ..common.exceptions import ErroDeExecucao  # pragma: no cover
+from ..meta import PropertiesCrawJUD
 from ..Utils.Driver import GetDriver  # pragma: no cover
 
 # from memory_profiler import profile
@@ -55,7 +55,7 @@ TypeHint = Union[
 # fp = open("crawjud_profiler.log", "w+")
 
 
-class CrawJUD(classproperty):  # pragma: no cover
+class CrawJUD(PropertiesCrawJUD):  # pragma: no cover
 
     settings = {
         "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
@@ -76,7 +76,7 @@ class CrawJUD(classproperty):  # pragma: no cover
             item = CrawJUD.__dict__.get(nome, None)
 
             if not item:
-                item = classproperty.kwrgs_.get(nome, None)
+                item = PropertiesCrawJUD.kwrgs_.get(nome, None)
 
         return item
 
@@ -178,7 +178,10 @@ class CrawJUD(classproperty):  # pragma: no cover
             raise e
 
     # @profile(stream=fp)
+    @classmethod
     def auth_bot(self) -> None:
+
+        # from ..Utils import A
 
         try:
             """

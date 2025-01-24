@@ -12,13 +12,13 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
-from ..CrawJUD import CrawJUD
+from ..meta import PropertiesCrawJUD
 
 if platform.system() == "Windows":
     from pywinauto import Application
 
 
-class AuthBot(CrawJUD):
+class AuthBot(PropertiesCrawJUD):
 
     def __getattr__(self, nome):
         return super().__getattr__(nome)

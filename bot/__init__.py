@@ -1,42 +1,73 @@
-import pathlib
-
-# from contextlib import suppress
+import signal
+import threading as th
 from importlib import import_module
+from pathlib import Path
 from typing import Callable, Union
 
 import psutil
+from celery import shared_task
 from celery.result import AsyncResult
 from flask import Flask
 
-# from memory_profiler import profile
-
 process_type = Union[psutil.Process, None]
-
-# fp = open("memory_profiler.log", "+w")
 
 
 class WorkerThread:
 
-    # @profile(stream=fp)
-    @property
-    def BotStarter(self) -> Callable[[], None]:  # pragma: no cover
-
-        return getattr(
-            import_module(f".scripts.{self.system}", __package__),
-            self.system,
-        )
-
-    # argv: str = None, botname: str = None
-    def __init__(self, **kwrgs: dict[str, str]):  # pragma: no cover
-        self.kwrgs = kwrgs
-        self.__dict__.update(kwrgs)
-
-    # @profile
-    def start(self) -> None:
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
 
         try:
+            process = th.Thread(
+                target=WorkerThread,
+                args=(
+                    path_args,
+                    display_name,
+                    system,
+                    typebot,
+                ),
+                daemon=False,
+            )
 
-            self.BotStarter(**self.kwrgs)
+            process.start()
+
+            pid = Path(path_args).stem
+
+            while process.is_alive():
+
+                if signal.SIGTERM:
+                    path_flag = (
+                        Path(__file__)
+                        .cwd()
+                        .resolve()
+                        .joinpath("exec")
+                        .joinpath(pid)
+                        .joinpath(f"{pid}.flag")
+                    )
+
+                    path_flag.parent.resolve().mkdir(exist_ok=True, mode=0o775)
+
+                    with path_flag.open("w") as f:
+                        f.write("Encerrar processo")
+                    break
+
+            return "Finalizado!"
+
+        except Exception as e:
+            raise e
+
+    # argv: str = None, botname: str = None
+    def __init__(
+        self, path_args: str, display_name: str, system: str, typebot: str
+    ):  # pragma: no cover
+        try:
+            bot_: Callable[[], None] = getattr(
+                import_module(f".scripts.{system}", __package__),
+                system,
+            )
+
+            bot_(**self.kwrgs)
 
         except Exception as e:
             raise e
@@ -44,20 +75,6 @@ class WorkerThread:
     def stop(self, processID: int, pid: str, app: Flask = None) -> str:
 
         try:
-
-            path_flag = (
-                pathlib.Path(__file__)
-                .cwd()
-                .resolve()
-                .joinpath("exec")
-                .joinpath(pid)
-                .joinpath(f"{pid}.flag")
-            )
-
-            path_flag.parent.resolve().mkdir(exist_ok=True, mode=0o775)
-
-            with path_flag.open("w") as f:
-                f.write("Encerrar processo")
 
             # Process: process_type = None
             # with suppress(psutil.NoSuchProcess):

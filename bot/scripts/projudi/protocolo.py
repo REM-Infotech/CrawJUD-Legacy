@@ -20,17 +20,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ErroDeExecucao
-from bot.meta.CrawJUD import CrawJUD
+
+from ...CrawJUD import CrawJUD
+from ...meta import PropertiesCrawJUD
 
 dotenv.load_dotenv()
 
 
-class protocolo(CrawJUD):
+class protocolo(PropertiesCrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
-        super().setup()
-        super().auth_bot()
+        CrawJUD.setup()
+        CrawJUD.auth_bot()
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
@@ -47,7 +49,7 @@ class protocolo(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    super().auth_bot()
+                    CrawJUD.auth_bot()
 
             try:
                 self.queue()
@@ -65,7 +67,7 @@ class protocolo(CrawJUD):
 
                     old_message = self.message
 
-                    super().auth_bot()
+                    CrawJUD.auth_bot()
 
                 if old_message is None:
                     old_message = self.message

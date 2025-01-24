@@ -12,9 +12,10 @@ from flask import current_app as app
 from flask import jsonify, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 
+from miscellaneous import reload_module
+
 from ..misc import GeoLoc, check_latest, stop_execution
 from ..models import ScheduleModel
-from ..tasks import init_bot as bot_starter
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
@@ -58,7 +59,12 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
                 with app.app_context():
 
+                    reload_module("bot")
+
                     from app.models import ThreadBots
+                    from bot import WorkerThread
+
+                    bot_starter = WorkerThread.start_bot
 
                     pid = pathlib.Path(path_args).stem
 

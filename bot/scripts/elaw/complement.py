@@ -12,7 +12,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ErroDeExecucao
-from bot.meta.CrawJUD import CrawJUD
+
+from ...CrawJUD import CrawJUD
+from ...meta import PropertiesCrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -37,12 +39,12 @@ campos_validar: List[str] = [
 ]
 
 
-class complement(CrawJUD):
+class complement(PropertiesCrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
-        super().setup()
-        super().auth_bot()
+        CrawJUD.setup()
+        CrawJUD.auth_bot()
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
@@ -59,7 +61,7 @@ class complement(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    super().auth_bot()
+                    CrawJUD.auth_bot()
 
             try:
                 self.queue()
@@ -77,7 +79,7 @@ class complement(CrawJUD):
 
                     old_message = self.message
 
-                    super().auth_bot()
+                    CrawJUD.auth_bot()
 
                 if old_message is None:
                     old_message = self.message
