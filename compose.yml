@@ -2,26 +2,18 @@ version: '3.9'
 name: CrawJUD-Bots
 services:
   app:
-
     build:
       context: .
-
     volumes:
       - .:/crawjudbot_app
-
     ports:
       - 8000:8000
-
     hostname: crawjudbot_app
     command: python3 -m app
-
   celery:
-
     build:
         context: .
-
     volumes:
       - .:/crawjudbot_app
-
     hostname: crawjudbot_app
     command: python3 -m celery -A app.run.celery worker -E --loglevel INFO --autoscale=50,3

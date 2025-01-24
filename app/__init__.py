@@ -2,7 +2,7 @@
 import pathlib
 from datetime import timedelta
 from pathlib import Path
-
+from os import getenv
 from celery import Celery
 from dotenv import dotenv_values
 from flask import Flask
@@ -18,7 +18,11 @@ from .utils import check_allowed_origin, make_celery
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
+
 io = SocketIO(async_mode="threading")
+
+if getenv("DOCKER_CONTEXT", None):
+    io = SocketIO(async_mode="eventlet")
 app = None
 
 
