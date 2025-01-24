@@ -1,28 +1,8 @@
 from importlib import import_module
 from typing import Any
 
-# from .andamentos import andamentos
-# from .prazos import prazos
-# from .cadastro import cadastro
-# from .complement import complement
-# from .download import download
-# from .sol_pag import sol_pags
-# from .provisao import provisao
-
-# Hints = Union[download, cadastro, sol_pags, andamentos, complement, provisao, prazos]
-
 
 class elaw:
-
-    # bots = {
-    #     "download": download,
-    #     "cadastro": cadastro,
-    #     "sol_pags": sol_pags,
-    #     "andamentos": andamentos,
-    #     "complement": complement,
-    #     "provisao": provisao,
-    #     "prazos": prazos,
-    # }
 
     def __init__(self, **kwrgs) -> None:
         self.kwrgs = kwrgs

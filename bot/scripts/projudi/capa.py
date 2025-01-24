@@ -7,10 +7,10 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from bot.common.exceptions import ErroDeExecucao
+from ...common import ErroDeExecucao
 
-from ...CrawJUD import CrawJUD
-from ...meta import PropertiesCrawJUD
+from ...core import CrawJUD
+from ...shared import PropertiesCrawJUD
 
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
@@ -27,7 +27,7 @@ class capa(PropertiesCrawJUD):
     # @profile(stream=fp)
     def execution(self) -> None:
 
-        frame = CrawJUD.dataFrame()
+        frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):

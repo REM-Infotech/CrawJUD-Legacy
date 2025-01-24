@@ -12,7 +12,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ItemNaoEcontrado
 
-from ..meta import PropertiesCrawJUD
+from ..shared import PropertiesCrawJUD
 
 
 class Interact(PropertiesCrawJUD):

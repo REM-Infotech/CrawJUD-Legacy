@@ -9,9 +9,9 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from bot.common.exceptions import ErroDeExecucao
+from ..common import ErroDeExecucao
 
-from ..meta import PropertiesCrawJUD
+from ..shared import PropertiesCrawJUD
 
 
 class SeachBot(PropertiesCrawJUD):

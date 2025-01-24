@@ -1,7 +1,7 @@
 from importlib import import_module
 from typing import Union
 
-from ...meta import PropertiesCrawJUD
+from ...shared import PropertiesCrawJUD
 from .elaw import ELAW_AME
 from .esaj import ESAJ_AM
 from .pje import PJE_AM

@@ -36,7 +36,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 # )
 from werkzeug.utils import secure_filename
 
-from ..meta import PropertiesCrawJUD
+from ..shared import PropertiesCrawJUD
 from ..Utils.Driver import GetDriver
 
 # from memory_profiler import profile

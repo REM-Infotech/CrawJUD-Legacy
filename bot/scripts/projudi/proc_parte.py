@@ -7,10 +7,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from urllib3.exceptions import MaxRetryError
 
-from bot.common.exceptions import ErroDeExecucao
+from ...common import ErroDeExecucao
 
-from ...CrawJUD import CrawJUD
-from ...meta import PropertiesCrawJUD
+from ...core import CrawJUD
+from ...shared import PropertiesCrawJUD
 
 
 class proc_parte(PropertiesCrawJUD):

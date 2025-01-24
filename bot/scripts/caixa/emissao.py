@@ -10,11 +10,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 
-from bot.common.exceptions import ErroDeExecucao
+from ...common import ErroDeExecucao
 
-from ...CrawJUD import CrawJUD
-from ...meta import PropertiesCrawJUD
-from ...meta.Utils.count_doc import count_doc
+from ...core import CrawJUD
+from ...shared import PropertiesCrawJUD
+from ...Utils.count_doc import count_doc
 
 
 class emissao(PropertiesCrawJUD):
@@ -27,7 +27,7 @@ class emissao(PropertiesCrawJUD):
 
     def execution(self) -> None:
 
-        frame = CrawJUD.dataFrame()
+        frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):

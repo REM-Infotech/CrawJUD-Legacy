@@ -12,7 +12,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
-from ..meta import PropertiesCrawJUD
+from ..shared import PropertiesCrawJUD
 
 if platform.system() == "Windows":
     from pywinauto import Application

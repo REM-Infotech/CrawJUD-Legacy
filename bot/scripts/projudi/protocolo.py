@@ -19,10 +19,10 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from bot.common.exceptions import ErroDeExecucao
+from ...common import ErroDeExecucao
 
-from ...CrawJUD import CrawJUD
-from ...meta import PropertiesCrawJUD
+from ...core import CrawJUD
+from ...shared import PropertiesCrawJUD
 
 dotenv.load_dotenv()
 
@@ -37,7 +37,7 @@ class protocolo(PropertiesCrawJUD):
 
     def execution(self) -> None:
 
-        frame = CrawJUD.dataFrame()
+        frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):

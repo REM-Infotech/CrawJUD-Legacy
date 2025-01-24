@@ -1,6 +1,6 @@
 import pytest
 
-from bot.meta import PropertiesCrawJUD
+from bot.shared import PropertiesCrawJUD
 
 
 @pytest.fixture
