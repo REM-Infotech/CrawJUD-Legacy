@@ -1,6 +1,5 @@
 from contextlib import suppress
 from time import sleep
-
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -16,6 +15,15 @@ from ..shared import PropertiesCrawJUD
 
 
 class Interact(PropertiesCrawJUD):
+
+    def __init__(self, instance) -> None:
+        import copy
+
+        copy.copy(instance, self)
+
+    @classmethod
+    def init_util(cls, self) -> "Interact":
+        return Interact(self)
 
     def send_key(self, element: WebElement, word: any) -> None:
 
@@ -44,7 +52,7 @@ class Interact(PropertiesCrawJUD):
         Action = ActionChains(self.driver)
         Action.double_click(element).perform()
 
-    def select_item(self, elemento: str, text: str) -> bool | Exception:
+    def select_item(self, elemento: str, text: str) -> bool:
 
         itens: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elemento))

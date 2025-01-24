@@ -19,7 +19,7 @@ from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD
 from .auth import AuthBot
 from .Driver import DriverBot
-from .elements import ElementsBot
+from .elements import ElementsBot, ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
 from .interator import Interact
 from .MakeTemplate import MakeXlsx
 from .PrintLogs import printbot
@@ -33,6 +33,10 @@ __all__ = [
     DriverBot,
     SearchBot,
     printbot,
+    ELAW_AME,
+    ESAJ_AM,
+    PJE_AM,
+    PROJUDI_AM,
 ]
 
 

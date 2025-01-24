@@ -12,7 +12,7 @@ TypeValues = Union[str, Numbers, list, tuple]
 SubDict = Dict[str, Union[TypeValues, Numbers]]
 
 # from memory_profiler import profile
-# fp = open("memory_profiler_PropertiesCrawJUD.log", "+w")
+# fp = open("memory_profiler_self.log", "+w")
 
 load_dotenv()
 
@@ -52,7 +52,7 @@ class PropertiesCrawJUD:
 
     @property
     def path(self) -> Path:
-        return PropertiesCrawJUD.path_
+        return self.path_
 
     @path.setter
     def path(self, new_path: Path) -> None:
@@ -60,198 +60,198 @@ class PropertiesCrawJUD:
         if not isinstance(new_path, Path):
             raise ValueError("Path must be a Path object")
 
-        PropertiesCrawJUD.path_ = new_path
+        self.path_ = new_path
 
     @property
     def path_args(self) -> Type[str]:
-        return PropertiesCrawJUD.path_args_
+        return self.path_args_
 
     @path_args.setter
     def path_args(self, new_path: Type[str]) -> None:
-        PropertiesCrawJUD.path_args_ = new_path
+        self.path_args_ = new_path
 
     @property
     def appends(self) -> List[str]:
-        return PropertiesCrawJUD.appends_
+        return self.appends_
 
     @appends.setter
     def appends(self, new_appends: list) -> None:
-        PropertiesCrawJUD.appends_ = new_appends
+        self.appends_ = new_appends
 
     @property
     def another_append(self) -> List[str]:
-        return PropertiesCrawJUD.another_append_
+        return self.another_append_
 
     @another_append.setter
     def another_append(self, new_another_append: list) -> None:
-        PropertiesCrawJUD.another_append_ = new_another_append
+        self.another_append_ = new_another_append
 
     @property
     def system(self) -> Type[str]:
-        return PropertiesCrawJUD.systembot
+        return self.systembot
 
     @system.setter
     def system(self, systembot: Type[str]) -> None:
-        PropertiesCrawJUD.systembot = systembot
+        self.systembot = systembot
 
     @property
     def state_or_client(self) -> Type[str]:
-        return PropertiesCrawJUD.state_or_client_
+        return self.state_or_client_
 
     @state_or_client.setter
     def state_or_client(self, new_s: Type[str]) -> None:
-        PropertiesCrawJUD.state_or_client_ = new_s
+        self.state_or_client_ = new_s
 
     @property
     def type_log(self) -> Type[str]:
-        return PropertiesCrawJUD.type_log_
+        return self.type_log_
 
     @type_log.setter
     def type_log(self, new_log: Type[str]) -> None:
-        PropertiesCrawJUD.type_log_ = new_log
+        self.type_log_ = new_log
 
     @property
     def pid(self) -> Type[str]:
-        return PropertiesCrawJUD.pid_
+        return self.pid_
 
     @pid.setter
     def pid(self, pid_: Type[str]) -> None:
-        PropertiesCrawJUD.pid_ = pid_
+        self.pid_ = pid_
 
     @property
     def message(self) -> Type[str]:
-        return PropertiesCrawJUD.message
+        return self.message
 
     @message.setter
     def message(self, new_msg: Type[str]) -> None:
-        PropertiesCrawJUD.message_bot = new_msg
+        self.message_bot = new_msg
 
     @property
     def driver(self) -> WebDriver:
-        return PropertiesCrawJUD.drv
+        return self.drv
 
     @driver.setter
     def driver(self, new_drv: WebDriver) -> None:
-        PropertiesCrawJUD.drv = new_drv
+        self.drv = new_drv
 
     @property
     def wait(self) -> WebDriverWait:
-        return PropertiesCrawJUD.wt
+        return self.wt
 
     @wait.setter
     def wait(self, new_wt: WebDriverWait) -> None:
-        PropertiesCrawJUD.wt = new_wt
+        self.wt = new_wt
 
     @property
     def chr_dir(self) -> Type[str]:
-        return PropertiesCrawJUD.user_data_dir
+        return self.user_data_dir
 
     @chr_dir.setter
     def chr_dir(self, new_dir: Type[str]) -> None:
-        PropertiesCrawJUD.user_data_dir = new_dir
+        self.user_data_dir = new_dir
 
     @property
     def output_dir_path(self) -> Type[str]:
-        return PropertiesCrawJUD.out_dir
+        return self.out_dir
 
     @output_dir_path.setter
     def output_dir_path(self, new_outdir: Type[str]) -> None:
-        PropertiesCrawJUD.out_dir = new_outdir
+        self.out_dir = new_outdir
 
     @property
     def kwrgs(self) -> Dict[str, TypeValues | SubDict]:
-        return PropertiesCrawJUD.kwrgs_
+        return self.kwrgs_
 
     @kwrgs.setter
     def kwrgs(self, new_kwg: Dict[str, Any]) -> None:
-        PropertiesCrawJUD.kwrgs_ = new_kwg
+        self.kwrgs_ = new_kwg
 
         for key, value in list(new_kwg.items()):
             setattr(self, key, value)
 
     @property
     def row(self) -> Type[int]:
-        return PropertiesCrawJUD.row_
+        return self.row_
 
     @row.setter
     def row(self, new_row: int) -> None:
-        PropertiesCrawJUD.row_ = new_row
+        self.row_ = new_row
 
     @property
     def message_error(self) -> Type[str]:
-        return PropertiesCrawJUD.message_boterror_
+        return self.message_boterror_
 
     @message_error.setter
     def message_error(self, nw_m: Type[str]) -> Type[str]:
-        PropertiesCrawJUD.message_boterror_ = nw_m
+        self.message_boterror_ = nw_m
 
     @property
     def graphicMode(self) -> Type[str]:
-        return PropertiesCrawJUD.graphicMode_
+        return self.graphicMode_
 
     @graphicMode.setter
     def graphicMode(self, new_graph) -> None:
-        PropertiesCrawJUD.graphicMode_ = new_graph
+        self.graphicMode_ = new_graph
 
     @property
     def bot_data(self) -> dict[str, str | Numbers]:
-        return PropertiesCrawJUD.bot_data_
+        return self.bot_data_
 
     @bot_data.setter
     def bot_data(self, new_botdata: dict[str, str | Numbers]) -> None:
-        PropertiesCrawJUD.bot_data_ = new_botdata
+        self.bot_data_ = new_botdata
 
     @property
     def vara(self) -> Type[str]:
-        return PropertiesCrawJUD.vara_
+        return self.vara_
 
     @vara.setter
     def vara(self, vara_str: Type[str]) -> None:
-        PropertiesCrawJUD.vara_ = vara_str
+        self.vara_ = vara_str
 
     @property
     def path_accepted(self) -> Type[str]:
-        return PropertiesCrawJUD.path_accepted_
+        return self.path_accepted_
 
     @path_accepted.setter
     def path_accepted(self, new_path: Type[str]) -> None:
-        PropertiesCrawJUD.path_accepted_ = new_path
+        self.path_accepted_ = new_path
 
     @property
     def OpenAI_client(self) -> OpenAI:
-        return PropertiesCrawJUD.OpenAI_
+        return self.OpenAI_
 
     @property
     def typebot(self) -> Type[str]:
-        return PropertiesCrawJUD.type_bot
+        return self.type_bot
 
     @typebot.setter
     def typebot(self, type_bot: str) -> None:
-        PropertiesCrawJUD.type_bot = type_bot
+        self.type_bot = type_bot
 
     @property
     def state(self) -> Type[str]:
-        return PropertiesCrawJUD.state_
+        return self.state_
 
     @state.setter
     def state(self, state_: str) -> None:
-        PropertiesCrawJUD.state_ = state_
+        self.state_ = state_
 
     @property
     def path_erro(self) -> Type[str]:
-        return PropertiesCrawJUD.path_erro_
+        return self.path_erro_
 
     @path_erro.setter
     def path_erro(self, path_erro_: str):
-        PropertiesCrawJUD.path_erro_ = path_erro_
+        self.path_erro_ = path_erro_
 
     @property
     def name_cert(self) -> Type[str]:
-        return PropertiesCrawJUD.name_cert_
+        return self.name_cert_
 
     @name_cert.setter
     def name_cert(self, name_cert: str) -> None:
-        PropertiesCrawJUD.name_cert_ = name_cert
+        self.name_cert_ = name_cert
 
 
 # class PropertiesCrawJUD(PropertiesCrawJUD):

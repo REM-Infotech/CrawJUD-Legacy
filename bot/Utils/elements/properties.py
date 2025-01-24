@@ -1,4 +1,4 @@
-class Configuracao(object):
+class Configuracao:
     """Define propriedades específicas para cada elemento esperado."""
 
     def __init__(self, dados):

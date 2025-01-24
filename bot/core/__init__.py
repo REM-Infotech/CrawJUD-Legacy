@@ -19,21 +19,31 @@ __all__ = [
     printbot,
 ]
 
+if __name__ == "__main__":
+    from ..Utils import ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM
+
 
 class CrawJUD(PropertiesCrawJUD):
 
-    interact = Interact
+    elements_ = None
+    interact_ = None
     search_bot = SearchBot
     MakeXlsx = mk_xlsx
     DriverLaunch = DriverBot.DriverLaunch
+    prt = printbot.print_msg
+    end_prt = printbot.end_bot
 
     @property
-    def end_prt(self, status: str) -> None:
-        printbot.end_bot(status)
+    def elements(self) -> "ESAJ_AM | ELAW_AME | PJE_AM | PROJUDI_AM":
+        return self.elements_
+
+    @elements.setter
+    def elements(self, elements) -> None:
+        self.elements_ = elements
 
     @property
-    def prt(self) -> None:
-        printbot.print_msg()
+    def interact(self) -> Interact:
+        return self.interact_
 
     @property
     def isStoped(self) -> bool:
@@ -76,6 +86,7 @@ class CrawJUD(PropertiesCrawJUD):
             Exception: If any error occurs during the setup process, it logs the error and raises the exception.
         """
         self.row = 0
+
         try:
             with open(self.path_args, "rb") as f:
                 json_f: dict[str, str | int] = json.load(f)
@@ -85,6 +96,7 @@ class CrawJUD(PropertiesCrawJUD):
                 for key, value in json_f.items():
                     setattr(self, key, value)
 
+            self.elements = ElementsBot.init_elements(self)
             self.message = str("Inicializando robô")
             self.type_log = str("log")
             self.prt()
@@ -100,7 +112,6 @@ class CrawJUD(PropertiesCrawJUD):
                 "--disable-blink-features=AutomationControlled",
                 "--kiosk-printing",
             ]
-            self.system
             if self.name_cert:
 
                 self.install_cert()
@@ -185,3 +196,18 @@ class CrawJUD(PropertiesCrawJUD):
                 self.driver.quit()
 
             raise e
+
+    def __getattr__(self, name):
+
+        for obj in [
+            ElementsBot,
+            Interact,
+            mk_xlsx,
+            OtherUtils,
+            SearchBot,
+            DriverBot,
+            printbot,
+        ]:
+            item = getattr(obj, name)
+
+        return item

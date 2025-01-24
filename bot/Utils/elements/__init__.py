@@ -1,39 +1,45 @@
+from __future__ import annotations
 from importlib import import_module
-from typing import Union
+from typing import Self, Union
 
 from ...shared import PropertiesCrawJUD
-from .elaw import ELAW_AME
-from .esaj import ESAJ_AM
-from .pje import PJE_AM
-from .projudi import PROJUDI_AM
 
 
-class BaseElementsBot(PropertiesCrawJUD):
+class ElementsBot(PropertiesCrawJUD):
 
-    # system = ""
-    # state_or_client = ""
+    elements_bot = None
 
-    def __init__(self, *args, **kwrgs) -> None:
-        """### ElementsBot"""
+    def __init__(
+        self, elements_base: Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]
+    ) -> None:
+        self.elements_bot = elements_base
 
-        state_or_client = self.state_or_client
-
-        if " - " in state_or_client:
-            state_or_client = state_or_client.split(" - ")[0]
-
-        self.objeto: Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM] = getattr(
-            import_module(f".{self.system.lower()}", __package__),
-            f"{self.system.upper()}_{state_or_client.upper()}",
-        )
+    @classmethod
+    def init_elements(cls, self: Self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:
+        return ElementsBot(
+            getattr(
+                import_module(f".{self.system.lower()}", __package__),
+                f"{self.system.upper()}_{self.state_or_client.upper()}",
+            )
+        ).Elements
 
     @property
     def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:
-        """Retorna a configuração de acordo com o estado ou cliente."""
-
-        return self.objeto
+        return self.elements_bot
 
 
-class ElementsBot(BaseElementsBot):
+if __name__ == "__main__":
 
-    def __init__(self, *args, **kwrgs) -> None:
-        BaseElementsBot.__init__(self, *args, **kwrgs)
+    from .elaw import ELAW_AME
+    from .esaj import ESAJ_AM
+    from .pje import PJE_AM
+    from .projudi import PROJUDI_AM
+
+    # @property
+    # def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:
+    #     """Retorna a configuração de acordo com o estado ou cliente."""
+
+    #     return self.objeto
+
+
+ElementsBot.init_elements("").Elements
