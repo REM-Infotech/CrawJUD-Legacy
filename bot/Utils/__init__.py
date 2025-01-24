@@ -38,6 +38,9 @@ __all__ = [
 
 class OtherUtils(PropertiesCrawJUD):
 
+    prt = printbot.print_msg
+    end_prt = printbot.end_bot
+
     @property
     def nomes_colunas(self) -> List[str]:
 
