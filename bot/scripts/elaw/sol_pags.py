@@ -16,7 +16,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-
+from ...shared import PropertiesCrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -25,6 +25,11 @@ class sol_pags(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
+
+        PropertiesCrawJUD.kwrgs = kwrgs
+        for key, value in list(kwrgs.items()):
+            setattr(PropertiesCrawJUD, key, value)
+
         CrawJUD.setup()
         CrawJUD.auth_bot()
         self.start_time = time.perf_counter()

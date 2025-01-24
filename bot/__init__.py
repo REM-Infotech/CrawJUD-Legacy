@@ -1,11 +1,11 @@
 import signal
-import threading as th
 from importlib import import_module
 from pathlib import Path
 from time import sleep
 from typing import Callable, Dict, Tuple, Union
 
 import psutil
+from billiard.context import Process
 from celery import shared_task
 from celery.result import AsyncResult
 from flask import Flask
@@ -13,10 +13,10 @@ from flask import Flask
 process_type = Union[psutil.Process, None]
 
 
-class BotThread(th.Thread):
+class BotThread(Process):
 
     def join(self) -> None:
-        th.Thread.join(self)
+        Process.join(self)
         if self.exc_bot:
             raise self.exc_bot
 
@@ -46,13 +46,16 @@ class WorkerThread:
                     typebot,
                 ),
             )
-
             process.start()
             sleep(2)
             pid = Path(path_args).stem
 
             if not process.is_alive():
-                raise process.join()
+                try:
+                    raise process.join()
+
+                except Exception as e:
+                    raise e
 
             while process.is_alive():
 

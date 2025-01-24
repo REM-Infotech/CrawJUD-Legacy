@@ -18,7 +18,7 @@ from werkzeug.utils import secure_filename
 from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD
 from .auth import AuthBot
-from .Driver import SetupDriver
+from .Driver import DriverBot
 from .elements import ElementsBot
 from .interator import Interact
 from .MakeTemplate import MakeXlsx
@@ -30,7 +30,7 @@ __all__ = [
     MakeXlsx,
     ElementsBot,
     Interact,
-    SetupDriver,
+    DriverBot,
     SearchBot,
     printbot,
 ]

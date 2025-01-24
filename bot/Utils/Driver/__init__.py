@@ -7,7 +7,7 @@ import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 import requests
 from rich.console import Group
@@ -61,7 +61,9 @@ class DriverBot(PropertiesCrawJUD):
         self.list_args_ = new_Args
 
     @classmethod
-    def DriverLaunch(cls, message: str = "Inicializando WebDriver") -> WebDriver:
+    def DriverLaunch(
+        cls, message: str = "Inicializando WebDriver"
+    ) -> Tuple[WebDriver, WebDriverWait]:
 
         try:
             cls.message = message
@@ -159,14 +161,14 @@ class DriverBot(PropertiesCrawJUD):
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()
 
-            cls.driver = driver
-            cls.wait = wait
-
             cls.message = "WebDriver inicializado"
             cls.type_log = "log"
             cls.prt()
 
-            return driver
+            return (
+                driver,
+                wait,
+            )
 
         except Exception as e:
             raise e

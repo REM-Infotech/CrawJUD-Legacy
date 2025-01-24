@@ -10,12 +10,12 @@ from .appends import listas
 class MakeXlsx(PropertiesCrawJUD):
 
     @classmethod
-    def make_output(cls, path_template: str) -> List[str]:
+    def make_output(cls, type_xlsx: str, path_template: str) -> List[str]:
 
         lista_colunas: List[str] = getattr(
             listas,
-            f"{cls.system}_{cls.typebot}",
-            getattr(listas, cls.typebot, None),
+            f"{cls.typebot}_{type_xlsx}",
+            getattr(listas, cls.type_xlsx, None),
         )
         # Criar um novo workbook e uma planilha
         workbook = openpyxl.Workbook()

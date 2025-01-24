@@ -5,25 +5,17 @@ from pathlib import Path
 from pytz import timezone
 
 from ..shared import PropertiesCrawJUD
-from ..Utils import (
-    AuthBot,
-    ElementsBot,
-    Interact,
-    MakeXlsx,
-    OtherUtils,
-    SearchBot,
-    SetupDriver,
-    count_doc,
-    printbot,
-)
+from ..Utils import AuthBot, DriverBot, ElementsBot, Interact
+from ..Utils import MakeXlsx as mk_xlsx
+from ..Utils import OtherUtils, SearchBot, count_doc, printbot
 
 __all__ = [
     ElementsBot,
     Interact,
-    MakeXlsx,
+    mk_xlsx,
     OtherUtils,
     SearchBot,
-    SetupDriver,
+    DriverBot,
     count_doc,
     printbot,
 ]
@@ -33,6 +25,8 @@ class CrawJUD(PropertiesCrawJUD):
 
     interact = Interact
     search_bot = SearchBot
+    MakeXlsx = mk_xlsx
+    DriverLaunch = DriverBot.DriverLaunch
 
     @property
     def isStoped(self) -> bool:
@@ -114,10 +108,8 @@ class CrawJUD(PropertiesCrawJUD):
             namefile_erro = f"Erros - PID {cls.pid} {time_xlsx}.xlsx"
             cls.path_erro = f"{cls.output_dir_path}/{namefile_erro}"
 
-            cls.name_colunas = cls.MakeXlsx("sucesso", cls.typebot).make_output(
-                cls.path
-            )
-            cls.MakeXlsx("erro", cls.typebot).make_output(cls.path_erro)
+            cls.name_colunas = cls.MakeXlsx.make_output("sucesso", cls.path)
+            cls.MakeXlsx.make_output("erro", cls.path_erro)
 
             if not cls.xlsx:
 
@@ -125,7 +117,10 @@ class CrawJUD(PropertiesCrawJUD):
                 cls.data_fim = datetime.strptime(cls.data_fim, "%Y-%m-%d")
 
             cls.state_or_client = cls.state if cls.state is not None else cls.client
-            cls.DriverLaunch()
+            driver, wait = cls.DriverLaunch()
+
+            cls.driver = driver
+            cls.wait = wait
 
             cls.set_permissions_recursive(Path(cls.output_dir_path).parent.resolve())
 

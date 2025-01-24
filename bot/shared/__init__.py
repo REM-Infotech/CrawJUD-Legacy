@@ -49,6 +49,7 @@ class BasePropertiesCrawJUD:
     drv: Type[WebDriver] = ""
     wt: Type[WebDriverWait] = ""
     path_: Path = ""
+    state_: Type[str] = ""
 
     @property
     def path(self) -> Path:
@@ -220,6 +221,22 @@ class BasePropertiesCrawJUD:
     @property
     def OpenAI_client(self) -> OpenAI:
         return self.OpenAI_
+
+    @property
+    def typebot(self) -> Type[str]:
+        return self.type_bot
+
+    @typebot.setter
+    def typebot(self, type_bot: str) -> None:
+        self.type_bot = type_bot
+
+    @property
+    def state(self) -> Type[str]:
+        return self.state_
+
+    @state.setter
+    def state(self, state_: str) -> None:
+        self.state_ = state_
 
 
 class PropertiesCrawJUD(BasePropertiesCrawJUD):

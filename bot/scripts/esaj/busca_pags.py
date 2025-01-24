@@ -9,18 +9,24 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
+from ...shared import PropertiesCrawJUD
 
 
 class busca_pags(CrawJUD):
 
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
+
+        PropertiesCrawJUD.kwrgs = kwrgs
+        for key, value in list(kwrgs.items()):
+            setattr(PropertiesCrawJUD, key, value)
+
         CrawJUD.setup()
         CrawJUD.auth_bot()
+        self.start_time = time.perf_counter()
         self.datetimeNOW = datetime.now(pytz.timezone("America/Manaus")).strftime(
             "%d-%m-%Y"
         )
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
 
