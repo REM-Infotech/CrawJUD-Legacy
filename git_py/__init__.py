@@ -85,29 +85,32 @@ def update_servers(tag: str) -> None:  # pragma: no cover
 def checkout_release(tag: str) -> None:  # pragma: no cover
 
     load_dotenv()
-    values = environ
 
-    user_git = values.get("USER_GITHUB")
-    token_git = values.get("GITHUB_API_TOKEN")
-    repo_git = values.get("REPO_NAME")
+    if environ.get("DEBUG", "False").lower() == "False":
 
-    repo_remote = "".join(
-        ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
-    )
+        values = environ
+        user_git = values.get("USER_GITHUB")
+        token_git = values.get("GITHUB_API_TOKEN")
+        repo_git = values.get("REPO_NAME")
 
-    git_path = cwd_dir.joinpath(".git").exists()
-    if not git_path:
+        repo_remote = "".join(
+            ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
+        )
 
-        repo = Repo.init(Path(__file__).cwd())
-        origin = repo.create_remote("origin", repo_remote)
-        origin.fetch()
+        git_path = cwd_dir.joinpath(".git").exists()
+        if not git_path:
 
-    elif git_path:
-        repo = Repo(cwd_dir)
+            repo = Repo.init(Path(__file__).cwd())
+            origin = repo.create_remote("origin", repo_remote)
+            origin.fetch()
 
-    git = repo.git
-    git.fetch("--all", "--tags")
-    git.checkout(tag)
+        elif git_path:
+            repo = Repo(cwd_dir)
+
+        git = repo.git
+        git.fetch("--all", "--tags")
+
+        git.checkout(tag)
 
 
 def version_file() -> None:

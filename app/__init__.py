@@ -1,5 +1,6 @@
 # Python Imports
 import pathlib
+import platform
 from datetime import timedelta
 from os import getenv
 from pathlib import Path
@@ -20,10 +21,14 @@ mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
 
-io = SocketIO(async_mode="threading")
+async_mode = (
+    str("threading")
+    if (getenv("DOCKER_CONTEXT", None) is None or platform.system() == "Windows")
+    or (getenv("DEBUG", "False").lower() == "true")
+    else str("eventlet")
+)
 
-if getenv("DOCKER_CONTEXT", None):
-    io = SocketIO(async_mode="eventlet")
+io = SocketIO(async_mode=async_mode)
 app = None
 
 
