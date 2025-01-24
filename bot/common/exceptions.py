@@ -1,6 +1,10 @@
 from bot.common.selenium_excepts import exceptionsBot, webdriver_exepts
 
 
+class StartError(Exception):
+    """Exception raised for errors that occur during the start of the bot."""
+
+
 class CrawJUDExceptions(Exception):
 
     message_: str = None

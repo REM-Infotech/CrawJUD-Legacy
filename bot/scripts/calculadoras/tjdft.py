@@ -15,7 +15,6 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
-
 from ...core import CrawJUD
 from ...shared import PropertiesCrawJUD
 

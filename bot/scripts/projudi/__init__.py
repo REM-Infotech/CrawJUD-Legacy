@@ -1,27 +1,11 @@
 import logging
+import traceback
 from importlib import import_module
 
-from clear import clear
-
-# from typing import Union
-
-
-# from .capa import capa
-# from .movimentacao import movimentacao
-# from .proc_parte import proc_parte
-# from .protocolo import protocolo
-
-# Hints = Union[capa, protocolo, proc_parte, movimentacao]
+from ...common.exceptions import StartError
 
 
 class projudi:
-
-    # bots = {
-    #     "capa": capa,
-    #     "protocolo": protocolo,
-    #     "proc_parte": proc_parte,
-    #     "movimentacao": movimentacao,
-    # }
 
     def __init__(self, **kwrgs) -> None:
         self.kwrgs = kwrgs
@@ -31,8 +15,9 @@ class projudi:
             self.Bot.execution()
 
         except Exception as e:
-            clear()
+
             logging.error(f"Exception: {e}", exc_info=True)
+            raise StartError(traceback.format_exc())
 
     @property
     def Bot(self):

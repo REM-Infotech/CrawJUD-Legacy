@@ -16,7 +16,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 
 from ...common import ErroDeExecucao
-
 from ...core import CrawJUD
 from ...shared import PropertiesCrawJUD
 

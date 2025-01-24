@@ -1,5 +1,9 @@
+import logging
+import traceback
 from importlib import import_module
 from typing import Any
+
+from ...common import StartError
 
 
 class elaw:
@@ -12,7 +16,9 @@ class elaw:
             self.Bot.execution()
 
         except Exception as e:
-            raise e
+
+            logging.error(f"Exception: {e}", exc_info=True)
+            raise StartError(traceback.format_exc())
 
     @property
     def Bot(self) -> Any:

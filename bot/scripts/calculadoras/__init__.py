@@ -1,5 +1,9 @@
+import logging
+import traceback
+from importlib import import_module
 from typing import Union
 
+from ...common import StartError
 from .tjdft import tjdft
 
 Hints = Union[tjdft]
@@ -7,9 +11,7 @@ Hints = Union[tjdft]
 
 class calculadoras:
 
-    bots = {"tjdf": tjdft}
-
-    def __init__(self, **kwrgs):
+    def __init__(self, **kwrgs) -> None:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
@@ -17,12 +19,19 @@ class calculadoras:
             self.Bot.execution()
 
         except Exception as e:
-            raise e
+
+            logging.error(f"Exception: {e}", exc_info=True)
+            raise StartError(traceback.format_exc())
 
     @property
-    def Bot(self) -> Hints:
+    def Bot(self):
 
-        rb = self.bots.get(self.typebot)
+        rb = getattr(
+            import_module(f".{self.typebot.lower()}", __package__),
+            self.typebot.lower(),
+        )
+
+        # rb = self.bots.get(self.typebot)
         if not rb:
             raise AttributeError("Robô não encontrado!!")
 

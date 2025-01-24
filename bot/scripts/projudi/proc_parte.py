@@ -8,7 +8,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from urllib3.exceptions import MaxRetryError
 
 from ...common import ErroDeExecucao
-
 from ...core import CrawJUD
 from ...shared import PropertiesCrawJUD
 

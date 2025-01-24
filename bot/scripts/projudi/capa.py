@@ -8,7 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from ...common import ErroDeExecucao
-
 from ...core import CrawJUD
 from ...shared import PropertiesCrawJUD
 

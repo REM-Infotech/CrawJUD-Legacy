@@ -1,3 +1,3 @@
-from .exceptions import ErroDeExecucao, ItemNaoEcontrado
+from .exceptions import ErroDeExecucao, ItemNaoEcontrado, StartError
 
-__all__ = ["ErroDeExecucao", "ItemNaoEcontrado"]
+__all__ = ["ErroDeExecucao", "ItemNaoEcontrado", "StartError"]

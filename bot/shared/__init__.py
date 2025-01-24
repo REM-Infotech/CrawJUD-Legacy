@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 import os
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
-import time
 from typing import Dict, Union
-from pandas import Timestamp
-from dotenv import load_dotenv
 
 # from memory_profiler import profile
 import pandas as pd
+from dotenv import load_dotenv
+from pandas import Timestamp
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 

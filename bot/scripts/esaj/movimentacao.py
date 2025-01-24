@@ -8,7 +8,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 
 from ...common import ErroDeExecucao
-
 from ...core import CrawJUD
 from ...shared import PropertiesCrawJUD
 

@@ -12,6 +12,26 @@ from flask import Flask
 process_type = Union[psutil.Process, None]
 
 
+class BotThread(th.Thread):
+
+    def join(self):
+        th.Thread.join(self)
+        # Since join() returns in caller thread
+        # we re-raise the caught exception
+        # if any was caught
+        if self.exc_bot:
+            raise self.exc_bot
+
+    def run(self):
+
+        self.exc_bot: Exception = None
+
+        try:
+            self._target(*self._args, **self._kwargs)
+        except Exception as e:
+            self.exc_bot = e
+
+
 class WorkerThread:
 
     @staticmethod
@@ -19,7 +39,7 @@ class WorkerThread:
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
 
         try:
-            process = th.Thread(
+            process = BotThread(
                 target=WorkerThread,
                 args=(
                     path_args,
@@ -27,12 +47,14 @@ class WorkerThread:
                     system,
                     typebot,
                 ),
-                daemon=False,
             )
 
             process.start()
 
             pid = Path(path_args).stem
+
+            if not process.is_alive():
+                raise process.join()
 
             while process.is_alive():
 
@@ -52,14 +74,20 @@ class WorkerThread:
                         f.write("Encerrar processo")
                     break
 
-            return "Finalizado!"
-
         except Exception as e:
             raise e
 
+        return str("Finalizado!")
+
     # argv: str = None, botname: str = None
     def __init__(
-        self, path_args: str, display_name: str, system: str, typebot: str
+        self,
+        path_args: str,
+        display_name: str,
+        system: str,
+        typebot: str,
+        *args,
+        **kwrgs,
     ):  # pragma: no cover
         try:
             bot_: Callable[[], None] = getattr(
@@ -67,7 +95,7 @@ class WorkerThread:
                 system,
             )
 
-            bot_(**self.kwrgs)
+            bot_(**kwrgs)
 
         except Exception as e:
             raise e

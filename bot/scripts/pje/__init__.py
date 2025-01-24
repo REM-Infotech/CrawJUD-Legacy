@@ -1,15 +1,13 @@
-from typing import Union
+import logging
+import traceback
+from importlib import import_module
+
+from .common import StartError
 
 
 class pje:
 
-    from ..pje.pauta import pauta
-
-    Hints = Union[pauta]
-
-    bots = {"pauta": pauta}
-
-    def __init__(self, **kwrgs):
+    def __init__(self, **kwrgs) -> None:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
@@ -17,12 +15,19 @@ class pje:
             self.Bot.execution()
 
         except Exception as e:
-            raise e
+
+            logging.error(f"Exception: {e}", exc_info=True)
+            raise StartError(traceback.format_exc())
 
     @property
-    def Bot(self) -> Hints:
+    def Bot(self):
 
-        rb = self.bots.get(self.typebot)
+        rb = getattr(
+            import_module(f".{self.typebot.lower()}", __package__),
+            self.typebot.lower(),
+        )
+
+        # rb = self.bots.get(self.typebot)
         if not rb:
             raise AttributeError("Robô não encontrado!!")
 

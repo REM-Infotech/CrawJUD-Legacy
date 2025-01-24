@@ -11,13 +11,12 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 
 from ...common import ErroDeExecucao
-
 from ...core import CrawJUD
 from ...shared import PropertiesCrawJUD
 from ...Utils.count_doc import count_doc
 
 
-class emissao(PropertiesCrawJUD):
+class emissor(PropertiesCrawJUD):
 
     def __init__(self, **kwrgs) -> None:
         super().__init__(**kwrgs)
