@@ -60,21 +60,20 @@ class DriverBot(PropertiesCrawJUD):
     def list_args(self, new_Args: list[str]) -> None:
         self.list_args_ = new_Args
 
-    @classmethod
     def DriverLaunch(
-        cls, message: str = "Inicializando WebDriver"
+        self, message: str = "Inicializando WebDriver"
     ) -> Tuple[WebDriver, WebDriverWait]:
 
         try:
-            cls.message = message
-            cls.type_log = "log"
-            cls.prt()
+            self.message = message
+            self.type_log = "log"
+            self.prt()
 
-            list_args = cls.list_args
+            list_args = self.list_args
 
             chrome_options = Options()
-            cls.chr_dir = str(
-                os.path.join(Path(__file__).cwd(), "exec", cls.pid, "chrome")
+            self.chr_dir = str(
+                os.path.join(Path(__file__).cwd(), "exec", self.pid, "chrome")
             )
 
             user = os.environ.get(
@@ -83,30 +82,30 @@ class DriverBot(PropertiesCrawJUD):
             if user != "root" or platform.system() != "Linux":
                 list_args.remove("--no-sandbox")
 
-            if platform.system() == "Windows" and cls.login_method == "cert":
-                state = str(cls.state)
-                cls.path_accepted = str(
+            if platform.system() == "Windows" and self.login_method == "cert":
+                state = str(self.state)
+                self.path_accepted = str(
                     os.path.join(
                         Path(__file__).cwd(),
                         "Browser",
                         state,
-                        cls.username,
+                        self.username,
                         "chrome",
                     )
                 )
-                path_exist = os.path.exists(cls.path_accepted)
+                path_exist = os.path.exists(self.path_accepted)
                 if path_exist:
 
-                    for root, dirs, files in os.walk(cls.path_accepted):
+                    for root, dirs, files in os.walk(self.path_accepted):
                         try:
-                            shutil.copytree(root, cls.chr_dir)
+                            shutil.copytree(root, self.chr_dir)
                         except Exception as e:
                             print(e)
 
                 elif not path_exist:
-                    os.makedirs(cls.path_accepted, exist_ok=True, mode=0o775)
+                    os.makedirs(self.path_accepted, exist_ok=True, mode=0o775)
 
-            chrome_options.add_argument(f"user-data-dir={cls.chr_dir}")
+            chrome_options.add_argument(f"user-data-dir={self.chr_dir}")
             for argument in list_args:
                 chrome_options.add_argument(argument)
 
@@ -123,16 +122,16 @@ class DriverBot(PropertiesCrawJUD):
                 "plugins.always_open_pdf_externally": True,
                 "profile.default_content_settings.popups": 0,
                 "printing.print_preview_sticky_settings.appState": json.dumps(
-                    cls.settings
+                    self.settings
                 ),
                 "download.default_directory": "{}".format(
-                    os.path.join(cls.output_dir_path)
+                    os.path.join(self.output_dir_path)
                 ),
             }
 
             path_chrome = None
             chrome_options.add_experimental_option("prefs", chrome_prefs)
-            pid_path = Path(cls.path_args).parent.resolve()
+            pid_path = Path(self.path_args).parent.resolve()
             getdriver = SetupDriver(destination=pid_path)
 
             abs_pidpath = Path(pid_path).absolute()
@@ -161,9 +160,9 @@ class DriverBot(PropertiesCrawJUD):
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()
 
-            cls.message = "WebDriver inicializado"
-            cls.type_log = "log"
-            cls.prt()
+            self.message = "WebDriver inicializado"
+            self.type_log = "log"
+            self.prt()
 
             return (
                 driver,

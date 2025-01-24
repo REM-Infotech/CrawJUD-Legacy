@@ -20,53 +20,52 @@ iobot = SocketBot()
 
 class printbot(PropertiesCrawJUD):
 
-    @classmethod
-    def print_msg(cls) -> None:
+    def print_msg(self) -> None:
 
-        log = cls.message
-        if cls.message_error:
-            log = cls.message_error
-            cls.message_error = None
+        log = self.message
+        if self.message_error:
+            log = self.message_error
+            self.message_error = None
 
-        cls.prompt = "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-            pid=cls.pid,
-            type_log=cls.type_log,
-            row=cls.row,
+        self.prompt = "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
+            pid=self.pid,
+            type_log=self.type_log,
+            row=self.row,
             dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"),
             log=log,
         )
-        tqdm.write(cls.prompt)
+        tqdm.write(self.prompt)
 
         data: dict[str, str | int] = {
-            "message": cls.prompt,
-            "pid": cls.pid,
-            "type": cls.type_log,
-            "pos": cls.row,
-            "graphicMode": cls.graphicMode,
-            "total": cls.kwrgs.get("total_rows", 0),
+            "message": self.prompt,
+            "pid": self.pid,
+            "type": self.type_log,
+            "pos": self.row,
+            "graphicMode": self.graphicMode,
+            "total": self.kwrgs.get("total_rows", 0),
         }
 
-        cls().socket_message(data)
-        mensagens.append(cls.prompt)
+        self.socket_message(data)
+        mensagens.append(self.prompt)
 
-        cls.list_messages = mensagens
-        if "fim da execução" in cls.message.lower():
+        self.list_messages = mensagens
+        if "fim da execução" in self.message.lower():
             sleep(1)
-            cls.file_log()
+            self.file_log()
 
-    def file_log(cls) -> None:
+    def file_log(self) -> None:
 
         try:
             savelog = os.path.join(
                 pathlib.Path(__file__).cwd(),
                 "exec",
-                cls.pid,
-                f"LogFile - PID {cls.pid}.txt",
+                self.pid,
+                f"LogFile - PID {self.pid}.txt",
             )
             with open(savelog, "a") as f:
-                for mensagem in cls.list_messages:
+                for mensagem in self.list_messages:
 
-                    if cls.pid in mensagem:
+                    if self.pid in mensagem:
                         f.write(f"{mensagem}\n")
                 pass
 
@@ -80,23 +79,22 @@ class printbot(PropertiesCrawJUD):
             # Exibe o erro
             tqdm.write(f"{e}")
 
-    def end_bot(cls, status: str) -> None:
+    def end_bot(self, status: str) -> None:
 
-        data = {"pid": cls.pid, "status": status}
+        data = {"pid": self.pid, "status": status}
 
         iobot.end_message(data, url_socket)
 
-    @classmethod
-    def socket_message(cls, data: dict) -> None:
+    def socket_message(self, data: dict) -> None:
 
-        chk_type1 = "fim da execução" in cls.prompt
-        chk_type2 = "falha ao iniciar" in cls.prompt
+        chk_type1 = "fim da execução" in self.prompt
+        chk_type2 = "falha ao iniciar" in self.prompt
         message_stop = [chk_type1, chk_type2]
 
         try:
 
             if any(message_stop):
-                data.update({"system": cls.system, "typebot": cls.typebot})
+                data.update({"system": self.system, "typebot": self.typebot})
 
             iobot.send_message(data, url_socket)
 

@@ -17,8 +17,7 @@ from ..shared import PropertiesCrawJUD
 
 class Interact(PropertiesCrawJUD):
 
-    @classmethod
-    def send_key(cls, element: WebElement, word: any) -> None:
+    def send_key(self, element: WebElement, word: any) -> None:
 
         send = None
         for key in dir(Keys):
@@ -34,27 +33,24 @@ class Interact(PropertiesCrawJUD):
                 sleep(0.001)
                 element.send_keys(c)
 
-    @classmethod
-    def click(cls, element: WebElement) -> None:
+    def click(self, element: WebElement) -> None:
 
         sleep(0.05)
         element.click()
         sleep(0.05)
 
-    @classmethod
-    def double_click(cls, element: WebDriver) -> None:
+    def double_click(self, element: WebDriver) -> None:
 
-        Action = ActionChains(cls.driver)
+        Action = ActionChains(self.driver)
         Action.double_click(element).perform()
 
-    @classmethod
-    def select_item(cls, elemento: str, text: str) -> bool | Exception:
+    def select_item(self, elemento: str, text: str) -> bool | Exception:
 
-        itens: WebElement = cls.wait.until(
+        itens: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elemento))
         )
 
-        cls.diplay_none(itens)
+        self.diplay_none(itens)
         sleep(0.5)
 
         if not text.isupper():
@@ -77,28 +73,26 @@ class Interact(PropertiesCrawJUD):
         if not item:
             raise ItemNaoEcontrado(message=f'Item "{text}" não encontrado!')
 
-        Action = ActionChains(cls.driver)
+        Action = ActionChains(self.driver)
         Action.double_click(item).perform()
 
         return True
 
-    @classmethod
-    def clear(cls, element: WebElement) -> None:
+    def clear(self, element: WebElement) -> None:
 
         element.click()
         sleep(0.5)
         element.clear()
         sleep(1)
 
-    @classmethod
-    def sleep_load(cls, element: str = 'div[id="j_id_3x"]') -> None:
+    def sleep_load(self, element: str = 'div[id="j_id_3x"]') -> None:
 
         while True:
             sleep(0.5)
             load = None
             aria_value = None
             with suppress(TimeoutException):
-                load: WebElement = WebDriverWait(cls.driver, 5).until(
+                load: WebElement = WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, element))
                 )
 
@@ -125,8 +119,7 @@ class Interact(PropertiesCrawJUD):
             if not load:
                 break
 
-    @classmethod
-    def diplay_none(cls, elemento: WebElement):
+    def diplay_none(self, elemento: WebElement):
 
         while True:
 
@@ -136,14 +129,13 @@ class Interact(PropertiesCrawJUD):
                 sleep(0.01)
                 break
 
-    @classmethod
-    def wait_caixa(cls) -> None:
+    def wait_caixa(self) -> None:
 
         while True:
 
             check_wait = None
             with suppress(NoSuchElementException):
-                check_wait = cls.driver.find_element(
+                check_wait = self.driver.find_element(
                     By.CSS_SELECTOR,
                     'div[id="modal:waitContainer"][style="position: absolute; z-index: 100; background-color: inherit; display: none;"]',
                 )
@@ -151,8 +143,7 @@ class Interact(PropertiesCrawJUD):
             if check_wait:
                 break
 
-    @classmethod
-    def wait_fileupload(cls) -> None:
+    def wait_fileupload(self) -> None:
 
         while True:
 
@@ -162,7 +153,7 @@ class Interact(PropertiesCrawJUD):
             div0 = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile"]'
             progress_bar = None
 
-            div0progress_bar = cls.driver.find_element(By.CSS_SELECTOR, div0)
+            div0progress_bar = self.driver.find_element(By.CSS_SELECTOR, div0)
             div1progress_bar = div0progress_bar.find_element(By.CSS_SELECTOR, div1)
 
             with suppress(NoSuchElementException):
@@ -171,17 +162,15 @@ class Interact(PropertiesCrawJUD):
             if progress_bar is None:
                 break
 
-    @classmethod
-    def scroll_to(cls, element: WebElement):
+    def scroll_to(self, element: WebElement):
 
-        Action = ActionChains(cls.driver)
+        Action = ActionChains(self.driver)
         Action.scroll_to_element(element)
         sleep(0.5)
 
-    @classmethod
-    def Select2_ELAW(cls, elementSelect: str, to_Search: str) -> None:
+    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
 
-        selector: WebElement = cls.wait.until(
+        selector: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect))
         )
 
@@ -196,7 +185,7 @@ class Interact(PropertiesCrawJUD):
 
             value_item = item.get_attribute("value")
             cms = f"{elementsSelecting} > option[value='{value_item}']"
-            text_item = cls.driver.execute_script(f'return $("{cms}").text();')
+            text_item = self.driver.execute_script(f'return $("{cms}").text();')
 
             opt_itens.update({text_item.upper(): value_item})
 
@@ -211,5 +200,5 @@ class Interact(PropertiesCrawJUD):
                 command = f"$(\"{elementSelect}\").val(['{value_opt}']);"
                 command2 = f"$(\"{elementSelect}\").trigger('change');"
 
-            cls.driver.execute_script(command)
-            cls.driver.execute_script(command2)
+            self.driver.execute_script(command)
+            self.driver.execute_script(command2)

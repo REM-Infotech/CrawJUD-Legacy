@@ -257,8 +257,7 @@ class OtherUtils(PropertiesCrawJUD):
             "Urucurituba": "Interior",
         }
 
-    @classmethod
-    def dataFrame(cls) -> list[dict[str, str]]:
+    def dataFrame(self) -> list[dict[str, str]]:
         """
         Converts an Excel file to a list of dictionaries with formatted data.
         This method reads an Excel file specified by the instance's path arguments,
@@ -272,7 +271,7 @@ class OtherUtils(PropertiesCrawJUD):
             ValueError: If there is an issue reading the Excel file.
         """
 
-        input_file = Path(cls.path_args).joinpath(cls.xlsx).resolve()
+        input_file = Path(self.path_args).joinpath(self.xlsx).resolve()
 
         df = pd.read_excel(input_file)
         df.columns = df.columns.str.upper()
@@ -301,8 +300,7 @@ class OtherUtils(PropertiesCrawJUD):
 
         return vars_df
 
-    @classmethod
-    def elawFormats(cls, data: dict[str, str]) -> dict[str, str]:
+    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
         """
         Formats the given data dictionary according to specific rules.
         Args:
@@ -329,7 +327,7 @@ class OtherUtils(PropertiesCrawJUD):
                     data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
 
             elif key.upper() == "COMARCA":
-                set_locale = cls.cities_Amazonas().get(value, None)
+                set_locale = self.cities_Amazonas.get(value, None)
                 if not set_locale:
                     set_locale = "Outro Estado"
 
@@ -346,8 +344,7 @@ class OtherUtils(PropertiesCrawJUD):
 
         return data
 
-    @classmethod
-    def calc_time(cls) -> list:
+    def calc_time(self) -> list:
         """
         Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
         Returns:
@@ -357,7 +354,7 @@ class OtherUtils(PropertiesCrawJUD):
         """
 
         end_time = time.perf_counter()
-        execution_time = end_time - cls.start_time
+        execution_time = end_time - self.start_time
         calc = execution_time / 60
         splitcalc = str(calc).split(".")
         minutes = int(splitcalc[0])
@@ -365,42 +362,40 @@ class OtherUtils(PropertiesCrawJUD):
 
         return [minutes, seconds]
 
-    @classmethod
-    def append_moves(cls) -> None:
+    def append_moves(self) -> None:
         """
         Appends movements to the spreadsheet if there are any movements to append.
-        This method checks if there are any movements stored in the `cls.appends` list.
-        If there are, it iterates over each movement and calls the `cls.append_success`
+        This method checks if there are any movements stored in the `self.appends` list.
+        If there are, it iterates over each movement and calls the `self.append_success`
         method to save the movement to the spreadsheet with a success message.
         Raises:
-            ErroDeExecucao: If no movements are found in the `cls.appends` list.
+            ErroDeExecucao: If no movements are found in the `self.appends` list.
         """
 
-        if len(cls.appends) > 0:
+        if len(self.appends) > 0:
 
-            for append in cls.appends:
+            for append in self.appends:
 
-                cls.append_success(
+                self.append_success(
                     append, "Movimentação salva na planilha com sucesso!!"
                 )
 
-        elif len(cls.appends) == 0:
+        elif len(self.appends) == 0:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    @classmethod
-    def append_success(cls, data, message: str = None, fileN: str = None) -> None:
+    def append_success(self, data, message: str = None, fileN: str = None) -> None:
 
         if not message:
             message = "Execução do processo efetuada com sucesso!"
 
         def save_info(data: list[dict[str, str]]):
 
-            output_success = cls.path
+            output_success = self.path
 
             chk_not_path = output_success is None
 
             if fileN is not None or chk_not_path:
-                output_success = Path(cls.path).parent.resolve().joinpath(fileN)
+                output_success = Path(self.path).parent.resolve().joinpath(fileN)
 
             if not output_success.exists():
                 df = pd.DataFrame(data)
@@ -421,7 +416,7 @@ class OtherUtils(PropertiesCrawJUD):
 
             data2 = {}
 
-            for item in cls().nomes_colunas:
+            for item in self().nomes_colunas:
                 data2.update({item: ""})
 
             for item in data:
@@ -436,14 +431,13 @@ class OtherUtils(PropertiesCrawJUD):
         save_info(data)
 
         if message:
-            if cls.type_log == "log":
-                cls.type_log = "success"
+            if self.type_log == "log":
+                self.type_log = "success"
 
-            cls.message = message
-            cls.prt()
+            self.message = message
+            self.prt()
 
-    @classmethod
-    def count_doc(cls, doc: str) -> str | None:
+    def count_doc(self, doc: str) -> str | None:
 
         tipo_doc = None
         numero = "".join(filter(str.isdigit, doc))
@@ -456,11 +450,10 @@ class OtherUtils(PropertiesCrawJUD):
 
         return tipo_doc
 
-    @classmethod
-    def append_validarcampos(cls, data: List[Dict[str, str]]) -> None:
+    def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
 
-        nomeplanilha = f"CAMPOS VALIDADOS PID {cls.pid}.xlsx"
-        planilha_validar = Path(cls.path).parent.resolve().joinpath(nomeplanilha)
+        nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
+        planilha_validar = Path(self.path).parent.resolve().joinpath(nomeplanilha)
         if not os.path.exists(planilha_validar):
             df = pd.DataFrame(data)
             df = df.to_dict(orient="records")
@@ -473,23 +466,21 @@ class OtherUtils(PropertiesCrawJUD):
         new_data = pd.DataFrame(df)
         new_data.to_excel(planilha_validar, index=False)
 
-    @classmethod
-    def append_error(cls, data: dict[str, str] = None) -> None:
+    def append_error(self, data: dict[str, str] = None) -> None:
 
-        if not os.path.exists(cls.path_erro):
+        if not os.path.exists(self.path_erro):
             df = pd.DataFrame(data)
             df = df.to_dict(orient="records")
 
-        elif os.path.exists(cls.path_erro):
-            df = pd.read_excel(cls.path_erro)
+        elif os.path.exists(self.path_erro):
+            df = pd.read_excel(self.path_erro)
             df = df.to_dict(orient="records")
             df.extend([data])
 
         new_data = pd.DataFrame(df)
-        new_data.to_excel(cls.path_erro, index=False)
+        new_data.to_excel(self.path_erro, index=False)
 
-    @classmethod
-    def get_recent(cls, folder: str) -> str | None:
+    def get_recent(self, folder: str) -> str | None:
         files = [os.path.join(folder, f) for f in os.listdir(folder)]
         files = [f for f in files if os.path.isfile(f)]
         files = list(
@@ -501,8 +492,7 @@ class OtherUtils(PropertiesCrawJUD):
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
 
-    @classmethod
-    def format_String(cls, string: str) -> str:
+    def format_String(self, string: str) -> str:
 
         return secure_filename(
             "".join(
@@ -514,11 +504,10 @@ class OtherUtils(PropertiesCrawJUD):
             )
         )
 
-    @classmethod
-    def normalizar_nome(cls, word: str):
+    def normalizar_nome(self, word: str):
         """
 
-        ### (function) def normalizar_nome(cls, word: str) -> str
+        ### (function) def normalizar_nome(self, word: str) -> str
 
         Função para normalizar os nomes (removendo caracteres especiais)
         Remove espaços, substitui "_" e "-" por nada, e converte para minúsculas
@@ -532,8 +521,7 @@ class OtherUtils(PropertiesCrawJUD):
         #
         return re.sub(r"[\s_\-]", "", word).lower()
 
-    @classmethod
-    def similaridade(cls, word1: str, word2: str) -> float:
+    def similaridade(self, word1: str, word2: str) -> float:
         """
         ### similaridade
 
@@ -549,43 +537,41 @@ class OtherUtils(PropertiesCrawJUD):
         """
         return SequenceMatcher(None, word1, word2).ratio()
 
-    @classmethod
-    def finalize_execution(cls) -> None:
+    def finalize_execution(self) -> None:
 
-        window_handles = cls.driver.window_handles
-        cls.row = cls.row + 1
+        window_handles = self.driver.window_handles
+        self.row = self.row + 1
         if len(window_handles) > 0:
 
-            cls.driver.delete_all_cookies()
-            cls.driver.quit()
+            self.driver.delete_all_cookies()
+            self.driver.quit()
 
         end_time = time.perf_counter()
-        execution_time = end_time - cls.start_time
+        execution_time = end_time - self.start_time
         calc = execution_time / 60
         minutes = int(calc)
         seconds = int((calc - minutes) * 60)
 
-        cls.end_prt("Finalizado")
+        self.end_prt("Finalizado")
 
-        cls.type_log = "success"
-        cls.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
-        cls.prt()
+        self.type_log = "success"
+        self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
+        self.prt()
 
-    @classmethod
-    def install_cert(cls) -> None:
+    def install_cert(self) -> None:
 
-        installed = cls.CertIsInstall(cls.name_cert.split(".pfx")[0])
+        installed = self.CertIsInstall(self.name_cert.split(".pfx")[0])
 
         if installed is False:
 
-            path_cert = str(os.path.join(cls.output_dir_path, cls.name_cert))
+            path_cert = str(os.path.join(self.output_dir_path, self.name_cert))
             comando = [
                 "certutil",
                 "-importpfx",
                 "-user",
                 "-f",
                 "-p",
-                cls.token,
+                self.token,
                 "-silent",
                 path_cert,
             ]
@@ -599,15 +585,14 @@ class OtherUtils(PropertiesCrawJUD):
                     stderr=subprocess.PIPE,
                 )
 
-                cls.message = str(resultado.stdout)
-                cls.type_log = str("log")
-                cls.prt()
+                self.message = str(resultado.stdout)
+                self.type_log = str("log")
+                self.prt()
 
             except subprocess.CalledProcessError as e:
                 raise e
 
-    @classmethod
-    def CertIsInstall(cls, crt_sbj_nm: str, store: str = "MY") -> bool:
+    def CertIsInstall(self, crt_sbj_nm: str, store: str = "MY") -> bool:
         """
         Verifica se um certificado PFX específico está instalado no repositório 'MY'.
 
@@ -633,8 +618,7 @@ class OtherUtils(PropertiesCrawJUD):
 
         return False
 
-    @classmethod
-    def group_date_all(cls, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
+    def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
 
         records = []
         for vara, dates in data.items():
@@ -648,8 +632,7 @@ class OtherUtils(PropertiesCrawJUD):
 
         return records
 
-    @classmethod
-    def group_keys(cls, data: list[dict[str, str]]) -> dict[str, str]:
+    def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
 
         record = {}
         for pos, entry in enumerate(data):
@@ -661,13 +644,12 @@ class OtherUtils(PropertiesCrawJUD):
                 record.get(key).update({str(pos): value})
         return record
 
-    @classmethod
-    def gpt_chat(cls, text_mov: str) -> str:
+    def gpt_chat(self, text_mov: str) -> str:
 
         try:
 
             time.sleep(5)
-            client = cls.OpenAI_client
+            client = self.OpenAI_client
             completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
@@ -727,8 +709,7 @@ class OtherUtils(PropertiesCrawJUD):
             print(e)
             raise e
 
-    @classmethod
-    def text_is_a_date(cls, text: str) -> bool:
+    def text_is_a_date(self, text: str) -> bool:
 
         # Regex para verificar se o texto pode ser uma data (opcional)
         date_like_pattern = (

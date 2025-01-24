@@ -26,22 +26,14 @@ class CrawJUD(PropertiesCrawJUD):
     search_bot = SearchBot
     MakeXlsx = mk_xlsx
     DriverLaunch = DriverBot.DriverLaunch
-    end_prt = printbot.end_bot
-    prt = printbot.print_msg
 
-    # @classmethod
-    # def end_prt(self, status: str) -> None:
+    @property
+    def end_prt(self, status: str) -> None:
+        printbot.end_bot(status)
 
-    #     graphic = self.graphicMode_
-    #     self.graphicMode = graphic
-    #     printbot.end_bot(status)
-
-    # @classmethod
-    # def prt(self) -> None:
-
-    #     graphic = self.graphicMode_
-    #     self.graphicMode = graphic
-    #     printbot.print_msg()
+    @property
+    def prt(self) -> None:
+        printbot.print_msg()
 
     @property
     def isStoped(self) -> bool:
