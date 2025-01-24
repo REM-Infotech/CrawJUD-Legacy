@@ -7,7 +7,7 @@ from pytz import timezone
 from ..shared import PropertiesCrawJUD
 from ..Utils import AuthBot, DriverBot, ElementsBot, Interact
 from ..Utils import MakeXlsx as mk_xlsx
-from ..Utils import OtherUtils, SearchBot, count_doc, printbot
+from ..Utils import OtherUtils, SearchBot, printbot
 
 __all__ = [
     ElementsBot,
@@ -16,7 +16,6 @@ __all__ = [
     OtherUtils,
     SearchBot,
     DriverBot,
-    count_doc,
     printbot,
 ]
 
@@ -27,6 +26,22 @@ class CrawJUD(PropertiesCrawJUD):
     search_bot = SearchBot
     MakeXlsx = mk_xlsx
     DriverLaunch = DriverBot.DriverLaunch
+    end_prt = printbot.end_bot
+    prt = printbot.print_msg
+
+    # @classmethod
+    # def end_prt(self, status: str) -> None:
+
+    #     graphic = self.graphicMode_
+    #     self.graphicMode = graphic
+    #     printbot.end_bot(status)
+
+    # @classmethod
+    # def prt(self) -> None:
+
+    #     graphic = self.graphicMode_
+    #     self.graphicMode = graphic
+    #     printbot.print_msg()
 
     @property
     def isStoped(self) -> bool:
@@ -40,8 +55,7 @@ class CrawJUD(PropertiesCrawJUD):
         "version": 2,
     }
 
-    @classmethod
-    def set_permissions_recursive(path: Path, permissions: int = 0o775) -> None:
+    def set_permissions_recursive(self, path: Path, permissions: int = 0o775) -> None:
         # Converte o caminho para um objeto Path, caso ainda não seja
         path = Path(path)
 
@@ -52,41 +66,40 @@ class CrawJUD(PropertiesCrawJUD):
         for item in path.rglob("*"):  # rglob percorre recursivamente
             item.chmod(permissions)
 
-    @classmethod
-    def setup(cls) -> None:
+    def setup(self) -> None:
         """
         Sets up the bot by loading configuration from a JSON file, initializing various attributes,
         and preparing the environment for the bot to run.
         This method performs the following steps:
-        1. Loads configuration from a JSON file specified by `cls.path_args`.
+        1. Loads configuration from a JSON file specified by `self.path_args`.
         2. Sets attributes based on the loaded configuration.
         3. Initializes logging and output directory paths.
         4. Prepares a list of arguments for the system.
-        5. Installs certificates if `cls.name_cert` is specified.
+        5. Installs certificates if `self.name_cert` is specified.
         6. Creates Excel files for logging successes and errors.
-        7. Parses date strings into datetime objects if `cls.xlsx` is not specified.
+        7. Parses date strings into datetime objects if `self.xlsx` is not specified.
         8. Sets the state or client attribute.
         9. Launches the driver.
         Raises:
             Exception: If any error occurs during the setup process, it logs the error and raises the exception.
         """
-
+        self.row = 0
         try:
-            with open(cls.path_args, "rb") as f:
+            with open(self.path_args, "rb") as f:
                 json_f: dict[str, str | int] = json.load(f)
 
-                cls.kwrgs = json_f
+                self.kwrgs = json_f
 
                 for key, value in json_f.items():
-                    setattr(cls, key, value)
+                    setattr(self, key, value)
 
-            cls.message = str("Inicializando robô")
-            cls.type_log = str("log")
-            cls.prt()
+            self.message = str("Inicializando robô")
+            self.type_log = str("log")
+            self.prt()
 
-            cls.output_dir_path = Path(cls.path_args).parent.resolve().__str__()
+            self.output_dir_path = Path(self.path_args).parent.resolve().__str__()
             # time.sleep(10)
-            cls.list_args = [
+            self.list_args = [
                 "--ignore-ssl-errors=yes",
                 "--ignore-certificate-errors",
                 "--display=:99",
@@ -95,50 +108,49 @@ class CrawJUD(PropertiesCrawJUD):
                 "--disable-blink-features=AutomationControlled",
                 "--kiosk-printing",
             ]
-            cls.system
-            if cls.name_cert:
+            self.system
+            if self.name_cert:
 
-                cls.install_cert()
+                self.install_cert()
 
             time_xlsx = datetime.now(timezone("America/Manaus")).strftime("%d-%m-%y")
 
-            namefile = f"Sucessos - PID {cls.pid} {time_xlsx}.xlsx"
-            cls.path = f"{cls.output_dir_path}/{namefile}"
+            namefile = f"Sucessos - PID {self.pid} {time_xlsx}.xlsx"
+            self.path = f"{self.output_dir_path}/{namefile}"
 
-            namefile_erro = f"Erros - PID {cls.pid} {time_xlsx}.xlsx"
-            cls.path_erro = f"{cls.output_dir_path}/{namefile_erro}"
+            namefile_erro = f"Erros - PID {self.pid} {time_xlsx}.xlsx"
+            self.path_erro = f"{self.output_dir_path}/{namefile_erro}"
 
-            cls.name_colunas = cls.MakeXlsx.make_output("sucesso", cls.path)
-            cls.MakeXlsx.make_output("erro", cls.path_erro)
+            self.name_colunas = self.MakeXlsx.make_output("sucesso", self.path)
+            self.MakeXlsx.make_output("erro", self.path_erro)
 
-            if not cls.xlsx:
+            if not self.xlsx:
 
-                cls.data_inicio = datetime.strptime(cls.data_inicio, "%Y-%m-%d")
-                cls.data_fim = datetime.strptime(cls.data_fim, "%Y-%m-%d")
+                self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
+                self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
-            cls.state_or_client = cls.state if cls.state is not None else cls.client
-            driver, wait = cls.DriverLaunch()
+            self.state_or_client = self.state if self.state is not None else self.client
+            driver, wait = self.DriverLaunch()
 
-            cls.driver = driver
-            cls.wait = wait
+            self.driver = driver
+            self.wait = wait
 
-            cls.set_permissions_recursive(Path(cls.output_dir_path).parent.resolve())
+            self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:
 
-            cls.row = 0
-            cls.message = "Falha ao iniciar"
-            cls.type_log = "error"
-            cls.prt()
-            cls.end_prt("Falha ao iniciar")
+            self.row = 0
+            self.message = "Falha ao iniciar"
+            self.type_log = "error"
+            self.prt()
+            self.end_prt("Falha ao iniciar")
 
-            if cls.driver:
-                cls.driver.quit()
+            if self.driver:
+                self.driver.quit()
 
             raise e
 
-    @classmethod
-    def auth_bot(cls) -> None:
+    def auth_bot(self) -> None:
 
         try:
             """
@@ -152,46 +164,32 @@ class CrawJUD(PropertiesCrawJUD):
                 Exception: If the login fails.
             """
 
-            if cls.login_method:
+            if self.login_method:
                 chk_logged = AuthBot.auth()
                 if chk_logged is True:
 
-                    cls.message = "Login efetuado com sucesso!"
-                    cls.type_log = "log"
-                    cls.prt()
+                    self.message = "Login efetuado com sucesso!"
+                    self.type_log = "log"
+                    self.prt()
 
                 elif chk_logged is False:
 
-                    cls.driver.quit()
-                    cls.message = "Erro ao realizar login"
-                    cls.type_log = "error"
-                    cls.prt()
-                    raise Exception(message=cls.message)
+                    self.driver.quit()
+                    self.message = "Erro ao realizar login"
+                    self.type_log = "error"
+                    self.prt()
+                    raise Exception(message=self.message)
 
         except Exception as e:
 
             print(e)
-            cls.row = 0
-            cls.message = "Erro ao realizar login"
-            cls.type_log = "error"
+            self.row = 0
+            self.message = "Erro ao realizar login"
+            self.type_log = "error"
 
-            cls.prt()
-            cls.end_prt("Falha ao iniciar")
-            if cls.driver:
-                cls.driver.quit()
+            self.prt()
+            self.end_prt("Falha ao iniciar")
+            if self.driver:
+                self.driver.quit()
 
             raise e
-
-    @classmethod
-    def end_prt(cls, status: str) -> None:
-
-        graphic = cls.graphicMode_
-        cls.graphicMode = graphic
-        printbot.end_bot(status)
-
-    @classmethod
-    def prt(cls) -> None:
-
-        graphic = cls.graphicMode_
-        cls.graphicMode = graphic
-        printbot.print_msg()

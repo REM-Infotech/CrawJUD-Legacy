@@ -10,7 +10,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
+
+# from ...shared import PropertiesCrawJUD
 
 
 class capa(CrawJUD):
@@ -18,12 +19,12 @@ class capa(CrawJUD):
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
-        PropertiesCrawJUD.kwrgs = kwrgs
-        for key, value in list(kwrgs.items()):
-            setattr(PropertiesCrawJUD, key, value)
+        # PropertiesCrawJUD.kwrgs = kwrgs
+        # for key, value in list(kwrgs.items()):
+        #     setattr(PropertiesCrawJUD, key, value)
 
         CrawJUD.setup()
-        CrawJUD.auth_bot()
+        self.auth_bot()
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
@@ -40,7 +41,7 @@ class capa(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
             try:
                 self.queue()
@@ -52,13 +53,13 @@ class capa(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        super().DriverLaunch(
+                        self.DriverLaunch(
                             message="Webdriver encerrado inesperadamente, reinicializando..."
                         )
 
                     old_message = self.message
 
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
                 if old_message is None:
                     old_message = self.message

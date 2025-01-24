@@ -13,7 +13,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
+
+# from ...shared import PropertiesCrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -43,9 +44,9 @@ class complement(CrawJUD):
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
-        PropertiesCrawJUD.kwrgs = kwrgs
-        for key, value in list(kwrgs.items()):
-            setattr(PropertiesCrawJUD, key, value)
+        # PropertiesCrawJUD.kwrgs = kwrgs
+        # for key, value in list(kwrgs.items()):
+        #     setattr(PropertiesCrawJUD, key, value)
 
         CrawJUD.setup()
         CrawJUD.auth_bot()
@@ -77,7 +78,7 @@ class complement(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        super().DriverLaunch(
+                        self.DriverLaunch(
                             message="Webdriver encerrado inesperadamente, reinicializando..."
                         )
 

@@ -9,7 +9,8 @@ from urllib3.exceptions import MaxRetryError
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
-from ...shared import PropertiesCrawJUD
+
+# from ...shared import PropertiesCrawJUD
 
 
 class proc_parte(CrawJUD):
@@ -17,12 +18,12 @@ class proc_parte(CrawJUD):
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
-        PropertiesCrawJUD.kwrgs = kwrgs
-        for key, value in list(kwrgs.items()):
-            setattr(PropertiesCrawJUD, key, value)
+        # PropertiesCrawJUD.kwrgs = kwrgs
+        # for key, value in list(kwrgs.items()):
+        #     setattr(PropertiesCrawJUD, key, value)
 
         CrawJUD.setup()
-        CrawJUD.auth_bot()
+        self.auth_bot()
         self.start_time = time.perf_counter()
         self.data_append = []
 
@@ -33,7 +34,7 @@ class proc_parte(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
             try:
                 self.queue()
@@ -65,7 +66,7 @@ class proc_parte(CrawJUD):
 
                 with suppress(Exception):
                     if self.driver.title.lower() == "a sessao expirou":
-                        CrawJUD.auth_bot()
+                        self.auth_bot()
 
         except Exception as e:
 
@@ -76,13 +77,13 @@ class proc_parte(CrawJUD):
             if check_window:
 
                 with suppress(Exception):
-                    super().DriverLaunch(
+                    self.DriverLaunch(
                         message="Webdriver encerrado inesperadamente, reinicializando..."
                     )
 
                     old_message = self.message
 
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
             if old_message is None:
                 old_message = self.message
@@ -133,7 +134,7 @@ class proc_parte(CrawJUD):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    CrawJUD.auth_bot()
+                    self.auth_bot()
 
         except Exception as e:
             raise ErroDeExecucao(e=e)
