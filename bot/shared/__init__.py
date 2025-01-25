@@ -347,16 +347,6 @@ class PropertiesCrawJUD:
         return self.SearchBot_.search_()
 
     @property
-    def append_error(self) -> Callable[..., None]:
-
-        return self.OtherUtils.append_error
-
-    @property
-    def append_success(self) -> Callable[..., None]:
-
-        return self.OtherUtils.append_success
-
-    @property
     def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
 
         return self.OtherUtils.dataFrame
@@ -366,6 +356,105 @@ class PropertiesCrawJUD:
 
         file_check = Path(self.output_dir_path).joinpath(f"{self.pid}.flag").resolve()
         return file_check.exists()
+
+    @property
+    def elawFormats(self) -> Callable[..., dict[str, str]]:
+
+        return self.OtherUtils.elawFormats
+
+    @property
+    def calc_time(self) -> Callable[[], list]:
+
+        return self.OtherUtils.calc_time
+
+    @property
+    def append_moves(self) -> Callable[[], None]:
+
+        return self.OtherUtils.append_moves
+
+    @property
+    def append_success(self) -> Callable[..., None]:
+
+        return self.OtherUtils.append_success
+
+    @property
+    def append_error(self) -> Callable[..., None]:
+
+        return self.OtherUtils.append_error
+
+    @property
+    def append_validarcampos(self) -> Callable[..., None]:
+
+        return self.OtherUtils.append_validarcampos
+
+    @property
+    def count_doc(self) -> Callable[..., str | None]:
+
+        return self.OtherUtils.count_doc
+
+    @property
+    def get_recent(self) -> Callable[..., str | None]:
+
+        return self.OtherUtils.get_recent
+
+    @property
+    def format_String(self) -> Callable[..., str]:
+
+        return self.OtherUtils.format_String
+
+    @property
+    def normalizar_nome(self) -> Callable[..., str]:
+
+        return self.OtherUtils.normalizar_nome
+
+    @property
+    def similaridade(self) -> Callable[..., float]:
+
+        return self.OtherUtils.similaridade
+
+    @property
+    def finalize_execution(self) -> Callable[[], None]:
+
+        return self.OtherUtils.finalize_execution
+
+    @property
+    def install_cert(self) -> Callable[[], None]:
+
+        return self.OtherUtils.install_cert
+
+    @property
+    def group_date_all(self) -> Callable[..., list[dict[str, str]]]:
+
+        return self.OtherUtils.group_date_all
+
+    @property
+    def group_keys(self) -> Callable[..., dict[str, str]]:
+
+        return self.OtherUtils.group_keys
+
+    @property
+    def gpt_chat(self) -> Callable[..., str]:
+        """
+        Analyzes a given legal document text and adjusts the response based on the type of document.
+        This method uses the OpenAI GPT model to analyze the provided text and generate a response
+        that identifies the type of legal document and extracts relevant information based on the
+        document type. The document types include sentences, initial petitions, defenses, and
+        interlocutory decisions.
+        Args:
+            text_mov (str): The text of the legal document to be analyzed.
+        Returns:
+            str: The adjusted response based on the type of document, including extracted values
+                 and summaries as specified in the system message.
+        Raises:
+            Exception: If an error occurs during the API call or processing.
+        """
+
+        return self.OtherUtils.gpt_chat
+
+    @property
+    def text_is_a_date(self) -> Callable[..., bool]:
+
+        return self.OtherUtils.text_is_a_date
 
 
 if __name__ == "__main__":

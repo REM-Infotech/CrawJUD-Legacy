@@ -450,18 +450,19 @@ class OtherUtils(CrawJUD):
             self.message = message
             self.prt()
 
-    def count_doc(self, doc: str) -> str | None:
+    def append_error(self, data: dict[str, str] = None) -> None:
 
-        tipo_doc = None
-        numero = "".join(filter(str.isdigit, doc))
+        if not os.path.exists(self.path_erro):
+            df = pd.DataFrame(data)
+            df = df.to_dict(orient="records")
 
-        if len(numero) == 11:
-            tipo_doc = "cpf"
+        elif os.path.exists(self.path_erro):
+            df = pd.read_excel(self.path_erro)
+            df = df.to_dict(orient="records")
+            df.extend([data])
 
-        elif len(numero) == 14:
-            tipo_doc = "cnpj"
-
-        return tipo_doc
+        new_data = pd.DataFrame(df)
+        new_data.to_excel(self.path_erro, index=False)
 
     def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
 
@@ -479,19 +480,18 @@ class OtherUtils(CrawJUD):
         new_data = pd.DataFrame(df)
         new_data.to_excel(planilha_validar, index=False)
 
-    def append_error(self, data: dict[str, str] = None) -> None:
+    def count_doc(self, doc: str) -> str | None:
 
-        if not os.path.exists(self.path_erro):
-            df = pd.DataFrame(data)
-            df = df.to_dict(orient="records")
+        tipo_doc = None
+        numero = "".join(filter(str.isdigit, doc))
 
-        elif os.path.exists(self.path_erro):
-            df = pd.read_excel(self.path_erro)
-            df = df.to_dict(orient="records")
-            df.extend([data])
+        if len(numero) == 11:
+            tipo_doc = "cpf"
 
-        new_data = pd.DataFrame(df)
-        new_data.to_excel(self.path_erro, index=False)
+        elif len(numero) == 14:
+            tipo_doc = "cnpj"
+
+        return tipo_doc
 
     def get_recent(self, folder: str) -> str | None:
         files = [os.path.join(folder, f) for f in os.listdir(folder)]
@@ -573,7 +573,34 @@ class OtherUtils(CrawJUD):
 
     def install_cert(self) -> None:
 
-        installed = self.CertIsInstall(self.name_cert.split(".pfx")[0])
+        def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:
+            """
+            Verifica se um certificado PFX específico está instalado no repositório 'MY'.
+
+            Arguments:
+                crt_sbj_nm (str): Nome do Assunto (Subject) do certificado para buscar.
+                param store (str): Nome do repositório de certificados a ser verificado (default: "MY").
+
+            :return: True se o certificado for encontrado, False caso contrário.
+            """
+            for cert, encoding, trust in ssl.enum_certificates(store):
+                try:
+                    # Converte o certificado em formato DER para objeto X509
+                    x509_cert = x509.load_der_x509_certificate(cert, default_backend())
+
+                    # Obtém o nome do Assunto (Subject)
+                    subject_name = x509_cert.subject.rfc4514_string()
+
+                    # Verifica se o nome fornecido corresponde ao do certificado
+                    if crt_sbj_nm in subject_name:
+                        return True
+
+                except Exception as e:
+                    print(f"Erro ao processar o certificado: {e}")
+
+            return False
+
+        installed = CertIsInstall(self.name_cert.split(".pfx")[0])
 
         if installed is False:
 
@@ -605,32 +632,6 @@ class OtherUtils(CrawJUD):
             except subprocess.CalledProcessError as e:
                 raise e
 
-    def CertIsInstall(self, crt_sbj_nm: str, store: str = "MY") -> bool:
-        """
-        Verifica se um certificado PFX específico está instalado no repositório 'MY'.
-
-        Arguments:
-            crt_sbj_nm (str): Nome do Assunto (Subject) do certificado para buscar.
-            param store (str): Nome do repositório de certificados a ser verificado (default: "MY").
-
-        :return: True se o certificado for encontrado, False caso contrário.
-        """
-        for cert, encoding, trust in ssl.enum_certificates(store):
-            try:
-                # Converte o certificado em formato DER para objeto X509
-                x509_cert = x509.load_der_x509_certificate(cert, default_backend())
-
-                # Obtém o nome do Assunto (Subject)
-                subject_name = x509_cert.subject.rfc4514_string()
-
-                # Verifica se o nome fornecido corresponde ao do certificado
-                if crt_sbj_nm in subject_name:
-                    return True
-            except Exception as e:
-                print(f"Erro ao processar o certificado: {e}")
-
-        return False
-
     def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
 
         records = []
@@ -658,6 +659,20 @@ class OtherUtils(CrawJUD):
         return record
 
     def gpt_chat(self, text_mov: str) -> str:
+        """
+        Analyzes a given legal document text and adjusts the response based on the type of document.
+        This method uses the OpenAI GPT model to analyze the provided text and generate a response
+        that identifies the type of legal document and extracts relevant information based on the
+        document type. The document types include sentences, initial petitions, defenses, and
+        interlocutory decisions.
+        Args:
+            text_mov (str): The text of the legal document to be analyzed.
+        Returns:
+            str: The adjusted response based on the type of document, including extracted values
+                 and summaries as specified in the system message.
+        Raises:
+            Exception: If an error occurs during the API call or processing.
+        """
 
         try:
 
