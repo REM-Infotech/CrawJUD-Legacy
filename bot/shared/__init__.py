@@ -17,38 +17,45 @@ SubDict = Dict[str, Union[TypeValues, Numbers]]
 load_dotenv()
 
 TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
-Typebot: Type[str]
 
 
 class PropertiesCrawJUD:
 
     load_dotenv()
 
-    name_cert_ = ""
-    path_erro_: Type[str] = ""
+    pid_: str = None
+    vara_: str = None
+    state_: str = None
+    client_: str = None
+    message_: str = None
+    type_bot_: str = None
+    name_cert_: str = None
+    systembot_: str = None
+    message_error_: str = None
+    state_or_client_: str = None
+    type_log_: str = str("info")
+    graphicMode_: str = str("doughnut")
+
+    path_: Path = None
+    out_dir: Path = None
+    path_erro_: Path = None
+    path_args_: Path = None
+    user_data_dir: Path = None
+    path_accepted_: Path = None
+
+    driver_: WebDriver = None
+    webdriverwait_: WebDriverWait = None
+
     OpenAI_ = OpenAI()
     appends_: List[str] = []
     another_append_: List[str] = []
-    path_args_: Type[str] = ""
-    path_accepted_: Type[str] = ""
-    vara_: Type[str] = ""
-    systembot: Type[str] = str("")
-    state_or_client_: Type[str] = ""
-    type_log_: Type[str] = "info"
-    message_: Type[str] = ""
-    pid_: Type[str] = ""
+
     kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
-    row_: Type[int] = 0
-    message_error_: Type[str] = ""
+    row_: int = 0
+
     bot_data_: Dict[str, Union[TypeValues, SubDict]] = {}
-    graphicMode_: Type[str] = "doughnut"
-    out_dir: Type[str] = ""
-    user_data_dir: Type[str] = ""
-    cr_list_args: list[str] = []
-    drv: Type[WebDriver] = ""
-    wt: Type[WebDriverWait] = ""
-    path_: Path = ""
-    state_: Type[str] = ""
+
+    cr_list_args: List[str] = []
 
     @property
     def path(self) -> Path:
@@ -63,11 +70,15 @@ class PropertiesCrawJUD:
         self.path_ = new_path
 
     @property
-    def path_args(self) -> Type[str]:
+    def path_args(self) -> Path:
         return self.path_args_
 
     @path_args.setter
-    def path_args(self, new_path: Type[str]) -> None:
+    def path_args(self, new_path: Path) -> None:
+
+        if not isinstance(new_path, Path):
+            raise ValueError("Path must be a Path object")
+
         self.path_args_ = new_path
 
     @property
@@ -87,76 +98,84 @@ class PropertiesCrawJUD:
         self.another_append_ = new_another_append
 
     @property
-    def system(self) -> Type[str]:
-        return self.systembot
+    def system(self) -> str:
+        return self.systembot_
 
     @system.setter
-    def system(self, systembot: Type[str]) -> None:
-        self.systembot = systembot
+    def system(self, systembot_) -> None:
+        self.systembot_ = systembot_
 
     @property
-    def state_or_client(self) -> Type[str]:
+    def state_or_client(self) -> str:
         return self.state_or_client_
 
     @state_or_client.setter
-    def state_or_client(self, new_s: Type[str]) -> None:
+    def state_or_client(self, new_s) -> None:
         self.state_or_client_ = new_s
 
     @property
-    def type_log(self) -> Type[str]:
+    def type_log(self) -> str:
         return self.type_log_
 
     @type_log.setter
-    def type_log(self, new_log: Type[str]) -> None:
+    def type_log(self, new_log) -> None:
         self.type_log_ = new_log
 
     @property
-    def pid(self) -> Type[str]:
+    def pid(self) -> str:
         return self.pid_
 
     @pid.setter
-    def pid(self, pid_: Type[str]) -> None:
+    def pid(self, pid_) -> None:
         self.pid_ = pid_
 
     @property
-    def message(self) -> Type[str]:
-        return self.message
+    def message(self) -> str:
+        return self.message_
 
     @message.setter
-    def message(self, new_msg: Type[str]) -> None:
+    def message(self, new_msg) -> None:
         self.message_bot = new_msg
 
     @property
     def driver(self) -> WebDriver:
-        return self.drv
+        return self.driver_
 
     @driver.setter
-    def driver(self, new_drv: WebDriver) -> None:
-        self.drv = new_drv
+    def driver(self, new_driver_: WebDriver) -> None:
+        self.driver_ = new_driver_
 
     @property
     def wait(self) -> WebDriverWait:
-        return self.wt
+        return self.webdriverwait_
 
     @wait.setter
-    def wait(self, new_wt: WebDriverWait) -> None:
-        self.wt = new_wt
+    def wait(self, new_webdriverwait_: WebDriverWait) -> None:
+        self.webdriverwait_ = new_webdriverwait_
 
     @property
-    def chr_dir(self) -> Type[str]:
+    def chr_dir(self) -> Path:
         return self.user_data_dir
 
     @chr_dir.setter
-    def chr_dir(self, new_dir: Type[str]) -> None:
-        self.user_data_dir = new_dir
+    def chr_dir(self, new_path: Path) -> None:
+
+        if not isinstance(new_path, Path):
+            raise ValueError("Path must be a Path object")
+
+        self.user_data_dir = new_path
 
     @property
-    def output_dir_path(self) -> Type[str]:
+    def output_dir_path(self) -> Path:
         return self.out_dir
 
     @output_dir_path.setter
-    def output_dir_path(self, new_outdir: Type[str]) -> None:
-        self.out_dir = new_outdir
+    def output_dir_path(self, new_path: Path) -> None:
+
+        if not isinstance(new_path, Path):
+            raise ValueError("Path must be a Path object")
+
+        self.out_dir = new_path
 
     @property
     def kwrgs(self) -> Dict[str, TypeValues | SubDict]:
@@ -165,9 +184,6 @@ class PropertiesCrawJUD:
     @kwrgs.setter
     def kwrgs(self, new_kwg: Dict[str, Any]) -> None:
         self.kwrgs_ = new_kwg
-
-        for key, value in list(new_kwg.items()):
-            setattr(self, key, value)
 
     @property
     def row(self) -> Type[int]:
@@ -178,15 +194,15 @@ class PropertiesCrawJUD:
         self.row_ = new_row
 
     @property
-    def message_error(self) -> Type[str]:
-        return self.message_boterror_
+    def message_error(self) -> str:
+        return self.message_error_
 
     @message_error.setter
-    def message_error(self, nw_m: Type[str]) -> Type[str]:
-        self.message_boterror_ = nw_m
+    def message_error(self, nw_m) -> str:
+        self.message_error_ = nw_m
 
     @property
-    def graphicMode(self) -> Type[str]:
+    def graphicMode(self) -> str:
         return self.graphicMode_
 
     @graphicMode.setter
@@ -202,19 +218,23 @@ class PropertiesCrawJUD:
         self.bot_data_ = new_botdata
 
     @property
-    def vara(self) -> Type[str]:
+    def vara(self) -> str:
         return self.vara_
 
     @vara.setter
-    def vara(self, vara_str: Type[str]) -> None:
+    def vara(self, vara_str) -> None:
         self.vara_ = vara_str
 
     @property
-    def path_accepted(self) -> Type[str]:
+    def path_accepted(self) -> Path:
         return self.path_accepted_
 
     @path_accepted.setter
-    def path_accepted(self, new_path: Type[str]) -> None:
+    def path_accepted(self, new_path) -> None:
+
+        if not isinstance(new_path, Path):
+            raise ValueError("Path must be a Path object")
+
         self.path_accepted_ = new_path
 
     @property
@@ -222,15 +242,15 @@ class PropertiesCrawJUD:
         return self.OpenAI_
 
     @property
-    def typebot(self) -> Type[str]:
+    def typebot(self) -> str:
         return self.type_bot
 
     @typebot.setter
-    def typebot(self, type_bot: str) -> None:
+    def typebot(self, type_bot) -> None:
         self.type_bot = type_bot
 
     @property
-    def state(self) -> Type[str]:
+    def state(self) -> str:
         return self.state_
 
     @state.setter
@@ -238,32 +258,30 @@ class PropertiesCrawJUD:
         self.state_ = state_
 
     @property
-    def path_erro(self) -> Type[str]:
+    def path_erro(self) -> Path:
+
         return self.path_erro_
 
     @path_erro.setter
-    def path_erro(self, path_erro_: str):
-        self.path_erro_ = path_erro_
+    def path_erro(self, new_path: Path) -> None:
+
+        if not isinstance(new_path, Path):
+            raise ValueError("Path must be a Path object")
+
+        self.path_erro_ = new_path
 
     @property
-    def name_cert(self) -> Type[str]:
+    def name_cert(self) -> str:
         return self.name_cert_
 
     @name_cert.setter
-    def name_cert(self, name_cert: str) -> None:
+    def name_cert(self, name_cert) -> None:
         self.name_cert_ = name_cert
 
+    @property
+    def client(self) -> str:
+        return self.client_
 
-# class PropertiesCrawJUD(PropertiesCrawJUD):
-#     def __init__(self, *args, **kwargs) -> None:
-#         self.__dict__.update(kwargs)
-#         self.kwrgs = kwargs
-
-#     def __getattr__(self, nome: Type[str]) -> TypeHint:
-#         super_cls = super()
-#         item = self.kwrgs.get(nome, None)
-
-#         if not item:
-#             item = getattr(super_cls, nome, None)
-
-#         return item
+    @client.setter
+    def client(self, client_) -> None:
+        self.client_ = client_

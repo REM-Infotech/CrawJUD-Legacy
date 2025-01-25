@@ -1,9 +1,11 @@
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
 
 from pytz import timezone
 
+from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD
 from ..Utils import AuthBot, DriverBot, ElementsBot, Interact
 from ..Utils import MakeXlsx as mk_xlsx
@@ -20,30 +22,40 @@ __all__ = [
 ]
 
 if __name__ == "__main__":
-    from ..Utils import ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM
+    from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
 
 
 class CrawJUD(PropertiesCrawJUD):
+
+    settings = {
+        "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
+        "selectedDestinationId": "Save as PDF",
+        "version": 2,
+    }
 
     elements_ = None
     interact_ = None
     search_bot = SearchBot
     MakeXlsx = mk_xlsx
-    DriverLaunch = DriverBot.DriverLaunch
-    prt = printbot.print_msg
-    end_prt = printbot.end_bot
+
+    def __init__(self, *args, **kwargs) -> None:
+
+        self.kwrgs = kwargs
+        list_kwargs = list(kwargs.items())
+        for key, value in list_kwargs:
+
+            if key == "path_args":
+                value = Path(value).resolve()
+
+            setattr(self, key, value)
 
     @property
     def elements(self) -> "ESAJ_AM | ELAW_AME | PJE_AM | PROJUDI_AM":
-        return self.elements_
-
-    @elements.setter
-    def elements(self, elements) -> None:
-        self.elements_ = elements
+        return ElementsBot().Elements
 
     @property
     def interact(self) -> Interact:
-        return self.interact_
+        return Interact()
 
     @property
     def isStoped(self) -> bool:
@@ -51,11 +63,20 @@ class CrawJUD(PropertiesCrawJUD):
         file_check = Path(self.output_dir_path).resolve().joinpath(f"{self.pid}.flag")
         return file_check.exists()
 
-    settings = {
-        "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
-        "selectedDestinationId": "Save as PDF",
-        "version": 2,
-    }
+    @property
+    def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
+        return OtherUtils().dataFrame
+
+    @property
+    def Auth_Bot(self) -> Callable[[], bool]:
+        return AuthBot().auth
+
+    def prt(self) -> None:
+        """Print message"""
+        printbot().print_msg()
+
+    def end_prt(self, status: str) -> None:
+        printbot().end_prt(status)
 
     def set_permissions_recursive(self, path: Path, permissions: int = 0o775) -> None:
         # Converte o caminho para um objeto Path, caso ainda não seja
@@ -96,12 +117,11 @@ class CrawJUD(PropertiesCrawJUD):
                 for key, value in json_f.items():
                     setattr(self, key, value)
 
-            self.elements = ElementsBot.init_elements(self)
             self.message = str("Inicializando robô")
             self.type_log = str("log")
             self.prt()
 
-            self.output_dir_path = Path(self.path_args).parent.resolve().__str__()
+            self.output_dir_path = Path(self.path_args).parent.resolve()
             # time.sleep(10)
             self.list_args = [
                 "--ignore-ssl-errors=yes",
@@ -118,11 +138,17 @@ class CrawJUD(PropertiesCrawJUD):
 
             time_xlsx = datetime.now(timezone("America/Manaus")).strftime("%d-%m-%y")
 
-            namefile = f"Sucessos - PID {self.pid} {time_xlsx}.xlsx"
-            self.path = f"{self.output_dir_path}/{namefile}"
+            self.path = (
+                Path(self.output_dir_path)
+                .joinpath(f"Sucessos - PID {self.pid} {time_xlsx}.xlsx")
+                .resolve()
+            )
 
-            namefile_erro = f"Erros - PID {self.pid} {time_xlsx}.xlsx"
-            self.path_erro = f"{self.output_dir_path}/{namefile_erro}"
+            self.path_erro = (
+                Path(self.output_dir_path)
+                .joinpath(f"Erros - PID {self.pid} {time_xlsx}.xlsx")
+                .resolve()
+            )
 
             self.name_colunas = self.MakeXlsx.make_output("sucesso", self.path)
             self.MakeXlsx.make_output("erro", self.path_erro)
@@ -133,7 +159,7 @@ class CrawJUD(PropertiesCrawJUD):
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
             self.state_or_client = self.state if self.state is not None else self.client
-            driver, wait = self.DriverLaunch()
+            driver, wait = DriverBot().DriverLaunch
 
             self.driver = driver
             self.wait = wait
@@ -168,7 +194,7 @@ class CrawJUD(PropertiesCrawJUD):
             """
 
             if self.login_method:
-                chk_logged = AuthBot.auth()
+                chk_logged = self.Auth_Bot()
                 if chk_logged is True:
 
                     self.message = "Login efetuado com sucesso!"
@@ -181,7 +207,7 @@ class CrawJUD(PropertiesCrawJUD):
                     self.message = "Erro ao realizar login"
                     self.type_log = "error"
                     self.prt()
-                    raise Exception(message=self.message)
+                    raise ErroDeExecucao(message=self.message)
 
         except Exception as e:
 
@@ -196,18 +222,3 @@ class CrawJUD(PropertiesCrawJUD):
                 self.driver.quit()
 
             raise e
-
-    def __getattr__(self, name):
-
-        for obj in [
-            ElementsBot,
-            Interact,
-            mk_xlsx,
-            OtherUtils,
-            SearchBot,
-            DriverBot,
-            printbot,
-        ]:
-            item = getattr(obj, name)
-
-        return item

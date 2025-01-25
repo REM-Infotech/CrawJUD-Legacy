@@ -19,7 +19,7 @@ from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD
 from .auth import AuthBot
 from .Driver import DriverBot
-from .elements import ElementsBot, ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
+from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
 from .interator import Interact
 from .MakeTemplate import MakeXlsx
 from .PrintLogs import printbot
@@ -41,9 +41,6 @@ __all__ = [
 
 
 class OtherUtils(PropertiesCrawJUD):
-
-    prt = printbot.print_msg
-    end_prt = printbot.end_bot
 
     @property
     def nomes_colunas(self) -> List[str]:

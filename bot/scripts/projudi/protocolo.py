@@ -36,8 +36,8 @@ class protocolo(CrawJUD):
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        CrawJUD.setup()
-        self.auth_bot()
+        super().setup()
+        super().auth_bot()
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:

@@ -3,6 +3,7 @@ import os
 import pathlib
 from datetime import datetime
 from time import sleep
+from typing import Self
 
 import pytz
 from dotenv import dotenv_values
@@ -45,15 +46,16 @@ class printbot(PropertiesCrawJUD):
             "total": self.kwrgs.get("total_rows", 0),
         }
 
-        self.socket_message(data)
+        printbot.socket_message(self, data)
         mensagens.append(self.prompt)
 
         self.list_messages = mensagens
         if "fim da execução" in self.message.lower():
             sleep(1)
-            self.file_log()
+            printbot.file_log(self)
 
-    def file_log(self) -> None:
+    @classmethod
+    def file_log(cls, self: Self) -> None:
 
         try:
             savelog = os.path.join(
@@ -79,13 +81,14 @@ class printbot(PropertiesCrawJUD):
             # Exibe o erro
             tqdm.write(f"{e}")
 
-    def end_bot(self, status: str) -> None:
+    def end_prt(self, status: str) -> None:
 
         data = {"pid": self.pid, "status": status}
 
         iobot.end_message(data, url_socket)
 
-    def socket_message(self, data: dict) -> None:
+    @classmethod
+    def socket_message(cls, self: Self, data: dict) -> None:
 
         chk_type1 = "fim da execução" in self.prompt
         chk_type2 = "falha ao iniciar" in self.prompt

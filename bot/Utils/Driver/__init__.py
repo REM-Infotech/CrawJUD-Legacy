@@ -1,11 +1,11 @@
 import json
-import os
 import pathlib
 import platform
 import shutil
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
+from os import environ, path
 from pathlib import Path
 from typing import List, Tuple
 
@@ -57,7 +57,7 @@ class DriverBot(PropertiesCrawJUD):
         return self.list_args_
 
     @list_args.setter
-    def list_args(self, new_Args: list[str]) -> None:
+    def list_args(self, new_Args: List[str]) -> None:
         self.list_args_ = new_Args
 
     def DriverLaunch(
@@ -65,6 +65,9 @@ class DriverBot(PropertiesCrawJUD):
     ) -> Tuple[WebDriver, WebDriverWait]:
 
         try:
+
+            pid_path = self.output_dir_path.resolve()
+
             self.message = message
             self.type_log = "log"
             self.prt()
@@ -72,49 +75,46 @@ class DriverBot(PropertiesCrawJUD):
             list_args = self.list_args
 
             chrome_options = Options()
-            self.chr_dir = str(
-                os.path.join(Path(__file__).cwd(), "exec", self.pid, "chrome")
-            )
+            self.chr_dir = Path(pid_path).joinpath("chrome").resolve()
 
-            user = os.environ.get(
-                "USER", os.environ.get("LOGNAME", os.environ.get("USERNAME", "root"))
+            user = environ.get(
+                "USER", environ.get("LOGNAME", environ.get("USERNAME", "root"))
             )
             if user != "root" or platform.system() != "Linux":
                 list_args.remove("--no-sandbox")
 
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
-                self.path_accepted = str(
-                    os.path.join(
-                        Path(__file__).cwd(),
+                self.path_accepted = Path(
+                    path.join(
+                        Path(__file__).cwd().resolve(),
                         "Browser",
                         state,
                         self.username,
                         "chrome",
                     )
                 )
-                path_exist = os.path.exists(self.path_accepted)
+                path_exist = self.path_accepted.exists()
                 if path_exist:
 
-                    for root, dirs, files in os.walk(self.path_accepted):
+                    for root, _, files in self.path_accepted.walk():
                         try:
                             shutil.copytree(root, self.chr_dir)
                         except Exception as e:
                             print(e)
 
                 elif not path_exist:
-                    os.makedirs(self.path_accepted, exist_ok=True, mode=0o775)
+                    self.path_accepted.mkdir(parents=True, exist_ok=True)
 
-            chrome_options.add_argument(f"user-data-dir={self.chr_dir}")
+            chrome_options.add_argument(f"user-data-dir={str(self.chr_dir)}")
             for argument in list_args:
                 chrome_options.add_argument(argument)
 
-            this_path = Path(__file__).parent.resolve().__str__()
-            path_extensions = os.path.join(this_path, "extensions")
-            for root, dirs, files in os.walk(path_extensions):
+            this_path = Path(__file__).parent.resolve().joinpath("extensions")
+            for root, _, files in this_path.walk():
                 for file_ in files:
                     if ".crx" in file_:
-                        path_plugin = os.path.join(root, file_)
+                        path_plugin = str(root.joinpath(file_).resolve())
                         chrome_options.add_extension(path_plugin)
 
             chrome_prefs = {
@@ -124,17 +124,13 @@ class DriverBot(PropertiesCrawJUD):
                 "printing.print_preview_sticky_settings.appState": json.dumps(
                     self.settings
                 ),
-                "download.default_directory": "{}".format(
-                    os.path.join(self.output_dir_path)
-                ),
+                "download.default_directory": "{}".format(str(pid_path)),
             }
 
             path_chrome = None
             chrome_options.add_experimental_option("prefs", chrome_prefs)
-            pid_path = Path(self.path_args).parent.resolve()
-            getdriver = SetupDriver(destination=pid_path)
 
-            abs_pidpath = Path(pid_path).absolute()
+            getdriver = SetupDriver(destination=pid_path)
 
             if message != "Inicializando WebDriver":
 
@@ -143,11 +139,11 @@ class DriverBot(PropertiesCrawJUD):
                 if platform.system() == "Windows":
                     chrome_name += ".exe"
 
-                if Path(os.path.join(abs_pidpath, chrome_name)).exists():
-                    path_chrome = Path(pid_path).parent.resolve().joinpath(chrome_name)
+                existspath_ = Path(pid_path).joinpath(chrome_name)
+                path_chrome = existspath_ if existspath_.exists() else None
 
             if path_chrome is None:
-                path_chrome = Path(pid_path).parent.resolve().joinpath(getdriver())
+                path_chrome = Path(pid_path).joinpath(getdriver()).resolve()
 
             path_chrome.chmod(0o777, follow_symlinks=True)
 
@@ -200,7 +196,7 @@ class SetupDriver:
     progress_group = Group(Panel(Group(current_app_progress, progress)))
 
     def __init__(
-        self, destination: str = os.path.join(pathlib.Path(__file__).cwd()), **kwrgs
+        self, destination: Path = Path(__file__).cwd().resolve(), **kwrgs
     ) -> None:
 
         new_stem = f"chromedriver{self.code_ver}.zip"
@@ -234,7 +230,7 @@ class SetupDriver:
                 self.ConfigBar(pool)
 
         shutil.copy(self.file_path, self.destination)
-        return os.path.basename(self.destination)
+        return self.destination.name
 
     def ConfigBar(self, pool: ThreadPoolExecutor):
         self.current_task_id = self.current_app_progress.add_task(
@@ -244,17 +240,18 @@ class SetupDriver:
             "download", filename=self.fileN.upper(), start=False
         )
 
-        self.destination = os.path.join(self.destination, self.fileN)
-        root_path = str(Path(self.file_path).parent.resolve())
-        if not os.path.exists(self.file_path):
+        self.destination = self.destination.joinpath(self.fileN).resolve()
+        root_path = Path(self.file_path).parent.resolve()
+        if not self.file_path.exists():
 
-            if not os.path.exists(root_path):
-                os.makedirs(root_path, mode=0o775)
+            if not root_path.exists():
+                root_path.mkdir(mode=0o775, exist_ok=True, parents=True)
+
             url = self.getUrl()
             pool.submit(self.copy_url, task_id, url, self.file_path)
 
-        elif os.path.exists(root_path):
-            if os.path.exists(self.file_path):
+        elif root_path.exists():
+            if self.file_path.exists():
                 self.current_app_progress.update(
                     self.current_task_id,
                     description="[bold green] Carregado webdriver salvo em cache!",
@@ -326,11 +323,11 @@ class SetupDriver:
                 if not_Cr1 or not_Cr2:
 
                     # Get the original file name without any directory structure
-                    dir_name = os.path.dirname(path)
-                    extracted_path = zip_ref.extract(member, dir_name)
-                    base_name = os.path.basename(extracted_path)
+                    dir_name = path.name
+                    extracted_path = Path(zip_ref.extract(member, dir_name))
+                    base_name = extracted_path.name
                     # If the extracted path has directories, move the file directly into the subfolder
-                    chk = base_name and os.path.isdir(extracted_path)
+                    chk = base_name and extracted_path.is_dir()
                     if chk:
                         continue
 
