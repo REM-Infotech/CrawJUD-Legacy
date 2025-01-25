@@ -1,31 +1,13 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
 
 from pytz import timezone
-
+from ..emulate import Emulate
 from ..common import ErroDeExecucao
-from ..shared import PropertiesCrawJUD
-from ..Utils import AuthBot, DriverBot, ElementsBot, Interact
-from ..Utils import MakeXlsx as mk_xlsx
-from ..Utils import OtherUtils, SearchBot, printbot
-
-__all__ = [
-    ElementsBot,
-    Interact,
-    mk_xlsx,
-    OtherUtils,
-    SearchBot,
-    DriverBot,
-    printbot,
-]
-
-if __name__ == "__main__":
-    from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
 
 
-class CrawJUD(PropertiesCrawJUD):
+class CrawJUD(Emulate):
 
     settings = {
         "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
@@ -33,10 +15,14 @@ class CrawJUD(PropertiesCrawJUD):
         "version": 2,
     }
 
-    elements_ = None
-    interact_ = None
-    search_bot = SearchBot
-    MakeXlsx = mk_xlsx
+    def prt(self) -> None:
+        """Print message"""
+
+        self.printtext.print_msg()
+
+    def end_prt(self, status: str) -> None:
+
+        self.printtext.end_prt(status)
 
     def __init__(self, *args, **kwargs) -> None:
 
@@ -48,35 +34,6 @@ class CrawJUD(PropertiesCrawJUD):
                 value = Path(value).resolve()
 
             setattr(self, key, value)
-
-    @property
-    def elements(self) -> "ESAJ_AM | ELAW_AME | PJE_AM | PROJUDI_AM":
-        return ElementsBot().Elements
-
-    @property
-    def interact(self) -> Interact:
-        return Interact()
-
-    @property
-    def isStoped(self) -> bool:
-
-        file_check = Path(self.output_dir_path).resolve().joinpath(f"{self.pid}.flag")
-        return file_check.exists()
-
-    @property
-    def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
-        return OtherUtils().dataFrame
-
-    @property
-    def Auth_Bot(self) -> Callable[[], bool]:
-        return AuthBot().auth
-
-    def prt(self) -> None:
-        """Print message"""
-        printbot().print_msg()
-
-    def end_prt(self, status: str) -> None:
-        printbot().end_prt(status)
 
     def set_permissions_recursive(self, path: Path, permissions: int = 0o775) -> None:
         # Converte o caminho para um objeto Path, caso ainda não seja
@@ -159,7 +116,7 @@ class CrawJUD(PropertiesCrawJUD):
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
             self.state_or_client = self.state if self.state is not None else self.client
-            driver, wait = DriverBot().DriverLaunch
+            driver, wait = self.DriverLaunch
 
             self.driver = driver
             self.wait = wait

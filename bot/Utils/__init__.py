@@ -7,7 +7,7 @@ import unicodedata
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import pandas as pd
 from cryptography import x509
@@ -16,13 +16,14 @@ from pandas import Timestamp
 from werkzeug.utils import secure_filename
 
 from ..common import ErroDeExecucao
-from ..shared import PropertiesCrawJUD
+from ..shared import Numbers
+from ..core import CrawJUD
 from .auth import AuthBot
 from .Driver import DriverBot
 from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
 from .interator import Interact
 from .MakeTemplate import MakeXlsx
-from .PrintLogs import printbot
+from .PrintLogs import PrintBot
 from .search import SearchBot
 
 __all__ = [
@@ -32,15 +33,19 @@ __all__ = [
     Interact,
     DriverBot,
     SearchBot,
-    printbot,
+    PrintBot,
     ELAW_AME,
     ESAJ_AM,
     PJE_AM,
     PROJUDI_AM,
 ]
 
+TypeData = Union[
+    List[Dict[str, str | Numbers, datetime]], Dict[str, str | Numbers, datetime]
+]
 
-class OtherUtils(PropertiesCrawJUD):
+
+class OtherUtils(CrawJUD):
 
     @property
     def nomes_colunas(self) -> List[str]:
@@ -384,12 +389,14 @@ class OtherUtils(PropertiesCrawJUD):
         elif len(self.appends) == 0:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    def append_success(self, data, message: str = None, fileN: str = None) -> None:
+    def append_success(
+        self, data: TypeData, message: str = None, fileN: str = None
+    ) -> None:
 
         if not message:
             message = "Execução do processo efetuada com sucesso!"
 
-        def save_info(data: list[dict[str, str]]):
+        def save_info(data: list[dict[str, str]]) -> None:
 
             output_success = self.path
 
@@ -505,7 +512,7 @@ class OtherUtils(PropertiesCrawJUD):
             )
         )
 
-    def normalizar_nome(self, word: str):
+    def normalizar_nome(self, word: str) -> str:
         """
 
         ### (function) def normalizar_nome(self, word: str) -> str

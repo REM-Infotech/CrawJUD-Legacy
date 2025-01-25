@@ -3,11 +3,11 @@ from typing import List
 import openpyxl
 from openpyxl.styles import Font, PatternFill
 
-from ...shared import PropertiesCrawJUD
+from ...core import CrawJUD
 from .appends import listas
 
 
-class MakeXlsx(PropertiesCrawJUD):
+class MakeXlsx(CrawJUD):
 
     def make_output(self, type_xlsx: str, path_template: str) -> List[str]:
 

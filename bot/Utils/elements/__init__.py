@@ -3,14 +3,14 @@ from __future__ import annotations
 from importlib import import_module
 from typing import Union
 
-from ...shared import PropertiesCrawJUD
+from ...core import CrawJUD
 from .elaw import ELAW_AME
 from .esaj import ESAJ_AM
 from .pje import PJE_AM
 from .projudi import PROJUDI_AM
 
 
-class ElementsBot(PropertiesCrawJUD):
+class ElementsBot(CrawJUD):
 
     elements_bot = None
 

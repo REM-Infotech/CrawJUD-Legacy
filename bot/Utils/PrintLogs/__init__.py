@@ -9,7 +9,7 @@ import pytz
 from dotenv import dotenv_values
 from tqdm import tqdm
 
-from ...shared import PropertiesCrawJUD
+from ...core import CrawJUD
 from .socketio import SocketBot
 
 codificacao = "UTF-8"
@@ -19,7 +19,7 @@ url_socket = dotenv_values().get("HOSTNAME")
 iobot = SocketBot()
 
 
-class printbot(PropertiesCrawJUD):
+class PrintBot(CrawJUD):
 
     def print_msg(self) -> None:
 
@@ -46,13 +46,13 @@ class printbot(PropertiesCrawJUD):
             "total": self.kwrgs.get("total_rows", 0),
         }
 
-        printbot.socket_message(self, data)
+        PrintBot.socket_message(self, data)
         mensagens.append(self.prompt)
 
         self.list_messages = mensagens
         if "fim da execução" in self.message.lower():
             sleep(1)
-            printbot.file_log(self)
+            PrintBot.file_log(self)
 
     @classmethod
     def file_log(cls, self: Self) -> None:

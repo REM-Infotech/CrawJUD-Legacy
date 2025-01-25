@@ -29,7 +29,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...shared import PropertiesCrawJUD
+from ...core import CrawJUD
 from ..PrintLogs import printbot
 
 try:
@@ -39,7 +39,7 @@ except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
 
-class DriverBot(PropertiesCrawJUD):
+class DriverBot(CrawJUD):
     prt = printbot.print_msg
 
     list_args_ = [

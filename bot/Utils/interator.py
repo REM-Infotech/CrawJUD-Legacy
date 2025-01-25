@@ -12,10 +12,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ItemNaoEcontrado
 
-from ..shared import PropertiesCrawJUD
+from ..core import CrawJUD
 
 
-class Interact(PropertiesCrawJUD):
+class Interact(CrawJUD):
 
     def send_key(self, element: WebElement, word: any) -> None:
 
