@@ -41,11 +41,16 @@ __all__ = [
 ]
 
 TypeData = Union[
-    List[Dict[str, str | Numbers, datetime]], Dict[str, str | Numbers, datetime]
+    List[Dict[str, str | Numbers | datetime]], Dict[str, str | Numbers | datetime]
 ]
 
 
 class OtherUtils(CrawJUD):
+
+    def __init__(
+        self,
+    ) -> None:
+        """"""
 
     @property
     def nomes_colunas(self) -> List[str]:

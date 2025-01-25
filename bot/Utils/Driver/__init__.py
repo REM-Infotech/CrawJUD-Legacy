@@ -30,7 +30,6 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...core import CrawJUD
-from ..PrintLogs import printbot
 
 try:
     from getchromeVer import chrome_ver
@@ -40,7 +39,11 @@ except ModuleNotFoundError:
 
 
 class DriverBot(CrawJUD):
-    prt = printbot.print_msg
+
+    def __init__(
+        self,
+    ) -> None:
+        """"""
 
     list_args_ = [
         "--ignore-ssl-errors=yes",

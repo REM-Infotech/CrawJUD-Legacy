@@ -1,6 +1,7 @@
+from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Type, Union
+from typing import Any, Dict, List, Type, Union, Callable, Tuple
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -23,6 +24,9 @@ class PropertiesCrawJUD:
 
     load_dotenv()
 
+    OpenAI_ = OpenAI()
+
+    row_: int = 0
     pid_: str = None
     vara_: str = None
     state_: str = None
@@ -46,16 +50,12 @@ class PropertiesCrawJUD:
     driver_: WebDriver = None
     webdriverwait_: WebDriverWait = None
 
-    OpenAI_ = OpenAI()
     appends_: List[str] = []
+    cr_list_args: List[str] = []
     another_append_: List[str] = []
 
     kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
-    row_: int = 0
-
     bot_data_: Dict[str, Union[TypeValues, SubDict]] = {}
-
-    cr_list_args: List[str] = []
 
     @property
     def path(self) -> Path:
@@ -285,3 +285,98 @@ class PropertiesCrawJUD:
     @client.setter
     def client(self, client_) -> None:
         self.client_ = client_
+
+    @property
+    def AuthBot(self) -> Callable[[], bool]:
+
+        from ..Utils import AuthBot as _AuthBot_
+
+        return _AuthBot_().auth
+
+    @property
+    def MakeXlsx(self) -> _MakeXlsx_:
+
+        from ..Utils import MakeXlsx as _MakeXlsx_
+
+        return _MakeXlsx_()
+
+    @property
+    def Interact(self) -> _Interact_:
+
+        from ..Utils import Interact as _Interact_
+
+        return _Interact_()
+
+    @property
+    def PrintBot(self) -> _PrintBot_:
+
+        from ..Utils import PrintBot as _PrintBot_
+
+        return _PrintBot_()
+
+    @property
+    def SearchBot(self) -> _SearchBot_:
+
+        from ..Utils import SearchBot as _SearchBot_
+
+        return _SearchBot_()
+
+    @property
+    def OtherUtils(self) -> _OtherUtils_:
+
+        from ..Utils import OtherUtils as _OtherUtils_
+
+        return _OtherUtils_()
+
+    @property
+    def elements(self) -> Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]:
+
+        from ..Utils import ElementsBot as _ElementsBot_
+
+        return _ElementsBot_().Config().Elements
+
+    @property
+    def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:
+
+        from ..Utils import DriverBot as _DriverBot_
+
+        return _DriverBot_().DriverLaunch
+
+    def search_bot(self) -> bool:
+
+        return self.SearchBot_.search_()
+
+    @property
+    def append_error(self) -> Callable[..., None]:
+
+        return self.OtherUtils.append_error
+
+    @property
+    def append_success(self) -> Callable[..., None]:
+
+        return self.OtherUtils.append_success
+
+    @property
+    def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
+
+        return self.OtherUtils.dataFrame
+
+    @property
+    def isStoped(self) -> bool:
+
+        file_check = Path(self.output_dir_path).joinpath(f"{self.pid}.flag").resolve()
+        return file_check.exists()
+
+
+if __name__ == "__main__":
+    from ..Utils import (
+        PrintBot as _PrintBot_,
+        Interact as _Interact_,
+        OtherUtils as _OtherUtils_,
+        SearchBot as _SearchBot_,
+        MakeXlsx as _MakeXlsx_,
+        ELAW_AME,
+        ESAJ_AM,
+        PJE_AM,
+        PROJUDI_AM,
+    )

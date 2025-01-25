@@ -17,6 +17,11 @@ from ..core import CrawJUD
 
 class Interact(CrawJUD):
 
+    def __init__(
+        self,
+    ) -> None:
+        """"""
+
     def send_key(self, element: WebElement, word: any) -> None:
 
         send = None

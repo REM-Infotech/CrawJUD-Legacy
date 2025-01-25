@@ -3,11 +3,11 @@ from datetime import datetime
 from pathlib import Path
 
 from pytz import timezone
-from ..emulate import Emulate
 from ..common import ErroDeExecucao
+from ..shared import PropertiesCrawJUD
 
 
-class CrawJUD(Emulate):
+class CrawJUD(PropertiesCrawJUD):
 
     settings = {
         "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
@@ -18,11 +18,11 @@ class CrawJUD(Emulate):
     def prt(self) -> None:
         """Print message"""
 
-        self.printtext.print_msg()
+        self.PrintBot.print_msg()
 
     def end_prt(self, status: str) -> None:
 
-        self.printtext.end_prt(status)
+        self.PrintBot.end_prt(status)
 
     def __init__(self, *args, **kwargs) -> None:
 
@@ -34,6 +34,16 @@ class CrawJUD(Emulate):
                 value = Path(value).resolve()
 
             setattr(self, key, value)
+
+        with open(self.path_args, "rb") as f:
+            json_f: dict[str, str | int] = json.load(f)
+
+            self.kwrgs = json_f
+
+            for key, value in json_f.items():
+                setattr(self, key, value)
+
+        self.state_or_client = self.state if self.state is not None else self.client
 
     def set_permissions_recursive(self, path: Path, permissions: int = 0o775) -> None:
         # Converte o caminho para um objeto Path, caso ainda não seja
@@ -66,13 +76,6 @@ class CrawJUD(Emulate):
         self.row = 0
 
         try:
-            with open(self.path_args, "rb") as f:
-                json_f: dict[str, str | int] = json.load(f)
-
-                self.kwrgs = json_f
-
-                for key, value in json_f.items():
-                    setattr(self, key, value)
 
             self.message = str("Inicializando robô")
             self.type_log = str("log")
@@ -115,7 +118,6 @@ class CrawJUD(Emulate):
                 self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
-            self.state_or_client = self.state if self.state is not None else self.client
             driver, wait = self.DriverLaunch
 
             self.driver = driver

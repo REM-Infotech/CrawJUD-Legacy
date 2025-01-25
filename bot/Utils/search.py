@@ -10,12 +10,14 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ..common import ErroDeExecucao
 from ..core import CrawJUD
-from .PrintLogs import printbot
 
 
 class SearchBot(CrawJUD):
 
-    prt = printbot.print_msg
+    def __init__(
+        self,
+    ) -> None:
+        """"""
 
     def search_(self) -> bool:
 

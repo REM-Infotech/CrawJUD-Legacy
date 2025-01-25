@@ -20,6 +20,11 @@ if platform.system() == "Windows":
 
 class AuthBot(CrawJUD):
 
+    def __init__(
+        self,
+    ) -> None:
+        """"""
+
     def auth(self) -> bool:
 
         to_call = getattr(AuthBot, f"{self.system.lower()}_auth")

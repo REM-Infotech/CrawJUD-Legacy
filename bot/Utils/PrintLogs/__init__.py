@@ -21,6 +21,11 @@ iobot = SocketBot()
 
 class PrintBot(CrawJUD):
 
+    def __init__(
+        self,
+    ) -> None:
+        """"""
+
     def print_msg(self) -> None:
 
         log = self.message

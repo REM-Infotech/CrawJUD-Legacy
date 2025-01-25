@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from importlib import import_module
-from typing import Union
+from typing import Union, Self
 
 from ...core import CrawJUD
 from .elaw import ELAW_AME
@@ -14,11 +14,20 @@ class ElementsBot(CrawJUD):
 
     elements_bot = None
 
-    def __init__(self) -> None:
-        self.elements_bot = getattr(
-            import_module(f".{self.system.lower()}", __package__),
-            f"{self.system.upper()}_{self.state_or_client.upper()}",
-        )
+    def __init__(
+        self,
+    ) -> None:
+        """"""
+
+    def Config(self) -> Self:
+
+        if self.elements_bot is None:
+            self.elements_bot = getattr(
+                import_module(f".{self.system.lower()}", __package__),
+                f"{self.system.upper()}_{self.state_or_client.upper()}",
+            )
+
+        return self
 
     @property
     def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:
