@@ -282,7 +282,7 @@ class OtherUtils(CrawJUD):
             ValueError: If there is an issue reading the Excel file.
         """
 
-        input_file = Path(self.path_args).joinpath(self.xlsx).resolve()
+        input_file = Path(self.output_dir_path).joinpath(self.xlsx).resolve()
 
         df = pd.read_excel(input_file)
         df.columns = df.columns.str.upper()

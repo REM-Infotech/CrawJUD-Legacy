@@ -5,6 +5,7 @@ import string
 import subprocess
 from contextlib import suppress
 from time import sleep
+from typing import Callable
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -27,9 +28,9 @@ class AuthBot(CrawJUD):
 
     def auth(self) -> bool:
 
-        to_call = getattr(AuthBot, f"{self.system.lower()}_auth")
+        to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth")
         if to_call:
-            return to_call()
+            return to_call(self)
 
         raise RuntimeError("Sistema Não encontrado!")
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 import traceback
 from importlib import import_module

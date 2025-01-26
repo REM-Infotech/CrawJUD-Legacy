@@ -50,12 +50,12 @@ class WorkerThread:
             sleep(2)
             pid = Path(path_args).stem
 
-            if not process.is_alive():
-                try:
-                    raise process.join()
+            # if not process.is_alive():
+            #     try:
+            #         raise process.join()
 
-                except Exception as e:
-                    raise e
+            #     except Exception as e:
+            #         raise e
 
             while process.is_alive():
 

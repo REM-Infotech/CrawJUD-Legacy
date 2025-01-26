@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pytz import timezone
 from ..common import ErroDeExecucao
-from ..shared import PropertiesCrawJUD
+from ..shared import PropertiesCrawJUD, TypeHint
 
 
 class CrawJUD(PropertiesCrawJUD):
@@ -44,6 +44,18 @@ class CrawJUD(PropertiesCrawJUD):
                 setattr(self, key, value)
 
         self.state_or_client = self.state if self.state is not None else self.client
+
+    def __getattr__(self, nome: str) -> TypeHint:
+
+        item = self.kwrgs.get(nome, None)
+
+        if not item:
+            item = CrawJUD.__dict__.get(nome, None)
+
+            if not item:
+                item = PropertiesCrawJUD.kwrgs_.get(nome, None)
+
+        return item
 
     def set_permissions_recursive(self, path: Path, permissions: int = 0o775) -> None:
         # Converte o caminho para um objeto Path, caso ainda não seja

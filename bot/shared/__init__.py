@@ -40,6 +40,8 @@ class PropertiesCrawJUD:
     type_log_: str = str("info")
     graphicMode_: str = str("doughnut")
 
+    _start_time_ = 0.0
+
     path_: Path = None
     out_dir: Path = None
     path_erro_: Path = None
@@ -56,6 +58,16 @@ class PropertiesCrawJUD:
 
     kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: Dict[str, Union[TypeValues, SubDict]] = {}
+
+    @property
+    def start_time(self) -> float | int:
+
+        return self._start_time_
+
+    @start_time.setter
+    def start_time(self, start_time: int | float) -> None:
+
+        self._start_time_ = start_time
 
     @property
     def path(self) -> Path:
@@ -356,7 +368,7 @@ class PropertiesCrawJUD:
     def isStoped(self) -> bool:
 
         file_check = Path(self.output_dir_path).joinpath(f"{self.pid}.flag").resolve()
-        return file_check.exists()
+        return file_check
 
     @property
     def elawFormats(self) -> Callable[..., dict[str, str]]:
