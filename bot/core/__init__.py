@@ -54,7 +54,12 @@ class CrawJUD(PropertiesCrawJUD):
 
         # Itera sobre todos os arquivos e diretórios dentro da pasta
         for item in path.rglob("*"):  # rglob percorre recursivamente
-            item.chmod(permissions)
+
+            try:
+                item.chmod(permissions)
+
+            except FileNotFoundError:
+                continue
 
     def setup(self) -> None:
         """
@@ -118,7 +123,7 @@ class CrawJUD(PropertiesCrawJUD):
                 self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
-            driver, wait = self.DriverLaunch
+            driver, wait = self.DriverLaunch()
 
             self.driver = driver
             self.wait = wait
@@ -153,7 +158,7 @@ class CrawJUD(PropertiesCrawJUD):
             """
 
             if self.login_method:
-                chk_logged = self.Auth_Bot()
+                chk_logged = self.AuthBot()
                 if chk_logged is True:
 
                     self.message = "Login efetuado com sucesso!"

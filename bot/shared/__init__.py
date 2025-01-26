@@ -342,9 +342,10 @@ class PropertiesCrawJUD:
 
         return _DriverBot_().DriverLaunch
 
-    def search_bot(self) -> bool:
+    @property
+    def search_bot(self) -> Callable[[], bool]:
 
-        return self.SearchBot_.search_()
+        return self.SearchBot.search_
 
     @property
     def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
