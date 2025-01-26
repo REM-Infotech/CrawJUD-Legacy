@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from importlib import import_module
-from typing import Union, Self
+from typing import Self, Union
 
 from ...core import CrawJUD
 from .elaw import ELAW_AME

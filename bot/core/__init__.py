@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pytz import timezone
+
 from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD, TypeHint
 

@@ -1,7 +1,8 @@
 from __future__ import annotations
+
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Type, Union, Callable, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Type, Union
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -471,14 +472,9 @@ class PropertiesCrawJUD:
 
 
 if __name__ == "__main__":
-    from ..Utils import (
-        PrintBot as _PrintBot_,
-        Interact as _Interact_,
-        OtherUtils as _OtherUtils_,
-        SearchBot as _SearchBot_,
-        MakeXlsx as _MakeXlsx_,
-        ELAW_AME,
-        ESAJ_AM,
-        PJE_AM,
-        PROJUDI_AM,
-    )
+    from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
+    from ..Utils import Interact as _Interact_
+    from ..Utils import MakeXlsx as _MakeXlsx_
+    from ..Utils import OtherUtils as _OtherUtils_
+    from ..Utils import PrintBot as _PrintBot_
+    from ..Utils import SearchBot as _SearchBot_

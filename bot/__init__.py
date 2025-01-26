@@ -1,6 +1,4 @@
-import signal
 from importlib import import_module
-from pathlib import Path
 from time import sleep
 from typing import Callable, Dict, Tuple, Union
 
@@ -10,6 +8,8 @@ from celery import shared_task
 from celery.result import AsyncResult
 from flask import Flask
 
+# import signal
+# from pathlib import Path
 process_type = Union[psutil.Process, None]
 
 
@@ -48,32 +48,34 @@ class WorkerThread:
             )
             process.start()
             sleep(2)
-            pid = Path(path_args).stem
+            # pid = Path(path_args).stem
 
-            # if not process.is_alive():
-            #     try:
-            #         raise process.join()
+            is_alive = process.is_alive()
 
-            #     except Exception as e:
-            #         raise e
+            if not is_alive:
+                try:
+                    raise process.join()
 
-            while process.is_alive():
+                except Exception as e:
+                    raise e
 
-                if signal.SIGTERM:
-                    path_flag = (
-                        Path(__file__)
-                        .cwd()
-                        .resolve()
-                        .joinpath("exec")
-                        .joinpath(pid)
-                        .joinpath(f"{pid}.flag")
-                    )
+            while is_alive:
+                ...
+                # if signal.SIGTERM:
+                #     path_flag = (
+                #         Path(__file__)
+                #         .cwd()
+                #         .resolve()
+                #         .joinpath("exec")
+                #         .joinpath(pid)
+                #         .joinpath(f"{pid}.flag")
+                #     )
 
-                    path_flag.parent.resolve().mkdir(exist_ok=True, mode=0o775)
+                #     path_flag.parent.resolve().mkdir(exist_ok=True, mode=0o775)
 
-                    with path_flag.open("w") as f:
-                        f.write("Encerrar processo")
-                    break
+                #     with path_flag.open("w") as f:
+                #         f.write("Encerrar processo")
+                #     break
 
         except Exception as e:
             raise e
