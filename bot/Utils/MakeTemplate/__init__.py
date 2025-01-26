@@ -19,7 +19,7 @@ class MakeXlsx(CrawJUD):
         lista_colunas: List[str] = getattr(
             listas(),
             f"{self.typebot}_{type_xlsx}",
-            getattr(listas(), self.type_xlsx, None),
+            getattr(listas(), type_xlsx, None),
         )
         # Criar um novo workbook e uma planilha
         workbook = openpyxl.Workbook()

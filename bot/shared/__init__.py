@@ -134,8 +134,8 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.message_
 
     @message.setter
-    def message(self, new_msg) -> None:
-        PropertiesCrawJUD.message_bot = new_msg
+    def message(self, new_msg: str) -> None:
+        PropertiesCrawJUD.message_ = new_msg
 
     @property
     def driver(self) -> WebDriver:
