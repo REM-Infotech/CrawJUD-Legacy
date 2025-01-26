@@ -7,6 +7,7 @@ from typing import Callable, Dict, List, Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -136,15 +137,13 @@ class complement(CrawJUD):
                         complement.esfera(self, esfera_xls)
 
                 for item in lista1:
-                    check_column = self.bot_data.get(item.upper())
+                    # check_column = self.bot_data.get(item.upper())
 
-                    if check_column:
-                        func: Callable[[], None] = getattr(
-                            complement, item.lower(), None
-                        )
+                    # if check_column:
+                    func: Callable[[], None] = getattr(complement, item.lower(), None)
 
-                        if func:
-                            func(self)
+                    if func and item.lower() != "ESFERA":
+                        func(self)
 
                 end_time = time.perf_counter()
                 execution_time = end_time - start_time
@@ -383,6 +382,68 @@ class complement(CrawJUD):
         )
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante
+
+    @classmethod
+    def advogado_interno(cls, self: Self) -> None:
+
+        self.message = "informando advogado interno"
+        self.type_log = "log"
+        self.prt()
+
+        input_adv_responsavel: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_adv_responsavel)
+            )
+        )
+        input_adv_responsavel.click()
+        self.interact.send_key(
+            input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO")
+        )
+
+        css_wait_adv = r"#j_id_3k_1\:autoCompleteLawyer_panel > ul > li"
+
+        wait_adv = None
+
+        with suppress(TimeoutException):
+            wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv))
+            )
+
+        if wait_adv:
+            wait_adv.click()
+        elif not wait_adv:
+            raise ErroDeExecucao(message="Advogado interno não encontrado")
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        div_select_Adv: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_div_select_Adv)
+            )
+        )
+        div_select_Adv.click()
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        input_select_adv: WebElement = self.wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, self.elements.css_input_select_Adv)
+            )
+        )
+        input_select_adv.click()
+
+        self.interact.send_key(input_select_adv, self.bot_data.get("ADVOGADO_INTERNO"))
+        input_select_adv.send_keys(Keys.ENTER)
+
+        self.driver.execute_script(
+            f"document.querySelector('{self.elements.css_div_select_Adv}').blur()"
+        )
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Advogado interno informado!"
+        self.type_log = "info"
+        self.prt()
 
     @classmethod
     def esfera(cls, self: Self, text: str = "Judicial") -> None:
