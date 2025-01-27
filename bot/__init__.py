@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import multiprocessing as mp
 import os
 import pathlib
@@ -19,7 +21,9 @@ process_type = Union[psutil.Process, None]
 class WorkerThread:
 
     # @profile(stream=fp)
-    def BotStarter(self):
+    def BotStarter(
+        self,
+    ) -> Union[projudi, elaw, calculadoras, caixa, esaj, pje]:
 
         return getattr(
             import_module(f".scripts.{self.system}", __package__),
@@ -27,7 +31,7 @@ class WorkerThread:
         )
 
     # argv: str = None, botname: str = None
-    def __init__(self, **kwrgs: dict[str, str]):
+    def __init__(self, **kwrgs: dict[str, str]) -> None:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
@@ -123,3 +127,8 @@ class WorkerThread:
 
         except Exception as e:
             return str(e)
+
+
+if __name__ == "__main__":
+
+    from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi
