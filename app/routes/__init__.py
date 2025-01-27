@@ -7,7 +7,7 @@ from werkzeug.exceptions import HTTPException
 
 def register_routes(app: Flask) -> None:
 
-    import_module("app.routes.logs", package=__package__)
+    import_module(".logs", package=__package__)
     from ..routes.bot import bot
     from ..routes.webhook import wh
 

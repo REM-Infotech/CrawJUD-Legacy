@@ -9,24 +9,24 @@ from status.server_side import FormatMessage, load_cache
 
 
 @io.on("connect", namespace="/log")
-def on_connect():
+def on_connect() -> None:
     send("connected!")
 
 
 @io.on("disconnect", namespace="/log")
-def on_disconnect():
+def on_disconnect() -> None:
     send("disconnected!")
 
 
 @io.on("leave", namespace="/log")
-def on_leave(data):
+def on_leave(data) -> None:
     room = data["pid"]
     leave_room(room)
     send(f"Leaving Room '{room}'")
 
 
 @io.on("join", namespace="/log")
-def on_join(data: dict[str, str]):
+def on_join(data: dict[str, str]) -> None:
 
     room = data["pid"]
     join_room(room)
@@ -40,6 +40,8 @@ def on_join(data: dict[str, str]):
 
         pid = room
         processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+
+        message = "Fim da Execução"
 
         if processID:
             processID = processID.processID
@@ -69,13 +71,17 @@ def on_join(data: dict[str, str]):
 
     except Exception:  # pragma: no cover
         send("Failed to check bot has stopped")
+        data = FormatMessage(
+            {"type": "error", "pid": room, "message": message}, room, app
+        )
+        stop_execution(app, pid)
 
     emit("log_message", data, room=room)
     send(f"Joinned room! Room: {room}")
 
 
 @io.on("stop_bot", namespace="/log")
-def on_stop_bot(data: dict[str, str]):
+def on_stop_bot(data: dict[str, str]) -> None:
 
     pid = data["pid"]
     stop_execution(app, pid)
@@ -83,7 +89,7 @@ def on_stop_bot(data: dict[str, str]):
 
 
 @io.on("terminate_bot", namespace="/log")
-def on_terminate_bot(data: dict[str, str]):
+def on_terminate_bot(data: dict[str, str]) -> None:
 
     from app import db
     from app.models import ThreadBots
@@ -103,7 +109,7 @@ def on_terminate_bot(data: dict[str, str]):
 
 
 @io.on("log_message", namespace="/log")
-def on_log_message(data: dict[str, str]):
+def on_log_message(data: dict[str, str]) -> None:
 
     try:
 
@@ -121,5 +127,5 @@ def on_log_message(data: dict[str, str]):
 
 
 @io.on("statusbot", namespace="/log")
-def statusbot(data: dict):
+def statusbot(data: dict) -> None:
     send("Bot stopped!")

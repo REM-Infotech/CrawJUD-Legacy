@@ -109,7 +109,7 @@ class DriverBot(CrawJUD):
                 elif not path_exist:
                     self.path_accepted.mkdir(parents=True, exist_ok=True)
 
-            chrome_options.add_argument(f"user-data-dir={str(self.chr_dir)}")
+            # chrome_options.add_argument(f"user-data-dir={str(self.chr_dir)}")
             for argument in list_args:
                 chrome_options.add_argument(argument)
 
