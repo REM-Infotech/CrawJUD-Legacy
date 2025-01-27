@@ -5,7 +5,7 @@ import os
 import pathlib
 from contextlib import suppress
 from importlib import import_module
-from typing import Union
+from typing import Dict, Union
 
 import psutil
 from flask import Flask
@@ -20,6 +20,11 @@ process_type = Union[psutil.Process, None]
 
 class WorkerThread:
 
+    system: str
+    kwrgs: Dict[str, str]
+
+    __dict__: Dict[str, str]
+
     # @profile(stream=fp)
     def BotStarter(
         self,
@@ -31,7 +36,7 @@ class WorkerThread:
         )
 
     # argv: str = None, botname: str = None
-    def __init__(self, **kwrgs: dict[str, str]) -> None:
+    def __init__(self, **kwrgs: Dict[str, str]) -> None:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
