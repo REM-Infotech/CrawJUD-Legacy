@@ -19,7 +19,7 @@ process_type = Union[psutil.Process, None]
 class WorkerThread:
 
     # @profile(stream=fp)
-    def BotStarter(self):  # pragma: no cover
+    def BotStarter(self):
 
         return getattr(
             import_module(f".scripts.{self.system}", __package__),
@@ -27,7 +27,7 @@ class WorkerThread:
         )
 
     # argv: str = None, botname: str = None
-    def __init__(self, **kwrgs: dict[str, str]):  # pragma: no cover
+    def __init__(self, **kwrgs: dict[str, str]):
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
 
@@ -42,7 +42,7 @@ class WorkerThread:
 
                 pid = os.path.basename(self.path_args.replace(".json", ""))
 
-                if not app.testing:  # pragma: no cover
+                if not app.testing:
 
                     bot = self.BotStarter()
                     process = mp.Process(
@@ -69,7 +69,7 @@ class WorkerThread:
                 db.session.commit()
                 return 200
 
-        except Exception:  # pragma: no cover
+        except Exception:
             return 500
 
     def stop(self, processID: int, pid: str, app: Flask = None) -> str:
@@ -95,16 +95,16 @@ class WorkerThread:
 
             return f"Process {processID} stopped!"
 
-        except psutil.TimeoutExpired:  # pragma: no cover
+        except psutil.TimeoutExpired:
             return "O processo não foi encerrado dentro do tempo limite"
 
-        except psutil.NoSuchProcess:  # pragma: no cover
+        except psutil.NoSuchProcess:
             return f"Process {processID} stopped!"
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             return str(e)
 
-    def check_status(self, processID: int) -> str:  # pragma: no cover
+    def check_status(self, processID: int) -> str:
 
         try:
 
@@ -115,11 +115,11 @@ class WorkerThread:
 
             return f"Process {processID} stopped!"
 
-        except psutil.TimeoutExpired:  # pragma: no cover
+        except psutil.TimeoutExpired:
             return "O processo não foi encerrado dentro do tempo limite"
 
-        except psutil.NoSuchProcess:  # pragma: no cover
+        except psutil.NoSuchProcess:
             return f"Process {processID} stopped!"
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             return str(e)

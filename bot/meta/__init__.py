@@ -130,22 +130,22 @@ class classproperty:
 
     @property
     # @profile(stream=fp)
-    def driver(self) -> WebDriver:  # pragma: no cover
+    def driver(self) -> WebDriver:
         return classproperty.drv
 
     @driver.setter
     # @profile(stream=fp)
-    def driver(self, new_drv: WebDriver):  # pragma: no cover
+    def driver(self, new_drv: WebDriver):
         classproperty.drv = new_drv
 
     @property
     # @profile(stream=fp)
-    def wait(self) -> WebDriverWait:  # pragma: no cover
+    def wait(self) -> WebDriverWait:
         return classproperty.wt
 
     @wait.setter
     # @profile(stream=fp)
-    def wait(self, new_wt: WebDriverWait):  # pragma: no cover
+    def wait(self, new_wt: WebDriverWait):
         classproperty.wt = new_wt
 
     @property
@@ -210,7 +210,7 @@ class classproperty:
 
     @property
     # @profile(stream=fp)
-    def list_args(self):  # pragma: no cover
+    def list_args(self):
         return [
             "--ignore-ssl-errors=yes",
             "--ignore-certificate-errors",
@@ -223,7 +223,7 @@ class classproperty:
 
     @list_args.setter
     # @profile(stream=fp)
-    def list_args(self, new_Args: list[str]):  # pragma: no cover
+    def list_args(self, new_Args: list[str]):
         classproperty.cr_list_args = new_Args
 
     @property
@@ -238,14 +238,14 @@ class classproperty:
 
     @property
     # @profile(stream=fp)
-    def AuthBot(self):  # pragma: no cover
+    def AuthBot(self):
         from .Utils.auth import AuthBot
 
         return AuthBot()
 
     @property
     # @profile(stream=fp)
-    def SearchBot(self):  # pragma: no cover
+    def SearchBot(self):
 
         from .Utils.search import SeachBot
 
@@ -253,42 +253,42 @@ class classproperty:
 
     @property
     # @profile(stream=fp)
-    def interact(self):  # pragma: no cover
+    def interact(self):
         from .Utils.interator import Interact
 
         return Interact()
 
     @property
     # @profile(stream=fp)
-    def printtext(self):  # pragma: no cover
+    def printtext(self):
         from .Utils.PrintLogs import printbot
 
         return printbot
 
     @property
     # @profile(stream=fp)
-    def MakeXlsx(self):  # pragma: no cover
+    def MakeXlsx(self):
         from .Utils.MakeTemplate import MakeXlsx
 
         return MakeXlsx
 
     @property
     # @profile(stream=fp)
-    def cities_Amazonas(self):  # pragma: no cover
+    def cities_Amazonas(self):
         from .Utils.dicionarios import cities_Amazonas
 
         return cities_Amazonas
 
     @property
     # @profile(stream=fp)
-    def elements(self):  # pragma: no cover
+    def elements(self):
         from .Utils.elements import ElementsBot
 
         return ElementsBot().Elements
 
     @property
     # @profile(stream=fp)
-    def vara(self) -> str:  # pragma: no cover
+    def vara(self) -> str:
         return classproperty.vara_
 
     @vara.setter

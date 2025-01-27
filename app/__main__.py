@@ -1,54 +1,20 @@
-import subprocess  # pragma: no cover
-from os import getcwd, path  # pragma: no cover
+from os import getcwd, path
 from pathlib import Path
-from platform import system
 
-from clear import clear  # pragma: no cover
-from dotenv import dotenv_values as values  # pragma: no cover
+from clear import clear
+from dotenv import dotenv_values as values
 
-from app import create_app  # pragma: no cover
+from app import create_app
 
-app, io = create_app()  # pragma: no cover
+app, io = create_app()
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
 
     clear()
 
     debug = values().get("DEBUG", "False").lower() in ("true")
     hostname = values().get("SERVER_HOSTNAME", "127.0.0.1")
-    print(
-        f"""
-============================================================
-
-        Executando servidor Flask
-        * Porta: {int(values().get("PORT", "8000"))}
-
-============================================================
-              """
-    )
-
-    # if system().lower() == "linux":
-    #     try:
-    #         # Executa o comando com verificação de erro
-    #         subprocess.run(
-    #             [
-    #                 "tightvncserver",
-    #                 ":99",
-    #                 "-geometry",
-    #                 "1600x900",
-    #                 "-depth",
-    #                 "24",
-    #                 "-rfbport",
-    #                 "5999",
-    #             ],
-    #             check=True,  # Lança exceção se o comando falhar
-    #         )
-    #         print("TightVNC iniciado com sucesso!")
-    #     except subprocess.CalledProcessError as e:
-
-    #         print(f"Erro ao iniciar o TightVNC: {e}")
-    #         raise e
 
     version_Path = Path(path.join(getcwd(), ".version"))
     if version_Path.exists() is False:

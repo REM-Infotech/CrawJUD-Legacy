@@ -35,11 +35,11 @@ def load_cache(pid: str, app: Flask):
 
             log_pid = dict(logs_pid)
 
-            if "total" not in log_pid:  # pragma: no cover
+            if "total" not in log_pid:
                 continue
 
             log_pid.update({"message": log_pid.get("last_log", log_pid.get("message"))})
-            break  # pragma: no cover
+            break
 
     return log_pid
 
@@ -142,12 +142,8 @@ def FormatMessage(data: dict[str, str], pid: str, app: Flask):
                         log_pid["success"] = int(log_pid["success"]) + 1
 
             elif data_type == "error":
-                log_pid.update(
-                    {"remaining": int(log_pid["remaining"]) - 1}
-                )  # pragma: no cover
-                log_pid.update(
-                    {"errors": int(log_pid["errors"]) + 1}
-                )  # pragma: no cover
+                log_pid.update({"remaining": int(log_pid["remaining"]) - 1})
+                log_pid.update({"errors": int(log_pid["errors"]) + 1})
 
                 if data_pos == 0 or app.testing:
                     log_pid["errors"] = log_pid["total"]

@@ -32,17 +32,17 @@ class AppFactory:
     testing = False
 
     @property
-    def csp(self):  # pragma: no cover
+    def csp(self):
         return self.csp_
 
     @csp.setter
-    def csp(self, new_csp: dict):  # pragma: no cover
+    def csp(self, new_csp: dict):
         self.csp_ = new_csp
 
     def __init__(self, testing: bool = False):
         self.testing = testing
 
-    def set_csp(self):  # pragma: no cover
+    def set_csp(self):
 
         from .models import Servers
 
@@ -118,7 +118,7 @@ class AppFactory:
 
         app.config.from_object(config_obj)
 
-        if self.testing is False:  # pragma: no cover
+        if self.testing is False:
 
             with app.app_context():
                 self.init_database(app)
@@ -141,7 +141,7 @@ class AppFactory:
 
         register_routes(app)
 
-    def init_talisman(self, app: Flask):  # pragma: no cover
+    def init_talisman(self, app: Flask):
 
         global tslm
         tslm = Talisman(
@@ -193,7 +193,7 @@ class AppFactory:
 
             if not Path("is_init.txt").exists():
 
-                with open("is_init.txt", "w") as f:  # pragma: no cover
+                with open("is_init.txt", "w") as f:
                     db.create_all()
                     f.write("True")
 
@@ -202,7 +202,7 @@ class AppFactory:
             if not db.engine.dialect.has_table(
                 db.engine.connect(), ThreadBots.__tablename__
             ):
-                with open("is_init.txt", "w") as f:  # pragma: no cover
+                with open("is_init.txt", "w") as f:
 
                     db.create_all()
                     f.write("True")
@@ -212,9 +212,7 @@ class AppFactory:
             NAMESERVER = values.get("NAMESERVER")
             HOST = values.get("HOSTNAME")
 
-            if not Servers.query.filter(
-                Servers.name == NAMESERVER
-            ).first():  # pragma: no cover
+            if not Servers.query.filter(Servers.name == NAMESERVER).first():
 
                 server = Servers(
                     name=NAMESERVER, address=HOST, system=platform.system()
@@ -225,5 +223,5 @@ class AppFactory:
             return db
 
 
-create_app = AppFactory().create_app  # pragma: no cover
-create_test_app = AppFactory(testing=True)  # pragma: no cover
+create_app = AppFactory().create_app
+create_test_app = AppFactory(testing=True)

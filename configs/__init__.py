@@ -17,7 +17,7 @@ class Configurator:
         if debug_flag:
             self.env_file = ".testing"
 
-    def get_configurator(self) -> dict:  # pragma: no cover
+    def get_configurator(self) -> dict:
 
         class ConfigObject:
 
@@ -72,7 +72,7 @@ class Configurator:
         return ConfigObject
 
 
-def csp() -> dict[str]:  # pragma: no cover
+def csp() -> dict[str]:
 
     from app.models import Servers
 
@@ -136,7 +136,7 @@ def csp() -> dict[str]:  # pragma: no cover
     return csp_vars
 
 
-def check_allowed_origin(origin="https://google.com"):  # pragma: no cover
+def check_allowed_origin(origin="https://google.com"):
     allowed_origins = [
         r"https:\/\/.*\.nicholas\.dev\.br",
         r"https:\/\/.*\.robotz\.dev",

@@ -32,7 +32,7 @@ def on_join(data: dict[str, str]):
     join_room(room)
 
     data = load_cache(room, app)
-    try:  # pragma: no cover
+    try:
 
         from app import db
         from app.models import ThreadBots
@@ -61,7 +61,7 @@ def on_join(data: dict[str, str]):
                     }
                 )
 
-    except Exception:  # pragma: no cover
+    except Exception:
         send("Failed to check bot has stopped")
 
     emit("log_message", data, room=room)

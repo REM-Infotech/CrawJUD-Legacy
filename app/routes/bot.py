@@ -16,7 +16,7 @@ path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
-def reload_module(module_name: str):  # pragma: no cover
+def reload_module(module_name: str):
     if module_name in sys.modules:
         importlib.reload(sys.modules[module_name])
     else:
@@ -43,13 +43,13 @@ def botlaunch(id: int, system: str, typebot: str):
 
             data_bot = request_data if request_data else request_form
 
-            if isinstance(data_bot, str):  # pragma: no cover
+            if isinstance(data_bot, str):
                 data_bot = json.loads(data_bot)
 
-            if check_latest() is False and app.debug is False:  # pragma: no cover
+            if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")
 
-            if app.testing is False:  # pragma: no cover
+            if app.testing is False:
 
                 if system == "esaj" and platform.system() != "Windows":
                     raise Exception("Este servidor não pode executar este robô!")
@@ -70,7 +70,7 @@ def botlaunch(id: int, system: str, typebot: str):
             elif app.testing is True:
                 is_started = 200 if data_bot else 500
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             message = {"error": str(e)}
             is_started = 500
 
@@ -79,7 +79,7 @@ def botlaunch(id: int, system: str, typebot: str):
 
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
-def stop_bot(user: str, pid: str):  # pragma: no cover
+def stop_bot(user: str, pid: str):
 
     from flask import current_app as app
 
