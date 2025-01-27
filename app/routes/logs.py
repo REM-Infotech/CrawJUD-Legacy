@@ -70,7 +70,7 @@ def on_join(data: dict[str, str]) -> None:
                 # )
                 stop_execution(app, pid)
 
-    except Exception:  # pragma: no cover
+    except Exception:
         send("Failed to check bot has stopped")
         # data = FormatMessage(
         #     {"type": "error", "pid": room, "message": message}, room, app

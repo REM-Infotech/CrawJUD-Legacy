@@ -99,7 +99,7 @@ class SetStatus:
                 ws: Worksheet = wb.active
                 rows = ws.max_row
 
-        elif data.get("typebot") == "pauta":  # pragma: no cover
+        elif data.get("typebot") == "pauta":
             data_inicio_formated = datetime.strptime(
                 data.get("data_inicio"), "%Y-%m-%d"
             )
@@ -109,7 +109,7 @@ class SetStatus:
             diff = data_fim_formated - data_inicio_formated
             rows = diff.days + 2
 
-        elif data.get("typebot") == "proc_parte":  # pragma: no cover
+        elif data.get("typebot") == "proc_parte":
 
             rows = len(list(data.get("varas"))) + 1
 
@@ -122,7 +122,7 @@ class SetStatus:
         max_length = name_column.type.length
         xlsx_ = str(data.get("xlsx", "Sem Arquivo"))
 
-        if len(data.get("xlsx", "Sem Arquivo")) > int(max_length):  # pragma: no cover
+        if len(data.get("xlsx", "Sem Arquivo")) > int(max_length):
             xlsx_ = xlsx_[: int(max_length)]
 
         execut = Executions(
@@ -199,7 +199,7 @@ class SetStatus:
 
             try:
                 email_stop(execution, app)
-            except Exception as e:  # pragma: no cover
+            except Exception as e:
                 raise e
 
             execution.status = status
@@ -209,5 +209,5 @@ class SetStatus:
             db.session.close()
             return objeto_destino
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             raise e

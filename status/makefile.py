@@ -9,7 +9,7 @@ from shutil import rmtree
 import pytz
 
 
-def makezip(pid: str) -> str:  # pragma: no cover
+def makezip(pid: str) -> str:
 
     file_paths = []
     exec_path = (

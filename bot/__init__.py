@@ -32,6 +32,11 @@ class BotThread(Process):
 
 class WorkerThread:
 
+    system: str
+    kwrgs: Dict[str, str]
+
+    __dict__: Dict[str, str]
+
     @staticmethod
     @shared_task(ignore_result=False)
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
@@ -123,13 +128,13 @@ class WorkerThread:
 
             return f"Process {processID} stopped!"
 
-        except psutil.TimeoutExpired:  # pragma: no cover
+        except psutil.TimeoutExpired:
             return "O processo não foi encerrado dentro do tempo limite"
 
-        except psutil.NoSuchProcess:  # pragma: no cover
+        except psutil.NoSuchProcess:
             return f"Process {processID} stopped!"
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             return str(e)
 
     def check_status(self, processID: str) -> str:  # pragma: no cover
@@ -148,8 +153,13 @@ class WorkerThread:
         except psutil.TimeoutExpired:  # pragma: no cover
             return "O processo não foi encerrado dentro do tempo limite"
 
-        except psutil.NoSuchProcess:  # pragma: no cover
+        except psutil.NoSuchProcess:
             return f"Process {processID} stopped!"
 
-        except Exception as e:  # pragma: no cover
+        except Exception as e:
             return str(e)
+
+
+if __name__ == "__main__":
+
+    from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi

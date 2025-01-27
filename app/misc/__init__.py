@@ -87,25 +87,25 @@ def stop_execution(
             get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
             filename = get_file(pid, app)
 
-            if filename != "":  # pragma: no cover
+            if filename != "":
 
                 get_info.file_output = filename
                 db.session.commit()
                 db.session.close()
 
-            elif filename == "":  # pragma: no cover
+            elif filename == "":
                 get_info.file_output = SetStatus(
                     usr=user, pid=pid, system=system, typebot=typebot
                 ).botstop(db, app)
                 db.session.commit()
                 db.session.close()
 
-        elif not processID:  # pragma: no cover
+        elif not processID:
             raise Exception("Execution not found!")
 
         return {"message": "bot stopped!"}, 200
 
-    except Exception as e:  # pragma: no cover
+    except Exception as e:
         app.logger.error("An error occurred: %s", str(e))
         return {"message": "An internal error has occurred!"}, 500
 

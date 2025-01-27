@@ -32,6 +32,9 @@ async_mode = (
 io = SocketIO(async_mode=async_mode)
 app = None
 
+async_mode = "threading"
+if platform.system() == "Linux" and os.environ.get("DOCKER_CONTEXT"):
+    async_mode = "eventlet"
 
 clean_prompt = False
 
@@ -132,7 +135,7 @@ class AppFactory:
 
             if not Path("is_init.txt").exists():
 
-                with open("is_init.txt", "w") as f:  # pragma: no cover
+                with open("is_init.txt", "w") as f:
                     db.create_all()
                     f.write("True")
 
@@ -141,7 +144,7 @@ class AppFactory:
             if not db.engine.dialect.has_table(
                 db.engine.connect(), ThreadBots.__tablename__
             ):
-                with open("is_init.txt", "w") as f:  # pragma: no cover
+                with open("is_init.txt", "w") as f:
 
                     db.create_all()
                     f.write("True")
@@ -151,9 +154,7 @@ class AppFactory:
             NAMESERVER = values.get("NAMESERVER")
             HOST = values.get("HOSTNAME")
 
-            if not Servers.query.filter(
-                Servers.name == NAMESERVER
-            ).first():  # pragma: no cover
+            if not Servers.query.filter(Servers.name == NAMESERVER).first():
 
                 server = Servers(
                     name=NAMESERVER, address=HOST, system=platform.system()

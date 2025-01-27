@@ -40,13 +40,13 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
             data_bot = request_data if request_data else request_form
 
-            if isinstance(data_bot, str):  # pragma: no cover
+            if isinstance(data_bot, str):
                 data_bot = json.loads(data_bot)
 
-            if check_latest() is False and app.debug is False:  # pragma: no cover
+            if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")
 
-            if app.testing is False:  # pragma: no cover
+            if app.testing is False:
 
                 if system == "esaj" and platform.system() != "Windows":
                     raise Exception("Este servidor não pode executar este robô!")
