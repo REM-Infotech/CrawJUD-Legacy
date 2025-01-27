@@ -1,6 +1,7 @@
+from __future__ import annotations
 from importlib import import_module
 from time import sleep
-from typing import Callable, Dict, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import psutil
 from billiard.context import Process
@@ -93,7 +94,7 @@ class WorkerThread:
 
             kwargs.update({"display_name": display_name})
 
-            bot_: Callable[..., None] = getattr(
+            bot_: ClassesSystems = getattr(
                 import_module(f".scripts.{system_}", __package__),
                 system_,
             )
@@ -162,4 +163,4 @@ class WorkerThread:
 
 if __name__ == "__main__":
 
-    from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi
+    from .scripts import ClassesSystems

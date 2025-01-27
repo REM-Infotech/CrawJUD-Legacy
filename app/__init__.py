@@ -1,10 +1,7 @@
-# Python Imports
-import pathlib
 import platform
 from datetime import timedelta
 from os import getenv
 from pathlib import Path
-
 from celery import Celery
 from clear import clear
 from dotenv import dotenv_values
@@ -31,11 +28,7 @@ async_mode = (
 
 io = SocketIO(async_mode=async_mode)
 app = None
-
-async_mode = "threading"
-if platform.system() == "Linux" and os.environ.get("DOCKER_CONTEXT"):
-    async_mode = "eventlet"
-
+app = Flask(__name__)
 clean_prompt = False
 
 objects_config = {
@@ -54,9 +47,6 @@ class AppFactory:
         global app
 
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
-        src_path = pathlib.Path(__file__).cwd().resolve().joinpath("static")
-
-        app = Flask(__name__, static_folder=src_path)
 
         env_ambient = dotenv_values(".env")["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
