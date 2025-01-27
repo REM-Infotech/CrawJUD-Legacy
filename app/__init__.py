@@ -1,7 +1,5 @@
-# Flask imports
-# Python Imports
 import os
-import pathlib
+import platform
 from datetime import timedelta
 from pathlib import Path
 
@@ -18,11 +16,13 @@ from configs import Configurator, check_allowed_origin
 
 db = None
 mail = None
-io = None
-app = None
 
+async_mode = "threading"
+if platform.system() == "Linux" and os.environ.get("DOCKER_CONTEXT"):
+    async_mode = "eventlet"
 
-clean_prompt = False
+app = Flask(__name__)
+io = SocketIO(app, async_mode=async_mode)
 
 
 class AppFactory:
@@ -107,14 +107,9 @@ class AppFactory:
 
     def create_app(self) -> tuple[Flask, SocketIO] | Flask:
 
-        global app
-
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
-        src_path = os.path.join(pathlib.Path(__file__).cwd(), "static")
 
         config_obj = Configurator().get_configurator()
-
-        app = Flask(__name__, static_folder=src_path)
 
         app.config.from_object(config_obj)
 
@@ -158,7 +153,7 @@ class AppFactory:
     def init_socket(self, app: Flask):
 
         global io
-        io = SocketIO(app, async_mode="eventlet")
+
         io.init_app(
             app,
             cors_allowed_origins=check_allowed_origin,
