@@ -581,6 +581,31 @@ class complement(CrawJUD):
         self.prt()
 
     @classmethod
+    def bairro(cls, self: Self):
+
+        self.message = "Informando bairro"
+        self.type_log = "log"
+        self.prt()
+
+        css_input_bairro = 'input[id="j_id_3k_1:j_id_3k_4_2_2_8_9_44_2:j_id_3k_4_2_2_8_9_44_3_1_2_2_1_1:fieldid_9237fieldText"]'
+
+        bairro_ = self.bot_data.get("BAIRRO")
+
+        input_bairro = self.driver.find_element(By.CSS_SELECTOR, css_input_bairro)
+        input_bairro.click()
+        self.interact.send_key(input_bairro, bairro_)
+
+        self.driver.execute_script(
+            f"document.querySelector('{self.elements.css_valor_causa}').blur()"
+        )
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Bairro informado!"
+        self.type_log = "info"
+        self.prt()
+
+    @classmethod
     def divisao(cls, self: Self) -> None:
 
         self.message = "Informando divisão"
