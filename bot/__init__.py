@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import platform
 from importlib import import_module
+from pathlib import Path
 from time import sleep
 from typing import Dict, Tuple, Union
 
@@ -160,18 +161,24 @@ class WorkerBot:
     def stop(cls, processID: int, pid: str, app: Flask = None) -> str:
 
         try:
+            Process = AsyncResult(processID)
 
-            # Process: process_type = None
-            # with suppress(psutil.NoSuchProcess):
-            #     Process = psutil.Process(processID)
+            print(Process.status)
 
-            # if Process and Process.is_running() or app.testing is True:
-            #     if not path_flag.exists():
+            if app.testing is True or (Process and Process.status == "PENDING"):
 
-            #         path_flag.parent.resolve().mkdir(parents=True, exist_ok=True)
-
-            #         with open(str(_flag), "w") as f:
-            #             f.write("Encerrar processo")
+                path_flag = (
+                    Path(__file__)
+                    .cwd()
+                    .joinpath("exec")
+                    .joinpath(pid)
+                    .joinpath(f"{pid}.flag")
+                    .resolve()
+                )
+                if not path_flag.exists():
+                    path_flag.parent.mkdir(parents=True, exist_ok=True)
+                    with path_flag.open("w") as f:
+                        f.write("Encerrar processo")
 
             return f"Process {processID} stopped!"
 
