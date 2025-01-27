@@ -2,6 +2,7 @@ import re
 import time
 from contextlib import suppress
 from datetime import datetime
+from typing import Dict
 
 # from memory_profiler import profile
 from selenium.webdriver.common.by import By
@@ -95,7 +96,7 @@ class capa(CrawJUD):
         try:
 
             grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
-            process_info = {}
+            process_info: Dict[str, str | int | datetime] = {}
             process_info.update(
                 {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")}
             )
