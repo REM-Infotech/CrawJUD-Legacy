@@ -53,7 +53,7 @@
         "--loglevel",
         "INFO",
         "-P",
-        "solo",
+        "threads",
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
