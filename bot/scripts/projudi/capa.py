@@ -218,12 +218,13 @@ class capa(CrawJUD):
 
                             if self.text_is_a_date(value_text) is True:
                                 value_text = datetime.strptime(value_text, "%d/%m/%Y")
-                                process_info.update({label_text: value_text})
 
                         elif not_formated_label != value_text:
-                            process_info.update(
-                                {label_text: " ".join(value_text.split(" ")).upper()}
-                            )
+                            value_text = " ".join(value_text.split(" ")).upper()
+
+                        process_info.update(
+                            {label_text: " ".join(value_text.split(" ")).upper()}
+                        )
 
             btn_partes = self.elements.btn_partes
             if grau == 2:
