@@ -4,4 +4,68 @@
   ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "superAdmin",
+      "base": "admin",
+      "color": "orange",
+      "lightColor": "orange",
+      "folderNames": [
+        "supersu",
+        "superuser",
+        "superSu"
+      ]
+    },
+    {
+      "name": "user",
+      "base": "admin",
+      "color": "brown",
+      "lightColor": "brown",
+      "folderNames": [
+        "user",
+        "usr",
+        "User",
+        "usr"
+      ]
+    },
+    {
+      "name": "forms-flask",
+      "base": "resource",
+      "color": "#1ABC9C",
+      "lightColor": "#1ABC9C",
+      "folderNames": [
+        "Forms",
+        "forms",
+        "wtforms"
+      ]
+    },
+    {
+      "name": "sqlite-instance",
+      "base": "database",
+      "color": "#880ff1",
+      "lightColor": "#880ff1",
+      "folderNames": [
+        "instance",
+        "Instance"
+      ]
+    },
+    {
+      "name": "git_folder",
+      "base": "git",
+      "color": "orange",
+      "folderNames": [
+        "git_funcs",
+      ]
+    },
+    {
+      "name": "system",
+      "base": "controller",
+      "color": "#d6d309",
+      "lightColor": "#f5f259",
+      "folderNames": [
+        "sys",
+        "System"
+      ]
+    },
+  ],
 }
