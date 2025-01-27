@@ -27,7 +27,7 @@ async_mode = (
     else str("eventlet")
 )
 
-io = SocketIO(async_mode=async_mode)
+io = None
 app = None
 app = Flask(__name__)
 clean_prompt = False
@@ -94,6 +94,16 @@ class AppFactory:
         return tslm
 
     def init_socket(self, app: Flask) -> SocketIO:
+        global io
+
+        host_redis = getenv("REDIS_HOST")
+        pass_redis = getenv("REDIS_PASSWORD")
+        port_redis = getenv("REDIS_PORT")
+
+        io = SocketIO(
+            async_mode=async_mode,
+            message_queue=f"redis://:{pass_redis}@{host_redis}:{port_redis}/9",
+        )
 
         io.init_app(
             app,

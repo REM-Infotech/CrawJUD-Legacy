@@ -37,7 +37,7 @@ def on_join(data: dict[str, str]) -> None:
 
         from app import db
         from app.models import ThreadBots
-        from bot import WorkerThread
+        from bot import WorkerBot
 
         pid = room
         processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
@@ -46,7 +46,7 @@ def on_join(data: dict[str, str]) -> None:
 
         if processID:
             processID = processID.processID
-            message = WorkerThread().check_status(processID)
+            message = WorkerBot.check_status(processID)
 
             if message == f"Process {processID} stopped!":
                 stop_execution(app, pid)
@@ -94,7 +94,7 @@ def on_terminate_bot(data: dict[str, str]) -> None:
 
     from app import db
     from app.models import ThreadBots
-    from bot import WorkerThread
+    from bot import WorkerBot
 
     try:
         pid = data["pid"]
@@ -102,7 +102,7 @@ def on_terminate_bot(data: dict[str, str]) -> None:
 
         if processID:
             processID = str(processID.processID)
-            WorkerThread().stop(processID, pid, app)
+            WorkerBot.stop(processID, pid, app)
             send("Bot stopped!")
 
     except Exception:

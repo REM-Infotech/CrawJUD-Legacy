@@ -9,14 +9,13 @@ from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Dict, List, Union
 
-import pandas as pd
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from pandas import Timestamp
 from werkzeug.utils import secure_filename
 
 from ..common import ErroDeExecucao
-from ..core import CrawJUD
+from ..core import CrawJUD, pd
 from ..shared import Numbers
 from .auth import AuthBot
 from .Driver import DriverBot

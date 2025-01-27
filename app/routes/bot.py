@@ -62,9 +62,9 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
                     reload_module("bot")
 
                     from app.models import ThreadBots
-                    from bot import WorkerThread
+                    from bot import WorkerBot
 
-                    bot_starter = WorkerThread.start_bot
+                    bot_starter = WorkerBot.start_bot
 
                     pid = pathlib.Path(path_args).stem
 

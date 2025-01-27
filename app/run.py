@@ -39,4 +39,4 @@ if system().lower() == "linux" and getenv("DOCKER_CONTEXT", None):
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
-_, __, app = create_app()
+flask_app, __, app = create_app()

@@ -15,8 +15,8 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from ..core import CrawJUD
 
-if platform.system() == "Windows":
-    from pywinauto import Application
+if platform.system == "Windows":
+    from ..core import Application
 
 
 class AuthBot(CrawJUD):

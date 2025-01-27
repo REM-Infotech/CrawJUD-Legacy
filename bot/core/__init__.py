@@ -1,4 +1,26 @@
+from __future__ import annotations
+
 import json
+import platform
+
+from .. import (
+    BarColumn,
+    DownloadColumn,
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+    pd,
+)
+
+if platform.system() == "Windows":
+    from .. import Application
+
 from datetime import datetime
 from pathlib import Path
 
@@ -6,6 +28,22 @@ from pytz import timezone
 
 from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD, TypeHint
+
+__all__ = [
+    pd,
+    "Application",
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    BarColumn,
+    DownloadColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+]
 
 
 class CrawJUD(PropertiesCrawJUD):

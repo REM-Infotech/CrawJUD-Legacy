@@ -10,12 +10,19 @@ from pathlib import Path
 from typing import List, Tuple
 
 import requests
-from rich.console import Group
-from rich.live import Live
-from rich.panel import Panel
-from rich.progress import (
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+
+from ...core import (
     BarColumn,
+    CrawJUD,
     DownloadColumn,
+    Group,
+    Live,
+    Panel,
     Progress,
     TaskID,
     TextColumn,
@@ -23,13 +30,6 @@ from rich.progress import (
     TimeRemainingColumn,
     TransferSpeedColumn,
 )
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
-
-from ...core import CrawJUD
 
 try:
     from getchromeVer import chrome_ver

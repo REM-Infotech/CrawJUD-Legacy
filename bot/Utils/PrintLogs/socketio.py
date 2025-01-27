@@ -19,8 +19,8 @@ class SocketBot:
             """Verifica se já está conectado antes de tentar se conectar"""
             self.connect_emit(event, data, url)
 
-        except Exception as e:
-            print(e)
+        except Exception:
+            # print(e)
             try:
                 self.connected = False
                 sio.disconnect()

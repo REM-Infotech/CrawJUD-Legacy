@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from bot import WorkerThread
+from bot import WorkerBot
 from status import SetStatus as st_stt
 
 
@@ -15,7 +15,7 @@ class TestRunner:
 
             path_args, display_name = SetStatus.start_bot(app, db, user, pid, 1)
 
-            worker_thread = WorkerThread(
+            worker_thread = WorkerBot(
                 path_args=path_args,
                 display_name=display_name,
                 system="projudi",
@@ -40,7 +40,7 @@ class TestRunner:
         with app.app_context():
 
             stop = SetStatus.botstop(db, app, pid)
-            check_return = WorkerThread().stop(12345, pid, app)
+            check_return = WorkerBot().stop(12345, pid, app)
 
             file_ = get_file(pid, app)
 
@@ -62,5 +62,5 @@ class TestRunner:
         with app.app_context():
 
             stop = SetStatus.botstop(db, app, pid, "esaj", "protocolo")
-            check_return = WorkerThread().stop(12345, pid, app)
+            check_return = WorkerBot().stop(12345, pid, app)
             assert check_return is not None and stop is not None

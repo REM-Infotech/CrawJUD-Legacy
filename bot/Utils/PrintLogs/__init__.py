@@ -31,7 +31,7 @@ class PrintBot(CrawJUD):
         log = self.message
         if self.message_error:
             log = self.message_error
-            self.message_error = None
+            self.message_error = ""
 
         self.prompt = "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
             pid=self.pid,
