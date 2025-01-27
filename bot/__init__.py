@@ -144,22 +144,18 @@ class WorkerThread:
         try:
 
             Process = AsyncResult(processID)
-            if Process.status == "SUCCESS":
+
+            status: str = Process.status
+            if status == "SUCCESS":
                 return f"Process {processID} stopped!"
 
-            elif Process.status == "FAILURE":
+            elif status == "FAILURE":
                 return "Erro ao inicializar robô"
 
             return "Process running!"
 
-        except psutil.TimeoutExpired:  # pragma: no cover
-            return "O processo não foi encerrado dentro do tempo limite"
-
-        except psutil.NoSuchProcess:
+        except Exception:
             return f"Process {processID} stopped!"
-
-        except Exception as e:
-            return str(e)
 
 
 if __name__ == "__main__":
