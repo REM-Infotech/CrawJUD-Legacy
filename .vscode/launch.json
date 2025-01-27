@@ -54,6 +54,7 @@
         "INFO",
         "-P",
         "threads",
+        "--autoscale=50,3"
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
