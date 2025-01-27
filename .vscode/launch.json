@@ -1,0 +1,80 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Run Flask app (Linux)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
+    },
+    {
+      "name": "Python: Run Flask app (Windows)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
+    },
+    {
+      "name": "Python: Celery Workers (Linux)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "args": [
+        "-A",
+        "app.run.app",
+        "worker",
+        "-E",
+        "--loglevel",
+        "INFO",
+        "-P",
+        "threads",
+        "--autoscale=50,3"
+      ],
+      "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
+    },
+    {
+      "name": "Python: Celery Workers (Windows)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "args": [
+        "-A",
+        "app.run.app",
+        "worker",
+        "-E",
+        "--loglevel",
+        "INFO",
+        "-P",
+        "threads",
+        "--autoscale=50,3"
+      ],
+      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
+    },
+    {
+      "name": "Python: Celery Beat",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "args": [
+        "-A",
+        "app.run.app",
+        "beat",
+        "--loglevel",
+        "INFO",
+        "--scheduler",
+        "job.FlaskSchedule.DatabaseScheduler"
+      ],
+      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
+    },
+  ]
+}
