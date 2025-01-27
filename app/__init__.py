@@ -2,6 +2,7 @@ import platform
 from datetime import timedelta
 from os import getenv
 from pathlib import Path
+
 from celery import Celery
 from clear import clear
 from dotenv import dotenv_values

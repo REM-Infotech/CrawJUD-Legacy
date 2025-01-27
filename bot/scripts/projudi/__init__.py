@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import logging
 import traceback
 from importlib import import_module
@@ -38,9 +39,9 @@ class projudi:
 
 
 if __name__ == "__main__":
-    from .proc_parte import proc_parte
     from .capa import capa
     from .movimentacao import movimentacao
+    from .proc_parte import proc_parte
     from .protocolo import protocolo
 
     ClassBots = Union[proc_parte, capa, movimentacao, protocolo]
