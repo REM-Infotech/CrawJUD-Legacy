@@ -5,7 +5,8 @@ from pytz import timezone
 
 from app import app, io
 from app.misc import stop_execution
-from status.server_side import FormatMessage, load_cache
+
+# from status.server_side import load_cache, FormatMessage
 
 
 @io.on("connect", namespace="/log")
@@ -31,7 +32,7 @@ def on_join(data: dict[str, str]) -> None:
     room = data["pid"]
     join_room(room)
 
-    data = load_cache(room, app)
+    # data = load_cache(room, app)
     try:  # pragma: no cover
 
         from app import db
@@ -64,16 +65,16 @@ def on_join(data: dict[str, str]) -> None:
                 )
             elif message == "Erro ao inicializar robô":
 
-                data = FormatMessage(
-                    {"type": "error", "pid": room, "message": message}, room, app
-                )
+                # data = FormatMessage(
+                #     {"type": "error", "pid": room, "message": message}, room, app
+                # )
                 stop_execution(app, pid)
 
     except Exception:  # pragma: no cover
         send("Failed to check bot has stopped")
-        data = FormatMessage(
-            {"type": "error", "pid": room, "message": message}, room, app
-        )
+        # data = FormatMessage(
+        #     {"type": "error", "pid": room, "message": message}, room, app
+        # )
         stop_execution(app, pid)
 
     emit("log_message", data, room=room)
@@ -116,7 +117,7 @@ def on_log_message(data: dict[str, str]) -> None:
         pid = data["pid"]
 
         if "message" in data:
-            data = FormatMessage(data, pid, app)
+            # data = FormatMessage(data, pid, app)
             emit("log_message", data, room=pid)
 
         send("message received!")
