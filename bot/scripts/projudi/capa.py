@@ -218,6 +218,7 @@ class capa(CrawJUD):
 
                             if self.text_is_a_date(value_text) is True:
                                 value_text = datetime.strptime(value_text, "%d/%m/%Y")
+                                process_info.update({label_text: value_text})
 
                         elif not_formated_label != value_text:
                             process_info.update(
