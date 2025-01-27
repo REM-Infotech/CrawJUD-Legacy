@@ -226,6 +226,9 @@ class capa(CrawJUD):
                         elif not_formated_label != value_text:
                             value_text = " ".join(value_text.split(" ")).upper()
 
+                        else:
+                            continue
+
                         process_info.update({label_text: value_text})
 
             btn_partes = self.elements.btn_partes
