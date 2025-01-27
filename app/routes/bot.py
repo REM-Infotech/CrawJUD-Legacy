@@ -134,9 +134,9 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:
     if isinstance(data_bot, str):  # pragma: no cover
         data_bot = json.loads(data_bot)
 
-    # cron = crontab(
-    #     minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*"
-    # )
+    cron = crontab(
+        minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*"
+    )
 
     cron = crontab(**data_bot.get("CRONTAB_ARGS"))
 

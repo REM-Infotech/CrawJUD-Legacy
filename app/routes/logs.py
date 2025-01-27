@@ -5,29 +5,79 @@ from pytz import timezone
 
 from app import app, io
 from app.misc import stop_execution
-
-# from status.server_side import load_cache, FormatMessage
+from status.server_side import FormatMessage  # load_cache, FormatMessage
 
 
 @io.on("connect", namespace="/log")
-def on_connect() -> None:
+def connect() -> None:
     send("connected!")
 
 
 @io.on("disconnect", namespace="/log")
-def on_disconnect() -> None:
+def disconnect() -> None:
     send("disconnected!")
 
 
 @io.on("leave", namespace="/log")
-def on_leave(data) -> None:
+def leave(data) -> None:
     room = data["pid"]
     leave_room(room)
     send(f"Leaving Room '{room}'")
 
 
+@io.on("stop_bot", namespace="/log")
+def stop_bot(data: dict[str, str]) -> None:
+
+    pid = data["pid"]
+    stop_execution(app, pid)
+    send("Bot stopped!")
+
+
+@io.on("terminate_bot", namespace="/log")
+def terminate_bot(data: dict[str, str]) -> None:
+
+    from app import db
+    from app.models import ThreadBots
+    from bot import WorkerBot
+
+    try:
+        pid = data["pid"]
+        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+
+        if processID:
+            processID = str(processID.processID)
+            WorkerBot.stop(processID, pid, app)
+            send("Bot stopped!")
+
+    except Exception:
+        send("Failed to stop bot!")
+
+
+@io.on("log_message", namespace="/log")
+def log_message(data: dict[str, str]) -> None:
+
+    try:
+
+        pid = data["pid"]
+
+        if "message" in data:
+            data = FormatMessage(data, pid, app)
+            emit("log_message", data, room=pid)
+
+        send("message received!")
+
+    except Exception as e:
+        print(e)
+        send("failed to receive message")
+
+
+@io.on("statusbot", namespace="/log")
+def statusbot(data: dict) -> None:
+    send("Bot stopped!")
+
+
 @io.on("join", namespace="/log")
-def on_join(data: dict[str, str]) -> None:
+def join(data: dict[str, str]) -> None:
 
     room = data["pid"]
     join_room(room)
@@ -79,54 +129,3 @@ def on_join(data: dict[str, str]) -> None:
 
     emit("log_message", data, room=room)
     send(f"Joinned room! Room: {room}")
-
-
-@io.on("stop_bot", namespace="/log")
-def on_stop_bot(data: dict[str, str]) -> None:
-
-    pid = data["pid"]
-    stop_execution(app, pid)
-    send("Bot stopped!")
-
-
-@io.on("terminate_bot", namespace="/log")
-def on_terminate_bot(data: dict[str, str]) -> None:
-
-    from app import db
-    from app.models import ThreadBots
-    from bot import WorkerBot
-
-    try:
-        pid = data["pid"]
-        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
-
-        if processID:
-            processID = str(processID.processID)
-            WorkerBot.stop(processID, pid, app)
-            send("Bot stopped!")
-
-    except Exception:
-        send("Failed to stop bot!")
-
-
-@io.on("log_message", namespace="/log")
-def on_log_message(data: dict[str, str]) -> None:
-
-    try:
-
-        pid = data["pid"]
-
-        if "message" in data:
-            # data = FormatMessage(data, pid, app)
-            emit("log_message", data, room=pid)
-
-        send("message received!")
-
-    except Exception as e:
-        print(e)
-        send("failed to receive message")
-
-
-@io.on("statusbot", namespace="/log")
-def statusbot(data: dict) -> None:
-    send("Bot stopped!")

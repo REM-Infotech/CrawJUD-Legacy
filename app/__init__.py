@@ -1,4 +1,3 @@
-import platform
 from datetime import timedelta
 from os import getenv
 from pathlib import Path
@@ -13,19 +12,21 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from redis_flask import Redis
 
-# APP Imports
 from .utils import check_allowed_origin, make_celery
+
+# import platform
+# async_mode = (
+#     str("threading")
+#     if (getenv("DOCKER_CONTEXT", None) is None or platform.system() == "Windows")
+#     or (getenv("DEBUG", "False").lower() == "true")
+#     else str("eventlet")
+# )
+
 
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
 
-async_mode = (
-    str("threading")
-    if (getenv("DOCKER_CONTEXT", None) is None or platform.system() == "Windows")
-    or (getenv("DEBUG", "False").lower() == "true")
-    else str("eventlet")
-)
 
 io = None
 app = None
@@ -101,7 +102,7 @@ class AppFactory:
         port_redis = getenv("REDIS_PORT")
 
         io = SocketIO(
-            async_mode=async_mode,
+            async_mode="threading",
             message_queue=f"redis://:{pass_redis}@{host_redis}:{port_redis}/9",
         )
 
