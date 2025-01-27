@@ -112,7 +112,7 @@ class capa(CrawJUD):
                 matches = re.findall(pattern, valorDaCausa)
                 if len(matches) > 0:
 
-                    def convert_to_float(value):
+                    def convert_to_float(value) -> float:
                         # Remover símbolos de moeda e espaços
                         value = re.sub(r"[^\d.,]", "", value)
 
