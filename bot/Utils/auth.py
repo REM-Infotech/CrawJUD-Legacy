@@ -1,5 +1,5 @@
 import os
-import pathlib
+from pathlib import Path
 import platform
 import string
 import subprocess
@@ -261,10 +261,9 @@ class AuthBot(CrawJUD):
             sleep(0.5)
             button[1].click_input()
 
-            target_directory = os.path.join(
-                pathlib.Path(accepted_dir).parent.resolve(), "chrome"
-            )
-            os.makedirs(target_directory, exist_ok=True, mode=0o775)
+            target_directory = Path(accepted_dir).parent.joinpath("chrome").resolve()
+
+            target_directory.mkdir(exist_ok=True)
             source_directory = self.chr_dir
 
             try:

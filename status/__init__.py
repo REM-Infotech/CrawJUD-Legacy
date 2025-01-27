@@ -72,7 +72,7 @@ class SetStatus:
         id = self.id if id is None else id
 
         path_pid = Path(path.join(Path(__file__).cwd(), "exec", pid))
-        path_pid.mkdir(parents=True, exist_ok=True, mode=0o775)
+        path_pid.mkdir(parents=True, exist_ok=True)
 
         if self.files:
             for f, value in self.files.items():

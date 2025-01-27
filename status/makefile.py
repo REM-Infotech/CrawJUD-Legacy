@@ -16,7 +16,7 @@ def makezip(pid: str) -> str:  # pragma: no cover
         Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec").joinpath(pid)
     )
 
-    exec_path.mkdir(mode=0o775, exist_ok=True)
+    exec_path.mkdir(exist_ok=True)
     for root, dirs, files in exec_path.walk():
         if "chrome" in str(root) and root.is_dir():
             rmtree(root, ignore_errors=True)

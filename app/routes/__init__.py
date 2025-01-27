@@ -15,7 +15,7 @@ def register_routes(app: Flask) -> None:
     app.register_blueprint(bot)
 
     @app.errorhandler(HTTPException)
-    def handle_http_exception(error) -> Response:
+    def handle_http_exception(error: HTTPException) -> Response:
 
         url = dotenv_values().get("url_web")
         return make_response(redirect(url))

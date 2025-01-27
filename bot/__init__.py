@@ -61,21 +61,6 @@ class WorkerThread:
 
             while is_alive:
                 ...
-                # if signal.SIGTERM:
-                #     path_flag = (
-                #         Path(__file__)
-                #         .cwd()
-                #         .resolve()
-                #         .joinpath("exec")
-                #         .joinpath(pid)
-                #         .joinpath(f"{pid}.flag")
-                #     )
-
-                #     path_flag.parent.resolve().mkdir(exist_ok=True, mode=0o775)
-
-                #     with path_flag.open("w") as f:
-                #         f.write("Encerrar processo")
-                #     break
 
         except Exception as e:
             raise e

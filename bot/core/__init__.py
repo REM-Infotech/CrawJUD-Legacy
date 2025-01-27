@@ -58,21 +58,21 @@ class CrawJUD(PropertiesCrawJUD):
 
         return item
 
-    def set_permissions_recursive(self, path: Path, permissions: int = 0o775) -> None:
-        # Converte o caminho para um objeto Path, caso ainda não seja
-        path = Path(path)
+    # def set_permissions_recursive(self, path: Path, permissions: int) -> None:
+    #     # Converte o caminho para um objeto Path, caso ainda não seja
+    #     path = Path(path)
 
-        # Define a permissão para o próprio diretório
-        path.chmod(permissions)
+    #     # Define a permissão para o próprio diretório
+    #     path.chmod(permissions)
 
-        # Itera sobre todos os arquivos e diretórios dentro da pasta
-        for item in path.rglob("*"):  # rglob percorre recursivamente
+    #     # Itera sobre todos os arquivos e diretórios dentro da pasta
+    #     for item in path.rglob("*"):  # rglob percorre recursivamente
 
-            try:
-                item.chmod(permissions)
+    #         try:
+    #             item.chmod(permissions)
 
-            except FileNotFoundError:
-                continue
+    #         except FileNotFoundError:
+    #             continue
 
     def setup(self) -> None:
         """
@@ -141,7 +141,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.driver = driver
             self.wait = wait
 
-            self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
+            # self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:
 

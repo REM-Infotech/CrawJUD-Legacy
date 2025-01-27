@@ -248,7 +248,7 @@ class SetupDriver:
         if not self.file_path.exists():
 
             if not root_path.exists():
-                root_path.mkdir(mode=0o775, exist_ok=True, parents=True)
+                root_path.mkdir(exist_ok=True, parents=True)
 
             url = self.getUrl()
             pool.submit(self.copy_url, task_id, url, self.file_path)
@@ -311,7 +311,6 @@ class SetupDriver:
         # input(str("member"))
         # Extract the zip file
 
-        zip_name.chmod(0o775)
         with zipfile.ZipFile(zip_name, "r") as zip_ref:
 
             # Extract each file directly into the subfolder
@@ -335,7 +334,6 @@ class SetupDriver:
                         continue
 
                     shutil.move(extracted_path, path)
-                    path.chmod(0o775)
 
         zip_name.unlink()
         self.current_app_progress.update(
