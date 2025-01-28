@@ -289,9 +289,14 @@ class CrawJUD(classproperty):
         """
 
         data_listed = list(data.items())
+
         for key, value in data_listed:
 
-            if not value.strip():
+            if isinstance(value, str):
+                if not value.strip():
+                    data.pop(key)
+
+            elif value is None:
                 data.pop(key)
 
             if key.upper() == "TIPO_EMPRESA":
