@@ -175,3 +175,8 @@ cython_debug/
 
 webdriver/
 *.exe
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
