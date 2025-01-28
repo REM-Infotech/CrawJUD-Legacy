@@ -4,7 +4,8 @@ from pathlib import Path
 
 from celery import Celery
 from clear import clear
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from flask import Flask
 from flask_mail import Mail
 from flask_socketio import SocketIO
@@ -22,6 +23,7 @@ from .utils import check_allowed_origin, make_celery
 #     else str("eventlet")
 # )
 
+load_dotenv()
 
 mail = Mail()
 tslm = Talisman()
@@ -40,6 +42,7 @@ objects_config = {
 }
 
 clear()
+load_dotenv()
 
 
 class AppFactory:
@@ -50,7 +53,7 @@ class AppFactory:
 
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
 
-        env_ambient = dotenv_values(".env")["AMBIENT_CONFIG"]
+        env_ambient = environ["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
 
@@ -151,10 +154,8 @@ class AppFactory:
                     db.create_all()
                     f.write("True")
 
-            values = dotenv_values()
-
-            NAMESERVER = values.get("NAMESERVER")
-            HOST = values.get("HOSTNAME")
+            NAMESERVER = environ.get("NAMESERVER")
+            HOST = environ.get("HOSTNAME")
 
             if not Servers.query.filter(Servers.name == NAMESERVER).first():
 

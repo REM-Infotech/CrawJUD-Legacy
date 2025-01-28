@@ -2,8 +2,11 @@ import re
 from typing import Any
 
 from celery import Celery
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from flask import Flask
+
+load_dotenv()
 
 
 def make_celery(app: Flask) -> Celery:
@@ -27,7 +30,7 @@ def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cov
         r"https:\/\/.*\.rhsolut\.com\.br",
     ]
     if not origin:
-        origin = f'https://{dotenv_values().get("HOSTNAME")}'
+        origin = f'https://{environ.get("HOSTNAME")}'
 
     for orig in allowed_origins:
         pattern = orig

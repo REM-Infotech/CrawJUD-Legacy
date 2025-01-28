@@ -6,7 +6,8 @@ from time import sleep
 from typing import Self
 
 import pytz
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from tqdm import tqdm
 
 from ...core import CrawJUD
@@ -14,8 +15,9 @@ from .socketio import SocketBot
 
 codificacao = "UTF-8"
 mensagens = []
+load_dotenv()
 
-url_socket = dotenv_values().get("HOSTNAME")
+url_socket = environ.get("HOSTNAME")
 iobot = SocketBot()
 
 

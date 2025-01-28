@@ -1,10 +1,12 @@
 import json
 
 import FindMyIP as ip
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from tornado.httpclient import HTTPClient
 
-TOKEN = dotenv_values().get("TOKEN_IP2")
+TOKEN = environ.get("TOKEN_IP2")
+load_dotenv()
 
 
 class GlobalExcept(Exception):

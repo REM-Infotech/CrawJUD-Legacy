@@ -1,8 +1,9 @@
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from flask import Flask
 from flask_mail import Mail, Message
 
-values = dotenv_values()
+load_dotenv()
 
 
 def email_start(execution: None, app: Flask) -> None:
@@ -19,7 +20,7 @@ def email_start(execution: None, app: Flask) -> None:
     admins: list[str] = []
     pid = execution.pid
     usr: Users = execution.user
-    url_web = dotenv_values().get("url_web")
+    url_web = environ.get("url_web")
 
     display_name = execution.bot.display_name
     xlsx = execution.arquivo_xlsx
@@ -33,8 +34,8 @@ def email_start(execution: None, app: Flask) -> None:
 
     with app.app_context():
 
-        url_web = dotenv_values().get("url_web")
-        sendermail = values["MAIL_DEFAULT_SENDER"]
+        url_web = environ.get("url_web")
+        sendermail = environ["MAIL_DEFAULT_SENDER"]
 
         robot = f"Notificações do Robô <{sendermail}>"
         assunto = "Notificação de inicialização"
@@ -78,7 +79,7 @@ def email_stop(execution: None, app: Flask) -> None:
     admins: list[str] = []
     pid = execution.pid
     usr: Users = execution.user
-    url_web = dotenv_values().get("url_web")
+    url_web = environ.get("url_web")
 
     display_name = execution.bot.display_name
     xlsx = execution.arquivo_xlsx
@@ -92,8 +93,8 @@ def email_stop(execution: None, app: Flask) -> None:
 
     with app.app_context():
 
-        url_web = dotenv_values().get("url_web")
-        sendermail = values["MAIL_DEFAULT_SENDER"]
+        url_web = environ.get("url_web")
+        sendermail = environ["MAIL_DEFAULT_SENDER"]
 
         robot = f"Notificações do Robô <{sendermail}>"
         assunto = "Notificação de Finalização"

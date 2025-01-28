@@ -4,7 +4,8 @@ import string
 from datetime import datetime
 
 import pytz
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from flask import Flask
 from google.cloud.storage import Bucket, Client
 from google.cloud.storage.blob import Blob
@@ -16,6 +17,8 @@ from .get_location import GeoLoc
 
 signed_url_lifetime = 300
 __all__ = [GeoLoc, _release_tag, check_latest, checkout_release, update_servers]
+
+load_dotenv()
 
 
 def generate_pid() -> str:
@@ -37,7 +40,7 @@ def generate_pid() -> str:
 
 def storageClient() -> Client:
 
-    project_id = dotenv_values().get("project_id")
+    project_id = environ.get("project_id")
     # Configure a autenticação para a conta de serviço do GCS
     credentials = CredentialsGCS()
 
@@ -46,7 +49,7 @@ def storageClient() -> Client:
 
 def CredentialsGCS() -> Credentials:
 
-    credentials_dict = json.loads(dotenv_values().get("credentials_dict"))
+    credentials_dict = json.loads(environ.get("credentials_dict"))
     return Credentials.from_service_account_info(credentials_dict).with_scopes(
         ["https://www.googleapis.com/auth/cloud-platform"]
     )
@@ -56,7 +59,7 @@ def CredentialsGCS() -> Credentials:
 
 def bucketGcs(storageClient: Client) -> Bucket:
 
-    bucket_name = dotenv_values().get("bucket_name")
+    bucket_name = environ.get("bucket_name")
 
     bucket_obj = storageClient.bucket(bucket_name)
     return bucket_obj

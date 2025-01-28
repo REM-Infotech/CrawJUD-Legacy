@@ -1,8 +1,12 @@
 from importlib import import_module
 
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
 from flask import Flask, Response, make_response, redirect
 from werkzeug.exceptions import HTTPException
+
+
+load_dotenv()
 
 
 def register_routes(app: Flask) -> None:
@@ -17,5 +21,5 @@ def register_routes(app: Flask) -> None:
     @app.errorhandler(HTTPException)
     def handle_http_exception(error: HTTPException) -> Response:
 
-        url = dotenv_values().get("url_web")
+        url = environ.get("url_web")
         return make_response(redirect(url))

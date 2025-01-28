@@ -3,7 +3,10 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Dict, List, Type
 
-from dotenv import dotenv_values
+from os import environ
+from dotenv_vault import load_dotenv
+
+load_dotenv()
 
 
 class Config(object):
@@ -117,7 +120,7 @@ class Config(object):
 class ProductionConfig(Config):
 
     try:
-        env = dotenv_values(".env")
+        env = environ
 
         # Flask-mail config
         MAIL_SERVER = env["MAIL_SERVER"]
@@ -168,7 +171,7 @@ class DevelopmentConfig(Config):
 
     try:
 
-        env = dotenv_values(".env")
+        env = environ
 
         # Flask-mail config
 
@@ -223,7 +226,7 @@ class TestingConfig(Config):
 
     try:
         TESTTING = True
-        env = dotenv_values(".env")
+        env = environ
 
         # Flask-mail config
 
