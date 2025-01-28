@@ -58,6 +58,8 @@ process_type = Union[psutil.Process, None]
 
 class BotThread(Process):
 
+    exc_bot: Exception = None
+
     def join(self) -> None:
         Process.join(self)
         if self.exc_bot:
@@ -98,17 +100,18 @@ class WorkerBot:
             sleep(2)
             # pid = Path(path_args).stem
 
-            is_alive = process.is_alive()
-
-            if not is_alive:
+            if not process.is_alive():
                 try:
-                    raise process.join()
+                    process.join()
 
                 except Exception as e:
                     raise e
 
-            while is_alive:
+            while process.is_alive():
                 ...
+
+            else:
+                process.join()
 
         except Exception as e:
             raise e
