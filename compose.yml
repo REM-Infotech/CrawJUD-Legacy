@@ -15,5 +15,8 @@ services:
         context: .
     volumes:
       - .:C:\crawjudbot_app
+    ports:
+      - 3389:3389
+
     hostname: crawjudbot_app
-    command: python -m celery -A app.run.celery worker -E --loglevel INFO --autoscale=50,3
+    command: python -m celery -A app.run.app worker -E --loglevel INFO --autoscale=50,3

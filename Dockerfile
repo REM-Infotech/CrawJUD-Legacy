@@ -15,4 +15,5 @@ RUN powershell.exe -noexit ".\inst_vnc.ps1"
 
 # RUN powershell.exe -noexit ".\inst_postgres.ps1"
 RUN pip install --no-cache-dir poetry
+RUN git config --global --add safe.directory C:/crawjudbot_app
 RUN poetry config virtualenvs.create false; poetry install --without dev

@@ -11,6 +11,8 @@ function Install-Vnc {
     choco upgrade tightvnc -y --installArguments "$ARGS_1 $ARGS_2 $ARGS_3"
     choco install git.install -y --params "'/GitAndUnixToolsOnPath /NoAutoCrlf'"
 
+    return $true
+
 }
 
 Install-Vnc
