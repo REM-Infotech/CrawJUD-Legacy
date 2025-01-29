@@ -1,4 +1,3 @@
-# Initialize Logging
 import logging
 import os
 from logging.handlers import RotatingFileHandler
@@ -9,7 +8,7 @@ def initialize_logging(
     log_file="app.log", log_level=logging.DEBUG, max_bytes=1024 * 1024, backup_count=1
 ) -> logging.Logger:
     """
-    Initializes a logger with a rotating file handler and a console handler.
+    Return a logger with a rotating file handler and a console handler.
 
     Args:
         log_file (str): Path to the log file.

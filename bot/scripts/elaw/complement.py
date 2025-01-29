@@ -460,7 +460,16 @@ class complement(CrawJUD):
 
     @classmethod
     def estado(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Updates the state of the process in the system.
+        This method retrieves the state information from `self.bot_data` using the key "ESTADO",
+        logs the action, and updates the state input field in the system using the `Select2_ELAW` method.
+        It then waits for the system to load the changes.
+        Args:
+            self (Self): An instance of the class containing the method.
+        Returns:
+            None
+        """
 
         key = "ESTADO"
         elementSelect = self.elements.estado_input
@@ -479,7 +488,16 @@ class complement(CrawJUD):
 
     @classmethod
     def comarca(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Fills in the comarca (judicial district) information for the process.
+        This method retrieves the comarca information from the bot data,
+        selects the appropriate input element, and inputs the comarca text.
+        It also logs the actions performed during this process.
+        Args:
+            self (Self): The instance of the class containing bot data and elements.
+        Returns:
+            None
+        """
 
         text = str(self.bot_data.get("COMARCA"))
         elementSelect = self.elements.comarca_input
@@ -497,7 +515,17 @@ class complement(CrawJUD):
 
     @classmethod
     def foro(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Updates the forum (foro) information for the process.
+        This method selects the appropriate forum input element and updates it with the
+        forum information retrieved from `self.bot_data`. It logs the actions performed
+        and interacts with the necessary elements on the page to ensure the forum information
+        is correctly updated.
+        Args:
+            self (Self): The instance of the class calling this method.
+        Returns:
+            None
+        """
 
         elementSelect = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))

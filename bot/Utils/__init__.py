@@ -266,12 +266,11 @@ class OtherUtils(CrawJUD):
         }
 
     def dataFrame(self) -> list[dict[str, str]]:
-        """
-        Converts an Excel file to a list of dictionaries with formatted data.
-        This method reads an Excel file specified by the instance's path arguments,
+        """Convert an Excel file to a list of dictionaries with formatted data.
+        His method reads an Excel file specified by the instance's path arguments,
         processes the data by formatting dates and floats, and returns the data as
         a list of dictionaries.
-        Returns:
+        Return:
             list[dict[str, str]]: A list of dictionaries where each dictionary
             represents a row in the Excel file with formatted data.
         Raises:
@@ -309,8 +308,7 @@ class OtherUtils(CrawJUD):
         return vars_df
 
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
-        """
-        Formats the given data dictionary according to specific rules.
+        """Format the given data dictionary according to specific rules.
         Args:
             data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
         Returns:
@@ -374,8 +372,7 @@ class OtherUtils(CrawJUD):
         return [minutes, seconds]
 
     def append_moves(self) -> None:
-        """
-        Appends movements to the spreadsheet if there are any movements to append.
+        """Append movements to the spreadsheet if there are any movements to append.
         This method checks if there are any movements stored in the `self.appends` list.
         If there are, it iterates over each movement and calls the `self.append_success`
         method to save the movement to the spreadsheet with a success message.
@@ -508,29 +505,20 @@ class OtherUtils(CrawJUD):
         )
 
     def normalizar_nome(self, word: str) -> str:
-        """
-
-        ### (function) def normalizar_nome(self, word: str) -> str
-
-        Função para normalizar os nomes (removendo caracteres especiais)
-        Remove espaços, substitui "_" e "-" por nada, e converte para minúsculas
+        """Return a normalized version of the given word.
+        Removes spaces, replaces "_" and "-" with nothing, and converts to lowercase
 
         Args:
-            word (str): palavra a ser 'normalizada'
+            word (str): word to be normalized
 
-        Returns:
-            str: nome normalizado
+        Return:
+            str: normalized name
         """
         #
         return re.sub(r"[\s_\-]", "", word).lower()
 
     def similaridade(self, word1: str, word2: str) -> float:
-        """
-        ### similaridade
-
-        Função para comparar similaridade
-
-
+        """Compare similarity between two words.
         Args:
             word1 (str): Palavra 1
             word2 (str): Palavra 2

@@ -1,5 +1,3 @@
-"""Crawler ELAW Cadastro"""
-
 import os
 import pathlib
 import time
@@ -148,7 +146,15 @@ class cadastro(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def area_direito(self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """Selects the area of law in the web form.
+        This method interacts with a web form to select a specific area of law.
+        It waits for the area label element to be present, clicks on it, and then
+        selects the appropriate item from a dropdown or similar element based on
+        the provided bot data.
+        Raises:
+            TimeoutException: If the area label element is not found within the
+                      specified wait time.
+        """
 
         self.message = "Informando área do direito"
         self.type_log = "log"
@@ -193,6 +199,14 @@ class cadastro(CrawJUD):
         self.prt()
 
     def next_page(self) -> None:
+        """
+        Navigate to the next page by clicking the designated button.
+        This method waits until the next page button is present in the DOM,
+        then clicks it to navigate to the next page.
+        Raises:
+            TimeoutException: If the next page button is not found within the wait time.
+        """
+
         next_page: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_button)),
             message="Erro ao encontrar elemento",
@@ -200,6 +214,14 @@ class cadastro(CrawJUD):
         next_page.click()
 
     def info_localizacao(self) -> None:
+        """
+        Provides information about the location of the process.
+        This method selects the judicial sphere of the process and logs the actions performed.
+        It interacts with the web elements to set the sphere and waits for the loading to complete.
+        Returns:
+            None
+        """
+
         elementSelect = self.elements.css_esfera_judge
         text = "Judicial"
 
@@ -215,7 +237,14 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_estado(self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Informs the state of the process by selecting the appropriate option from a dropdown menu.
+        This method retrieves the state information from the bot's data, logs the action,
+        selects the state in the dropdown menu using the Select2_ELAW method, waits for the
+        page to load, and then logs the completion of the action.
+        Returns:
+            None
+        """
 
         key = "ESTADO"
         elementSelect = self.elements.estado_input
@@ -233,7 +262,20 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_comarca(self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Fills in the comarca (judicial district) information for the process.
+        This method retrieves the comarca information from the bot data, selects the appropriate
+        input element, and inputs the comarca text. It also logs the actions performed.
+        Steps:
+        1. Retrieve the comarca information from bot data.
+        2. Select the comarca input element.
+        3. Log the action of informing the comarca.
+        4. Use the Select2_ELAW method to input the comarca text.
+        5. Wait for the loading indicator to disappear.
+        6. Log the completion of the comarca information input.
+        Returns:
+            None
+        """
 
         text = str(self.bot_data.get("COMARCA"))
         elementSelect = self.elements.comarca_input
@@ -250,7 +292,19 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_foro(self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Informs the court jurisdiction (foro) for the process.
+        This method retrieves the court jurisdiction information from the bot data,
+        logs the action, and interacts with the web element to input the court jurisdiction.
+        Steps:
+        1. Retrieves the court jurisdiction from `self.bot_data`.
+        2. Logs the action of informing the court jurisdiction.
+        3. Uses the `Select2_ELAW` method to select the court jurisdiction in the web element.
+        4. Waits for the loading element to disappear.
+        5. Logs the completion of the action.
+        Returns:
+            None
+        """
 
         elementSelect = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
@@ -267,7 +321,20 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_vara(self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Fills in the court information for the process.
+        This method retrieves the court information from the bot data and inputs it
+        into the appropriate field in the ELAW system. It logs the actions performed
+        and ensures the input is processed by the system.
+        Steps:
+        1. Retrieve the court information from `self.bot_data`.
+        2. Log the action of informing the court information.
+        3. Use the `Select2_ELAW` method to input the court information.
+        4. Wait for the system to process the input.
+        5. Log the completion of the action.
+        Returns:
+            None
+        """
 
         text = self.bot_data.get("VARA")
         elementSelect = self.elements.vara_input
@@ -324,7 +391,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def set_classe_empresa(self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Sets the classification of the company.
+        This method retrieves the company type from the bot data, formats it,
+        and uses it to interact with a specific input element on the page.
+        It logs messages before and after the interaction to indicate the
+        progress of the operation.
+        Returns:
+            None
+        """
 
         key = "TIPO_EMPRESA"
         elementSelect = self.elements.tipo_empresa_input

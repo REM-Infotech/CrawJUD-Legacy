@@ -1,8 +1,8 @@
 import re
+from os import environ
 from typing import Any
 
 from celery import Celery
-from os import environ
 from dotenv_vault import load_dotenv
 from flask import Flask
 
@@ -33,7 +33,7 @@ def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cov
         r"https:\/\/.*\.rhsolut\.com\.br",
     ]
     if not origin:
-        origin = f'https://{environ.get("HOSTNAME")}'
+        origin = f"https://{environ.get('HOSTNAME')}"
 
     for orig in allowed_origins:
         pattern = orig

@@ -1,5 +1,3 @@
-"""Crawler ELAW Andamentos"""
-
 import time
 from contextlib import suppress
 from time import sleep

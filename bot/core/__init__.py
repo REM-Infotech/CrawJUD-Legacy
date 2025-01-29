@@ -54,7 +54,7 @@ class CrawJUD(PropertiesCrawJUD):
     }
 
     def prt(self) -> None:
-        """Print message"""
+        """Call the print method from the PrintBot class."""
 
         self.PrintBot.print_msg()
 
@@ -108,9 +108,9 @@ class CrawJUD(PropertiesCrawJUD):
     #             continue
 
     def setup(self) -> None:
-        """
-        Sets up the bot by loading configuration from a JSON file, initializing various attributes,
-        and preparing the environment for the bot to run.
+        """Configure the bot.
+        Sets up the bot by loading configuration and preparing the environment.
+
         This method performs the following steps:
         1. Loads configuration from a JSON file specified by `self.path_args`.
         2. Sets attributes based on the loaded configuration.
@@ -121,6 +121,7 @@ class CrawJUD(PropertiesCrawJUD):
         7. Parses date strings into datetime objects if `self.xlsx` is not specified.
         8. Sets the state or client attribute.
         9. Launches the driver.
+
         Raises:
             Exception: If any error occurs during the setup process, it logs the error and raises the exception.
         """

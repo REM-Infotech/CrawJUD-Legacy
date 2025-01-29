@@ -7,7 +7,7 @@ from os import popen
 
 class ChromeVersion:
     def get_chrome_version(self):
-        """Gets the Chrome version."""
+        """Return the Chrome version."""
 
         result = None
         system = platform.system()

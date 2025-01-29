@@ -1,7 +1,7 @@
 import json
+from os import environ
 
 import FindMyIP as ip
-from os import environ
 from dotenv_vault import load_dotenv
 from tornado.httpclient import HTTPClient
 
@@ -25,7 +25,6 @@ class NetworkError(GlobalExcept):
 
 
 class InfoGeoloc:
-
     data: dict[str, str, int | bool] = {}
 
     def __init__(self):
@@ -38,7 +37,6 @@ class InfoGeoloc:
             self.data.update({f"_{key}": value})
 
     def __getattr__(self, name: str) -> str:
-
         item = self.data.get(name, None)
         if not item:
             raise AttributeError(
@@ -48,7 +46,6 @@ class InfoGeoloc:
         return item
 
     def IP2Location(self, ip: str) -> dict[str, str] | None:
-
         client = HTTPClient()
         data = client.fetch(
             "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)

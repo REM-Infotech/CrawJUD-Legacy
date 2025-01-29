@@ -43,7 +43,7 @@ def app():
 
 @pytest.fixture()
 def client(app: Flask):
-    """Cliente Flask
+    """Return Cliente Flask
 
     Args:
         app (Flask): App Flask

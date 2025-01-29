@@ -42,7 +42,8 @@ class DriverBot(CrawJUD):
     def __init__(
         self,
     ) -> None:
-        """"""
+        # init_
+        ...
 
     list_args_ = [
         "--ignore-ssl-errors=yes",
