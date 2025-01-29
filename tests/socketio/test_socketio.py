@@ -1,3 +1,26 @@
+"""
+This module contains unit tests for the Socket.IO server using Flask-SocketIO's
+
+SocketIOTestClient. The tests cover various functionalities such as connecting,
+disconnecting, joining rooms, sending messages, and handling different message
+types and scenarios.
+Functions:
+    test_connect(io: SocketIOTestClient):
+        Tests the connection to the Socket.IO server.
+    test_disconnect(io: SocketIOTestClient):
+        Tests the disconnection from the Socket.IO server.
+    test_leave(io: SocketIOTestClient, create_dummy_pid):
+        Tests leaving a room with a given PID.
+    test_statusbot(io: SocketIOTestClient):
+        Tests the status bot functionality.
+    test_stop_bot(io: SocketIOTestClient, create_dummy_pid):
+        Tests stopping a bot with a given PID.
+    test_terminate_bot(io: SocketIOTestClient, create_dummy_pid):
+        Tests terminating a bot with and without a given PID.
+    test_join_and_message(io: SocketIOTestClient, create_dummy_pid):
+        Tests joining a room and sending messages with various scenarios.
+"""
+
 from flask_socketio import SocketIOTestClient
 
 

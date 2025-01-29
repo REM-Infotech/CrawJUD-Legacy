@@ -1,3 +1,13 @@
+"""
+This module contains tests for Flask API routes.
+
+Functions:
+    test_client_flask(client: FlaskClient, app: Flask, args_bot: dict[str, str | Any], create_dummy_pid):
+        Tests various API routes and their responses.
+    __doc__():
+        Placeholder for module-level docstring.
+"""
+
 from typing import Any
 
 from flask import Flask

@@ -1,3 +1,7 @@
+"""
+Module for creating ZIP archives of executions in CrawJUD-Bots.
+"""
+
 import os
 import pathlib
 import zipfile
@@ -10,21 +14,33 @@ import pytz
 
 
 def makezip(pid: str) -> str:
+    """
+    Create a ZIP archive for a given process ID.
+
+    This function collects all relevant files associated with the provided PID,
+    excludes certain files and directories, and packages them into a ZIP file
+    for easier handling and transmission.
+
+    Args:
+        pid (str): The process ID for which to create the ZIP archive.
+
+    Returns:
+        str: The path to the created ZIP file.
+
+    Raises:
+        Exception: If an error occurs during the ZIP creation process.
+    """
     file_paths = []
-    exec_path = (
-        Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec").joinpath(pid)
-    )
+    exec_path = Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec", pid)
 
     exec_path.mkdir(exist_ok=True)
     for root, dirs, files in exec_path.walk():
-        if "chrome" in str(root) and root.is_dir():
+        if "chrome" in str(root) and Path(root).is_dir():
             rmtree(root, ignore_errors=True)
-
-        elif "chrome" in str(root) and root.is_file():
-            root.unlink()
-
-        elif "json" in root.suffix or "flag" in root.suffix:
-            root.unlink()
+        elif "chrome" in str(root) and Path(root).is_file():
+            Path(root).unlink()
+        elif Path(root).suffix in {".json", ".flag"}:
+            Path(root).unlink()
 
     files = [str(f) for f in exec_path.iterdir() if f.is_file() and pid in f.stem]
     files_subfolders = [
@@ -36,8 +52,9 @@ def makezip(pid: str) -> str:
     file_paths.extend(files)
     file_paths.extend(files_subfolders)
 
-    # Empacotar os arquivos em um arquivo zip para facilitar o envio
-    zip_file = f"Archives/PID {pid} {datetime.now(pytz.timezone('America/Manaus')).strftime('%d-%m-%Y-%H.%M')}.zip"
+    # Package the files into a ZIP archive to facilitate sending
+    zip_filename = f"PID {pid} {datetime.now(pytz.timezone('America/Manaus')).strftime('%d-%m-%Y-%H.%M')}.zip"
+    zip_file = path.join("Archives", zip_filename)
     with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
         for file in file_paths:
             arcname = os.path.relpath(file, os.path.join("exec", pid))

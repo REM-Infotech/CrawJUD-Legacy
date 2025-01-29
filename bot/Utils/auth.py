@@ -1,3 +1,10 @@
+"""
+This module provides the AuthBot class for handling authentication across different systems.
+
+Classes:
+    AuthBot: A class for handling authentication across different systems.
+"""
+
 import os
 import platform
 import string
@@ -15,24 +22,79 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from ..core import CrawJUD
 
-if platform.system == "Windows":
+if platform.system() == "Windows":
     from ..core import Application
 
 
 class AuthBot(CrawJUD):
-    def __init__(
-        self,
-    ) -> None:
-        """"""
+    """
+    AuthBot class for handling authentication across different systems.
+
+    Methods
+    -------
+    __init__() -> None
+        Initializes the AuthBot instance.
+    auth() -> bool:
+        Determines the appropriate authentication method based on the system and calls it.
+    esaj_auth() -> bool:
+        Handles authentication for the ESAJ system.
+    projudi_auth() -> bool:
+        Handles authentication for the Projudi system.
+    elaw_auth() -> bool:
+        Handles authentication for the eLaw system.
+    pje_auth() -> bool:
+        Handles authentication for the PJE system.
+    accept_cert(accepted_dir: str) -> None:
+        Accepts the certificate for the user.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the AuthBot instance.
+
+        Initializes the AuthBot with necessary attributes and configurations.
+        """
+        super().__init__()
+        # Initialize any additional attributes here
 
     def auth(self) -> bool:
-        to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth")
+        """
+        Authenticate the user based on the system attribute.
+
+        This method dynamically calls the appropriate authentication method
+        for the system specified in the `self.system` attribute. The method
+        name is constructed by converting the system name to lowercase and
+        appending '_auth'. If the method exists, it is called and its result
+        is returned. If the method does not exist, a RuntimeError is raised.
+
+        Returns:
+            bool: The result of the authentication method.
+
+        Raises:
+            RuntimeError: If the authentication method for the specified system is not found.
+        """
+        to_call: Callable[[], bool] = getattr(
+            AuthBot, f"{self.system.lower()}_auth", None
+        )
         if to_call:
             return to_call(self)
 
         raise RuntimeError("Sistema Não encontrado!")
 
     def esaj_auth(self) -> bool:
+        """
+        Authenticate the user on the ESAJ system.
+
+        This method handles both certificate-based and username/password-based
+        authentication methods. It navigates to the appropriate login page,
+        fills in the required fields, and submits the login form.
+
+        Returns:
+            bool: True if authentication is successful, False otherwise.
+
+        Raises:
+            Exception: If any error occurs during the authentication process.
+        """
         try:
             loginuser = "".join(
                 filter(lambda x: x not in string.punctuation, self.username)
@@ -135,6 +197,18 @@ class AuthBot(CrawJUD):
             raise e
 
     def projudi_auth(self) -> bool:
+        """
+        Authenticate the user on the Projudi platform.
+
+        This method navigates to the login page, enters the username and password,
+        and attempts to log in. It then checks if the login was successful.
+
+        Returns:
+            bool: True if login was successful, False otherwise.
+
+        Raises:
+            Exception: If any error occurs during the login process.
+        """
         try:
             self.driver.get(self.elements.url_login)
 
@@ -168,6 +242,20 @@ class AuthBot(CrawJUD):
             raise e
 
     def elaw_auth(self) -> bool:
+        """
+        Authenticate the user on the eLaw platform.
+
+        This method navigates to the eLaw login page, enters the username and password,
+        and attempts to log in. It waits for the necessary elements to be present on the page
+        before interacting with them. After attempting to log in, it checks the current URL
+        to determine if the login was successful.
+
+        Returns:
+            bool: True if the login was successful, False otherwise.
+
+        Raises:
+            Exception: If any error occurs during the authentication process.
+        """
         try:
             self.driver.get("https://amazonas.elaw.com.br/login")
 
@@ -196,6 +284,20 @@ class AuthBot(CrawJUD):
             raise e
 
     def pje_auth(self) -> bool:
+        """
+        Authenticate the user on the PJE system.
+
+        This method navigates to the login page, inputs the username and password,
+        and attempts to log in. It waits for the login elements to be present on the page,
+        sends the credentials, and clicks the login button. Finally, it checks if the login
+        was successful by verifying the URL.
+
+        Returns:
+            bool: True if login was successful, False otherwise.
+
+        Raises:
+            Exception: If any error occurs during the login process.
+        """
         try:
             self.driver.get(self.elements.url_login)
 
@@ -223,7 +325,9 @@ class AuthBot(CrawJUD):
 
             logado = None
             with suppress(TimeoutException):
-                logado = self.wait.until(EC.url_to_be(self.elements.chk_login))
+                logado = WebDriverWait(self.driver, 10).until(
+                    EC.url_to_be(self.elements.chk_login)
+                )
 
             return logado is not None
 
@@ -231,6 +335,19 @@ class AuthBot(CrawJUD):
             raise e
 
     def accept_cert(self, accepted_dir: str) -> None:
+        """
+        Accept the certificate for the user.
+
+        This method automates the acceptance of certificates by interacting with
+        the certificate management application. It copies necessary files and ensures
+        that the certificate is properly accepted.
+
+        Args:
+            accepted_dir (str): The directory where accepted certificates are stored.
+
+        Raises:
+            Exception: If any error occurs during the certificate acceptance process.
+        """
         try:
             path = r"C:\Users\%USERNAME%\AppData\Local\Softplan Sistemas\Web Signer"
             resolved_path = os.path.expandvars(path)
@@ -276,7 +393,7 @@ class AuthBot(CrawJUD):
             except Exception as e:
                 raise e
 
-            with open(accepted_dir.encode("utf-8"), "w") as f:
+            with open(Path(accepted_dir), "w", encoding="utf-8") as f:
                 f.write("")
 
         except Exception as e:

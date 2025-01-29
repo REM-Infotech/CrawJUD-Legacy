@@ -52,6 +52,15 @@ class OtherUtils(CrawJUD):
 
     @property
     def nomes_colunas(self) -> List[str]:
+        """
+        Retrieve a list of column names.
+
+        This method returns a list of strings representing the names of various columns
+        used in the application. The columns cover a wide range of data fields such as
+        names, identification numbers, dates, values, and other relevant information.
+        Returns:
+            List[str]: A list of column names.
+        """
         all_fields = [
             "NOME_PARTE",
             "PORTAL",
@@ -168,6 +177,39 @@ class OtherUtils(CrawJUD):
 
     @property
     def elaw_data(self) -> Dict[str, str]:
+        """
+        Generate a dictionary with keys related to legal case information and empty string values.
+
+        Returns:
+            Dict[str, str]: A dictionary containing the following keys with empty string values:
+                - "NUMERO_PROCESSO": Case number
+                - "AREA_DIREITO": Area of law
+                - "SUBAREA_DIREITO": Subarea of law
+                - "ESTADO": State
+                - "COMARCA": District
+                - "FORO": Forum
+                - "VARA": Court
+                - "DATA_DISTRIBUICAO": Distribution date
+                - "PARTE_CONTRARIA": Opposing party
+                - "TIPO_PARTE_CONTRARIA": Type of opposing party
+                - "DOC_PARTE_CONTRARIA": Document of opposing party
+                - "EMPRESA": Company
+                - "TIPO_EMPRESA": Type of company
+                - "DOC_EMPRESA": Document of company
+                - "UNIDADE_CONSUMIDORA": Consumer unit
+                - "CAPITAL_INTERIOR": Capital interior
+                - "DIVISAO": Division
+                - "ACAO": Action
+                - "DATA_CITACAO": Citation date
+                - "OBJETO": Object
+                - "PROVIMENTO": Provision
+                - "ADVOGADO_INTERNO": Internal lawyer
+                - "ADV_PARTE_CONTRARIA": Opposing party lawyer
+                - "FATO_GERADOR": Generating fact
+                - "ESCRITORIO_EXTERNO": External office
+                - "VALOR_CAUSA": Cause value
+                - "FASE": Phase
+        """
         return {
             "NUMERO_PROCESSO": "",
             "AREA_DIREITO": "",
@@ -200,6 +242,13 @@ class OtherUtils(CrawJUD):
 
     @property
     def cities_Amazonas(self) -> dict[str, str]:
+        """
+        Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
+
+        Returns:
+            dict[str, str]: A dictionary where the keys are city names and
+            the values are either "Capital" or "Interior".
+        """
         return {
             "Alvarães": "Interior",
             "Amaturá": "Interior",
@@ -472,6 +521,20 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(planilha_validar, index=False)
 
     def count_doc(self, doc: str) -> str | None:
+        """
+        Determine the type of Brazilian document based on its length.
+
+        This function takes a string representing a Brazilian document number,
+        filters out all non-digit characters, and returns the type of document
+        based on the length of the resulting number. If the number has 11 digits,
+        it is identified as a CPF. If the number has 14 digits, it is identified
+        as a CNPJ. If the number has any other length, None is returned.
+        Args:
+            doc (str): The document number as a string.
+        Returns:
+            str | None: The type of document ("cpf" or "cnpj") or None if the
+                document length is not 11 or 14 digits.
+        """
         tipo_doc = None
         numero = "".join(filter(str.isdigit, doc))
 
@@ -484,6 +547,17 @@ class OtherUtils(CrawJUD):
         return tipo_doc
 
     def get_recent(self, folder: str) -> str | None:
+        """
+        Get the most recent PDF file from a specified folder.
+
+        This method searches the specified folder for files with a ".pdf" extension,
+        excluding any files with a ".crdownload" extension. It then returns the path
+        to the most recently created PDF file.
+        Args:
+            folder (str): The path to the folder to search for PDF files.
+        Returns:
+            str | None: The path to the most recent PDF file, or None if no PDF files are found.
+        """
         files = [os.path.join(folder, f) for f in os.listdir(folder)]
         files = [f for f in files if os.path.isfile(f)]
         files = list(
@@ -496,6 +570,16 @@ class OtherUtils(CrawJUD):
         return files[0] if files else None
 
     def format_String(self, string: str) -> str:
+        """
+        Format a given string to a secure filename.
+
+        This method normalizes the input string to NFKD form, removes any combining characters,
+        and then converts it to a secure filename format.
+        Args:
+            string (str): The input string to be formatted.
+        Returns:
+            str: The formatted string as a secure filename.
+        """
         return secure_filename(
             "".join(
                 [
@@ -532,6 +616,17 @@ class OtherUtils(CrawJUD):
         return SequenceMatcher(None, word1, word2).ratio()
 
     def finalize_execution(self) -> None:
+        """
+        Finalize the execution of the bot.
+
+        This method performs the following steps:
+        1. Increments the row counter.
+        2. Checks if there are any open browser windows and, if so, deletes all cookies and quits the driver.
+        3. Calculates the total execution time and converts it to minutes and seconds.
+        4. Logs the end of the execution with a success message and the total execution time.
+        Returns:
+            None
+        """
         window_handles = self.driver.window_handles
         self.row = self.row + 1
         if len(window_handles) > 0:
@@ -551,16 +646,18 @@ class OtherUtils(CrawJUD):
         self.prt()
 
     def install_cert(self) -> None:
+        """
+        Install a certificate if it is not already installed.
+
+        This method checks if a certificate with the subject name specified in
+        `self.name_cert` is installed in the "MY" certificate store. If the
+        certificate is not found, it imports the certificate from the specified
+        path using the `certutil` command.
+        Returns:
+            None
+        """
+
         def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:
-            """
-            Verifica se um certificado PFX específico está instalado no repositório 'MY'.
-
-            Arguments:
-                crt_sbj_nm (str): Nome do Assunto (Subject) do certificado para buscar.
-                param store (str): Nome do repositório de certificados a ser verificado (default: "MY").
-
-            :return: True se o certificado for encontrado, False caso contrário.
-            """
             for cert, encoding, trust in ssl.enum_certificates(store):
                 try:
                     # Converte o certificado em formato DER para objeto X509
@@ -610,6 +707,16 @@ class OtherUtils(CrawJUD):
                 raise e
 
     def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
+        """
+        Group date and vara information from the input data into a list of records.
+
+        Args:
+            data (dict[str, dict[str, str]]): A dictionary where the keys are 'vara'
+            and the values are dictionaries with dates as keys and entries as values.
+        Returns:
+            list[dict[str, str]]: A list of dictionaries where each dictionary
+            contains 'Data', 'Vara', and other entry information.
+        """
         records = []
         for vara, dates in data.items():
             record = {}
@@ -622,6 +729,17 @@ class OtherUtils(CrawJUD):
         return records
 
     def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
+        """
+        Group keys from a list of dictionaries.
+
+        Args:
+            data (list[dict[str, str]]): A list of dictionaries where each dictionary
+                                         contains string keys and string values.
+        Returns:
+            dict[str, str]: A dictionary where each key is a key from the input dictionaries,
+                            and the value is another dictionary mapping the position of the
+                            original dictionary in the list to its corresponding value.
+        """
         record = {}
         for pos, entry in enumerate(data):
             for key, value in entry.items():
@@ -710,6 +828,16 @@ class OtherUtils(CrawJUD):
             raise e
 
     def text_is_a_date(self, text: str) -> bool:
+        """
+        Check if the given text is in a date-like format.
+
+        This function uses a regular expression to determine if the input text
+        resembles a date format such as 'YYYY-MM-DD' or 'DD/MM/YYYY'.
+        Args:
+            text (str): The text to be checked.
+        Returns:
+            bool: True if the text matches a date-like pattern, False otherwise.
+        """
         # Regex para verificar se o texto pode ser uma data (opcional)
         date_like_pattern = (
             r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"  # Exemplo: 2023-01-08 ou 08/01/2023

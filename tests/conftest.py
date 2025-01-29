@@ -1,3 +1,7 @@
+"""
+Configuration and fixtures for CrawJUD-Bots tests.
+"""
+
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Generator
@@ -25,7 +29,12 @@ create_routes = factory.init_routes
 
 @pytest.fixture(scope="session")
 def app():
-    """Cria uma instância do aplicativo Flask para testes."""
+    """
+    Create a Flask application instance for testing.
+
+    Returns:
+        Flask: The configured Flask application.
+    """
     app = create_test_app()
     app.config["TESTING"] = True
     create_socket(app)
@@ -33,13 +42,7 @@ def app():
     create_redis(app)
     create_mail(app)
     create_routes(app)
-
-    yield app
-
-    with app.app_context():
-        app.debug = False
-        db: SQLAlchemy = app.extensions.get("sqlalchemy")
-        db.drop_all()
+    return app
 
 
 @pytest.fixture()

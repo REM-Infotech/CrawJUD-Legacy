@@ -1,3 +1,7 @@
+"""
+Module for testing the CrawJUD-Bots functionalities.
+"""
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,7 +10,17 @@ from status import SetStatus as st_stt
 
 
 class TestRunner:
+    """Class containing test cases for CrawJUD-Bots."""
+
     def test_status_start(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
+        """
+        Test the start status of the bot.
+
+        Args:
+            app (Flask): The Flask application instance.
+            SetStatus (st_stt): The status setter.
+            create_dummy_pid: Fixture for creating dummy PID.
+        """
         user, pid = create_dummy_pid
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         with app.app_context():
@@ -25,6 +39,14 @@ class TestRunner:
             assert check_result
 
     def test_status_stop(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
+        """
+        Test the stop status of the bot.
+
+        Args:
+            app (Flask): The Flask application instance.
+            SetStatus (st_stt): The status setter.
+            create_dummy_pid: Fixture for creating dummy PID.
+        """
         from app.misc import get_file
 
         user, pid = create_dummy_pid
@@ -47,6 +69,14 @@ class TestRunner:
         assert checks
 
     def test_status_stop_esaj(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
+        """
+        Test the stop status of the bot for ESAJ system.
+
+        Args:
+            app (Flask): The Flask application instance.
+            SetStatus (st_stt): The status setter.
+            create_dummy_pid: Fixture for creating dummy PID.
+        """
         user, pid = create_dummy_pid
         db: SQLAlchemy = app.extensions["sqlalchemy"]
 

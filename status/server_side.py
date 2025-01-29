@@ -1,4 +1,8 @@
-from typing import Dict
+"""
+Module for server-side operations in CrawJUD-Bots.
+"""
+
+from typing import Dict, List
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -6,50 +10,70 @@ from redis_flask import Redis
 
 from status import SetStatus
 
-# from typing import Dict
 
-# def load_cache(pid: str, app: Flask) -> Dict[str, str]:
+def load_cache(pid: str, app: Flask) -> Dict[str, str]:
+    """
+    Load cache data for a given PID from Redis.
 
-#     log_pid: dict[str, str | int] = {}
-#     list_cached: list[dict[str, str | int]] = []
+    Args:
+        pid (str): The process ID for which to load the cache.
+        app (Flask): The Flask application instance.
 
-#     redis_client: Redis = app.extensions["redis"]
-#     redis_key = f"*{pid}*"
+    Returns:
+        Dict[str, str]: A dictionary containing cached log data.
+    """
+    log_pid: Dict[str, str | int] = {}
+    list_cached: List[Dict[str, str | int]] = []
 
-#     get_cache: list | None = redis_client.keys(redis_key)
-#     if get_cache:
+    redis_client: Redis = app.extensions["redis"]
+    redis_key = f"*{pid}*"
 
-#         list_cache: list[str] = list(get_cache)
-#         for cache in list_cache:
-#             k_process, k_pid, k_pos, k_value = cache.split(":")
-#             cached = [{"pid": k_pid, "pos": int(k_value)}]
+    get_cache: List | None = redis_client.keys(redis_key)
+    if get_cache:
+        list_cache: List[str] = list(get_cache)
+        for cache in list_cache:
+            k_process, k_pid, k_pos, k_value = cache.split(":")
+            cached = [{"pid": k_pid, "pos": int(k_value)}]
+            list_cached.extend(cached)
 
-#             list_cached.extend(cached)
+        sorted_cache: List[Dict[str, str | int]] = sorted(
+            list_cached, key=lambda x: x.get("pos"), reverse=True
+        )
 
-#         get_cache: list[dict[str, str | int]] = sorted(
-#             list_cached, key=lambda x: x.get("pos"), reverse=True
-#         )
+        for item in sorted_cache:
+            pos = item["pos"]
+            redis_key = f"process:{pid}:pos:{pos}"
+            logs_pid = redis_client.hgetall(redis_key)
 
-#         for item in get_cache:
+            log_pid = dict(logs_pid)
 
-#             pos = item["pos"]
-#             redis_key = f"process:{pid}:pos:{pos}"
-#             logs_pid = redis_client.hgetall(redis_key)
-
-#             log_pid = dict(logs_pid)
-
-#             if "total" not in log_pid:  # pragma: no cover
-#                 continue
-
-#             log_pid.update({"message": log_pid.get("last_log", log_pid.get("message"))})
-#             break  # pragma: no cover
-
-#     return log_pid
+    return log_pid
 
 
 def FormatMessage(
     data: Dict[str, str | int] = {}, pid: str = None, app: Flask = None
 ) -> Dict[str, str | int]:
+    """
+    Format and update the status message for a given process.
+
+    This function interacts with a SQLAlchemy database and a Redis client to
+    manage and update the status of a process identified by a PID. It ensures
+    that the process status is correctly initialized and updated in Redis,
+    and it updates the provided data dictionary with the latest status
+    information.
+    Args:
+        data (Dict[str, str | int], optional): A dictionary containing process
+            information. Defaults to an empty dictionary.
+        pid (str, optional): The process ID. Defaults to None.
+        app (Flask, optional): The Flask application instance, used to access
+            extensions like SQLAlchemy and Redis. Defaults to None.
+    Returns:
+        Dict[str, str | int]: The updated data dictionary with the latest
+        process status information.
+    Raises:
+        Exception: If any error occurs during the process, the original data
+        dictionary is returned without modifications.
+    """
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         redis_client: Redis = app.extensions["redis"]

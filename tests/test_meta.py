@@ -1,3 +1,30 @@
+"""
+This module contains unit tests for the PropertiesCrawJUD class from the bot.shared module.
+
+The tests are written using the pytest framework and cover various properties and methods of the PropertiesCrawJUD class.
+Fixtures:
+    setup_PropertiesCrawJUD: A pytest fixture that returns an instance of the PropertiesCrawJUD class.
+Tests:
+    test_appends: Tests the 'appends' property.
+    test_another_append: Tests the 'another_append' property.
+    test_OpenAI_client: Tests the 'OpenAI_client' property.
+    test_system: Tests the 'system' property.
+    test_state_or_client: Tests the 'state_or_client' property.
+    test_type_log: Tests the 'type_log' property.
+    test_pid: Tests the 'pid' property.
+    test_message: Tests the 'message' property.
+    test_isStoped: Tests the 'isStoped' property by mocking the os.path.exists function.
+    test_chr_dir: Tests the 'chr_dir' property.
+    test_output_dir_path: Tests the 'output_dir_path' property.
+    test_kwrgs: Tests the 'kwrgs' property.
+    test_row: Tests the 'row' property.
+    test_message_error: Tests the 'message_error' property.
+    test_graphicMode: Tests the 'graphicMode' property.
+    test_bot_data: Tests the 'bot_data' property.
+    test_vara: Tests the 'vara' property.
+    test_path_accepted: Tests the 'path_accepted' property.
+"""
+
 import pytest
 
 from bot.shared import PropertiesCrawJUD

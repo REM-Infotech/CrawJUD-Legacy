@@ -1,9 +1,22 @@
+"""
+Module for uninstalling certificates.
+"""
+
 import subprocess
 
 from tqdm import tqdm
 
 
-def uninstall(nome_do_certificado: str):
+def uninstall(nome_do_certificado: str) -> None:
+    """
+    Uninstalls a certificate by its name.
+
+    Args:
+        nome_do_certificado (str): The name of the certificate to uninstall.
+
+    Raises:
+        subprocess.CalledProcessError: If the certificate uninstallation process fails.
+    """
     certs = {}
     try:
         comando = ["certutil", "-store", "-user", "my"]
@@ -34,6 +47,7 @@ def uninstall(nome_do_certificado: str):
                     break
 
     except subprocess.CalledProcessError as e:
+        # Handle exception
         raise e
 
     try:

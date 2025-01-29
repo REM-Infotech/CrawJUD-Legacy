@@ -1,5 +1,8 @@
-from os import environ
+"""
+Module for sending email notifications related to CrawJUD-Bots executions.
+"""
 
+from os import environ
 from dotenv_vault import load_dotenv
 from flask import Flask
 from flask_mail import Mail, Message
@@ -8,6 +11,16 @@ load_dotenv()
 
 
 def email_start(execution: None, app: Flask) -> None:
+    """
+    Sends an email notification when an execution starts.
+
+    Args:
+        execution (Executions): The execution instance that has started.
+        app (Flask): The Flask application instance.
+
+    Raises:
+        Exception: If an error occurs while sending the email.
+    """
     from app.models import Executions, Users
 
     execution: Executions = execution
@@ -36,17 +49,17 @@ def email_start(execution: None, app: Flask) -> None:
         url_web = environ.get("url_web")
         sendermail = environ["MAIL_DEFAULT_SENDER"]
 
-        robot = f"Notificações do Robô <{sendermail}>"
-        assunto = "Notificação de inicialização"
+        robot = f"Robot Notifications <{sendermail}>"
+        assunto = "Initialization Notification"
         destinatario = usr.email
-        mensagem = f"""  <h1>Notificação de inicialização - PID {pid}</h1>
-                        <p>Olá {usr.nome_usuario}, sua execução foi iniciada com sucesso!</p>
-                        <ul>
-                            <li>Robô: {display_name}</li>
-                            <li>Planilha: {xlsx}</li>
-                        </ul>
-                        <p>Acompanhe a execução do robô em <b><a href="{url_web}/logs_bot/{pid}">Nosso sistema</a></b><p>
-                        <p>Por favor, <b>NÃO RESPONDER ESTE EMAIL</b></p>
+        mensagem = f"""<h1>Initialization Notification - PID {pid}</h1>
+                      <p>Hello {usr.nome_usuario}, your execution has started successfully!</p>
+                      <ul>
+                          <li>Robot: {display_name}</li>
+                          <li>Spreadsheet: {xlsx}</li>
+                      </ul>
+                      <p>Monitor the robot's execution in <b><a href="{url_web}/logs_bot/{pid}">Our System</a></b></p>
+                      <p>Please, <b>DO NOT REPLY TO THIS EMAIL</b></p>
         """
 
         msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
@@ -63,6 +76,16 @@ def email_start(execution: None, app: Flask) -> None:
 
 
 def email_stop(execution: None, app: Flask) -> None:
+    """
+    Sends an email notification when an execution stops.
+
+    Args:
+        execution (Executions): The execution instance that has stopped.
+        app (Flask): The Flask application instance.
+
+    Raises:
+        Exception: If an error occurs while sending the email.
+    """
     from app.models import Executions, Users
 
     execution: Executions = execution
@@ -93,17 +116,17 @@ def email_stop(execution: None, app: Flask) -> None:
         url_web = environ.get("url_web")
         sendermail = environ["MAIL_DEFAULT_SENDER"]
 
-        robot = f"Notificações do Robô <{sendermail}>"
-        assunto = "Notificação de Finalização"
+        robot = f"Robot Notifications <{sendermail}>"
+        assunto = "Completion Notification"
         destinatario = usr.email
-        mensagem = f"""  <h1>Notificação de Finalização - PID {pid}</h1>
-                        <p>Olá {usr.nome_usuario}, Execução finalizada!</p>
-                        <ul>
-                            <li>Robô: {display_name}</li>
-                            <li>Planilha: {xlsx}</li>
-                        </ul>
-                        <p>Verifique o status da execução do robô em <b><a href="{url_web}/logs_bot/{pid}">Nosso sistema</a></b><p>
-                        <p>Por favor, <b>NÃO RESPONDER ESTE EMAIL</b></p>
+        mensagem = f"""<h1>Completion Notification - PID {pid}</h1>
+                      <p>Hello {usr.nome_usuario}, your execution has been completed!</p>
+                      <ul>
+                          <li>Robot: {display_name}</li>
+                          <li>Spreadsheet: {xlsx}</li>
+                      </ul>
+                      <p>Check the execution status in <b><a href="{url_web}/logs_bot/{pid}">Our System</a></b></p>
+                      <p>Please, <b>DO NOT REPLY TO THIS EMAIL</b></p>
         """
 
         msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
