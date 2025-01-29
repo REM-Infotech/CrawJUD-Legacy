@@ -593,6 +593,7 @@ class complement(CrawJUD):
 
         input_bairro = self.driver.find_element(By.CSS_SELECTOR, css_input_bairro)
         input_bairro.click()
+        self.interact.clear(input_bairro)
         self.interact.send_key(input_bairro, bairro_)
 
         self.driver.execute_script(
