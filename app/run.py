@@ -33,7 +33,7 @@ def start_vnc() -> None:
         print(e)
 
 
-if system().lower() == "linux" and getenv("DOCKER_CONTEXT", None):
+if system().lower() == "linux" and getenv("INTO_DOCKER", None):
     start_vnc()
 
 signal.signal(signal.SIGTERM, handle_exit)

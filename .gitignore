@@ -179,3 +179,5 @@ webdriver/
 .flaskenv*
 !.env.project
 !.env.vault
+
+compose_spec.json

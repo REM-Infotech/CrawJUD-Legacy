@@ -16,7 +16,7 @@ ENV USER root
 ENV TERM xterm
 ENV LANG=pt_BR.UTF-8
 ENV LC_ALL=pt_BR.UTF-8
-ENV DOCKER_CONTEXT=DOCKER_CONTEXT
+ENV INTO_DOCKER=INTO_DOCKER
 # Instalar Chrome, TightVNCServer, i3 e dependências
 RUN apt-get update && apt-get install -y \
     wget \

@@ -61,11 +61,11 @@ if __name__ == "__main__":
 
     hostname = (
         values("SERVER_HOSTNAME", "127.0.0.1")
-        if getenv("DOCKER_CONTEXT", None)
+        if getenv("INTO_DOCKER", None)
         else "127.0.0.1"
     )
 
-    unsafe_werkzeug = getenv("DOCKER_CONTEXT", None) is None or (
+    unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (
         getenv("DEBUG", "False").lower() == "true"
     )
     port = int(values("PORT", "8000"))
@@ -74,14 +74,12 @@ if __name__ == "__main__":
         start_vnc()
 
     args_run = {
-        "host": hostname,
         "port": port,
-        "log_output": True,
         "allow_unsafe_werkzeug": unsafe_werkzeug,
     }
 
     try:
-        io.run(app, **args_run)
+        io.run(app, **args_run, log_output=True)
     except (KeyboardInterrupt, TypeError):
 
         if system().lower() == "linux":

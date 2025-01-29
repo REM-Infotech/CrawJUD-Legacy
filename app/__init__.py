@@ -19,7 +19,7 @@ import platform
 
 async_mode = (
     str("threading")
-    if (getenv("DOCKER_CONTEXT", None) is None or platform.system() == "Windows")
+    if (getenv("INTO_DOCKER", None) is None or platform.system() == "Windows")
     or (getenv("DEBUG", "False").lower() == "true")
     else str("eventlet")
 )
