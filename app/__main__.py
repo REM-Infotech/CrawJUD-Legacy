@@ -22,7 +22,6 @@ def handle_exit() -> None:
 
 
 def start_vnc() -> None:
-
     try:
         # Executa o comando com verificação de erro
         subprocess.run(
@@ -81,9 +80,7 @@ if __name__ == "__main__":
     try:
         io.run(app, **args_run, log_output=True)
     except (KeyboardInterrupt, TypeError):
-
         if system().lower() == "linux":
-
             try:
                 subprocess.run(["tightvncserver", "-kill", ":99"])
 

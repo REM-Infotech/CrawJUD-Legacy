@@ -47,7 +47,6 @@ type_docscss = {
 
 
 class emissao(CrawJUD):
-
     count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -62,12 +61,10 @@ class emissao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -81,7 +78,6 @@ class emissao(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -111,7 +107,6 @@ class emissao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             custa = str(self.bot_data.get("TIPO_GUIA"))
             if custa.lower() == "custas iniciais":
@@ -130,7 +125,6 @@ class emissao(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def custas_iniciais(self) -> None:
-
         self.driver.get(
             "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"
         )
@@ -185,7 +179,6 @@ class emissao(CrawJUD):
             ).text
 
     def preparo_ri(self) -> None:
-
         portal = self.bot_data.get("PORTAL", "não informado")
         if str(portal).lower() == "esaj":
             self.driver.get(
@@ -265,7 +258,6 @@ class emissao(CrawJUD):
         pass
 
     def generate_doc(self) -> str:
-
         self.original_window = original_window = self.driver.current_window_handle
         generatepdf: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto))
@@ -305,7 +297,6 @@ class emissao(CrawJUD):
             return f"https://consultasaj.tjam.jus.br{url}"
 
     def downloadpdf(self, link_pdf):
-
         response = requests.get(link_pdf, timeout=60)
 
         self.nomearquivo = f"{self.tipodoc} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.nomeparte} - {self.pid}.pdf"
@@ -329,7 +320,6 @@ class emissao(CrawJUD):
         self.prt()
 
     def get_barcode(self) -> None:
-
         try:
             self.message = "Extraindo código de barras"
             self.type_log = "log"

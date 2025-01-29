@@ -1,4 +1,4 @@
-""" Crawler ELAW Cadastro"""
+"""Crawler ELAW Cadastro"""
 
 import os
 import time
@@ -23,7 +23,6 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 
 class sol_pags(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -36,12 +35,10 @@ class sol_pags(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = self.elawFormats(value)
             if self.isStoped:
@@ -55,7 +52,6 @@ class sol_pags(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -85,12 +81,10 @@ class sol_pags(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
 
             if search is True:
-
                 namedef = self.format_String(self.bot_data.get("TIPO_PAGAMENTO"))
                 self.new_payment()
                 self.set_pgto(namedef)
@@ -107,7 +101,6 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def new_payment(self) -> None:
-
         try:
             tab_pagamentos: WebElement = self.wait.until(
                 EC.presence_of_element_located(
@@ -133,7 +126,6 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def set_pgto(self, namedef: str):
-
         try:
             self.message = "Informando tipo de pagamento"
             self.type_log = "log"
@@ -156,7 +148,6 @@ class sol_pags(CrawJUD):
             list_itens = list_itens.find_elements(By.TAG_NAME, "li")
 
             for item in list_itens:
-
                 item: WebElement = item
 
                 normalizado_text = self.format_String(item.text)
@@ -178,9 +169,7 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def condenacao(self) -> None:
-
         try:
-
             self.message = "Informando o valor da guia"
             self.type_log = "log"
             self.prt()
@@ -216,7 +205,6 @@ class sol_pags(CrawJUD):
             list_type_doc = list_type_doc.find_elements(By.TAG_NAME, "li")
 
             for item in list_type_doc:
-
                 item: WebElement = item
                 if item.text.lower() == "guia de pagamento":
                     item.click()
@@ -239,7 +227,6 @@ class sol_pags(CrawJUD):
                 docs.extend(calculos)
 
             for doc in docs:
-
                 doc = self.format_String(doc.upper())
                 insert_doc: WebElement = self.wait.until(
                     EC.presence_of_element_located(
@@ -264,7 +251,6 @@ class sol_pags(CrawJUD):
 
             tipo_condenacao = str(self.bot_data.get("TIPO_CONDENACAO"))
             if "sentença" == tipo_condenacao.lower():
-
                 sleep(0.5)
                 sentenca = self.driver.find_element(
                     By.CSS_SELECTOR,
@@ -419,9 +405,7 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def custas(self) -> None:
-
         try:
-
             self.message = "Informando valor da guia"
             self.type_log = "log"
             self.prt()
@@ -465,7 +449,6 @@ class sol_pags(CrawJUD):
             docs = [self.bot_data.get("DOC_GUIA")]
 
             for doc in docs:
-
                 doc = self.format_String(doc)
                 insert_doc: WebElement = self.wait.until(
                     EC.presence_of_element_located(
@@ -525,10 +508,8 @@ class sol_pags(CrawJUD):
             )
             list_tipo_custa = list_tipo_custa.find_elements(By.TAG_NAME, "li")
             for item in list_tipo_custa:
-
                 item: WebElement = item
                 if tipo_guia.lower() == item.text.lower():
-
                     sleep(0.5)
                     item.click()
                     break
@@ -649,9 +630,7 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def save_changes(self) -> None:
-
         try:
-
             self.message = "Salvando alterações"
             self.type_log = "log"
             self.prt()
@@ -669,7 +648,6 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def confirm_save(self) -> None:
-
         try:
             tab_pagamentos: WebElement = self.wait.until(
                 EC.presence_of_element_located(
@@ -701,7 +679,6 @@ class sol_pags(CrawJUD):
             current_handle = self.driver.current_window_handle
 
             for pos, item in enumerate(check_solicitacoes):
-
                 if item.text == "Nenhum registro encontrado!":
                     raise ErroDeExecucao("Pagamento não solicitado")
 
@@ -734,7 +711,7 @@ class sol_pags(CrawJUD):
                 now = datetime.now(timezone("America/Manaus")).strftime(
                     "%d-%m-%Y %H.%M.%S"
                 )
-                Name_Comprovante1 = f"COMPROVANTE 1 {self.bot_data.get("NUMERO_PROCESSO")} - {self.pid} - {now}.png"
+                Name_Comprovante1 = f"COMPROVANTE 1 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
                 cod_bars_xls = str(
                     self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", "")
                 )
@@ -806,7 +783,7 @@ class sol_pags(CrawJUD):
                     self.driver.switch_to.window(current_handle)
 
                     closeContext.click()
-                    Name_Comprovante2 = f"COMPROVANTE 2 {self.bot_data.get("NUMERO_PROCESSO")} - {self.pid} - {now}.png"
+                    Name_Comprovante2 = f"COMPROVANTE 2 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
                     item.screenshot(
                         os.path.join(self.output_dir_path, Name_Comprovante2)
                     )
@@ -831,7 +808,6 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def getScreenShot(self, url_page: str, Name_Comprovante1: str):
-
         self.driver.switch_to.new_window("tab")
         self.driver.get(url_page)
         self.driver.save_screenshot(

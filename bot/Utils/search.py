@@ -13,18 +13,16 @@ from ..core import CrawJUD
 
 
 class SearchBot(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
         """"""
 
     def search_(self) -> bool:
-
         self.message = (
             f'Buscando processos pelo nome "{self.parte_name}"'
             if self.typebot == "proc_parte"
-            else f'Buscando Processo Nº{self.bot_data.get("NUMERO_PROCESSO")}'
+            else f"Buscando Processo Nº{self.bot_data.get('NUMERO_PROCESSO')}"
         )
         self.type_log = "log"
         self.prt()
@@ -39,9 +37,7 @@ class SearchBot(CrawJUD):
         return src
 
     def elaw_search(self) -> bool:
-
         if self.driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
-
             self.driver.get("https://amazonas.elaw.com.br/processoList.elaw")
 
         campo_numproc: WebElement = self.wait.until(
@@ -76,7 +72,6 @@ class SearchBot(CrawJUD):
         return False
 
     def esaj_search(self) -> None:
-
         grau = self.bot_data.get("GRAU", 1)
 
         if isinstance(grau, str):
@@ -86,17 +81,14 @@ class SearchBot(CrawJUD):
             grau = int(grau)
 
         if grau == 1:
-
             self.driver.get(self.elements.consultaproc_grau1)
             id_consultar = "botaoConsultarProcessos"
 
         elif grau == 2:
-
             self.driver.get(self.elements.consultaproc_grau2)
             id_consultar = "pbConsultar"
 
         elif not grau or grau != 1 or grau != 2:
-
             raise ErroDeExecucao("Informar instancia!")
 
         sleep(1)
@@ -168,11 +160,9 @@ class SearchBot(CrawJUD):
         return check_process is not None
 
     def projudi_search(self) -> None:
-
         self.driver.get(self.elements.url_busca)
 
         if self.typebot != "proc_parte":
-
             returns = self.search_proc()
 
         if self.typebot == "proc_parte":
@@ -181,7 +171,6 @@ class SearchBot(CrawJUD):
         return returns
 
     def search_proc(self) -> bool:
-
         inputproc = None
         enterproc = None
         allowacess = None
@@ -189,13 +178,11 @@ class SearchBot(CrawJUD):
         grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
 
         def detect_intimacao() -> None:
-
             if "intimacaoAdvogado.do" in self.driver.current_url:
                 raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
 
         def get_link_grau2() -> str | None:
             with suppress(Exception, TimeoutException, NoSuchElementException):
-
                 info_proc = self.wait.until(
                     EC.presence_of_all_elements_located(
                         (
@@ -233,14 +220,12 @@ class SearchBot(CrawJUD):
                 )
 
             if enterproc:
-
                 enterproc.click()
                 to_grau2 = get_link_grau2()
 
                 detect_intimacao()
 
                 with suppress(TimeoutException, NoSuchElementException):
-
                     allowacess = self.driver.find_element(
                         By.CSS_SELECTOR, "#habilitacaoProvisoriaButton"
                     )
@@ -269,7 +254,6 @@ class SearchBot(CrawJUD):
         return False
 
     def search_proc_parte(self) -> bool:
-
         allprocess = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')

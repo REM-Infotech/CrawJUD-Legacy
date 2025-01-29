@@ -57,7 +57,6 @@ process_type = Union[psutil.Process, None]
 
 
 class BotThread(Process):
-
     exc_bot: Exception = None
 
     def join(self) -> None:
@@ -66,7 +65,6 @@ class BotThread(Process):
             raise self.exc_bot
 
     def run(self) -> None:
-
         self.exc_bot: Exception = None
 
         try:
@@ -76,7 +74,6 @@ class BotThread(Process):
 
 
 class WorkerBot:
-
     system: str
     kwrgs: Dict[str, str]
 
@@ -85,7 +82,6 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
-
         try:
             process = BotThread(
                 target=WorkerBot,
@@ -129,11 +125,9 @@ class WorkerBot:
         **kwargs: Dict[str, str],
     ) -> None:
         try:
-
             from app.run import flask_app as app
 
             with app.app_context():
-
                 display_name_ = (
                     args[0] if args else kwargs.pop("display_name", display_name)
                 )
@@ -162,14 +156,12 @@ class WorkerBot:
 
     @classmethod
     def stop(cls, processID: int, pid: str, app: Flask = None) -> str:
-
         try:
             Process = AsyncResult(processID)
 
             print(Process.status)
 
             if app.testing is True or (Process and Process.status == "PENDING"):
-
                 path_flag = (
                     Path(__file__)
                     .cwd()
@@ -196,9 +188,7 @@ class WorkerBot:
 
     @classmethod
     def check_status(cls, processID: str) -> str:  # pragma: no cover
-
         try:
-
             Process = AsyncResult(processID)
 
             status: str = Process.status
@@ -215,5 +205,4 @@ class WorkerBot:
 
 
 if __name__ == "__main__":
-
     from .scripts import ClassesSystems

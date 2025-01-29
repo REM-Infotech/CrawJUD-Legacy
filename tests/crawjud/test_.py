@@ -6,13 +6,10 @@ from status import SetStatus as st_stt
 
 
 class TestRunner:
-
     def test_status_start(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
-
         user, pid = create_dummy_pid
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         with app.app_context():
-
             path_args, display_name = SetStatus.start_bot(app, db, user, pid, 1)
 
             worker_thread = WorkerBot(
@@ -28,7 +25,6 @@ class TestRunner:
             assert check_result
 
     def test_status_stop(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
-
         from app.misc import get_file
 
         user, pid = create_dummy_pid
@@ -38,7 +34,6 @@ class TestRunner:
         pid = str(pid)
 
         with app.app_context():
-
             stop = SetStatus.botstop(db, app, pid)
             check_return = WorkerBot().stop(12345, pid, app)
 
@@ -52,7 +47,6 @@ class TestRunner:
         assert checks
 
     def test_status_stop_esaj(self, app: Flask, SetStatus: st_stt, create_dummy_pid):
-
         user, pid = create_dummy_pid
         db: SQLAlchemy = app.extensions["sqlalchemy"]
 
@@ -60,7 +54,6 @@ class TestRunner:
         pid = str(pid)
 
         with app.app_context():
-
             stop = SetStatus.botstop(db, app, pid, "esaj", "protocolo")
             check_return = WorkerBot().stop(12345, pid, app)
             assert check_return is not None and stop is not None

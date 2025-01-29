@@ -1,5 +1,4 @@
 def varas() -> dict:
-
     return {
         "1ª Vara do Trabalho de Boa Vista": "#VTBV1-1",
         "2ª Vara do Trabalho de Boa Vista": "#VTBV2-1",

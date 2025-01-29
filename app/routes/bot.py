@@ -14,8 +14,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 from miscellaneous import reload_module
 
-from ..misc import GeoLoc, check_latest, stop_execution
+from ..misc import check_latest, stop_execution
 from ..models import ScheduleModel
+from ..utils import GeoLoc
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
@@ -23,7 +24,6 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 @bot.post("/bot/<id>/<system>/<typebot>")
 def botlaunch(id: int, system: str, typebot: str) -> Response:
-
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
     from status import SetStatus
@@ -47,7 +47,6 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
                 raise Exception("Server running outdatest version!")
 
             if app.testing is False:
-
                 if system == "esaj" and platform.system() != "Windows":
                     raise Exception("Este servidor não pode executar este robô!")
 
@@ -58,7 +57,6 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
                 path_args, display_name = start_rb.start_bot(app, db)
 
                 with app.app_context():
-
                     reload_module("bot")
 
                     from app.models import ThreadBots
@@ -91,7 +89,6 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
                 is_started = 200 if data_bot else 500
 
         except Exception as e:  # pragma: no cover
-
             print(traceback.format_exc())
             message = {"error": str(e)}
             is_started: Type[int] = 500
@@ -102,7 +99,6 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
 def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
-
     from flask import current_app as app
 
     from app.models import Executions
@@ -121,7 +117,6 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
 
 @bot.post("/periodic_bot/<id>/<system>/<typebot>")
 def periodic_bot(id: int, system: str, typebot: str) -> Response:
-
     from status import SetStatus
 
     db: SQLAlchemy = app.extensions["sqlalchemy"]

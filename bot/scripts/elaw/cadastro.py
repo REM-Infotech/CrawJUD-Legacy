@@ -1,4 +1,4 @@
-""" Crawler ELAW Cadastro"""
+"""Crawler ELAW Cadastro"""
 
 import os
 import pathlib
@@ -22,7 +22,6 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 
 class cadastro(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -35,12 +34,10 @@ class cadastro(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -54,7 +51,6 @@ class cadastro(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -84,13 +80,11 @@ class cadastro(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             self.bot_data = self.elawFormats(self.bot_data)
             search = self.search_bot()
 
             if search is True:
-
                 self.append_success(
                     [
                         self.bot_data.get("NUMERO_PROCESSO"),
@@ -100,7 +94,6 @@ class cadastro(CrawJUD):
                 )
 
             elif search is not True:
-
                 self.message = "Processo não encontrado, inicializando cadastro..."
                 self.type_log = "log"
                 self.prt()
@@ -179,7 +172,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def subarea_direito(self) -> None:
-
         self.message = "Informando sub-área do direito"
         self.type_log = "log"
         self.prt()
@@ -201,7 +193,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def next_page(self) -> None:
-
         next_page: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_button)),
             message="Erro ao encontrar elemento",
@@ -209,7 +200,6 @@ class cadastro(CrawJUD):
         next_page.click()
 
     def info_localizacao(self) -> None:
-
         elementSelect = self.elements.css_esfera_judge
         text = "Judicial"
 
@@ -294,7 +284,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_proceso(self) -> None:
-
         key = "NUMERO_PROCESSO"
         css_campo_processo = self.elements.numero_processo
 
@@ -320,7 +309,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_empresa(self) -> None:
-
         text = self.bot_data.get("EMPRESA")
         elementSelect = self.elements.empresa_input
 
@@ -354,7 +342,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def parte_contraria(self) -> None:
-
         self.message = "Preechendo informações da parte contrária"
         self.type_log = "log"
         self.prt()
@@ -384,7 +371,6 @@ class cadastro(CrawJUD):
             )
 
             if get_label == tipo_doc:
-
                 select_button = item.find_element(
                     By.CSS_SELECTOR, 'div[class="ui-radiobutton ui-widget"]'
                 )
@@ -430,7 +416,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def uf_proc(self) -> None:
-
         get_div_select_locale: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.css_div_select_opt)
@@ -445,7 +430,6 @@ class cadastro(CrawJUD):
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
-
             other_location: WebElement = self.wait.until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, self.elements.css_other_location)
@@ -457,7 +441,6 @@ class cadastro(CrawJUD):
             self.interact.send_key(other_location, Keys.ENTER)
 
     def acao_proc(self) -> None:
-
         self.message = "Informando ação do processo"
         self.type_log = "log"
         self.prt()
@@ -488,7 +471,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def data_distribuicao(self) -> None:
-
         self.interact.sleep_load('div[id="j_id_3x"]')
         self.message = "Informando data de distribuição"
         self.type_log = "log"
@@ -515,7 +497,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def advogado_responsavel(self) -> None:
-
         self.message = "informando advogado interno"
         self.type_log = "log"
         self.prt()
@@ -576,7 +557,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def adv_parte_contraria(self) -> None:
-
         self.message = "Informando Adv. Parte contrária"
         self.type_log = "log"
         self.prt()
@@ -631,7 +611,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def info_valor_causa(self) -> None:
-
         self.message = "Informando valor da causa"
         self.type_log = "log"
         self.prt()
@@ -659,7 +638,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def escritorio_externo(self) -> None:
-
         self.message = "Informando Escritório Externo"
         self.type_log = "log"
         self.prt()
@@ -682,7 +660,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def tipo_contingencia(self) -> None:
-
         self.message = "Informando contingenciamento"
         self.type_log = "log"
         self.prt()
@@ -710,7 +687,6 @@ class cadastro(CrawJUD):
         self.prt()
 
     def cad_adv(self) -> None:
-
         try:
             self.message = "Cadastrando advogado"
             self.type_log = "log"
@@ -800,7 +776,6 @@ class cadastro(CrawJUD):
             raise ErroDeExecucao("Não foi possível cadastrar advogado", e)
 
     def cad_parte(self) -> None:
-
         try:
             self.message = "Cadastrando parte"
             self.type_log = "log"
@@ -929,7 +904,6 @@ class cadastro(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def salvar_tudo(self) -> None:
-
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
             EC.presence_of_element_located(
@@ -945,8 +919,7 @@ class cadastro(CrawJUD):
         salvartudo.click()
 
     def print_comprovante(self) -> None:
-
-        name_comprovante = f'Comprovante Cadastro - {self.bot_data.get("NUMERO_PROCESSO")} - PID {self.pid}.png'
+        name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
         savecomprovante = os.path.join(
             pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
         )
@@ -956,7 +929,6 @@ class cadastro(CrawJUD):
         )
 
     def check_part_found(self, driver) -> str | None:
-
         name_parte = ""
         with suppress(NoSuchElementException):
             name_parte = (
@@ -966,13 +938,11 @@ class cadastro(CrawJUD):
             )
 
         if name_parte != "":
-
             return name_parte
 
         return None
 
     def confirm_save(self) -> bool:
-
         wait_confirm_save = None
 
         with suppress(TimeoutException):
@@ -982,7 +952,6 @@ class cadastro(CrawJUD):
             )
 
         if wait_confirm_save:
-
             self.message = "Processo salvo com sucesso!"
             self.type_log = "log"
             self.prt()

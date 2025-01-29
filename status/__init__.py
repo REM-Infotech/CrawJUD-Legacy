@@ -21,7 +21,6 @@ url_cache = []
 
 
 class SetStatus:
-
     def __init__(
         self,
         form: Dict[str, str] = {},
@@ -34,7 +33,6 @@ class SetStatus:
         status: str = "Finalizado",
         **kwargs,
     ) -> str:
-
         self.form = form
         self.files = files
         self.id = id
@@ -45,7 +43,6 @@ class SetStatus:
         self.status = status
 
     def format_String(self, string: str) -> str:
-
         return secure_filename(
             "".join(
                 [
@@ -64,7 +61,6 @@ class SetStatus:
         pid: str = None,
         id: int = None,
     ) -> tuple[str, str]:
-
         from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
         user = self.user if user is None else user
@@ -76,7 +72,6 @@ class SetStatus:
 
         if self.files:
             for f, value in self.files.items():
-
                 if "xlsx" not in f or app.testing is True:
                     f = self.format_String(f)
 
@@ -110,7 +105,6 @@ class SetStatus:
             rows = diff.days + 2
 
         elif data.get("typebot") == "proc_parte":
-
             rows = len(list(data.get("varas"))) + 1
 
         data.update({"total_rows": rows})

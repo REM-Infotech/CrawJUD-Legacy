@@ -10,7 +10,6 @@ salt = bcrypt.gensalt()
 
 
 class SuperUser(db.Model):
-
     __tablename__ = "superuser"
     id: int = db.Column(db.Integer, primary_key=True)
     users_id = db.Column(db.Integer, db.ForeignKey("users.id"))
@@ -18,7 +17,6 @@ class SuperUser(db.Model):
 
 
 class Users(db.Model):
-
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(length=30), nullable=False, unique=True)
@@ -51,7 +49,6 @@ class Users(db.Model):
 
 
 class LicensesUsers(db.Model):
-
     __tablename__ = "licenses_users"
     id: int = db.Column(db.Integer, primary_key=True)
     name_client: str = db.Column(db.String(length=60), nullable=False, unique=True)

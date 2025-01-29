@@ -6,7 +6,6 @@ class StartError(Exception):
 
 
 class CrawJUDExceptions(Exception):
-
     message_: str = None
 
     @property
@@ -18,7 +17,6 @@ class CrawJUDExceptions(Exception):
         self.message_ = message
 
     def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
-
         self.message = message
 
         if isinstance(e, ErroDeExecucao):
@@ -35,7 +33,6 @@ class CrawJUDExceptions(Exception):
         return self.message
 
     def __instancecheck__(self, instance: Exception) -> bool:
-
         check_except = instance in webdriver_exepts()
         return check_except
 

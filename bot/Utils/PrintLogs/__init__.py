@@ -2,11 +2,11 @@ import logging
 import os
 import pathlib
 from datetime import datetime
+from os import environ
 from time import sleep
 from typing import Self
 
 import pytz
-from os import environ
 from dotenv_vault import load_dotenv
 from tqdm import tqdm
 
@@ -22,14 +22,12 @@ iobot = SocketBot()
 
 
 class PrintBot(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
         """"""
 
     def print_msg(self) -> None:
-
         log = self.message
         if self.message_error:
             log = self.message_error
@@ -63,7 +61,6 @@ class PrintBot(CrawJUD):
 
     @classmethod
     def file_log(cls, self: Self) -> None:
-
         try:
             savelog = os.path.join(
                 pathlib.Path(__file__).cwd(),
@@ -73,7 +70,6 @@ class PrintBot(CrawJUD):
             )
             with open(savelog, "a") as f:
                 for mensagem in self.list_messages:
-
                     if self.pid in mensagem:
                         f.write(f"{mensagem}\n")
                 pass
@@ -89,20 +85,17 @@ class PrintBot(CrawJUD):
             tqdm.write(f"{e}")
 
     def end_prt(self, status: str) -> None:
-
         data = {"pid": self.pid, "status": status}
 
         iobot.end_message(data, url_socket)
 
     @classmethod
     def socket_message(cls, self: Self, data: dict) -> None:
-
         chk_type1 = "fim da execução" in self.prompt
         chk_type2 = "falha ao iniciar" in self.prompt
         message_stop = [chk_type1, chk_type2]
 
         try:
-
             if any(message_stop):
                 data.update({"system": self.system, "typebot": self.typebot})
 

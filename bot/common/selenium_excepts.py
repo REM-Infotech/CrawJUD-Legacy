@@ -10,7 +10,6 @@ from urllib3.exceptions import MaxRetryError, ProtocolError
 
 
 def webdriver_exepts() -> list[Exception]:
-
     return [
         TimeoutException,
         StaleElementReferenceException,
@@ -26,7 +25,6 @@ def webdriver_exepts() -> list[Exception]:
 
 
 def exceptionsBot() -> dict[str, str]:
-
     return {
         "TimeoutException": "Falha ao encontrar elemento",
         "StaleElementReferenceException": "Erro ao encontrar referencia do elemento",

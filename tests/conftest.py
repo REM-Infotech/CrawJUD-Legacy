@@ -36,7 +36,6 @@ def app():
     yield app
 
     with app.app_context():
-
         app.debug = False
         db: SQLAlchemy = app.extensions.get("sqlalchemy")
         db.drop_all()
@@ -85,7 +84,6 @@ def args_bot():
     )
     basename = path.basename(xls_Test)
     with Path(xls_Test).open("rb") as f:
-
         data = {
             "url": "https://",
             "files": {basename: (basename, f)},
@@ -122,7 +120,6 @@ def args_statusbot():
     )
     basename = path.basename(xls_Test)
     with Path(xls_Test).open("rb") as f:
-
         f = FileStorage(f, basename)
         data = {
             "id": 1,
@@ -208,12 +205,10 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
     db: SQLAlchemy = app.extensions["sqlalchemy"]
 
     with app.app_context():
-
         db.drop_all()
         db.create_all()
 
         def _user_license():
-
             from app.models import LicensesUsers, Users
 
             license_dummy = str(uuid4())
@@ -232,7 +227,6 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
             return usr, license_user
 
         def _bots(license_user: LicensesUsers):
-
             df = pd.read_excel(
                 Path(__file__)
                 .cwd()
@@ -244,7 +238,6 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
             bot_info = None
             data = []
             for values in list(df.to_dict(orient="records")):
-
                 key = list(values)[1]
                 value = values.get(key)
 
@@ -271,7 +264,6 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
             return license_user, bot_info
 
         def _execut(usr, license_, bot_info):
-
             rows = process_id
             bt = bot_info
             process = ThreadBots(pid=pid, processID=process_id)

@@ -21,7 +21,6 @@ from ...core import CrawJUD
 
 
 class pauta(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -34,7 +33,6 @@ class pauta(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -42,7 +40,6 @@ class pauta(CrawJUD):
         self.current_date = self.data_inicio
 
         while not self.isStoped and self.current_date <= self.data_fim:
-
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
                     self.auth_bot()
@@ -51,7 +48,6 @@ class pauta(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -70,8 +66,7 @@ class pauta(CrawJUD):
                 message_error = str(e)
 
                 self.type_log = "error"
-                self.message_error = f"{
-                    message_error}. | Operação: {old_message}"
+                self.message_error = f"{message_error}. | Operação: {old_message}"
                 self.prt()
 
                 self.bot_data.update({"MOTIVO_ERRO": self.message_error})
@@ -82,16 +77,14 @@ class pauta(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
-
-            self.message = f"Buscando pautas na data {
-                self.current_date.strftime('%d/%m/%Y')}"
+            self.message = (
+                f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
+            )
             self.type_log = "log"
             self.prt()
             varas: list[str] = self.varas
             for vara in varas:
-
                 date = self.current_date.strftime("%Y-%m-%d")
                 self.data_append.update({vara: {date: []}})
 
@@ -104,7 +97,7 @@ class pauta(CrawJUD):
 
                 elif len(data_append) > 0:
                     vara = vara.replace("#", "").upper()
-                    fileN = f'{vara} - {date.replace("-", ".")} - {self.pid}.xlsx'
+                    fileN = f"{vara} - {date.replace('-', '.')} - {self.pid}.xlsx"
                     self.append_success(data=data_append, fileN=fileN)
 
             data_append = self.group_date_all(self.data_append)
@@ -125,9 +118,7 @@ class pauta(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_pautas(self, current_date: Type[datetime], vara: str):
-
         try:
-
             # Interage com a tabela de pautas
             self.driver.implicitly_wait(10)
             times = 4
@@ -152,7 +143,6 @@ class pauta(CrawJUD):
 
             # Caso encontre a tabela, raspa os dados
             if itens_pautas:
-
                 self.message = "Pautas encontradas!"
                 self.type_log = "log"
                 self.prt()
@@ -188,7 +178,7 @@ class pauta(CrawJUD):
 
                         self.data_append[vara][current_date].append(appends)
                         self.message = (
-                            f'Processo {appends["NUMERO_PROCESSO"]} adicionado!'
+                            f"Processo {appends['NUMERO_PROCESSO']} adicionado!"
                         )
                         self.type_log = "log"
                         self.prt()
@@ -200,7 +190,6 @@ class pauta(CrawJUD):
 
                     buttondisabled = btn_next.get_attribute("disabled")
                     if not buttondisabled:
-
                         btn_next.click()
                         self.get_pautas(current_date, vara)
 

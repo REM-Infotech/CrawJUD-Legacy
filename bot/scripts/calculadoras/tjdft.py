@@ -1,4 +1,4 @@
-""" calculadoras.tjdft """
+"""calculadoras.tjdft"""
 
 import base64
 import os
@@ -23,7 +23,6 @@ cookieaceito = []
 
 
 class tjdft(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -36,12 +35,10 @@ class tjdft(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -55,7 +52,6 @@ class tjdft(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -85,7 +81,6 @@ class tjdft(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             self.get_calcular()
             self.info_numproc()
@@ -100,7 +95,6 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_calcular(self) -> None:
-
         try:
             self.message = "Acessando Página de cálculo.."
             self.type_log = "log"
@@ -121,7 +115,6 @@ class tjdft(CrawJUD):
                 )
 
             if check_cookies:
-
                 sleep(2)
 
                 aceitar_cookies_css = (
@@ -137,7 +130,6 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_numproc(self) -> None:
-
         try:
             sleep(2)
             self.message = "Informando numero do processo"
@@ -158,7 +150,6 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao("Erro ao informar número do processo", e)
 
     def info_requerente(self) -> None:
-
         try:
             sleep(2)
             css_name_requerente = 'input[name="requerente"][id="requerente"]'
@@ -179,7 +170,6 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_requerido(self) -> None:
-
         try:
             sleep(2)
             css_name_requerido = 'input[name="requerido"][id="requerido"]'
@@ -200,7 +190,6 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_jurosapartir(self) -> None:
-
         try:
             self.message = "Informando incidencia de juros e data de incidencia"
             self.type_log = "log"
@@ -225,7 +214,6 @@ class tjdft(CrawJUD):
                 )
 
             elif juros_percent != "1":
-
                 percent = juros_percent
                 percent = f"{percent},00" if "," not in percent else percent
 
@@ -254,7 +242,6 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def valores_devidos(self) -> None:
-
         try:
             css_data_valor_devido = 'input[id="data-0"][name="parcela_data:list"]'
             self.message = "Informando data valor devido"
@@ -288,9 +275,7 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def acessorios(self) -> None:
-
         def multa_percentual() -> None | Exception:
-
             try:
                 sleep(1)
                 css_multa_percentual = 'input[name="multa_percent"][id="multa_percent"]'
@@ -311,7 +296,6 @@ class tjdft(CrawJUD):
                     multa_percentual.send_keys(percent)
 
                 if self.bot_data.get("MULTA_DATA", None):
-
                     multa_data = self.driver.find_element(
                         By.CSS_SELECTOR, 'input[id="multa_data"]'
                     )
@@ -333,7 +317,6 @@ class tjdft(CrawJUD):
                 raise ErroDeExecucao(e=e)
 
         def honorario_sucumb() -> None | Exception:
-
             try:
                 css_honorario_sucumb = (
                     'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
@@ -345,7 +328,6 @@ class tjdft(CrawJUD):
                 disabled_state = ""
 
                 if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
-
                     honorario_sucumb: WebElement = self.wait.until(
                         EC.presence_of_element_located(
                             (By.CSS_SELECTOR, css_honorario_sucumb)
@@ -369,7 +351,6 @@ class tjdft(CrawJUD):
                     self.bot_data.get("HONORARIO_SUCUMB_DATA", None)
                     and disabled_state == ""
                 ):
-
                     honor_sucumb_data = self.driver.find_element(
                         By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]'
                     )
@@ -400,7 +381,6 @@ class tjdft(CrawJUD):
                 raise ErroDeExecucao(e=e)
 
         def percent_multa_475J():
-
             try:
                 percent_multa_ = self.driver.find_element(
                     By.CSS_SELECTOR, 'input[id="multa475_exec_percent"]'
@@ -413,7 +393,6 @@ class tjdft(CrawJUD):
                 raise ErroDeExecucao(e=e)
 
         def honorario_cumprimento() -> None | Exception:
-
             try:
                 css_honorario_exec = 'input[id="honor_exec_percent"]'
                 self.message = "Informando Honorários de Cumprimento"
@@ -423,7 +402,6 @@ class tjdft(CrawJUD):
                 disabled_state = ""
 
                 if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
-
                     honorario_exec: WebElement = self.wait.until(
                         EC.presence_of_element_located(
                             (By.CSS_SELECTOR, css_honorario_exec)
@@ -447,7 +425,6 @@ class tjdft(CrawJUD):
                     self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None)
                     and disabled_state == ""
                 ):
-
                     honor_exec_data = self.driver.find_element(
                         By.CSS_SELECTOR, 'input[id="honor_exec_data"]'
                     )
@@ -478,7 +455,6 @@ class tjdft(CrawJUD):
                 raise ErroDeExecucao(e=e)
 
         def custas() -> None | Exception:
-
             try:
                 css_data_custas = 'input[id="custas-data-0"]'
                 self.message = "Informando valor custas"
@@ -521,7 +497,6 @@ class tjdft(CrawJUD):
                         break
 
     def finalizar_execucao(self) -> None:
-
         try:
             css_calcular = 'input[type="submit"][value="Calcular"][id="calcular"]'
             calcular = self.driver.find_element(By.CSS_SELECTOR, css_calcular)
@@ -549,7 +524,7 @@ class tjdft(CrawJUD):
 
             # Salva o PDF em um arquivo
 
-            pdf_name = f'CALCULO - {self.bot_data.get("NUMERO_PROCESSO")} - {self.bot_data.get("REQUERENTE")} - {self.pid}.pdf'
+            pdf_name = f"CALCULO - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('REQUERENTE')} - {self.pid}.pdf"
 
             path_pdf = os.path.join(self.output_dir_path, pdf_name)
             with open(path_pdf, "wb") as file:

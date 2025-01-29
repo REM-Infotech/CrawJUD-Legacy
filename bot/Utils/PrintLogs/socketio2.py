@@ -47,7 +47,6 @@ class SocketBot:
             sleep(1)
 
         except BadNamespaceError:
-
             exc = traceback.format_exc()
 
             try:
@@ -59,7 +58,6 @@ class SocketBot:
                 sleep(1)
 
             except Exception as e:
-
                 if "Client is not in a disconnected state" in str(e):
                     sio.disconnect()
                     self.connected = False
@@ -72,7 +70,6 @@ class SocketBot:
                 exc = traceback.format_exc()
 
         except ConnectionError as e:
-
             exc = traceback.format_exc()
 
             try:
@@ -84,7 +81,6 @@ class SocketBot:
                     self.emit_message(event, data)
 
                 elif "Already connected" in str(e):
-
                     self.emit_message(event, data)
                     self.connected = True
 
@@ -98,11 +94,9 @@ class SocketBot:
             print(exc)
 
     def emit_message(self, event: str, data: Dict):
-
         sio.emit(event, data, namespace="/log")
 
     def connect_socket(self, url: str) -> None:
-
         if self.connected is False:
             sio.connect(url, namespaces=["/log"])
             self.connected = True

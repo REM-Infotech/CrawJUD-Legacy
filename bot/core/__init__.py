@@ -47,7 +47,6 @@ __all__ = [
 
 
 class CrawJUD(PropertiesCrawJUD):
-
     settings = {
         "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
         "selectedDestinationId": "Save as PDF",
@@ -60,15 +59,12 @@ class CrawJUD(PropertiesCrawJUD):
         self.PrintBot.print_msg()
 
     def end_prt(self, status: str) -> None:
-
         self.PrintBot.end_prt(status)
 
     def __init__(self, *args, **kwargs) -> None:
-
         self.kwrgs = kwargs
         list_kwargs = list(kwargs.items())
         for key, value in list_kwargs:
-
             if key == "path_args":
                 value = Path(value).resolve()
 
@@ -85,7 +81,6 @@ class CrawJUD(PropertiesCrawJUD):
         self.state_or_client = self.state if self.state is not None else self.client
 
     def __getattr__(self, nome: str) -> TypeHint:
-
         item = self.kwrgs.get(nome, None)
 
         if not item:
@@ -132,7 +127,6 @@ class CrawJUD(PropertiesCrawJUD):
         self.row = 0
 
         try:
-
             self.message = str("Inicializando robô")
             self.type_log = str("log")
             self.prt()
@@ -149,7 +143,6 @@ class CrawJUD(PropertiesCrawJUD):
                 "--kiosk-printing",
             ]
             if self.name_cert:
-
                 self.install_cert()
 
             time_xlsx = datetime.now(timezone("America/Manaus")).strftime("%d-%m-%y")
@@ -170,7 +163,6 @@ class CrawJUD(PropertiesCrawJUD):
             self.MakeXlsx.make_output("erro", self.path_erro)
 
             if not self.xlsx:
-
                 self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
@@ -182,7 +174,6 @@ class CrawJUD(PropertiesCrawJUD):
             # self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:
-
             self.row = 0
             self.message = "Falha ao iniciar"
             self.type_log = "error"
@@ -195,7 +186,6 @@ class CrawJUD(PropertiesCrawJUD):
             raise e
 
     def auth_bot(self) -> None:
-
         try:
             """
             Authenticates the bot using the specified login method.
@@ -211,13 +201,11 @@ class CrawJUD(PropertiesCrawJUD):
             if self.login_method:
                 chk_logged = self.AuthBot()
                 if chk_logged is True:
-
                     self.message = "Login efetuado com sucesso!"
                     self.type_log = "log"
                     self.prt()
 
                 elif chk_logged is False:
-
                     self.driver.quit()
                     self.message = "Erro ao realizar login"
                     self.type_log = "error"
@@ -225,7 +213,6 @@ class CrawJUD(PropertiesCrawJUD):
                     raise ErroDeExecucao(message=self.message)
 
         except Exception as e:
-
             print(e)
             self.row = 0
             self.message = "Erro ao realizar login"

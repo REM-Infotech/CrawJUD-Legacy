@@ -9,22 +9,18 @@ from ...common.exceptions import StartError
 
 
 class projudi:
-
     def __init__(self, **kwrgs) -> None:
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
-
             self.Bot.execution()
 
         except Exception as e:
-
             logging.error(f"Exception: {e}", exc_info=True)
             raise StartError(traceback.format_exc())
 
     @property
     def Bot(self) -> ClassBots:
-
         module_rb = import_module(f".{self.typebot.lower()}", __package__)
         rb: ClassBots = getattr(
             module_rb,

@@ -20,14 +20,12 @@ if platform.system == "Windows":
 
 
 class AuthBot(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
         """"""
 
     def auth(self) -> bool:
-
         to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth")
         if to_call:
             return to_call(self)
@@ -35,14 +33,12 @@ class AuthBot(CrawJUD):
         raise RuntimeError("Sistema Não encontrado!")
 
     def esaj_auth(self) -> bool:
-
         try:
             loginuser = "".join(
                 filter(lambda x: x not in string.punctuation, self.username)
             )
             passuser = self.password
             if self.login_method == "cert":
-
                 self.driver.get(self.elements.url_login_cert)
                 sleep(3)
                 loginopt: WebElement = self.wait.until(
@@ -63,7 +59,6 @@ class AuthBot(CrawJUD):
                     raise e
                 if item:
                     try:
-
                         sencert = item.get_attribute("value")
                         select = Select(
                             self.driver.find_element(
@@ -91,7 +86,6 @@ class AuthBot(CrawJUD):
 
                 checkloged = None
                 with suppress(TimeoutException):
-
                     checkloged = WebDriverWait(self.driver, 15).until(
                         EC.presence_of_element_located(
                             (
@@ -126,7 +120,6 @@ class AuthBot(CrawJUD):
 
             checkloged = None
             with suppress(TimeoutException):
-
                 checkloged = WebDriverWait(self.driver, 15).until(
                     EC.presence_of_element_located(
                         (
@@ -142,7 +135,6 @@ class AuthBot(CrawJUD):
             raise e
 
     def projudi_auth(self) -> bool:
-
         try:
             self.driver.get(self.elements.url_login)
 
@@ -176,7 +168,6 @@ class AuthBot(CrawJUD):
             raise e
 
     def elaw_auth(self) -> bool:
-
         try:
             self.driver.get("https://amazonas.elaw.com.br/login")
 
@@ -205,7 +196,6 @@ class AuthBot(CrawJUD):
             raise e
 
     def pje_auth(self) -> bool:
-
         try:
             self.driver.get(self.elements.url_login)
 
@@ -241,9 +231,7 @@ class AuthBot(CrawJUD):
             raise e
 
     def accept_cert(self, accepted_dir: str) -> None:
-
         try:
-
             path = r"C:\Users\%USERNAME%\AppData\Local\Softplan Sistemas\Web Signer"
             resolved_path = os.path.expandvars(path)
 
@@ -267,7 +255,6 @@ class AuthBot(CrawJUD):
             source_directory = self.chr_dir
 
             try:
-
                 comando = [
                     "xcopy",
                     source_directory,

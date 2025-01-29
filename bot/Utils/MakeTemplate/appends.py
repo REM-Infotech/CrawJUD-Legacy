@@ -1,5 +1,4 @@
 class listas:
-
     @property
     def emissor_sucesso(self) -> list[str]:
         return [
@@ -28,7 +27,6 @@ class listas:
 
     @property
     def capa_sucesso(self) -> list[str]:
-
         return [
             "AREA_DIREITO",
             "SUBAREA_DIREITO",
@@ -52,7 +50,6 @@ class listas:
 
     @property
     def movimentacao_sucesso(self) -> list[str]:
-
         return [
             "Data movimentação",
             "Nome Movimentação",
@@ -63,7 +60,6 @@ class listas:
 
     @property
     def sols_pag_sucesso(self) -> list[str]:
-
         return [
             "MENSAGEM_COMCLUSAO",
             "TIPO_PGTO",
@@ -74,15 +70,12 @@ class listas:
 
     @property
     def sucesso(self) -> list[str]:
-
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE"]
 
     @property
     def protocolo_sucesso(self) -> list[str]:
-
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE", "ID_PROTOCOLO"]
 
     @property
     def erro(self) -> list[str]:
-
         return ["MOTIVO_ERRO"]

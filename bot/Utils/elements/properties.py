@@ -5,7 +5,6 @@ class Configuracao:
         self.element_data = dados
 
     def __getattr__(self, name: str) -> str:
-
         element = self.element_data.get(name)
         if not element:
             raise AttributeError(f"Elemento {name} não encontrado")

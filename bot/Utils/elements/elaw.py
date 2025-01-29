@@ -2,7 +2,6 @@ from .properties import Configuracao
 
 
 class ELAW_AME(Configuracao):
-
     # Login Elaw
     url_login = ""
     campo_username = ""

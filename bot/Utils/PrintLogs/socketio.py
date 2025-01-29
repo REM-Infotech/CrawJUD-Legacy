@@ -12,7 +12,6 @@ class SocketBot:
         self.tries = 0
 
     def with_context(self, event: str, data: dict, url: str) -> None:
-
         try:
             url = f"https://{url}"
 
@@ -35,7 +34,6 @@ class SocketBot:
         #     io.emit(event, data, namespace="/log")
 
     def connect_emit(self, event: str, data: dict, url: str) -> None:
-
         if not self.connected:
             sio.connect(url, namespaces=["/log"])
             self.connected = True

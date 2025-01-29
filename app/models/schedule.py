@@ -4,7 +4,6 @@ from app import db
 
 
 class ScheduleModel(db.Model):
-
     __tablename__ = "scheduled_jobs"
     id = db.Column(db.Integer, primary_key=True)
     task_name: str = db.Column(db.String(128), nullable=False)

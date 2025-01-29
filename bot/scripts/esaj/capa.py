@@ -15,7 +15,6 @@ from ...core import CrawJUD
 
 
 class capa(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -28,12 +27,10 @@ class capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -47,7 +44,6 @@ class capa(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -77,7 +73,6 @@ class capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             self.search_bot()
             self.append_success(self.get_process_informations())
@@ -86,7 +81,6 @@ class capa(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_process_informations(self) -> list:
-
         # chk_advs = ["Advogada", "Advogado"]
         # adv_polo_ativo = "Não consta"
         # adv_polo_passivo = "Não consta"
@@ -100,7 +94,6 @@ class capa(CrawJUD):
         self.driver.execute_script("$('div#maisDetalhes').show()")
 
         if grau == 1:
-
             acao: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao))
             ).text
@@ -253,15 +246,12 @@ class capa(CrawJUD):
             list_sumary = [sumary_1_esaj, sumary_2_esaj]
 
             for pos_, sumary in enumerate(list_sumary):
-
                 for pos, rows in enumerate(sumary):
-
                     subitems_sumary = rows.find_elements(
                         By.CSS_SELECTOR, self.elements.rows_sumary_
                     )
 
                     for item in subitems_sumary:
-
                         if pos == 0 and pos_ == 0:
                             num_proc = item.find_element(
                                 By.CLASS_NAME, self.elements.numproc
@@ -300,7 +290,6 @@ class capa(CrawJUD):
                 info_parte = group_parte.find_elements(By.TAG_NAME, "td")[1]
                 info_parte_text = info_parte.text.split("\n")
                 if "\n" in info_parte.text:
-
                     for attr_parte in info_parte_text:
                         if ":" in attr_parte:
                             representante = attr_parte.replace("  ", "").split(":")

@@ -5,9 +5,7 @@ from app.misc import bucketGcs, storageClient
 
 
 def enviar_arquivo_para_gcs(zip_file: str) -> bool:
-
     try:
-
         arquivo_local = ""
         objeto_destino = ""
 

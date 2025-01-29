@@ -14,7 +14,6 @@ from ...core import CrawJUD
 
 
 class proc_parte(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -28,10 +27,8 @@ class proc_parte(CrawJUD):
         self.data_append = []
 
     def execution(self) -> None:
-
         self.graphicMode = "bar"
         while not self.isStoped:
-
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
                     self.auth_bot()
@@ -40,7 +37,6 @@ class proc_parte(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old = self.message
                 message_error = str(e)
 
@@ -56,7 +52,6 @@ class proc_parte(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             for vara in self.varas:
                 self.vara: str = vara
@@ -69,13 +64,11 @@ class proc_parte(CrawJUD):
                         self.auth_bot()
 
         except Exception as e:
-
             old_message = None
             check_window = any(
                 [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
             )
             if check_window:
-
                 with suppress(Exception):
                     self.DriverLaunch(
                         message="Webdriver encerrado inesperadamente, reinicializando..."
@@ -100,7 +93,6 @@ class proc_parte(CrawJUD):
             self.queue()
 
     def get_process_list(self) -> None:
-
         try:
             table_processos = self.driver.find_element(
                 By.CLASS_NAME, "resultTable"
@@ -140,7 +132,6 @@ class proc_parte(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def use_list_process(self, list_processos: list[WebElement]):
-
         self.data_append.clear()
         for processo in list_processos:
             numero_processo = processo.find_elements(By.TAG_NAME, "td")[1].text

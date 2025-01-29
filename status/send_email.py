@@ -1,4 +1,5 @@
 from os import environ
+
 from dotenv_vault import load_dotenv
 from flask import Flask
 from flask_mail import Mail, Message
@@ -7,7 +8,6 @@ load_dotenv()
 
 
 def email_start(execution: None, app: Flask) -> None:
-
     from app.models import Executions, Users
 
     execution: Executions = execution
@@ -33,7 +33,6 @@ def email_start(execution: None, app: Flask) -> None:
         print(e)
 
     with app.app_context():
-
         url_web = environ.get("url_web")
         sendermail = environ["MAIL_DEFAULT_SENDER"]
 
@@ -64,7 +63,6 @@ def email_start(execution: None, app: Flask) -> None:
 
 
 def email_stop(execution: None, app: Flask) -> None:
-
     from app.models import Executions, Users
 
     execution: Executions = execution
@@ -92,7 +90,6 @@ def email_stop(execution: None, app: Flask) -> None:
         print(e)
 
     with app.app_context():
-
         url_web = environ.get("url_web")
         sendermail = environ["MAIL_DEFAULT_SENDER"]
 

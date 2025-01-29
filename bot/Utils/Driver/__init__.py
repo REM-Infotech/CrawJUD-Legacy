@@ -39,7 +39,6 @@ except ModuleNotFoundError:
 
 
 class DriverBot(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
@@ -66,9 +65,7 @@ class DriverBot(CrawJUD):
     def DriverLaunch(
         self, message: str = "Inicializando WebDriver"
     ) -> Tuple[WebDriver, WebDriverWait]:
-
         try:
-
             pid_path = self.output_dir_path.resolve()
 
             self.message = message
@@ -99,7 +96,6 @@ class DriverBot(CrawJUD):
                 )
                 path_exist = self.path_accepted.exists()
                 if path_exist:
-
                     for root, _, files in self.path_accepted.walk():
                         try:
                             shutil.copytree(root, self.chr_dir)
@@ -136,7 +132,6 @@ class DriverBot(CrawJUD):
             getdriver = SetupDriver(destination=pid_path)
 
             if message != "Inicializando WebDriver":
-
                 version = getdriver.code_ver
                 chrome_name = f"chromedriver{version}"
                 if platform.system() == "Windows":
@@ -173,7 +168,6 @@ class DriverBot(CrawJUD):
 
 
 class SetupDriver:
-
     @property
     def code_ver(self) -> str:
         return ".".join(chrome_ver().split(".")[:-1])
@@ -201,7 +195,6 @@ class SetupDriver:
     def __init__(
         self, destination: Path = Path(__file__).cwd().resolve(), **kwrgs
     ) -> None:
-
         new_stem = f"chromedriver{self.code_ver}.zip"
         self.file_path = (
             pathlib.Path(__file__)
@@ -217,7 +210,6 @@ class SetupDriver:
             self.fileN = self.file_path.name
 
         elif platform.system() == "Windows":
-
             self.file_path = self.file_path.with_suffix(".exe")
             self.fileN = self.file_path.name
 
@@ -227,7 +219,6 @@ class SetupDriver:
         self.destination = destination
 
     def __call__(self) -> str:
-
         with Live(self.progress_group):
             with ThreadPoolExecutor() as pool:
                 self.ConfigBar(pool)
@@ -246,7 +237,6 @@ class SetupDriver:
         self.destination = self.destination.joinpath(self.fileN).resolve()
         root_path = Path(self.file_path).parent.resolve()
         if not self.file_path.exists():
-
             if not root_path.exists():
                 root_path.mkdir(exist_ok=True, parents=True)
 
@@ -262,7 +252,6 @@ class SetupDriver:
                 shutil.copy(self.file_path, self.destination)
 
     def getUrl(self) -> str:
-
         # Verifica no endpoint qual a versão disponivel do WebDriver
         url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
         results = requests.get(url_chromegit, timeout=60)
@@ -279,7 +268,6 @@ class SetupDriver:
 
         set_URL = [chrome_version, os_sys, os_sys]
         for pos, item in enumerate(set_URL):
-
             if pos == len(set_URL) - 1:
                 url_driver += f"chromedriver-{item}.zip"
                 continue
@@ -301,10 +289,8 @@ class SetupDriver:
         self.progress.update(task_id, total=int(response.headers["Content-length"]))
 
         with zip_name.open("wb") as dest_file:
-
             self.progress.start_task(task_id)
             for data in iter(partial(response.raw.read, 32768), b""):
-
                 dest_file.write(data)
                 self.progress.update(task_id, advance=len(data))
 
@@ -312,7 +298,6 @@ class SetupDriver:
         # Extract the zip file
 
         with zipfile.ZipFile(zip_name, "r") as zip_ref:
-
             # Extract each file directly into the subfolder
             for member in zip_ref.namelist():
                 # input(str(member))
@@ -323,7 +308,6 @@ class SetupDriver:
                 not_Cr2 = member.split("/")[-1].lower() == "chromedriver"
 
                 if not_Cr1 or not_Cr2:
-
                     # Get the original file name without any directory structure
                     dir_name = path.name
                     extracted_path = Path(zip_ref.extract(member, dir_name))

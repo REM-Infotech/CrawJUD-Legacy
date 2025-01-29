@@ -27,7 +27,6 @@ def leave(data) -> None:
 
 @io.on("stop_bot", namespace="/log")
 def stop_bot(data: dict[str, str]) -> None:
-
     pid = data["pid"]
     stop_execution(app, pid)
     send("Bot stopped!")
@@ -35,7 +34,6 @@ def stop_bot(data: dict[str, str]) -> None:
 
 @io.on("terminate_bot", namespace="/log")
 def terminate_bot(data: dict[str, str]) -> None:
-
     from app import db
     from app.models import ThreadBots
     from bot import WorkerBot
@@ -55,9 +53,7 @@ def terminate_bot(data: dict[str, str]) -> None:
 
 @io.on("log_message", namespace="/log")
 def log_message(data: dict[str, str]) -> None:
-
     try:
-
         pid = data["pid"]
 
         if "message" in data:
@@ -78,13 +74,11 @@ def statusbot(data: dict) -> None:
 
 @io.on("join", namespace="/log")
 def join(data: dict[str, str]) -> None:
-
     room = data["pid"]
     join_room(room)
 
     # data = load_cache(room, app)
     try:  # pragma: no cover
-
         from app import db
         from app.models import ThreadBots
         from bot import WorkerBot
@@ -114,7 +108,6 @@ def join(data: dict[str, str]) -> None:
                     }
                 )
             elif message == "Erro ao inicializar robô":
-
                 # data = FormatMessage(
                 #     {"type": "error", "pid": room, "message": message}, room, app
                 # )

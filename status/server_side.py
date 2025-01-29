@@ -50,7 +50,6 @@ from status import SetStatus
 def FormatMessage(
     data: Dict[str, str | int] = {}, pid: str = None, app: Flask = None
 ) -> Dict[str, str | int]:
-
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         redis_client: Redis = app.extensions["redis"]
@@ -94,9 +93,7 @@ def FormatMessage(
 
         # Atualizar informações existentes
         elif data_pos > 0 or data["message"] != log_pid["message"] or "pid" not in data:
-
             if not log_pid or "pid" not in data:
-
                 if data_pos > 1:
                     # Chave única para o processo no Redis
                     redis_key_tmp = f"process:{data_pid}:pos:{data_pos - 1}"
@@ -139,9 +136,7 @@ def FormatMessage(
             log_pid["pos"] = data_pos
 
             if typeSuccess:
-
                 if log_pid.get("remaining") and log_pid.get("success"):
-
                     log_pid["remaining"] = int(log_pid["remaining"]) - 1
                     if "fim da execução" not in data_message.lower():
                         log_pid["success"] = int(log_pid["success"]) + 1

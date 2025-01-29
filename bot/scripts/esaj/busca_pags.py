@@ -14,7 +14,6 @@ from ...core import CrawJUD
 
 
 class busca_pags(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -30,12 +29,10 @@ class busca_pags(CrawJUD):
         )
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -49,7 +46,6 @@ class busca_pags(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -79,7 +75,6 @@ class busca_pags(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             self.get_page_custas_pagas()
             self.page_custas()
@@ -88,7 +83,6 @@ class busca_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_page_custas_pagas(self) -> None:
-
         generatepdf: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.get_page_custas_pagas)
@@ -101,13 +95,11 @@ class busca_pags(CrawJUD):
         self.driver.get(url)
 
     def page_custas(self) -> None:
-
         divcustaspagas: list[WebElement] = self.wait.until(
             EC.presence_of_all_elements_located((By.TAG_NAME, "div"))
         )
         total = 0
         for divcorreta in divcustaspagas:
-
             nomediv = None
 
             with suppress(Exception):
@@ -119,7 +111,6 @@ class busca_pags(CrawJUD):
                 continue
 
             if "Lista de custas pagas" in nomediv:
-
                 self.message = "Extraindo dados..."
                 self.type_log = "log"
                 self.prt()
@@ -132,7 +123,6 @@ class busca_pags(CrawJUD):
                 self.roleta = 0
 
                 for rows in tr_rows:
-
                     try:
                         checkifclass = rows.get_attribute("class")
                         if checkifclass == "":

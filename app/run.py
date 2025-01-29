@@ -12,7 +12,6 @@ def handle_exit() -> None:
 
 
 def start_vnc() -> None:
-
     try:
         # Executa o comando com verificação de erro
         subprocess.run(

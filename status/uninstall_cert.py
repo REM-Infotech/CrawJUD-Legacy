@@ -4,10 +4,8 @@ from tqdm import tqdm
 
 
 def uninstall(nome_do_certificado: str):
-
     certs = {}
     try:
-
         comando = ["certutil", "-store", "-user", "my"]
         resultados = subprocess.run(
             comando,
@@ -24,15 +22,12 @@ def uninstall(nome_do_certificado: str):
             if "================" in line:
                 inside_cert = False
             if "Requerente:" in line:
-
                 if nome_do_certificado in line:
-
                     certs[nome_do_certificado] = ""
 
                 atual_cert = line
                 inside_cert = True
             if "Hash Cert(sha1):" in line and inside_cert:
-
                 if nome_do_certificado in atual_cert:
                     hash_certificado = line.split(": ")[1].strip()
                     certs[nome_do_certificado] = hash_certificado

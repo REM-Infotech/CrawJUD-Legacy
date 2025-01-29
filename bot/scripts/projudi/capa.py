@@ -17,7 +17,6 @@ from ...core import CrawJUD
 
 
 class capa(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -30,12 +29,10 @@ class capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -49,7 +46,6 @@ class capa(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -80,7 +76,6 @@ class capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
 
@@ -95,9 +90,7 @@ class capa(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_process_informations(self) -> list:
-
         try:
-
             grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
             process_info: Dict[str, str | int | datetime] = {}
             process_info.update(
@@ -173,7 +166,6 @@ class capa(CrawJUD):
                 )
 
                 for item in itens:
-
                     labels = list(
                         filter(
                             lambda x: x.text.strip() != "",
@@ -196,7 +188,6 @@ class capa(CrawJUD):
                     )
 
                     for pos, label in enumerate(labels):
-
                         if len(labels) != len(values):
                             continue
 
@@ -216,7 +207,6 @@ class capa(CrawJUD):
                             or "DISTRIBUICAO" in label_text
                             or "AUTUACAO" in label_text
                         ):
-
                             if " às " in value_text:
                                 value_text = value_text.split(" às ")[0]
 
@@ -233,7 +223,6 @@ class capa(CrawJUD):
 
             btn_partes = self.elements.btn_partes
             if grau == 2:
-
                 btn_partes = btn_partes.replace("2", "1")
 
             btn_partes = self.driver.find_element(By.CSS_SELECTOR, btn_partes)
@@ -256,7 +245,6 @@ class capa(CrawJUD):
             )
 
             for pos, parte_info in enumerate(result_table):
-
                 h4_name = list(
                     filter(
                         lambda x: x.text != "" and x is not None,
@@ -277,9 +265,7 @@ class capa(CrawJUD):
                 for parte in parte_info.find_element(
                     By.TAG_NAME, "tbody"
                 ).find_elements(By.XPATH, self.elements.table_moves):
-
                     for pos_, nome_coluna in enumerate(nome_colunas):
-
                         key = "_".join(
                             (
                                 self.format_String(nome_coluna)
@@ -291,7 +277,6 @@ class capa(CrawJUD):
                         value = parte.find_elements(By.TAG_NAME, "td")[pos_].text
 
                         if value:
-
                             " ".join(value.split(" "))
 
                             if "\n" in value:

@@ -15,7 +15,6 @@ cwd_dir = cwd_dir = Path(__file__).cwd().resolve()
 
 
 def _release_tag() -> str:
-
     load_dotenv()
     values = environ
 
@@ -29,7 +28,6 @@ def _release_tag() -> str:
 
     git_path = cwd_dir.joinpath(".git").exists()
     if not git_path:
-
         repo = Repo.init()
         origin = repo.create_remote("origin", repo_remote)
         origin.fetch()
@@ -63,7 +61,6 @@ def _release_tag() -> str:
 
 
 def check_latest() -> bool:
-
     with open(".version", "r") as f:
         version = f.read()
 
@@ -73,7 +70,6 @@ def check_latest() -> bool:
 
 
 def update_servers(tag: str) -> None:  # pragma: no cover
-
     checkout_release(tag)
 
     path_fileversion = cwd_dir.joinpath(".version")
@@ -83,11 +79,9 @@ def update_servers(tag: str) -> None:  # pragma: no cover
 
 
 def checkout_release(tag: str) -> None:  # pragma: no cover
-
     load_dotenv()
 
     if environ.get("DEBUG", "False").lower() == "False":
-
         values = environ
         user_git = values.get("USER_GITHUB")
         token_git = values.get("GITHUB_API_TOKEN")
@@ -99,7 +93,6 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
 
         git_path = cwd_dir.joinpath(".git").exists()
         if not git_path:
-
             repo = Repo.init(Path(__file__).cwd())
             origin = repo.create_remote("origin", repo_remote)
             origin.fetch()
@@ -114,7 +107,6 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
 
 
 def version_file() -> None:
-
     version_Path = Path(__file__).cwd().joinpath(".version")
     version_ = None
 
@@ -126,7 +118,6 @@ def version_file() -> None:
 
     if version_ and (version_ != checkout_Version) or (not version_Path.exists()):
         with open(".version", "w") as f:
-
             f.write(checkout_Version)
 
             if version_ != checkout_Version:

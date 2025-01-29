@@ -1,10 +1,10 @@
+import platform
 from datetime import timedelta
-from os import getenv
+from os import environ, getenv
 from pathlib import Path
 
 from celery import Celery
 from clear import clear
-from os import environ
 from dotenv_vault import load_dotenv
 from flask import Flask
 from flask_mail import Mail
@@ -13,9 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from redis_flask import Redis
 
-from .utils import check_allowed_origin, make_celery
-
-import platform
+from .utils import check_allowed_origin, initialize_logging, make_celery
 
 async_mode = (
     str("threading")
@@ -47,9 +45,7 @@ load_dotenv()
 
 
 class AppFactory:
-
     def create_app(self) -> tuple[Flask, SocketIO, Celery]:
-
         global app
 
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
@@ -65,7 +61,6 @@ class AppFactory:
         celery.autodiscover_tasks(["bot"])
 
         if app.testing is False:  # pragma: no cover
-
             with app.app_context():
                 self.init_database(app)
                 self.init_mail(app)
@@ -77,16 +72,15 @@ class AppFactory:
 
                 return app, io, celery
 
+        app.logger = initialize_logging()
         return app, io, celery
 
     def init_routes(self, app: Flask) -> None:
-
         from app.routes import register_routes
 
         register_routes(app)
 
     def init_talisman(self, app: Flask) -> Talisman:  # pragma: no cover
-
         tslm.init_app(
             app,
             content_security_policy=app.config["CSP"],
@@ -120,27 +114,22 @@ class AppFactory:
         return io
 
     def init_mail(self, app) -> None:
-
         mail.init_app(app)
 
     def init_redis(self, app: Flask) -> Redis:
-
         global redis
 
         redis = Redis(app)
         return redis
 
     def init_database(self, app: Flask) -> SQLAlchemy:
-
         import platform
 
         global db
         with app.app_context():
-
             db.init_app(app)
 
             if not Path("is_init.txt").exists():
-
                 with open("is_init.txt", "w") as f:
                     db.create_all()
                     f.write("True")
@@ -151,7 +140,6 @@ class AppFactory:
                 db.engine.connect(), ThreadBots.__tablename__
             ):
                 with open("is_init.txt", "w") as f:
-
                     db.create_all()
                     f.write("True")
 
@@ -159,7 +147,6 @@ class AppFactory:
             HOST = environ.get("HOSTNAME")
 
             if not Servers.query.filter(Servers.name == NAMESERVER).first():
-
                 server = Servers(
                     name=NAMESERVER, address=HOST, system=platform.system()
                 )

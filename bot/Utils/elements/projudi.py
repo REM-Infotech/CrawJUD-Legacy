@@ -2,7 +2,6 @@ from .properties import Configuracao
 
 
 class PROJUDI_AM(Configuracao):
-
     url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
     campo_username = "#login"
     campo_passwd = "#senha"

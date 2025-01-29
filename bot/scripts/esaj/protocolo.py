@@ -20,7 +20,6 @@ from ...core import CrawJUD
 
 
 class protocolo(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -33,12 +32,10 @@ class protocolo(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -52,7 +49,6 @@ class protocolo(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -82,7 +78,6 @@ class protocolo(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             self.search_bot()
             self.init_protocolo()
@@ -98,7 +93,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def init_protocolo(self) -> None:
-
         try:
             try:
                 self.prt.print_log(
@@ -114,7 +108,6 @@ class protocolo(CrawJUD):
                 sleep(5)
 
             except Exception:
-
                 button_enterproc: WebElement = WebDriverWait(self.driver, 5).until(
                     EC.presence_of_element_located(
                         (By.CSS_SELECTOR, "#processoSelecionado")
@@ -140,7 +133,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao inicializar peticionamento")
 
     def set_tipo_protocolo(self) -> None:
-
         try:
             self.interact.sleep_load('div[id="loadFeedback"]')
             self.prt.print_log("log", "Informando tipo de peticionamento")
@@ -176,7 +168,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao informar tipo de protocolo")
 
     def set_subtipo_protocolo(self) -> None:
-
         try:
             self.prt.print_log("log", "Informando subtipo de peticionamento")
             select_categoria_peticao: WebElement = self.wait.until(
@@ -210,7 +201,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao informar subtipo de protocolo")
 
     def set_petition_file(self) -> None:
-
         try:
             self.prt.print_log("log", "Anexando petição")
             input_file: WebElement = self.wait.until(
@@ -247,7 +237,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao enviar petição")
 
     def vincular_parte(self) -> None:
-
         try:
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
             self.prt.print_log("log", "Vinculando parte a petição...")
@@ -263,7 +252,6 @@ class protocolo(CrawJUD):
                         By.CSS_SELECTOR, self.elements.nome
                     ).text.lower()
                     if parte_name == parte_peticao:
-
                         sleep(3)
 
                         incluir_button = None
@@ -308,7 +296,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Não foi possivel vincular parte a petição")
 
     def finish_petition(self) -> None:
-
         self.prt.print_log("log", "Finalizando...")
 
         finish_button = self.driver.find_element(
@@ -326,7 +313,6 @@ class protocolo(CrawJUD):
         confirm_button.click()
 
     def get_confirm_protocol(self) -> list:
-
         try:
             getlinkrecibo: WebElement = WebDriverWait(self.driver, 60).until(
                 EC.presence_of_element_located(
@@ -338,7 +324,7 @@ class protocolo(CrawJUD):
 
             name_recibo = f"Recibo Protocolo - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.pdf"
             self.driver.get_screenshot_as_file(
-                f'{self.output_dir_path}/{name_recibo.replace(".pdf", ".png")}'
+                f"{self.output_dir_path}/{name_recibo.replace('.pdf', '.png')}"
             )
 
             getlinkrecibo.click()
@@ -349,7 +335,6 @@ class protocolo(CrawJUD):
             )
 
             while True:
-
                 if os.path.exists(pathpdf):
                     sleep(0.5)
                     break

@@ -11,7 +11,6 @@ from .projudi import PROJUDI_AM
 
 
 class ElementsBot(CrawJUD):
-
     elements_bot = None
 
     def __init__(
@@ -20,7 +19,6 @@ class ElementsBot(CrawJUD):
         """"""
 
     def Config(self) -> Self:
-
         if self.elements_bot is None:
             self.elements_bot = getattr(
                 import_module(f".{self.system.lower()}", __package__),

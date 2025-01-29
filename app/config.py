@@ -1,16 +1,15 @@
 import secrets
 from datetime import timedelta
+from os import environ
 from pathlib import Path
 from typing import Dict, List, Type
 
-from os import environ
 from dotenv_vault import load_dotenv
 
 load_dotenv()
 
 
 class Config(object):
-
     DEBUG: Type[bool] = False
     TESTING: Type[bool] = False
     SECRET_KEY: Type[str] = secrets.token_hex()
@@ -118,7 +117,6 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-
     try:
         env = environ
 
@@ -168,9 +166,7 @@ class ProductionConfig(Config):
 
 
 class DevelopmentConfig(Config):
-
     try:
-
         env = environ
 
         # Flask-mail config
@@ -223,7 +219,6 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
-
     try:
         TESTTING = True
         env = environ

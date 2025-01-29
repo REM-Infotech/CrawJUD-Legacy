@@ -28,7 +28,6 @@ dotenv.load_dotenv()
 
 
 class protocolo(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -41,12 +40,10 @@ class protocolo(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -60,7 +57,6 @@ class protocolo(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -91,7 +87,6 @@ class protocolo(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
 
@@ -122,7 +117,6 @@ class protocolo(CrawJUD):
             if debug is False:
                 confirm_protocol = self.confirm_protocol()
                 if not confirm_protocol:
-
                     if self.set_parte() is not True:
                         raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
 
@@ -140,7 +134,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def confirm_protocol(self) -> str | None:
-
         successMessage = None
         with suppress(TimeoutException):
             successMessage = (
@@ -156,7 +149,6 @@ class protocolo(CrawJUD):
         return successMessage
 
     def set_parte(self) -> bool:
-
         # self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, 'iframe[name="userMainFrame"]'))
         self.message = "Selecionando parte"
         self.type_log = "log"
@@ -172,7 +164,6 @@ class protocolo(CrawJUD):
         selected_parte = False
 
         for pos, item in enumerate(table_partes):
-
             td_partes = table_partes[pos + 1].find_element(By.TAG_NAME, "td")
 
             # if os.getenv("DEBUG", "False").lower() in ("false", "f", "0"):
@@ -186,9 +177,7 @@ class protocolo(CrawJUD):
             if "\n" in td_partes.text:
                 partes = td_partes.text.split("\n")
                 for enum, parte in enumerate(partes):
-
                     if parte.upper() == self.bot_data.get("PARTE_PETICIONANTE").upper():
-
                         radio_item = item.find_element(
                             By.CSS_SELECTOR, "input[type='radio']"
                         )
@@ -216,7 +205,6 @@ class protocolo(CrawJUD):
                         break
 
             elif chk_info:
-
                 radio_item = item.find_element(
                     By.CSS_SELECTOR, self.elements.input_radio
                 )
@@ -243,7 +231,6 @@ class protocolo(CrawJUD):
         return selected_parte
 
     def add_new_move(self) -> None:
-
         try:
             self.message = "Inicializando peticionamento..."
             self.type_log = "log"
@@ -290,7 +277,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def add_new_file(self) -> None:
-
         try:
             """PARA CORRIGIR"""
             # file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
@@ -356,7 +342,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def set_file_principal(self) -> None:
-
         try:
             tablefiles: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
@@ -373,7 +358,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def more_files(self) -> None:
-
         try:
             sleep(0.5)
 
@@ -382,7 +366,6 @@ class protocolo(CrawJUD):
                 anexos_list = self.bot_data.get("ANEXOS").__str__().split(",")
 
             for file in anexos_list:
-
                 self.message = f"Enviando arquivo '{file}'"
                 file_to_upload = self.format_String(file)
                 self.type_log = "log"
@@ -426,7 +409,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def sign_files(self) -> None:
-
         try:
             self.message = "Assinando arquivos..."
             self.type_log = "log"
@@ -475,8 +457,7 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def finish_move(self) -> None:
-
-        self.message = f'Concluindo peticionamento do processo {self.bot_data.get("NUMERO_PROCESSO")}'
+        self.message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
         self.type_log = "log"
         self.prt()
         return_cmd = False
@@ -496,9 +477,7 @@ class protocolo(CrawJUD):
         finish_button.click()
 
     def screenshot_sucesso(self):
-
         try:
-
             table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
             table_moves = table_moves.find_elements(
                 By.XPATH,
@@ -536,15 +515,15 @@ class protocolo(CrawJUD):
             combined_image.paste(im_tr2, (0, height1))
 
             # Salve a imagem combinada
-            comprovante1 = f'{self.pid} - COMPROVANTE 1 - {self.bot_data.get("NUMERO_PROCESSO")}.png'
+            comprovante1 = f"{self.pid} - COMPROVANTE 1 - {self.bot_data.get('NUMERO_PROCESSO')}.png"
             combined_image.save(os.path.join(self.output_dir_path, comprovante1))
 
-            filename = f'Protocolo - {self.bot_data.get("NUMERO_PROCESSO")} - PID{self.pid}.png'
+            filename = f"Protocolo - {self.bot_data.get('NUMERO_PROCESSO')} - PID{self.pid}.png"
             self.driver.get_screenshot_as_file(
                 os.path.join(self.output_dir_path, filename)
             )
 
-            self.message = f'Peticionamento do processo Nº{self.bot_data.get("NUMERO_PROCESSO")} concluído com sucesso!'
+            self.message = f"Peticionamento do processo Nº{self.bot_data.get('NUMERO_PROCESSO')} concluído com sucesso!"
 
             self.type_log = "log"
             self.prt()
@@ -555,7 +534,6 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def remove_files(self) -> None:
-
         tablefiles = None
         with suppress(TimeoutException):
             tablefiles: WebElement = WebDriverWait(self.driver, 5).until(
@@ -563,14 +541,12 @@ class protocolo(CrawJUD):
             )
 
         if tablefiles:
-
             sleep(1)
             checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
                 By.TAG_NAME, "tr"
             )
 
             for file in checkfiles:
-
                 with suppress(NoSuchElementException, StaleElementReferenceException):
                     radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(
                         By.CSS_SELECTOR, self.elements.input_radio
@@ -594,9 +570,7 @@ class protocolo(CrawJUD):
                 sleep(2)
 
     def wait_progressbar(self) -> None:
-
         while True:
-
             try:
                 divprogressbar: WebElement = self.wait.until(
                     EC.presence_of_element_located(

@@ -2,7 +2,6 @@ from flask_socketio import SocketIOTestClient
 
 
 def test_connect(io: SocketIOTestClient):
-
     io.emit("connect", namespace="/log")
     received = io.get_received(namespace="/log")
 
@@ -12,7 +11,6 @@ def test_connect(io: SocketIOTestClient):
 
 
 def test_disconnect(io: SocketIOTestClient):
-
     io.emit("disconnect", namespace="/log")
     received = io.get_received(namespace="/log")
 
@@ -22,7 +20,6 @@ def test_disconnect(io: SocketIOTestClient):
 
 
 def test_leave(io: SocketIOTestClient, create_dummy_pid):
-
     _, pid = create_dummy_pid
 
     io.emit("leave", {"pid": pid}, namespace="/log")
@@ -33,7 +30,6 @@ def test_leave(io: SocketIOTestClient, create_dummy_pid):
 
 
 def test_statusbot(io: SocketIOTestClient):
-
     io.emit("statusbot", {}, namespace="/log")
     received = io.get_received(namespace="/log")
 
@@ -41,7 +37,6 @@ def test_statusbot(io: SocketIOTestClient):
 
 
 def test_stop_bot(io: SocketIOTestClient, create_dummy_pid):
-
     _, pid = create_dummy_pid
     pid = str(pid)
 
@@ -54,7 +49,6 @@ def test_stop_bot(io: SocketIOTestClient, create_dummy_pid):
 
 
 def test_terminate_bot(io: SocketIOTestClient, create_dummy_pid):
-
     _, pid = create_dummy_pid
     pid = str(pid)
 
@@ -151,7 +145,6 @@ def test_join_and_message(io: SocketIOTestClient, create_dummy_pid):
         result_sucess.append(message_received_)
 
     def datatype_testing():
-
         data_error = {}
         data_success = {}
         data_graphic = {}

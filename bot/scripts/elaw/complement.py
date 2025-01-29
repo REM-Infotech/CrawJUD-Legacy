@@ -41,7 +41,6 @@ campos_validar: List[str] = [
 
 
 class complement(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -54,12 +53,10 @@ class complement(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -73,7 +70,6 @@ class complement(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -103,13 +99,11 @@ class complement(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
             self.bot_data = self.elawFormats(self.bot_data)
 
             if search is True:
-
                 self.message = "Inicializando complemento de cadastro"
                 self.type_log = "log"
                 self.prt()
@@ -184,7 +178,6 @@ class complement(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def salvar_tudo(self) -> None:
-
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
             EC.presence_of_element_located(
@@ -197,7 +190,6 @@ class complement(CrawJUD):
         salvartudo.click()
 
     def validar_campos(self) -> None:
-
         self.message = "Validando campos"
         self.type_log = "log"
         self.prt()
@@ -235,7 +227,6 @@ class complement(CrawJUD):
         message_campo: List[str] = []
 
         for campo in campos_validar:
-
             try:
                 campo_validar: str = self.elements.dict_campos_validar.get(campo)
                 command = f"return $('{campo_validar}').text()"
@@ -253,7 +244,6 @@ class complement(CrawJUD):
                 validar.update({campo.upper(): element})
 
             except Exception as e:
-
                 try:
                     message = e.message
 
@@ -273,7 +263,6 @@ class complement(CrawJUD):
         self.prt()
 
     def validar_advogado(self) -> str:
-
         self.message = "Validando advogado responsável"
         self.type_log = "log"
         self.prt()
@@ -294,7 +283,6 @@ class complement(CrawJUD):
         return element
 
     def validar_advs_participantes(self) -> None:
-
         data_bot = self.bot_data
         adv_name = data_bot.get("ADVOGADO_INTERNO", self.validar_advogado())
 
@@ -332,7 +320,6 @@ class complement(CrawJUD):
         self.prt()
 
     def confirm_save(self) -> bool:
-
         wait_confirm_save = None
 
         with suppress(TimeoutException):
@@ -375,8 +362,7 @@ class complement(CrawJUD):
         #         raise ErroDeExecucao(self.message)
 
     def print_comprovante(self) -> str:
-
-        name_comprovante = f'Comprovante Cadastro - {self.bot_data.get("NUMERO_PROCESSO")} - PID {self.pid}.png'
+        name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
         savecomprovante = os.path.join(
             pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
         )
@@ -385,7 +371,6 @@ class complement(CrawJUD):
 
     @classmethod
     def advogado_interno(cls, self: Self) -> None:
-
         self.message = "informando advogado interno"
         self.type_log = "log"
         self.prt()
@@ -589,7 +574,6 @@ class complement(CrawJUD):
 
     @classmethod
     def divisao(cls, self: Self) -> None:
-
         self.message = "Informando divisão"
         self.type_log = "log"
         self.prt()
@@ -607,7 +591,6 @@ class complement(CrawJUD):
 
     @classmethod
     def data_citacao(cls, self: Self) -> None:
-
         self.message = "Informando data de citação"
         self.type_log = "log"
         self.prt()
@@ -724,7 +707,6 @@ class complement(CrawJUD):
 
     @classmethod
     def desc_objeto(cls, self: Self) -> None:
-
         input_descobjeto = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.input_descobjeto_css)
@@ -760,7 +742,6 @@ class complement(CrawJUD):
 
     @classmethod
     def tipo_empresa(cls, self: Self) -> None:
-
         self.message = "Informando contingenciamento"
         self.type_log = "log"
         self.prt()

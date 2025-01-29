@@ -6,7 +6,6 @@ from app import db
 
 
 class BotsCrawJUD(db.Model):
-
     __tablename__ = "bots"
     id = db.Column(db.Integer, primary_key=True)
     display_name = db.Column(db.String(length=45), nullable=False)
@@ -20,7 +19,6 @@ class BotsCrawJUD(db.Model):
 
 
 class Credentials(db.Model):
-
     __tablename__ = "credentials"
     id = db.Column(db.Integer, primary_key=True)
     nome_credencial = db.Column(db.String(length=45), nullable=False)
@@ -39,7 +37,6 @@ class Credentials(db.Model):
 
 
 class Executions(db.Model):
-
     __tablename__ = "executions"
     pid = db.Column(db.String(length=12), nullable=False)
     id = db.Column(db.Integer, primary_key=True)
@@ -68,7 +65,6 @@ class Executions(db.Model):
 
 
 class CacheLogs(db.Model):
-
     __bind_key__ = "cachelogs"
     __tablename__ = "cachelogs"
     id = db.Column(db.Integer, primary_key=True)
@@ -85,7 +81,6 @@ class CacheLogs(db.Model):
 
 
 class ThreadBots(db.Model):
-
     __bind_key__ = "cachelogs"
     __tablename__ = "thread_bots"
     id = db.Column(db.Integer, primary_key=True)

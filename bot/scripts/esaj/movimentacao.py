@@ -14,7 +14,6 @@ from ...core import CrawJUD
 
 
 class movimentacao(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -27,12 +26,10 @@ class movimentacao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -46,7 +43,6 @@ class movimentacao(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -76,7 +72,6 @@ class movimentacao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             self.appends = []
             self.resultados = []
@@ -93,7 +88,6 @@ class movimentacao(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_moves(self) -> None:
-
         show_all: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')
@@ -111,7 +105,6 @@ class movimentacao(CrawJUD):
         sleep(0.5)
 
         try:
-
             table_moves = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.movimentacoes
             )
@@ -136,7 +129,6 @@ class movimentacao(CrawJUD):
             termos = palavra_chave.replace(", ", ",").split(",")
 
         for termo in termos:
-
             self.message = f'Buscando movimentações que contenham "{termo}"'
             self.type_log = "log"
 

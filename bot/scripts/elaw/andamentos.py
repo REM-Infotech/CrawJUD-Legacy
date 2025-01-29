@@ -1,4 +1,4 @@
-""" Crawler ELAW Andamentos"""
+"""Crawler ELAW Andamentos"""
 
 import time
 from contextlib import suppress
@@ -17,7 +17,6 @@ from ...core import CrawJUD
 
 
 class andamentos(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -30,12 +29,10 @@ class andamentos(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -49,7 +46,6 @@ class andamentos(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -79,7 +75,6 @@ class andamentos(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
             if search is True:
@@ -108,9 +103,7 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_data(self) -> None:
-
         try:
-
             self.message = "Informando data"
             self.type_log = "log"
             self.prt()
@@ -131,7 +124,6 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_ocorrencia(self) -> None:
-
         try:
             self.message = "Informando ocorrência"
             self.type_log = "log"
@@ -150,7 +142,6 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_observacao(self) -> None:
-
         try:
             self.message = "Informando observação"
             self.type_log = "log"
@@ -169,11 +160,9 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def add_anexo(self) -> None:
-
         pass
 
     def save_andamento(self) -> None:
-
         try:
             self.message = "Salvando andamento..."
             self.type_log = "log"

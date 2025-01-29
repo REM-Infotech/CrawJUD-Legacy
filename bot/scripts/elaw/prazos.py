@@ -13,7 +13,6 @@ from ...core import CrawJUD
 
 
 class prazos(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -26,12 +25,10 @@ class prazos(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -45,7 +42,6 @@ class prazos(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -75,7 +71,6 @@ class prazos(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
             if not search:
@@ -84,7 +79,7 @@ class prazos(CrawJUD):
 
             comprovante = ""
             self.data_Concat = (
-                f'{self.bot_data["DATA_AUDIENCIA"]} {self.bot_data["HORA_AUDIENCIA"]}'
+                f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
             )
             self.message = "Processo Encontrado!"
             self.type_log = "log"
@@ -119,9 +114,7 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def TablePautas(self) -> None:
-
         try:
-
             switch_pautaAndamento = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.switch_pautaAndamento
             )
@@ -138,7 +131,6 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def NovaPauta(self) -> None:
-
         try:
             self.message = "Lançando nova audiência"
             self.type_log = "log"
@@ -166,7 +158,6 @@ class prazos(CrawJUD):
             items = selectorTipoAudiencia.find_elements(By.TAG_NAME, "option")
             opt_itens: dict[str, str] = {}
             for item in items:
-
                 value_item = item.get_attribute("value")
                 text_item = self.driver.execute_script(
                     f"return $(\"option[value='{value_item}']\").text();"
@@ -203,9 +194,7 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def save_Prazo(self) -> None:
-
         try:
-
             self.message = "Salvando..."
             self.type_log = "log"
             self.prt()
@@ -220,9 +209,7 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def CheckLancamento(self) -> dict[str, str] | None:
-
         try:
-
             tablePrazos: WebElement = self.wait.until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, self.elements.tablePrazos)
@@ -233,7 +220,6 @@ class prazos(CrawJUD):
 
             data = None
             for item in tablePrazos:
-
                 if item.text == "Nenhum registro encontrado!":
                     return None
 
@@ -245,8 +231,7 @@ class prazos(CrawJUD):
                 chk_dataAudiencia = data_Prazo == self.data_Concat
 
                 if chk_tipo and chk_dataAudiencia:
-
-                    nProc_pid = f'{self.bot_data["NUMERO_PROCESSO"]} - {self.pid}'
+                    nProc_pid = f"{self.bot_data['NUMERO_PROCESSO']} - {self.pid}"
 
                     nameComprovante = f"Comprovante - {nProc_pid}.png"
                     idPrazo = str(item.find_elements(By.TAG_NAME, "td")[2].text)

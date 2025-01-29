@@ -21,9 +21,7 @@ TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
 
 
 class CustomProperty(property):
-
     def __set__(self, obj, value) -> None:
-
         if self.fset is None:
             raise AttributeError("can't set attribute")
 
@@ -51,7 +49,6 @@ class CustomProperty(property):
 
 
 class PropertiesCrawJUD:
-
     load_dotenv()
 
     row_: int = 0
@@ -89,12 +86,10 @@ class PropertiesCrawJUD:
 
     @CustomProperty
     def start_time(self) -> float | int:
-
         return self._start_time_
 
     @start_time.setter
     def start_time(self, start_time: int | float) -> None:
-
         self._start_time_ = start_time
 
     @CustomProperty
@@ -103,7 +98,6 @@ class PropertiesCrawJUD:
 
     @path.setter
     def path(self, new_var: Path) -> None:
-
         PropertiesCrawJUD.path_ = new_var
 
     @CustomProperty
@@ -112,7 +106,6 @@ class PropertiesCrawJUD:
 
     @path_args.setter
     def path_args(self, new_var: Path) -> None:
-
         PropertiesCrawJUD.path_args_ = new_var
 
     @CustomProperty
@@ -121,7 +114,6 @@ class PropertiesCrawJUD:
 
     @appends.setter
     def appends(self, new_var: List) -> None:
-
         PropertiesCrawJUD.appends_ = new_var
 
     @CustomProperty
@@ -130,7 +122,6 @@ class PropertiesCrawJUD:
 
     @another_append.setter
     def another_append(self, new_var: list) -> None:
-
         PropertiesCrawJUD.another_append_ = new_var
 
     @CustomProperty
@@ -147,7 +138,6 @@ class PropertiesCrawJUD:
 
     @state_or_client.setter
     def state_or_client(self, new_var: str) -> None:
-
         PropertiesCrawJUD.state_or_client_ = new_var
 
     @CustomProperty
@@ -156,7 +146,6 @@ class PropertiesCrawJUD:
 
     @type_log.setter
     def type_log(self, new_var: str) -> None:
-
         PropertiesCrawJUD.type_log_ = new_var
 
     @CustomProperty
@@ -197,7 +186,6 @@ class PropertiesCrawJUD:
 
     @chr_dir.setter
     def chr_dir(self, new_path: Path) -> None:
-
         PropertiesCrawJUD.user_data_dir = new_path
 
     @CustomProperty
@@ -206,7 +194,6 @@ class PropertiesCrawJUD:
 
     @output_dir_path.setter
     def output_dir_path(self, new_path: Path) -> None:
-
         PropertiesCrawJUD.out_dir = new_path
 
     @CustomProperty(type_=Dict[str, TypeValues | SubDict])
@@ -263,12 +250,10 @@ class PropertiesCrawJUD:
 
     @path_accepted.setter
     def path_accepted(self, new_path) -> None:
-
         PropertiesCrawJUD.path_accepted_ = new_path
 
     @CustomProperty(type_=OpenAI)
     def OpenAI_client(self) -> OpenAI:
-
         load_dotenv()
 
         return OpenAI()
@@ -291,12 +276,10 @@ class PropertiesCrawJUD:
 
     @CustomProperty
     def path_erro(self) -> Path:
-
         return PropertiesCrawJUD.path_erro_
 
     @path_erro.setter
     def path_erro(self, new_path: Path) -> None:
-
         PropertiesCrawJUD.path_erro_ = new_path
 
     @CustomProperty
@@ -318,68 +301,58 @@ class PropertiesCrawJUD:
     # Funcionalidades
     @CustomProperty
     def AuthBot(self) -> Callable[[], bool]:
-
         from ..Utils import AuthBot as _AuthBot_
 
         return _AuthBot_().auth
 
     @CustomProperty
     def MakeXlsx(self) -> _MakeXlsx_:
-
         from ..Utils import MakeXlsx as _MakeXlsx_
 
         return _MakeXlsx_()
 
     @CustomProperty
     def Interact(self) -> _Interact_:
-
         from ..Utils import Interact as _Interact_
 
         return _Interact_()
 
     @CustomProperty
     def PrintBot(self) -> _PrintBot_:
-
         from ..Utils import PrintBot as _PrintBot_
 
         return _PrintBot_()
 
     @CustomProperty
     def SearchBot(self) -> _SearchBot_:
-
         from ..Utils import SearchBot as _SearchBot_
 
         return _SearchBot_()
 
     @CustomProperty
     def OtherUtils(self) -> _OtherUtils_:
-
         from ..Utils import OtherUtils as _OtherUtils_
 
         return _OtherUtils_()
 
     @CustomProperty
     def elements(self) -> Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]:
-
         from ..Utils import ElementsBot as _ElementsBot_
 
         return _ElementsBot_().Config().Elements
 
     @CustomProperty
     def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:
-
         from ..Utils import DriverBot as _DriverBot_
 
         return _DriverBot_().DriverLaunch
 
     @CustomProperty
     def search_bot(self) -> Callable[[], bool]:
-
         return self.SearchBot.search_
 
     @CustomProperty
     def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
-
         return self.OtherUtils.dataFrame
 
     @CustomProperty(type_=bool)
@@ -389,77 +362,62 @@ class PropertiesCrawJUD:
 
     @CustomProperty
     def elawFormats(self) -> Callable[..., dict[str, str]]:
-
         return self.OtherUtils.elawFormats
 
     @CustomProperty
     def calc_time(self) -> Callable[[], list]:
-
         return self.OtherUtils.calc_time
 
     @CustomProperty
     def append_moves(self) -> Callable[[], None]:
-
         return self.OtherUtils().append_moves
 
     @CustomProperty
     def append_success(self) -> Callable[..., None]:
-
         return self.OtherUtils.append_success
 
     @CustomProperty
     def append_error(self) -> Callable[..., None]:
-
         return self.OtherUtils.append_error
 
     @CustomProperty
     def append_validarcampos(self) -> Callable[..., None]:
-
         return self.OtherUtils.append_validarcampos
 
     @CustomProperty
     def count_doc(self) -> Callable[..., str | None]:
-
         return self.OtherUtils.count_doc
 
     @CustomProperty
     def get_recent(self) -> Callable[..., str | None]:
-
         return self.OtherUtils.get_recent
 
     @CustomProperty
     def format_String(self) -> Callable[..., str]:
-
         return self.OtherUtils.format_String
 
     @CustomProperty
     def normalizar_nome(self) -> Callable[..., str]:
-
         return self.OtherUtils.normalizar_nome
 
     @CustomProperty
     def similaridade(self) -> Callable[..., float]:
-
         return self.OtherUtils.similaridade
 
     @CustomProperty
     def finalize_execution(self) -> Callable[[], None]:
-
         return self.OtherUtils.finalize_execution
 
     @CustomProperty
     def install_cert(self) -> Callable[[], None]:
-
         return self.OtherUtils.install_cert
 
     @CustomProperty
     def group_date_all(self) -> Callable[..., list[dict[str, str]]]:
-
         return self.OtherUtils.group_date_all
 
     @CustomProperty
     def group_keys(self) -> Callable[..., dict[str, str]]:
-
         return self.OtherUtils.group_keys
 
     @CustomProperty
@@ -483,12 +441,10 @@ class PropertiesCrawJUD:
 
     @CustomProperty
     def text_is_a_date(self) -> Callable[..., bool]:
-
         return self.OtherUtils.text_is_a_date
 
 
 if __name__ == "__main__":
-
     from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
     from ..Utils import Interact as _Interact_
     from ..Utils import MakeXlsx as _MakeXlsx_

@@ -8,14 +8,12 @@ from .appends import listas
 
 
 class MakeXlsx(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
         """"""
 
     def make_output(self, type_xlsx: str, path_template: str) -> List[str]:
-
         lista_colunas: List[str] = getattr(
             listas(),
             f"{self.typebot}_{type_xlsx}",

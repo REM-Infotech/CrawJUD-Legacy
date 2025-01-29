@@ -22,7 +22,6 @@ wh = Blueprint("webhook", __package__)
 # Endpoint para o webhook
 @wh.post("/webhook")
 def github_webhook() -> Response:  # pragma: no cover
-
     app = current_app
     data = request.json
 
@@ -62,7 +61,6 @@ def github_webhook() -> Response:  # pragma: no cover
         )
 
     except Exception as e:
-
         logging.exception(str(e))
         return make_response(jsonify({"message": "Evento ignorado"}), 500)
 

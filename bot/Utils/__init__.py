@@ -45,7 +45,6 @@ TypeData = Union[
 
 
 class OtherUtils(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
@@ -53,7 +52,6 @@ class OtherUtils(CrawJUD):
 
     @property
     def nomes_colunas(self) -> List[str]:
-
         all_fields = [
             "NOME_PARTE",
             "PORTAL",
@@ -327,7 +325,6 @@ class OtherUtils(CrawJUD):
 
         data_listed = list(data.items())
         for key, value in data_listed:
-
             if isinstance(value, str):
                 if not value.strip():
                     data.pop(key)
@@ -387,9 +384,7 @@ class OtherUtils(CrawJUD):
         """
 
         if len(self.appends) > 0:
-
             for append in self.appends:
-
                 self.append_success(
                     append, "Movimentação salva na planilha com sucesso!!"
                 )
@@ -400,12 +395,10 @@ class OtherUtils(CrawJUD):
     def append_success(
         self, data: TypeData, message: str = None, fileN: str = None
     ) -> None:
-
         if not message:
             message = "Execução do processo efetuada com sucesso!"
 
         def save_info(data: list[dict[str, str]]) -> None:
-
             output_success = self.path
 
             chk_not_path = output_success is None
@@ -418,7 +411,6 @@ class OtherUtils(CrawJUD):
                 df = df.to_dict(orient="records")
 
             elif output_success.exists():
-
                 df = pd.read_excel(output_success)
                 df = df.to_dict(orient="records")
                 df.extend(data)
@@ -429,7 +421,6 @@ class OtherUtils(CrawJUD):
         typeD = type(data) is list and all(isinstance(item, dict) for item in data)
 
         if not typeD:
-
             data2 = {}
 
             for item in self().nomes_colunas:
@@ -454,7 +445,6 @@ class OtherUtils(CrawJUD):
             self.prt()
 
     def append_error(self, data: dict[str, str] = None) -> None:
-
         if not os.path.exists(self.path_erro):
             df = pd.DataFrame(data)
             df = df.to_dict(orient="records")
@@ -468,7 +458,6 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(self.path_erro, index=False)
 
     def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
-
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
         planilha_validar = Path(self.path).parent.resolve().joinpath(nomeplanilha)
         if not os.path.exists(planilha_validar):
@@ -484,7 +473,6 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(planilha_validar, index=False)
 
     def count_doc(self, doc: str) -> str | None:
-
         tipo_doc = None
         numero = "".join(filter(str.isdigit, doc))
 
@@ -509,7 +497,6 @@ class OtherUtils(CrawJUD):
         return files[0] if files else None
 
     def format_String(self, string: str) -> str:
-
         return secure_filename(
             "".join(
                 [
@@ -554,11 +541,9 @@ class OtherUtils(CrawJUD):
         return SequenceMatcher(None, word1, word2).ratio()
 
     def finalize_execution(self) -> None:
-
         window_handles = self.driver.window_handles
         self.row = self.row + 1
         if len(window_handles) > 0:
-
             self.driver.delete_all_cookies()
             self.driver.quit()
 
@@ -575,7 +560,6 @@ class OtherUtils(CrawJUD):
         self.prt()
 
     def install_cert(self) -> None:
-
         def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:
             """
             Verifica se um certificado PFX específico está instalado no repositório 'MY'.
@@ -606,7 +590,6 @@ class OtherUtils(CrawJUD):
         installed = CertIsInstall(self.name_cert.split(".pfx")[0])
 
         if installed is False:
-
             path_cert = str(os.path.join(self.output_dir_path, self.name_cert))
             comando = [
                 "certutil",
@@ -636,13 +619,11 @@ class OtherUtils(CrawJUD):
                 raise e
 
     def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
-
         records = []
         for vara, dates in data.items():
             record = {}
             for date, entries in dates.items():
                 for entry in entries:
-
                     record.update({"Data": date, "Vara": vara})
                     record.update(entry)
                     records.append(record)
@@ -650,11 +631,9 @@ class OtherUtils(CrawJUD):
         return records
 
     def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
-
         record = {}
         for pos, entry in enumerate(data):
             for key, value in entry.items():
-
                 if not record.get(key):
                     record.update({key: {}})
 
@@ -678,7 +657,6 @@ class OtherUtils(CrawJUD):
         """
 
         try:
-
             time.sleep(5)
             client = self.OpenAI_client
             completion = client.chat.completions.create(
@@ -741,7 +719,6 @@ class OtherUtils(CrawJUD):
             raise e
 
     def text_is_a_date(self, text: str) -> bool:
-
         # Regex para verificar se o texto pode ser uma data (opcional)
         date_like_pattern = (
             r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"  # Exemplo: 2023-01-08 ou 08/01/2023

@@ -10,7 +10,6 @@ import pytz
 
 
 def makezip(pid: str) -> str:
-
     file_paths = []
     exec_path = (
         Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec").joinpath(pid)

@@ -1,4 +1,4 @@
-""" Crawler ELAW Baixa Documentos"""
+"""Crawler ELAW Baixa Documentos"""
 
 import os
 import shutil
@@ -17,7 +17,6 @@ from ...core import CrawJUD
 
 
 class download(CrawJUD):
-
     def __init__(self, *args, **kwrgs) -> None:
         super().__init__(*args, **kwrgs)
 
@@ -30,12 +29,10 @@ class download(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -49,7 +46,6 @@ class download(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -79,11 +75,9 @@ class download(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             search = self.search_bot()
             if search is True:
-
                 self.message = "Processo encontrado!"
                 self.type_log = "log"
                 self.prt()
@@ -109,7 +103,6 @@ class download(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def buscar_doc(self) -> None:
-
         self.message = "Acessando página de anexos"
         self.type_log = "log"
         self.prt()
@@ -125,7 +118,6 @@ class download(CrawJUD):
         self.prt()
 
     def download_docs(self) -> None:
-
         table_doc: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.css_table_doc)
@@ -149,7 +141,6 @@ class download(CrawJUD):
         self.prt()
 
         for item in table_doc:
-
             item: WebElement = item
             get_name_file = str(
                 item.find_elements(By.TAG_NAME, "td")[3]
@@ -158,7 +149,6 @@ class download(CrawJUD):
             )
 
             for termo in termos:
-
                 if str(termo).lower() in get_name_file.lower():
                     sleep(1)
 
@@ -177,15 +167,11 @@ class download(CrawJUD):
                     self.prt()
 
     def rename_doc(self, namefile: str):
-
         filedownloaded = False
         while True:
             for root, dirs, files in os.walk(os.path.join(self.output_dir_path)):
-
                 for file in files:
-
                     if file.replace(" ", "") == namefile.replace(" ", ""):
-
                         filedownloaded = True
                         namefile = file
                         break
@@ -200,7 +186,7 @@ class download(CrawJUD):
 
             sleep(0.01)
 
-        filename_replaced = f'{self.pid} - {namefile.replace(" ", "")}'
+        filename_replaced = f"{self.pid} - {namefile.replace(' ', '')}"
         path_renamed = os.path.join(self.output_dir_path, filename_replaced)
         shutil.move(old_file, path_renamed)
 

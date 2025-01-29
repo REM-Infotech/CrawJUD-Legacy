@@ -16,14 +16,12 @@ from ..core import CrawJUD
 
 
 class Interact(CrawJUD):
-
     def __init__(
         self,
     ) -> None:
         """"""
 
     def send_key(self, element: WebElement, word: any) -> None:
-
         send = None
         for key in dir(Keys):
             if getattr(Keys, key) == word:
@@ -39,18 +37,15 @@ class Interact(CrawJUD):
                 element.send_keys(c)
 
     def click(self, element: WebElement) -> None:
-
         sleep(0.05)
         element.click()
         sleep(0.05)
 
     def double_click(self, element: WebDriver) -> None:
-
         Action = ActionChains(self.driver)
         Action.double_click(element).perform()
 
     def select_item(self, elemento: str, text: str) -> bool:
-
         itens: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elemento))
         )
@@ -84,14 +79,12 @@ class Interact(CrawJUD):
         return True
 
     def clear(self, element: WebElement) -> None:
-
         element.click()
         sleep(0.5)
         element.clear()
         sleep(1)
 
     def sleep_load(self, element: str = 'div[id="j_id_3x"]') -> None:
-
         while True:
             sleep(0.5)
             load = None
@@ -102,7 +95,6 @@ class Interact(CrawJUD):
                 )
 
             if load:
-
                 for attributes in ["aria-live", "aria-hidden", "class"]:
                     aria_value = load.get_attribute(attributes)
 
@@ -125,9 +117,7 @@ class Interact(CrawJUD):
                 break
 
     def diplay_none(self, elemento: WebElement):
-
         while True:
-
             style = elemento.get_attribute("style")
 
             if "display: none;" not in style:
@@ -135,9 +125,7 @@ class Interact(CrawJUD):
                 break
 
     def wait_caixa(self) -> None:
-
         while True:
-
             check_wait = None
             with suppress(NoSuchElementException):
                 check_wait = self.driver.find_element(
@@ -149,9 +137,7 @@ class Interact(CrawJUD):
                 break
 
     def wait_fileupload(self) -> None:
-
         while True:
-
             sleep(0.05)
             div1 = 'div[class="ui-fileupload-files"]'
             div2 = 'div[class="ui-fileupload-row"]'
@@ -168,13 +154,11 @@ class Interact(CrawJUD):
                 break
 
     def scroll_to(self, element: WebElement):
-
         Action = ActionChains(self.driver)
         Action.scroll_to_element(element)
         sleep(0.5)
 
     def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
-
         selector: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect))
         )
@@ -187,7 +171,6 @@ class Interact(CrawJUD):
             elementsSelecting = elementSelect.replace('"', "'")
 
         for item in items:
-
             value_item = item.get_attribute("value")
             cms = f"{elementsSelecting} > option[value='{value_item}']"
             text_item = self.driver.execute_script(f'return $("{cms}").text();')
@@ -197,7 +180,6 @@ class Interact(CrawJUD):
         value_opt = opt_itens.get(to_Search.upper())
 
         if value_opt:
-
             command = f"$('{elementSelect}').val(['{value_opt}']);"
             command2 = f"$('{elementSelect}').trigger('change');"
 

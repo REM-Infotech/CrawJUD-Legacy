@@ -6,7 +6,6 @@ from os import popen
 
 
 class ChromeVersion:
-
     def get_chrome_version(self):
         """Gets the Chrome version."""
 
@@ -31,7 +30,6 @@ class ChromeVersion:
         return result
 
     def traverse_registry_tree(self, keypath: str) -> dict[str, str]:
-
         hkey = winreg.HKEY_LOCAL_MACHINE
         reg_dict = {}
         with winreg.OpenKey(hkey, keypath, 0, winreg.KEY_READ) as key:

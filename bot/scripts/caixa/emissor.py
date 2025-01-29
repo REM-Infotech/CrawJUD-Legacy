@@ -18,7 +18,6 @@ from ...Utils import OtherUtils
 
 
 class emissor(CrawJUD):
-
     count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -33,12 +32,10 @@ class emissor(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
-
             self.row = pos + 1
             self.bot_data = value
             if self.isStoped:
@@ -52,7 +49,6 @@ class emissor(CrawJUD):
                 self.queue()
 
             except Exception as e:
-
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -82,7 +78,6 @@ class emissor(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-
         try:
             nameboleto = None
             self.get_site()
@@ -99,7 +94,6 @@ class emissor(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_site(self) -> None:
-
         self.message = "Acessando página de emissão"
         self.type_log = "log"
         self.prt()
@@ -151,7 +145,6 @@ class emissor(CrawJUD):
         next_btn.click()
 
     def locale_proc(self) -> None:
-
         self.interact.wait_caixa()
 
         self.message = "Informando tribunal"
@@ -226,7 +219,6 @@ class emissor(CrawJUD):
                 break
 
     def proc_nattribut(self) -> None:
-
         numprocess = self.bot_data.get("NUMERO_PROCESSO").split(".")
         numproc_formated = (
             f"{numprocess[0]}.{numprocess[1]}.{numprocess[3]}.{numprocess[4]}"
@@ -269,7 +261,6 @@ class emissor(CrawJUD):
         natureza_tributaria.click()
 
     def dados_partes(self) -> None:
-
         self.interact.wait_caixa()
         self.message = "Informando nome do autor"
         self.type_log = "log"
@@ -358,7 +349,6 @@ class emissor(CrawJUD):
         campo_doc_reu.send_keys(doc_reu)
 
     def info_deposito(self) -> None:
-
         self.interact.wait_caixa()
         self.message = "Informando indicador depositante"
         self.type_log = "log"
@@ -369,7 +359,6 @@ class emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
 
         for item in indicador_depositante:
-
             if item.text.lower() == "réu":
                 item.click()
                 break
@@ -389,7 +378,6 @@ class emissor(CrawJUD):
         campo_val_deposito.send_keys(val_deposito)
 
     def make_doc(self) -> None:
-
         self.interact.wait_caixa()
         self.message = "Gerando documento"
         self.type_log = "log"
@@ -409,7 +397,6 @@ class emissor(CrawJUD):
         download_pdf.click()
 
     def rename_pdf(self) -> str:
-
         pgto_name = self.bot_data.get("NOME_CUSTOM", "Guia De Depósito")
 
         pdf_name = f"{pgto_name} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
@@ -424,7 +411,6 @@ class emissor(CrawJUD):
         return pdf_name
 
     def get_val_doc_and_codebar(self, pdf_name: str) -> None:
-
         sleep(0.5)
 
         path_pdf = os.path.join(self.output_dir_path, pdf_name)
