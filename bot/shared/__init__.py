@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple, Union, get_type_hints
 
-from dotenv import load_dotenv
+from dotenv_vault import load_dotenv
 from pydantic import BaseModel, ValidationError
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait

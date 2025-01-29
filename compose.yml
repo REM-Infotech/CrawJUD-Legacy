@@ -1,22 +1,45 @@
-version: '3.9'
 name: CrawJUD-Bots
 services:
+
   app:
+    environment:
+      - DOTENV_KEY=${DOTENV_KEY}
+      - DOCKER_CONTEXT=${DOCKER_CONTEXT}
+
     build:
       context: .
     volumes:
-      - .:C:\crawjudbot_app
+      - ./exec:C:\crawjudbot_app\exec
     ports:
       - 8000:8000
     hostname: crawjudbot_app
     command: python -m app
+    networks:
+      - flask_net
   celery:
+    environment:
+      - DOTENV_KEY=${DOTENV_KEY}
+      - DOCKER_CONTEXT=${DOCKER_CONTEXT}
+
     build:
         context: .
     volumes:
-      - .:C:\crawjudbot_app
+      - ./exec:C:\crawjudbot_app\exec
     ports:
-      - 3389:3389
-
+      - 3336:3389
+    networks:
+      - celery_net
     hostname: crawjudbot_app
     command: python -m celery -A app.run.app worker -E --loglevel INFO --autoscale=50,3
+
+volumes:
+  exec_shared:
+    external: true
+
+networks:
+  celery_net:
+    external: true
+
+  flask_net:
+    external: true
+

@@ -8,7 +8,7 @@ from platform import system
 from typing import Dict
 
 # from clear import clear
-from dotenv import load_dotenv
+from dotenv_vault import load_dotenv
 
 from git_py import version_file
 

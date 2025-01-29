@@ -15,13 +15,14 @@ from redis_flask import Redis
 
 from .utils import check_allowed_origin, make_celery
 
-# import platform
-# async_mode = (
-#     str("threading")
-#     if (getenv("DOCKER_CONTEXT", None) is None or platform.system() == "Windows")
-#     or (getenv("DEBUG", "False").lower() == "true")
-#     else str("eventlet")
-# )
+import platform
+
+async_mode = (
+    str("threading")
+    if (getenv("DOCKER_CONTEXT", None) is None or platform.system() == "Windows")
+    or (getenv("DEBUG", "False").lower() == "true")
+    else str("eventlet")
+)
 
 load_dotenv()
 

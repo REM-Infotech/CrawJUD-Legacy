@@ -9,7 +9,8 @@ ENV POETRY_HOME="C:\\ProgramData\\poetry"
 WORKDIR C:/crawjudbot_app
 
 # Copiar arquivos do projeto
-COPY poetry.lock pyproject.toml windows/inst_vnc.ps1 C:/crawjudbot_app/
+COPY . C:/crawjudbot_app/
+COPY windows/inst_vnc.ps1 C:/crawjudbot_app/
 
 RUN powershell.exe -noexit ".\inst_vnc.ps1"
 

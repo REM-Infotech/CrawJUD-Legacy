@@ -2,7 +2,7 @@
 from os import environ
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv_vault import load_dotenv
 from git import Repo
 
 # from github import Github
