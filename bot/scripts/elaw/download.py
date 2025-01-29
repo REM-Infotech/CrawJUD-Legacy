@@ -1,5 +1,3 @@
-"""Crawler ELAW Baixa Documentos"""
-
 import os
 import shutil
 import time

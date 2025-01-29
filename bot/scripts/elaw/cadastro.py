@@ -146,16 +146,15 @@ class cadastro(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def area_direito(self) -> None:
-        """Selects the area of law in the web form.
-        This method interacts with a web form to select a specific area of law.
-        It waits for the area label element to be present, clicks on it, and then
-        selects the appropriate item from a dropdown or similar element based on
-        the provided bot data.
-        Raises:
-            TimeoutException: If the area label element is not found within the
-                      specified wait time.
-        """
+        """Select the area of law in the web form.
 
+        This method interacts with a web form to select the area of law specified
+        in the bot data. It logs the process and handles any necessary waits and
+        interactions with the web elements.
+        Raises:
+            TimeoutException: If the label area element is not found within the
+                              specified wait time.
+        """
         self.message = "Informando área do direito"
         self.type_log = "log"
         self.prt()
@@ -201,12 +200,12 @@ class cadastro(CrawJUD):
     def next_page(self) -> None:
         """
         Navigate to the next page by clicking the designated button.
+
         This method waits until the next page button is present in the DOM,
         then clicks it to navigate to the next page.
         Raises:
             TimeoutException: If the next page button is not found within the wait time.
         """
-
         next_page: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_button)),
             message="Erro ao encontrar elemento",
@@ -215,13 +214,13 @@ class cadastro(CrawJUD):
 
     def info_localizacao(self) -> None:
         """
-        Provides information about the location of the process.
+        Provide information about the location of the process.
+
         This method selects the judicial sphere of the process and logs the actions performed.
         It interacts with the web elements to set the sphere and waits for the loading to complete.
         Returns:
             None
         """
-
         elementSelect = self.elements.css_esfera_judge
         text = "Judicial"
 
@@ -239,13 +238,13 @@ class cadastro(CrawJUD):
     def informa_estado(self) -> None:
         """
         Informs the state of the process by selecting the appropriate option from a dropdown menu.
+
         This method retrieves the state information from the bot's data, logs the action,
         selects the state in the dropdown menu using the Select2_ELAW method, waits for the
         page to load, and then logs the completion of the action.
         Returns:
             None
         """
-
         key = "ESTADO"
         elementSelect = self.elements.estado_input
         text = str(self.bot_data.get(key, None))
@@ -263,7 +262,8 @@ class cadastro(CrawJUD):
 
     def informa_comarca(self) -> None:
         """
-        Fills in the comarca (judicial district) information for the process.
+        Fill in the comarca (judicial district) information for the process.
+
         This method retrieves the comarca information from the bot data, selects the appropriate
         input element, and inputs the comarca text. It also logs the actions performed.
         Steps:
@@ -276,7 +276,6 @@ class cadastro(CrawJUD):
         Returns:
             None
         """
-
         text = str(self.bot_data.get("COMARCA"))
         elementSelect = self.elements.comarca_input
 
@@ -294,6 +293,7 @@ class cadastro(CrawJUD):
     def informa_foro(self) -> None:
         """
         Informs the court jurisdiction (foro) for the process.
+
         This method retrieves the court jurisdiction information from the bot data,
         logs the action, and interacts with the web element to input the court jurisdiction.
         Steps:
@@ -305,7 +305,6 @@ class cadastro(CrawJUD):
         Returns:
             None
         """
-
         elementSelect = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
 
@@ -322,7 +321,8 @@ class cadastro(CrawJUD):
 
     def informa_vara(self) -> None:
         """
-        Fills in the court information for the process.
+        Fill in the court information for the process.
+
         This method retrieves the court information from the bot data and inputs it
         into the appropriate field in the ELAW system. It logs the actions performed
         and ensures the input is processed by the system.
@@ -335,7 +335,6 @@ class cadastro(CrawJUD):
         Returns:
             None
         """
-
         text = self.bot_data.get("VARA")
         elementSelect = self.elements.vara_input
 
@@ -392,7 +391,8 @@ class cadastro(CrawJUD):
 
     def set_classe_empresa(self) -> None:
         """
-        Sets the classification of the company.
+        Set the classification of the company.
+
         This method retrieves the company type from the bot data, formats it,
         and uses it to interact with a specific input element on the page.
         It logs messages before and after the interaction to indicate the
@@ -400,7 +400,6 @@ class cadastro(CrawJUD):
         Returns:
             None
         """
-
         key = "TIPO_EMPRESA"
         elementSelect = self.elements.tipo_empresa_input
         text = self.bot_data.get(key).__str__().capitalize()

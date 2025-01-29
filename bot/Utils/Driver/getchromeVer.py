@@ -6,9 +6,18 @@ from os import popen
 
 
 class ChromeVersion:
-    def get_chrome_version(self):
-        """Return the Chrome version."""
+    def get_chrome_version(self) -> str | None:
+        """Get the version of Google Chrome installed on the system.
 
+        This method determines the operating system and retrieves the version
+        of Google Chrome accordingly. For Windows, it attempts to read the
+        version from the registry. For macOS and Linux, it uses the command
+        line to get the version.
+
+        Returns:
+            str: The version of Google Chrome installed on the system, or None
+            if the version could not be determined.
+        """
         result = None
         system = platform.system()
         if system == "Windows":

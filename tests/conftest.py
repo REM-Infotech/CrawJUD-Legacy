@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Generator
 from uuid import uuid4
 
 import pandas as pd
@@ -13,6 +13,7 @@ from pytz import timezone
 from werkzeug.datastructures import FileStorage
 
 from app import create_test_app as factory
+from status import SetStatus
 
 create_test_app = factory.create_app
 create_db = factory.init_database
@@ -42,14 +43,13 @@ def app():
 
 
 @pytest.fixture()
-def client(app: Flask):
-    """Return Cliente Flask
+def client(app: Flask) -> FlaskClient:
+    """Create a test client for the given Flask application.
 
     Args:
-        app (Flask): App Flask
-
+        app (Flask): The Flask application instance.
     Returns:
-        FlaskClient: Cliente Flask
+        FlaskClient: A test client for the Flask application.
     """
     return app.test_client()
 
@@ -68,11 +68,29 @@ def client(app: Flask):
 
 
 @pytest.fixture()
-def args_bot():
-    """Argumentos Bot (Sem pós-formatação)
+def args_bot() -> Generator[Dict[str, Any], Any, None]:
+    """Generate and yield a dictionary containing test data for a bot.
+
+    The function constructs a dictionary with URL, file, and data information
+    required for testing a bot. It reads an Excel file from a specified path,
+    generates a process ID (pid), and includes user credentials and other
+    necessary data.
 
     Yields:
-        dict: Argumentos de inicialização bots
+        dict: A dictionary containing the following keys:
+            - "url" (str): The URL for the bot.
+            - "files" (dict): A dictionary with the basename of the Excel file
+              as the key and a tuple containing the basename and file object as
+              the value.
+            - "data" (dict): A dictionary containing:
+                - "pid" (str): A generated process ID.
+                - "user" (str): The username for the bot.
+                - "xlsx" (str): The basename of the Excel file.
+                - "username" (str): The username for login.
+                - "password" (str): The password for login.
+                - "login_method" (str): The login method (e.g., "pw").
+                - "creds" (str): Credentials for the bot.
+                - "state" (str): The state code (e.g., "AM").
     """
     from os import path
     from pathlib import Path
@@ -103,13 +121,17 @@ def args_bot():
 
 
 @pytest.fixture()
-def args_statusbot():
-    """Argumentos de Bot com formatação pós POST
+def args_statusbot() -> Generator[Dict[str, Any], Any, None]:
+    """Generate and yield a dictionary containing test data for a bot's status.
+
+    This function creates a dictionary with various keys representing the status,
+    system, type of bot, files, and form data required for testing a bot. It reads
+    an Excel file from a predefined path and includes it in the dictionary. The
+    function uses the `generate_pid` function to generate a unique process ID.
 
     Yields:
-        dict: Dicionario com argumentos
+        dict: A dictionary containing test data for the bot's status.
     """
-
     from os import path
     from pathlib import Path
 
@@ -143,14 +165,13 @@ def args_statusbot():
 
 
 @pytest.fixture()
-def SetStatus(args_statusbot: dict[str, str]):
-    """Instância da classe "Setstatus"
+def SetStatus(args_statusbot: dict[str, str]) -> Generator[SetStatus, Any, None]:
+    """Set the status using the provided arguments.
 
     Args:
-        args_statusbot (dict[str, str]): argumentos de inicialização com formatação "pós POST"
-
+        args_statusbot (dict[str, str]): A dictionary containing status arguments.
     Yields:
-        SetStatus: Classe "SetStatus"
+        setstatus: An instance of SetStatus initialized with the provided arguments.
     """
     from status import SetStatus
 
@@ -159,15 +180,18 @@ def SetStatus(args_statusbot: dict[str, str]):
 
 
 @pytest.fixture(scope="function")
-def io(app: Flask, client: FlaskClient):
-    """Cliente do SocketIO
+def io(app: Flask, client: FlaskClient) -> Generator[SocketIOTestClient, Any, None]:
+    """Fixture to provide a SocketIO test client for the Flask application.
+
+    This fixture initializes a SocketIO test client, connects it to the
+    specified namespace, and yields the client for use in tests. After the
+    test is completed, the client is disconnected.
 
     Args:
-        app (Flask): Aplicação Flask
-        client (FlaskClient): Cliente Flask
-
+        app (Flask): The Flask application instance.
+        client (FlaskClient): The Flask test client instance.
     Yields:
-        SocketIOTestClient: Cliente Socketio
+        SocketIOTestClient: The SocketIO test client connected to the "/log" namespace.
     """
     io: SocketIO = app.extensions["socketio"]
     socketio_client = SocketIOTestClient(app, io, flask_test_client=client)
@@ -177,17 +201,30 @@ def io(app: Flask, client: FlaskClient):
 
 
 @pytest.fixture(scope="function")
-def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]):
-    """
-    Instânciamento de Usuário, Licença e Execução "Dummy"
-    Retorna Usuario e PID para testes
+def create_dummy_pid(
+    app: Flask, args_bot: dict[str, str | Any]
+) -> Generator[
+    tuple[str | dict[str, str] | None, str | dict[str, str] | None], Any, None
+]:
+    """Create a dummy process ID and populate the database with test data.
 
+    This function sets up a dummy process ID and populates the database with
+    test data for users, licenses, bots, and executions. It is intended for
+
+    use in testing environments.
     Args:
-        app (Flask): App flask
-        args_bot (dict[str, str  |  Any]): argumentos bots
-
+        app (Flask): The Flask application instance.
+        args_bot (dict[str, str | Any]): A dictionary containing bot arguments.
+            Expected keys:
+                - "data" (dict[str, str]): A dictionary containing user data.
+                    Expected keys:
+                        - "username" (str): The username of the user.
+                        - "pid" (str): The process ID.
     Yields:
-        user, pid (tuple[str, str]): Usuário e PID criados
+        tuple: A tuple containing the username and process ID.
+    Example:
+        >>> with app.app_context():
+        >>>     user, pid = next(create_dummy_pid(app, args_bot))
     """
     import random
     import string

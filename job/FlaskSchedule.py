@@ -29,7 +29,15 @@ class DatabaseScheduler(Scheduler):
 
     @staticmethod
     def parse_cron(cron_string):
-        """Converte o formato crontab string em kwargs para crontab."""
+        """Parse a cron string into its respective fields.
+
+        Args:
+            cron_string (str): A string representing the cron schedule.
+        Returns:
+            dict: A dictionary with keys "minute", "hour", "day_of_month",
+                  "month_of_year", and "day_of_week" mapping to their respective values
+                  from the cron string.
+        """
         fields = ["minute", "hour", "day_of_month", "month_of_year", "day_of_week"]
         cron_parts = cron_string.split()
         return {field: value for field, value in zip(fields, cron_parts)}

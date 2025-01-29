@@ -20,7 +20,7 @@ __all__ = [
     "check_latest",
     "checkout_release",
     "update_servers",
-    "initialize_logging",
+    "init_log",
 ]
 
 load_dotenv()

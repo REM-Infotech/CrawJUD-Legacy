@@ -54,8 +54,11 @@ class CrawJUD(PropertiesCrawJUD):
     }
 
     def prt(self) -> None:
-        """Call the print method from the PrintBot class."""
+        """
+        Call the print_msg method of the PrintBot instance.
 
+        This method is used to print a message using the PrintBot's print_msg method.
+        """
         self.PrintBot.print_msg()
 
     def end_prt(self, status: str) -> None:
@@ -108,8 +111,8 @@ class CrawJUD(PropertiesCrawJUD):
     #             continue
 
     def setup(self) -> None:
-        """Configure the bot.
-        Sets up the bot by loading configuration and preparing the environment.
+        """
+        Set up the bot by loading configuration and preparing the environment.
 
         This method performs the following steps:
         1. Loads configuration from a JSON file specified by `self.path_args`.

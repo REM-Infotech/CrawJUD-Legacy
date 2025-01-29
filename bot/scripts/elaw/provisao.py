@@ -101,12 +101,14 @@ class provisao(CrawJUD):
             raise e
 
     def chk_risk(self):
-        """
-        Checks the risk label on the webpage and selects the appropriate risk type if the label indicates "Risco Quebrado".
-        This method waits for the risk label element to be present on the webpage. If the label's text is "Risco Quebrado",
-        it selects the risk type "Risco" from a dropdown menu.
-        """
+        """Check the risk label and select the appropriate risk type.
 
+        This method waits for the risk label element to be present on the page.
+        If the label text is "Risco Quebrado", it selects the "Risco" option
+        from the risk type dropdown.
+        Returns:
+            None
+        """
         label_risk = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.type_risk_label)

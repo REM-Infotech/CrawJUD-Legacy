@@ -13,7 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from redis_flask import Redis
 
-from .utils import check_allowed_origin, initialize_logging, make_celery
+from .utils import check_allowed_origin, init_log, make_celery
 
 async_mode = (
     str("threading")
@@ -72,7 +72,7 @@ class AppFactory:
 
                 return app, io, celery
 
-        app.logger = initialize_logging()
+        app.logger = init_log()
         return app, io, celery
 
     def init_routes(self, app: Flask) -> None:

@@ -67,14 +67,23 @@ def test_terminate_bot(io: SocketIOTestClient, create_dummy_pid):
     assert message_received and message_received_
 
 
-def test_join_and_message(io: SocketIOTestClient, create_dummy_pid):
-    """Teste do endpoint Websocket "log_message"
+def test_join_and_message(io: SocketIOTestClient, create_dummy_pid) -> None:
+    """Test the join and message functionalities of a Socket.IO server.
+
+    This test covers the following scenarios:
+    1. Joining a room without a cached PID in Redis.
+    2. Sending a log message with a valid PID.
+    3. Joining a room with a cached PID in Redis.
+    4. Sending log messages with different POS values (0 and 1).
+    5. Sending a log message without a PID.
+    6. Sending log messages with different data types and graphic modes.
 
     Args:
-        io (SocketIOTestClient): Cliente Socketio
-        create_dummy_pid (tuple[str, str]): Execução dummy
+        io (SocketIOTestClient): The Socket.IO test client.
+        create_dummy_pid (tuple): A tuple containing a dummy user and PID.
+    Asserts:
+        All test scenarios should return the expected results.
     """
-
     result_sucess: list[bool] = []
     user, pid = create_dummy_pid
     pid = str(pid)

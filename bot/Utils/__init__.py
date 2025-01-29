@@ -267,9 +267,11 @@ class OtherUtils(CrawJUD):
 
     def dataFrame(self) -> list[dict[str, str]]:
         """Convert an Excel file to a list of dictionaries with formatted data.
+
         His method reads an Excel file specified by the instance's path arguments,
         processes the data by formatting dates and floats, and returns the data as
         a list of dictionaries.
+
         Return:
             list[dict[str, str]]: A list of dictionaries where each dictionary
             represents a row in the Excel file with formatted data.
@@ -277,7 +279,6 @@ class OtherUtils(CrawJUD):
             FileNotFoundError: If the specified Excel file does not exist.
             ValueError: If there is an issue reading the Excel file.
         """
-
         input_file = Path(self.output_dir_path).joinpath(self.xlsx).resolve()
 
         df = pd.read_excel(input_file)
@@ -309,6 +310,7 @@ class OtherUtils(CrawJUD):
 
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
         """Format the given data dictionary according to specific rules.
+
         Args:
             data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
         Returns:
@@ -320,7 +322,6 @@ class OtherUtils(CrawJUD):
             - If the value is an integer or float, format it to two decimal places and replace the decimal point with a comma.
             - If the key is "CNPJ_FAVORECIDO" and its value is empty, set it to "04.812.509/0001-90".
         """
-
         data_listed = list(data.items())
         for key, value in data_listed:
             if isinstance(value, str):
@@ -356,12 +357,12 @@ class OtherUtils(CrawJUD):
     def calc_time(self) -> list:
         """
         Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
+
         Returns:
             list: A list containing two integers:
                 - minutes (int): The number of minutes of the elapsed time.
                 - seconds (int): The number of seconds of the elapsed time.
         """
-
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
         calc = execution_time / 60
@@ -373,13 +374,14 @@ class OtherUtils(CrawJUD):
 
     def append_moves(self) -> None:
         """Append movements to the spreadsheet if there are any movements to append.
+
         This method checks if there are any movements stored in the `self.appends` list.
         If there are, it iterates over each movement and calls the `self.append_success`
         method to save the movement to the spreadsheet with a success message.
+
         Raises:
             ErroDeExecucao: If no movements are found in the `self.appends` list.
         """
-
         if len(self.appends) > 0:
             for append in self.appends:
                 self.append_success(
@@ -506,6 +508,7 @@ class OtherUtils(CrawJUD):
 
     def normalizar_nome(self, word: str) -> str:
         """Return a normalized version of the given word.
+
         Removes spaces, replaces "_" and "-" with nothing, and converts to lowercase
 
         Args:
@@ -514,11 +517,11 @@ class OtherUtils(CrawJUD):
         Return:
             str: normalized name
         """
-        #
         return re.sub(r"[\s_\-]", "", word).lower()
 
     def similaridade(self, word1: str, word2: str) -> float:
         """Compare similarity between two words.
+
         Args:
             word1 (str): Palavra 1
             word2 (str): Palavra 2
@@ -629,12 +632,13 @@ class OtherUtils(CrawJUD):
         return record
 
     def gpt_chat(self, text_mov: str) -> str:
-        """
-        Analyzes a given legal document text and adjusts the response based on the type of document.
+        """Analyzes a given legal document text and adjusts the response based on the type of document.
+
         This method uses the OpenAI GPT model to analyze the provided text and generate a response
         that identifies the type of legal document and extracts relevant information based on the
         document type. The document types include sentences, initial petitions, defenses, and
         interlocutory decisions.
+
         Args:
             text_mov (str): The text of the legal document to be analyzed.
         Returns:
@@ -643,7 +647,6 @@ class OtherUtils(CrawJUD):
         Raises:
             Exception: If an error occurs during the API call or processing.
         """
-
         try:
             time.sleep(5)
             client = self.OpenAI_client

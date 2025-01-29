@@ -1,5 +1,3 @@
-"""Crawler ELAW Cadastro"""
-
 import os
 import time
 from contextlib import suppress

@@ -35,8 +35,16 @@ class CustomProperty(property):
         self.fset(obj, value)
 
     def validate_type(self, value) -> None:
-        """
-        Valida o tipo do valor usando Pydantic.
+        """Validate the type of the given value.
+
+        This method uses a dynamically created Pydantic model to validate
+        that the provided value matches the expected type defined by
+        `self.type_`.
+
+        Args:
+            value: The value to be validated.
+        Raises:
+            pydantic.ValidationError: If the value does not match the expected type.
         """
 
         class TypedPropertyModel(BaseModel):
@@ -422,12 +430,13 @@ class PropertiesCrawJUD:
 
     @CustomProperty
     def gpt_chat(self) -> Callable[..., str]:
-        """
-        Analyzes a given legal document text and adjusts the response based on the type of document.
+        """Analyze a given legal document text and adjusts the response based on the type of document.
+
         This method uses the OpenAI GPT model to analyze the provided text and generate a response
         that identifies the type of legal document and extracts relevant information based on the
         document type. The document types include sentences, initial petitions, defenses, and
         interlocutory decisions.
+
         Args:
             text_mov (str): The text of the legal document to be analyzed.
         Returns:
@@ -436,7 +445,6 @@ class PropertiesCrawJUD:
         Raises:
             Exception: If an error occurs during the API call or processing.
         """
-
         return self.OtherUtils.gpt_chat
 
     @CustomProperty

@@ -51,18 +51,16 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
 
 class ErroDeExecucao(CrawJUDExceptions):
-    """
-    Exception raised for errors that occur during the execution of CrawJUD bots.
-    This exception is a subclass of CrawJUDExceptions and is intended to be used
-    for handling execution-related errors specifically.
-    Methods
-    -------
-    __init__(*args, **kwargs)
-        Initializes the exception with optional arguments.
-    __instancecheck__(instance: Exception) -> bool
-        Checks if the given instance is an instance of this exception.
-    __str__()
-        Returns a string representation of the exception.
+    """Exception raised for errors in the execution of CrawJUD.
+
+    This exception is a subclass of CrawJUDExceptions and is used to indicate
+    that an error occurred during the execution of a CrawJUD process.
+
+    Methods:
+        __instancecheck__(instance: Exception) -> bool:
+            Check if the instance is an exception.
+        __str__() -> str:
+            Return the string representation of the exception.
     """
 
     def __init__(self, *args, **kwargs):

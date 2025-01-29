@@ -433,7 +433,8 @@ class complement(CrawJUD):
     @classmethod
     def esfera(cls, self: Self, text: str = "Judicial") -> None:
         """
-        Handles the selection of the judicial sphere in the process.
+        Handle the selection of the judicial sphere in the process.
+
         This function performs the following steps:
         1. Selects the judicial sphere element.
         2. Sets the text to "Judicial".
@@ -444,7 +445,6 @@ class complement(CrawJUD):
         Returns:
             None
         """
-
         elementSelect = self.elements.css_esfera_judge
 
         self.message = "Informando esfera do processo"
@@ -461,7 +461,8 @@ class complement(CrawJUD):
     @classmethod
     def estado(cls, self: Self) -> None:
         """
-        Updates the state of the process in the system.
+        Update the state of the process in the system.
+
         This method retrieves the state information from `self.bot_data` using the key "ESTADO",
         logs the action, and updates the state input field in the system using the `Select2_ELAW` method.
         It then waits for the system to load the changes.
@@ -470,7 +471,6 @@ class complement(CrawJUD):
         Returns:
             None
         """
-
         key = "ESTADO"
         elementSelect = self.elements.estado_input
         text = str(self.bot_data.get(key, None))
@@ -489,16 +489,14 @@ class complement(CrawJUD):
     @classmethod
     def comarca(cls, self: Self) -> None:
         """
-        Fills in the comarca (judicial district) information for the process.
+        Inform the "comarca" (jurisdiction) of the process.
+
         This method retrieves the comarca information from the bot data,
-        selects the appropriate input element, and inputs the comarca text.
-        It also logs the actions performed during this process.
+        selects the appropriate input element, and interacts with the
+        interface to input the comarca information.
         Args:
             self (Self): The instance of the class containing bot data and elements.
-        Returns:
-            None
         """
-
         text = str(self.bot_data.get("COMARCA"))
         elementSelect = self.elements.comarca_input
 
@@ -516,7 +514,8 @@ class complement(CrawJUD):
     @classmethod
     def foro(cls, self: Self) -> None:
         """
-        Updates the forum (foro) information for the process.
+        Update the forum (foro) information for the process.
+
         This method selects the appropriate forum input element and updates it with the
         forum information retrieved from `self.bot_data`. It logs the actions performed
         and interacts with the necessary elements on the page to ensure the forum information
@@ -526,7 +525,6 @@ class complement(CrawJUD):
         Returns:
             None
         """
-
         elementSelect = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
 
@@ -543,8 +541,17 @@ class complement(CrawJUD):
 
     @classmethod
     def vara(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Update the "vara" (court) information for the process.
 
+        This method retrieves the "VARA" data from the bot's data, selects the appropriate
+        input element for "vara", and interacts with the ELAW system to update the information.
+        It logs messages before and after the interaction to indicate the status of the operation.
+        Args:
+            self (Self): The instance of the class containing bot data and elements.
+        Returns:
+            None
+        """
         text = self.bot_data.get("VARA")
         elementSelect = self.elements.vara_input
 
@@ -562,7 +569,8 @@ class complement(CrawJUD):
     @classmethod
     def unidade_consumidora(cls, self: Self) -> None:
         """
-        Handles the process of informing the consumer unit in the web application.
+        Handle the process of informing the consumer unit in the web application.
+
         This function performs the following steps:
         1. Logs the start of the process.
         2. Waits for the input field for the consumer unit to be present in the DOM.
@@ -580,7 +588,6 @@ class complement(CrawJUD):
             self.interact.clear(): Method to clear the input field.
             self.interact.send_key(): Method to send keys to the input field.
         """
-
         self.message = "Informando unidade consumidora"
         self.type_log = "log"
         self.prt()
@@ -619,6 +626,24 @@ class complement(CrawJUD):
 
     @classmethod
     def data_citacao(cls, self: Self) -> None:
+        """
+        Handle the process of informing the citation date in the web application.
+
+        This method performs the following steps:
+        1. Logs the start of the citation date input process.
+        2. Waits for the citation date input field to be present in the DOM.
+        3. Clears any existing value in the citation date input field.
+        4. Waits for a specific element to ensure the page is loaded.
+        5. Sends the citation date value to the input field.
+        6. Waits for 2 seconds to ensure the input is processed.
+        7. Triggers a blur event on the citation date input field to simulate user interaction.
+        8. Waits for a specific element to ensure the page is loaded.
+        9. Logs the completion of the citation date input process.
+        Args:
+            self (Self): The instance of the class containing this method.
+        Returns:
+            None
+        """
         self.message = "Informando data de citação"
         self.type_log = "log"
         self.prt()
@@ -643,7 +668,19 @@ class complement(CrawJUD):
 
     @classmethod
     def fase(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Update the phase of the process in the ELAW system.
+
+        This method selects the appropriate input element for the phase,
+        retrieves the phase information from the bot data, and updates
+        the phase in the ELAW system. It also logs messages before and
+        after the update.
+        Args:
+            self (Self): An instance of the class containing the elements
+                         and bot data.
+        Returns:
+            None
+        """
         elementSelect = self.elements.fase_input
         text = self.bot_data.get("FASE")
 
@@ -660,7 +697,18 @@ class complement(CrawJUD):
 
     @classmethod
     def provimento(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Handle the process of informing the anticipatory provision.
+
+        This method retrieves the anticipatory provision text from the bot data,
+        selects the appropriate input element, and performs the necessary actions
+        to input the provision text into the system. It logs the process steps
+        before and after the interaction.
+        Args:
+            self (Self): An instance of the class containing bot data and elements.
+        Returns:
+            None
+        """
         text = self.bot_data.get("PROVIMENTO")
         elementSelect = self.elements.provimento_input
 
@@ -678,7 +726,8 @@ class complement(CrawJUD):
     @classmethod
     def valor_causa(cls, self: Self) -> None:
         """
-        Fills in the value of the cause in a web form.
+        Fill in the value of the cause in a web form.
+
         This method performs the following steps:
         1. Logs the start of the process.
         2. Waits for the element representing the value of the cause to be clickable.
@@ -689,7 +738,6 @@ class complement(CrawJUD):
         Raises:
             TimeoutException: If the element is not found within the specified wait time.
         """
-
         self.message = "Informando valor da causa"
         self.type_log = "log"
         self.prt()
@@ -718,7 +766,19 @@ class complement(CrawJUD):
 
     @classmethod
     def fato_gerador(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Handle the process of informing the 'fato gerador' (triggering event) in the system.
+
+        This method performs the following steps:
+        1. Logs the start of the 'fato gerador' process.
+        2. Selects the appropriate input element for 'fato gerador'.
+        3. Retrieves the 'FATO_GERADOR' value from bot data.
+        4. Uses the Select2_ELAW method to input the 'FATO_GERADOR' value.
+        5. Waits for the loading of the specified element.
+        6. Logs the completion of the 'fato gerador' process.
+        Args:
+            self (Self): An instance of the class containing the method.
+        """
         self.message = "Informando fato gerador"
         self.type_log = "log"
         self.prt()
@@ -735,6 +795,19 @@ class complement(CrawJUD):
 
     @classmethod
     def desc_objeto(cls, self: Self) -> None:
+        """
+        Fill in the description object field on the web page.
+
+        This method waits for the description object input field to be present,
+        clicks on it, clears any existing text, and then enters the new text
+        retrieved from `self.bot_data`. After entering the text, it triggers a
+        blur event on the input field and waits for a specific loading element
+        to disappear.
+        Args:
+            self (Self): An instance of the class containing the method.
+        Returns:
+            None
+        """
         input_descobjeto = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.input_descobjeto_css)
@@ -753,7 +826,18 @@ class complement(CrawJUD):
 
     @classmethod
     def objeto(cls, self: Self) -> None:
-        """Declaração dos CSS em variáveis"""
+        """
+        Handle the process of informing the object of the process.
+
+        This method updates the message and type_log attributes to indicate the
+        start and completion of the process. It selects the appropriate input
+        element and sets its value based on the bot_data. It also includes a
+        sleep to wait for the loading of a specific element.
+        Args:
+            self (Self): The instance of the class calling this method.
+        Returns:
+            None
+        """
         self.message = "Informando objeto do processo"
         self.type_log = "log"
         self.prt()
@@ -770,6 +854,17 @@ class complement(CrawJUD):
 
     @classmethod
     def tipo_empresa(cls, self: Self) -> None:
+        """Set the type of company and updates the relevant UI elements accordingly.
+
+        This method determines the type of company (either "Ativa" or "Passiva") based on the
+        "TIPO_EMPRESA" value in `self.bot_data`. It then updates the UI elements for
+        contingencia and tipo_polo with the appropriate values and logs the actions performed.
+
+        Args:
+            self (Self): An instance of the class containing the method.
+        Returns:
+            None
+        """
         self.message = "Informando contingenciamento"
         self.type_log = "log"
         self.prt()

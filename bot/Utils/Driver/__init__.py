@@ -281,8 +281,19 @@ class SetupDriver:
         return url_driver
 
     def copy_url(self, task_id: TaskID, url: str, path: Path) -> None:
-        """Copy data from a url to a local file."""
+        """Copy a URL to a specified path and extract its contents.
 
+        This method downloads a file from the given URL, saves it as a zip file,
+        and extracts its contents to the specified path. It also updates the
+        progress of the task.
+
+        Args:
+            task_id (TaskID): The ID of the task to update progress.
+            url (str): The URL to download the file from.
+            path (Path): The path to save and extract the file to.
+        Returns:
+            None
+        """
         zip_name = path.with_name(f"{path.name}.zip")
         response = requests.get(f"https://{url}", stream=True, timeout=60)
         # input("teste")

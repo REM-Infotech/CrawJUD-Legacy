@@ -6,7 +6,7 @@ from celery import Celery
 from dotenv_vault import load_dotenv
 from flask import Flask
 
-from .bots_logs import initialize_logging
+from .bots_logs import init_log
 from .get_location import GeoLoc
 
 load_dotenv()
@@ -44,4 +44,4 @@ def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cov
     return False
 
 
-__all__ = ["make_celery", "check_allowed_origin", "initialize_logging", "GeoLoc"]
+__all__ = ["make_celery", "check_allowed_origin", "init_log", "GeoLoc"]

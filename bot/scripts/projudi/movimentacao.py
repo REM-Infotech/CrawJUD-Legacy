@@ -158,18 +158,23 @@ class movimentacao(CrawJUD):
         data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
 
         def data_check(data_mov: str) -> bool:
-            """
-            ### (function): data_check
-
-            Por Padrão, ele utilizará a data da movimentação
-            Caso o Usuario opte por filtrar por datas, ele deve
-            informar a coluna `DATA_INICIO`, `DATA_FIM` ou ambas
+            """Validate the given date string against multiple date formats and checks if it falls within a specified date range.
 
             Args:
-                data_mov (str): Data da movimentação
-
+                data_mov (str): The date string to be validated.
             Returns:
-                bool: Resultado do filtro (False | True)
+                bool: True if the date string is valid and falls within the specified date range, False otherwise.
+            The function performs the following steps:
+            1. Tries to match the given date string against multiple date formats.
+            2. Converts the matched date string to a datetime object.
+            3. Retrieves the start and end dates from the bot's data.
+            4. Validates and converts the start and end dates if they are not already datetime objects.
+            5. Checks if the given date falls within the start and end dates.
+            The supported date formats are:
+            - "%d/%m/%Y"
+            - "%m/%d/%Y"
+            - "%Y/%m/%d"
+            - "%Y/%d/%m"
             """
             patterns = [
                 ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
@@ -217,15 +222,19 @@ class movimentacao(CrawJUD):
             )
 
         def text_check(text_mov: str) -> bool:
-            """text_check `Verificação de palavra chave`
+            """Check if the given text matches certain criteria.
 
-            Filtro de movimentações por palavra chave
+            This function evaluates whether the provided text (`text_mov`) meets any of the following conditions:
+            - Contains a keyword that is an asterisk ("*").
+            - The first line of the text matches a keyword (case-insensitive).
+            - The entire text matches a keyword (case-insensitive).
+            - The keyword is a substring of the text (case-insensitive).
+            - The similarity between the keyword and the first line of the text is greater than 0.8.
 
             Args:
-                text_mov (str): Texto da movimentação
-
+                text_mov (str): The text to be checked.
             Returns:
-                bool: Resultado (False | True)
+                bool: True if any of the conditions are met, False otherwise.
             """
             check_palavra = any(
                 chk is True
@@ -242,15 +251,16 @@ class movimentacao(CrawJUD):
             return check_palavra
 
         def check_intimado() -> bool:
-            """check_intimado
+            """Check if the bot is intimated based on the bot data.
 
-            Filtro de Intimado. Eficiente para casos onde o usuário
-            quer apenas movimentações em seu nome ou nome de seu cliente.
-
-            Por Padrão, o intimado deve vir vazio para trazer todos independente
+            This function checks if the bot has been intimated by looking for the
+            "INTIMADO" key in the bot data. If the key is present, it verifies if
+            the value associated with the key is present in the text_mov string
+            (case insensitive).
 
             Returns:
-                bool: Resultado (False | True)
+                bool: True if the bot is intimated or if the "INTIMADO" key is not
+                present in the bot data, False otherwise.
             """
             intimado_chk = True
             intimado = self.bot_data.get("INTIMADO", None)
