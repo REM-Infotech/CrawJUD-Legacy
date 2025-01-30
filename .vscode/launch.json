@@ -4,13 +4,6 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-    // {
-    //   "name": "Python: Run Flask app (Linux)",
-    //   "type": "debugpy",
-    //   "request": "launch",
-    //   "module": "app",
-    //   "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
-    // },
     {
       "name": "Python: Run Flask app (Windows)",
       "type": "debugpy",
