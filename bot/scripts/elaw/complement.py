@@ -609,7 +609,6 @@ class complement(CrawJUD):
 
     @classmethod
     def bairro(cls, self: Self):
-
         self.message = "Informando bairro"
         self.type_log = "log"
         self.prt()

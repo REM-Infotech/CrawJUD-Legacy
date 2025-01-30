@@ -3,6 +3,7 @@ Module for sending email notifications related to CrawJUD-Bots executions.
 """
 
 from os import environ
+
 from dotenv_vault import load_dotenv
 from flask import Flask
 from flask_mail import Mail, Message

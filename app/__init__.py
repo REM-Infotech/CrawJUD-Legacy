@@ -1,3 +1,5 @@
+"""Initialize the CrawJUD-Bots application with Flask, Celery, SocketIO, and other extensions."""
+
 import platform
 from datetime import timedelta
 from os import environ, getenv
@@ -28,7 +30,6 @@ mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
 
-
 io = None
 app = None
 app = Flask(__name__)
@@ -45,9 +46,13 @@ load_dotenv()
 
 
 class AppFactory:
+    """Factory to create and configure the Flask app, SocketIO, and Celery."""
+
     def create_app(self) -> tuple[Flask, SocketIO, Celery]:
+        """Create and configure the Flask application, SocketIO, and Celery worker."""
         global app
 
+        # Temporarily disable Redis client
         # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
 
         env_ambient = environ["AMBIENT_CONFIG"]
@@ -60,7 +65,7 @@ class AppFactory:
 
         celery.autodiscover_tasks(["bot"])
 
-        if app.testing is False:  # pragma: no cover
+        if not app.testing:  # pragma: no cover
             with app.app_context():
                 self.init_database(app)
                 self.init_mail(app)
@@ -76,11 +81,13 @@ class AppFactory:
         return app, io, celery
 
     def init_routes(self, app: Flask) -> None:
+        """Initialize and register the application routes."""
         from app.routes import register_routes
 
         register_routes(app)
 
-    def init_talisman(self, app: Flask) -> Talisman:  # pragma: no cover
+    def init_talisman(self, app: Flask) -> Talisman:
+        """Initialize Talisman for security headers."""
         tslm.init_app(
             app,
             content_security_policy=app.config["CSP"],
@@ -93,6 +100,7 @@ class AppFactory:
         return tslm
 
     def init_socket(self, app: Flask) -> SocketIO:
+        """Initialize the SocketIO instance."""
         global io
 
         host_redis = getenv("REDIS_HOST")
@@ -100,7 +108,7 @@ class AppFactory:
         port_redis = getenv("REDIS_PORT")
 
         io = SocketIO(
-            async_mode="threading",
+            async_mode=async_mode,
             message_queue=f"redis://:{pass_redis}@{host_redis}:{port_redis}/9",
         )
 
@@ -114,15 +122,18 @@ class AppFactory:
         return io
 
     def init_mail(self, app) -> None:
+        """Initialize the mail extension."""
         mail.init_app(app)
 
     def init_redis(self, app: Flask) -> Redis:
+        """Initialize the Redis extension."""
         global redis
 
         redis = Redis(app)
         return redis
 
     def init_database(self, app: Flask) -> SQLAlchemy:
+        """Initialize the database and create tables if they do not exist."""
         import platform
 
         global db

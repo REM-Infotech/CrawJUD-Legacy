@@ -1,8 +1,8 @@
 import logging
 import os
+from logging import DEBUG, Logger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from logging import DEBUG, Logger
 
 
 def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> Logger:

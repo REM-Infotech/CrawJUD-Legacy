@@ -1,13 +1,17 @@
+"""
+Main module for CrawJUD-Bots application.
+
+Handles signal management and VNC server initiation.
+"""
+
 import signal
 import subprocess
 import sys
 
-# import traceback
 from os import environ, getenv
 from platform import system
 from typing import Dict
 
-# from clear import clear
 from dotenv_vault import load_dotenv
 
 from git_py import version_file
@@ -18,10 +22,17 @@ values = environ.get
 
 
 def handle_exit() -> None:
+    """Handle the termination signal and exits the program."""
     sys.exit(0)
 
 
 def start_vnc() -> None:
+    """
+    Start the TightVNC server with specified parameters.
+
+    Raises:
+        Exception: If the TightVNC server fails to start.
+    """
     try:
         # Executa o comando com verificação de erro
         subprocess.run(
@@ -39,8 +50,6 @@ def start_vnc() -> None:
         )
         print("TightVNC iniciado com sucesso!")
     except Exception:
-        # err = traceback.format_exc()
-        # app.logger.exception(err)
         ...
 
 
@@ -48,7 +57,16 @@ signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
 
-if __name__ == "__main__":
+def start_app():
+    """
+    Initialize and start the application.
+
+    This function sets up the application context, configures the server
+    settings, and starts the application using the specified parameters.
+    It also handles cleanup operations when the application is interrupted.
+    Raises:
+        SystemExit: Exits the application when a KeyboardInterrupt or TypeError occurs.
+    """
     from app import create_app
 
     app, io, _ = create_app()
@@ -73,6 +91,8 @@ if __name__ == "__main__":
         start_vnc()
 
     args_run = {
+        "host": hostname,
+        "debug": debug,
         "port": port,
         "allow_unsafe_werkzeug": unsafe_werkzeug,
     }
@@ -90,3 +110,7 @@ if __name__ == "__main__":
                 ...
 
         sys.exit(0)
+
+
+if __name__ == "__main__":
+    start_app()

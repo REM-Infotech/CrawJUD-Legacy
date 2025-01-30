@@ -42,7 +42,7 @@ is_init.txt
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-
+results_pre-commit.md
 redis_flask/
 bandit_results.html
 # Unit test / coverage reports

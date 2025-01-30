@@ -2,6 +2,7 @@
 
 [![license mit](https://img.shields.io/badge/licence-MIT-blue.svg)](./LICENSE)
 [![Python 3.11](https://shields.io/badge/python-3.11%20-green?logo=python)](https://python.org/downloads/release/python-3119/)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 _Total de linhas no código: `9523`_
 _Última contagem: `10/12/2024 10:16`_
