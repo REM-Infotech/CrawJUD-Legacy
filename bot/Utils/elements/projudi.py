@@ -1,7 +1,15 @@
+"""
+Module for PROJUDI_AM element configurations.
+
+Defines the PROJUDI_AM class that manages property selectors for the PROJUDI_AM system.
+"""
+
 from .properties import Configuracao
 
 
 class PROJUDI_AM(Configuracao):
+    """Configuration selectors for the PROJUDI_AM system."""
+
     url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
     campo_username = "#login"
     campo_passwd = "#senha"

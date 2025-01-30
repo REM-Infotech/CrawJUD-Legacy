@@ -1,120 +1,90 @@
-# CrawJUD - Robôs de Automação
+# CrawJUD - RPA for Judicial Processes
 
 [![license mit](https://img.shields.io/badge/licence-MIT-blue.svg)](./LICENSE)
 [![Python 3.11](https://shields.io/badge/python-3.11%20-green?logo=python)](https://python.org/downloads/release/python-3119/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
+## Tecnologies
+
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://learn.microsoft.com/pt-br/virtualization/windowscontainers/quick-start/set-up-environment?tabs=dockerce)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/get-started)
+[![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=for-the-badge&logo=celery&logoColor=ddf4a4)](https://docs.celeryq.dev/en/stable/)
+[![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/en/2.0.x/)
+[![Poetry](https://img.shields.io/badge/Poetry-430098?style=for-the-badge&logo=python&logoColor=white)](https://python-poetry.org/docs/)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+
+## Description
+
+CrawJUD is a suite of automation robots designed to streamline and enhance judicial processes. Built with Flask and various Python libraries, CrawJUD aims to automate routine tasks, manage data efficiently, and provide seamless integration with existing systems.
+
 _Total de linhas no código: `9523`_
 _Última contagem: `10/12/2024 10:16`_
 
-## Requisitos do projeto
+## Table of Contents
 
-### Setup de ambiente:
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Debugging](#debugging)
+- [Contributing](#contributing)
+- [License](#license)
 
-- [`PPA DeadSnakes | Apenas Linux`](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa#ppa-install)
+## Project Structure
 
-  > Verificar qual sua distro para o comando correto da instalação do PPA e instalação do python 3.11
+- [`app/`](./app/): Centralizes routes, forms, and Flask models.
 
-  ### No ubuntu e debian (Normalmente utilizados para projetos):
+  - [`models/`](./app/models/): Contains models and SQL bindings.
 
-  - `sudo add-apt-repository ppa:deadsnakes/ppa`
-  - `sudo apt update`
-  - `sudo apt install python3.11 python3.11-venv default-libmysqlclient-dev build-essential`
+  - [`Forms/`](./app/Forms/): Project forms, organized by functionality.
 
-- [`Dependências do Projeto`](./requirements.txt), estarão em `requirements.txt`
+  - [`routes/`](./app/routes/): Project routes, organized by functionality.
 
-## Como rodar na minha máquina?
+- [`bot/`](./bot/): Contains bot-related scripts and configurations.
 
-#### Instalação do `venv (Virtual Environment)`
+## Installation
 
-> Caso opte por usar um nome personalizado, adicionar o mesmo no `.gitignore` para a pasta não subir para o repositório
+To set up the project locally, follow these steps:
 
-- `python3.11 -m venv .venv`
-  ou
-- `python3.11 -m venv .{nomepersonalizado}`
+1. **Clone the repository:**
 
-#### No Windows:
+   ```bash
+   git clone [Repository URL](./)
+   cd CrawJUD-Bots
+   ```
 
-> Necessário habilitar execução de scripts `.ps1` da [Microsoft](https://learn.microsoft.com/pt-br/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
+2. **Set up the environment variables:**
 
-- `.venv/Scripts/activate`
-- `python -m pip install -r requirements.txt`
+   Create a `.env` file based on the provided [.env.vault](http://_vscodecontentref_/0) template.
 
-#### No Linux:
+3. **Install dependencies using Poetry:**
 
-- `source .venv/bin/activate`
-- `python -m pip install -r requirements.txt`
+   ```bash
+   poetry install
+   ```
 
-## Estrutura do projeto
+4. **Run the application:**
 
-- [`APP`](./app/): É a pasta onde fica centralizado rotas, formulários e models do Flask
+   ```bash
+   poetry run flask run
+   ```
 
-#### A partir de `/app`, teremos:
+## Usage
 
-- [`Models`](./app/models/): Onde ficam os models e bind's do SQL.
+Provide instructions and examples on how to use the application.
 
-  - `bases/`: Onde ficam as bases para evitar criação de base para cada SGBD diferente
-  - `sqlite3/`, `mysqld/`, `oracle/`, etc: Onde ficam as binds para os databases respectivos
+## Debugging
 
-- [`Forms`](./app/Forms/): Formulários do projeto, sempre mantendo separados por funções, como, por exemplo:
+### Requirements:
 
-  - pass
+- **Cloudflare Tunnel (Required):** [Cloudflare Tunnel Documentation](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
 
-- [`Routes`](./app/routes/): Formulários do projeto, sempre mantendo separados por funções, como, por exemplo:
-  - pass
+  > If you have any doubts on how to set up a Cloudflare Tunnel, watch [This Video](https://www.youtube.com/watch?v=Y0LTZZCyPko&t=123s)
 
-## Como depurar em minha máquina?
+## Contributing
 
-### Requisitos:
+Unfortunately we are not yet accepting contributions
 
-#### [Cloudflare Tunnel (`Obrigatório`)](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+## License
 
-> Caso tenha alguma dúvida de como configurar um Tunnel Cloudflare, veja [`Esse Video`](https://www.youtube.com/watch?v=Y0LTZZCyPko&t=123s)
-
-#### Arquivo `.env`
-
-```python
-
-## URL do FRONT
-DEBUG = ""
-PORT = ""
-TOKEN_IP2 = ""
-
-
-url_web = ""
-NAMESERVER = ""
-HOST = ""
-
-credentials_dict = ""
-
-TUNNEL_ID =""
-CREDENTIALS_TUNNEL = ""
-
-MAIL_SERVER = ""
-MAIL_PORT = ""
-MAIL_USERNAME = ""
-MAIL_PASSWORD = ""
-MAIL_DEFAULT_SENDER = ""
-
-## SQL Config
-login = ""
-password = ""
-HOST = ""
-database = ""
-
-credentials_dict = '{
-  "type": "info da service account GCS",
-  "project_id": "info da service account GCS",
-  "private_key_id": "info da service account GCS",
-  "private_key": "info da service account GCS",
-  "client_email": "info da service account GCS",
-  "client_id": "info da service account GCS",
-  "auth_uri": "info da service account GCS",
-  "token_uri": "info da service account GCS",
-  "auth_provider_x509_cert_url": "info da service account GCS",
-  "client_x509_cert_url": "info da service account GCS",
-  "universe_domain": "info da service account GCS"
-}'
-
-
-```
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
