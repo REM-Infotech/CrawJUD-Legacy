@@ -1,4 +1,9 @@
-# Função para atualizar para a tag da nova release
+"""
+Initialization module for git_py package.
+
+Provides functions to manage Git repository tags and handle versioning.
+"""
+
 from os import environ
 from pathlib import Path
 
@@ -11,10 +16,16 @@ from git import Repo
 # GITHUB_API_TOKEN = config_vals.get("GITHUB_API_TOKEN", "")
 # REPO_NAME = config_vals.get("REPO_NAME", "")
 # USER_GITHUB = config_vals.get("USER_GITHUB", "")
-cwd_dir = cwd_dir = Path(__file__).cwd().resolve()
+cwd_dir = Path(__file__).cwd().resolve()
 
 
 def _release_tag() -> str:
+    """
+    Retrieve the latest release tag from the remote Git repository.
+
+    Returns:
+        str: The latest release tag.
+    """
     load_dotenv()
     values = environ
 
@@ -61,6 +72,12 @@ def _release_tag() -> str:
 
 
 def check_latest() -> bool:
+    """
+    Check if the current version matches the latest release tag.
+
+    Returns:
+        bool: True if the current version is up-to-date, False otherwise.
+    """
     with open(".version", "r") as f:
         version = f.read()
 
@@ -70,6 +87,12 @@ def check_latest() -> bool:
 
 
 def update_servers(tag: str) -> None:  # pragma: no cover
+    """
+    Update servers to the specified release tag.
+
+    Args:
+        tag (str): The release tag to update to.
+    """
     checkout_release(tag)
 
     path_fileversion = cwd_dir.joinpath(".version")
@@ -79,6 +102,12 @@ def update_servers(tag: str) -> None:  # pragma: no cover
 
 
 def checkout_release(tag: str) -> None:  # pragma: no cover
+    """
+    Checkout the specified release tag in the Git repository.
+
+    Args:
+        tag (str): The release tag to checkout.
+    """
     load_dotenv()
 
     if environ.get("DEBUG", "False").lower() == "False":
@@ -107,6 +136,12 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
 
 
 def version_file() -> None:
+    """
+    Update the local version file with the latest release tag.
+
+    If the version file does not exist or differs from the latest release tag,
+    it updates the file and checks out the corresponding release.
+    """
     version_Path = Path(__file__).cwd().joinpath(".version")
     version_ = None
 

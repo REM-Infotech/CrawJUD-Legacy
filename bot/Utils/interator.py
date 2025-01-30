@@ -1,3 +1,10 @@
+"""
+Utility module for interacting with web elements using Selenium WebDriver.
+
+Provides the Interact class with methods to perform various interactions
+such as clicking, sending keys, and selecting items.
+"""
+
 from contextlib import suppress
 from time import sleep
 
@@ -5,7 +12,6 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -16,12 +22,20 @@ from ..core import CrawJUD
 
 
 class Interact(CrawJUD):
-    def __init__(
-        self,
-    ) -> None:
-        """"""
+    """Provides methods to interact with web elements using Selenium WebDriver."""
+
+    def __init__(self) -> None:
+        """Initialize the Interact class."""
+        super().__init__()
 
     def send_key(self, element: WebElement, word: any) -> None:
+        """
+        Send a sequence of keys to a web element.
+
+        Args:
+            element (WebElement): The web element to send keys to.
+            word (any): The keys or text to send to the element.
+        """
         send = None
         for key in dir(Keys):
             if getattr(Keys, key) == word:
@@ -37,20 +51,45 @@ class Interact(CrawJUD):
                 element.send_keys(c)
 
     def click(self, element: WebElement) -> None:
+        """
+        Click on a web element with a short delay before and after.
+
+        Args:
+            element (WebElement): The web element to click.
+        """
         sleep(0.05)
         element.click()
         sleep(0.05)
 
-    def double_click(self, element: WebDriver) -> None:
-        Action = ActionChains(self.driver)
-        Action.double_click(element).perform()
+    def double_click(self, element: WebElement) -> None:
+        """
+        Perform a double-click action on a web element.
+
+        Args:
+            element (WebElement): The web element to double-click.
+        """
+        action = ActionChains(self.driver)
+        action.double_click(element).perform()
 
     def select_item(self, elemento: str, text: str) -> bool:
+        """
+        Select an item from a dropdown or list based on the provided text.
+
+        Args:
+            elemento (str): The CSS selector of the element containing the items.
+            text (str): The text of the item to select.
+
+        Returns:
+            bool: True if the item was successfully selected.
+
+        Raises:
+            ItemNaoEcontrado: If the item with the specified text is not found.
+        """
         itens: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elemento))
         )
 
-        self.diplay_none(itens)
+        self.display_none(itens)
         sleep(0.5)
 
         if not text.isupper():
@@ -73,18 +112,31 @@ class Interact(CrawJUD):
         if not item:
             raise ItemNaoEcontrado(message=f'Item "{text}" não encontrado!')
 
-        Action = ActionChains(self.driver)
-        Action.double_click(item).perform()
+        action = ActionChains(self.driver)
+        action.double_click(item).perform()
 
         return True
 
     def clear(self, element: WebElement) -> None:
+        """
+        Clear the content of a web element.
+
+        Args:
+            element (WebElement): The web element to clear.
+        """
         element.click()
         sleep(0.5)
         element.clear()
         sleep(1)
 
     def sleep_load(self, element: str = 'div[id="j_id_3x"]') -> None:
+        """
+        Wait until a specific element is no longer loading.
+
+        Args:
+            element (str, optional): The CSS selector of the loading element.
+                                      Defaults to 'div[id="j_id_3x"]'.
+        """
         while True:
             sleep(0.5)
             load = None
@@ -116,7 +168,13 @@ class Interact(CrawJUD):
             if not load:
                 break
 
-    def diplay_none(self, elemento: WebElement):
+    def display_none(self, elemento: WebElement) -> None:
+        """
+        Wait until the display style of an element is set to 'none'.
+
+        Args:
+            elemento (WebElement): The web element to check.
+        """
         while True:
             style = elemento.get_attribute("style")
 
@@ -125,6 +183,7 @@ class Interact(CrawJUD):
                 break
 
     def wait_caixa(self) -> None:
+        """Wait until a specific modal dialog is present on the page."""
         while True:
             check_wait = None
             with suppress(NoSuchElementException):
@@ -137,6 +196,7 @@ class Interact(CrawJUD):
                 break
 
     def wait_fileupload(self) -> None:
+        """Wait until the file upload process is complete."""
         while True:
             sleep(0.05)
             div1 = 'div[class="ui-fileupload-files"]'
@@ -153,12 +213,25 @@ class Interact(CrawJUD):
             if progress_bar is None:
                 break
 
-    def scroll_to(self, element: WebElement):
-        Action = ActionChains(self.driver)
-        Action.scroll_to_element(element)
+    def scroll_to(self, element: WebElement) -> None:
+        """
+        Scroll to a specific web element.
+
+        Args:
+            element (WebElement): The web element to scroll to.
+        """
+        action = ActionChains(self.driver)
+        action.scroll_to_element(element)
         sleep(0.5)
 
     def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
+        """
+        Select an option from a Select2 dropdown based on the search text.
+
+        Args:
+            elementSelect (str): The CSS selector of the Select2 element.
+            to_Search (str): The text to search and select.
+        """
         selector: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect))
         )
