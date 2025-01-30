@@ -45,7 +45,12 @@ class ElementsBot(CrawJUD):
     def __init__(
         self,
     ) -> None:
-        """"""
+        """
+        Initialize the ElementsBot instance.
+
+        This method initializes the ElementsBot instance by calling the __init__ method of the CrawJUD class.
+        """
+        super().__init__()
 
     def Config(self) -> Self:
         """

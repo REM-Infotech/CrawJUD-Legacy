@@ -1,3 +1,12 @@
+"""
+Utility module for CrawJUD-Bots, providing various classes and functions.
+
+for authentication, driving browsers, interacting with elements, and more.
+
+Classes:
+    OtherUtils: Provides utility methods for data processing and interaction.
+"""
+
 import os
 import re
 import ssl
@@ -26,40 +35,69 @@ from .PrintLogs import PrintBot
 from .search import SearchBot
 
 __all__ = [
-    AuthBot,
-    MakeXlsx,
-    ElementsBot,
-    Interact,
-    DriverBot,
-    SearchBot,
-    PrintBot,
-    ELAW_AME,
-    ESAJ_AM,
-    PJE_AM,
-    PROJUDI_AM,
+    "AuthBot",
+    "MakeXlsx",
+    "ElementsBot",
+    "Interact",
+    "DriverBot",
+    "SearchBot",
+    "PrintBot",
+    "ELAW_AME",
+    "ESAJ_AM",
+    "PJE_AM",
+    "PROJUDI_AM",
 ]
 
 TypeData = Union[
-    List[Dict[str, str | Numbers | datetime]], Dict[str, str | Numbers | datetime]
+    List[Dict[str, Union[str, Numbers, datetime]]],
+    Dict[str, Union[str, Numbers, datetime]],
 ]
 
 
 class OtherUtils(CrawJUD):
-    def __init__(
-        self,
-    ) -> None:
-        """"""
+    """
+    Provides utility methods for data processing and interaction within CrawJUD-Bots.
+
+    Methods:
+        nomes_colunas() -> List[str]
+        elaw_data() -> Dict[str, str]
+        cities_Amazonas() -> Dict[str, str]
+        dataFrame() -> List[Dict[str, str]]
+        elawFormats(data: Dict[str, str]) -> Dict[str, str]
+        calc_time() -> List[int]
+        append_moves() -> None
+        append_success(data: TypeData, message: str = None, fileN: str = None) -> None
+        append_error(data: Dict[str, str] = None) -> None
+        append_validarcampos(data: List[Dict[str, str]]) -> None
+        count_doc(doc: str) -> Union[str, None]
+        get_recent(folder: str) -> Union[str, None]
+        format_String(string: str) -> str
+        normalizar_nome(word: str) -> str
+        similaridade(word1: str, word2: str) -> float
+        finalize_execution() -> None
+        install_cert() -> None
+        group_date_all(data: Dict[str, Dict[str, str]]) -> List[Dict[str, str]]
+        group_keys(data: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]
+        gpt_chat(text_mov: str) -> str
+        text_is_a_date(text: str) -> bool
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the OtherUtils instance.
+
+        Sets up necessary attributes and configurations for utility operations.
+        """
+        super().__init__()
+        # Initialize any additional attributes here
 
     @property
     def nomes_colunas(self) -> List[str]:
         """
         Retrieve a list of column names.
 
-        This method returns a list of strings representing the names of various columns
-        used in the application. The columns cover a wide range of data fields such as
-        names, identification numbers, dates, values, and other relevant information.
         Returns:
-            List[str]: A list of column names.
+            List[str]: A list of column names used in the application.
         """
         all_fields = [
             "NOME_PARTE",
@@ -181,34 +219,7 @@ class OtherUtils(CrawJUD):
         Generate a dictionary with keys related to legal case information and empty string values.
 
         Returns:
-            Dict[str, str]: A dictionary containing the following keys with empty string values:
-                - "NUMERO_PROCESSO": Case number
-                - "AREA_DIREITO": Area of law
-                - "SUBAREA_DIREITO": Subarea of law
-                - "ESTADO": State
-                - "COMARCA": District
-                - "FORO": Forum
-                - "VARA": Court
-                - "DATA_DISTRIBUICAO": Distribution date
-                - "PARTE_CONTRARIA": Opposing party
-                - "TIPO_PARTE_CONTRARIA": Type of opposing party
-                - "DOC_PARTE_CONTRARIA": Document of opposing party
-                - "EMPRESA": Company
-                - "TIPO_EMPRESA": Type of company
-                - "DOC_EMPRESA": Document of company
-                - "UNIDADE_CONSUMIDORA": Consumer unit
-                - "CAPITAL_INTERIOR": Capital interior
-                - "DIVISAO": Division
-                - "ACAO": Action
-                - "DATA_CITACAO": Citation date
-                - "OBJETO": Object
-                - "PROVIMENTO": Provision
-                - "ADVOGADO_INTERNO": Internal lawyer
-                - "ADV_PARTE_CONTRARIA": Opposing party lawyer
-                - "FATO_GERADOR": Generating fact
-                - "ESCRITORIO_EXTERNO": External office
-                - "VALOR_CAUSA": Cause value
-                - "FASE": Phase
+            Dict[str, str]: A dictionary containing keys for legal case details with empty string values.
         """
         return {
             "NUMERO_PROCESSO": "",
@@ -241,13 +252,12 @@ class OtherUtils(CrawJUD):
         }
 
     @property
-    def cities_Amazonas(self) -> dict[str, str]:
+    def cities_Amazonas(self) -> Dict[str, str]:
         """
         Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
 
         Returns:
-            dict[str, str]: A dictionary where the keys are city names and
-            the values are either "Capital" or "Interior".
+            Dict[str, str]: A dictionary where the keys are city names and the values are their categories.
         """
         return {
             "Alvarães": "Interior",
@@ -314,16 +324,16 @@ class OtherUtils(CrawJUD):
             "Urucurituba": "Interior",
         }
 
-    def dataFrame(self) -> list[dict[str, str]]:
-        """Convert an Excel file to a list of dictionaries with formatted data.
+    def dataFrame(self) -> List[Dict[str, str]]:
+        """
+        Convert an Excel file to a list of dictionaries with formatted data.
 
-        His method reads an Excel file specified by the instance's path arguments,
-        processes the data by formatting dates and floats, and returns the data as
-        a list of dictionaries.
+        Reads an Excel file, processes the data by formatting dates and floats,
+        and returns the data as a list of dictionaries.
 
-        Return:
-            list[dict[str, str]]: A list of dictionaries where each dictionary
-            represents a row in the Excel file with formatted data.
+        Returns:
+            List[Dict[str, str]]: A list of dictionaries representing each row in the Excel file.
+
         Raises:
             FileNotFoundError: If the specified Excel file does not exist.
             ValueError: If there is an issue reading the Excel file.
@@ -333,16 +343,16 @@ class OtherUtils(CrawJUD):
         df = pd.read_excel(input_file)
         df.columns = df.columns.str.upper()
 
-        for col in df.columns.to_list():
+        for col in df.columns:
             df[col] = df[col].apply(
                 lambda x: (
                     x.strftime("%d/%m/%Y")
-                    if type(x) is datetime or type(x) is Timestamp
+                    if isinstance(x, (datetime, Timestamp))
                     else x
                 )
             )
 
-        for col in df.select_dtypes(include=["float"]).columns.to_list():
+        for col in df.select_dtypes(include=["float"]).columns:
             df[col] = df[col].apply(lambda x: "{:.2f}".format(x).replace(".", ","))
 
         vars_df = []
@@ -351,19 +361,21 @@ class OtherUtils(CrawJUD):
         for item in df_dicted:
             for key, value in item.items():
                 if str(value) == "nan":
-                    item.update({key: None})
-
+                    item[key] = None
             vars_df.append(item)
 
         return vars_df
 
-    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:
-        """Format the given data dictionary according to specific rules.
+    def elawFormats(self, data: Dict[str, str]) -> Dict[str, str]:
+        """
+        Format the given data dictionary according to specific rules.
 
         Args:
-            data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
+            data (Dict[str, str]): A dictionary containing key-value pairs to be formatted.
+
         Returns:
-            dict[str, str]: The formatted dictionary.
+            Dict[str, str]: The formatted dictionary.
+
         Rules:
             - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
             - If the key is "COMARCA", update "CAPITAL_INTERIOR" based on the value using the cities_Amazonas method.
@@ -381,107 +393,98 @@ class OtherUtils(CrawJUD):
                 data.pop(key)
 
             if key.upper() == "TIPO_EMPRESA":
-                data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
+                data["TIPO_PARTE_CONTRARIA"] = "Autor"
                 if value.upper() == "RÉU":
-                    data.update({"TIPO_PARTE_CONTRARIA": "Autor"})
+                    data["TIPO_PARTE_CONTRARIA"] = "Autor"
 
             elif key.upper() == "COMARCA":
-                set_locale = self.cities_Amazonas.get(value, None)
-                if not set_locale:
-                    set_locale = "Outro Estado"
-
-                data.update({"CAPITAL_INTERIOR": set_locale})
+                set_locale = self.cities_Amazonas.get(value, "Outro Estado")
+                data["CAPITAL_INTERIOR"] = set_locale
 
             elif key == "DATA_LIMITE" and not data.get("DATA_INICIO"):
-                data.update({"DATA_INICIO": value})
+                data["DATA_INICIO"] = value
 
-            elif type(value) is int or type(value) is float:
-                data.update({key: "{:.2f}".format(value).replace(".", ",")})
+            elif isinstance(value, (int, float)):
+                data[key] = "{:.2f}".format(value).replace(".", ",")
 
             elif key == "CNPJ_FAVORECIDO" and not value:
-                data.update({key: "04.812.509/0001-90"})
+                data["CNPJ_FAVORECIDO"] = "04.812.509/0001-90"
 
         return data
 
-    def calc_time(self) -> list:
+    def calc_time(self) -> List[int]:
         """
         Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
 
         Returns:
-            list: A list containing two integers:
+            List[int]: A list containing two integers:
                 - minutes (int): The number of minutes of the elapsed time.
                 - seconds (int): The number of seconds of the elapsed time.
         """
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
-        calc = execution_time / 60
-        splitcalc = str(calc).split(".")
-        minutes = int(splitcalc[0])
-        seconds = int(float(f"0.{splitcalc[1]}") * 60)
-
+        minutes = int(execution_time / 60)
+        seconds = int((execution_time - minutes * 60))
         return [minutes, seconds]
 
     def append_moves(self) -> None:
-        """Append movements to the spreadsheet if there are any movements to append.
+        """
+        Append movements to the spreadsheet if there are any movements to append.
 
-        This method checks if there are any movements stored in the `self.appends` list.
-        If there are, it iterates over each movement and calls the `self.append_success`
+        Checks if there are any movements stored in the `self.appends` list.
+        If there are, iterates over each movement and calls the `self.append_success`
         method to save the movement to the spreadsheet with a success message.
 
         Raises:
             ErroDeExecucao: If no movements are found in the `self.appends` list.
         """
-        if len(self.appends) > 0:
+        if self.appends:
             for append in self.appends:
                 self.append_success(
                     append, "Movimentação salva na planilha com sucesso!!"
                 )
-
-        elif len(self.appends) == 0:
+        else:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
     def append_success(
         self, data: TypeData, message: str = None, fileN: str = None
     ) -> None:
+        """
+        Append successful execution data to the spreadsheet.
+
+        Args:
+            data (TypeData): The data to append.
+            message (str, optional): Success message. Defaults to None.
+            fileN (str, optional): Filename to save data. Defaults to None.
+
+        Raises:
+            ValueError: If data is not in the expected format.
+        """
         if not message:
             message = "Execução do processo efetuada com sucesso!"
 
-        def save_info(data: list[dict[str, str]]) -> None:
+        def save_info(data: List[Dict[str, str]]) -> None:
             output_success = self.path
 
-            chk_not_path = output_success is None
-
-            if fileN is not None or chk_not_path:
+            if fileN or not output_success:
                 output_success = Path(self.path).parent.resolve().joinpath(fileN)
 
             if not output_success.exists():
                 df = pd.DataFrame(data)
-                df = df.to_dict(orient="records")
-
-            elif output_success.exists():
-                df = pd.read_excel(output_success)
-                df = df.to_dict(orient="records")
+            else:
+                df_existing = pd.read_excel(output_success)
+                df = df_existing.to_dict(orient="records")
                 df.extend(data)
 
             new_data = pd.DataFrame(df)
             new_data.to_excel(output_success, index=False)
 
-        typeD = type(data) is list and all(isinstance(item, dict) for item in data)
-
-        if not typeD:
-            data2 = {}
-
-            for item in self().nomes_colunas:
-                data2.update({item: ""})
-
-            for item in data:
-                for key, value in list(data2.items()):
-                    if not value:
-                        data2.update({key: item})
-                        break
-
-            data.clear()
-            data.append(data2)
+        if isinstance(data, list) and all(isinstance(item, dict) for item in data):
+            pass
+        else:
+            data = [
+                {key: item.get(key, "") for key in self.nomes_colunas} for item in data
+            ]
 
         save_info(data)
 
@@ -492,80 +495,76 @@ class OtherUtils(CrawJUD):
             self.message = message
             self.prt()
 
-    def append_error(self, data: dict[str, str] = None) -> None:
-        if not os.path.exists(self.path_erro):
-            df = pd.DataFrame(data)
-            df = df.to_dict(orient="records")
+    def append_error(self, data: Dict[str, str] = None) -> None:
+        """
+        Append error data to the error spreadsheet.
 
-        elif os.path.exists(self.path_erro):
-            df = pd.read_excel(self.path_erro)
-            df = df.to_dict(orient="records")
+        Args:
+            data (Dict[str, str], optional): The error data to append. Defaults to None.
+        """
+        if not os.path.exists(self.path_erro):
+            df = pd.DataFrame([data])
+        else:
+            df_existing = pd.read_excel(self.path_erro)
+            df = df_existing.to_dict(orient="records")
             df.extend([data])
 
         new_data = pd.DataFrame(df)
         new_data.to_excel(self.path_erro, index=False)
 
     def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
+        """
+        Append validated fields to the spreadsheet.
+
+        Args:
+            data (List[Dict[str, str]]): The validated data to append.
+        """
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
         planilha_validar = Path(self.path).parent.resolve().joinpath(nomeplanilha)
         if not os.path.exists(planilha_validar):
             df = pd.DataFrame(data)
-            df = df.to_dict(orient="records")
-
-        elif os.path.exists(planilha_validar):
-            df = pd.read_excel(planilha_validar)
-            df = df.to_dict(orient="records")
+        else:
+            df_existing = pd.read_excel(planilha_validar)
+            df = df_existing.to_dict(orient="records")
             df.extend(data)
 
         new_data = pd.DataFrame(df)
         new_data.to_excel(planilha_validar, index=False)
 
-    def count_doc(self, doc: str) -> str | None:
+    def count_doc(self, doc: str) -> Union[str, None]:
         """
         Determine the type of Brazilian document based on its length.
 
-        This function takes a string representing a Brazilian document number,
-        filters out all non-digit characters, and returns the type of document
-        based on the length of the resulting number. If the number has 11 digits,
-        it is identified as a CPF. If the number has 14 digits, it is identified
-        as a CNPJ. If the number has any other length, None is returned.
         Args:
             doc (str): The document number as a string.
+
         Returns:
-            str | None: The type of document ("cpf" or "cnpj") or None if the
-                document length is not 11 or 14 digits.
+            Union[str, None]: The type of document ("cpf" or "cnpj") or None if invalid.
         """
-        tipo_doc = None
         numero = "".join(filter(str.isdigit, doc))
-
         if len(numero) == 11:
-            tipo_doc = "cpf"
-
+            return "cpf"
         elif len(numero) == 14:
-            tipo_doc = "cnpj"
+            return "cnpj"
+        return None
 
-        return tipo_doc
-
-    def get_recent(self, folder: str) -> str | None:
+    def get_recent(self, folder: str) -> Union[str, None]:
         """
         Get the most recent PDF file from a specified folder.
 
-        This method searches the specified folder for files with a ".pdf" extension,
-        excluding any files with a ".crdownload" extension. It then returns the path
-        to the most recently created PDF file.
         Args:
             folder (str): The path to the folder to search for PDF files.
+
         Returns:
-            str | None: The path to the most recent PDF file, or None if no PDF files are found.
+            Union[str, None]: The path to the most recent PDF file, or None if none found.
         """
-        files = [os.path.join(folder, f) for f in os.listdir(folder)]
-        files = [f for f in files if os.path.isfile(f)]
-        files = list(
-            filter(
-                lambda x: ".pdf" in x.lower() and ".crdownload" not in x.lower(),
-                files,
-            )
-        )
+        files = [
+            os.path.join(folder, f)
+            for f in os.listdir(folder)
+            if os.path.isfile(os.path.join(folder, f))
+            and f.lower().endswith(".pdf")
+            and not f.lower().endswith(".crdownload")
+        ]
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
 
@@ -573,10 +572,9 @@ class OtherUtils(CrawJUD):
         """
         Format a given string to a secure filename.
 
-        This method normalizes the input string to NFKD form, removes any combining characters,
-        and then converts it to a secure filename format.
         Args:
             string (str): The input string to be formatted.
+
         Returns:
             str: The formatted string as a secure filename.
         """
@@ -591,27 +589,29 @@ class OtherUtils(CrawJUD):
         )
 
     def normalizar_nome(self, word: str) -> str:
-        """Return a normalized version of the given word.
+        """
+        Return a normalized version of the given word.
 
-        Removes spaces, replaces "_" and "-" with nothing, and converts to lowercase
+        Removes spaces, replaces "_" and "-" with nothing, and converts to lowercase.
 
         Args:
-            word (str): word to be normalized
+            word (str): The word to be normalized.
 
-        Return:
-            str: normalized name
+        Returns:
+            str: The normalized name.
         """
         return re.sub(r"[\s_\-]", "", word).lower()
 
     def similaridade(self, word1: str, word2: str) -> float:
-        """Compare similarity between two words.
+        """
+        Compare similarity between two words.
 
         Args:
-            word1 (str): Palavra 1
-            word2 (str): Palavra 2
+            word1 (str): First word.
+            word2 (str): Second word.
 
         Returns:
-            float: porcentagem de similaridade
+            float: Percentage of similarity.
         """
         return SequenceMatcher(None, word1, word2).ratio()
 
@@ -619,25 +619,17 @@ class OtherUtils(CrawJUD):
         """
         Finalize the execution of the bot.
 
-        This method performs the following steps:
-        1. Increments the row counter.
-        2. Checks if there are any open browser windows and, if so, deletes all cookies and quits the driver.
-        3. Calculates the total execution time and converts it to minutes and seconds.
-        4. Logs the end of the execution with a success message and the total execution time.
-        Returns:
-            None
+        Performs steps to clean up and log the completion of the bot's execution.
         """
         window_handles = self.driver.window_handles
-        self.row = self.row + 1
-        if len(window_handles) > 0:
+        self.row += 1
+        if window_handles:
             self.driver.delete_all_cookies()
             self.driver.quit()
 
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
-        calc = execution_time / 60
-        minutes = int(calc)
-        seconds = int((calc - minutes) * 60)
+        minutes, seconds = divmod(int(execution_time), 60)
 
         self.end_prt("Finalizado")
 
@@ -649,36 +641,24 @@ class OtherUtils(CrawJUD):
         """
         Install a certificate if it is not already installed.
 
-        This method checks if a certificate with the subject name specified in
-        `self.name_cert` is installed in the "MY" certificate store. If the
-        certificate is not found, it imports the certificate from the specified
-        path using the `certutil` command.
-        Returns:
-            None
+        Checks for the presence of a certificate and installs it using certutil if absent.
         """
 
         def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:
-            for cert, encoding, trust in ssl.enum_certificates(store):
+            for cert, _, _ in ssl.enum_certificates(store):
                 try:
-                    # Converte o certificado em formato DER para objeto X509
                     x509_cert = x509.load_der_x509_certificate(cert, default_backend())
-
-                    # Obtém o nome do Assunto (Subject)
                     subject_name = x509_cert.subject.rfc4514_string()
-
-                    # Verifica se o nome fornecido corresponde ao do certificado
                     if crt_sbj_nm in subject_name:
                         return True
-
                 except Exception as e:
                     print(f"Erro ao processar o certificado: {e}")
-
             return False
 
         installed = CertIsInstall(self.name_cert.split(".pfx")[0])
 
-        if installed is False:
-            path_cert = str(os.path.join(self.output_dir_path, self.name_cert))
+        if not installed:
+            path_cert = os.path.join(self.output_dir_path, self.name_cert)
             comando = [
                 "certutil",
                 "-importpfx",
@@ -690,7 +670,6 @@ class OtherUtils(CrawJUD):
                 path_cert,
             ]
             try:
-                # Quando você passa uma lista, você geralmente não deve usar shell=True
                 resultado = subprocess.run(
                     comando,
                     check=True,
@@ -698,70 +677,63 @@ class OtherUtils(CrawJUD):
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-
-                self.message = str(resultado.stdout)
-                self.type_log = str("log")
+                self.message = resultado.stdout
+                self.type_log = "log"
                 self.prt()
-
             except subprocess.CalledProcessError as e:
                 raise e
 
-    def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
+    def group_date_all(self, data: Dict[str, Dict[str, str]]) -> List[Dict[str, str]]:
         """
         Group date and vara information from the input data into a list of records.
 
         Args:
-            data (dict[str, dict[str, str]]): A dictionary where the keys are 'vara'
-            and the values are dictionaries with dates as keys and entries as values.
+            data (Dict[str, Dict[str, str]]): A dictionary where the keys are 'vara'
+                and the values are dictionaries with dates as keys and entries as values.
+
         Returns:
-            list[dict[str, str]]: A list of dictionaries where each dictionary
-            contains 'Data', 'Vara', and other entry information.
+            List[Dict[str, str]]: A list of dictionaries containing grouped data.
         """
         records = []
         for vara, dates in data.items():
-            record = {}
             for date, entries in dates.items():
                 for entry in entries:
-                    record.update({"Data": date, "Vara": vara})
+                    record = {"Data": date, "Vara": vara}
                     record.update(entry)
                     records.append(record)
-
         return records
 
-    def group_keys(self, data: list[dict[str, str]]) -> dict[str, str]:
+    def group_keys(self, data: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]:
         """
         Group keys from a list of dictionaries.
 
         Args:
-            data (list[dict[str, str]]): A list of dictionaries where each dictionary
-                                         contains string keys and string values.
+            data (List[Dict[str, str]]): A list of dictionaries with string keys and values.
+
         Returns:
-            dict[str, str]: A dictionary where each key is a key from the input dictionaries,
-                            and the value is another dictionary mapping the position of the
-                            original dictionary in the list to its corresponding value.
+            Dict[str, Dict[str, str]]: A dictionary grouping keys with their corresponding values.
         """
         record = {}
         for pos, entry in enumerate(data):
             for key, value in entry.items():
-                if not record.get(key):
-                    record.update({key: {}})
-
-                record.get(key).update({str(pos): value})
+                if key not in record:
+                    record[key] = {}
+                record[key][str(pos)] = value
         return record
 
     def gpt_chat(self, text_mov: str) -> str:
-        """Analyzes a given legal document text and adjusts the response based on the type of document.
+        """
+        Analyzes a legal document text and adjusts the response based on the document type.
 
-        This method uses the OpenAI GPT model to analyze the provided text and generate a response
-        that identifies the type of legal document and extracts relevant information based on the
-        document type. The document types include sentences, initial petitions, defenses, and
-        interlocutory decisions.
+        Uses the OpenAI GPT model to analyze the provided text and generate a response
+        identifying the document type and extracting relevant information.
 
         Args:
             text_mov (str): The text of the legal document to be analyzed.
+
         Returns:
-            str: The adjusted response based on the type of document, including extracted values
-                 and summaries as specified in the system message.
+            str: The adjusted response based on the document type.
+
         Raises:
             Exception: If an error occurs during the API call or processing.
         """
@@ -789,7 +761,7 @@ class OtherUtils(CrawJUD):
                             "\n- Para decisões interlocutórias: Identifique claramente o tipo de decisão e extraia, de forma minimalista, "
                             "as obrigações ou designações impostas, como deferimento ou indeferimento de pedidos, determinações processuais, "
                             "ou outras medidas relevantes. Resuma no formato: 'Tipo de documento: Decisão interlocutória; Assunto: [Obrigações/designações principais]'."
-                            "\n- Identifique claramente o tipo de documento no início da resposta."
+                            "- Identifique claramente o tipo de documento no início da resposta."
                             "- Exemplo de comportamento esperado:\n"
                             "  - Entrada: 'Sentença: Condenou o réu a pagar R$ 10.000,00 de danos morais e R$ 5.000,00 de danos materiais.'\n"
                             "  - Saída: 'Danos morais: R$ 10.000,00; Danos materiais: R$ 5.000,00'\n"
@@ -811,7 +783,7 @@ class OtherUtils(CrawJUD):
                     },
                 ],
                 temperature=0.1,
-                max_tokens=300,  # Ajuste conforme necessário
+                max_tokens=300,
             )
 
             choices = completion.choices
@@ -819,30 +791,20 @@ class OtherUtils(CrawJUD):
             choice_message = choice.message
             text = choice_message.content
 
-            if not text:
-                text = text_mov
+            return text or text_mov
 
-            return text
         except Exception as e:
-            print(e)
             raise e
 
     def text_is_a_date(self, text: str) -> bool:
         """
         Check if the given text is in a date-like format.
 
-        This function uses a regular expression to determine if the input text
-        resembles a date format such as 'YYYY-MM-DD' or 'DD/MM/YYYY'.
         Args:
             text (str): The text to be checked.
+
         Returns:
             bool: True if the text matches a date-like pattern, False otherwise.
         """
-        # Regex para verificar se o texto pode ser uma data (opcional)
-        date_like_pattern = (
-            r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"  # Exemplo: 2023-01-08 ou 08/01/2023
-        )
-        if re.search(date_like_pattern, text):
-            return True
-        else:
-            return False
+        date_like_pattern = r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"
+        return bool(re.search(date_like_pattern, text))

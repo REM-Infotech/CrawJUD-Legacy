@@ -1,7 +1,70 @@
+"""
+Module containing configuration classes for ESAJ elements.
+"""
+
 from .properties import Configuracao
 
 
 class ESAJ_AM(Configuracao):
+    """
+    Configuration class for ESAJ automation module.
+
+    Attributes:
+        get_page_custas_pagas (str): CSS selector for the 'Custas Pagas' button.
+        consultaproc_grau1 (str): URL for first-degree process consultation.
+        consultaproc_grau2 (str): URL for second-degree process consultation.
+        url_login (str): URL for the login page.
+        url_login_cert (str): URL for the certificate-based login page.
+        campo_username (str): CSS selector for the username input field.
+        campo_passwd (str): CSS selector for the password input field.
+        btn_entrar (str): CSS selector for the login button.
+        chk_login (str): CSS selector to verify successful login.
+        url_busca (str): URL for search functionality.
+        btn_busca (str): CSS selector for the search button.
+        acao (str): CSS selector for the action span.
+        vara_processual (str): CSS selector for the process court span.
+        area_selecao (str): ID for the main parts table.
+        id_valor (str): ID for the action value.
+        data_processual (str): ID for the distribution date and time.
+        classe_processual (str): XPath selector for the process class.
+        sumary_header_1 (str): CSS selector for the first summary header.
+        rows_sumary_ (str): CSS selector for summary rows.
+        sumary_header_2 (str): CSS selector for the second summary header.
+        selecao_processual (str): XPath selector for process selection.
+        orgao_processual (str): XPath selector for the judicial body of the process.
+        status_processual (str): CSS selector for the process status.
+        relator (str): XPath selector for the process reporter.
+        nome_foro (str): CSS selector for the forum name input.
+        tree_selection (str): CSS selector for the class selection tree input.
+        civil_selector (str): CSS selector for the civil area selector.
+        valor_acao (str): CSS selector for the action value input.
+        botao_avancar (str): CSS selector for the advance button.
+        interessado (str): CSS selector for the interested party input.
+        check (str): CSS selector for checkboxes.
+        botao_avancar_dois (str): CSS selector for the second advance button.
+        boleto (str): CSS selector for the boleto link.
+        mensagem_retorno (str): CSS selector for the return message.
+        movimentacoes (str): CSS selector for all movements table body.
+        ultimas_movimentacoes (str): CSS selector for the latest movements table.
+        editar_classificacao (str): CSS selector for the classification edit button.
+        selecionar_classe (str): CSS selector for the intermediate class selection container.
+        toggle (str): CSS selector for the toggle button.
+        input_classe (str): CSS selector for the intermediate class input.
+        select_categoria (str): CSS selector for the category selection container.
+        input_categoria (str): CSS selector for the category input.
+        selecionar_grupo (str): XPath selector for selecting a group.
+        input_documento (str): CSS selector for the document input file.
+        documento (str): XPath selector for the document button.
+        processo_view (str): CSS selector for the process view container.
+        nome (str): CSS selector for the party name span.
+        botao_incluir_peticao (str): CSS selector for the petition inclusion button.
+        botao_incluir_partecontraria (str): CSS selector for the opposing party inclusion button.
+        parte_view (str): CSS selector for the party view container.
+        botao_protocolar (str): XPath selector for the protocol button.
+        botao_confirmar (str): CSS selector for the confirm button in popover content.
+        botao_recibo (str): CSS selector for the receipt consultation button.
+    """
+
     get_page_custas_pagas = 'button[class="btn btn-secondary btn-space linkConsultaSG"]'
 
     consultaproc_grau1 = "https://consultasaj.tjam.jus.br/cpopg/open.do"
@@ -26,13 +89,6 @@ class ESAJ_AM(Configuracao):
 
     sumary_header_1 = 'div[class="unj-entity-header__summary"] > div[class="container"] > div[class="row"]'
     rows_sumary_ = 'div[class^="col-"]'
-
-    numproc = "unj-larger-1"
-    statusproc = "unj-tag"
-
-    nameitemsumary = "unj-label"
-    valueitemsumary = "line-clamp__2"
-    rows_sumary_
 
     sumary_header_2 = "div#maisDetalhes > div.row"
 
