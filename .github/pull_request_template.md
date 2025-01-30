@@ -1,6 +1,9 @@
 ## Description
 
-...
+<!--
+Copilot: Caso seja iniciado uma pull request, utilize esse template e insira o texto gerado aqui dentro.
+Copilot: Em uma pull request com o texto que foi solicitado, Preciso que o texto detalhe os commits e suas mensagens.
+-->
 
 ## Tasks
 

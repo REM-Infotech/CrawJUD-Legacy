@@ -20,12 +20,6 @@ repos:
 
       - id: ruff-format
 
-  - repo: "https://github.com/PyCQA/flake8"
-    rev: "7.0.0"
-    hooks:
-      - id: "flake8"
-        entry: pflake8
-        additional_dependencies: ["pyproject-flake8", "flake8-docstrings"]
   # bandit linter
   - repo: "https://github.com/PyCQA/bandit"
     rev: "1.8.2"
@@ -46,3 +40,10 @@ repos:
           - "-f"
           - "html"
         additional_dependencies: ["bandit[toml]"]
+
+  - repo: "https://github.com/PyCQA/flake8"
+    rev: "7.0.0"
+    hooks:
+      - id: "flake8"
+        entry: pflake8
+        additional_dependencies: ["pyproject-flake8", "flake8-docstrings"]
