@@ -55,6 +55,8 @@
 
 #### Comando de instalação de instalação
 
+> Para instalar todas as dependências de desenvolvimento, usar o seguinte comando:
+
 ```bash
 poetry install --with dev
 ```
@@ -65,29 +67,36 @@ poetry install --with dev
 poetry add <_nome_da_biblioteca_> --group dev
 ```
 
-- [pre-commit](https://pre-commit.com/) _Checagem de código antes do commit_
-  > Obs.: Essa biblioteca evita a necessidade de execução manual dos que tiverem com `*` no nome usando o seguinte comando:
+#### Bibliotecas:
 
-```bash
-pre-commit run --all-files
-```
+- [`pre-commit`](https://pre-commit.com/) _Checagem de código antes do commit_
 
-- [isort](https://pycqa.github.io/isort/) _Formatação de imports_
-- [Black](https://black.readthedocs.io/en/stable/) _Formatação de código_
-- [Ruff](https://beta.ruff.rs/docs/) _Checagem de código_
-- [Mypy](https://mypy.readthedocs.io/en/stable/) _Checagem de tipos_
-- [debugpy](https://github.com/microsoft/debugpy) _Depuração remota_
+  > Obs.: Essa biblioteca evita a necessidade de execução manual das bibliotecas com `*`.<br>
+  > Comando para execução:
 
-##### Pytest
+  ```bash
+  pre-commit run --all-files
+  ```
 
-- [pytest](https://docs.pytest.org/en/stable/) _Testes unitários_
-- [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/) _Cobertura de testes_
-- [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) _Mocking de objetos_
+- [`yamllint`](https://yamllint.readthedocs.io/en/stable/) _Checagem de arquivos YAML_
+- [`isort*`](https://pycqa.github.io/isort/) _Formatação de imports_
+- [`Black*`](https://black.readthedocs.io/en/stable/) _Formatação de código_
+- [`Ruff*`](https://beta.ruff.rs/docs/) _Checagem de código_
+- [`Mypy*`](https://mypy.readthedocs.io/en/stable/) _Checagem de tipos_
+- [`debugpy`](https://github.com/microsoft/debugpy) _Depuração remota_
 
-- [yamllint](https://yamllint.readthedocs.io/en/stable/) _Checagem de arquivos YAML_
+  > Disclaimer: Essa biblioteca é usada em conjunto com as configurações do arquivo [`launch.json`](../.vscode/launch.json)
 
-##### Flake8
+- [`Pytest`](https://docs.pytest.org/en/stable/) _Testes unitários_
 
-- [flake8](https://flake8.pycqa.org/en/latest/) _Checagem de estilo de código_
-- [flake8-docstrings](https://pypi.org/project/flake8-docstrings/) _Checagem de docstrings_
-- [pyproject-flake8](https://flake8.pycqa.org/en/latest/) _Possibilita o carregamento de configurações do arquivo [`pyproject.toml`](../pyproject.toml)_
+  > Dependências do pytest:
+
+  - [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/) _Cobertura de testes_
+  - [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) _Mocking de objetos_
+
+- [`Flake8*`](https://flake8.pycqa.org/en/latest/) _Checagem de estilo de código_
+
+  > Dependências do flake8:
+
+  - [flake8-docstrings](https://pypi.org/project/flake8-docstrings/) _Checagem de docstrings_
+  - [pyproject-flake8](https://flake8.pycqa.org/en/latest/) _Possibilita o carregamento de configurações do arquivo [`pyproject.toml`](../pyproject.toml)_
