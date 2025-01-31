@@ -1,6 +1,4 @@
-"""
-Module for sending email notifications related to CrawJUD-Bots executions.
-"""
+"""Module for sending email notifications related to CrawJUD-Bots executions."""
 
 from os import environ
 
@@ -13,7 +11,7 @@ load_dotenv()
 
 def email_start(execution: None, app: Flask) -> None:
     """
-    Sends an email notification when an execution starts.
+    Send an email notification when an execution starts.
 
     Args:
         execution (Executions): The execution instance that has started.
@@ -78,7 +76,7 @@ def email_start(execution: None, app: Flask) -> None:
 
 def email_stop(execution: None, app: Flask) -> None:
     """
-    Sends an email notification when an execution stops.
+    Send an email notification when an execution stops.
 
     Args:
         execution (Executions): The execution instance that has stopped.

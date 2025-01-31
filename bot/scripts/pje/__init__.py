@@ -1,3 +1,5 @@
+"""Provide the pje class to manage and execute the pje Bot."""
+
 from __future__ import annotations
 
 import logging
@@ -9,7 +11,10 @@ from ...common import StartError
 
 
 class pje:
+    """Represent the pje Bot environment and handle its execution."""
+
     def __init__(self, **kwrgs) -> None:
+        """Initialize the pje instance with the given keyword arguments."""
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
@@ -21,6 +26,7 @@ class pje:
 
     @property
     def Bot(self) -> Any:
+        """Return the bot instance configured for this environment."""
         rb = getattr(
             import_module(f".{self.typebot.lower()}", __package__),
             self.typebot.lower(),

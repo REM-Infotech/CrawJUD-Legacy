@@ -1,3 +1,5 @@
+"""This module manages the status of bots (Start and Stop)."""
+
 import json
 import unicodedata
 from datetime import datetime
@@ -21,6 +23,8 @@ url_cache = []
 
 
 class SetStatus:
+    """A class to manage  the status of bots (Start and Stop)."""
+
     def __init__(
         self,
         form: Dict[str, str] = {},
@@ -33,6 +37,18 @@ class SetStatus:
         status: str = "Finalizado",
         **kwargs,
     ) -> str:
+        """
+        Initialize the SetStatus instance.
+
+        :param form: Dictionary containing form data.
+        :param files: Dictionary containing file data.
+        :param id: Bot ID.
+        :param system: System name.
+        :param typebot: Type of bot.
+        :param usr: User name.
+        :param pid: Process ID.
+        :param status: Status of the bot.
+        """
         self.form = form
         self.files = files
         self.id = id
@@ -43,6 +59,12 @@ class SetStatus:
         self.status = status
 
     def format_String(self, string: str) -> str:
+        """
+        Format a string to be a secure filename.
+
+        :param string: The string to format.
+        :return: The formatted string.
+        """
         return secure_filename(
             "".join(
                 [
@@ -61,6 +83,16 @@ class SetStatus:
         pid: str = None,
         id: int = None,
     ) -> tuple[str, str]:
+        """
+        Start the bot and handle file uploads and database interactions.
+
+        :param app: Flask application instance.
+        :param db: SQLAlchemy database instance.
+        :param user: User name.
+        :param pid: Process ID.
+        :param id: Bot ID.
+        :return: Tuple containing the path to the arguments file and the bot display name.
+        """
         from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
         user = self.user if user is None else user
@@ -159,6 +191,17 @@ class SetStatus:
         system: str = None,
         typebot: str = None,
     ) -> str:
+        """
+        Stop the bot and handle file uploads and database interactions.
+
+        :param db: SQLAlchemy database instance.
+        :param app: Flask application instance.
+        :param pid: Process ID.
+        :param status: Status of the bot.
+        :param system: System name.
+        :param typebot: Type of bot.
+        :return: The name of the output file.
+        """
         from app.models import Executions
 
         try:

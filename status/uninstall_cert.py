@@ -1,6 +1,4 @@
-"""
-Module for uninstalling certificates.
-"""
+"""Module for uninstalling certificates."""
 
 import subprocess
 

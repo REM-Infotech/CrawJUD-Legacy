@@ -1,3 +1,9 @@
+"""
+This module provides functionality to create and customize Excel files.
+
+using openpyxl, based on the attributes of the CrawJUD framework.
+"""
+
 from typing import List
 
 import openpyxl
@@ -8,12 +14,22 @@ from .appends import listas
 
 
 class MakeXlsx(CrawJUD):
-    def __init__(
-        self,
-    ) -> None:
-        """"""
+    """Creates an Excel file with customized headers and styles."""
+
+    def __init__(self) -> None:
+        """Initialize the MakeXlsx class with default settings."""
 
     def make_output(self, type_xlsx: str, path_template: str) -> List[str]:
+        """
+        Build and save a new Excel file at the given path with various headers.
+
+        Args:
+            type_xlsx (str): A string defining the type of Excel template.
+            path_template (str): The path to save the generated Excel file.
+
+        Returns:
+            List[str]: A list of the headers used in the created Excel file.
+        """
         lista_colunas: List[str] = getattr(
             listas(),
             f"{self.typebot}_{type_xlsx}",

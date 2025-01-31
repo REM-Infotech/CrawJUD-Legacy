@@ -1,3 +1,5 @@
+"""This module provides logging and message handling utilities for the CrawJUD project."""
+
 import logging
 import os
 import pathlib
@@ -22,12 +24,14 @@ iobot = SocketBot()
 
 
 class PrintBot(CrawJUD):
-    def __init__(
-        self,
-    ) -> None:
+    """Handles printing logs and sending log messages via SocketBot."""
+
+    def __init__(self) -> None:
+        """Initialize a new PrintBot instance."""
         """"""
 
     def print_msg(self) -> None:
+        """Print the current message and emit it to the socket."""
         log = self.message
         if self.message_error:
             log = self.message_error
@@ -61,6 +65,7 @@ class PrintBot(CrawJUD):
 
     @classmethod
     def file_log(cls, self: Self) -> None:
+        """Write log messages to a file."""
         try:
             savelog = os.path.join(
                 pathlib.Path(__file__).cwd(),
@@ -85,12 +90,14 @@ class PrintBot(CrawJUD):
             tqdm.write(f"{e}")
 
     def end_prt(self, status: str) -> None:
+        """Send a final status message."""
         data = {"pid": self.pid, "status": status}
 
         iobot.end_message(data, url_socket)
 
     @classmethod
     def socket_message(cls, self: Self, data: dict) -> None:
+        """Send a message to the socket and handle termination checks."""
         chk_type1 = "fim da execução" in self.prompt
         chk_type2 = "falha ao iniciar" in self.prompt
         message_stop = [chk_type1, chk_type2]

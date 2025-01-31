@@ -1,6 +1,4 @@
-"""
-Configuration and fixtures for CrawJUD-Bots tests.
-"""
+"""Configuration and fixtures for CrawJUD-Bots tests."""
 
 from datetime import datetime
 from pathlib import Path

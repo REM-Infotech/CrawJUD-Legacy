@@ -1,6 +1,4 @@
-"""
-This module contains utility classes for template configurations.
-"""
+"""This module contains utility classes for template configurations."""
 
 
 class listas:

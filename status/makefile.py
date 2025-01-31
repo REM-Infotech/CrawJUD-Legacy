@@ -1,6 +1,4 @@
-"""
-Module for creating ZIP archives of executions in CrawJUD-Bots.
-"""
+"""Module for creating ZIP archives of executions in CrawJUD-Bots."""
 
 import os
 import pathlib

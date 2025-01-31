@@ -1,4 +1,12 @@
+"""This module provides a dictionary of court names and their corresponding codes."""
+
+
 def varas() -> dict:
+    """
+    Return a dictionary of court names and their corresponding codes.
+
+    :return: Dictionary of court names and codes.
+    """
     return {
         "1ª Vara do Trabalho de Boa Vista": "#VTBV1-1",
         "2ª Vara do Trabalho de Boa Vista": "#VTBV2-1",

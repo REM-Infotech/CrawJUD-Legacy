@@ -1,6 +1,4 @@
-"""
-Module for server-side operations in CrawJUD-Bots.
-"""
+"""Module for server-side operations in CrawJUD-Bots."""
 
 import json
 
@@ -9,9 +7,7 @@ from celery.schedules import crontab
 
 
 class DatabaseScheduler(Scheduler):
-    """
-    Scheduler that loads task schedules from the database.
-    """
+    """Scheduler that loads task schedules from the database."""
 
     def __init__(self, *args, **kwargs):
         """

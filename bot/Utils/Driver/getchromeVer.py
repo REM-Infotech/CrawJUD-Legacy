@@ -1,3 +1,5 @@
+"""This module provides functionality to retrieve the installed version of Google Chrome."""
+
 import platform
 
 if platform.system() == "Windows":
@@ -6,8 +8,10 @@ from os import popen
 
 
 class ChromeVersion:
+    """Represent a utility for retrieving the installed Google Chrome version."""
+
     def get_chrome_version(self) -> str | None:
-        """Get the version of Google Chrome installed on the system.
+        """Return the version of Google Chrome installed on the system, or None if undetected.
 
         This method determines the operating system and retrieves the version
         of Google Chrome accordingly. For Windows, it attempts to read the
@@ -39,6 +43,14 @@ class ChromeVersion:
         return result
 
     def traverse_registry_tree(self, keypath: str) -> dict[str, str]:
+        """Return a dictionary of registry values from the given key path on Windows.
+
+        Args:
+            keypath (str): The registry key path to traverse.
+
+        Returns:
+            dict[str, str]: A dictionary containing the registry values.
+        """
         hkey = winreg.HKEY_LOCAL_MACHINE
         reg_dict = {}
         with winreg.OpenKey(hkey, keypath, 0, winreg.KEY_READ) as key:

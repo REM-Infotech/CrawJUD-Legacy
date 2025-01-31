@@ -1,6 +1,4 @@
-"""
-Module for testing the CrawJUD-Bots functionalities.
-"""
+"""Module for testing the CrawJUD-Bots functionalities."""
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy

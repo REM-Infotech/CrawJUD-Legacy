@@ -1,6 +1,4 @@
-"""
-Module for server-side operations in CrawJUD-Bots.
-"""
+"""Module for server-side operations in CrawJUD-Bots."""
 
 from typing import Dict, List
 

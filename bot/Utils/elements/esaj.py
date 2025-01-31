@@ -1,6 +1,4 @@
-"""
-Module containing configuration classes for ESAJ elements.
-"""
+"""Module containing configuration classes for ESAJ elements."""
 
 from .properties import Configuracao
 

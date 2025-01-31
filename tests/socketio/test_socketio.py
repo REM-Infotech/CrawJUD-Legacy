@@ -1,30 +1,32 @@
 """
-This module contains unit tests for the Socket.IO server using Flask-SocketIO's
+Unit tests for the Socket.IO server using Flask-SocketIO's SocketIOTestClient.
 
-SocketIOTestClient. The tests cover various functionalities such as connecting,
-disconnecting, joining rooms, sending messages, and handling different message
-types and scenarios.
+The tests cover various functionalities such as connecting, disconnecting,
+joining rooms, sending messages, and handling different message types and
+scenarios.
+
 Functions:
     test_connect(io: SocketIOTestClient):
-        Tests the connection to the Socket.IO server.
+        Test the connection to the Socket.IO server.
     test_disconnect(io: SocketIOTestClient):
-        Tests the disconnection from the Socket.IO server.
+        Test the disconnection from the Socket.IO server.
     test_leave(io: SocketIOTestClient, create_dummy_pid):
-        Tests leaving a room with a given PID.
+        Test leaving a room with a given PID.
     test_statusbot(io: SocketIOTestClient):
-        Tests the status bot functionality.
+        Test the status bot functionality.
     test_stop_bot(io: SocketIOTestClient, create_dummy_pid):
-        Tests stopping a bot with a given PID.
+        Test stopping a bot with a given PID.
     test_terminate_bot(io: SocketIOTestClient, create_dummy_pid):
-        Tests terminating a bot with and without a given PID.
+        Test terminating a bot with and without a given PID.
     test_join_and_message(io: SocketIOTestClient, create_dummy_pid):
-        Tests joining a room and sending messages with various scenarios.
+        Test joining a room and sending messages with various scenarios.
 """
 
 from flask_socketio import SocketIOTestClient
 
 
 def test_connect(io: SocketIOTestClient):
+    """Test the connection to the Socket.IO server."""
     io.emit("connect", namespace="/log")
     received = io.get_received(namespace="/log")
 
@@ -34,6 +36,7 @@ def test_connect(io: SocketIOTestClient):
 
 
 def test_disconnect(io: SocketIOTestClient):
+    """Test the disconnection from the Socket.IO server."""
     io.emit("disconnect", namespace="/log")
     received = io.get_received(namespace="/log")
 
@@ -43,6 +46,7 @@ def test_disconnect(io: SocketIOTestClient):
 
 
 def test_leave(io: SocketIOTestClient, create_dummy_pid):
+    """Test leaving a room with a given PID."""
     _, pid = create_dummy_pid
 
     io.emit("leave", {"pid": pid}, namespace="/log")
@@ -53,6 +57,7 @@ def test_leave(io: SocketIOTestClient, create_dummy_pid):
 
 
 def test_statusbot(io: SocketIOTestClient):
+    """Test the status bot functionality."""
     io.emit("statusbot", {}, namespace="/log")
     received = io.get_received(namespace="/log")
 
@@ -60,6 +65,7 @@ def test_statusbot(io: SocketIOTestClient):
 
 
 def test_stop_bot(io: SocketIOTestClient, create_dummy_pid):
+    """Test stopping a bot with a given PID."""
     _, pid = create_dummy_pid
     pid = str(pid)
 
@@ -72,6 +78,7 @@ def test_stop_bot(io: SocketIOTestClient, create_dummy_pid):
 
 
 def test_terminate_bot(io: SocketIOTestClient, create_dummy_pid):
+    """Test terminating a bot with and without a given PID."""
     _, pid = create_dummy_pid
     pid = str(pid)
 
@@ -91,7 +98,8 @@ def test_terminate_bot(io: SocketIOTestClient, create_dummy_pid):
 
 
 def test_join_and_message(io: SocketIOTestClient, create_dummy_pid) -> None:
-    """Test the join and message functionalities of a Socket.IO server.
+    """
+    Test the join and message functionalities of a Socket.IO server.
 
     This test covers the following scenarios:
     1. Joining a room without a cached PID in Redis.
@@ -104,6 +112,7 @@ def test_join_and_message(io: SocketIOTestClient, create_dummy_pid) -> None:
     Args:
         io (SocketIOTestClient): The Socket.IO test client.
         create_dummy_pid (tuple): A tuple containing a dummy user and PID.
+
     Asserts:
         All test scenarios should return the expected results.
     """

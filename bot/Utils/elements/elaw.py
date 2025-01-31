@@ -1,6 +1,4 @@
-"""
-Module containing configuration classes for ELAW elements.
-"""
+"""Module containing configuration classes for ELAW elements."""
 
 from .properties import Configuracao
 

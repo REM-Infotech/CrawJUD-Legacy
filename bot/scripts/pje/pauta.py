@@ -1,3 +1,5 @@
+"""This module fetches and processes court hearing schedules (pautas)."""
+
 import os
 import time
 from contextlib import suppress
@@ -17,11 +19,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 
 class pauta(CrawJUD):
+    """Represents the main class to retrieve hearing data (pautas)."""
+
     def __init__(self, *args, **kwrgs) -> None:
+        """Initialize the pauta class with any given arguments."""
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -33,6 +36,7 @@ class pauta(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """Run the main execution logic for retrieving pautas."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -77,6 +81,7 @@ class pauta(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """Process each vara (court branch) in the queue and fetch data about pautas."""
         try:
             self.message = (
                 f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
@@ -117,7 +122,13 @@ class pauta(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e)
 
-    def get_pautas(self, current_date: Type[datetime], vara: str):
+    def get_pautas(self, current_date: Type[datetime], vara: str) -> None:
+        """Get and parse pautas from the appropriate page.
+
+        Args:
+            current_date (datetime): The date for retrieving pautas.
+            vara (str): The vara (court branch).
+        """
         try:
             # Interage com a tabela de pautas
             self.driver.implicitly_wait(10)

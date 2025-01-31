@@ -1,6 +1,4 @@
-"""
-Module for uploading ZIP files to Google Cloud Storage (GCS).
-"""
+"""Module for uploading ZIP files to Google Cloud Storage (GCS)."""
 
 import os
 import pathlib
@@ -11,7 +9,7 @@ from app.misc import bucketGcs, storageClient
 
 def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
     """
-    Uploads a ZIP file to Google Cloud Storage.
+    Upload a ZIP file to Google Cloud Storage.
 
     Args:
         zip_file (str): The name of the ZIP file to upload.

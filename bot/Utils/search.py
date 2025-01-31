@@ -47,9 +47,7 @@ class SearchBot(CrawJUD):
         ErroDeExecucao: If an error occurs during the execution of the search.
     """
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self) -> None:
         """Initialize the SearchBot class."""
 
     def search_(self) -> bool:
@@ -81,6 +79,16 @@ class SearchBot(CrawJUD):
         return src
 
     def elaw_search(self) -> bool:
+        """
+        Perform a search for a process using the ELAW system.
+
+        This method navigates to the ELAW search page, inputs the process number,
+        and initiates the search. It handles the search results and determines
+        if the process is found.
+
+        Returns:
+            bool: True if the process is found, False otherwise.
+        """
         if self.driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
             self.driver.get("https://amazonas.elaw.com.br/processoList.elaw")
 
@@ -115,9 +123,9 @@ class SearchBot(CrawJUD):
 
         return False
 
-    def esaj_search(self) -> None:
+    def esaj_search(self) -> bool:
         """
-        Perform a search for a process based on the type of bot using the ESAJ system.
+        Perform a search for a process using the ESAJ system.
 
         This method constructs a search message based on the type of bot
         and initiates the search process by calling a system-specific search
@@ -213,7 +221,17 @@ class SearchBot(CrawJUD):
 
         return check_process is not None
 
-    def projudi_search(self) -> None:
+    def projudi_search(self) -> bool:
+        """
+        Perform a search for a process using the PROJUDI system.
+
+        This method navigates to the PROJUDI search page and initiates the search
+        based on the type of bot. It handles the search results and determines
+        if the process is found.
+
+        Returns:
+            bool: True if the process is found, False otherwise.
+        """
         self.driver.get(self.elements.url_busca)
 
         if self.typebot != "proc_parte":
@@ -226,7 +244,7 @@ class SearchBot(CrawJUD):
 
     def search_proc(self) -> bool:
         """
-        Perform a search for a process based on the type of bot using the PROJUDI system.
+        Perform a search for a process using the PROJUDI system.
 
         This method constructs a search message based on the type of bot
         and initiates the search process by calling a system-specific search
@@ -329,6 +347,16 @@ class SearchBot(CrawJUD):
         return False
 
     def search_proc_parte(self) -> bool:
+        """
+        Perform a search for a process by party name using the PROJUDI system.
+
+        This method inputs the party name and other relevant details to search
+        for the process. It handles the search results and determines if the
+        process is found.
+
+        Returns:
+            bool: True if the process is found, False otherwise.
+        """
         allprocess = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')
