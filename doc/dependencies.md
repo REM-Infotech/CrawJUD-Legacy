@@ -65,15 +65,29 @@ poetry install --with dev
 poetry add <_nome_da_biblioteca_> --group dev
 ```
 
+- [pre-commit](https://pre-commit.com/) _Checagem de código antes do commit_
+  > Obs.: Essa biblioteca evita a necessidade de execução manual dos que tiverem com `*` no nome usando o seguinte comando:
+
+```bash
+pre-commit run --all-files
+```
+
 - [isort](https://pycqa.github.io/isort/) _Formatação de imports_
 - [Black](https://black.readthedocs.io/en/stable/) _Formatação de código_
 - [Ruff](https://beta.ruff.rs/docs/) _Checagem de código_
 - [Mypy](https://mypy.readthedocs.io/en/stable/) _Checagem de tipos_
-- [pre-commit](https://pre-commit.com/) _Checagem de código antes do commit_
 - [debugpy](https://github.com/microsoft/debugpy) _Depuração remota_
+
+##### Pytest
+
 - [pytest](https://docs.pytest.org/en/stable/) _Testes unitários_
 - [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/) _Cobertura de testes_
 - [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) _Mocking de objetos_
+
 - [yamllint](https://yamllint.readthedocs.io/en/stable/) _Checagem de arquivos YAML_
-- [pyproject-flake8](https://flake8.pycqa.org/en/latest/) _Checagem de estilo de código_
+
+##### Flake8
+
+- [flake8](https://flake8.pycqa.org/en/latest/) _Checagem de estilo de código_
 - [flake8-docstrings](https://pypi.org/project/flake8-docstrings/) _Checagem de docstrings_
+- [pyproject-flake8](https://flake8.pycqa.org/en/latest/) _Possibilita o carregamento de configurações do arquivo [`pyproject.toml`](../pyproject.toml)_

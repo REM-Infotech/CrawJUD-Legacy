@@ -11,26 +11,6 @@
       "module": "app",
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
-    // {
-    //   "name": "Python: Celery Workers (Linux)",
-    //   "type": "debugpy",
-    //   "request": "launch",
-    //   "module": "celery",
-    //   "console": "integratedTerminal",
-    //   "envFile": "${workspaceFolder}/.env",
-    //   "args": [
-    //     "-A",
-    //     "app.run.app",
-    //     "worker",
-    //     "-E",
-    //     "--loglevel",
-    //     "INFO",
-    //     "-P",
-    //     "threads",
-    //     "--autoscale=50,3"
-    //   ],
-    //   "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
-    // },
     {
       "name": "Python: Celery Workers (Windows)",
       "type": "debugpy",
@@ -50,6 +30,33 @@
         "--autoscale=50,3"
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
+    },
+    {
+      "name": "Python: Run Flask app (Linux)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
+    },
+    {
+      "name": "Python: Celery Workers (Linux)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env",
+      "args": [
+        "-A",
+        "app.run.app",
+        "worker",
+        "-E",
+        "--loglevel",
+        "INFO",
+        "-P",
+        "threads",
+        "--autoscale=50,3"
+      ],
+      "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
     },
     {
       "name": "Python: Celery Beat",
