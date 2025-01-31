@@ -1,3 +1,10 @@
+"""
+Module: projudi.
+
+This module defines the projudi class, which manages the initialization and execution
+of different bot types within the CrawJUD-Bots application.
+"""
+
 from __future__ import annotations
 
 import logging
@@ -9,7 +16,23 @@ from ...common.exceptions import StartError
 
 
 class projudi:
+    """
+    The projudi class initializes and executes the specified bot based on provided configurations.
+
+    Attributes:
+        kwrgs (dict): Keyword arguments containing configuration parameters for the bot.
+    """
+
     def __init__(self, **kwrgs) -> None:
+        """
+        Initialize the projudi instance with the given keyword arguments.
+
+        Args:
+            **kwrgs: Arbitrary keyword arguments for bot configuration.
+
+        Raises:
+            StartError: If an exception occurs during bot execution.
+        """
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
@@ -21,6 +44,15 @@ class projudi:
 
     @property
     def Bot(self) -> ClassBots:
+        """
+        Get the bot instance based on the 'typebot' configuration.
+
+        Returns:
+            ClassBots: An instance of the specified bot class.
+
+        Raises:
+            AttributeError: If the specified bot type is not found.
+        """
         module_rb = import_module(f".{self.typebot.lower()}", __package__)
         rb: ClassBots = getattr(
             module_rb,

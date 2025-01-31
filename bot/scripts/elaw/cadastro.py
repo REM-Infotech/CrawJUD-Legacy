@@ -1,3 +1,10 @@
+"""
+Module: cadastro.
+
+This module defines the cadastro class, which handles registration processes
+within the CrawJUD-Bots application.
+"""
+
 import os
 import pathlib
 import time
@@ -20,7 +27,26 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 
 class cadastro(CrawJUD):
+    """
+    The cadastro class extends CrawJUD to manage registration tasks within the application.
+
+    Attributes:
+        type_doc (dict): A dictionary mapping document types to their identifiers.
+        ...existing attributes...
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the cadastro instance.
+
+        This method initializes the cadastro class by calling the base class's
+        __init__ method, setting up the bot, performing authentication, and initializing
+        the start time.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -32,6 +58,15 @@ class cadastro(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the main processing loop for registrations.
+
+        Iterates over each entry in the data frame and processes it.
+        Handles authentication and error logging.
+
+        Raises:
+            Exception: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -78,6 +113,16 @@ class cadastro(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the registration queue processing.
+
+        Refreshes the driver, extracts process information, and manages the registration
+        process using the ELAW system. Logs the steps, calculates execution time,
+        and handles potential exceptions.
+
+        Raises:
+            ErroDeExecucao: If the process is not found or extraction fails.
+        """
         try:
             self.bot_data = self.elawFormats(self.bot_data)
             search = self.search_bot()
@@ -151,6 +196,7 @@ class cadastro(CrawJUD):
         This method interacts with a web form to select the area of law specified
         in the bot data. It logs the process and handles any necessary waits and
         interactions with the web elements.
+
         Raises:
             TimeoutException: If the label area element is not found within the
                               specified wait time.
@@ -177,6 +223,13 @@ class cadastro(CrawJUD):
         self.prt()
 
     def subarea_direito(self) -> None:
+        """
+        Select the sub-area of law in the web form.
+
+        This method interacts with a web form to select the sub-area of law specified
+        in the bot data. It logs the process and handles any necessary waits and
+        interactions with the web elements.
+        """
         self.message = "Informando sub-área do direito"
         self.type_log = "log"
         self.prt()
@@ -203,6 +256,7 @@ class cadastro(CrawJUD):
 
         This method waits until the next page button is present in the DOM,
         then clicks it to navigate to the next page.
+
         Raises:
             TimeoutException: If the next page button is not found within the wait time.
         """
@@ -218,6 +272,7 @@ class cadastro(CrawJUD):
 
         This method selects the judicial sphere of the process and logs the actions performed.
         It interacts with the web elements to set the sphere and waits for the loading to complete.
+
         Returns:
             None
         """
@@ -242,6 +297,7 @@ class cadastro(CrawJUD):
         This method retrieves the state information from the bot's data, logs the action,
         selects the state in the dropdown menu using the Select2_ELAW method, waits for the
         page to load, and then logs the completion of the action.
+
         Returns:
             None
         """
@@ -273,6 +329,7 @@ class cadastro(CrawJUD):
         4. Use the Select2_ELAW method to input the comarca text.
         5. Wait for the loading indicator to disappear.
         6. Log the completion of the comarca information input.
+
         Returns:
             None
         """
@@ -302,6 +359,7 @@ class cadastro(CrawJUD):
         3. Uses the `Select2_ELAW` method to select the court jurisdiction in the web element.
         4. Waits for the loading element to disappear.
         5. Logs the completion of the action.
+
         Returns:
             None
         """
@@ -332,6 +390,7 @@ class cadastro(CrawJUD):
         3. Use the `Select2_ELAW` method to input the court information.
         4. Wait for the system to process the input.
         5. Log the completion of the action.
+
         Returns:
             None
         """
@@ -350,6 +409,18 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_proceso(self) -> None:
+        """
+        Inform the process number in the web form.
+
+        This method retrieves the process number from the bot data, inputs it into the
+        designated field, and handles any necessary interactions and waits.
+
+        Raises:
+            TimeoutException: If the process number field is not found within the wait time.
+
+        Returns:
+            None
+        """
         key = "NUMERO_PROCESSO"
         css_campo_processo = self.elements.numero_processo
 
@@ -375,6 +446,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def informa_empresa(self) -> None:
+        """
+        Inform the company associated with the process.
+
+        This method retrieves the company name from the bot data, selects the appropriate
+        input field, and inputs the company name. It includes logging of actions performed.
+
+        Returns:
+            None
+        """
         text = self.bot_data.get("EMPRESA")
         elementSelect = self.elements.empresa_input
 
@@ -397,6 +477,7 @@ class cadastro(CrawJUD):
         and uses it to interact with a specific input element on the page.
         It logs messages before and after the interaction to indicate the
         progress of the operation.
+
         Returns:
             None
         """
@@ -416,6 +497,16 @@ class cadastro(CrawJUD):
         self.prt()
 
     def parte_contraria(self) -> None:
+        """
+        Handle the opposing party information.
+
+        This method manages the input and processing of opposing party details.
+        It interacts with the relevant web elements and ensures the data is correctly
+        entered and processed.
+
+        Returns:
+            None
+        """
         self.message = "Preechendo informações da parte contrária"
         self.type_log = "log"
         self.prt()
@@ -490,6 +581,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def uf_proc(self) -> None:
+        """
+        Inform the federal unit (state) of the process.
+
+        This method selects the appropriate state from the dropdown menu based on
+        the bot data and logs the action performed.
+
+        Returns:
+            None
+        """
         get_div_select_locale: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.css_div_select_opt)
@@ -515,6 +615,15 @@ class cadastro(CrawJUD):
             self.interact.send_key(other_location, Keys.ENTER)
 
     def acao_proc(self) -> None:
+        """
+        Inform the action of the process.
+
+        This method selects the appropriate action type for the process from the
+        dropdown menu based on the bot data and logs the action performed.
+
+        Returns:
+            None
+        """
         self.message = "Informando ação do processo"
         self.type_log = "log"
         self.prt()
@@ -545,6 +654,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def data_distribuicao(self) -> None:
+        """
+        Inform the distribution date of the process.
+
+        This method inputs the distribution date into the designated field and logs
+        the action performed.
+
+        Returns:
+            None
+        """
         self.interact.sleep_load('div[id="j_id_3x"]')
         self.message = "Informando data de distribuição"
         self.type_log = "log"
@@ -571,6 +689,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def advogado_responsavel(self) -> None:
+        """
+        Inform the responsible lawyer for the process.
+
+        This method retrieves the lawyer's information from the bot data, inputs it
+        into the designated field, and logs the action performed.
+
+        Returns:
+            None
+        """
         self.message = "informando advogado interno"
         self.type_log = "log"
         self.prt()
@@ -631,6 +758,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def adv_parte_contraria(self) -> None:
+        """
+        Inform the lawyer for the opposing party.
+
+        This method retrieves the opposing party's lawyer information from the bot data,
+        inputs it into the designated field, and logs the action performed.
+
+        Returns:
+            None
+        """
         self.message = "Informando Adv. Parte contrária"
         self.type_log = "log"
         self.prt()
@@ -685,6 +821,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def info_valor_causa(self) -> None:
+        """
+        Inform the value of the cause.
+
+        This method retrieves the cause value from the bot data, inputs it into the
+        designated field, and logs the action performed.
+
+        Returns:
+            None
+        """
         self.message = "Informando valor da causa"
         self.type_log = "log"
         self.prt()
@@ -712,6 +857,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def escritorio_externo(self) -> None:
+        """
+        Inform the external office involved in the process.
+
+        This method retrieves the external office information from the bot data,
+        inputs it into the designated field, and logs the action performed.
+
+        Returns:
+            None
+        """
         self.message = "Informando Escritório Externo"
         self.type_log = "log"
         self.prt()
@@ -734,6 +888,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def tipo_contingencia(self) -> None:
+        """
+        Inform the type of contingency for the process.
+
+        This method selects the appropriate contingency type from the dropdown menu
+        based on the bot data and logs the action performed.
+
+        Returns:
+            None
+        """
         self.message = "Informando contingenciamento"
         self.type_log = "log"
         self.prt()
@@ -761,6 +924,15 @@ class cadastro(CrawJUD):
         self.prt()
 
     def cad_adv(self) -> None:
+        """
+        Register the lawyer information.
+
+        This method handles the registration of lawyer details by interacting with
+        the relevant web elements and logging the actions performed.
+
+        Returns:
+            None
+        """
         try:
             self.message = "Cadastrando advogado"
             self.type_log = "log"
@@ -850,6 +1022,15 @@ class cadastro(CrawJUD):
             raise ErroDeExecucao("Não foi possível cadastrar advogado", e)
 
     def cad_parte(self) -> None:
+        """
+        Register the party information.
+
+        This method handles the registration of party details by interacting with
+        the relevant web elements and logging the actions performed.
+
+        Returns:
+            None
+        """
         try:
             self.message = "Cadastrando parte"
             self.type_log = "log"
@@ -978,6 +1159,15 @@ class cadastro(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def salvar_tudo(self) -> None:
+        """
+        Save all entered information.
+
+        This method clicks the save button to persist all entered data and logs the
+        action performed.
+
+        Returns:
+            None
+        """
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
             EC.presence_of_element_located(
@@ -993,6 +1183,16 @@ class cadastro(CrawJUD):
         salvartudo.click()
 
     def print_comprovante(self) -> None:
+        """
+        Print the receipt of the registration.
+
+        This method handles the printing of the registration receipt by interacting
+        with the relevant web elements, taking a screenshot, and logging the actions
+        performed.
+
+        Returns:
+            None
+        """
         name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
         savecomprovante = os.path.join(
             pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
@@ -1003,6 +1203,18 @@ class cadastro(CrawJUD):
         )
 
     def check_part_found(self, driver) -> str | None:
+        """
+        Check if the opposing party is found.
+
+        This method verifies the presence of the opposing party in the process.
+        It interacts with the web elements to perform the check and returns the result.
+
+        Args:
+            driver: The WebDriver instance.
+
+        Returns:
+            str | None: The status of the opposing party search.
+        """
         name_parte = ""
         with suppress(NoSuchElementException):
             name_parte = (
@@ -1017,6 +1229,19 @@ class cadastro(CrawJUD):
         return None
 
     def confirm_save(self) -> bool:
+        """
+        Confirm the saving of information.
+
+        This method verifies that all information has been successfully saved
+        by checking the URL and interacting with web elements as needed.
+        Logs the action performed.
+
+        Returns:
+            bool: True if the save is confirmed, False otherwise.
+
+        Raises:
+            ErroDeExecucao: If the save confirmation fails.
+        """
         wait_confirm_save = None
 
         with suppress(TimeoutException):

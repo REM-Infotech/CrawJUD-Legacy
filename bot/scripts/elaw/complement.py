@@ -4,7 +4,6 @@ Module for "Complemento de Cadastro".
 Classes:
     complement: A class that configures and retrieves an elements bot instance
     and interacts with the ELAW system to complete the registration of a process.
-
 """
 
 import os
@@ -50,6 +49,12 @@ campos_validar: List[str] = [
 
 
 class complement(CrawJUD):
+    """
+    A class that configures and retrieves an elements bot instance.
+
+    and interacts with the ELAW system to complete the registration of a process.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
         """
         Initialize the complement class.
@@ -152,17 +157,18 @@ class complement(CrawJUD):
         Steps:
         1. Check the search status and format bot data.
         2. If the search is successful:
-        - Initialize the registration complement.
-        - Locate and click the edit button for complementing processes.
-        - Iterate over the bot data to perform specific actions based on keys.
-        - Validate fields and participants.
-        - Save all changes and confirm the save operation.
-        - Log the success message and execution time.
+           - Initialize the registration complement.
+           - Locate and click the edit button for complementing processes.
+           - Iterate over the bot data to perform specific actions based on keys.
+           - Validate fields and participants.
+           - Save all changes and confirm the save operation.
+           - Log the success message and execution time.
         3. If the search is not successful, raise an error.
         4. Handle any exceptions by raising `ErroDeExecucao`.
 
-        Returns:
-            None
+        Returns
+        -------
+        None
         """
         try:
             search = self.search_bot()
@@ -196,12 +202,9 @@ class complement(CrawJUD):
                         complement.esfera(self, esfera_xls)
 
                 for item in lista1:
-                    # check_column = self.bot_data.get(item.upper())
-
-                    # if check_column:
                     func: Callable[[], None] = getattr(complement, item.lower(), None)
 
-                    if func and item.lower() != "ESFERA":
+                    if func and item.lower() != "esfera":
                         func(self)
 
                 end_time = time.perf_counter()
@@ -243,6 +246,16 @@ class complement(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def save_all(self) -> None:
+        """
+        Save all changes in the process.
+
+        This method interacts with the web elements to save all changes made
+        to the process. It logs the action and clicks the save button.
+
+        Returns
+        -------
+        None
+        """
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
             EC.presence_of_element_located(
@@ -255,36 +268,20 @@ class complement(CrawJUD):
         salvartudo.click()
 
     def validar_campos(self) -> None:
+        """
+        Validate the required fields.
+
+        This method checks each required field in the process to ensure
+        they are properly filled. It logs the validation steps and raises
+        an error if any required field is missing.
+
+        Returns
+        -------
+        None
+        """
         self.message = "Validando campos"
         self.type_log = "log"
         self.prt()
-
-        # message_campo: List[str] = []
-
-        # for campo in campos_obrigatorios:
-        #     try:
-
-        #         campo_validar = self.elements.dict_campos_validar.get(campo)
-        #         command = f"return $('{campo_validar}').text()"
-        #         element = self.driver.execute_script(command)
-
-        #         if not element or element.lower() == "selecione":
-        #             raise ErroDeExecucao(message=f"Campo {campo} não preenchido")
-
-        #         message_campo.append(
-        #             f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
-        #         )
-
-        #     except Exception as e:
-        #         raise ErroDeExecucao(e=e)
-
-        # sleep(0.5)
-
-        # message_campo.append('<p class="fw-bold">Campos obrigatórios validados!</p>')
-
-        # self.message = "".join(message_campo)
-        # self.type_log = "log"
-        # self.prt()
 
         validar: Dict[str, str] = {
             "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")
@@ -299,9 +296,6 @@ class complement(CrawJUD):
 
                 if not element or element.lower() == "selecione":
                     raise ErroDeExecucao(message=f'Campo "{campo}" não preenchido')
-                    # self.message = f'Campo "{campo}" não preenchido'
-                    # self.type_log = "info"
-                    # self.prt()
 
                 message_campo.append(
                     f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
@@ -312,7 +306,7 @@ class complement(CrawJUD):
                 try:
                     message = e.message
 
-                except Exception as e:
+                except Exception:
                     message = str(e)
 
                 validar.update({campo.upper(): message})
@@ -328,6 +322,18 @@ class complement(CrawJUD):
         self.prt()
 
     def validar_advogado(self) -> str:
+        """
+        Validate the responsible lawyer.
+
+        This method ensures that the responsible lawyer field is filled and
+        properly selected. It logs the validation steps and raises an error
+        if the field is not properly filled.
+
+        Returns
+        -------
+        str
+            The name of the responsible lawyer.
+        """
         self.message = "Validando advogado responsável"
         self.type_log = "log"
         self.prt()
@@ -348,6 +354,17 @@ class complement(CrawJUD):
         return element
 
     def validar_advs_participantes(self) -> None:
+        """
+        Validate participating lawyers.
+
+        This method ensures that the responsible lawyer is present in the
+        list of participating lawyers. It logs the validation steps and
+        raises an error if the responsible lawyer is not found.
+
+        Returns
+        -------
+        None
+        """
         data_bot = self.bot_data
         adv_name = data_bot.get("ADVOGADO_INTERNO", self.validar_advogado())
 
@@ -385,6 +402,18 @@ class complement(CrawJUD):
         self.prt()
 
     def confirm_save(self) -> bool:
+        """
+        Confirm the save operation.
+
+        This method checks if the process was successfully saved by verifying
+        the URL or checking for error messages. It logs the outcome and raises
+        an error if the save was not successful.
+
+        Returns
+        -------
+        bool
+            True if the save was successful, False otherwise.
+        """
         wait_confirm_save = None
 
         with suppress(TimeoutException):
@@ -414,19 +443,18 @@ class complement(CrawJUD):
 
             raise ErroDeExecucao(ErroElaw)
 
-        # elif not wait_confirm_save:
-        #     div_messageerro_css = 'div[id="messages"]'
-        #     try:
-        #         message: WebElement = self.wait.until(EC.presence_of_element_located(
-        #             (By.CSS_SELECTOR, div_messageerro_css))).find_element(By.TAG_NAME, "ul").text
-
-        #         raise ErroDeExecucao(self.message)
-
-        #     except Exception as e:
-        #         self.message = "Processo Não cadastrado"
-        #         raise ErroDeExecucao(self.message)
-
     def print_comprovante(self) -> str:
+        """
+        Print the comprovante (receipt) of the registration.
+
+        This method captures a screenshot of the process and saves it
+        as a comprovante file.
+
+        Returns
+        -------
+        str
+            The name of the comprovante file.
+        """
         name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
         savecomprovante = os.path.join(
             pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
@@ -436,6 +464,21 @@ class complement(CrawJUD):
 
     @classmethod
     def advogado_interno(cls, self: Self) -> None:
+        """
+        Inform the internal lawyer.
+
+        This method inputs the internal lawyer information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
+        """
         self.message = "informando advogado interno"
         self.type_log = "log"
         self.prt()
@@ -507,8 +550,17 @@ class complement(CrawJUD):
         4. Calls the Select2_ELAW method to select the element.
         5. Waits for the loading of the specified div element.
         6. Logs the message "Esfera Informada!".
-        Returns:
-            None
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+        text : str, optional
+            The text to set for the judicial sphere, by default "Judicial".
+
+        Returns
+        -------
+        None
         """
         elementSelect = self.elements.css_esfera_judge
 
@@ -531,10 +583,15 @@ class complement(CrawJUD):
         This method retrieves the state information from `self.bot_data` using the key "ESTADO",
         logs the action, and updates the state input field in the system using the `Select2_ELAW` method.
         It then waits for the system to load the changes.
-        Args:
-            self (Self): An instance of the class containing the method.
-        Returns:
-            None
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         key = "ESTADO"
         elementSelect = self.elements.estado_input
@@ -559,8 +616,15 @@ class complement(CrawJUD):
         This method retrieves the comarca information from the bot data,
         selects the appropriate input element, and interacts with the
         interface to input the comarca information.
-        Args:
-            self (Self): The instance of the class containing bot data and elements.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         text = str(self.bot_data.get("COMARCA"))
         elementSelect = self.elements.comarca_input
@@ -585,10 +649,15 @@ class complement(CrawJUD):
         forum information retrieved from `self.bot_data`. It logs the actions performed
         and interacts with the necessary elements on the page to ensure the forum information
         is correctly updated.
-        Args:
-            self (Self): The instance of the class calling this method.
-        Returns:
-            None
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         elementSelect = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
@@ -612,10 +681,15 @@ class complement(CrawJUD):
         This method retrieves the "VARA" data from the bot's data, selects the appropriate
         input element for "vara", and interacts with the ELAW system to update the information.
         It logs messages before and after the interaction to indicate the status of the operation.
-        Args:
-            self (Self): The instance of the class containing bot data and elements.
-        Returns:
-            None
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         text = self.bot_data.get("VARA")
         elementSelect = self.elements.vara_input
@@ -643,15 +717,15 @@ class complement(CrawJUD):
         4. Clears any existing text in the input field.
         5. Sends the consumer unit data to the input field.
         6. Logs the completion of the process.
-        Attributes:
-            self.message (str): Message to be logged.
-            self.type_log (str): Type of log to be recorded.
-            self.elements.css_input_uc (str): CSS selector for the consumer unit input field.
-            self.bot_data (dict): Dictionary containing the consumer unit data.
-            self.prt(): Method to print/log messages.
-            self.wait.until(): Method to wait until a condition is met.
-            self.interact.clear(): Method to clear the input field.
-            self.interact.send_key(): Method to send keys to the input field.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         self.message = "Informando unidade consumidora"
         self.type_log = "log"
@@ -673,7 +747,22 @@ class complement(CrawJUD):
         self.prt()
 
     @classmethod
-    def bairro(cls, self: Self):
+    def bairro(cls, self: Self) -> None:
+        """
+        Inform the neighborhood in the process.
+
+        This method inputs the neighborhood information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
+        """
         self.message = "Informando bairro"
         self.type_log = "log"
         self.prt()
@@ -699,6 +788,21 @@ class complement(CrawJUD):
 
     @classmethod
     def divisao(cls, self: Self) -> None:
+        """
+        Inform the division of the process.
+
+        This method inputs the division information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
+        """
         self.message = "Informando divisão"
         self.type_log = "log"
         self.prt()
@@ -717,22 +821,18 @@ class complement(CrawJUD):
     @classmethod
     def data_citacao(cls, self: Self) -> None:
         """
-        Handle the process of informing the citation date in the web application.
+        Inform the citation date in the process.
 
-        This method performs the following steps:
-        1. Logs the start of the citation date input process.
-        2. Waits for the citation date input field to be present in the DOM.
-        3. Clears any existing value in the citation date input field.
-        4. Waits for a specific element to ensure the page is loaded.
-        5. Sends the citation date value to the input field.
-        6. Waits for 2 seconds to ensure the input is processed.
-        7. Triggers a blur event on the citation date input field to simulate user interaction.
-        8. Waits for a specific element to ensure the page is loaded.
-        9. Logs the completion of the citation date input process.
-        Args:
-            self (Self): The instance of the class containing this method.
-        Returns:
-            None
+        This method inputs the citation date into the system and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         self.message = "Informando data de citação"
         self.type_log = "log"
@@ -759,17 +859,19 @@ class complement(CrawJUD):
     @classmethod
     def fase(cls, self: Self) -> None:
         """
-        Update the phase of the process in the ELAW system.
+        Inform the phase of the process.
 
-        This method selects the appropriate input element for the phase,
-        retrieves the phase information from the bot data, and updates
-        the phase in the ELAW system. It also logs messages before and
-        after the update.
-        Args:
-            self (Self): An instance of the class containing the elements
-                         and bot data.
-        Returns:
-            None
+        This method inputs the phase information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         elementSelect = self.elements.fase_input
         text = self.bot_data.get("FASE")
@@ -788,16 +890,19 @@ class complement(CrawJUD):
     @classmethod
     def provimento(cls, self: Self) -> None:
         """
-        Handle the process of informing the anticipatory provision.
+        Inform the anticipatory provision in the process.
 
-        This method retrieves the anticipatory provision text from the bot data,
-        selects the appropriate input element, and performs the necessary actions
-        to input the provision text into the system. It logs the process steps
-        before and after the interaction.
-        Args:
-            self (Self): An instance of the class containing bot data and elements.
-        Returns:
-            None
+        This method inputs the anticipatory provision information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         text = self.bot_data.get("PROVIMENTO")
         elementSelect = self.elements.provimento_input
@@ -816,17 +921,19 @@ class complement(CrawJUD):
     @classmethod
     def valor_causa(cls, self: Self) -> None:
         """
-        Fill in the value of the cause in a web form.
+        Inform the value of the cause.
 
-        This method performs the following steps:
-        1. Logs the start of the process.
-        2. Waits for the element representing the value of the cause to be clickable.
-        3. Clicks on the element, clears any existing text, and inputs the new value.
-        4. Executes a JavaScript command to remove focus from the input field.
-        5. Waits for a specific loading element to disappear.
-        6. Logs the completion of the process.
-        Raises:
-            TimeoutException: If the element is not found within the specified wait time.
+        This method inputs the value of the cause into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         self.message = "Informando valor da causa"
         self.type_log = "log"
@@ -857,17 +964,19 @@ class complement(CrawJUD):
     @classmethod
     def fato_gerador(cls, self: Self) -> None:
         """
-        Handle the process of informing the 'fato gerador' (triggering event) in the system.
+        Inform the triggering event (fato gerador).
 
-        This method performs the following steps:
-        1. Logs the start of the 'fato gerador' process.
-        2. Selects the appropriate input element for 'fato gerador'.
-        3. Retrieves the 'FATO_GERADOR' value from bot data.
-        4. Uses the Select2_ELAW method to input the 'FATO_GERADOR' value.
-        5. Waits for the loading of the specified element.
-        6. Logs the completion of the 'fato gerador' process.
-        Args:
-            self (Self): An instance of the class containing the method.
+        This method inputs the triggering event information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         self.message = "Informando fato gerador"
         self.type_log = "log"
@@ -886,17 +995,19 @@ class complement(CrawJUD):
     @classmethod
     def desc_objeto(cls, self: Self) -> None:
         """
-        Fill in the description object field on the web page.
+        Fill in the description object field.
 
-        This method waits for the description object input field to be present,
-        clicks on it, clears any existing text, and then enters the new text
-        retrieved from `self.bot_data`. After entering the text, it triggers a
-        blur event on the input field and waits for a specific loading element
-        to disappear.
-        Args:
-            self (Self): An instance of the class containing the method.
-        Returns:
-            None
+        This method inputs the description of the object into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         input_descobjeto = self.wait.until(
             EC.presence_of_element_located(
@@ -917,16 +1028,19 @@ class complement(CrawJUD):
     @classmethod
     def objeto(cls, self: Self) -> None:
         """
-        Handle the process of informing the object of the process.
+        Inform the object of the process.
 
-        This method updates the message and type_log attributes to indicate the
-        start and completion of the process. It selects the appropriate input
-        element and sets its value based on the bot_data. It also includes a
-        sleep to wait for the loading of a specific element.
-        Args:
-            self (Self): The instance of the class calling this method.
-        Returns:
-            None
+        This method inputs the object information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         self.message = "Informando objeto do processo"
         self.type_log = "log"
@@ -944,16 +1058,21 @@ class complement(CrawJUD):
 
     @classmethod
     def tipo_empresa(cls, self: Self) -> None:
-        """Set the type of company and updates the relevant UI elements accordingly.
+        """
+        Set the type of company and update relevant UI elements.
 
         This method determines the type of company (either "Ativa" or "Passiva") based on the
         "TIPO_EMPRESA" value in `self.bot_data`. It then updates the UI elements for
         contingencia and tipo_polo with the appropriate values and logs the actions performed.
 
-        Args:
-            self (Self): An instance of the class containing the method.
-        Returns:
-            None
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
         """
         self.message = "Informando contingenciamento"
         self.type_log = "log"

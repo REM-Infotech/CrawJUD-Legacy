@@ -1,3 +1,9 @@
+"""
+Module: shared.
+
+This module defines shared properties and utilities for the CrawJUD-Bots application.
+"""
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -5,8 +11,6 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple, Union  # , get_type_hints
 
 from dotenv_vault import load_dotenv
-
-# from pydantic import BaseModel, ValidationError
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -21,43 +25,27 @@ load_dotenv()
 TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
 
 
-# class property(property):
-#     def __set__(self, obj, value) -> None:
-#         if self.fset is None:
-#             raise AttributeError("can't set attribute")
-
-#         try:
-#             self.type_ = get_type_hints(self.fget).get("return")
-#             self.validate_type(value)
-#         except ValidationError as e:
-#             raise TypeError(f"Invalid value: {e}")
-
-#         self.fget(obj)
-#         self.fset(obj, value)
-
-#     def validate_type(self, value) -> None:
-#         """Validate the type of the given value.
-
-#         This method uses a dynamically created Pydantic model to validate
-#         that the provided value matches the expected type defined by
-#         `self.type_`.
-
-#         Args:
-#             value: The value to be validated.
-#         Raises:
-#             pydantic.ValidationError: If the value does not match the expected type.
-#         """
-
-#         class TypedPropertyModel(BaseModel):
-#             value: self.type_
-
-#             class Config:
-#                 arbitrary_types_allowed = True
-
-#         TypedPropertyModel(value=value)
-
-
 class PropertiesCrawJUD:
+    """
+    PropertiesCrawJUD holds configuration and state information for the CrawJUD bot.
+
+    Attributes:
+        row_ (int): Current row index.
+        pid_ (str): Process ID.
+        vara_ (str): Variable A.
+        state_ (str): Current state.
+        client_ (str): Client information.
+        message_ (str): Current message.
+        type_bot (str): Type of bot.
+        name_cert_ (str): Certificate name.
+        systembot_ (str): System bot identifier.
+        message_error_ (str): Error message.
+        state_or_client_ (str): State or client identifier.
+        type_log_ (str): Type of log (default "info").
+        graphicMode_ (str): Mode of graphics (default "doughnut").
+        # ...existing attributes...
+    """
+
     load_dotenv()
 
     row_: int = 0
@@ -95,361 +83,436 @@ class PropertiesCrawJUD:
 
     @property
     def start_time(self) -> float | int:
+        """Get the start time."""
         return self._start_time_
 
     @start_time.setter
     def start_time(self, start_time: int | float) -> None:
+        """Set the start time."""
         self._start_time_ = start_time
 
     @property
     def path(self) -> Path:
+        """Get the current path."""
         return PropertiesCrawJUD.path_
 
     @path.setter
     def path(self, new_var: Path) -> None:
+        """Set a new path."""
         PropertiesCrawJUD.path_ = new_var
 
     @property
     def path_args(self) -> Path:
+        """Get the path arguments."""
         return PropertiesCrawJUD.path_args_
 
     @path_args.setter
     def path_args(self, new_var: Path) -> None:
+        """Set new path arguments."""
         PropertiesCrawJUD.path_args_ = new_var
 
     @property
     def appends(self) -> List[str]:
+        """Get the list of appends."""
         return PropertiesCrawJUD.appends_
 
     @appends.setter
     def appends(self, new_var: List) -> None:
+        """Set a new list of appends."""
         PropertiesCrawJUD.appends_ = new_var
 
     @property
     def another_append(self) -> List[str]:
+        """Get another list of appends."""
         return PropertiesCrawJUD.another_append_
 
     @another_append.setter
     def another_append(self, new_var: list) -> None:
+        """Set another list of appends."""
         PropertiesCrawJUD.another_append_ = new_var
 
     @property
     def system(self) -> str:
+        """Get the system bot identifier."""
         return PropertiesCrawJUD.systembot_
 
     @system.setter
     def system(self, systembot_) -> None:
+        """Set the system bot identifier."""
         PropertiesCrawJUD.systembot_ = systembot_
 
     @property
     def state_or_client(self) -> str:
+        """Get the state or client identifier."""
         return PropertiesCrawJUD.state_or_client_
 
     @state_or_client.setter
     def state_or_client(self, new_var: str) -> None:
+        """Set the state or client identifier."""
         PropertiesCrawJUD.state_or_client_ = new_var
 
     @property
     def type_log(self) -> str:
+        """Get the type of log."""
         return PropertiesCrawJUD.type_log_
 
     @type_log.setter
     def type_log(self, new_var: str) -> None:
+        """Set the type of log."""
         PropertiesCrawJUD.type_log_ = new_var
 
     @property
     def pid(self) -> str:
+        """Get the process ID."""
         return PropertiesCrawJUD.pid_
 
     @pid.setter
     def pid(self, pid_) -> None:
+        """Set the process ID."""
         PropertiesCrawJUD.pid_ = pid_
 
     @property
     def message(self) -> str:
+        """Get the current message."""
         return PropertiesCrawJUD.message_
 
     @message.setter
     def message(self, new_msg: str) -> None:
+        """Set the current message."""
         PropertiesCrawJUD.message_ = new_msg
 
     @property
     def driver(self) -> WebDriver:
+        """Get the WebDriver instance."""
         return PropertiesCrawJUD.driver_
 
     @driver.setter
     def driver(self, new_driver_: WebDriver) -> None:
+        """Set the WebDriver instance."""
         PropertiesCrawJUD.driver_ = new_driver_
 
     @property
     def wait(self) -> WebDriverWait:
+        """Get the WebDriverWait instance."""
         return PropertiesCrawJUD.webdriverwait_
 
     @wait.setter
     def wait(self, new_webdriverwait_: WebDriverWait) -> None:
+        """Set the WebDriverWait instance."""
         PropertiesCrawJUD.webdriverwait_ = new_webdriverwait_
 
     @property
     def chr_dir(self) -> Path:
+        """Get the user data directory path."""
         return PropertiesCrawJUD.user_data_dir
 
     @chr_dir.setter
     def chr_dir(self, new_path: Path) -> None:
+        """Set the user data directory path."""
         PropertiesCrawJUD.user_data_dir = new_path
 
     @property
     def output_dir_path(self) -> Path:
+        """Get the output directory path."""
         return PropertiesCrawJUD.out_dir
 
     @output_dir_path.setter
     def output_dir_path(self, new_path: Path) -> None:
+        """Set the output directory path."""
         PropertiesCrawJUD.out_dir = new_path
 
     @property  # (type_=Dict[str, TypeValues | SubDict])
     def kwrgs(self) -> Dict[str, TypeValues | SubDict]:
+        """Get the keyword arguments."""
         return PropertiesCrawJUD.kwrgs_
 
     @kwrgs.setter
     def kwrgs(self, new_kwg: Dict[str, Any]) -> None:
+        """Set the keyword arguments."""
         PropertiesCrawJUD.kwrgs_ = new_kwg
 
     @property  # (type_=int)
     def row(self) -> int:
+        """Get the current row index."""
         return PropertiesCrawJUD.row_
 
     @row.setter
     def row(self, new_row: int) -> None:
+        """Set the current row index."""
         PropertiesCrawJUD.row_ = new_row
 
     @property
     def message_error(self) -> str:
+        """Get the error message."""
         return PropertiesCrawJUD.message_error_
 
     @message_error.setter
     def message_error(self, nw_m) -> str:
+        """Set the error message."""
         PropertiesCrawJUD.message_error_ = nw_m
 
     @property
     def graphicMode(self) -> str:
+        """Get the graphic mode."""
         return PropertiesCrawJUD.graphicMode_
 
     @graphicMode.setter
     def graphicMode(self, new_graph) -> None:
+        """Set the graphic mode."""
         PropertiesCrawJUD.graphicMode_ = new_graph
 
     @property  # (type_=Dict[str, TypeValues | SubDict])
     def bot_data(self) -> Dict[str, TypeValues | SubDict]:
+        """Get the bot data."""
         return PropertiesCrawJUD.bot_data_
 
     @bot_data.setter
     def bot_data(self, new_botdata: Dict[str, TypeValues | SubDict]) -> None:
+        """Set the bot data."""
         PropertiesCrawJUD.bot_data_ = new_botdata
 
     @property
     def vara(self) -> str:
+        """Get the variable A."""
         return PropertiesCrawJUD.vara_
 
     @vara.setter
     def vara(self, vara_str) -> None:
+        """Set the variable A."""
         PropertiesCrawJUD.vara_ = vara_str
 
     @property
     def path_accepted(self) -> Path:
+        """Get the accepted path."""
         return PropertiesCrawJUD.path_accepted_
 
     @path_accepted.setter
     def path_accepted(self, new_path) -> None:
+        """Set the accepted path."""
         PropertiesCrawJUD.path_accepted_ = new_path
 
     @property  # (type_=OpenAI)
     def OpenAI_client(self) -> OpenAI:
+        """Get the OpenAI client."""
         load_dotenv()
 
         return OpenAI()
 
     @property
     def typebot(self) -> str:
+        """Get the type of bot."""
         return PropertiesCrawJUD.type_bot
 
     @typebot.setter
     def typebot(self, type_bot) -> None:
+        """Set the type of bot."""
         PropertiesCrawJUD.type_bot = type_bot
 
     @property
     def state(self) -> str:
+        """Get the current state."""
         return PropertiesCrawJUD.state_
 
     @state.setter
     def state(self, state_: str) -> None:
+        """Set the current state."""
         PropertiesCrawJUD.state_ = state_
 
     @property
     def path_erro(self) -> Path:
+        """Get the error path."""
         return PropertiesCrawJUD.path_erro_
 
     @path_erro.setter
     def path_erro(self, new_path: Path) -> None:
+        """Set the error path."""
         PropertiesCrawJUD.path_erro_ = new_path
 
     @property
     def name_cert(self) -> str:
+        """Get the certificate name."""
         return PropertiesCrawJUD.name_cert_
 
     @name_cert.setter
     def name_cert(self, name_cert) -> None:
+        """Set the certificate name."""
         PropertiesCrawJUD.name_cert_ = name_cert
 
     @property
     def client(self) -> str:
+        """Get the client information."""
         return PropertiesCrawJUD.client_
 
     @client.setter
     def client(self, client_) -> None:
+        """Set the client information."""
         PropertiesCrawJUD.client_ = client_
 
     # Funcionalidades
     @property
     def AuthBot(self) -> Callable[[], bool]:
+        """Get the AuthBot callable."""
         from ..Utils import AuthBot as _AuthBot_
 
         return _AuthBot_().auth
 
     @property
     def MakeXlsx(self) -> _MakeXlsx_:
+        """Get the MakeXlsx instance."""
         from ..Utils import MakeXlsx as _MakeXlsx_
 
         return _MakeXlsx_()
 
     @property
     def Interact(self) -> _Interact_:
+        """Get the Interact instance."""
         from ..Utils import Interact as _Interact_
 
         return _Interact_()
 
     @property
     def PrintBot(self) -> _PrintBot_:
+        """Get the PrintBot instance."""
         from ..Utils import PrintBot as _PrintBot_
 
         return _PrintBot_()
 
     @property
     def SearchBot(self) -> _SearchBot_:
+        """Get the SearchBot instance."""
         from ..Utils import SearchBot as _SearchBot_
 
         return _SearchBot_()
 
     @property
     def OtherUtils(self) -> _OtherUtils_:
+        """Get the OtherUtils instance."""
         from ..Utils import OtherUtils as _OtherUtils_
 
         return _OtherUtils_()
 
     @property
     def elements(self) -> Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]:
+        """Get the elements configuration."""
         from ..Utils import ElementsBot as _ElementsBot_
 
         return _ElementsBot_().Config().Elements
 
     @property
     def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:
+        """Get the DriverLaunch callable."""
         from ..Utils import DriverBot as _DriverBot_
 
         return _DriverBot_().DriverLaunch
 
     @property
     def search_bot(self) -> Callable[[], bool]:
+        """Get the search_bot callable."""
         return self.SearchBot.search_
 
     @property
     def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
+        """Get the dataFrame callable."""
         return self.OtherUtils.dataFrame
 
     @property  # (type_=bool)
     def isStoped(self) -> bool:
+        """Check if the process is stopped."""
         stopped = Path(self.output_dir_path).joinpath(f"{self.pid}.flag").exists()
         return stopped
 
     @property
     def elawFormats(self) -> Callable[..., dict[str, str]]:
+        """Get the elawFormats callable."""
         return self.OtherUtils.elawFormats
 
     @property
     def calc_time(self) -> Callable[[], list]:
+        """Get the calc_time callable."""
         return self.OtherUtils.calc_time
 
     @property
     def append_moves(self) -> Callable[[], None]:
+        """Get the append_moves callable."""
         return self.OtherUtils().append_moves
 
     @property
     def append_success(self) -> Callable[..., None]:
+        """Get the append_success callable."""
         return self.OtherUtils.append_success
 
     @property
     def append_error(self) -> Callable[..., None]:
+        """Get the append_error callable."""
         return self.OtherUtils.append_error
 
     @property
     def append_validarcampos(self) -> Callable[..., None]:
+        """Get the append_validarcampos callable."""
         return self.OtherUtils.append_validarcampos
 
     @property
     def count_doc(self) -> Callable[..., str | None]:
+        """Get the count_doc callable."""
         return self.OtherUtils.count_doc
 
     @property
     def get_recent(self) -> Callable[..., str | None]:
+        """Get the get_recent callable."""
         return self.OtherUtils.get_recent
 
     @property
     def format_String(self) -> Callable[..., str]:
+        """Get the format_String callable."""
         return self.OtherUtils.format_String
 
     @property
     def normalizar_nome(self) -> Callable[..., str]:
+        """Get the normalizar_nome callable."""
         return self.OtherUtils.normalizar_nome
 
     @property
     def similaridade(self) -> Callable[..., float]:
+        """Get the similaridade callable."""
         return self.OtherUtils.similaridade
 
     @property
     def finalize_execution(self) -> Callable[[], None]:
+        """Get the finalize_execution callable."""
         return self.OtherUtils.finalize_execution
 
     @property
     def install_cert(self) -> Callable[[], None]:
+        """Get the install_cert callable."""
         return self.OtherUtils.install_cert
 
     @property
     def group_date_all(self) -> Callable[..., list[dict[str, str]]]:
+        """Get the group_date_all callable."""
         return self.OtherUtils.group_date_all
 
     @property
     def group_keys(self) -> Callable[..., dict[str, str]]:
+        """Get the group_keys callable."""
         return self.OtherUtils.group_keys
 
     @property
     def gpt_chat(self) -> Callable[..., str]:
-        """Analyze a given legal document text and adjusts the response based on the type of document.
+        """
+        Analyze a given legal document text and adjust the response based on the document type.
 
-        This method uses the OpenAI GPT model to analyze the provided text and generate a response
-        that identifies the type of legal document and extracts relevant information based on the
-        document type. The document types include sentences, initial petitions, defenses, and
-        interlocutory decisions.
+        Uses the OpenAI GPT model to analyze the provided text and generate a response that
+        identifies the type of legal document and extracts relevant information based on the
+        document type.
 
-        Args:
-            text_mov (str): The text of the legal document to be analyzed.
         Returns:
-            str: The adjusted response based on the type of document, including extracted values
-                 and summaries as specified in the system message.
-        Raises:
-            Exception: If an error occurs during the API call or processing.
+            Callable[..., str]: The GPT chat function.
         """
         return self.OtherUtils.gpt_chat
 
     @property
     def text_is_a_date(self) -> Callable[..., bool]:
+        """Get the text_is_a_date callable."""
         return self.OtherUtils.text_is_a_date
 
 
@@ -460,3 +523,40 @@ if __name__ == "__main__":
     from ..Utils import OtherUtils as _OtherUtils_
     from ..Utils import PrintBot as _PrintBot_
     from ..Utils import SearchBot as _SearchBot_
+
+# from pydantic import BaseModel, ValidationError
+# from typing import get_type_hints
+# class property(property):
+#     def __set__(self, obj, value) -> None:
+#         if self.fset is None:
+#             raise AttributeError("can't set attribute")
+
+#         try:
+#             self.type_ = get_type_hints(self.fget).get("return")
+#             self.validate_type(value)
+#         except ValidationError as e:
+#             raise TypeError(f"Invalid value: {e}")
+
+#         self.fget(obj)
+#         self.fset(obj, value)
+
+#     def validate_type(self, value) -> None:
+#         """Validate the type of the given value.
+
+#         This method uses a dynamically created Pydantic model to validate
+#         that the provided value matches the expected type defined by
+#         `self.type_`.
+
+#         Args:
+#             value: The value to be validated.
+#         Raises:
+#             pydantic.ValidationError: If the value does not match the expected type.
+#         """
+
+#         class TypedPropertyModel(BaseModel):
+#             value: self.type_
+
+#             class Config:
+#                 arbitrary_types_allowed = True
+
+#         TypedPropertyModel(value=value)

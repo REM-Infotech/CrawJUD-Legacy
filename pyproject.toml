@@ -86,7 +86,7 @@ skips = ["B404", "B603", "B105", "B605", "B607"]
 
 [tool.flake8]
 max-line-length = 88
-extend-ignore = ["E203", "W503", "E501", "E402", "D"]
+extend-ignore = ["E203", "W503", "E501", "E402"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

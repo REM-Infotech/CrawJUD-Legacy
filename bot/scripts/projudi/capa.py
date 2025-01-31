@@ -1,3 +1,10 @@
+"""
+Module: capa.
+
+This module defines the capa class, which handles process information extraction and management
+within the CrawJUD-Bots application.
+"""
+
 import re
 import time
 from contextlib import suppress
@@ -17,7 +24,20 @@ from ...core import CrawJUD
 
 
 class capa(CrawJUD):
+    """
+    The capa class extends CrawJUD to handle specific execution tasks related to process.
+
+    information extraction and management.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the capa instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -29,6 +49,12 @@ class capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the main processing loop, handling each frame of data.
+
+        Raises:
+            Exception: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -76,6 +102,12 @@ class capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the queue processing, refreshing the driver and extracting process information.
+
+        Raises:
+            ErroDeExecucao: If the process is not found or extraction fails.
+        """
         try:
             search = self.search_bot()
 
@@ -90,6 +122,15 @@ class capa(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_process_informations(self) -> list:
+        """
+        Extract information from the current process in the web driver.
+
+        Returns:
+            list: A list of dictionaries containing process information.
+
+        Raises:
+            Exception: If an error occurs during information extraction.
+        """
         try:
             grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
             process_info: Dict[str, str | int | datetime] = {}
@@ -98,6 +139,15 @@ class capa(CrawJUD):
             )
 
             def format_vl_causa(valorDaCausa: str) -> float | str:
+                """
+                Format the value of the cause by removing currency symbols and converting to float.
+
+                Args:
+                    valorDaCausa (str): The raw value string.
+
+                Returns:
+                    float | str: The formatted value as float or original string if no match.
+                """
                 if "¤" in valorDaCausa:
                     valorDaCausa = valorDaCausa.replace("¤", "")
 
@@ -106,6 +156,15 @@ class capa(CrawJUD):
                 if len(matches) > 0:
 
                     def convert_to_float(value) -> float:
+                        """
+                        Convert a formatted string to float.
+
+                        Args:
+                            value (str): The string to convert.
+
+                        Returns:
+                            float: The converted float value.
+                        """
                         # Remover símbolos de moeda e espaços
                         value = re.sub(r"[^\d.,]", "", value)
 
@@ -289,5 +348,4 @@ class capa(CrawJUD):
             return [process_info]
 
         except Exception as e:
-            e
             raise e
