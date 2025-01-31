@@ -598,7 +598,7 @@ class complement(CrawJUD):
 
         css_input_bairro = 'input[id="j_id_3k_1:j_id_3k_4_2_2_8_9_44_2:j_id_3k_4_2_2_8_9_44_3_1_2_2_1_1:fieldid_9237fieldText"]'
 
-        bairro_ = self.bot_data.get("BAIRRO")
+        bairro_ = self.bot_data.get("LOCALIDADE")
 
         input_bairro = self.driver.find_element(By.CSS_SELECTOR, css_input_bairro)
         input_bairro.click()
