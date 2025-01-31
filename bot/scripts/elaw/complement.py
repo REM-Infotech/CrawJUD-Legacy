@@ -1,6 +1,9 @@
 """
 Module for "Complemento de Cadastro".
 
+This module contains the `complement` class which configures and retrieves an elements bot instance
+and interacts with the ELAW system to complete the registration of a process.
+
 Classes:
     complement: A class that configures and retrieves an elements bot instance
     and interacts with the ELAW system to complete the registration of a process.
@@ -52,7 +55,7 @@ class complement(CrawJUD):
     """
     A class that configures and retrieves an elements bot instance.
 
-    and interacts with the ELAW system to complete the registration of a process.
+    This class interacts with the ELAW system to complete the registration of a process.
     """
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -747,9 +750,49 @@ class complement(CrawJUD):
         self.prt()
 
     @classmethod
+    def localidade(cls, self: Self) -> None:
+        """
+        Inform the locality of the process.
+
+        This method inputs the locality information into the system
+        and ensures it is properly selected.
+
+        Parameters
+        ----------
+        self : Self
+            The instance of the class.
+
+        Returns
+        -------
+        None
+        """
+        self.message = "Informando localidade"
+        self.type_log = "log"
+        self.prt()
+
+        css_input_bairro = 'input[id="j_id_3k_1:j_id_3k_4_2_2_7_9_44_2:j_id_3k_4_2_2_7_9_44_3_1_2_2_1_1:fieldid_13351fieldText"]'
+
+        bairro_ = self.bot_data.get("LOCALIDADE")
+
+        input_bairro = self.driver.find_element(By.CSS_SELECTOR, css_input_bairro)
+        input_bairro.click()
+        self.interact.clear(input_bairro)
+        self.interact.send_key(input_bairro, bairro_)
+
+        self.driver.execute_script(
+            f"document.querySelector('{self.elements.css_valor_causa}').blur()"
+        )
+
+        self.interact.sleep_load('div[id="j_id_3x"]')
+
+        self.message = "Localidade informada!"
+        self.type_log = "info"
+        self.prt()
+
+    @classmethod
     def bairro(cls, self: Self) -> None:
         """
-        Inform the neighborhood in the process.
+        Inform the neighborhood of the process.
 
         This method inputs the neighborhood information into the system
         and ensures it is properly selected.
