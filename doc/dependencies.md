@@ -2,6 +2,7 @@
 
 ## Sumário
 
+- [`Ferramentas de Desenvolvimento (Obrigatório)`](#ferramentas-de-desenvolvimento)
 - [`API's`](#apis)
 - [`Automatização`](#automatização)
 - [`Gerenciamento de Arquivos`](#gerenciamento-de-arquivos)
@@ -49,3 +50,30 @@
 - [`PyYAML`](https://pyyaml.org/wiki/PyYAMLDocumentation) _Manipulação de arquivos YAML_
 - [`GitPython`](https://gitpython.readthedocs.io/en/stable/) _Manipulação de repositórios Git_
 - [`PyGithub`](https://pygithub.readthedocs.io/en/latest/) _Integração com a API do GitHub_
+
+## Ferramentas de Desenvolvimento
+
+#### Comando de instalação de instalação
+
+```bash
+poetry install --with dev
+```
+
+> Disclaimer: para novas bibliotecas de desenvolvimento, usar o seguinte comando:
+
+```bash
+poetry add <_nome_da_biblioteca_> --group dev
+```
+
+- [isort](https://pycqa.github.io/isort/) _Formatação de imports_
+- [Black](https://black.readthedocs.io/en/stable/) _Formatação de código_
+- [Ruff](https://beta.ruff.rs/docs/) _Checagem de código_
+- [Mypy](https://mypy.readthedocs.io/en/stable/) _Checagem de tipos_
+- [pre-commit](https://pre-commit.com/) _Checagem de código antes do commit_
+- [debugpy](https://github.com/microsoft/debugpy) _Depuração remota_
+- [pytest](https://docs.pytest.org/en/stable/) _Testes unitários_
+- [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/) _Cobertura de testes_
+- [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/) _Mocking de objetos_
+- [yamllint](https://yamllint.readthedocs.io/en/stable/) _Checagem de arquivos YAML_
+- [pyproject-flake8](https://flake8.pycqa.org/en/latest/) _Checagem de estilo de código_
+- [flake8-docstrings](https://pypi.org/project/flake8-docstrings/) _Checagem de docstrings_
