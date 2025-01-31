@@ -1,8 +1,4 @@
-"""
-Main module for CrawJUD-Bots application.
-
-Handles signal management and VNC server initiation.
-"""
+"""Main module for CrawJUD-Bots application."""
 
 import signal
 import subprocess
@@ -118,18 +114,6 @@ def dev_modules():
     Raises:
         ImportError: If any of the dev dependencies are not installed.
     """
-    # isort = "^6.0.0"
-    # black = "^25.1.0"
-    # ruff = "^0.9.2"
-    # mypy = "^1.13.0"
-    # pre-commit = "^4.0.1"
-    # debugpy = "^1.8.9"
-    # pytest = "^8.3.4"
-    # pytest-cov = "^6.0.0"
-    # pytest-mock = "^3.14.0"
-    # yamllint = "^1.35.1"
-    # pyproject-flake8 = "^7.0.0"
-    # flake8-docstrings = "^1.7.0"
 
     import importlib
 
@@ -137,14 +121,10 @@ def dev_modules():
     importlib.import_module("black")
     importlib.import_module("ruff")
     importlib.import_module("mypy")
-    importlib.import_module("pre-commit")
-    importlib.import_module("debugpy")
     # importlib.import_module("pytest")
     # importlib.import_module("pytest-cov")
     # importlib.import_module("pytest-mock")
     # importlib.import_module("yamllint")
-    importlib.import_module("pyproject-flake8")
-    importlib.import_module("flake8-docstrings")
 
 
 if __name__ == "__main__":

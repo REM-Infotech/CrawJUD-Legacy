@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Tuple, Union, get_type_hints
+from typing import Any, Callable, Dict, List, Tuple, Union  # , get_type_hints
 
 from dotenv_vault import load_dotenv
-from pydantic import BaseModel, ValidationError
+
+# from pydantic import BaseModel, ValidationError
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -20,40 +21,40 @@ load_dotenv()
 TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
 
 
-class CustomProperty(property):
-    def __set__(self, obj, value) -> None:
-        if self.fset is None:
-            raise AttributeError("can't set attribute")
+# class property(property):
+#     def __set__(self, obj, value) -> None:
+#         if self.fset is None:
+#             raise AttributeError("can't set attribute")
 
-        try:
-            self.type_ = get_type_hints(self.fget).get("return")
-            self.validate_type(value)
-        except ValidationError as e:
-            raise TypeError(f"Invalid value: {e}")
+#         try:
+#             self.type_ = get_type_hints(self.fget).get("return")
+#             self.validate_type(value)
+#         except ValidationError as e:
+#             raise TypeError(f"Invalid value: {e}")
 
-        self.fget(obj)
-        self.fset(obj, value)
+#         self.fget(obj)
+#         self.fset(obj, value)
 
-    def validate_type(self, value) -> None:
-        """Validate the type of the given value.
+#     def validate_type(self, value) -> None:
+#         """Validate the type of the given value.
 
-        This method uses a dynamically created Pydantic model to validate
-        that the provided value matches the expected type defined by
-        `self.type_`.
+#         This method uses a dynamically created Pydantic model to validate
+#         that the provided value matches the expected type defined by
+#         `self.type_`.
 
-        Args:
-            value: The value to be validated.
-        Raises:
-            pydantic.ValidationError: If the value does not match the expected type.
-        """
+#         Args:
+#             value: The value to be validated.
+#         Raises:
+#             pydantic.ValidationError: If the value does not match the expected type.
+#         """
 
-        class TypedPropertyModel(BaseModel):
-            value: self.type_
+#         class TypedPropertyModel(BaseModel):
+#             value: self.type_
 
-            class Config:
-                arbitrary_types_allowed = True
+#             class Config:
+#                 arbitrary_types_allowed = True
 
-        TypedPropertyModel(value=value)
+#         TypedPropertyModel(value=value)
 
 
 class PropertiesCrawJUD:
@@ -92,7 +93,7 @@ class PropertiesCrawJUD:
     kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: Dict[str, TypeValues | SubDict] = {}
 
-    @CustomProperty
+    @property
     def start_time(self) -> float | int:
         return self._start_time_
 
@@ -100,7 +101,7 @@ class PropertiesCrawJUD:
     def start_time(self, start_time: int | float) -> None:
         self._start_time_ = start_time
 
-    @CustomProperty
+    @property
     def path(self) -> Path:
         return PropertiesCrawJUD.path_
 
@@ -108,7 +109,7 @@ class PropertiesCrawJUD:
     def path(self, new_var: Path) -> None:
         PropertiesCrawJUD.path_ = new_var
 
-    @CustomProperty
+    @property
     def path_args(self) -> Path:
         return PropertiesCrawJUD.path_args_
 
@@ -116,7 +117,7 @@ class PropertiesCrawJUD:
     def path_args(self, new_var: Path) -> None:
         PropertiesCrawJUD.path_args_ = new_var
 
-    @CustomProperty
+    @property
     def appends(self) -> List[str]:
         return PropertiesCrawJUD.appends_
 
@@ -124,7 +125,7 @@ class PropertiesCrawJUD:
     def appends(self, new_var: List) -> None:
         PropertiesCrawJUD.appends_ = new_var
 
-    @CustomProperty
+    @property
     def another_append(self) -> List[str]:
         return PropertiesCrawJUD.another_append_
 
@@ -132,7 +133,7 @@ class PropertiesCrawJUD:
     def another_append(self, new_var: list) -> None:
         PropertiesCrawJUD.another_append_ = new_var
 
-    @CustomProperty
+    @property
     def system(self) -> str:
         return PropertiesCrawJUD.systembot_
 
@@ -140,7 +141,7 @@ class PropertiesCrawJUD:
     def system(self, systembot_) -> None:
         PropertiesCrawJUD.systembot_ = systembot_
 
-    @CustomProperty
+    @property
     def state_or_client(self) -> str:
         return PropertiesCrawJUD.state_or_client_
 
@@ -148,7 +149,7 @@ class PropertiesCrawJUD:
     def state_or_client(self, new_var: str) -> None:
         PropertiesCrawJUD.state_or_client_ = new_var
 
-    @CustomProperty
+    @property
     def type_log(self) -> str:
         return PropertiesCrawJUD.type_log_
 
@@ -156,7 +157,7 @@ class PropertiesCrawJUD:
     def type_log(self, new_var: str) -> None:
         PropertiesCrawJUD.type_log_ = new_var
 
-    @CustomProperty
+    @property
     def pid(self) -> str:
         return PropertiesCrawJUD.pid_
 
@@ -164,7 +165,7 @@ class PropertiesCrawJUD:
     def pid(self, pid_) -> None:
         PropertiesCrawJUD.pid_ = pid_
 
-    @CustomProperty
+    @property
     def message(self) -> str:
         return PropertiesCrawJUD.message_
 
@@ -172,7 +173,7 @@ class PropertiesCrawJUD:
     def message(self, new_msg: str) -> None:
         PropertiesCrawJUD.message_ = new_msg
 
-    @CustomProperty
+    @property
     def driver(self) -> WebDriver:
         return PropertiesCrawJUD.driver_
 
@@ -180,7 +181,7 @@ class PropertiesCrawJUD:
     def driver(self, new_driver_: WebDriver) -> None:
         PropertiesCrawJUD.driver_ = new_driver_
 
-    @CustomProperty
+    @property
     def wait(self) -> WebDriverWait:
         return PropertiesCrawJUD.webdriverwait_
 
@@ -188,7 +189,7 @@ class PropertiesCrawJUD:
     def wait(self, new_webdriverwait_: WebDriverWait) -> None:
         PropertiesCrawJUD.webdriverwait_ = new_webdriverwait_
 
-    @CustomProperty
+    @property
     def chr_dir(self) -> Path:
         return PropertiesCrawJUD.user_data_dir
 
@@ -196,7 +197,7 @@ class PropertiesCrawJUD:
     def chr_dir(self, new_path: Path) -> None:
         PropertiesCrawJUD.user_data_dir = new_path
 
-    @CustomProperty
+    @property
     def output_dir_path(self) -> Path:
         return PropertiesCrawJUD.out_dir
 
@@ -204,7 +205,7 @@ class PropertiesCrawJUD:
     def output_dir_path(self, new_path: Path) -> None:
         PropertiesCrawJUD.out_dir = new_path
 
-    @CustomProperty(type_=Dict[str, TypeValues | SubDict])
+    @property  # (type_=Dict[str, TypeValues | SubDict])
     def kwrgs(self) -> Dict[str, TypeValues | SubDict]:
         return PropertiesCrawJUD.kwrgs_
 
@@ -212,7 +213,7 @@ class PropertiesCrawJUD:
     def kwrgs(self, new_kwg: Dict[str, Any]) -> None:
         PropertiesCrawJUD.kwrgs_ = new_kwg
 
-    @CustomProperty(type_=int)
+    @property  # (type_=int)
     def row(self) -> int:
         return PropertiesCrawJUD.row_
 
@@ -220,7 +221,7 @@ class PropertiesCrawJUD:
     def row(self, new_row: int) -> None:
         PropertiesCrawJUD.row_ = new_row
 
-    @CustomProperty
+    @property
     def message_error(self) -> str:
         return PropertiesCrawJUD.message_error_
 
@@ -228,7 +229,7 @@ class PropertiesCrawJUD:
     def message_error(self, nw_m) -> str:
         PropertiesCrawJUD.message_error_ = nw_m
 
-    @CustomProperty
+    @property
     def graphicMode(self) -> str:
         return PropertiesCrawJUD.graphicMode_
 
@@ -236,7 +237,7 @@ class PropertiesCrawJUD:
     def graphicMode(self, new_graph) -> None:
         PropertiesCrawJUD.graphicMode_ = new_graph
 
-    @CustomProperty(type_=Dict[str, TypeValues | SubDict])
+    @property  # (type_=Dict[str, TypeValues | SubDict])
     def bot_data(self) -> Dict[str, TypeValues | SubDict]:
         return PropertiesCrawJUD.bot_data_
 
@@ -244,7 +245,7 @@ class PropertiesCrawJUD:
     def bot_data(self, new_botdata: Dict[str, TypeValues | SubDict]) -> None:
         PropertiesCrawJUD.bot_data_ = new_botdata
 
-    @CustomProperty
+    @property
     def vara(self) -> str:
         return PropertiesCrawJUD.vara_
 
@@ -252,7 +253,7 @@ class PropertiesCrawJUD:
     def vara(self, vara_str) -> None:
         PropertiesCrawJUD.vara_ = vara_str
 
-    @CustomProperty
+    @property
     def path_accepted(self) -> Path:
         return PropertiesCrawJUD.path_accepted_
 
@@ -260,13 +261,13 @@ class PropertiesCrawJUD:
     def path_accepted(self, new_path) -> None:
         PropertiesCrawJUD.path_accepted_ = new_path
 
-    @CustomProperty(type_=OpenAI)
+    @property  # (type_=OpenAI)
     def OpenAI_client(self) -> OpenAI:
         load_dotenv()
 
         return OpenAI()
 
-    @CustomProperty
+    @property
     def typebot(self) -> str:
         return PropertiesCrawJUD.type_bot
 
@@ -274,7 +275,7 @@ class PropertiesCrawJUD:
     def typebot(self, type_bot) -> None:
         PropertiesCrawJUD.type_bot = type_bot
 
-    @CustomProperty
+    @property
     def state(self) -> str:
         return PropertiesCrawJUD.state_
 
@@ -282,7 +283,7 @@ class PropertiesCrawJUD:
     def state(self, state_: str) -> None:
         PropertiesCrawJUD.state_ = state_
 
-    @CustomProperty
+    @property
     def path_erro(self) -> Path:
         return PropertiesCrawJUD.path_erro_
 
@@ -290,7 +291,7 @@ class PropertiesCrawJUD:
     def path_erro(self, new_path: Path) -> None:
         PropertiesCrawJUD.path_erro_ = new_path
 
-    @CustomProperty
+    @property
     def name_cert(self) -> str:
         return PropertiesCrawJUD.name_cert_
 
@@ -298,7 +299,7 @@ class PropertiesCrawJUD:
     def name_cert(self, name_cert) -> None:
         PropertiesCrawJUD.name_cert_ = name_cert
 
-    @CustomProperty
+    @property
     def client(self) -> str:
         return PropertiesCrawJUD.client_
 
@@ -307,128 +308,128 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.client_ = client_
 
     # Funcionalidades
-    @CustomProperty
+    @property
     def AuthBot(self) -> Callable[[], bool]:
         from ..Utils import AuthBot as _AuthBot_
 
         return _AuthBot_().auth
 
-    @CustomProperty
+    @property
     def MakeXlsx(self) -> _MakeXlsx_:
         from ..Utils import MakeXlsx as _MakeXlsx_
 
         return _MakeXlsx_()
 
-    @CustomProperty
+    @property
     def Interact(self) -> _Interact_:
         from ..Utils import Interact as _Interact_
 
         return _Interact_()
 
-    @CustomProperty
+    @property
     def PrintBot(self) -> _PrintBot_:
         from ..Utils import PrintBot as _PrintBot_
 
         return _PrintBot_()
 
-    @CustomProperty
+    @property
     def SearchBot(self) -> _SearchBot_:
         from ..Utils import SearchBot as _SearchBot_
 
         return _SearchBot_()
 
-    @CustomProperty
+    @property
     def OtherUtils(self) -> _OtherUtils_:
         from ..Utils import OtherUtils as _OtherUtils_
 
         return _OtherUtils_()
 
-    @CustomProperty
+    @property
     def elements(self) -> Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]:
         from ..Utils import ElementsBot as _ElementsBot_
 
         return _ElementsBot_().Config().Elements
 
-    @CustomProperty
+    @property
     def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:
         from ..Utils import DriverBot as _DriverBot_
 
         return _DriverBot_().DriverLaunch
 
-    @CustomProperty
+    @property
     def search_bot(self) -> Callable[[], bool]:
         return self.SearchBot.search_
 
-    @CustomProperty
+    @property
     def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
         return self.OtherUtils.dataFrame
 
-    @CustomProperty(type_=bool)
+    @property  # (type_=bool)
     def isStoped(self) -> bool:
         stopped = Path(self.output_dir_path).joinpath(f"{self.pid}.flag").exists()
         return stopped
 
-    @CustomProperty
+    @property
     def elawFormats(self) -> Callable[..., dict[str, str]]:
         return self.OtherUtils.elawFormats
 
-    @CustomProperty
+    @property
     def calc_time(self) -> Callable[[], list]:
         return self.OtherUtils.calc_time
 
-    @CustomProperty
+    @property
     def append_moves(self) -> Callable[[], None]:
         return self.OtherUtils().append_moves
 
-    @CustomProperty
+    @property
     def append_success(self) -> Callable[..., None]:
         return self.OtherUtils.append_success
 
-    @CustomProperty
+    @property
     def append_error(self) -> Callable[..., None]:
         return self.OtherUtils.append_error
 
-    @CustomProperty
+    @property
     def append_validarcampos(self) -> Callable[..., None]:
         return self.OtherUtils.append_validarcampos
 
-    @CustomProperty
+    @property
     def count_doc(self) -> Callable[..., str | None]:
         return self.OtherUtils.count_doc
 
-    @CustomProperty
+    @property
     def get_recent(self) -> Callable[..., str | None]:
         return self.OtherUtils.get_recent
 
-    @CustomProperty
+    @property
     def format_String(self) -> Callable[..., str]:
         return self.OtherUtils.format_String
 
-    @CustomProperty
+    @property
     def normalizar_nome(self) -> Callable[..., str]:
         return self.OtherUtils.normalizar_nome
 
-    @CustomProperty
+    @property
     def similaridade(self) -> Callable[..., float]:
         return self.OtherUtils.similaridade
 
-    @CustomProperty
+    @property
     def finalize_execution(self) -> Callable[[], None]:
         return self.OtherUtils.finalize_execution
 
-    @CustomProperty
+    @property
     def install_cert(self) -> Callable[[], None]:
         return self.OtherUtils.install_cert
 
-    @CustomProperty
+    @property
     def group_date_all(self) -> Callable[..., list[dict[str, str]]]:
         return self.OtherUtils.group_date_all
 
-    @CustomProperty
+    @property
     def group_keys(self) -> Callable[..., dict[str, str]]:
         return self.OtherUtils.group_keys
 
-    @CustomProperty
+    @property
     def gpt_chat(self) -> Callable[..., str]:
         """Analyze a given legal document text and adjusts the response based on the type of document.
 
@@ -447,7 +448,7 @@ class PropertiesCrawJUD:
         """
         return self.OtherUtils.gpt_chat
 
-    @CustomProperty
+    @property
     def text_is_a_date(self) -> Callable[..., bool]:
         return self.OtherUtils.text_is_a_date
 
