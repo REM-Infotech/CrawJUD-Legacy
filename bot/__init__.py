@@ -1,3 +1,22 @@
+"""
+Package for CrawJUD-Bots, a web scraper and bot for automated interaction with the Brazilian Justice System.
+
+Subpackages:
+    core: Core functions for CrawJUD-Bots.
+    shared: Shared functions and classes between packages.
+    Utils: Utility functions and classes for CrawJUD-Bots.
+    common: Common functions and classes for CrawJUD-Bots.
+    scripts: Scripts for CrawJUD-Bots.
+
+Modules:
+    __init__: Initialization module for the CrawJUD-Bots package.
+    core: Core functions for CrawJUD-Bots.
+    shared: Shared functions and classes between packages.
+    Utils: Utility functions and classes for CrawJUD-Bots.
+    common: Common functions and classes for CrawJUD-Bots.
+    scripts: Scripts for CrawJUD-Bots.
+"""
+
 from __future__ import annotations
 
 import platform
@@ -60,6 +79,13 @@ class BotThread(Process):
     exc_bot: Exception = None
 
     def join(self) -> None:
+        """
+        Wait for the BotThread to finish its execution.
+
+        This method overrides the `join` method of the `Process` class.
+        It waits for the thread to complete its execution. If an exception
+        occurred during the execution of the thread, it raises that exception.
+        """
         Process.join(self)
         if self.exc_bot:
             raise self.exc_bot
@@ -82,6 +108,18 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
+        """
+        Inicia um novo processo de um rob  com base em um conjunto de argumentos.
+
+        Args:
+            path_args (str): Caminho para o arquivo json com argumentos do rob .
+            display_name (str): Nome do rob  para ser exibido na interface de controle.
+            system (str): Sistema do rob  (projudi, pje, elaw, caixa, etc.).
+            typebot (str): Tipo do rob  (capa, movimenta o, proc parte, etc.).
+
+        Returns:
+            str: Status do rob  (Finalizado!).
+        """
         try:
             process = BotThread(
                 target=WorkerBot,
@@ -124,6 +162,24 @@ class WorkerBot:
         *args: Tuple[str],
         **kwargs: Dict[str, str],
     ) -> None:
+        """
+        Initialize a WorkerBot instance with specified parameters.
+
+        This constructor sets up a WorkerBot instance, importing the necessary bot
+        module based on the specified system and executing the bot with the provided
+        arguments.
+
+        Args:
+            path_args (str): The path to the arguments file for the bot.
+            display_name (str): The display name for the bot.
+            system (str): The system for which the bot is being initialized.
+            typebot (str): The type of bot being executed.
+            *args (Tuple[str]): Additional positional arguments.
+            **kwargs (Dict[str, str]): Additional keyword arguments.
+
+        Raises:
+            Exception: If an error occurs during the bot's initialization or execution.
+        """
         try:
             from app.run import flask_app as app
 
@@ -156,6 +212,17 @@ class WorkerBot:
 
     @classmethod
     def stop(cls, processID: int, pid: str, app: Flask = None) -> str:
+        """
+        Stop a process with the given processID and return a message accordingly.
+
+        Args:
+            processID (int): The process ID of the process to be stopped.
+            pid (str): The PID of the process to be stopped.
+            app (Flask, optional): The Flask app instance. Defaults to None.
+
+        Returns:
+            str: A message indicating whether the process was stopped or not.
+        """
         try:
             Process = AsyncResult(processID)
 

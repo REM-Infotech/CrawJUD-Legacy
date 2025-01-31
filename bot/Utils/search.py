@@ -1,3 +1,23 @@
+"""This module provides the SearchBot class for handling the search of processes.
+
+Attributes:
+    parte_name (str): The name of the party to be searched.
+    bot_data (dict): The data of the process to be searched.
+
+Methods:
+    __init__: This method is the constructor of the class. It receives the
+        parte_name and bot_data as parameters.
+    search: This method is responsible for performing the search of the process.
+        It should be implemented in the subclasses.
+
+Class Methods:
+    is_search_successful: This method is responsible for verifying if the search
+        was successful. It should be implemented in the subclasses.
+
+Raises:
+    ErroDeExecucao: If an error occurs during the execution of the search.
+"""
+
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
@@ -13,12 +33,36 @@ from ..core import CrawJUD
 
 
 class SearchBot(CrawJUD):
+    """
+    A class to handle the search of processes on the Web.
+
+    Subclasses are responsible for implementing the logic of the search in the
+    respective system.
+
+    Attributes:
+        parte_name (str): The name of the party to be searched.
+        bot_data (dict): The data of the process to be searched.
+
+    Raises:
+        ErroDeExecucao: If an error occurs during the execution of the search.
+    """
+
     def __init__(
         self,
     ) -> None:
-        """"""
+        """Initialize the SearchBot class."""
 
     def search_(self) -> bool:
+        """
+        Perform a search for a process based on the type of bot.
+
+        This method constructs a search message based on the type of bot
+        and initiates the search process by calling a system-specific search
+        method. It logs the search initiation and success messages.
+
+        Returns:
+            bool: True if the process is found, False otherwise.
+        """
         self.message = (
             f'Buscando processos pelo nome "{self.parte_name}"'
             if self.typebot == "proc_parte"
@@ -72,6 +116,16 @@ class SearchBot(CrawJUD):
         return False
 
     def esaj_search(self) -> None:
+        """
+        Perform a search for a process based on the type of bot using the ESAJ system.
+
+        This method constructs a search message based on the type of bot
+        and initiates the search process by calling a system-specific search
+        method. It logs the search initiation and success messages.
+
+        Returns:
+            bool: True if the process is found, False otherwise.
+        """
         grau = self.bot_data.get("GRAU", 1)
 
         if isinstance(grau, str):
@@ -171,6 +225,16 @@ class SearchBot(CrawJUD):
         return returns
 
     def search_proc(self) -> bool:
+        """
+        Perform a search for a process based on the type of bot using the PROJUDI system.
+
+        This method constructs a search message based on the type of bot
+        and initiates the search process by calling a system-specific search
+        method. It logs the search initiation and success messages.
+
+        Returns:
+            bool: True if the process is found, False otherwise.
+        """
         inputproc = None
         enterproc = None
         allowacess = None
@@ -182,6 +246,17 @@ class SearchBot(CrawJUD):
                 raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
 
         def get_link_grau2() -> str | None:
+            """
+            Retrieve the link to access the resources related to the process for the second grade.
+
+            This method waits for the presence of the link to access the resources related to the process
+            and filters the last element in the list of elements that contains the text "Clique aqui para
+            visualizar os recursos relacionados". If the link is found, it returns the href attribute of
+            the element. Otherwise, it returns None.
+
+            Returns:
+                str | None: The link to access the resources related to the process or None.
+            """
             with suppress(Exception, TimeoutException, NoSuchElementException):
                 info_proc = self.wait.until(
                     EC.presence_of_all_elements_located(
