@@ -1,3 +1,5 @@
+"""Blueprint for managing bot operations such as launching, stopping, and scheduling."""
+
 import json
 import os
 import pathlib
@@ -24,6 +26,16 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 @bot.post("/bot/<id>/<system>/<typebot>")
 def botlaunch(id: int, system: str, typebot: str) -> Response:
+    """Launch a new bot with the specified parameters.
+
+    Args:
+        id (int): The identifier for the bot.
+        system (str): The system the bot is associated with.
+        typebot (str): The type of bot to launch.
+
+    Returns:
+        Response: JSON response indicating the success or error of the launch operation.
+    """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
     from status import SetStatus
@@ -99,6 +111,15 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
 def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
+    """Stop a running bot based on user and PID.
+
+    Args:
+        user (str): The user requesting the stop.
+        pid (str): The PID of the bot to stop.
+
+    Returns:
+        Response: JSON response indicating the result of the stop operation.
+    """
     from flask import current_app as app
 
     from app.models import Executions
@@ -117,6 +138,16 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
 
 @bot.post("/periodic_bot/<id>/<system>/<typebot>")
 def periodic_bot(id: int, system: str, typebot: str) -> Response:
+    """Schedule a bot to run periodically based on provided cron arguments.
+
+    Args:
+        id (int): The identifier for the bot.
+        system (str): The system the bot is associated with.
+        typebot (str): The type of bot to schedule.
+
+    Returns:
+        Response: JSON response indicating the success of the scheduling operation.
+    """
     from status import SetStatus
 
     db: SQLAlchemy = app.extensions["sqlalchemy"]

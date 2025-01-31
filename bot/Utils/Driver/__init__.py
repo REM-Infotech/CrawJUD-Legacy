@@ -1,3 +1,5 @@
+"""Module for managing WebDriver instances and related utilities."""
+
 import json
 import pathlib
 import platform
@@ -39,9 +41,12 @@ except ModuleNotFoundError:
 
 
 class DriverBot(CrawJUD):
+    """Bot for handling WebDriver operations within CrawJUD framework."""
+
     def __init__(
         self,
     ) -> None:
+        """Initialize the DriverBot with default settings."""
         # init_
         ...
 
@@ -57,15 +62,29 @@ class DriverBot(CrawJUD):
 
     @property
     def list_args(self) -> List[str]:
+        """Get the list of arguments for WebDriver."""
         return self.list_args_
 
     @list_args.setter
     def list_args(self, new_Args: List[str]) -> None:
+        """Set a new list of arguments for WebDriver.
+
+        Args:
+            new_Args (List[str]): The new arguments to set.
+        """
         self.list_args_ = new_Args
 
     def DriverLaunch(
         self, message: str = "Inicializando WebDriver"
     ) -> Tuple[WebDriver, WebDriverWait]:
+        """Launch the WebDriver with specified parameters.
+
+        Args:
+            message (str, optional): Initialization message. Defaults to "Inicializando WebDriver".
+
+        Returns:
+            Tuple[WebDriver, WebDriverWait]: The WebDriver instance and its WebDriverWait.
+        """
         try:
             pid_path = self.output_dir_path.resolve()
 
@@ -169,8 +188,15 @@ class DriverBot(CrawJUD):
 
 
 class SetupDriver:
+    """Setup utility for downloading and configuring the appropriate WebDriver."""
+
     @property
     def code_ver(self) -> str:
+        """Retrieve the major version of the installed Chrome browser.
+
+        Returns:
+            str: The Chrome version.
+        """
         return ".".join(chrome_ver().split(".")[:-1])
 
     progress = Progress(
@@ -196,6 +222,12 @@ class SetupDriver:
     def __init__(
         self, destination: Path = Path(__file__).cwd().resolve(), **kwrgs
     ) -> None:
+        """Initialize the SetupDriver with destination path and additional arguments.
+
+        Args:
+            destination (Path, optional): The destination directory for WebDriver. Defaults to current working directory.
+            **kwrgs: Additional keyword arguments.
+        """
         new_stem = f"chromedriver{self.code_ver}.zip"
         self.file_path = (
             pathlib.Path(__file__)
@@ -220,6 +252,11 @@ class SetupDriver:
         self.destination = destination
 
     def __call__(self) -> str:
+        """Execute the driver setup process.
+
+        Returns:
+            str: The name of the downloaded WebDriver.
+        """
         with Live(self.progress_group):
             with ThreadPoolExecutor() as pool:
                 self.ConfigBar(pool)
@@ -228,6 +265,11 @@ class SetupDriver:
         return self.destination.name
 
     def ConfigBar(self, pool: ThreadPoolExecutor):
+        """Configure the progress bar for downloading WebDriver.
+
+        Args:
+            pool (ThreadPoolExecutor): The thread pool executor for handling downloads.
+        """
         self.current_task_id = self.current_app_progress.add_task(
             "[bold blue] Baixando Chromedriver"
         )
@@ -253,6 +295,11 @@ class SetupDriver:
                 shutil.copy(self.file_path, self.destination)
 
     def getUrl(self) -> str:
+        """Construct the download URL for the WebDriver based on Chrome version.
+
+        Returns:
+            str: The download URL.
+        """
         # Verifica no endpoint qual a versão disponivel do WebDriver
         url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
         results = requests.get(url_chromegit, timeout=60)
@@ -281,18 +328,15 @@ class SetupDriver:
         return url_driver
 
     def copy_url(self, task_id: TaskID, url: str, path: Path) -> None:
-        """Copy a URL to a specified path and extract its contents.
-
-        This method downloads a file from the given URL, saves it as a zip file,
-        and extracts its contents to the specified path. It also updates the
-        progress of the task.
+        """Download and extract the WebDriver from the specified URL.
 
         Args:
             task_id (TaskID): The ID of the task to update progress.
             url (str): The URL to download the file from.
             path (Path): The path to save and extract the file to.
-        Returns:
-            None
+
+        Raises:
+            Exception: If the download or extraction fails.
         """
         zip_name = path.with_name(f"{path.name}.zip")
         response = requests.get(f"https://{url}", stream=True, timeout=60)

@@ -1,3 +1,5 @@
+"""Module defining database models for CrawJUD bots and related entities."""
+
 from datetime import datetime
 
 import pytz
@@ -6,6 +8,8 @@ from app import db
 
 
 class BotsCrawJUD(db.Model):
+    """Model representing CrawJUD bots."""
+
     __tablename__ = "bots"
     id = db.Column(db.Integer, primary_key=True)
     display_name = db.Column(db.String(length=45), nullable=False)
@@ -19,6 +23,8 @@ class BotsCrawJUD(db.Model):
 
 
 class Credentials(db.Model):
+    """Model representing user credentials."""
+
     __tablename__ = "credentials"
     id = db.Column(db.Integer, primary_key=True)
     nome_credencial = db.Column(db.String(length=45), nullable=False)
@@ -37,6 +43,8 @@ class Credentials(db.Model):
 
 
 class Executions(db.Model):
+    """Model representing bot executions."""
+
     __tablename__ = "executions"
     pid = db.Column(db.String(length=12), nullable=False)
     id = db.Column(db.Integer, primary_key=True)
@@ -65,6 +73,8 @@ class Executions(db.Model):
 
 
 class CacheLogs(db.Model):
+    """Model representing cache logs for bot executions."""
+
     __bind_key__ = "cachelogs"
     __tablename__ = "cachelogs"
     id = db.Column(db.Integer, primary_key=True)
@@ -81,6 +91,8 @@ class CacheLogs(db.Model):
 
 
 class ThreadBots(db.Model):
+    """Model representing threads associated with bot executions."""
+
     __bind_key__ = "cachelogs"
     __tablename__ = "thread_bots"
     id = db.Column(db.Integer, primary_key=True)

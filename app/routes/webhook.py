@@ -1,3 +1,5 @@
+"""Blueprint for handling GitHub webhook events."""
+
 import hashlib
 import hmac
 import json
@@ -22,6 +24,13 @@ wh = Blueprint("webhook", __package__)
 # Endpoint para o webhook
 @wh.post("/webhook")
 def github_webhook() -> Response:  # pragma: no cover
+    """Handle incoming GitHub webhook events.
+
+    Verifies the signature, processes release events, and updates servers accordingly.
+
+    Returns:
+        Response: JSON response indicating the result of the webhook processing.
+    """
     app = current_app
     data = request.json
 
@@ -72,12 +81,13 @@ def verify_signature(
 ) -> None:  # pragma: no cover
     """Verify that the payload was sent from GitHub by validating SHA256.
 
-    Raise and return 403 if not authorized.
-
     Args:
-        payload_body: original request body to verify (request.body())
-        secret_token: GitHub app webhook token (WEBHOOK_SECRET)
-        signature_header: header received from GitHub (x-hub-signature-256)
+        payload_body (Dict[str, str], optional): Original request body to verify.
+        secret_token (str, optional): GitHub app webhook token.
+        signature_header (str, optional): Signature header received from GitHub.
+
+    Raises:
+        abort(403): If the signature is missing or does not match.
     """
     if not signature_header:
         raise abort(403, detail="x-hub-signature-256 header is missing!")
