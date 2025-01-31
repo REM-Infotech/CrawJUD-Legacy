@@ -1,3 +1,12 @@
+"""
+Module for "Complemento de Cadastro".
+
+Classes:
+    complement: A class that configures and retrieves an elements bot instance
+    and interacts with the ELAW system to complete the registration of a process.
+
+"""
+
 import os
 import pathlib
 import time
@@ -42,6 +51,24 @@ campos_validar: List[str] = [
 
 class complement(CrawJUD):
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the complement class.
+
+        This method initializes the complement class by calling the base class's
+        __init__ method and setting up the bot and authentication.
+
+        Parameters
+        ----------
+        *args : tuple
+            A tuple of arguments to be passed to the base class's __init__ method.
+        **kwrgs : dict
+            A dictionary of keyword arguments to be passed to the base class's
+            __init__ method.
+
+        Returns
+        -------
+        None
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -53,6 +80,19 @@ class complement(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the complement bot.
+
+        This method executes the complement bot by calling the queue method
+        for each row in the DataFrame, and handling any exceptions that may
+        occur. If the Webdriver is closed unexpectedly, it will be
+        reinitialized. The bot will also be stopped if the isStoped attribute
+        is set to True.
+
+        Returns
+        -------
+        None
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -99,6 +139,31 @@ class complement(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Execute the queue process for complementing registration.
+
+        This method performs a series of operations to complete the registration
+        process using the ELAW system. It checks the current search status, formats
+        the bot data, and if the process is found, it initializes the registration
+        complement by interacting with various web elements. The method logs the
+        steps, calculates the execution time, and handles potential exceptions
+        during the process.
+
+        Steps:
+        1. Check the search status and format bot data.
+        2. If the search is successful:
+        - Initialize the registration complement.
+        - Locate and click the edit button for complementing processes.
+        - Iterate over the bot data to perform specific actions based on keys.
+        - Validate fields and participants.
+        - Save all changes and confirm the save operation.
+        - Log the success message and execution time.
+        3. If the search is not successful, raise an error.
+        4. Handle any exceptions by raising `ErroDeExecucao`.
+
+        Returns:
+            None
+        """
         try:
             search = self.search_bot()
             self.bot_data = self.elawFormats(self.bot_data)
@@ -150,7 +215,7 @@ class complement(CrawJUD):
 
                 self.validar_advs_participantes()
 
-                self.salvar_tudo()
+                self.save_all()
 
                 if self.confirm_save() is True:
                     name_comprovante = self.print_comprovante()
@@ -177,7 +242,7 @@ class complement(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e)
 
-    def salvar_tudo(self) -> None:
+    def save_all(self) -> None:
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
             EC.presence_of_element_located(
