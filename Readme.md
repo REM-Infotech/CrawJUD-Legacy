@@ -24,6 +24,7 @@ _Última contagem: `10/12/2024 10:16`_
 ## Table of Contents
 
 - [Project Structure](#project-structure)
+- [Dependencies](../doc/dependencies.md)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Debugging](#debugging)
