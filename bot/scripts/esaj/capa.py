@@ -1,3 +1,10 @@
+"""
+Module: capa.
+
+This module manages the 'capa' functionalities within the CrawJUD-Bots application.
+Handles tasks related to document processing, authentication, and error handling within the 'capa' context.
+"""
+
 import time
 from contextlib import suppress
 from time import sleep
@@ -15,7 +22,29 @@ from ...core import CrawJUD
 
 
 class capa(CrawJUD):
+    """
+    Manages 'capa' related tasks within the application.
+
+    Inherits from CrawJUD to utilize core functionalities for processing 'capa' operations.
+
+    Attributes:
+        start_time (float): Timestamp marking the start of execution.
+        max_rows (int): Total number of rows to process.
+        row (int): Current row being processed.
+        bot_data (dict): Data associated with the current bot operation.
+        isStoped (bool): Flag indicating if the execution should stop.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the capa instance.
+
+        Sets up the bot by initializing the parent class, configuring settings, and authenticating.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -27,6 +56,15 @@ class capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the main process for 'capa' operations.
+
+        Iterates through each row of data, managing the execution flow,
+        handling session expirations, and logging any errors that occur during processing.
+
+        Raises:
+            ErroDeExecucao: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -73,6 +111,15 @@ class capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Queue the tasks for processing.
+
+        Executes the sequence of actions required to process a 'capa', including
+        searching for the bot and adding processes.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the queuing process.
+        """
         try:
             self.search_bot()
             self.append_success(self.get_process_informations())
@@ -81,6 +128,12 @@ class capa(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_process_informations(self) -> list:
+        """
+        Retrieve process information.
+
+        Returns:
+            list: A list containing process information.
+        """
         # chk_advs = ["Advogada", "Advogado"]
         # adv_polo_ativo = "Não consta"
         # adv_polo_passivo = "Não consta"

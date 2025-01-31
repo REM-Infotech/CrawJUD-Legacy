@@ -1,3 +1,9 @@
+"""
+Module: emissao.
+
+This module manages the emission processes within the CrawJUD-Bots application.
+"""
+
 import platform
 import re
 import time
@@ -46,11 +52,26 @@ type_docscss = {
 }
 
 
-class emissao(CrawJUD):
+class Emissao(CrawJUD):
+    """
+    The Emissao class extends CrawJUD to handle emission tasks within the application.
+
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
     count_doc = OtherUtils.count_doc
 
-    def __init__(self, *args, **kwrgs) -> None:
-        super().__init__(*args, **kwrgs)
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initialize the Emissao instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        super().__init__(*args, **kwargs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
@@ -61,6 +82,12 @@ class emissao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the emission process.
+
+        Raises:
+            EmissionError: If an error occurs during emission.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -107,6 +134,12 @@ class emissao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Queue the emission tasks.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the queue process.
+        """
         try:
             custa = str(self.bot_data.get("TIPO_GUIA"))
             if custa.lower() == "custas iniciais":
@@ -125,6 +158,7 @@ class emissao(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def custas_iniciais(self) -> None:
+        """Handle the initial costs emission process."""
         self.driver.get(
             "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"
         )
@@ -179,6 +213,12 @@ class emissao(CrawJUD):
             ).text
 
     def preparo_ri(self) -> None:
+        """
+        Handle the preparation of RI emission process.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the preparation process.
+        """
         portal = self.bot_data.get("PORTAL", "não informado")
         if str(portal).lower() == "esaj":
             self.driver.get(
@@ -249,15 +289,27 @@ class emissao(CrawJUD):
             )
 
     def renajud(self) -> None:
+        """Handle the Renajud emission process."""
         pass
 
     def sisbajud(self) -> None:
+        """Handle the Sisbajud emission process."""
         pass
 
     def custas_postais(self) -> None:
+        """Handle the postal costs emission process."""
         pass
 
     def generate_doc(self) -> str:
+        """
+        Generate the document for emission.
+
+        Returns:
+            str: The URL of the generated document.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during document generation.
+        """
         self.original_window = original_window = self.driver.current_window_handle
         generatepdf: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto))
@@ -297,6 +349,12 @@ class emissao(CrawJUD):
             return f"https://consultasaj.tjam.jus.br{url}"
 
     def downloadpdf(self, link_pdf):
+        """
+        Download the PDF document.
+
+        Args:
+            link_pdf (str): The URL of the PDF document.
+        """
         response = requests.get(link_pdf, timeout=60)
 
         self.nomearquivo = f"{self.tipodoc} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.nomeparte} - {self.pid}.pdf"
@@ -320,6 +378,15 @@ class emissao(CrawJUD):
         self.prt()
 
     def get_barcode(self) -> None:
+        """
+        Extract the barcode from the PDF document.
+
+        Returns:
+            list: A list containing barcode information.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during barcode extraction.
+        """
         try:
             self.message = "Extraindo código de barras"
             self.type_log = "log"

@@ -1,3 +1,9 @@
+"""
+Module: sol_pags.
+
+This module handles the solution of pages within the Elaw system of the CrawJUD-Bots application.
+"""
+
 import os
 import time
 from contextlib import suppress
@@ -20,8 +26,23 @@ from ...core import CrawJUD
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class sol_pags(CrawJUD):
+class SolPags(CrawJUD):
+    """
+    The SolPags class extends CrawJUD to manage page solutions within the application.
+
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the SolPags instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -33,6 +54,7 @@ class sol_pags(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """Execute the main processing loop for page solutions."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -79,6 +101,12 @@ class sol_pags(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the solution queue processing.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during execution.
+        """
         try:
             search = self.search_bot()
 
@@ -99,6 +127,12 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def new_payment(self) -> None:
+        """
+        Create a new payment entry.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during payment creation.
+        """
         try:
             tab_pagamentos: WebElement = self.wait.until(
                 EC.presence_of_element_located(
@@ -124,6 +158,15 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def set_pgto(self, namedef: str):
+        """
+        Set the payment type.
+
+        Args:
+            namedef (str): The name definition for the payment type.
+
+        Raises:
+            ErroDeExecucao: If the payment type is not found.
+        """
         try:
             self.message = "Informando tipo de pagamento"
             self.type_log = "log"
@@ -167,6 +210,12 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def condenacao(self) -> None:
+        """
+        Handle condemnation details.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during condemnation handling.
+        """
         try:
             self.message = "Informando o valor da guia"
             self.type_log = "log"
@@ -403,6 +452,12 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def custas(self) -> None:
+        """
+        Manage cost-related operations.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during cost management.
+        """
         try:
             self.message = "Informando valor da guia"
             self.type_log = "log"
@@ -628,6 +683,7 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def save_changes(self) -> None:
+        """Save all changes made during the payment process."""
         try:
             self.message = "Salvando alterações"
             self.type_log = "log"
@@ -646,6 +702,12 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def confirm_save(self) -> None:
+        """
+        Confirm the saving of payment details.
+
+        Raises:
+            ErroDeExecucao: If the save operation fails.
+        """
         try:
             tab_pagamentos: WebElement = self.wait.until(
                 EC.presence_of_element_located(
@@ -806,6 +868,13 @@ class sol_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def getScreenShot(self, url_page: str, Name_Comprovante1: str):
+        """
+        Capture a screenshot of the specified page.
+
+        Args:
+            url_page (str): The URL of the page to capture.
+            Name_Comprovante1 (str): The name for the screenshot file.
+        """
         self.driver.switch_to.new_window("tab")
         self.driver.get(url_page)
         self.driver.save_screenshot(

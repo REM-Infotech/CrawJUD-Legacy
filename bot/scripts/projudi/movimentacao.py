@@ -1,3 +1,9 @@
+"""
+Module: movimentacao.
+
+This module handles movement-related operations within the Projudi system of the CrawJUD-Bots application.
+"""
+
 import os
 import re
 import shutil

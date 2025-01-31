@@ -1,3 +1,9 @@
+"""
+Module: tjdft.
+
+This module handles calculations related to the TJD-Federal Tribunal within the CrawJUD-Bots application.
+"""
+
 import base64
 import os
 import time
@@ -20,9 +26,24 @@ from ...core import CrawJUD
 cookieaceito = []
 
 
-class tjdft(CrawJUD):
-    def __init__(self, *args, **kwrgs) -> None:
-        super().__init__(*args, **kwrgs)
+class Tjdft(CrawJUD):
+    """
+    The Tjdft class extends CrawJUD to handle calculations for the TJD-Federal Tribunal.
+
+    Attributes:
+        cookieaceito (list): List to track accepted cookies.
+        # ...other attributes...
+    """
+
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initialize the Tjdft instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        super().__init__(*args, **kwargs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
@@ -33,6 +54,15 @@ class tjdft(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the main processing loop for calculations.
+
+        Iterates over each entry in the data frame and processes it.
+        Handles session expiration and error logging.
+
+        Raises:
+            Exception: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -79,6 +109,14 @@ class tjdft(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the calculation queue processing.
+
+        Performs the calculation steps and finalizes the execution.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during queue processing.
+        """
         try:
             self.get_calcular()
             self.info_numproc()
@@ -93,6 +131,14 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_calcular(self) -> None:
+        """
+        Access the calculation page.
+
+        This method navigates to the calculation URL and handles cookie acceptance if prompted.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while accessing the calculation page.
+        """
         try:
             self.message = "Acessando Página de cálculo.."
             self.type_log = "log"
@@ -128,6 +174,14 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_numproc(self) -> None:
+        """
+        Inform the process number.
+
+        This method fills in the process number in the calculation form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the process number.
+        """
         try:
             sleep(2)
             self.message = "Informando numero do processo"
@@ -148,6 +202,14 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao("Erro ao informar número do processo", e)
 
     def info_requerente(self) -> None:
+        """
+        Inform the petitioner.
+
+        This method fills in the petitioner's name in the calculation form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the petitioner.
+        """
         try:
             sleep(2)
             css_name_requerente = 'input[name="requerente"][id="requerente"]'
@@ -168,6 +230,14 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_requerido(self) -> None:
+        """
+        Inform the required party.
+
+        This method fills in the required party's name in the calculation form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the required party.
+        """
         try:
             sleep(2)
             css_name_requerido = 'input[name="requerido"][id="requerido"]'
@@ -188,6 +258,14 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_jurosapartir(self) -> None:
+        """
+        Inform the interest starting point.
+
+        This method selects the interest starting point in the calculation form and informs the associated data.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the interest starting point.
+        """
         try:
             self.message = "Informando incidencia de juros e data de incidencia"
             self.type_log = "log"
@@ -240,6 +318,14 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def valores_devidos(self) -> None:
+        """
+        Inform the owed values.
+
+        This method fills in the owed values and their dates in the calculation form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the owed values.
+        """
         try:
             css_data_valor_devido = 'input[id="data-0"][name="parcela_data:list"]'
             self.message = "Informando data valor devido"
@@ -273,6 +359,15 @@ class tjdft(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def acessorios(self) -> None:
+        """
+        Inform accessory values like penalties and fees.
+
+        This method handles the input of accessory financial details in the calculation form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing accessory values.
+        """
+
         def multa_percentual() -> None | Exception:
             try:
                 sleep(1)
@@ -495,6 +590,14 @@ class tjdft(CrawJUD):
                         break
 
     def finalizar_execucao(self) -> None:
+        """
+        Finalize the execution of the calculation.
+
+        This method submits the calculation form, retrieves the calculated value, and saves the PDF receipt.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during finalization.
+        """
         try:
             css_calcular = 'input[type="submit"][value="Calcular"][id="calcular"]'
             calcular = self.driver.find_element(By.CSS_SELECTOR, css_calcular)

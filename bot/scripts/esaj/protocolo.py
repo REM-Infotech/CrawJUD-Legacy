@@ -1,3 +1,10 @@
+"""
+Module: protocolo.
+
+This module handles protocol-related functionalities within the Projudi system of the CrawJUD-Bots application.
+Manages the creation, modification, and finalization of protocols, including file uploads and error handling.
+"""
+
 import os
 import pathlib
 import shutil
@@ -20,7 +27,29 @@ from ...core import CrawJUD
 
 
 class protocolo(CrawJUD):
+    """
+    Manages protocol-related tasks within the Projudi system.
+
+    Inherits from CrawJUD to utilize core functionalities for processing protocols.
+
+    Attributes:
+        start_time (float): Timestamp marking the start of execution.
+        max_rows (int): Total number of rows to process.
+        row (int): Current row being processed.
+        bot_data (dict): Data associated with the current bot operation.
+        isStoped (bool): Flag indicating if the execution should stop.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the protocolo instance.
+
+        Sets up the bot by initializing the parent class, configuring settings, and authenticating.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -32,6 +61,15 @@ class protocolo(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the protocol processing.
+
+        Iterates through each entry in the data frame, managing the execution flow,
+        handling session expirations, and logging any errors that occur during processing.
+
+        Raises:
+            ErroDeExecucao: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -78,6 +116,16 @@ class protocolo(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Queue the tasks for processing protocols.
+
+        Manages the sequence of actions required to process protocols, including
+        searching for the bot, initializing protocols, setting types and subtypes,
+        uploading petition files, linking parties, signing documents, and confirming protocols.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during any step of the protocol processing.
+        """
         try:
             self.search_bot()
             self.init_protocolo()
@@ -93,6 +141,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def init_protocolo(self) -> None:
+        """
+        Initialize the protocol filing process.
+
+        Navigates to the protocol initiation page and handles any preliminary steps
+        required to start the protocol filing.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during protocol initialization.
+        """
         try:
             try:
                 self.prt.print_log(
@@ -133,6 +190,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao inicializar peticionamento")
 
     def set_tipo_protocolo(self) -> None:
+        """
+        Set the type of protocol.
+
+        Interacts with the web elements to specify the type of protocol based on
+        the bot data. Ensures that the type is correctly selected and confirmed.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while setting the protocol type.
+        """
         try:
             self.interact.sleep_load('div[id="loadFeedback"]')
             self.prt.print_log("log", "Informando tipo de peticionamento")
@@ -168,6 +234,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao informar tipo de protocolo")
 
     def set_subtipo_protocolo(self) -> None:
+        """
+        Set the subtype of protocol.
+
+        Specifies the subtype of the protocol by interacting with the relevant
+        web elements. Confirms the selection to ensure accuracy.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while setting the protocol subtype.
+        """
         try:
             self.prt.print_log("log", "Informando subtipo de peticionamento")
             select_categoria_peticao: WebElement = self.wait.until(
@@ -201,6 +276,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao informar subtipo de protocolo")
 
     def set_petition_file(self) -> None:
+        """
+        Attach the petition file to the protocol.
+
+        Handles the uploading of the primary petition document by interacting
+        with the file input elements and ensuring the file is correctly attached.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the petition file upload.
+        """
         try:
             self.prt.print_log("log", "Anexando petição")
             input_file: WebElement = self.wait.until(
@@ -237,6 +321,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Erro ao enviar petição")
 
     def vincular_parte(self) -> None:
+        """
+        Link the relevant party to the petition.
+
+        Associates the specified party with the petition by interacting with
+        the web elements responsible for party selection and linking.
+
+        Raises:
+            ErroDeExecucao: If unable to link the specified party to the petition.
+        """
         try:
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
             self.prt.print_log("log", "Vinculando parte a petição...")
@@ -296,6 +389,12 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao("Não foi possivel vincular parte a petição")
 
     def finish_petition(self) -> None:
+        """
+        Finalize the petition filing process.
+
+        Completes the petition by confirming selections and submitting the
+        necessary information to finalize the filing.
+        """
         self.prt.print_log("log", "Finalizando...")
 
         finish_button = self.driver.find_element(
@@ -313,6 +412,19 @@ class protocolo(CrawJUD):
         confirm_button.click()
 
     def get_confirm_protocol(self) -> list:
+        """
+        Retrieve the confirmation details of the protocol.
+
+        Captures screenshots of the protocol confirmation, combines them, and
+        retrieves the protocol number and confirmation message.
+
+        Returns:
+            list: A list containing the process number, success message, and
+                  the path to the combined screenshot.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while retrieving the confirmation details.
+        """
         try:
             getlinkrecibo: WebElement = WebDriverWait(self.driver, 60).until(
                 EC.presence_of_element_located(

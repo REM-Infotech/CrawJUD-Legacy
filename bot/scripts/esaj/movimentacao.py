@@ -1,3 +1,10 @@
+"""
+Module: movimentacao.
+
+This module manages movement-related functionalities within the Esaj system of the CrawJUD-Bots application.
+Handles the tracking and processing of case movements, including updating statuses and logging activities.
+"""
+
 import time
 from contextlib import suppress
 from datetime import datetime
@@ -13,8 +20,30 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class movimentacao(CrawJUD):
+class Movimentacao(CrawJUD):
+    """
+    Handles movement-related tasks within the Esaj system.
+
+    Inherits from CrawJUD to utilize core functionalities for processing case movements.
+
+    Attributes:
+        start_time (float): Timestamp marking the start of execution.
+        max_rows (int): Total number of rows to process.
+        row (int): Current row being processed.
+        bot_data (dict): Data associated with the current bot operation.
+        isStoped (bool): Flag indicating if the execution should stop.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the Movimentacao instance.
+
+        Sets up the bot by initializing the parent class, configuring settings, and authenticating.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -26,6 +55,15 @@ class movimentacao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the movement processing.
+
+        Iterates through each entry in the data frame, managing the execution flow,
+        handling session expirations, and logging any errors that occur during processing.
+
+        Raises:
+            ErroDeExecucao: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -72,6 +110,15 @@ class movimentacao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Queue the tasks for processing movements.
+
+        Manages the sequence of actions required to process movements, including
+        searching for the bot and retrieving movement information.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during task queuing.
+        """
         try:
             self.appends = []
             self.resultados = []
@@ -88,6 +135,15 @@ class movimentacao(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_moves(self) -> None:
+        """
+        Retrieve movement information.
+
+        Extracts and processes movement-related data from the Esaj system, updating
+        the relevant records and logging the activities.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while retrieving movement information.
+        """
         show_all: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')

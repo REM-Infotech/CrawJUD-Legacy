@@ -1,3 +1,9 @@
+"""
+Module: andamentos.
+
+This module manages the andamento (progress) tracking within the CrawJUD-Bots application.
+"""
+
 import time
 from contextlib import suppress
 from time import sleep
@@ -14,9 +20,24 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class andamentos(CrawJUD):
-    def __init__(self, *args, **kwrgs) -> None:
-        super().__init__(*args, **kwrgs)
+class Andamentos(CrawJUD):
+    """
+    The Andamentos class extends CrawJUD to handle andamento tracking tasks within the application.
+
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initialize the Andamentos instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        super().__init__(*args, **kwargs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
@@ -27,6 +48,15 @@ class andamentos(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the main processing loop for andamentos.
+
+        Iterates over each entry in the data frame and processes it.
+        Handles session expiration and error logging.
+
+        Raises:
+            Exception: If an unexpected error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -73,6 +103,14 @@ class andamentos(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the andamento queue processing.
+
+        Attempts to perform the andamento operations and handles cases where the process is not found.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during queue processing.
+        """
         try:
             search = self.search_bot()
             if search is True:
@@ -101,6 +139,14 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_data(self) -> None:
+        """
+        Inform the date of the andamento.
+
+        This method fills in the date field in the andamento form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the date.
+        """
         try:
             self.message = "Informando data"
             self.type_log = "log"
@@ -122,6 +168,14 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_ocorrencia(self) -> None:
+        """
+        Inform the occurrence details of the andamento.
+
+        This method fills in the occurrence details in the andamento form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the occurrence.
+        """
         try:
             self.message = "Informando ocorrência"
             self.type_log = "log"
@@ -140,6 +194,14 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def info_observacao(self) -> None:
+        """
+        Inform the observation details of the andamento.
+
+        This method fills in the observation details in the andamento form.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while informing the observation.
+        """
         try:
             self.message = "Informando observação"
             self.type_log = "log"
@@ -158,9 +220,25 @@ class andamentos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def add_anexo(self) -> None:
+        """
+        Add attachments to the andamento.
+
+        This method handles the addition of attachments to the andamento form.
+
+        Raises:
+            NotImplementedError: If the method is not yet implemented.
+        """
         pass
 
     def save_andamento(self) -> None:
+        """
+        Save the andamento details.
+
+        This method clicks the save button to persist the andamento data and verifies the save operation.
+
+        Raises:
+            ErroDeExecucao: If the save operation fails or cannot be validated.
+        """
         try:
             self.message = "Salvando andamento..."
             self.type_log = "log"

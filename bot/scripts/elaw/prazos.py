@@ -1,3 +1,9 @@
+"""
+Module: prazos.
+
+This module manages deadline-related functionalities within the Elaw system of the CrawJUD-Bots application.
+"""
+
 import os
 import time
 from contextlib import suppress
@@ -12,8 +18,23 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class prazos(CrawJUD):
+class Prazos(CrawJUD):
+    """
+    The Prazos class extends CrawJUD to handle deadline-related tasks within the application.
+
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the Prazos instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -25,6 +46,7 @@ class prazos(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """Execute the main processing loop for deadlines."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -71,6 +93,12 @@ class prazos(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the deadline queue processing.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during execution.
+        """
         try:
             search = self.search_bot()
             if not search:
@@ -114,6 +142,12 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def TablePautas(self) -> None:
+        """
+        Verify if there are existing schedules for the specified day.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the verification process.
+        """
         try:
             switch_pautaAndamento = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.switch_pautaAndamento
@@ -131,6 +165,12 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def NovaPauta(self) -> None:
+        """
+        Launch a new audience schedule.
+
+        Raises:
+            ErroDeExecucao: If unable to launch a new audience.
+        """
         try:
             self.message = "Lançando nova audiência"
             self.type_log = "log"
@@ -194,6 +234,12 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def save_Prazo(self) -> None:
+        """
+        Save the newly created deadline.
+
+        Raises:
+            ErroDeExecucao: If unable to save the deadline.
+        """
         try:
             self.message = "Salvando..."
             self.type_log = "log"
@@ -209,6 +255,15 @@ class prazos(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def CheckLancamento(self) -> dict[str, str] | None:
+        """
+        Check if the deadline has been successfully recorded.
+
+        Returns:
+            dict[str, str] | None: Details of the recorded deadline or None if not found.
+
+        Raises:
+            ErroDeExecucao: If unable to verify the deadline record.
+        """
         try:
             tablePrazos: WebElement = self.wait.until(
                 EC.presence_of_element_located(

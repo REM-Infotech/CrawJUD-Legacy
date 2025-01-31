@@ -26,18 +26,18 @@ from ...core import CrawJUD
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class cadastro(CrawJUD):
+class Cadastro(CrawJUD):
     """
-    The cadastro class extends CrawJUD to manage registration tasks within the application.
+    The Cadastro class extends CrawJUD to manage registration tasks within the application.
 
     Attributes:
         type_doc (dict): A dictionary mapping document types to their identifiers.
         ...existing attributes...
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """
-        Initialize the cadastro instance.
+        Initialize the Cadastro instance.
 
         This method initializes the cadastro class by calling the base class's
         __init__ method, setting up the bot, performing authentication, and initializing
@@ -45,9 +45,9 @@ class cadastro(CrawJUD):
 
         Args:
             *args: Variable length argument list.
-            **kwrgs: Arbitrary keyword arguments.
+            **kwargs: Arbitrary keyword arguments.
         """
-        super().__init__(*args, **kwrgs)
+        super().__init__(*args, **kwargs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):

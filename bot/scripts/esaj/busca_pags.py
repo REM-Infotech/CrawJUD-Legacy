@@ -1,3 +1,9 @@
+"""
+Module: busca_pags.
+
+This module handles page search functionalities within the CrawJUD-Bots application.
+"""
+
 import time
 from contextlib import suppress
 from datetime import datetime
@@ -10,16 +16,25 @@ from selenium.webdriver.support import expected_conditions as EC
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 
 class busca_pags(CrawJUD):
-    def __init__(self, *args, **kwrgs) -> None:
-        super().__init__(*args, **kwrgs)
+    """
+    The busca_pags class manages page search operations.
 
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
-        #     setattr(PropertiesCrawJUD, key, value)
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
+    def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the busca_pags instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
+        super().__init__(*args, **kwrgs)
 
         super().setup()
         super().auth_bot()
@@ -29,6 +44,7 @@ class busca_pags(CrawJUD):
         )
 
     def execution(self) -> None:
+        """Perform the execution operation."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -75,6 +91,12 @@ class busca_pags(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Perform the queue operation.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the queue operation.
+        """
         try:
             self.get_page_custas_pagas()
             self.page_custas()
@@ -83,6 +105,7 @@ class busca_pags(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_page_custas_pagas(self) -> None:
+        """Get the page of paid costs."""
         generatepdf: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.get_page_custas_pagas)
@@ -95,6 +118,7 @@ class busca_pags(CrawJUD):
         self.driver.get(url)
 
     def page_custas(self) -> None:
+        """Process the page of costs."""
         divcustaspagas: list[WebElement] = self.wait.until(
             EC.presence_of_all_elements_located((By.TAG_NAME, "div"))
         )

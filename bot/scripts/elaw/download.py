@@ -1,3 +1,9 @@
+"""
+Module: download.
+
+This module manages the download functionalities within the CrawJUD-Bots application.
+"""
+
 import os
 import shutil
 import time
@@ -14,9 +20,24 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class download(CrawJUD):
-    def __init__(self, *args, **kwrgs) -> None:
-        super().__init__(*args, **kwrgs)
+class Download(CrawJUD):
+    """
+    The Download class extends CrawJUD to handle download tasks within the application.
+
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Initialize the Download instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        super().__init__(*args, **kwargs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
@@ -27,6 +48,12 @@ class download(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the download process.
+
+        Raises:
+            DownloadError: If an error occurs during execution.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -73,6 +100,12 @@ class download(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Handle the download queue processing.
+
+        Raises:
+            DownloadQueueError: If an error occurs during queue processing.
+        """
         try:
             search = self.search_bot()
             if search is True:
@@ -101,6 +134,12 @@ class download(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def buscar_doc(self) -> None:
+        """
+        Access the attachments page.
+
+        Raises:
+            DocumentSearchError: If an error occurs while accessing the page.
+        """
         self.message = "Acessando página de anexos"
         self.type_log = "log"
         self.prt()
@@ -116,6 +155,12 @@ class download(CrawJUD):
         self.prt()
 
     def download_docs(self) -> None:
+        """
+        Download the documents.
+
+        Raises:
+            DocumentDownloadError: If an error occurs during downloading.
+        """
         table_doc: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.css_table_doc)
@@ -164,7 +209,16 @@ class download(CrawJUD):
                     self.type_log = "info"
                     self.prt()
 
-    def rename_doc(self, namefile: str):
+    def rename_doc(self, namefile: str) -> None:
+        """
+        Rename the downloaded document.
+
+        Args:
+            namefile (str): The new name for the file.
+
+        Raises:
+            DocumentRenameError: If an error occurs during renaming.
+        """
         filedownloaded = False
         while True:
             for root, dirs, files in os.walk(os.path.join(self.output_dir_path)):

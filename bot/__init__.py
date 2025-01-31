@@ -1,5 +1,7 @@
 """
-Package for CrawJUD-Bots, a web scraper and bot for automated interaction with the Brazilian Justice System.
+Package: CrawJUD-Bots.
+
+CrawJUD-Bots is a web scraper and bot for automated interaction with the Brazilian Justice System.
 
 Subpackages:
     core: Core functions for CrawJUD-Bots.
@@ -69,13 +71,19 @@ __all__ = [
 
 process_type = Union[psutil.Process, None]
 
-
 # import signal
 # from pathlib import Path
 # from threading import Thread as Process
 
 
 class BotThread(Process):
+    """
+    The BotThread class extends Process to handle bot execution in a separate thread.
+
+    Attributes:
+        exc_bot (Exception): Stores any exception raised during bot execution.
+    """
+
     exc_bot: Exception = None
 
     def join(self) -> None:
@@ -91,7 +99,12 @@ class BotThread(Process):
             raise self.exc_bot
 
     def run(self) -> None:
-        self.exc_bot: Exception = None
+        """
+        Run the target function in the BotThread.
+
+        Captures any exceptions raised during execution.
+        """
+        self.exc_bot = None
 
         try:
             self._target(*self._args, **self._kwargs)
@@ -100,6 +113,14 @@ class BotThread(Process):
 
 
 class WorkerBot:
+    """
+    The WorkerBot class manages the lifecycle of bot processes.
+
+    Attributes:
+        system (str): The operating system.
+        kwrgs (Dict[str, str]): Keyword arguments for bot configuration.
+    """
+
     system: str
     kwrgs: Dict[str, str]
 
@@ -109,16 +130,19 @@ class WorkerBot:
     @shared_task(ignore_result=False)
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
         """
-        Inicia um novo processo de um rob  com base em um conjunto de argumentos.
+        Start a new bot process based on the provided arguments.
 
         Args:
-            path_args (str): Caminho para o arquivo json com argumentos do rob .
-            display_name (str): Nome do rob  para ser exibido na interface de controle.
-            system (str): Sistema do rob  (projudi, pje, elaw, caixa, etc.).
-            typebot (str): Tipo do rob  (capa, movimenta o, proc parte, etc.).
+            path_args (str): Path to the JSON file with bot arguments.
+            display_name (str): Display name for the bot in the control interface.
+            system (str): System for which the bot is initialized (projudi, pje, elaw, etc.).
+            typebot (str): Type of bot to execute (capa, movimenta, proc parte, etc.).
 
         Returns:
-            str: Status do rob  (Finalizado!).
+            str: Status message indicating bot completion.
+
+        Raises:
+            Exception: If an error occurs during bot initialization or execution.
         """
         try:
             process = BotThread(
@@ -137,12 +161,11 @@ class WorkerBot:
             if not process.is_alive():
                 try:
                     process.join()
-
                 except Exception as e:
                     raise e
 
             while process.is_alive():
-                ...
+                pass
 
             else:
                 process.join()
@@ -150,9 +173,8 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return str("Finalizado!")
+        return "Finalizado!"
 
-    # argv: str = None, botname: str = None
     def __init__(
         self,
         path_args: str,
@@ -193,9 +215,9 @@ class WorkerBot:
 
                 kwargs.update({"display_name": display_name})
 
-                bot_: ClassesSystems = getattr(
+                bot_ = getattr(
                     import_module(f".scripts.{system_}", __package__),
-                    system_,
+                    system_.lower(),
                 )
 
                 bot_(
@@ -213,7 +235,7 @@ class WorkerBot:
     @classmethod
     def stop(cls, processID: int, pid: str, app: Flask = None) -> str:
         """
-        Stop a process with the given processID and return a message accordingly.
+        Stop a process with the given processID.
 
         Args:
             processID (int): The process ID of the process to be stopped.
@@ -221,14 +243,14 @@ class WorkerBot:
             app (Flask, optional): The Flask app instance. Defaults to None.
 
         Returns:
-            str: A message indicating whether the process was stopped or not.
+            str: Message indicating the result of the stop operation.
         """
         try:
-            Process = AsyncResult(processID)
+            process = AsyncResult(processID)
 
-            print(Process.status)
+            print(process.status)
 
-            if app.testing is True or (Process and Process.status == "PENDING"):
+            if app and app.testing or (process and process.status == "PENDING"):
                 path_flag = (
                     Path(__file__)
                     .cwd()
@@ -254,11 +276,20 @@ class WorkerBot:
             return str(e)
 
     @classmethod
-    def check_status(cls, processID: str) -> str:  # pragma: no cover
-        try:
-            Process = AsyncResult(processID)
+    def check_status(cls, processID: str) -> str:
+        """
+        Check the status of a process.
 
-            status: str = Process.status
+        Args:
+            processID (str): The process ID to check.
+
+        Returns:
+            str: Status message of the process.
+        """
+        try:
+            process = AsyncResult(processID)
+
+            status = process.status
             if status == "SUCCESS":
                 return f"Process {processID} stopped!"
 
@@ -269,7 +300,3 @@ class WorkerBot:
 
         except Exception:
             return f"Process {processID} stopped!"
-
-
-if __name__ == "__main__":
-    from .scripts import ClassesSystems

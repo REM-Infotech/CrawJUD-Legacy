@@ -1,3 +1,9 @@
+"""
+Module: proc_parte.
+
+This module manages process-participant interactions within the Projudi system of the CrawJUD-Bots application.
+"""
+
 import os
 import time
 from contextlib import suppress

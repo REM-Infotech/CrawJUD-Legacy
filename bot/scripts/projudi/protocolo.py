@@ -1,3 +1,9 @@
+"""
+Module: protocolo.
+
+This module handles protocol-related functionalities within the Projudi system of the CrawJUD-Bots application.
+"""
+
 import os
 import pathlib
 import time
@@ -28,7 +34,23 @@ dotenv.load_dotenv()
 
 
 class protocolo(CrawJUD):
+    """
+    Handles protocol operations within the Projudi system.
+
+    This class extends CrawJUD to manage the creation, handling, and finalization
+    of protocols within the Projudi system. It includes functionalities such as
+    adding moves, uploading files, signing documents, and capturing screenshots
+    upon successful protocol processing.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the protocolo instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -40,6 +62,12 @@ class protocolo(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the protocol processing.
+
+        Iterates through each entry in the data frame, managing the execution flow,
+        handling session expirations, and logging any errors that occur during processing.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -87,6 +115,7 @@ class protocolo(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """Manage the execution queue for protocol processing."""
         try:
             search = self.search_bot()
 
@@ -134,6 +163,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def confirm_protocol(self) -> str | None:
+        """
+        Confirm the protocol and retrieve the success message.
+
+        Waits for the success message element to appear and extracts the protocol
+        number from the message.
+
+        Returns:
+            str | None: The extracted protocol number if available, otherwise None.
+        """
         successMessage = None
         with suppress(TimeoutException):
             successMessage = (
@@ -149,6 +187,18 @@ class protocolo(CrawJUD):
         return successMessage
 
     def set_parte(self) -> bool:
+        """
+        Select the appropriate party for the protocol.
+
+        Navigates through the available parties and selects the one specified in
+        the bot data. Ensures that the selection is successful.
+
+        Returns:
+            bool: True if the party was successfully selected, False otherwise.
+
+        Raises:
+            ErroDeExecucao: If unable to select the specified party.
+        """
         # self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, 'iframe[name="userMainFrame"]'))
         self.message = "Selecionando parte"
         self.type_log = "log"
@@ -231,6 +281,15 @@ class protocolo(CrawJUD):
         return selected_parte
 
     def add_new_move(self) -> None:
+        """
+        Add a new move to the protocol.
+
+        Initiates the process of adding a new move by interacting with the web
+        elements, entering the type of protocol, and confirming the addition.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the addition of a new move.
+        """
         try:
             self.message = "Inicializando peticionamento..."
             self.type_log = "log"
@@ -277,6 +336,16 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def add_new_file(self) -> None:
+        """
+        Add a new file to the protocol.
+
+        Handles the uploading of the primary petition and any additional attachments.
+        Interacts with the file input elements and ensures that files are uploaded
+        successfully.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during file upload.
+        """
         try:
             """PARA CORRIGIR"""
             # file = str(self.bot_data.get("PETICAO_PRINCIPAL"))
@@ -342,6 +411,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def set_file_principal(self) -> None:
+        """
+        Set the principal file for the protocol.
+
+        Selects the main file from the list of uploaded files to designate it as
+        the primary document for the protocol.
+
+        Raises:
+            ErroDeExecucao: If unable to set the principal file.
+        """
         try:
             tablefiles: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
@@ -358,6 +436,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def more_files(self) -> None:
+        """
+        Add more files to the protocol.
+
+        Uploads additional files if specified in the bot data. Iterates through
+        the list of attachments and uploads each one, setting their types accordingly.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the uploading of additional files.
+        """
         try:
             sleep(0.5)
 
@@ -409,6 +496,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def sign_files(self) -> None:
+        """
+        Sign the protocol files.
+
+        Automates the signing process by entering the certificate password and
+        confirming the signing action. Handles any errors related to incorrect passwords.
+
+        Raises:
+            ErroDeExecucao: If signing fails due to incorrect password or other issues.
+        """
         try:
             self.message = "Assinando arquivos..."
             self.type_log = "log"
@@ -457,6 +553,12 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def finish_move(self) -> None:
+        """
+        Finalize the protocol move.
+
+        Completes the protocol by confirming the selection and concluding the
+        move process. Ensures that the protocol is properly finalized in the system.
+        """
         self.message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
         self.type_log = "log"
         self.prt()
@@ -477,6 +579,20 @@ class protocolo(CrawJUD):
         finish_button.click()
 
     def screenshot_sucesso(self):
+        """
+        Capture a screenshot upon successful protocol processing.
+
+        Takes screenshots of the protocol confirmation and combines them into a
+        single image for verification. Saves the final screenshot to the specified
+        output directory and returns relevant information.
+
+        Returns:
+            list: A list containing the process number, success message, and
+                  the path to the combined screenshot.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during the screenshot process.
+        """
         try:
             table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
             table_moves = table_moves.find_elements(
@@ -534,6 +650,15 @@ class protocolo(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def remove_files(self) -> None:
+        """
+        Remove files from the protocol.
+
+        Deletes uploaded files from the protocol by interacting with the web
+        elements responsible for file management. Confirms deletions through alerts.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during file removal.
+        """
         tablefiles = None
         with suppress(TimeoutException):
             tablefiles: WebElement = WebDriverWait(self.driver, 5).until(
@@ -570,6 +695,13 @@ class protocolo(CrawJUD):
                 sleep(2)
 
     def wait_progressbar(self) -> None:
+        """
+        Wait for the progress bar to complete.
+
+        Continuously checks the state of the progress bar and waits until
+        the upload or processing is finished. Handles any exceptions related
+        to the progress bar's presence or state.
+        """
         while True:
             try:
                 divprogressbar: WebElement = self.wait.until(

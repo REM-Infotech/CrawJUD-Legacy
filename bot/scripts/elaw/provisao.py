@@ -1,3 +1,9 @@
+"""
+Module: provisao.
+
+This module handles provision-related functionalities within the Elaw system of the CrawJUD-Bots application.
+"""
+
 import os
 import pathlib
 import time
@@ -19,8 +25,23 @@ from ...core import CrawJUD
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class provisao(CrawJUD):
+class Provisao(CrawJUD):
+    """
+    The Provisao class extends CrawJUD to manage provisions within the application.
+
+    Attributes:
+        attribute_name (type): Description of the attribute.
+        # ...other attributes...
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize the Provisao instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -32,6 +53,7 @@ class provisao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """Execute the main processing loop for provisions."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -77,7 +99,13 @@ class provisao(CrawJUD):
 
         self.finalize_execution()
 
-    def queue(self) -> None | Exception:
+    def queue(self) -> None:
+        """
+        Handle the provision queue processing.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during execution.
+        """
         # module = "search_processo"
 
         try:
@@ -101,12 +129,10 @@ class provisao(CrawJUD):
             raise e
 
     def chk_risk(self):
-        """Check the risk label and select the appropriate risk type.
+        """
+        Check and select the appropriate risk type based on the provision label.
 
-        This method waits for the risk label element to be present on the page.
-        If the label text is "Risco Quebrado", it selects the "Risco" option
-        from the risk type dropdown.
-        Returns:
+        Raises:
             None
         """
         label_risk = self.wait.until(
@@ -119,6 +145,12 @@ class provisao(CrawJUD):
             self.Select2_ELAW(self.elements.type_risk_select, "Risco")
 
     def setup_calls(self):
+        """
+        Configure sequence of method calls based on the provision data.
+
+        Returns:
+            list: A list of method references to be called.
+        """
         calls = []
 
         # module = "get_valores_proc"
@@ -165,6 +197,12 @@ class provisao(CrawJUD):
         return calls
 
     def get_valores_proc(self) -> str:
+        """
+        Retrieve the values related to the process.
+
+        Returns:
+            str: Description of the process values.
+        """
         get_valores: WebElement = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores))
         )
@@ -192,6 +230,12 @@ class provisao(CrawJUD):
         return "Contém valores"
 
     def add_new_valor(self):
+        """
+        Add a new value entry.
+
+        Raises:
+            ErroDeExecucao: If unable to update the provision.
+        """
         try:
             div_tipo_obj: WebElement = self.wait.until(
                 EC.presence_of_element_located(
@@ -225,6 +269,7 @@ class provisao(CrawJUD):
             raise ErroDeExecucao("Não foi possivel atualizar provisão", e=e)
 
     def edit_valor(self):
+        """Edit an existing value entry."""
         editar_pedido: WebElement = self.wait.until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, self.elements.botao_editar)
@@ -233,6 +278,12 @@ class provisao(CrawJUD):
         editar_pedido.click()
 
     def set_valores(self):
+        """
+        Set the provision values.
+
+        Raises:
+            None
+        """
         try:
             self.message = "Informando valores"
             self.type_log = "log"
@@ -264,6 +315,12 @@ class provisao(CrawJUD):
             raise e
 
     def set_risk(self):
+        """
+        Set the risk type for the provision.
+
+        Raises:
+            None
+        """
         try:
             self.message = "Alterando risco"
             self.type_log = "log"
@@ -308,6 +365,12 @@ class provisao(CrawJUD):
             raise e
 
     def informar_datas(self):
+        """
+        Inform the correction base date and interest date.
+
+        Raises:
+            None
+        """
         try:
             self.message = "Alterando datas de correção base e juros"
             self.type_log = "log"
@@ -356,6 +419,12 @@ class provisao(CrawJUD):
             raise e
 
     def informar_motivo(self):
+        """
+        Inform the justification for the provision.
+
+        Raises:
+            None
+        """
         try:
             try_salvar = self.driver.find_element(
                 By.CSS_SELECTOR, self.elements.botao_salvar_id
@@ -389,6 +458,12 @@ class provisao(CrawJUD):
             raise e
 
     def save_changes(self) -> None:
+        """
+        Save all changes made during the provision process.
+
+        Raises:
+            ErroDeExecucao: If unable to save the provision.
+        """
         self.interact.sleep_load('div[id="j_id_2z"]')
         salvar = self.driver.find_element(
             By.CSS_SELECTOR, self.elements.botao_salvar_id
@@ -415,6 +490,12 @@ class provisao(CrawJUD):
         self.append_success(data, message="Provisão atualizada com sucesso!")
 
     def print_comprovante(self) -> str:
+        """
+        Capture and save a screenshot as proof of the provision.
+
+        Returns:
+            str: The name of the saved screenshot file.
+        """
         name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
         savecomprovante = os.path.join(
             pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante

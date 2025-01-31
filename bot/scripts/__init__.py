@@ -1,3 +1,9 @@
+"""
+Package: scripts.
+
+This package contains various scripts for different systems within the CrawJUD-Bots application, including projudi, esaj, elaw, pje, calculadoras, and caixa.
+"""
+
 from typing import Union
 
 from .caixa import caixa
