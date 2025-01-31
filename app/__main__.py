@@ -1,4 +1,4 @@
-"""Main module for CrawJUD-Bots application."""
+"""Main entry point for the CrawJUD-Bots application."""
 
 import signal
 import subprocess
@@ -17,7 +17,7 @@ values = environ.get
 
 
 def handle_exit() -> None:
-    """Handle the termination signal and exits the program."""
+    """Handle termination signals and exit the program gracefully."""
     sys.exit(0)
 
 
@@ -54,13 +54,13 @@ signal.signal(signal.SIGINT, handle_exit)
 
 def start_app():
     """
-    Initialize and start the application.
+    Initialize and start the Flask application with SocketIO.
 
-    This function sets up the application context, configures the server
-    settings, and starts the application using the specified parameters.
-    It also handles cleanup operations when the application is interrupted.
+    Sets up the application context, configures server settings,
+    and starts the application using specified parameters.
+
     Raises:
-        SystemExit: Exits the application when a KeyboardInterrupt or TypeError occurs.
+        SystemExit: Exits the application on interruption.
     """
     from app import create_app
 
@@ -109,12 +109,11 @@ def start_app():
 
 def dev_modules():
     """
-    Check dev dependencies are installed.
+    Verify that development dependencies are installed.
 
     Raises:
-        ImportError: If any of the dev dependencies are not installed.
+        ImportError: If any development dependencies are missing.
     """
-
     import importlib
 
     importlib.import_module("isort")
@@ -128,6 +127,12 @@ def dev_modules():
 
 
 if __name__ == "__main__":
+    """
+    Entry point for running the application.
+
+    Loads environment variables, checks for debug mode,
+    and starts the application.
+    """
     if getenv("DEBUG", "False").lower() == "true":
         dev_modules()
 

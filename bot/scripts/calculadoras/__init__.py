@@ -1,3 +1,9 @@
+"""
+Module: calculadoras.
+
+This module initializes and manages the Calculadoras bot within the CrawJUD-Bots application.
+"""
+
 import logging
 import traceback
 from importlib import import_module
@@ -7,7 +13,22 @@ from ...common import StartError
 
 
 class calculadoras:
+    """
+    calculadoras class.
+
+    Initializes and executes the Calculadoras bot based on provided configurations.
+    """
+
     def __init__(self, **kwrgs) -> None:
+        """
+        Initialize a new calculadoras instance.
+
+        Args:
+            **kwrgs: Variable keyword arguments for bot configuration.
+
+        Raises:
+            StartError: If an exception occurs during bot execution.
+        """
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
         try:
@@ -19,6 +40,17 @@ class calculadoras:
 
     @property
     def Bot(self) -> Any:
+        """
+        Bot property.
+
+        Dynamically imports and returns an instance of the specified bot type.
+
+        Returns:
+            Any: An instance of the specified bot.
+
+        Raises:
+            AttributeError: If the specified bot type is not found.
+        """
         rb = getattr(
             import_module(f".{self.typebot.lower()}", __package__),
             self.typebot.lower(),

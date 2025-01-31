@@ -1,3 +1,5 @@
+"""Module for initializing and configuring application logging."""
+
 import logging
 import os
 from logging import DEBUG, Logger
@@ -10,10 +12,11 @@ def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> 
     Initialize and configure logging for the application.
 
     Args:
-        L_F (str): The name of the log file. Defaults to "app.log".
-        L_LVL (int): The logging level. Defaults to logging.DEBUG.
-        mx_bt (int): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
-        bkp_ct (int): The number of backup log files to keep. Defaults to 1.
+        L_F (str, optional): The name of the log file. Defaults to "app.log".
+        L_LVL (int, optional): The logging level. Defaults to logging.DEBUG.
+        mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
+        bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
+
     Returns:
         Logger: Configured logger instance.
     """

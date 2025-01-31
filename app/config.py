@@ -1,3 +1,5 @@
+"""Configuration module for CrawJUD-Bots application."""
+
 import secrets
 from datetime import timedelta
 from os import environ
@@ -10,6 +12,8 @@ load_dotenv()
 
 
 class Config(object):
+    """Base configuration class."""
+
     DEBUG: Type[bool] = False
     TESTING: Type[bool] = False
     SECRET_KEY: Type[str] = secrets.token_hex()
@@ -117,6 +121,8 @@ class Config(object):
 
 
 class ProductionConfig(Config):
+    """Configuration settings for production environment."""
+
     try:
         env = environ
 
@@ -166,6 +172,8 @@ class ProductionConfig(Config):
 
 
 class DevelopmentConfig(Config):
+    """Configuration settings for development environment."""
+
     try:
         env = environ
 
@@ -219,6 +227,8 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
+    """Configuration settings for testing environment."""
+
     try:
         TESTTING = True
         env = environ

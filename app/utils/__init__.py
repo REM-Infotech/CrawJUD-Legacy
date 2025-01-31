@@ -1,3 +1,5 @@
+"""Utility functions and classes for the CrawJUD-Bots application."""
+
 import re
 from os import environ
 from typing import Any
@@ -13,6 +15,15 @@ load_dotenv()
 
 
 def make_celery(app: Flask) -> Celery:
+    """
+    Create and configure a Celery instance with Flask application context.
+
+    Args:
+        app (Flask): The Flask application instance.
+
+    Returns:
+        Celery: Configured Celery instance.
+    """
     celery = Celery(app.import_name)
     celery.conf.update(app.config["CELERY"])
 
@@ -26,6 +37,15 @@ def make_celery(app: Flask) -> Celery:
 
 
 def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cover
+    """
+    Check if the origin is allowed based on predefined patterns.
+
+    Args:
+        origin (str, optional): The origin to check. Defaults to "https://google.com".
+
+    Returns:
+        bool: True if origin is allowed, False otherwise.
+    """
     allowed_origins = [
         r"https:\/\/.*\.nicholas\.dev\.br",
         r"https:\/\/.*\.robotz\.dev",

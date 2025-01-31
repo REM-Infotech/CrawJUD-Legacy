@@ -1,3 +1,9 @@
+"""
+Module: run.
+
+This module serves as the entry point for the CrawJUD-Bots application, handling signal management and initializing the Flask app.
+"""
+
 import signal
 import subprocess
 import sys
@@ -8,10 +14,20 @@ from app import create_app
 
 
 def handle_exit() -> None:
+    """
+    Handle graceful shutdown of the application.
+
+    This function is triggered by termination signals to ensure the application exits cleanly.
+    """
     sys.exit(0)
 
 
 def start_vnc() -> None:
+    """
+    Start the TightVNC server for remote desktop access.
+
+    Executes the TightVNC server with specified parameters and handles any exceptions that occur during startup.
+    """
     try:
         # Executa o comando com verificação de erro
         subprocess.run(

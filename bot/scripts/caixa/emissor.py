@@ -1,3 +1,9 @@
+"""
+Module: emissor.
+
+This module handles the emission of judicial deposit documents within the Caixa system of the CrawJUD-Bots application.
+"""
+
 import os
 import re
 import shutil
@@ -18,9 +24,27 @@ from ...Utils import OtherUtils
 
 
 class emissor(CrawJUD):
+    """
+    emissor class.
+
+    Manages the emission and processing of judicial deposit documents within the Caixa system using the CrawJUD framework.
+    """
+
     count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize a new emissor instance.
+
+        Sets up authentication, initializes necessary variables, and prepares the processing environment.
+
+        Args:
+            *args: Variable length argument list.
+            **kwrgs: Variable keyword arguments for bot configuration.
+
+        Raises:
+            StartError: If an exception occurs during bot execution.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -32,6 +56,11 @@ class emissor(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
+        """
+        Execute the main processing loop.
+
+        Processes each entry in the data frame, handling session expiration and errors appropriately.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -78,6 +107,11 @@ class emissor(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Manage the processing queue.
+
+        Executes the emission steps and handles any exceptions that may occur during the process.
+        """
         try:
             nameboleto = None
             self.get_site()
@@ -94,6 +128,11 @@ class emissor(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_site(self) -> None:
+        """
+        Access the emission site.
+
+        Navigates to the Caixa judicial deposit page and handles initial CAPTCHA and navigation steps.
+        """
         self.message = "Acessando página de emissão"
         self.type_log = "log"
         self.prt()
@@ -145,6 +184,11 @@ class emissor(CrawJUD):
         next_btn.click()
 
     def locale_proc(self) -> None:
+        """
+        Configure the tribunal locale.
+
+        Selects the appropriate tribunal, comarca, vara, and agência based on the provided data.
+        """
         self.interact.wait_caixa()
 
         self.message = "Informando tribunal"
@@ -219,6 +263,11 @@ class emissor(CrawJUD):
                 break
 
     def proc_nattribut(self) -> None:
+        """
+        Process the nature of the tributary.
+
+        Inputs the process number, action type, and tributary nature into the system.
+        """
         numprocess = self.bot_data.get("NUMERO_PROCESSO").split(".")
         numproc_formated = (
             f"{numprocess[0]}.{numprocess[1]}.{numprocess[3]}.{numprocess[4]}"
@@ -261,6 +310,11 @@ class emissor(CrawJUD):
         natureza_tributaria.click()
 
     def dados_partes(self) -> None:
+        """
+        Input party data.
+
+        Provides information about the author and defendant, including names and document types.
+        """
         self.interact.wait_caixa()
         self.message = "Informando nome do autor"
         self.type_log = "log"
@@ -349,6 +403,11 @@ class emissor(CrawJUD):
         campo_doc_reu.send_keys(doc_reu)
 
     def info_deposito(self) -> None:
+        """
+        Provide deposit information.
+
+        Inputs the deposit indicator and value into the system.
+        """
         self.interact.wait_caixa()
         self.message = "Informando indicador depositante"
         self.type_log = "log"
@@ -378,6 +437,11 @@ class emissor(CrawJUD):
         campo_val_deposito.send_keys(val_deposito)
 
     def make_doc(self) -> None:
+        """
+        Generate and download the deposit document.
+
+        Initiates the document generation and handles the download process.
+        """
         self.interact.wait_caixa()
         self.message = "Gerando documento"
         self.type_log = "log"
@@ -397,6 +461,14 @@ class emissor(CrawJUD):
         download_pdf.click()
 
     def rename_pdf(self) -> str:
+        """
+        Rename the downloaded PDF document.
+
+        Renames the PDF file based on the process number, author, and PID.
+
+        Returns:
+            str: The new name of the PDF document.
+        """
         pgto_name = self.bot_data.get("NOME_CUSTOM", "Guia De Depósito")
 
         pdf_name = f"{pgto_name} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
@@ -411,6 +483,20 @@ class emissor(CrawJUD):
         return pdf_name
 
     def get_val_doc_and_codebar(self, pdf_name: str) -> None:
+        """
+        Extract values and barcode from the PDF document.
+
+        Parses the PDF to retrieve necessary information and formats the barcode.
+
+        Args:
+            pdf_name (str): The name of the PDF file to process.
+
+        Returns:
+            list: Contains process number, description text, calculated value, payment date, condenação status, JEC status, via condenação, barcode, and PDF name.
+
+        Raises:
+            ErroDeExecucao: If an error occurs during PDF processing.
+        """
         sleep(0.5)
 
         path_pdf = os.path.join(self.output_dir_path, pdf_name)

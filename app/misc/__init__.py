@@ -1,3 +1,5 @@
+"""Miscellaneous utilities and helpers for the CrawJUD-Bots application."""
+
 import json
 import random
 import string
@@ -27,6 +29,12 @@ load_dotenv()
 
 
 def generate_pid() -> str:
+    """
+    Generate a unique process identifier.
+
+    Returns:
+        str: A unique PID composed of interleaved letters and digits.
+    """
     while True:
         # Gerar 4 letras maiúsculas e 4 dígitos
         letters = random.sample(string.ascii_uppercase, 6)
@@ -43,6 +51,12 @@ def generate_pid() -> str:
 
 
 def storageClient() -> Client:
+    """
+    Create a Google Cloud Storage client.
+
+    Returns:
+        Client: Configured GCS client.
+    """
     project_id = environ.get("project_id")
     # Configure a autenticação para a conta de serviço do GCS
     credentials = CredentialsGCS()
@@ -51,6 +65,12 @@ def storageClient() -> Client:
 
 
 def CredentialsGCS() -> Credentials:
+    """
+    Create Google Cloud Storage credentials from environment variables.
+
+    Returns:
+        Credentials: GCS service account credentials.
+    """
     credentials_dict = json.loads(environ.get("credentials_dict"))
     return Credentials.from_service_account_info(credentials_dict).with_scopes(
         ["https://www.googleapis.com/auth/cloud-platform"]
@@ -60,6 +80,15 @@ def CredentialsGCS() -> Credentials:
 
 
 def bucketGcs(storageClient: Client) -> Bucket:
+    """
+    Retrieve the GCS bucket object.
+
+    Args:
+        storageClient (Client): The GCS client.
+
+    Returns:
+        Bucket: The GCS bucket.
+    """
     bucket_name = environ.get("bucket_name")
 
     bucket_obj = storageClient.bucket(bucket_name)
@@ -69,6 +98,17 @@ def bucketGcs(storageClient: Client) -> Bucket:
 def stop_execution(
     app: Flask, pid: str, robot_stop: bool = False
 ) -> tuple[dict[str, str], int]:
+    """
+    Stop the execution of a bot based on its PID.
+
+    Args:
+        app (Flask): The Flask application instance.
+        pid (str): The process identifier of the bot.
+        robot_stop (bool, optional): Flag to indicate robot stop. Defaults to False.
+
+    Returns:
+        tuple[dict[str, str], int]: A message and HTTP status code.
+    """
     from app import db
     from app.models import Executions, ThreadBots
     from status import SetStatus
@@ -111,6 +151,16 @@ def stop_execution(
 
 
 def get_file(pid: str, app: Flask) -> str:
+    """
+    Retrieve the output file associated with a bot's PID.
+
+    Args:
+        pid (str): The process identifier of the bot.
+        app (Flask): The Flask application instance.
+
+    Returns:
+        str: The filename if found, else an empty string.
+    """
     storage_client = storageClient()
 
     # Obtém o bucket

@@ -20,7 +20,18 @@ from ...core import CrawJUD
 
 
 class proc_parte(CrawJUD):
+    """
+    proc_parte class.
+
+    Handles the processing of participants in Projudi within the CrawJUD framework.
+    """
+
     def __init__(self, *args, **kwrgs) -> None:
+        """
+        Initialize a new proc_parte instance.
+
+        Sets up authentication and initializes necessary variables.
+        """
         super().__init__(*args, **kwrgs)
 
         # PropertiesCrawJUD.kwrgs = kwrgs
@@ -33,6 +44,11 @@ class proc_parte(CrawJUD):
         self.data_append = []
 
     def execution(self) -> None:
+        """
+        Execute the main processing loop.
+
+        Continuously processes queues until stopped, handling session expiration and errors.
+        """
         self.graphicMode = "bar"
         while not self.isStoped:
             with suppress(Exception):
@@ -58,6 +74,11 @@ class proc_parte(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
+        """
+        Manage the processing queue.
+
+        Iterates through varas to search and retrieve process lists, handling exceptions as needed.
+        """
         try:
             for vara in self.varas:
                 self.vara: str = vara
@@ -99,6 +120,11 @@ class proc_parte(CrawJUD):
             self.queue()
 
     def get_process_list(self) -> None:
+        """
+        Retrieve and process the list of processes.
+
+        Extracts process information from the web interface and handles pagination.
+        """
         try:
             table_processos = self.driver.find_element(
                 By.CLASS_NAME, "resultTable"
@@ -138,6 +164,11 @@ class proc_parte(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def use_list_process(self, list_processos: list[WebElement]):
+        """
+        Process a list of WebElement process entries.
+
+        Extracts relevant details from each process and logs successful saves.
+        """
         self.data_append.clear()
         for processo in list_processos:
             numero_processo = processo.find_elements(By.TAG_NAME, "td")[1].text

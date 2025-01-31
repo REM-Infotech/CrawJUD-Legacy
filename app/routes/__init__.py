@@ -1,3 +1,5 @@
+"""Route registration and error handling for the CrawJUD-Bots application."""
+
 from importlib import import_module
 from os import environ
 
@@ -9,6 +11,12 @@ load_dotenv()
 
 
 def register_routes(app: Flask) -> None:
+    """
+    Register blueprints and error handlers with the Flask application.
+
+    Args:
+        app (Flask): The Flask application instance.
+    """
     import_module(".logs", package=__package__)
     from ..routes.bot import bot
     from ..routes.webhook import wh

@@ -1,3 +1,5 @@
+"""Secondary association tables for many-to-many relationships in CrawJUD-Bots."""
+
 from app import db
 
 admins = db.Table(
@@ -10,7 +12,6 @@ admins = db.Table(
         primary_key=True,
     ),
 )
-
 
 execution_bots = db.Table(
     "execution_bots",

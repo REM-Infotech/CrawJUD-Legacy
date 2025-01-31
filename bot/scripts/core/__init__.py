@@ -1,7 +1,7 @@
-"""Core module for the CrawJUD bot.
+"""
+Module: core.
 
-This module provides the main functionalities and configurations
-for the CrawJUD bot, including setup and authentication processes.
+This module contains the CrawJUD class, which serves as the core framework for managing bot operations within the CrawJUD-Bots application.
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ from pathlib import Path
 from pytz import timezone
 
 from ..common import ErroDeExecucao
-from ..shared import PropertiesCrawJUD, TypeHint
+from ...shared import PropertiesCrawJUD, TypeHint
 
 __all__ = [
     pd,
@@ -53,10 +53,10 @@ __all__ = [
 
 
 class CrawJUD(PropertiesCrawJUD):
-    """CrawJUD bot core class.
+    """
+    CrawJUD class.
 
-    Manages the initialization, setup, and authentication processes
-    of the CrawJUD bot.
+    Serves as the core framework for managing bot operations, including setup, authentication, and attribute management.
     """
 
     settings = {
@@ -66,29 +66,34 @@ class CrawJUD(PropertiesCrawJUD):
     }
 
     def prt(self) -> None:
-        """Print a message using the PrintBot's print_msg method.
+        """
+        Print a message using the PrintBot instance.
 
-        This method invokes the print_msg method of the PrintBot instance
-        to display messages.
+        This method delegates the printing of messages to the PrintBot's print_msg method.
         """
         self.PrintBot.print_msg()
 
     def end_prt(self, status: str) -> None:
-        """End the print session with the given status.
+        """
+        End the print session with a given status.
 
         Args:
-            status (str): The status message to indicate the end of the print session.
+            status (str): The status message to log upon ending the print session.
         """
         self.PrintBot.end_prt(status)
 
     def __init__(self, *args, **kwargs) -> None:
-        """Initialize the CrawJUD instance with provided arguments.
+        """
+        Initialize a new CrawJUD instance.
 
-        Loads configurations, sets up paths, and initializes the driver.
+        Sets up configurations, loads settings from a JSON file, and launches the web driver.
 
         Args:
             *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            **kwargs: Variable keyword arguments for configuration.
+
+        Raises:
+            Exception: If an error occurs during the setup process.
         """
         self.kwrgs = kwargs
         list_kwargs = list(kwargs.items())
@@ -109,11 +114,8 @@ class CrawJUD(PropertiesCrawJUD):
         self.state_or_client = self.state if self.state is not None else self.client
 
     def __getattr__(self, nome: str) -> TypeHint:
-        """Retrieve an attribute dynamically.
-
-        Attempts to get the attribute 'nome' from the keyword arguments.
-        If not found, it searches in the CrawJUD class dictionary and
-        then in the PropertiesCrawJUD class dictionaries.
+        """
+        Retrieve an attribute by name.
 
         Args:
             nome (str): The name of the attribute to retrieve.
@@ -122,7 +124,7 @@ class CrawJUD(PropertiesCrawJUD):
             TypeHint: The value of the requested attribute.
 
         Raises:
-            AttributeError: If the attribute is not found in any sources.
+            AttributeError: If the attribute does not exist.
         """
         item = self.kwrgs.get(nome, None)
 
@@ -134,26 +136,11 @@ class CrawJUD(PropertiesCrawJUD):
 
         return item
 
-    # def set_permissions_recursive(self, path: Path, permissions: int) -> None:
-    #     # Converte o caminho para um objeto Path, caso ainda não seja
-    #     path = Path(path)
-
-    #     # Define a permissão para o próprio diretório
-    #     path.chmod(permissions)
-
-    #     # Itera sobre todos os arquivos e diretórios dentro da pasta
-    #     for item in path.rglob("*"):  # rglob percorre recursivamente
-
-    #         try:
-    #             item.chmod(permissions)
-
-    #         except FileNotFoundError:
-    #             continue
-
     def setup(self) -> None:
-        """Set up the bot by loading configuration and preparing the environment.
+        """
+        Set up the bot by loading configuration and preparing the environment.
 
-        Performs the following steps:
+        This method performs the following steps:
         1. Loads configuration from a JSON file specified by `self.path_args`.
         2. Sets attributes based on the loaded configuration.
         3. Initializes logging and output directory paths.
@@ -165,7 +152,7 @@ class CrawJUD(PropertiesCrawJUD):
         9. Launches the driver.
 
         Raises:
-            Exception: If any error occurs during the setup process.
+            Exception: If any error occurs during the setup process, it logs the error and raises the exception.
         """
         self.row = 0
 
@@ -229,15 +216,15 @@ class CrawJUD(PropertiesCrawJUD):
             raise e
 
     def auth_bot(self) -> None:
-        """Authenticate the bot using the specified login method.
+        """
+        Authenticate the bot using the specified login method.
 
-        Checks if the bot is logged in using the provided authentication method.
-        Logs a success message if login is successful.
-        Quits the driver, logs an error message, and raises an exception if login fails.
+        This method checks if the bot is logged in using the provided authentication method.
+        If the login is successful, it logs a success message.
+        If the login fails, it quits the driver, logs an error message, and raises an exception.
 
         Raises:
             ErroDeExecucao: If the login fails.
-            Exception: For any other errors during authentication.
         """
         try:
             if self.login_method:

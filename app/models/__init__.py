@@ -1,3 +1,5 @@
+"""Initialization of database models for the CrawJUD-Bots application."""
+
 from .bots import BotsCrawJUD, CacheLogs, Credentials, Executions, ThreadBots
 from .schedule import ScheduleModel
 from .secondaries import admins, execution_bots

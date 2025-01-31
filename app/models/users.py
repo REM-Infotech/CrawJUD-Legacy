@@ -1,3 +1,5 @@
+"""Database models for users and related entities in CrawJUD-Bots."""
+
 from datetime import datetime
 from uuid import uuid4
 
@@ -10,6 +12,8 @@ salt = bcrypt.gensalt()
 
 
 class SuperUser(db.Model):
+    """Represents a superuser linked to a regular user."""
+
     __tablename__ = "superuser"
     id: int = db.Column(db.Integer, primary_key=True)
     users_id = db.Column(db.Integer, db.ForeignKey("users.id"))
@@ -17,6 +21,8 @@ class SuperUser(db.Model):
 
 
 class Users(db.Model):
+    """Represents a user in the CrawJUD-Bots application."""
+
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(length=30), nullable=False, unique=True)
@@ -36,19 +42,37 @@ class Users(db.Model):
 
     @property
     def senhacrip(self) -> None:
+        """Get the hashed password."""
         return self.senhacrip
 
     @senhacrip.setter
     def senhacrip(self, senha_texto: str):
+        """
+        Set the hashed password from plaintext.
+
+        Args:
+            senha_texto (str): The plaintext password.
+        """
         self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
     def check_password(self, senha_texto_claro: str) -> bool:
+        """
+        Verify the plaintext password against the hashed password.
+
+        Args:
+            senha_texto_claro (str): The plaintext password.
+
+        Returns:
+            bool: True if passwords match, False otherwise.
+        """
         return bcrypt.checkpw(
             senha_texto_claro.encode("utf-8"), self.password.encode("utf-8")
         )
 
 
 class LicensesUsers(db.Model):
+    """Represents a license user in the CrawJUD-Bots application."""
+
     __tablename__ = "licenses_users"
     id: int = db.Column(db.Integer, primary_key=True)
     name_client: str = db.Column(db.String(length=60), nullable=False, unique=True)
