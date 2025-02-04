@@ -159,9 +159,14 @@ class Emissao(CrawJUD):
 
     def custas_iniciais(self) -> None:
         """Handle the initial costs emission process."""
-        self.driver.get(
-            "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"
+        url_custas_ini = "".join(
+            (
+                "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?",
+                "cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003",
+            )
         )
+
+        self.driver.get(url_custas_ini)
 
         self.message = "Informando foro"
         self.type_log = "log"
@@ -207,7 +212,7 @@ class Emissao(CrawJUD):
 
         self.valor_doc = ""
         with suppress(TimeoutException):
-            css_val_doc = "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10) > tbody > tr:nth-child(5) > td:nth-child(3) > strong"
+            css_val_doc = self.elements.css_val_doc_custas_ini
             self.valor_doc: WebElement = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc))
             ).text
@@ -221,14 +226,10 @@ class Emissao(CrawJUD):
         """
         portal = self.bot_data.get("PORTAL", "não informado")
         if str(portal).lower() == "esaj":
-            self.driver.get(
-                "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=9&flTipoCusta=1&&cdServicoCalculoCusta=690019"
-            )
+            self.driver.get(self.elements.url_preparo_esaj)
 
         elif str(portal).lower() == "projudi":
-            self.driver.get(
-                "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=21&flTipoCusta=5&&cdServicoCalculoCusta=690007"
-            )
+            self.driver.get(self.elements.url_preparo_projudi)
 
             set_foro: WebElement = self.wait.until(
                 EC.presence_of_element_located(

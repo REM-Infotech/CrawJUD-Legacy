@@ -85,8 +85,9 @@ exclude_dirs = ["tests", ".venv"]
 skips = ["B404", "B603", "B105", "B605", "B607"]
 
 [tool.flake8]
-max-line-length = 88
-extend-ignore = ["E203", "W503", "E501", "E402"]
+max-line-length = 180
+# extend-ignore = ["E203", "W503", "E501", "E402"]
+# --ignore=E902,E501,W503,E402
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

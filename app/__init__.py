@@ -1,4 +1,8 @@
-"""Initialize the CrawJUD-Bots application with Flask, Celery, SocketIO, and other extensions."""
+"""Initialize the CrawJUD-Bots app with Flask, Celery, SocketIO, and extension.
+
+This module creates the Flask app and configures extensions like Celery,
+SocketIO, Flask-Mail, SQLAlchemy, and Talisman.
+"""
 
 import platform
 from datetime import timedelta
@@ -17,12 +21,15 @@ from redis_flask import Redis
 
 from .utils import check_allowed_origin, init_log, make_celery
 
-async_mode = (
-    str("threading")
-    if (getenv("INTO_DOCKER", None) is None or platform.system() == "Windows")
-    or (getenv("DEBUG", "False").lower() == "true")
-    else str("eventlet")
-)
+valides = [
+    getenv("INTO_DOCKER", None) is None,
+    platform.system() == "Windows",
+    getenv("DEBUG", "False").lower() == "true",
+]
+
+asc = any(valides)
+
+async_mode = str("threading") if asc is True else str("eventlet")
 
 load_dotenv()
 
@@ -49,11 +56,16 @@ class AppFactory:
     """Factory to create and configure the Flask app, SocketIO, and Celery."""
 
     def create_app(self) -> tuple[Flask, SocketIO, Celery]:
-        """Create and configure the Flask application, SocketIO, and Celery worker."""
+        """Create and configure the Flask app, SocketIO, and Celery worker.
+
+        Returns:
+            tuple: A tuple containing Flask app, SocketIO, and Celery worker.
+        """
         global app
 
         # Temporarily disable Redis client
-        # redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True, password=)
+        # redis_client = redis.Redis(host='localhost', port=6379,
+        # decode_responses=True, password=)
 
         env_ambient = environ["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
@@ -87,7 +99,14 @@ class AppFactory:
         register_routes(app)
 
     def init_talisman(self, app: Flask) -> Talisman:
-        """Initialize Talisman for security headers."""
+        """Initialize Talisman for security headers.
+
+        Args:
+            app (Flask): The Flask application.
+
+        Returns:
+            Talisman: The Talisman instance.
+        """
         tslm.init_app(
             app,
             content_security_policy=app.config["CSP"],
@@ -100,7 +119,14 @@ class AppFactory:
         return tslm
 
     def init_socket(self, app: Flask) -> SocketIO:
-        """Initialize the SocketIO instance."""
+        """Initialize the SocketIO instance.
+
+        Args:
+            app (Flask): The Flask application.
+
+        Returns:
+            SocketIO: The initialized SocketIO instance.
+        """
         global io
 
         host_redis = getenv("REDIS_HOST")
@@ -122,18 +148,32 @@ class AppFactory:
         return io
 
     def init_mail(self, app) -> None:
-        """Initialize the mail extension."""
+        """Initialize the Flask-Mail extension."""
         mail.init_app(app)
 
     def init_redis(self, app: Flask) -> Redis:
-        """Initialize the Redis extension."""
+        """Initialize the Redis extension.
+
+        Args:
+            app (Flask): The Flask application.
+
+        Returns:
+            Redis: The Redis instance.
+        """
         global redis
 
         redis = Redis(app)
         return redis
 
     def init_database(self, app: Flask) -> SQLAlchemy:
-        """Initialize the database and create tables if they do not exist."""
+        """Initialize the database and create tables if they do not exist.
+
+        Args:
+            app (Flask): The Flask application.
+
+        Returns:
+            SQLAlchemy: The database instance.
+        """
         import platform
 
         global db

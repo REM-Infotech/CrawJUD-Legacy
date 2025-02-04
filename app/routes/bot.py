@@ -169,7 +169,12 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:
     start_rb = SetStatus(data_bot, request.files, id, system, typebot)
     path_args, display_name = start_rb.start_bot(app, db)
 
-    schedule_str = f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month} {cron._orig_month_of_year} {cron._orig_day_of_week}"
+    schedule_str = "".join(
+        (
+            f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month}",
+            f"{cron._orig_month_of_year} {cron._orig_day_of_week}",
+        )
+    )
 
     task_name = "app.tasks.bot_starter.init_bot"
     args = json.dumps([path_args, display_name, system, typebot])

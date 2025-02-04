@@ -81,9 +81,8 @@ class InfoGeoloc:
             dict[str, str] | None: Geolocation data if successful, else None.
         """
         client = HTTPClient()
-        data = client.fetch(
-            "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
-        )
+        url = "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
+        data = client.fetch(url)
         return json.loads(data.body.decode("utf-8"))
 
     @property

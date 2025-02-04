@@ -1,7 +1,7 @@
-"""
-Module: emissor.
+"""Module: emissor.
 
-This module handles the emission of judicial deposit documents within the Caixa system of the CrawJUD-Bots application.
+This module handles the emission of judicial deposit documents within the
+Caixa system of the CrawJUD-Bots application.
 """
 
 import os
@@ -24,23 +24,23 @@ from ...Utils import OtherUtils
 
 
 class emissor(CrawJUD):
-    """
-    emissor class.
+    """Class emissor.
 
-    Manages the emission and processing of judicial deposit documents within the Caixa system using the CrawJUD framework.
+    Manages the emission and processing of judicial deposit documents within
+    the Caixa system of the CrawJUD-Bots application.
     """
 
     count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize a new emissor instance.
+        """Initialize a new emissor instance.
 
-        Sets up authentication, initializes necessary variables, and prepares the processing environment.
+        Sets up authentication, initializes variables, and prepares the
+        processing environment.
 
         Args:
             *args: Variable length argument list.
-            **kwrgs: Variable keyword arguments for bot configuration.
+            **kwrgs: Keyword arguments for bot configuration.
 
         Raises:
             StartError: If an exception occurs during bot execution.
@@ -56,10 +56,10 @@ class emissor(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the main processing loop.
+        """Execute the main processing loop.
 
-        Processes each entry in the data frame, handling session expiration and errors appropriately.
+        Processes each entry in the data frame, handling session expiration
+        and errors.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -107,10 +107,9 @@ class emissor(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Manage the processing queue.
+        """Manage the processing queue.
 
-        Executes the emission steps and handles any exceptions that may occur during the process.
+        Executes emission steps and handles any exceptions raised.
         """
         try:
             nameboleto = None
@@ -128,10 +127,9 @@ class emissor(CrawJUD):
             raise ErroDeExecucao(e=e)
 
     def get_site(self) -> None:
-        """
-        Access the emission site.
+        """Access the emission site.
 
-        Navigates to the Caixa judicial deposit page and handles initial CAPTCHA and navigation steps.
+        Navigates to the Caixa deposit page and handles CAPTCHA and navigation.
         """
         self.message = "Acessando página de emissão"
         self.type_log = "log"
@@ -184,10 +182,9 @@ class emissor(CrawJUD):
         next_btn.click()
 
     def locale_proc(self) -> None:
-        """
-        Configure the tribunal locale.
+        """Configure the tribunal locale.
 
-        Selects the appropriate tribunal, comarca, vara, and agência based on the provided data.
+        Selects the tribunal, comarca, vara, and agency based on provided data.
         """
         self.interact.wait_caixa()
 
@@ -263,10 +260,9 @@ class emissor(CrawJUD):
                 break
 
     def proc_nattribut(self) -> None:
-        """
-        Process the nature of the tributary.
+        """Process the nature of the tributary.
 
-        Inputs the process number, action type, and tributary nature into the system.
+        Inputs the process number, action type, and tributary nature.
         """
         numprocess = self.bot_data.get("NUMERO_PROCESSO").split(".")
         numproc_formated = (
@@ -310,10 +306,10 @@ class emissor(CrawJUD):
         natureza_tributaria.click()
 
     def dados_partes(self) -> None:
-        """
-        Input party data.
+        """Input party data.
 
-        Provides information about the author and defendant, including names and document types.
+        Provides information about the author and defendant, including names
+        and document types.
         """
         self.interact.wait_caixa()
         self.message = "Informando nome do autor"
@@ -403,8 +399,7 @@ class emissor(CrawJUD):
         campo_doc_reu.send_keys(doc_reu)
 
     def info_deposito(self) -> None:
-        """
-        Provide deposit information.
+        """Provide deposit information.
 
         Inputs the deposit indicator and value into the system.
         """
@@ -437,10 +432,9 @@ class emissor(CrawJUD):
         campo_val_deposito.send_keys(val_deposito)
 
     def make_doc(self) -> None:
-        """
-        Generate and download the deposit document.
+        """Generate and download the deposit document.
 
-        Initiates the document generation and handles the download process.
+        Initiates document generation and handles the download process.
         """
         self.interact.wait_caixa()
         self.message = "Gerando documento"
@@ -461,8 +455,7 @@ class emissor(CrawJUD):
         download_pdf.click()
 
     def rename_pdf(self) -> str:
-        """
-        Rename the downloaded PDF document.
+        """Rename the downloaded PDF document.
 
         Renames the PDF file based on the process number, author, and PID.
 
@@ -471,7 +464,10 @@ class emissor(CrawJUD):
         """
         pgto_name = self.bot_data.get("NOME_CUSTOM", "Guia De Depósito")
 
-        pdf_name = f"{pgto_name} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
+        numproc = self.bot_data.get("NUMERO_PROCESSO")
+        pdf_name = (
+            f"{pgto_name} - {numproc} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
+        )
         sleep(3)
 
         caminho_old_pdf = os.path.join(self.output_dir_path, "guia_boleto.pdf")
@@ -483,16 +479,17 @@ class emissor(CrawJUD):
         return pdf_name
 
     def get_val_doc_and_codebar(self, pdf_name: str) -> None:
-        """
-        Extract values and barcode from the PDF document.
+        """Extract values and barcode from the PDF document.
 
-        Parses the PDF to retrieve necessary information and formats the barcode.
+        Parses the PDF to retrieve necessary information and formats the
+        barcode.
 
         Args:
             pdf_name (str): The name of the PDF file to process.
 
         Returns:
-            list: Contains process number, description text, calculated value, payment date, condenação status, JEC status, via condenação, barcode, and PDF name.
+            list: Process number, description text, value, payment date,
+            condemnation status, JEC status, via condemnation, barcode, and PDF name.
 
         Raises:
             ErroDeExecucao: If an error occurs during PDF processing.
