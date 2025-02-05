@@ -10,7 +10,7 @@ from time import sleep
 from typing import Dict
 
 from socketio import Client
-from socketio.exceptions import BadNamespaceError, ConnectionError
+from socketio.exceptions import BadNamespaceError
 
 sio = Client(reconnection_attempts=5)
 

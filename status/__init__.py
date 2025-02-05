@@ -35,7 +35,7 @@ class SetStatus:
         self,
         form: Dict[str, str] = None,
         files: Dict[str, FileStorage] = None,
-        id: int = 0,
+        id: int = 0,  # noqa: A002
         system: str = None,
         typebot: str = None,
         usr: str = None,
@@ -79,7 +79,7 @@ class SetStatus:
         db: SQLAlchemy,
         user: str = None,
         pid: str = None,
-        id: int = None,
+        id: int = None,  # noqa: A002
     ) -> tuple[str, str]:
         """
         Start the bot and handle file uploads and database interactions.
@@ -95,7 +95,7 @@ class SetStatus:
 
         user = self.user if user is None else user
         pid = self.pid if pid is None else pid
-        id = self.id if id is None else id
+        id = self.id if id is None else id  # noqa: A001
 
         path_pid = Path(path.join(Path(__file__).cwd(), "exec", pid))
         path_pid.mkdir(parents=True, exist_ok=True)

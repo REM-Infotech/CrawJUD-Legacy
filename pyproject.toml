@@ -140,7 +140,7 @@ line-length = 180
 indent-width = 4
 
 [tool.ruff.lint]
-select = ["E", "F", "D", "B", "W", "B9", "S", "T", "Q", "C", "N", "I", "G"]
+select = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W"]
 ignore = ["E402", "D203", "D212"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

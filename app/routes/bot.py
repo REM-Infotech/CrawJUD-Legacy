@@ -24,7 +24,7 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
 @bot.post("/bot/<id>/<system>/<typebot>")
-def botlaunch(id: int, system: str, typebot: str) -> Response:
+def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """
     Launch a new bot with the specified parameters.
 
@@ -141,7 +141,7 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
 
 
 @bot.post("/periodic_bot/<id>/<system>/<typebot>")
-def periodic_bot(id: int, system: str, typebot: str) -> Response:
+def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """
     Schedule a bot to run periodically based on provided cron arguments.
 
