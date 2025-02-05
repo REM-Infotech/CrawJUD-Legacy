@@ -90,7 +90,12 @@ class Interact(CrawJUD):
         sleep(0.5)
 
         if not text.isupper():
-            itens = list(filter(lambda item: not item.text.isupper(), itens.find_element(By.CSS_SELECTOR, "ul").find_elements(By.TAG_NAME, "li")))
+            itens = list(
+                filter(
+                    lambda item: not item.text.isupper(),
+                    itens.find_element(By.CSS_SELECTOR, "ul").find_elements(By.TAG_NAME, "li"),
+                )
+            )
 
         elif text.isupper():
             itens = itens.find_element(By.TAG_NAME, "ul").find_elements(By.TAG_NAME, "li")
@@ -130,7 +135,9 @@ class Interact(CrawJUD):
             load = None
             aria_value = None
             with suppress(TimeoutException):
-                load: WebElement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, element)))
+                load: WebElement = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, element))
+                )
 
             if load:
                 for attributes in ["aria-live", "aria-hidden", "class"]:
@@ -141,7 +148,9 @@ class Interact(CrawJUD):
 
                     break
 
-                if aria_value is None or any(value == aria_value for value in ["off", "true", "spinner--fullpage spinner--fullpage--show"]):
+                if aria_value is None or any(
+                    value == aria_value for value in ["off", "true", "spinner--fullpage spinner--fullpage--show"]
+                ):
                     break
 
             if not load:
@@ -167,7 +176,8 @@ class Interact(CrawJUD):
             check_wait = None
             with suppress(NoSuchElementException):
                 check_wait = self.driver.find_element(
-                    By.CSS_SELECTOR, 'div[id="modal:waitContainer"][style="position: absolute; z-index: 100; background-color: inherit; display: none;"]'
+                    By.CSS_SELECTOR,
+                    'div[id="modal:waitContainer"][style="position: absolute; z-index: 100; background-color: inherit; display: none;"]',  # noqa: E501
                 )
 
             if check_wait:

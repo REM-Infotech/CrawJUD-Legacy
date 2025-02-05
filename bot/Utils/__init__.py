@@ -35,7 +35,19 @@ from .MakeTemplate import MakeXlsx
 from .PrintLogs import PrintBot
 from .search import SearchBot
 
-__all__ = ["AuthBot", "MakeXlsx", "ElementsBot", "Interact", "DriverBot", "SearchBot", "PrintBot", "ELAW_AME", "ESAJ_AM", "PJE_AM", "PROJUDI_AM"]
+__all__ = [
+    "AuthBot",
+    "MakeXlsx",
+    "ElementsBot",
+    "Interact",
+    "DriverBot",
+    "SearchBot",
+    "PrintBot",
+    "ELAW_AME",
+    "ESAJ_AM",
+    "PJE_AM",
+    "PROJUDI_AM",
+]
 
 TypeData = Union[List[Dict[str, Union[str, Numbers, datetime]]], Dict[str, Union[str, Numbers, datetime]]]
 
@@ -243,7 +255,7 @@ class OtherUtils(CrawJUD):
         Returns:
             Dict[str, str]: A dictionary where the keys are city names and the values are their categories.
 
-        """
+        """  # noqa: E501
         return {
             "Alvarães": "Interior",
             "Amaturá": "Interior",
@@ -358,10 +370,10 @@ class OtherUtils(CrawJUD):
             - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
             - If the key is "COMARCA", update "CAPITAL_INTERIOR" based on the value using the cities_Amazonas method.
             - If the key is "DATA_LIMITE" and "DATA_INICIO" is not present, set "DATA_INICIO" to the value of "DATA_LIMITE".
-            - If the value is an integer or float, format it to two decimal places and replace the decimal point with a comma.
+            - If the value is an integer or float, format it to two decimal places and replace the decimal point with a clcomma.
             - If the key is "CNPJ_FAVORECIDO" and its value is empty, set it to "04.812.509/0001-90".
 
-        """
+        """  # noqa: E501
         data_listed = list(data.items())
         for key, value in data_listed:
             if isinstance(value, str):
@@ -539,7 +551,8 @@ class OtherUtils(CrawJUD):
         files = [
             os.path.join(folder, f)
             for f in os.listdir(folder)
-            if (os.path.isfile(os.path.join(folder, f)) and f.lower().endswith(".pdf")) and not f.lower().endswith(".crdownload")  # noqa: W503
+            if (os.path.isfile(os.path.join(folder, f)) and f.lower().endswith(".pdf"))
+            and not f.lower().endswith(".crdownload")  # noqa: W503
         ]
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
@@ -554,7 +567,9 @@ class OtherUtils(CrawJUD):
             str: The formatted string as a secure filename.
 
         """
-        return secure_filename("".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]))
+        return secure_filename(
+            "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)])
+        )
 
     def normalizar_nome(self, word: str) -> str:
         """Return a normalized version of the given word.
@@ -699,7 +714,12 @@ class OtherUtils(CrawJUD):
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": self.headgpt},
-                    {"role": "user", "content": (f"Analise o seguinte texto e ajuste sua resposta de acordo com o tipo de documento: {text_mov}.")},
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Analise o seguinte texto e ajuste sua resposta de acordo com o tipo de documento: {text_mov}."  # noqa: E501
+                        ),
+                    },
                 ],
                 temperature=0.1,
                 max_tokens=300,

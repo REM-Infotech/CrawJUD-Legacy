@@ -101,7 +101,9 @@ class busca_pags(CrawJUD):  # noqa: N801
 
     def get_page_custas_pagas(self) -> None:
         """Get the page of paid costs."""
-        generatepdf: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas)))
+        generatepdf: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas))
+        )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1
         url_end = onclick_value.find("'", url_start)
@@ -141,7 +143,9 @@ class busca_pags(CrawJUD):  # noqa: N801
 
                             data_calculo = datetime.strptime(data_calculo, "%d/%m/%Y")
 
-                            valor_custa = str(rows.find_elements(By.TAG_NAME, "td")[3].text).replace(".", "").replace(",", ".")
+                            valor_custa = (
+                                str(rows.find_elements(By.TAG_NAME, "td")[3].text).replace(".", "").replace(",", ".")
+                            )
 
                             valor_custa = float(valor_custa)
 
@@ -155,7 +159,16 @@ class busca_pags(CrawJUD):  # noqa: N801
                             total += valor_custa
 
                             self.roleta = self.roleta + 1
-                            data = [self.bot_data.get("NUMERO_PROCESSO"), tipo_custa, emissor, data_calculo, valor_custa, cód_guia, parcelaguia, data_pagamento]
+                            data = [
+                                self.bot_data.get("NUMERO_PROCESSO"),
+                                tipo_custa,
+                                emissor,
+                                data_calculo,
+                                valor_custa,
+                                cód_guia,
+                                parcelaguia,
+                                data_pagamento,
+                            ]
                             self.append_success()
                         elif not checkifclass == "":
                             continue
@@ -179,7 +192,16 @@ class busca_pags(CrawJUD):  # noqa: N801
                         self.roleta = self.roleta + 1
                         total += valor_custa
 
-                        data = [self.bot_data.get("NUMERO_PROCESSO"), tipo_custa, emissor, data_calculo, valor_custa, cód_guia, parcelaguia, data_pagamento]
+                        data = [
+                            self.bot_data.get("NUMERO_PROCESSO"),
+                            tipo_custa,
+                            emissor,
+                            data_calculo,
+                            valor_custa,
+                            cód_guia,
+                            parcelaguia,
+                            data_pagamento,
+                        ]
                         self.append_success(data)
 
             elif "Lista de custas pagas" not in nomediv:

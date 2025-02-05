@@ -144,7 +144,9 @@ class Tjdft(CrawJUD):
 
             check_cookies = None
             with suppress(TimeoutException):
-                check_cookies = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="alert text-center cookiealert show"]')))
+                check_cookies = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="alert text-center cookiealert show"]'))
+                )
 
             if check_cookies:
                 sleep(2)
@@ -172,7 +174,9 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
-            get_input_process: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc)))
+            get_input_process: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc))
+            )
             get_input_process.click()
             get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
 
@@ -198,7 +202,9 @@ class Tjdft(CrawJUD):
             self.message = "Informando requerente"
             self.type_log = "log"
             self.prt()
-            get_name_requerente: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente)))
+            get_name_requerente: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente))
+            )
             get_name_requerente.click()
             get_name_requerente.send_keys(self.bot_data.get("REQUERENTE"))
 
@@ -224,7 +230,9 @@ class Tjdft(CrawJUD):
             self.message = "Informado requerido"
             self.type_log = "log"
             self.prt()
-            get_name_requerido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido)))
+            get_name_requerido: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido))
+            )
             get_name_requerido.click()
             get_name_requerido.send_keys(self.bot_data.get("REQUERIDO"))
 
@@ -264,11 +272,18 @@ class Tjdft(CrawJUD):
                 percent = f"{percent},00" if "," not in percent else percent
 
                 self.interact.click(self.driver.find_element(By.CSS_SELECTOR, 'input[id="juros_percent2"]'))
-                self.interact.send_key(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]'))), percent)
+                self.interact.send_key(
+                    self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]'))
+                    ),
+                    percent,
+                )
 
             if not juros_partir == "VENCIMENTO":
                 css_data_incide = 'input[name="juros_data"][id="juros_data"]'
-                self.interact.send_key(self.driver.find_element(By.CSS_SELECTOR, css_data_incide), self.bot_data.get("DATA_INCIDENCIA"))
+                self.interact.send_key(
+                    self.driver.find_element(By.CSS_SELECTOR, css_data_incide), self.bot_data.get("DATA_INCIDENCIA")
+                )
 
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
@@ -287,7 +302,9 @@ class Tjdft(CrawJUD):
             self.message = "Informando data valor devido"
             self.type_log = "log"
             self.prt()
-            data_valor_devido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido)))
+            data_valor_devido: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido))
+            )
             data_valor_devido.click()
             data_valor_devido.send_keys(self.bot_data.get("DATA_CALCULO"))
 
@@ -296,7 +313,9 @@ class Tjdft(CrawJUD):
             self.message = "Informando valor devido"
             self.type_log = "log"
             self.prt()
-            valor_devido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido)))
+            valor_devido: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido))
+            )
             valor_devido.click()
 
             valor = str(self.bot_data.get("VALOR_CALCULO"))
@@ -329,7 +348,9 @@ class Tjdft(CrawJUD):
                 self.prt()
 
                 if self.bot_data.get("MULTA_PERCENTUAL", None):
-                    multa_percentual: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual)))
+                    multa_percentual: WebElement = self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual))
+                    )
                     multa_percentual.click()
 
                     percent = str(self.bot_data.get("MULTA_PERCENTUAL"))
@@ -363,7 +384,9 @@ class Tjdft(CrawJUD):
                 disabled_state = ""
 
                 if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
-                    honorario_sucumb: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb)))
+                    honorario_sucumb: WebElement = self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb))
+                    )
                     honorario_sucumb.click()
                     percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
                     percent = f"{percent},00" if "," not in percent else percent
@@ -372,12 +395,16 @@ class Tjdft(CrawJUD):
                     self.driver.execute_script(f"document.querySelector('{css_honorario_sucumb}').blur()")
                     sleep(0.5)
 
-                    disabled_state = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]').get_attribute("disabled")
+                    disabled_state = self.driver.find_element(
+                        By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]'
+                    ).get_attribute("disabled")
 
                 elif self.bot_data.get("HONORARIO_SUCUMB_DATA", None) and disabled_state == "":
                     honor_sucumb_data = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]')
                     honor_sucumb_valor = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_valor"]')
-                    sucumb_juros_partir = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_juros_partir"]')
+                    sucumb_juros_partir = self.driver.find_element(
+                        By.CSS_SELECTOR, 'input[id="honor_sucumb_juros_partir"]'
+                    )
 
                     valor = str(self.bot_data.get("HONORARIO_SUCUMB_VALOR"))
                     valor = f"{valor},00" if "," not in valor else valor
@@ -411,7 +438,9 @@ class Tjdft(CrawJUD):
                 disabled_state = ""
 
                 if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
-                    honorario_exec: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec)))
+                    honorario_exec: WebElement = self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec))
+                    )
                     honorario_exec.click()
                     percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
                     percent = f"{percent},00" if "," not in percent else percent
@@ -420,7 +449,9 @@ class Tjdft(CrawJUD):
                     self.driver.execute_script(f"document.querySelector('{css_honorario_exec}').blur()")
                     sleep(0.5)
 
-                    disabled_state = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_exec_data"]').get_attribute("disabled")
+                    disabled_state = self.driver.find_element(
+                        By.CSS_SELECTOR, 'input[id="honor_exec_data"]'
+                    ).get_attribute("disabled")
 
                 elif self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None) and disabled_state == "":
                     honor_exec_data = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_exec_data"]')
@@ -493,9 +524,13 @@ class Tjdft(CrawJUD):
             calcular = self.driver.find_element(By.CSS_SELECTOR, css_calcular)
             calcular.click()
 
-            table_valorcalc: WebElement = self.wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]')))[-1]
+            table_valorcalc: WebElement = self.wait.until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]'))
+            )[-1]
             row_valorcalc = table_valorcalc.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[-1]
-            valor_doc = float(row_valorcalc.find_elements(By.TAG_NAME, "td")[-1].text.replace(".", "").replace(",", "."))
+            valor_doc = float(
+                row_valorcalc.find_elements(By.TAG_NAME, "td")[-1].text.replace(".", "").replace(",", ".")
+            )
 
             print_options = PrintOptions()
             print_options.orientation = "portrait"
@@ -505,7 +540,9 @@ class Tjdft(CrawJUD):
 
             # Salva o PDF em um arquivo
 
-            pdf_name = f"CALCULO - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('REQUERENTE')} - {self.pid}.pdf"
+            pdf_name = (
+                f"CALCULO - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('REQUERENTE')} - {self.pid}.pdf"
+            )
 
             path_pdf = os.path.join(self.output_dir_path, pdf_name)
             with open(path_pdf, "wb") as file:

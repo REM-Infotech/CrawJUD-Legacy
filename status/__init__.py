@@ -68,7 +68,9 @@ class SetStatus:
         :param string: The string to format.
         :return: The formatted string.
         """
-        return secure_filename("".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]))
+        return secure_filename(
+            "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)])
+        )
 
     def start_bot(  # noqa: C901
         self,
@@ -173,7 +175,15 @@ class SetStatus:
 
         return (path_args, bt.display_name)
 
-    def botstop(self, db: SQLAlchemy, app: Flask, pid: str = None, status: str = "Finalizado", system: str = None, typebot: str = None) -> str:
+    def botstop(
+        self,
+        db: SQLAlchemy,
+        app: Flask,
+        pid: str = None,
+        status: str = "Finalizado",
+        system: str = None,
+        typebot: str = None,
+    ) -> str:
         """Stop the bot and handle file uploads and database interactions.
 
         :param db: SQLAlchemy database instance.

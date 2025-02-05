@@ -25,12 +25,28 @@ from ...Utils import OtherUtils
 
 type_docscss = {
     "custas_iniciais": {
-        "cnpj": ['input[name="entity.flTipoPessoa"][value="J"]', 'tr[id="campoNuCnpj"]', 'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]'],
-        "cpf": ['input[name="entity.flTipoPessoa"][value="F"]', 'tr[id="campoNuCpf"]', 'input[name="entity.nuCpfCnpj"][rotulo="CPF"]'],
+        "cnpj": [
+            'input[name="entity.flTipoPessoa"][value="J"]',
+            'tr[id="campoNuCnpj"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
+        ],
+        "cpf": [
+            'input[name="entity.flTipoPessoa"][value="F"]',
+            'tr[id="campoNuCpf"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
+        ],
     },
     "preparo ri": {
-        "cnpj": ['input[name="entity.flTipoPessoa"][value="J"]', 'tr[id="campoNuCnpj"]', 'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]'],
-        "cpf": ['input[name="entity.flTipoPessoa"][value="F"]', 'tr[id="campoNuCpf"]', 'input[name="entity.nuCpfCnpj"][rotulo="CPF"]'],
+        "cnpj": [
+            'input[name="entity.flTipoPessoa"][value="J"]',
+            'tr[id="campoNuCnpj"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
+        ],
+        "cpf": [
+            'input[name="entity.flTipoPessoa"][value="F"]',
+            'tr[id="campoNuCpf"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
+        ],
     },
 }
 
@@ -140,7 +156,12 @@ class Emissao(CrawJUD):
 
     def custas_iniciais(self) -> None:
         """Handle the initial costs emission process."""
-        url_custas_ini = "".join(("https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?", "cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"))
+        url_custas_ini = "".join(
+            (
+                "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?",
+                "cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003",
+            )
+        )
 
         self.driver.get(url_custas_ini)
 
@@ -148,7 +169,9 @@ class Emissao(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        set_foro: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ome_foro)))
+        set_foro: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ome_foro))
+        )
         set_foro.send_keys(self.bot_data.get("FORO"))
 
         set_classe = self.driver.find_element(By.CSS_SELECTOR, self.elements.tree_selection)
@@ -163,7 +186,9 @@ class Emissao(CrawJUD):
         nameinteressado = self.driver.find_element(By.CSS_SELECTOR, 'input[name="entity.nmInteressado"]')
         nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-        elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(self.count_doc(self.bot_data.get("CPF_CNPJ")))
+        elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+            self.count_doc(self.bot_data.get("CPF_CNPJ"))
+        )
         set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
         set_doc.click()
         sleep(0.5)
@@ -177,7 +202,9 @@ class Emissao(CrawJUD):
         self.valor_doc = ""
         with suppress(TimeoutException):
             css_val_doc = self.elements.css_val_doc_custas_ini
-            self.valor_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc))).text
+            self.valor_doc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc))
+            ).text
 
     def preparo_ri(self) -> None:
         """Handle the preparation of RI emission process.
@@ -193,7 +220,9 @@ class Emissao(CrawJUD):
         elif str(portal).lower() == "projudi":
             self.driver.get(self.elements.url_preparo_projudi)
 
-            set_foro: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.nome_foro)))
+            set_foro: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.nome_foro))
+            )
             set_foro.send_keys(self.bot_data.get("FORO"))
 
             val_acao = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_acao)
@@ -202,12 +231,16 @@ class Emissao(CrawJUD):
             nameinteressado = self.driver.find_element(By.CSS_SELECTOR, self.elements.interessado)
             nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-            elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(self.count_doc(self.bot_data.get("CPF_CNPJ")))
+            elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+                self.count_doc(self.bot_data.get("CPF_CNPJ"))
+            )
 
             set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
             set_doc.click()
             sleep(0.5)
-            setcpf_cnpj = self.driver.find_element(By.CSS_SELECTOR, elements[1]).find_element(By.CSS_SELECTOR, elements[2])
+            setcpf_cnpj = self.driver.find_element(By.CSS_SELECTOR, elements[1]).find_element(
+                By.CSS_SELECTOR, elements[2]
+            )
             sleep(0.5)
             setcpf_cnpj.send_keys(self.bot_data.get("CPF_CNPJ"))
 
@@ -223,8 +256,10 @@ class Emissao(CrawJUD):
             last_avançar.click()
 
             sleep(1)
-            css_val_doc = "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10) > tbody > tr:nth-child(3) > td:nth-child(3) > strong"
-            self.valor_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc))).text
+            css_val_doc = "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10) > tbody > tr:nth-child(3) > td:nth-child(3) > strong"  # noqa: E501
+            self.valor_doc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc))
+            ).text
 
         elif portal == "não informado":
             raise ErroDeExecucao("Informar portal do processo na planilha (PROJUDI ou ESAJ)")
@@ -252,7 +287,9 @@ class Emissao(CrawJUD):
 
         """
         self.original_window = original_window = self.driver.current_window_handle
-        generatepdf: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto)))
+        generatepdf: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto))
+        )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1
         url_end = onclick_value.find("'", url_start)
@@ -268,7 +305,11 @@ class Emissao(CrawJUD):
         # Checar se não ocorreu o erro "Boleto inexistente"
         check = None
         with suppress(TimeoutException):
-            check: WebElement = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.mensagem_retorno))).text
+            check: WebElement = (
+                WebDriverWait(self.driver, 3)
+                .until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.mensagem_retorno)))
+                .text
+            )
 
         if check:
             self.driver.close()
@@ -288,7 +329,9 @@ class Emissao(CrawJUD):
         """
         response = requests.get(link_pdf, timeout=60)
 
-        self.nomearquivo = f"{self.tipodoc} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.nomeparte} - {self.pid}.pdf"
+        self.nomearquivo = (
+            f"{self.tipodoc} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.nomeparte} - {self.pid}.pdf"
+        )
 
         if platform.system() == "Windows":
             self.path_pdf = path_pdf = f"{self.output_dir_path}\\{self.nomearquivo}"
@@ -350,7 +393,17 @@ class Emissao(CrawJUD):
                 numero = numero.split("  ")
                 numero = numero[2].split(".")
 
-            return [self.bot_data.get("NUMERO_PROCESSO"), self.tipodoc, self.valor_doc, self.data_lancamento, "guias", "JEC", "SENTENÇA", bar_code, self.nomearquivo]
+            return [
+                self.bot_data.get("NUMERO_PROCESSO"),
+                self.tipodoc,
+                self.valor_doc,
+                self.data_lancamento,
+                "guias",
+                "JEC",
+                "SENTENÇA",
+                bar_code,
+                self.nomearquivo,
+            ]
 
         except Exception as e:
             raise ErroDeExecucao(e=e) from e

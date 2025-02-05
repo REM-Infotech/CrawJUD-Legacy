@@ -1,7 +1,7 @@
 """Module: selenium_excepts.
 
 This module defines exceptions related to Selenium WebDriver interactions and provides utility functions for handling them.
-"""
+"""  # noqa: E501
 
 from selenium.common.exceptions import (
     ElementClickInterceptedException,

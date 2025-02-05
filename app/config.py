@@ -111,7 +111,12 @@ class Config(object):
             "https://unpkg.com",
             "https://avatars.githubusercontent.com",
         ],
-        "frame-src": ["'self'", "https://domain.cliente.com", "https://github.com", "https://avatars.githubusercontent.com"],
+        "frame-src": [
+            "'self'",
+            "https://domain.cliente.com",
+            "https://github.com",
+            "https://avatars.githubusercontent.com",
+        ],
     }
 
 

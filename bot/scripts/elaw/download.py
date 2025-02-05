@@ -112,7 +112,9 @@ class Download(CrawJUD):
                 self.buscar_doc()
                 self.download_docs()
                 self.message = "Arquivos salvos com sucesso!"
-                self.append_success([self.bot_data.get("NUMERO_PROCESSO"), self.message, self.list_docs], "Arquivos salvos com sucesso!")
+                self.append_success(
+                    [self.bot_data.get("NUMERO_PROCESSO"), self.message, self.list_docs], "Arquivos salvos com sucesso!"
+                )
 
             elif not search:
                 self.message = "Processo não encontrado!"
@@ -133,7 +135,9 @@ class Download(CrawJUD):
         self.message = "Acessando página de anexos"
         self.type_log = "log"
         self.prt()
-        anexosbutton: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css)))
+        anexosbutton: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css))
+        )
         anexosbutton.click()
         sleep(1.5)
         self.message = "Acessando tabela de documentos"
@@ -147,7 +151,9 @@ class Download(CrawJUD):
             DocumentDownloadError: If an error occurs during downloading.
 
         """
-        table_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc)))
+        table_doc: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc))
+        )
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
 
         if "," in self.bot_data.get("TERMOS"):
@@ -172,7 +178,9 @@ class Download(CrawJUD):
                     self.type_log = "log"
                     self.prt()
 
-                    baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(By.CSS_SELECTOR, self.elements.botao_baixar)
+                    baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
+                        By.CSS_SELECTOR, self.elements.botao_baixar
+                    )
                     baixar.click()
 
                     self.rename_doc(get_name_file)

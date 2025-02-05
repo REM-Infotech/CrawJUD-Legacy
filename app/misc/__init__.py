@@ -63,7 +63,9 @@ def CredentialsGCS() -> Credentials:  # noqa: N802
 
     """
     credentials_dict = json.loads(environ.get("credentials_dict"))
-    return Credentials.from_service_account_info(credentials_dict).with_scopes(["https://www.googleapis.com/auth/cloud-platform"])
+    return Credentials.from_service_account_info(credentials_dict).with_scopes(
+        ["https://www.googleapis.com/auth/cloud-platform"]
+    )
 
     # Configure a autenticação para a conta de serviço do GCS
 

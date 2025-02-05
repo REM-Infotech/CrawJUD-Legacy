@@ -1,7 +1,7 @@
 """Module: exceptions.
 
 This module defines custom exception classes for the CrawJUD-Bots application, facilitating error handling and reporting.
-"""
+"""  # noqa: E501
 
 from bot.common.selenium_excepts import exceptionsBot, webdriver_exepts
 

@@ -78,30 +78,9 @@ flake8-bandit = "^4.1.1"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-line_length = 88 # O mesmo limite de linha do Black
-
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
 # skips = ["B404", "B603", "B105", "B605", "B607"]
-
-[tool.flake8]
-max-line-length = 180
-exclude = [
-    "__pycache__",
-    ".venv",
-    ".git",
-    ".tox",
-    ".nox",
-    "build",
-    "dist",
-    "venv",
-    "site-packages",
-    "node_modules",
-    "tests",
-]
-# extend-ignore = ["E203", "W503", "E501", "E402"]
-# --ignore=E902,E501,W503,E402
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -136,7 +115,7 @@ exclude = [
 ]
 
 # Same as Black.
-line-length = 180
+line-length = 120
 indent-width = 4
 
 [tool.ruff.lint]

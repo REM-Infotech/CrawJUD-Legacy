@@ -61,7 +61,9 @@ def github_webhook() -> Response:  # pragma: no cover
         return make_response(jsonify({"message": "Evento ignorado"}), 500)
 
 
-def verify_signature(payload_body: Dict[str, str] = None, secret_token: str = None, signature_header: str = None) -> None:  # pragma: no cover
+def verify_signature(
+    payload_body: Dict[str, str] = None, secret_token: str = None, signature_header: str = None
+) -> None:  # pragma: no cover
     """Verify that the payload was sent from GitHub by validating SHA256.
 
     Args:

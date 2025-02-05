@@ -11,7 +11,7 @@ Methods:
 Attributes:
     elements_bot: Stores the elements bot instance.
 
-"""
+"""  # noqa: E501
 
 from __future__ import annotations
 
@@ -59,9 +59,12 @@ class ElementsBot(CrawJUD):
         Returns:
             Self: The instance with the configured elements_bot attribute.
 
-        """
+        """  # noqa: E501
         if self.elements_bot is None:
-            self.elements_bot = getattr(import_module(f".{self.system.lower()}", __package__), f"{self.system.upper()}_{self.state_or_client.upper()}")
+            self.elements_bot = getattr(
+                import_module(f".{self.system.lower()}", __package__),
+                f"{self.system.upper()}_{self.state_or_client.upper()}",
+            )
 
         return self
 

@@ -15,7 +15,9 @@ class PROJUDI_AM(Configuracao):  # noqa: N801
     btn_entrar = "#btEntrar"
     chk_login = 'iframe[name="userMainFrame"]'
 
-    url_busca = "".join(("https://projudi.tjam.jus.br/projudi/processo/", "buscaProcessosQualquerInstancia.do?actionType=pesquisar"))
+    url_busca = "".join(
+        ("https://projudi.tjam.jus.br/projudi/processo/", "buscaProcessosQualquerInstancia.do?actionType=pesquisar")
+    )
     btn_busca = ""
 
     btn_partes = "#tabItemprefix2"

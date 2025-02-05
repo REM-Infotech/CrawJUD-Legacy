@@ -100,7 +100,9 @@ class AuthBot(CrawJUD):
             if self.login_method == "cert":
                 self.driver.get(self.elements.url_login_cert)
                 sleep(3)
-                loginopt: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]')))
+                loginopt: WebElement = self.wait.until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]'))
+                )
                 loginopt = loginopt.find_elements(By.TAG_NAME, "option")
 
                 item = None
@@ -132,7 +134,12 @@ class AuthBot(CrawJUD):
                 checkloged = None
                 with suppress(TimeoutException):
                     checkloged = WebDriverWait(self.driver, 15).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos"))
+                        EC.presence_of_element_located(
+                            (
+                                By.CSS_SELECTOR,
+                                "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos",
+                            )
+                        )
                     )
 
                 if not checkloged:
@@ -156,7 +163,9 @@ class AuthBot(CrawJUD):
 
             checkloged = None
             with suppress(TimeoutException):
-                checkloged = WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)))
+                checkloged = WebDriverWait(self.driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login))
+                )
 
             return checkloged is not None
 
@@ -179,7 +188,9 @@ class AuthBot(CrawJUD):
         try:
             self.driver.get(self.elements.url_login)
 
-            username: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username)))
+            username: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username))
+            )
             username.send_keys(self.username)
 
             password = self.driver.find_element(By.CSS_SELECTOR, self.elements.campo_passwd)
@@ -191,7 +202,9 @@ class AuthBot(CrawJUD):
             check_login = None
 
             with suppress(TimeoutException):
-                check_login = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)))
+                check_login = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login))
+                )
 
             return check_login is not None
 

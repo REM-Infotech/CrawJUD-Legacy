@@ -64,7 +64,11 @@ class SearchBot(CrawJUD):
             bool: True if the process is found, False otherwise.
 
         """
-        self.message = f'Buscando processos pelo nome "{self.parte_name}"' if self.typebot == "proc_parte" else f"Buscando Processo Nº{self.bot_data.get('NUMERO_PROCESSO')}"
+        self.message = (
+            f'Buscando processos pelo nome "{self.parte_name}"'
+            if self.typebot == "proc_parte"
+            else f"Buscando Processo Nº{self.bot_data.get('NUMERO_PROCESSO')}"
+        )
         self.type_log = "log"
         self.prt()
 
@@ -164,15 +168,23 @@ class SearchBot(CrawJUD):
 
         check_process = None
         with suppress(NoSuchElementException, TimeoutException):
-            check_process = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno")))
+            check_process = WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno"))
+            )
 
         # Retry 1
         if not check_process:
             with suppress(NoSuchElementException, TimeoutException):
-                check_process: WebElement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]')))
+                check_process: WebElement = WebDriverWait(self.driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]'))
+                )
 
                 if check_process:
-                    check_process = check_process.find_element(By.TAG_NAME, "ul").find_elements(By.TAG_NAME, "li")[0].find_element(By.TAG_NAME, "a")
+                    check_process = (
+                        check_process.find_element(By.TAG_NAME, "ul")
+                        .find_elements(By.TAG_NAME, "li")[0]
+                        .find_element(By.TAG_NAME, "a")
+                    )
 
                     url_proc = check_process.get_attribute("href")
                     self.driver.get(url_proc)
@@ -246,16 +258,24 @@ class SearchBot(CrawJUD):
 
             """
             with suppress(Exception, TimeoutException, NoSuchElementException):
-                info_proc = self.wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table#informacoesProcessuais > tbody > tr > td > a")))
+                info_proc = self.wait.until(
+                    EC.presence_of_all_elements_located(
+                        (By.CSS_SELECTOR, "table#informacoesProcessuais > tbody > tr > td > a")
+                    )
+                )
 
-                info_proc = list(filter(lambda x: "Clique aqui para visualizar os recursos relacionados" in x.text, info_proc))[-1]
+                info_proc = list(
+                    filter(lambda x: "Clique aqui para visualizar os recursos relacionados" in x.text, info_proc)
+                )[-1]
 
                 return info_proc.get_attribute("href")
 
             return None
 
         with suppress(TimeoutException):
-            inputproc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")))
+            inputproc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso"))
+            )
 
         if inputproc:
             inputproc.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
@@ -306,7 +326,9 @@ class SearchBot(CrawJUD):
             bool: True if the process is found, False otherwise.
 
         """
-        allprocess = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')))
+        allprocess = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]'))
+        )
         allprocess.click()
         data_inicio_xls = self.data_inicio
         data_fim_xls = self.data_fim
@@ -320,7 +342,9 @@ class SearchBot(CrawJUD):
             data_fim_xls = data_fim_xls.strftime("%d/%m/%Y")
 
         if self.vara == "TODAS AS COMARCAS":
-            alljudge = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="pesquisarTodos"]')))
+            alljudge = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="pesquisarTodos"]'))
+            )
             alljudge.click()
 
         elif self.vara != "TODAS AS COMARCAS":

@@ -203,15 +203,30 @@ class capa(CrawJUD):  # noqa: N801
             includecontent.append(self.driver.find_element(By.CSS_SELECTOR, element_content2))
 
             for incl in includecontent:
-                itens = list(filter(lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1, incl.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")))
+                itens = list(
+                    filter(
+                        lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
+                        incl.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr"),
+                    )
+                )
 
                 for item in itens:
-                    labels = list(filter(lambda x: x.text.strip() != "", item.find_elements(By.CSS_SELECTOR, "td.label, td.labelRadio > label")))
+                    labels = list(
+                        filter(
+                            lambda x: x.text.strip() != "",
+                            item.find_elements(By.CSS_SELECTOR, "td.label, td.labelRadio > label"),
+                        )
+                    )
                     # para teste
                     # for value in item.find_elements(By.CSS_SELECTOR, "td"):
                     #     print(value.text.strip())
 
-                    values = list(filter(lambda x: x.text.strip() != "" and not x.get_attribute("class"), item.find_elements(By.TAG_NAME, "td")))
+                    values = list(
+                        filter(
+                            lambda x: x.text.strip() != "" and not x.get_attribute("class"),
+                            item.find_elements(By.TAG_NAME, "td"),
+                        )
+                    )
 
                     for _, label in enumerate(labels):
                         if len(labels) != len(values):
@@ -259,7 +274,9 @@ class capa(CrawJUD):  # noqa: N801
             result_table = includecontent.find_elements(By.CLASS_NAME, self.elements.resulttable)
 
             for pos, parte_info in enumerate(result_table):
-                h4_name = list(filter(lambda x: x.text != "" and x is not None, includecontent.find_elements(By.TAG_NAME, "h4")))
+                h4_name = list(
+                    filter(lambda x: x.text != "" and x is not None, includecontent.find_elements(By.TAG_NAME, "h4"))
+                )
                 tipo_parte = self.format_string(h4_name[pos].text).replace(" ", "_").upper()
 
                 nome_colunas = []
@@ -267,7 +284,9 @@ class capa(CrawJUD):  # noqa: N801
                 for column in parte_info.find_element(By.TAG_NAME, "thead").find_elements(By.TAG_NAME, "th"):
                     nome_colunas.append(column.text.upper())
 
-                for parte in parte_info.find_element(By.TAG_NAME, "tbody").find_elements(By.XPATH, self.elements.table_moves):
+                for parte in parte_info.find_element(By.TAG_NAME, "tbody").find_elements(
+                    By.XPATH, self.elements.table_moves
+                ):
                     for pos_, nome_coluna in enumerate(nome_colunas):
                         key = "_".join((self.format_string(nome_coluna).replace(" ", "_").upper(), tipo_parte))
                         value = parte.find_elements(By.TAG_NAME, "td")[pos_].text

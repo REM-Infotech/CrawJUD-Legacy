@@ -12,7 +12,12 @@ from typing import Type
 
 import dotenv
 from PIL import Image
-from selenium.common.exceptions import JavascriptException, NoSuchElementException, StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import (
+    JavascriptException,
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -159,7 +164,11 @@ class protocolo(CrawJUD):  # noqa: N801
         """
         successMessage = None  # noqa: N806
         with suppress(TimeoutException):
-            successMessage = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#successMessages"))).text.split("Protocolo:")[1].replace(" ", "")  # noqa: N806
+            successMessage = (  # noqa: N806
+                self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#successMessages")))
+                .text.split("Protocolo:")[1]
+                .replace(" ", "")
+            )  # noqa: N806
 
         return successMessage
 
@@ -194,7 +203,9 @@ class protocolo(CrawJUD):  # noqa: N801
                 return True
 
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").upper()
-            chk_info = (td_partes.text.upper() == parte_peticao.upper()) or (parte_peticao.upper() in td_partes.text.upper())
+            chk_info = (td_partes.text.upper() == parte_peticao.upper()) or (
+                parte_peticao.upper() in td_partes.text.upper()
+            )
             if "\n" in td_partes.text:
                 partes = td_partes.text.split("\n")
                 for enum, parte in enumerate(partes):
@@ -273,14 +284,20 @@ class protocolo(CrawJUD):  # noqa: N801
             self.message = "Informando tipo de protocolo..."
             self.type_log = "log"
             self.prt()
-            input_tipo_move: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')))
+            input_tipo_move: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]'))
+            )
             input_tipo_move.click()
             sleep(1)
             input_tipo_move.send_keys(self.bot_data.get("TIPO_PROTOCOLO"))
 
             sleep(1.5)
 
-            input_move_option: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)")))
+            input_move_option: WebElement = self.wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)")
+                )
+            )
             input_move_option.click()
             """ Corrigir elements """
 
@@ -325,7 +342,9 @@ class protocolo(CrawJUD):  # noqa: N801
             self.prt()
 
             css_inptfile = 'input[id="conteudo"]'
-            input_file_element: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile)))
+            input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile))
+            )
 
             file_to_upload = self.format_string(file)
 
@@ -365,7 +384,9 @@ class protocolo(CrawJUD):  # noqa: N801
         try:
             tablefiles: WebElement = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "resultTable")))
             checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[0]
-            radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(By.CSS_SELECTOR, self.elements.input_radio)
+            radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(
+                By.CSS_SELECTOR, self.elements.input_radio
+            )
             radiobutton.click()
 
         except Exception as e:
@@ -393,8 +414,12 @@ class protocolo(CrawJUD):  # noqa: N801
                 file_to_upload = self.format_string(file)
                 self.type_log = "log"
                 self.prt()
-                input_file_element: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.elements.conteudo)))
-                input_file_element.send_keys(f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}")
+                input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, self.elements.conteudo))
+                )
+                input_file_element.send_keys(
+                    f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}"
+                )
                 self.wait_progressbar()
                 self.message = f"Arquivo '{file}' enviado com sucesso!"
                 self.type_log = "log"
@@ -447,7 +472,9 @@ class protocolo(CrawJUD):  # noqa: N801
 
             check_p_element = ""
             with suppress(TimeoutException):
-                check_p_element: WebElement = WebDriverWait(self.driver, 5, 0.01).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#errorMessages > div.box-content")))
+                check_p_element: WebElement = WebDriverWait(self.driver, 5, 0.01).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "#errorMessages > div.box-content"))
+                )
 
             if check_p_element != "":
                 raise ErroDeExecucao("Senha Incorreta!")
@@ -512,7 +539,9 @@ class protocolo(CrawJUD):  # noqa: N801
         """
         try:
             table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
-            table_moves = table_moves.find_elements(By.XPATH, './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]')
+            table_moves = table_moves.find_elements(
+                By.XPATH, './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
+            )
 
             table_moves[0].screenshot(os.path.join(self.output_dir_path, "tr_0.png"))
 
@@ -571,7 +600,9 @@ class protocolo(CrawJUD):  # noqa: N801
         """
         tablefiles = None
         with suppress(TimeoutException):
-            tablefiles: WebElement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultTable")))
+            tablefiles: WebElement = WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
+            )
 
         if tablefiles:
             sleep(1)
@@ -579,7 +610,9 @@ class protocolo(CrawJUD):  # noqa: N801
 
             for file in checkfiles:
                 with suppress(NoSuchElementException, StaleElementReferenceException):
-                    radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(By.CSS_SELECTOR, self.elements.input_radio)
+                    radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(
+                        By.CSS_SELECTOR, self.elements.input_radio
+                    )
                     radiobutton.click()
 
                     delete_file = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_deletar)
@@ -603,7 +636,9 @@ class protocolo(CrawJUD):  # noqa: N801
         """
         while True:
             try:
-                divprogressbar: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_containerprogressbar)))
+                divprogressbar: WebElement = self.wait.until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_containerprogressbar))
+                )
                 divprogressbar = divprogressbar.find_element(By.CSS_SELECTOR, self.elements.css_divprogressbar)
                 sleep(1)
                 try:

@@ -20,7 +20,20 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...core import BarColumn, CrawJUD, DownloadColumn, Group, Live, Panel, Progress, TaskID, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn
+from ...core import (
+    BarColumn,
+    CrawJUD,
+    DownloadColumn,
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+)
 
 try:
     from getchromeVer import chrome_ver
@@ -92,7 +105,9 @@ class DriverBot(CrawJUD):
 
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
-                self.path_accepted = Path(path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome"))
+                self.path_accepted = Path(
+                    path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome")
+                )
                 path_exist = self.path_accepted.exists()
                 if path_exist:
                     for root, _, __ in self.path_accepted.walk():
@@ -200,9 +215,16 @@ class SetupDriver:
             destination (Path, optional): The destination directory for WebDriver. Defaults to current working directory.
             **kwrgs: Additional keyword arguments.
 
-        """
+        """  # noqa: E501
         new_stem = f"chromedriver{self.code_ver}.zip"
-        self.file_path = pathlib.Path(__file__).parent.cwd().resolve().joinpath("webdriver").joinpath("chromedriver").with_stem(new_stem)
+        self.file_path = (
+            pathlib.Path(__file__)
+            .parent.cwd()
+            .resolve()
+            .joinpath("webdriver")
+            .joinpath("chromedriver")
+            .with_stem(new_stem)
+        )
 
         if platform.system() == "Linux":
             self.file_path = self.file_path.with_suffix("")
@@ -252,7 +274,9 @@ class SetupDriver:
 
         elif root_path.exists():
             if self.file_path.exists():
-                self.current_app_progress.update(self.current_task_id, description="[bold green] Carregado webdriver salvo em cache!")
+                self.current_app_progress.update(
+                    self.current_task_id, description="[bold green] Carregado webdriver salvo em cache!"
+                )
                 shutil.copy(self.file_path, self.destination)
 
     def getUrl(self) -> str:  # noqa: N802

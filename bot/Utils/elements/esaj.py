@@ -63,11 +63,26 @@ class ESAJ_AM(Configuracao):  # noqa: N801
 
     """
 
-    css_val_doc_custas_ini = "".join(("body > table:nth-child(4) > tbody > tr > td > table:nth-child(10)", " > tbody > tr:nth-child(5) > td:nth-child(3) > strong"))
+    css_val_doc_custas_ini = "".join(
+        (
+            "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10)",
+            " > tbody > tr:nth-child(5) > td:nth-child(3) > strong",
+        )
+    )
 
-    url_preparo_esaj = "".join(("https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cd", "TipoCusta=9&flTipoCusta=1&&cdServicoCalculoCusta=690019"))
+    url_preparo_esaj = "".join(
+        (
+            "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cd",
+            "TipoCusta=9&flTipoCusta=1&&cdServicoCalculoCusta=690019",
+        )
+    )
 
-    url_preparo_projudi = "".join(("https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?", "cdTipoCusta=21&flTipoCusta=5&&cdServicoCalculoCusta=690007"))
+    url_preparo_projudi = "".join(
+        (
+            "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?",
+            "cdTipoCusta=21&flTipoCusta=5&&cdServicoCalculoCusta=690007",
+        )
+    )
 
     get_page_custas_pagas = 'button[class="btn btn-secondary btn-space linkConsultaSG"]'
 

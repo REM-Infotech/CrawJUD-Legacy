@@ -143,7 +143,9 @@ class pauta(CrawJUD):  # noqa: N801
                 times = 6
 
                 for item in itens_pautas:
-                    vara_name = self.driver.find_element(By.CSS_SELECTOR, 'span[class="ng-tns-c11-1 ng-star-inserted"]').text
+                    vara_name = self.driver.find_element(
+                        By.CSS_SELECTOR, 'span[class="ng-tns-c11-1 ng-star-inserted"]'
+                    ).text
                     with suppress(StaleElementReferenceException):
                         item: WebElement = item
                         itens_tr = item.find_elements(By.TAG_NAME, "td")
@@ -155,7 +157,10 @@ class pauta(CrawJUD):  # noqa: N801
                             "TIPO": itens_tr[2].text,
                             "ATO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[0],
                             "NUMERO_PROCESSO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[1],
-                            "PARTES": itens_tr[3].find_element(By.TAG_NAME, "span").find_element(By.TAG_NAME, "span").text,
+                            "PARTES": itens_tr[3]
+                            .find_element(By.TAG_NAME, "span")
+                            .find_element(By.TAG_NAME, "span")
+                            .text,
                             "SALA": itens_tr[5].text,
                             "SITUACAO": itens_tr[6].text,
                         }

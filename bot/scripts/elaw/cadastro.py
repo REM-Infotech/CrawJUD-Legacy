@@ -193,7 +193,10 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        label_area: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_label_area)), message="Erro ao encontrar elemento")
+        label_area: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_label_area)),
+            message="Erro ao encontrar elemento",
+        )
         label_area.click()
         text = str(self.bot_data.get("AREA_DIREITO"))
         sleep(0.5)
@@ -216,7 +219,10 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        expand_areasub: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboareasub_css)), message="Erro ao encontrar elemento")
+        expand_areasub: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboareasub_css)),
+            message="Erro ao encontrar elemento",
+        )
         expand_areasub.click()
         text = str(self.bot_data.get("SUBAREA_DIREITO"))
         sleep(0.5)
@@ -237,7 +243,10 @@ class Cadastro(CrawJUD):
             TimeoutException: If the next page button is not found within the wait time.
 
         """
-        next_page: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_button)), message="Erro ao encontrar elemento")
+        next_page: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_button)),
+            message="Erro ao encontrar elemento",
+        )
         next_page.click()
 
     def info_localizacao(self) -> None:
@@ -402,7 +411,9 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        campo_processo: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_campo_processo)), message="Erro ao encontrar elemento")
+        campo_processo: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css_campo_processo)), message="Erro ao encontrar elemento"
+        )
         campo_processo.click()
 
         self.interact.send_key(campo_processo, self.bot_data.get(key))
@@ -484,7 +495,10 @@ class Cadastro(CrawJUD):
         elementSelect = self.elements.tipo_parte_contraria_input  # noqa: N806
         self.Select2_ELAW(elementSelect, text)
 
-        table_tipo_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_tipo_doc)), message="Erro ao encontrar elemento")
+        table_tipo_doc: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_tipo_doc)),
+            message="Erro ao encontrar elemento",
+        )
         table_tipo_doc = table_tipo_doc.find_elements(By.TAG_NAME, "td")
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -499,7 +513,10 @@ class Cadastro(CrawJUD):
                 break
 
         self.interact.sleep_load('div[id="j_id_3x"]')
-        campo_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_campo_doc)), message="Erro ao encontrar elemento")
+        campo_doc: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_campo_doc)),
+            message="Erro ao encontrar elemento",
+        )
         campo_doc.click()
         sleep(0.05)
         campo_doc.clear()
@@ -507,7 +524,10 @@ class Cadastro(CrawJUD):
         self.interact.send_key(campo_doc, self.bot_data.get("DOC_PARTE_CONTRARIA"))
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        search_button_parte: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_search_button)), message="Erro ao encontrar elemento")
+        search_button_parte: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_search_button)),
+            message="Erro ao encontrar elemento",
+        )
         search_button_parte.click()
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -537,7 +557,8 @@ class Cadastro(CrawJUD):
 
         """
         get_div_select_locale: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_opt)), message="Erro ao encontrar elemento"
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_opt)),
+            message="Erro ao encontrar elemento",
         )
         get_div_select_locale.click()
         sleep(0.5)
@@ -547,7 +568,10 @@ class Cadastro(CrawJUD):
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
-            other_location: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_other_location)), message="Erro ao encontrar elemento")
+            other_location: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_other_location)),
+                message="Erro ao encontrar elemento",
+            )
             other_location.click()
             self.interact.send_key(other_location, self.bot_data.get("ESTADO"))
             self.interact.send_key(other_location, Keys.ENTER)
@@ -567,11 +591,15 @@ class Cadastro(CrawJUD):
         self.prt()
 
         div_comboProcessoTipo: WebElement = self.wait.until(  # noqa: N806
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboProcessoTipo)), message="Erro ao encontrar elemento"
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboProcessoTipo)),
+            message="Erro ao encontrar elemento",
         )
         div_comboProcessoTipo.click()
 
-        elemento = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.filtro_processo)), message="Erro ao encontrar elemento")
+        elemento = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.filtro_processo)),
+            message="Erro ao encontrar elemento",
+        )
 
         text = self.bot_data.get("ACAO")
         self.interact.click(elemento)
@@ -599,7 +627,10 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
-        data_distribuicao: WebElement = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_data_distribuicao)), message="Erro ao encontrar elemento")
+        data_distribuicao: WebElement = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_data_distribuicao)),
+            message="Erro ao encontrar elemento",
+        )
 
         self.interact.clear(data_distribuicao)
 
@@ -625,7 +656,9 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        input_adv_responsavel: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)))
+        input_adv_responsavel: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel))
+        )
         input_adv_responsavel.click()
         self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
 
@@ -634,7 +667,9 @@ class Cadastro(CrawJUD):
         wait_adv = None
 
         with suppress(TimeoutException):
-            wait_adv: WebElement = WebDriverWait(self.driver, 25).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)))
+            wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv))
+            )
 
         if wait_adv:
             wait_adv.click()
@@ -643,12 +678,16 @@ class Cadastro(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        div_select_Adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)))  # noqa: N806
+        div_select_Adv: WebElement = self.wait.until(  # noqa: N806
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv))
+        )  # noqa: N806
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        input_select_adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)))
+        input_select_adv: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv))
+        )
         input_select_adv.click()
 
         self.interact.send_key(input_select_adv, self.bot_data.get("ADVOGADO_INTERNO"))
@@ -676,7 +715,10 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        campo_adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_adv)), message="Erro ao encontrar elemento")
+        campo_adv: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_adv)),
+            message="Erro ao encontrar elemento",
+        )
         campo_adv.click()
         campo_adv.clear()
         sleep(0.02)
@@ -696,7 +738,12 @@ class Cadastro(CrawJUD):
 
         with suppress(TimeoutException):
             check_adv: WebElement = (
-                WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_check_adv)), message="Erro ao encontrar elemento").text
+                WebDriverWait(self.driver, 15)
+                .until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_check_adv)),
+                    message="Erro ao encontrar elemento",
+                )
+                .text
             )
             self.interact.send_key(campo_adv, Keys.ENTER)
             self.driver.execute_script(f"document.querySelector('{self.elements.css_input_adv}').blur()")
@@ -725,7 +772,10 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        valor_causa: WebElement = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)), message="Erro ao encontrar elemento")
+        valor_causa: WebElement = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
+            message="Erro ao encontrar elemento",
+        )
 
         valor_causa.click()
         sleep(0.5)
@@ -755,7 +805,8 @@ class Cadastro(CrawJUD):
         self.prt()
 
         div_escritrorioexterno: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.escritrorio_externo)), message="Erro ao encontrar elemento"
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.escritrorio_externo)),
+            message="Erro ao encontrar elemento",
         )
         div_escritrorioexterno.click()
         sleep(1)
@@ -819,18 +870,26 @@ class Cadastro(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            add_parte: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_add_adv)), message="Erro ao encontrar elemento")
+            add_parte: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_add_adv)),
+                message="Erro ao encontrar elemento",
+            )
             add_parte.click()
 
             sleep(0.5)
 
-            iframe: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.elements.xpath)), message="Erro ao encontrar elemento")
+            iframe: WebElement = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, self.elements.xpath)), message="Erro ao encontrar elemento"
+            )
 
             self.driver.switch_to.frame(iframe)
 
             sleep(0.5)
 
-            naoinfomadoc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_naoinfomadoc)), message="Erro ao encontrar elemento")
+            naoinfomadoc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_naoinfomadoc)),
+                message="Erro ao encontrar elemento",
+            )
             naoinfomadoc.click()
 
             """ CORRIGIR """
@@ -847,19 +906,28 @@ class Cadastro(CrawJUD):
             """ CORRIGIR """
 
             sleep(0.5)
-            continuebutton: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_continuar)), message="Erro ao encontrar elemento")
+            continuebutton: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_continuar)),
+                message="Erro ao encontrar elemento",
+            )
             continuebutton.click()
 
             sleep(0.5)
 
-            input_nomeadv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_nomeadv)), message="Erro ao encontrar elemento")
+            input_nomeadv: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_nomeadv)),
+                message="Erro ao encontrar elemento",
+            )
             input_nomeadv.click()
             self.interact.send_key(input_nomeadv, self.bot_data.get("ADV_PARTE_CONTRARIA"))
 
             self.driver.execute_script(f"document.querySelector('{self.elements.css_input_nomeadv}').blur()")
 
             sleep(0.05)
-            salvar: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.salvarcss)), message="Erro ao encontrar elemento")
+            salvar: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.salvarcss)),
+                message="Erro ao encontrar elemento",
+            )
             salvar.click()
 
             self.message = "Advogado cadastrado!"
@@ -885,20 +953,29 @@ class Cadastro(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            add_parte: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.parte_contraria)), message="Erro ao encontrar elemento")
+            add_parte: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.parte_contraria)),
+                message="Erro ao encontrar elemento",
+            )
             add_parte.click()
 
             self.interact.sleep_load('div[id="j_id_3x"]')
 
             iframe = None
 
-            iframe: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.elements.xpath_iframe)), message="Erro ao encontrar elemento")
+            iframe: WebElement = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, self.elements.xpath_iframe)),
+                message="Erro ao encontrar elemento",
+            )
 
             self.driver.switch_to.frame(iframe)
 
             with suppress(TimeoutException, NoSuchElementException):
                 set_infomar_cpf: WebElement = (
-                    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.cpf_cnpj)), message="Erro ao encontrar elemento")
+                    self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.cpf_cnpj)),
+                        message="Erro ao encontrar elemento",
+                    )
                     .find_elements(By.TAG_NAME, "td")[1]
                     .find_elements(By.CSS_SELECTOR, self.elements.botao_radio_widget)[1]
                 )
@@ -906,7 +983,8 @@ class Cadastro(CrawJUD):
                 set_infomar_cpf.click()
 
             table_tipo_doc: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tipo_cpf_cnpj)), message="Erro ao encontrar elemento"
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tipo_cpf_cnpj)),
+                message="Erro ao encontrar elemento",
             )
             itensintotable = table_tipo_doc.find_elements(By.TAG_NAME, "td")
 
@@ -937,7 +1015,9 @@ class Cadastro(CrawJUD):
             elif tipo_doc == "cnpj":
                 css_input_doc = self.elements.tipo_cnpj
 
-            input_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_input_doc)), message="Erro ao encontrar elemento")
+            input_doc: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_doc)), message="Erro ao encontrar elemento"
+            )
             input_doc.click()
             sleep(0.05)
             input_doc.clear()
@@ -946,13 +1026,19 @@ class Cadastro(CrawJUD):
             continuar.click()
 
             self.interact.sleep_load('div[id="j_id_3x"]')
-            name_parte: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_name_parte)), message="Erro ao encontrar elemento")
+            name_parte: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_name_parte)),
+                message="Erro ao encontrar elemento",
+            )
             name_parte.click()
             sleep(0.05)
             self.interact.send_key(name_parte, self.bot_data.get("PARTE_CONTRARIA").__str__().upper())
             self.driver.execute_script(f"document.querySelector('{self.elements.css_name_parte}').blur()")
 
-            save_parte: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_save_button)), message="Erro ao encontrar elemento")
+            save_parte: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_save_button)),
+                message="Erro ao encontrar elemento",
+            )
             save_parte.click()
 
             self.message = "Parte cadastrada!"
@@ -973,7 +1059,10 @@ class Cadastro(CrawJUD):
 
         """
         self.interact.sleep_load('div[id="j_id_3x"]')
-        salvartudo: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)), message="Erro ao encontrar elemento")
+        salvartudo: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)),
+            message="Erro ao encontrar elemento",
+        )
 
         self.message = "Salvando processo novo"
         self.type_log = "info"
@@ -1012,7 +1101,11 @@ class Cadastro(CrawJUD):
         """
         name_parte = ""
         with suppress(NoSuchElementException):
-            name_parte = self.driver.find_element(By.CSS_SELECTOR, self.elements.css_t_found).find_element(By.TAG_NAME, "td").text
+            name_parte = (
+                self.driver.find_element(By.CSS_SELECTOR, self.elements.css_t_found)
+                .find_element(By.TAG_NAME, "td")
+                .text
+            )
 
         if name_parte != "":
             return name_parte
@@ -1050,7 +1143,10 @@ class Cadastro(CrawJUD):
             ErroElaw: WebElement | str = None  # noqa: N806
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (  # noqa: N806
-                    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)), message="Erro ao encontrar elemento")
+                    self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
+                        message="Erro ao encontrar elemento",
+                    )
                     .find_element(By.TAG_NAME, "ul")
                     .text
                 )

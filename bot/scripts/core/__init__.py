@@ -1,7 +1,7 @@
 """Module: core.
 
 This module contains the CrawJUD class, which serves as the core framework for managing bot operations within the CrawJUD-Bots application.
-"""
+"""  # noqa: E501
 
 from __future__ import annotations
 
@@ -10,7 +10,20 @@ import logging
 import platform
 import traceback
 
-from .. import BarColumn, DownloadColumn, Group, Live, Panel, Progress, TaskID, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn, pd
+from .. import (
+    BarColumn,
+    DownloadColumn,
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+    pd,
+)
 
 if platform.system() == "Windows":
     from .. import Application
@@ -23,7 +36,21 @@ from pytz import timezone
 from ...shared import PropertiesCrawJUD, TypeHint
 from ..common import ErroDeExecucao
 
-__all__ = [pd, "Application", Group, Live, Panel, Progress, TaskID, BarColumn, DownloadColumn, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn]
+__all__ = [
+    pd,
+    "Application",
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    BarColumn,
+    DownloadColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+]
 
 
 class CrawJUD(PropertiesCrawJUD):
@@ -32,7 +59,11 @@ class CrawJUD(PropertiesCrawJUD):
     Serves as the core framework for managing bot operations, including setup, authentication, and attribute management.
     """
 
-    settings = {"recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}], "selectedDestinationId": "Save as PDF", "version": 2}
+    settings = {
+        "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
+        "selectedDestinationId": "Save as PDF",
+        "version": 2,
+    }
 
     def prt(self) -> None:
         """Print a message using the PrintBot instance.

@@ -149,7 +149,9 @@ class Provisao(CrawJUD):
         # module = "get_valores_proc"
         get_valores = self.get_valores_proc()
 
-        provisao = str(self.bot_data.get("PROVISAO")).replace("possivel", "possível").replace("provavel", "provável").lower()
+        provisao = (
+            str(self.bot_data.get("PROVISAO")).replace("possivel", "possível").replace("provavel", "provável").lower()
+        )
 
         chk_getvals1 = get_valores == "Contém valores"
         possible = provisao == "possível"
@@ -157,7 +159,9 @@ class Provisao(CrawJUD):
         if chk_getvals1 and possible:
             raise ErroDeExecucao('Provisão "Possível" já inserida')
 
-        edit_button: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit)))
+        edit_button: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit))
+        )
         edit_button.click()
 
         if get_valores == "Nenhum registro encontrado!":
@@ -187,10 +191,14 @@ class Provisao(CrawJUD):
             str: Description of the process values.
 
         """
-        get_valores: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores)))
+        get_valores: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores))
+        )
         get_valores.click()
 
-        check_exists_provisao: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css)))
+        check_exists_provisao: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css))
+        )
         check_exists_provisao = check_exists_provisao.find_elements(By.TAG_NAME, "tr")
 
         for item in check_exists_provisao:
@@ -213,7 +221,9 @@ class Provisao(CrawJUD):
 
         """
         try:
-            div_tipo_obj: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css)))
+            div_tipo_obj: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css))
+            )
 
             div_tipo_obj.click()
 
@@ -236,7 +246,9 @@ class Provisao(CrawJUD):
 
     def edit_valor(self):
         """Edit an existing value entry."""
-        editar_pedido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar)))
+        editar_pedido: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar))
+        )
         editar_pedido.click()
 
     def set_valores(self):
@@ -250,7 +262,9 @@ class Provisao(CrawJUD):
             self.message = "Informando valores"
             self.type_log = "log"
             self.prt()
-            campo_valor_dml = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt)))
+            campo_valor_dml = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt))
+            )
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
@@ -282,15 +296,21 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            expand_filter_risk = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk)))
+            expand_filter_risk = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk))
+            )
             expand_filter_risk.click()
 
             div_filter_risk = self.driver.find_element(By.CSS_SELECTOR, self.elements.processo_objt)
             filter_risk = div_filter_risk.find_elements(By.TAG_NAME, "li")
 
             for item in filter_risk:
-                # label_risco = self.driver.find_element(By.CSS_SELECTOR, 'label[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_label"]').text.lower()
-                provisao_from_xlsx = str(self.bot_data.get("PROVISAO")).lower().replace("possivel", "possível").replace("provavel", "provável")
+                provisao_from_xlsx = (
+                    str(self.bot_data.get("PROVISAO"))
+                    .lower()
+                    .replace("possivel", "possível")
+                    .replace("provavel", "provável")
+                )
 
                 provisao = item.text.lower()
                 if provisao == provisao_from_xlsx:
@@ -370,7 +390,9 @@ class Provisao(CrawJUD):
             self.message = "Informando justificativa"
             self.type_log = "log"
             self.prt()
-            informar_motivo: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo)))
+            informar_motivo: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo))
+            )
             informar_motivo.send_keys(self.bot_data.get("OBSERVACAO", "Atualização de provisão"))
             id_informar_motivo = informar_motivo.get_attribute("id")
             self.driver.execute_script(f"document.getElementById('{id_informar_motivo}').blur()")
@@ -391,7 +413,9 @@ class Provisao(CrawJUD):
 
         check_provisao_atualizada = None
         with suppress(TimeoutException):
-            check_provisao_atualizada: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#valoresGeralPanel_header > span")))
+            check_provisao_atualizada: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#valoresGeralPanel_header > span"))
+            )
 
         if not check_provisao_atualizada:
             raise ErroDeExecucao("Não foi possivel atualizar provisão")

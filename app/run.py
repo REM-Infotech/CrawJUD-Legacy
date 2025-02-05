@@ -1,7 +1,7 @@
 """Module: run.
 
 This module serves as the entry point for the CrawJUD-Bots application, handling signal management and initializing the Flask app.
-"""
+"""  # noqa: E501
 
 import logging
 import signal

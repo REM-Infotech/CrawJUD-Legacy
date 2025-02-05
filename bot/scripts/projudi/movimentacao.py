@@ -148,7 +148,9 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         Selects the value '1000' from the page size dropdown.
         """
-        select = Select(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size))))
+        select = Select(
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size)))
+        )
         select.select_by_value("1000")
 
     def setup_config(self) -> None:
@@ -219,7 +221,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             - "%Y/%m/%d"
             - "%Y/%d/%m"
 
-            """
+            """  # noqa: E501
             patterns = [
                 ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
                 ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
@@ -331,7 +333,10 @@ class movimentacao(CrawJUD):  # noqa: N801
         self.kword = keyword
         move_filter = list(filter(self.filter_moves, self.table_moves))
 
-        message_ = ["\n====================================================\n", "Buscando movimentações que contenham os argumentos: "]
+        message_ = [
+            "\n====================================================\n",
+            "Buscando movimentações que contenham os argumentos: ",
+        ]
 
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
@@ -534,7 +539,10 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         rows = table_docs.find_elements(By.TAG_NAME, "tr")
         for pos, docs in enumerate(rows):
-            nomearquivo = (f"{self.bot_data.get('NUMERO_PROCESSO')}", f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf")
+            nomearquivo = (
+                f"{self.bot_data.get('NUMERO_PROCESSO')}",
+                f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
+            )
             path_pdf = os.path.join(self.output_dir_path, "".join(nomearquivo))
 
             if os.path.exists(path_pdf):
@@ -588,7 +596,10 @@ class movimentacao(CrawJUD):  # noqa: N801
                 "Nome Arquivo (Caso Tenha)": "".join(nomearquivo),
             }
             if save_in_anotherfile is True:
-                msg = (f"Informações da movimentação '{nome_mov}'(Proc Nº{self.bot_data.get('NUMERO_PROCESSO')})", " foram salvos em uma planilha separada")
+                msg = (
+                    f"Informações da movimentação '{nome_mov}'(Proc Nº{self.bot_data.get('NUMERO_PROCESSO')})",
+                    " foram salvos em uma planilha separada",
+                )
 
                 self.another_append.append((data, "".join(msg), f"{self.pid} - Info_Mov_Docs.xlsx"))
 

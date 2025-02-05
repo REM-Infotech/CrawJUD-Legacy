@@ -27,7 +27,16 @@ class listas:  # noqa: N801
             list[str]: List of field names related to emissor success.
 
         """
-        return ["Descrição do Prazo", "Valor do documento", "Data para pagamento", "Tipo de pagamento", "Solicitante", "Condenação", "Código de Barras", "Nome Documento"]
+        return [
+            "Descrição do Prazo",
+            "Valor do documento",
+            "Data para pagamento",
+            "Tipo de pagamento",
+            "Solicitante",
+            "Condenação",
+            "Código de Barras",
+            "Nome Documento",
+        ]
 
     @property
     def esaj_guias_emissao_sucesso(self) -> list[str]:
@@ -37,7 +46,16 @@ class listas:  # noqa: N801
             list[str]: List of field names related to ESAJ guia emission success.
 
         """
-        return ["Tipo Guia", "Valor do documento", "Data para pagamento", "Tipo de pagamento", "Solicitante", "Condenação", "Código de Barras", "Nome Documento"]
+        return [
+            "Tipo Guia",
+            "Valor do documento",
+            "Data para pagamento",
+            "Tipo de pagamento",
+            "Solicitante",
+            "Condenação",
+            "Código de Barras",
+            "Nome Documento",
+        ]
 
     @property
     def capa_sucesso(self) -> list[str]:
@@ -76,7 +94,13 @@ class listas:  # noqa: N801
             list[str]: List of field names related to movimentacao success.
 
         """
-        return ["Data movimentação", "Nome Movimentação", "Texto da movimentação", "Nome peticionante", "Classiicação Peticionante"]
+        return [
+            "Data movimentação",
+            "Nome Movimentação",
+            "Texto da movimentação",
+            "Nome peticionante",
+            "Classiicação Peticionante",
+        ]
 
     @property
     def sols_pag_sucesso(self) -> list[str]:

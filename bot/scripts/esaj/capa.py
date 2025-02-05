@@ -144,7 +144,9 @@ class capa(CrawJUD):  # noqa: N801
         self.driver.execute_script("$('div#maisDetalhes').show()")
 
         if grau == 1:
-            acao: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao))).text
+            acao: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao))
+            ).text
             area_do_direito = "Diversos"
 
             if acao == "Procedimento do Juizado Especial Cível":
@@ -157,16 +159,24 @@ class capa(CrawJUD):  # noqa: N801
             if "Fórum de " in comarca:
                 comarca = str(comarca).replace("Fórum de ", "")
 
-            vara: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual))).text.split(" ")[0]
-            foro: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual))).text.replace(f"{vara} ", "")
+            vara: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual))
+            ).text.split(" ")[0]
+            foro: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual))
+            ).text.replace(f"{vara} ", "")
 
             table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
-            polo_ativo = table_partes.find_elements(By.TAG_NAME, "tr")[0].find_elements(By.TAG_NAME, "td")[1].text.split("\n")[0]
+            polo_ativo = (
+                table_partes.find_elements(By.TAG_NAME, "tr")[0].find_elements(By.TAG_NAME, "td")[1].text.split("\n")[0]
+            )
 
             tipo_parte = "Autor"
             cpf_polo_ativo = "Não consta"
 
-            polo_passivo = table_partes.find_elements(By.TAG_NAME, "tr")[1].find_elements(By.TAG_NAME, "td")[1].text.split("\n")[0]
+            polo_passivo = (
+                table_partes.find_elements(By.TAG_NAME, "tr")[1].find_elements(By.TAG_NAME, "td")[1].text.split("\n")[0]
+            )
 
             tipo_passivo = "réu"
             cpf_polo_passivo = "Não consta"
@@ -187,11 +197,21 @@ class capa(CrawJUD):  # noqa: N801
             fase = "inicial"
             valor = ""
             with suppress(TimeoutException):
-                valor: WebElement = WebDriverWait(self.driver, 1, 0.01).until(EC.presence_of_element_located((By.ID, self.elements.id_valor))).text
+                valor: WebElement = (
+                    WebDriverWait(self.driver, 1, 0.01)
+                    .until(EC.presence_of_element_located((By.ID, self.elements.id_valor)))
+                    .text
+                )
 
             def converte_valor_causa(valor_causa) -> str:
                 if "R$" in valor_causa:
-                    valor_causa = float(valor_causa.replace("$", "").replace("R", "").replace(" ", "").replace(".", "").replace(",", "."))
+                    valor_causa = float(
+                        valor_causa.replace("$", "")
+                        .replace("R", "")
+                        .replace(" ", "")
+                        .replace(".", "")
+                        .replace(",", ".")
+                    )
                     return "{:.2f}".format(valor_causa).replace(".", ",")
 
                 if "R$" not in valor_causa:
@@ -203,7 +223,11 @@ class capa(CrawJUD):  # noqa: N801
                 valorDaCausa = converte_valor_causa(valor)  # noqa: N806
 
             sleep(0.5)
-            distnotformated: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, self.elements.data_processual))).text.replace(" às ", "|").replace(" - ", "|")
+            distnotformated: WebElement = (
+                self.wait.until(EC.presence_of_element_located((By.ID, self.elements.data_processual)))
+                .text.replace(" às ", "|")
+                .replace(" - ", "|")
+            )
             distdata = distnotformated.split("|")[0]
             processo_data = [
                 self.bot_data.get("NUMERO_PROCESSO"),
@@ -238,9 +262,13 @@ class capa(CrawJUD):  # noqa: N801
         elif grau == 2:
             data = {"NUMERO_PROCESSO": ""}
 
-            sumary_1_esaj = self.wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1)))
+            sumary_1_esaj = self.wait.until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1))
+            )
 
-            sumary_2_esaj = self.wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2)))
+            sumary_2_esaj = self.wait.until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2))
+            )
 
             list_sumary = [sumary_1_esaj, sumary_2_esaj]
 

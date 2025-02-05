@@ -140,7 +140,11 @@ def join(data: dict[str, str]) -> None:
                 data.update(
                     {
                         "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-                            pid=pid, type_log="success", row=0, dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"), log="fim da execução"
+                            pid=pid,
+                            type_log="success",
+                            row=0,
+                            dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
+                            log="fim da execução",
                         )
                     }
                 )

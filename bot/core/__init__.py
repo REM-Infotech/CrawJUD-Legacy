@@ -11,7 +11,20 @@ import logging
 import platform
 import traceback
 
-from .. import BarColumn, DownloadColumn, Group, Live, Panel, Progress, TaskID, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn, pd
+from .. import (
+    BarColumn,
+    DownloadColumn,
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+    pd,
+)
 
 if platform.system() == "Windows":
     from .. import Application
@@ -24,7 +37,21 @@ from pytz import timezone
 from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD, TypeHint
 
-__all__ = [pd, "Application", Group, Live, Panel, Progress, TaskID, BarColumn, DownloadColumn, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn]
+__all__ = [
+    pd,
+    "Application",
+    Group,
+    Live,
+    Panel,
+    Progress,
+    TaskID,
+    BarColumn,
+    DownloadColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+]
 
 
 class CrawJUD(PropertiesCrawJUD):
@@ -34,7 +61,11 @@ class CrawJUD(PropertiesCrawJUD):
     of the CrawJUD bot.
     """
 
-    settings = {"recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}], "selectedDestinationId": "Save as PDF", "version": 2}
+    settings = {
+        "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
+        "selectedDestinationId": "Save as PDF",
+        "version": 2,
+    }
 
     def prt(self) -> None:
         """Print a message using the PrintBot's print_msg method.

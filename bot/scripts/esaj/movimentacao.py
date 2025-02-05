@@ -114,7 +114,9 @@ class Movimentacao(CrawJUD):
 
     def get_moves(self) -> None:
         """Retrieve movement information."""
-        show_all: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')))
+        show_all: WebElement = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]'))
+        )
 
         self.interact.scroll_to(show_all)
 

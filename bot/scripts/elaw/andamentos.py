@@ -237,7 +237,9 @@ class Andamentos(CrawJUD):
             raise ErroDeExecucao("Não foi possivel salvar andamento", e=e) from e
 
         try:
-            check_save: WebElement = WebDriverWait(self.driver, 10).until(EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"))
+            check_save: WebElement = WebDriverWait(self.driver, 10).until(
+                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw")
+            )
             if check_save:
                 sleep(3)
 

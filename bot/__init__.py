@@ -38,7 +38,16 @@ if platform.system() == "Windows":
 from rich.console import Group
 from rich.live import Live
 from rich.panel import Panel
-from rich.progress import BarColumn, DownloadColumn, Progress, TaskID, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn
+from rich.progress import (
+    BarColumn,
+    DownloadColumn,
+    Progress,
+    TaskID,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+)
 
 __all__ = [
     "pd",
@@ -150,7 +159,9 @@ class WorkerBot:
 
         return "Finalizado!"
 
-    def __init__(self, path_args: str, display_name: str, system: str, typebot: str, *args: Tuple[str], **kwargs: Dict[str, str]) -> None:
+    def __init__(
+        self, path_args: str, display_name: str, system: str, typebot: str, *args: Tuple[str], **kwargs: Dict[str, str]
+    ) -> None:
         """Initialize a WorkerBot instance.
 
         Sets up the bot and executes the bot module based on the system type.

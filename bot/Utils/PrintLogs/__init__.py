@@ -43,7 +43,11 @@ class PrintBot(CrawJUD):
             self.message_error = ""
 
         self.prompt = "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-            pid=self.pid, type_log=self.type_log, row=self.row, dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"), log=log
+            pid=self.pid,
+            type_log=self.type_log,
+            row=self.row,
+            dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"),
+            log=log,
         )
         tqdm.write(self.prompt)
 

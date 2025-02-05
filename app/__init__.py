@@ -21,7 +21,11 @@ from redis_flask import Redis
 
 from .utils import check_allowed_origin, init_log, make_celery
 
-valides = [getenv("INTO_DOCKER", None) is None, platform.system() == "Windows", getenv("DEBUG", "False").lower() == "true"]
+valides = [
+    getenv("INTO_DOCKER", None) is None,
+    platform.system() == "Windows",
+    getenv("DEBUG", "False").lower() == "true",
+]
 
 asc = any(valides)
 
@@ -38,7 +42,11 @@ app = None
 app = Flask(__name__)
 clean_prompt = False
 
-objects_config = {"development": "app.config.DevelopmentConfig", "production": "app.config.ProductionConfig", "testing": "app.config.TestingConfig"}
+objects_config = {
+    "development": "app.config.DevelopmentConfig",
+    "production": "app.config.ProductionConfig",
+    "testing": "app.config.TestingConfig",
+}
 
 clear()
 load_dotenv()
