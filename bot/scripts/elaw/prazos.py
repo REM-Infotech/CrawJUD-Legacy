@@ -3,6 +3,8 @@
 This module manages deadline-related functionalities within the Elaw system of the CrawJUD-Bots application.
 """
 
+from __future__ import annotations
+
 import os
 import time
 from contextlib import suppress
