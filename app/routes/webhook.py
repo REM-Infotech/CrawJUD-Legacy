@@ -24,8 +24,7 @@ wh = Blueprint("webhook", __package__)
 # Endpoint para o webhook
 @wh.post("/webhook")
 def github_webhook() -> Response:  # pragma: no cover
-    """
-    Handle incoming GitHub webhook events.
+    """Handle incoming GitHub webhook events.
 
     Verifies the signature, processes release events, and updates servers accordingly.
 
@@ -79,8 +78,7 @@ def verify_signature(
     secret_token: str = None,
     signature_header: str = None,
 ) -> None:  # pragma: no cover
-    """
-    Verify that the payload was sent from GitHub by validating SHA256.
+    """Verify that the payload was sent from GitHub by validating SHA256.
 
     Args:
         payload_body (Dict[str, str], optional): Original request body to verify.

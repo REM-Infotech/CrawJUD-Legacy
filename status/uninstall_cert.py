@@ -6,8 +6,7 @@ from tqdm import tqdm
 
 
 def uninstall(nome_do_certificado: str) -> None:
-    """
-    Uninstalls a certificate by its name.
+    """Uninstalls a certificate by its name.
 
     Args:
         nome_do_certificado (str): The name of the certificate to uninstall.

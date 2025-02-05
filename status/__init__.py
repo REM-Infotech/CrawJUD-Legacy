@@ -1,5 +1,4 @@
-"""
-Module: status.
+"""Module: status.
 
 This module manages the status of bots (Start and Stop).
 """
@@ -43,8 +42,7 @@ class SetStatus:
         status: str = "Finalizado",
         **kwargs,
     ) -> str:
-        """
-        Initialize the SetStatus instance.
+        """Initialize the SetStatus instance.
 
         :param form: Dictionary containing form data.
         :param files: Dictionary containing file data.
@@ -65,8 +63,7 @@ class SetStatus:
         self.status = status
 
     def format_string(self, string: str) -> str:
-        """
-        Format a string to be a secure filename.
+        """Format a string to be a secure filename.
 
         :param string: The string to format.
         :return: The formatted string.
@@ -81,8 +78,7 @@ class SetStatus:
         pid: str = None,
         id: int = None,  # noqa: A002
     ) -> tuple[str, str]:
-        """
-        Start the bot and handle file uploads and database interactions.
+        """Start the bot and handle file uploads and database interactions.
 
         :param app: Flask application instance.
         :param db: SQLAlchemy database instance.
@@ -186,8 +182,7 @@ class SetStatus:
         system: str = None,
         typebot: str = None,
     ) -> str:
-        """
-        Stop the bot and handle file uploads and database interactions.
+        """Stop the bot and handle file uploads and database interactions.
 
         :param db: SQLAlchemy database instance.
         :param app: Flask application instance.

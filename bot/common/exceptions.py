@@ -23,8 +23,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         self.message_ = message
 
     def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
-        """
-        Initialize CrawJUDExceptions with an optional message and exception.
+        """Initialize CrawJUDExceptions with an optional message and exception.
 
         Args:
             message (str, optional): Error message. Defaults to None.
@@ -70,8 +69,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
 
 class ErroDeExecucao(CrawJUDExceptions):
-    """
-    Exception raised for errors during CrawJUD execution.
+    """Exception raised for errors during CrawJUD execution.
 
     This exception is a subclass of CrawJUDExceptions and is used to indicate
     that an error occurred during the execution of a CrawJUD process.

@@ -23,8 +23,7 @@ def handle_exit() -> None:
 
 
 def start_vnc() -> None:
-    """
-    Start the TightVNC server with specified parameters.
+    """Start the TightVNC server with specified parameters.
 
     Raises:
         Exception: If the TightVNC server fails to start.
@@ -55,8 +54,7 @@ signal.signal(signal.SIGINT, handle_exit)
 
 
 def start_app():
-    """
-    Initialize and start the Flask application with SocketIO.
+    """Initialize and start the Flask application with SocketIO.
 
     Sets up the application context, configures server settings,
     and starts the application using specified parameters.
@@ -105,8 +103,7 @@ def start_app():
 
 
 def dev_modules():
-    """
-    Verify that development dependencies are installed.
+    """Verify that development dependencies are installed.
 
     Raises:
         ImportError: If any development dependencies are missing.

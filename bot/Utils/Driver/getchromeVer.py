@@ -1,5 +1,4 @@
-"""
-Module: getchromeVer.
+"""Module: getchromeVer.
 
 This module provides functionality to retrieve the installed version of Google Chrome.
 """  # noqa: N999
@@ -16,8 +15,7 @@ class ChromeVersion:
     """Represent a utility for retrieving the installed Google Chrome version."""
 
     def get_chrome_version(self) -> str | None:
-        """
-        Return the version of Google Chrome installed on the system, or None if undetected.
+        """Return the version of Google Chrome installed on the system, or None if undetected.
 
         This method determines the operating system and retrieves the version
         of Google Chrome accordingly. For Windows, it attempts to read the
@@ -52,8 +50,7 @@ class ChromeVersion:
         return result
 
     def traverse_registry_tree(self, keypath: str) -> dict[str, str]:
-        """
-        Return a dictionary of registry values from the given key path on Windows.
+        """Return a dictionary of registry values from the given key path on Windows.
 
         Args:
             keypath (str): The registry key path to traverse.

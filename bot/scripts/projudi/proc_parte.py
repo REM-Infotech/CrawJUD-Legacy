@@ -1,5 +1,4 @@
-"""
-Module: proc_parte.
+"""Module: proc_parte.
 
 This module manages process-participant interactions within the Projudi system of the CrawJUD-Bots application.
 """
@@ -20,15 +19,13 @@ from ...core import CrawJUD
 
 
 class proc_parte(CrawJUD):  # noqa: N801
-    """
-    proc_parte class.
+    """proc_parte class.
 
     Handles the processing of participants in Projudi within the CrawJUD framework.
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize a new proc_parte instance.
+        """Initialize a new proc_parte instance.
 
         Sets up authentication and initializes necessary variables.
         """
@@ -44,8 +41,7 @@ class proc_parte(CrawJUD):  # noqa: N801
         self.data_append = []
 
     def execution(self) -> None:
-        """
-        Execute the main processing loop.
+        """Execute the main processing loop.
 
         Continuously processes queues until stopped, handling session expiration and errors.
         """
@@ -74,8 +70,7 @@ class proc_parte(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Manage the processing queue.
+        """Manage the processing queue.
 
         Iterates through varas to search and retrieve process lists, handling exceptions as needed.
         """
@@ -116,8 +111,7 @@ class proc_parte(CrawJUD):  # noqa: N801
             self.queue()
 
     def get_process_list(self) -> None:
-        """
-        Retrieve and process the list of processes.
+        """Retrieve and process the list of processes.
 
         Extracts process information from the web interface and handles pagination.
         """
@@ -156,8 +150,7 @@ class proc_parte(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]):
-        """
-        Process a list of WebElement process entries.
+        """Process a list of WebElement process entries.
 
         Extracts relevant details from each process and logs successful saves.
         """

@@ -1,5 +1,4 @@
-"""
-Module for head_gpt function.
+"""Module for head_gpt function.
 
 Provides GPT head text with legal instructions for judicial documents.
 """
@@ -8,8 +7,7 @@ from typing import LiteralString
 
 
 def head_gpt() -> LiteralString:
-    """
-    Return GPT head text with legal instructions.
+    """Return GPT head text with legal instructions.
 
     The returned text describes document types and the output format.
     """

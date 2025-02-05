@@ -1,5 +1,4 @@
-"""
-Module: emissao.
+"""Module: emissao.
 
 This module manages the emission processes within the CrawJUD-Bots application.
 """
@@ -53,8 +52,7 @@ type_docscss = {
 
 
 class Emissao(CrawJUD):
-    """
-    The Emissao class extends CrawJUD to handle emission tasks within the application.
+    """The Emissao class extends CrawJUD to handle emission tasks within the application.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -65,8 +63,7 @@ class Emissao(CrawJUD):
     count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwargs) -> None:
-        """
-        Initialize the Emissao instance.
+        """Initialize the Emissao instance.
 
         Args:
             *args: Variable length argument list.
@@ -84,8 +81,7 @@ class Emissao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the emission process.
+        """Execute the emission process.
 
         Raises:
             EmissionError: If an error occurs during emission.
@@ -135,8 +131,7 @@ class Emissao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Queue the emission tasks.
+        """Queue the emission tasks.
 
         Raises:
             ErroDeExecucao: If an error occurs during the queue process.
@@ -206,8 +201,7 @@ class Emissao(CrawJUD):
             self.valor_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc))).text
 
     def preparo_ri(self) -> None:
-        """
-        Handle the preparation of RI emission process.
+        """Handle the preparation of RI emission process.
 
         Raises:
             ErroDeExecucao: If an error occurs during the preparation process.
@@ -269,8 +263,7 @@ class Emissao(CrawJUD):
         pass
 
     def generate_doc(self) -> str:
-        """
-        Generate the document for emission.
+        """Generate the document for emission.
 
         Returns:
             str: The URL of the generated document.
@@ -308,8 +301,7 @@ class Emissao(CrawJUD):
             return f"https://consultasaj.tjam.jus.br{url}"
 
     def downloadpdf(self, link_pdf):
-        """
-        Download the PDF document.
+        """Download the PDF document.
 
         Args:
             link_pdf (str): The URL of the PDF document.
@@ -336,8 +328,7 @@ class Emissao(CrawJUD):
         self.prt()
 
     def get_barcode(self) -> None:
-        """
-        Extract the barcode from the PDF document.
+        """Extract the barcode from the PDF document.
 
         Returns:
             list: A list containing barcode information.

@@ -8,8 +8,7 @@ from pathlib import Path
 
 
 def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> Logger:  # noqa: N803
-    """
-    Initialize and configure logging for the application.
+    """Initialize and configure logging for the application.
 
     Args:
         L_F (str, optional): The name of the log file. Defaults to "app.log".

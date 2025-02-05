@@ -1,5 +1,4 @@
-"""
-Module: capa.
+"""Module: capa.
 
 This module defines the capa class, which handles process information extraction and management
 within the CrawJUD-Bots application.
@@ -24,15 +23,13 @@ from ...core import CrawJUD
 
 
 class capa(CrawJUD):  # noqa: N801
-    """
-    The capa class extends CrawJUD to handle specific execution tasks related to process.
+    """The capa class extends CrawJUD to handle specific execution tasks related to process.
 
     information extraction and management.
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the capa instance.
+        """Initialize the capa instance.
 
         Args:
             *args: Variable length argument list.
@@ -50,8 +47,7 @@ class capa(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the main processing loop, handling each frame of data.
+        """Execute the main processing loop, handling each frame of data.
 
         Raises:
             Exception: If an unexpected error occurs during execution.
@@ -102,8 +98,7 @@ class capa(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Handle the queue processing, refreshing the driver and extracting process information.
+        """Handle the queue processing, refreshing the driver and extracting process information.
 
         Raises:
             ErroDeExecucao: If the process is not found or extraction fails.
@@ -123,8 +118,7 @@ class capa(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def get_process_informations(self) -> list:  # noqa: C901
-        """
-        Extract information from the current process in the web driver.
+        """Extract information from the current process in the web driver.
 
         Returns:
             list: A list of dictionaries containing process information.
@@ -139,8 +133,7 @@ class capa(CrawJUD):  # noqa: N801
             process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
 
             def format_vl_causa(valorDaCausa: str) -> float | str:  # noqa: N803
-                """
-                Format the value of the cause by removing currency symbols and converting to float.
+                """Format the value of the cause by removing currency symbols and converting to float.
 
                 Args:
                     valorDaCausa (str): The raw value string.
@@ -157,8 +150,7 @@ class capa(CrawJUD):  # noqa: N801
                 if len(matches) > 0:
 
                     def convert_to_float(value) -> float:
-                        """
-                        Convert a formatted string to float.
+                        """Convert a formatted string to float.
 
                         Args:
                             value (str): The string to convert.

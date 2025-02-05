@@ -1,5 +1,4 @@
-"""
-Module for PROJUDI_AM element configurations.
+"""Module for PROJUDI_AM element configurations.
 
 Defines the PROJUDI_AM class that manages property selectors for the PROJUDI_AM system.
 """

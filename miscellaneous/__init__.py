@@ -1,5 +1,4 @@
-"""
-Module: miscellaneous.
+"""Module: miscellaneous.
 
 This module provides miscellaneous utility functions.
 """
@@ -9,8 +8,7 @@ import sys
 
 
 def reload_module(module_name: str) -> None:  # pragma: no cover
-    """
-    Reload a module by its name.
+    """Reload a module by its name.
 
     If the module is already loaded, it will be reloaded. Otherwise, it will be imported.
 

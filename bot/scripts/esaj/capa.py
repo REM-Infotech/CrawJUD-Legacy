@@ -1,5 +1,4 @@
-"""
-Module: capa.
+"""Module: capa.
 
 This module manages the 'capa' functionalities within the CrawJUD-Bots application.
 Handles tasks related to document processing, authentication, and error handling within the 'capa' context.
@@ -22,8 +21,7 @@ from ...core import CrawJUD
 
 
 class capa(CrawJUD):  # noqa: N801
-    """
-    Manages 'capa' related tasks within the application.
+    """Manages 'capa' related tasks within the application.
 
     Inherits from CrawJUD to utilize core functionalities for processing 'capa' operations.
 
@@ -37,8 +35,7 @@ class capa(CrawJUD):  # noqa: N801
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the capa instance.
+        """Initialize the capa instance.
 
         Sets up the bot by initializing the parent class, configuring settings, and authenticating.
 
@@ -58,8 +55,7 @@ class capa(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the main process for 'capa' operations.
+        """Execute the main process for 'capa' operations.
 
         Iterates through each row of data, managing the execution flow,
         handling session expirations, and logging any errors that occur during processing.
@@ -112,8 +108,7 @@ class capa(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Queue the tasks for processing.
+        """Queue the tasks for processing.
 
         Executes the sequence of actions required to process a 'capa', including
         searching for the bot and adding processes.
@@ -130,8 +125,7 @@ class capa(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def get_process_informations(self) -> list:  # noqa: C901
-        """
-        Retrieve process information.
+        """Retrieve process information.
 
         Returns:
             list: A list containing process information.

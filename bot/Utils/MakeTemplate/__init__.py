@@ -1,5 +1,4 @@
-"""
-Module: MakeXlsx.
+"""Module: MakeXlsx.
 
 This module provides functionality to create and customize Excel files.
 
@@ -22,8 +21,7 @@ class MakeXlsx(CrawJUD):
         """Initialize the MakeXlsx class with default settings."""
 
     def make_output(self, type_xlsx: str, path_template: str) -> List[str]:
-        """
-        Build and save a new Excel file at the given path with various headers.
+        """Build and save a new Excel file at the given path with various headers.
 
         Args:
             type_xlsx (str): A string defining the type of Excel template.

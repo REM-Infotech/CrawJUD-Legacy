@@ -1,5 +1,4 @@
-"""
-Module: andamentos.
+"""Module: andamentos.
 
 This module manages the andamento (progress) tracking within the CrawJUD-Bots application.
 """
@@ -21,8 +20,7 @@ from ...core import CrawJUD
 
 
 class Andamentos(CrawJUD):
-    """
-    The Andamentos class extends CrawJUD to handle andamento tracking tasks within the application.
+    """The Andamentos class extends CrawJUD to handle andamento tracking tasks within the application.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -31,8 +29,7 @@ class Andamentos(CrawJUD):
     """
 
     def __init__(self, *args, **kwargs) -> None:
-        """
-        Initialize the Andamentos instance.
+        """Initialize the Andamentos instance.
 
         Args:
             *args: Variable length argument list.
@@ -50,8 +47,7 @@ class Andamentos(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the main processing loop for andamentos.
+        """Execute the main processing loop for andamentos.
 
         Iterates over each entry in the data frame and processes it.
         Handles session expiration and error logging.
@@ -104,8 +100,7 @@ class Andamentos(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Handle the andamento queue processing.
+        """Handle the andamento queue processing.
 
         Attempts to perform the andamento operations and handles cases where the process is not found.
 
@@ -139,8 +134,7 @@ class Andamentos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def info_data(self) -> None:
-        """
-        Inform the date of the andamento.
+        """Inform the date of the andamento.
 
         This method fills in the date field in the andamento form.
 
@@ -167,8 +161,7 @@ class Andamentos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def info_ocorrencia(self) -> None:
-        """
-        Inform the occurrence details of the andamento.
+        """Inform the occurrence details of the andamento.
 
         This method fills in the occurrence details in the andamento form.
 
@@ -190,8 +183,7 @@ class Andamentos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def info_observacao(self) -> None:
-        """
-        Inform the observation details of the andamento.
+        """Inform the observation details of the andamento.
 
         This method fills in the observation details in the andamento form.
 
@@ -213,8 +205,7 @@ class Andamentos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def add_anexo(self) -> None:
-        """
-        Add attachments to the andamento.
+        """Add attachments to the andamento.
 
         This method handles the addition of attachments to the andamento form.
 
@@ -225,8 +216,7 @@ class Andamentos(CrawJUD):
         pass
 
     def save_andamento(self) -> None:
-        """
-        Save the andamento details.
+        """Save the andamento details.
 
         This method clicks the save button to persist the andamento data and verifies the save operation.
 

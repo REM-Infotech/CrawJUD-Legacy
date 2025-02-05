@@ -1,5 +1,4 @@
-"""
-Module: prazos.
+"""Module: prazos.
 
 This module manages deadline-related functionalities within the Elaw system of the CrawJUD-Bots application.
 """
@@ -19,8 +18,7 @@ from ...core import CrawJUD
 
 
 class Prazos(CrawJUD):
-    """
-    The Prazos class extends CrawJUD to handle deadline-related tasks within the application.
+    """The Prazos class extends CrawJUD to handle deadline-related tasks within the application.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -29,8 +27,7 @@ class Prazos(CrawJUD):
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the Prazos instance.
+        """Initialize the Prazos instance.
 
         Args:
             *args: Variable length argument list.
@@ -93,8 +90,7 @@ class Prazos(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Handle the deadline queue processing.
+        """Handle the deadline queue processing.
 
         Raises:
             ErroDeExecucao: If an error occurs during execution.
@@ -137,8 +133,7 @@ class Prazos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def TablePautas(self) -> None:  # noqa: N802
-        """
-        Verify if there are existing schedules for the specified day.
+        """Verify if there are existing schedules for the specified day.
 
         Raises:
             ErroDeExecucao: If an error occurs during the verification process.
@@ -157,8 +152,7 @@ class Prazos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def NovaPauta(self) -> None:  # noqa: N802
-        """
-        Launch a new audience schedule.
+        """Launch a new audience schedule.
 
         Raises:
             ErroDeExecucao: If unable to launch a new audience.
@@ -209,8 +203,7 @@ class Prazos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def save_Prazo(self) -> None:  # noqa: N802
-        """
-        Save the newly created deadline.
+        """Save the newly created deadline.
 
         Raises:
             ErroDeExecucao: If unable to save the deadline.
@@ -229,8 +222,7 @@ class Prazos(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def CheckLancamento(self) -> dict[str, str] | None:  # noqa: N802
-        """
-        Check if the deadline has been successfully recorded.
+        """Check if the deadline has been successfully recorded.
 
         Returns:
             dict[str, str] | None: Details of the recorded deadline or None if not found.

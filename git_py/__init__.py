@@ -1,5 +1,4 @@
-"""
-Initialization module for git_py package.
+"""Initialization module for git_py package.
 
 Provides functions to manage Git repository tags and handle versioning.
 """
@@ -20,8 +19,7 @@ cwd_dir = Path(__file__).cwd().resolve()
 
 
 def _release_tag() -> str:
-    """
-    Retrieve the latest release tag from the remote Git repository.
+    """Retrieve the latest release tag from the remote Git repository.
 
     Returns:
         str: The latest release tag.
@@ -67,8 +65,7 @@ def _release_tag() -> str:
 
 
 def check_latest() -> bool:
-    """
-    Check if the current version matches the latest release tag.
+    """Check if the current version matches the latest release tag.
 
     Returns:
         bool: True if the current version is up-to-date, False otherwise.
@@ -83,8 +80,7 @@ def check_latest() -> bool:
 
 
 def update_servers(tag: str) -> None:  # pragma: no cover
-    """
-    Update servers to the specified release tag.
+    """Update servers to the specified release tag.
 
     Args:
         tag (str): The release tag to update to.
@@ -99,8 +95,7 @@ def update_servers(tag: str) -> None:  # pragma: no cover
 
 
 def checkout_release(tag: str) -> None:  # pragma: no cover
-    """
-    Checkout the specified release tag in the Git repository.
+    """Checkout the specified release tag in the Git repository.
 
     Args:
         tag (str): The release tag to checkout.
@@ -132,8 +127,7 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
 
 
 def version_file() -> None:
-    """
-    Update the local version file with the latest release tag.
+    """Update the local version file with the latest release tag.
 
     If the version file does not exist or differs from the latest release tag,
     it updates the file and checks out the corresponding release.

@@ -1,13 +1,11 @@
-"""
-Module: appends.
+"""Module: appends.
 
 This module contains utility classes for template configurations.
 """
 
 
 class listas:  # noqa: N801
-    """
-    Utility class providing predefined lists for template processing.
+    """Utility class providing predefined lists for template processing.
 
     Attributes:
         emissor_sucesso (list[str]): Fields indicating successful emissor operations.
@@ -23,8 +21,7 @@ class listas:  # noqa: N801
 
     @property
     def emissor_sucesso(self) -> list[str]:
-        """
-        Return a list of fields indicating successful emissor operations.
+        """Return a list of fields indicating successful emissor operations.
 
         Return:
             list[str]: List of field names related to emissor success.
@@ -43,8 +40,7 @@ class listas:  # noqa: N801
 
     @property
     def esaj_guias_emissao_sucesso(self) -> list[str]:
-        """
-        Return a list of fields indicating successful ESAJ guia emissions.
+        """Return a list of fields indicating successful ESAJ guia emissions.
 
         Return:
             list[str]: List of field names related to ESAJ guia emission success.
@@ -63,8 +59,7 @@ class listas:  # noqa: N801
 
     @property
     def capa_sucesso(self) -> list[str]:
-        """
-        Return a list of fields for successful capa operations.
+        """Return a list of fields for successful capa operations.
 
         Return:
             list[str]: List of field names related to capa success.
@@ -93,8 +88,7 @@ class listas:  # noqa: N801
 
     @property
     def movimentacao_sucesso(self) -> list[str]:
-        """
-        Return a list of fields indicating successful movimentacao operations.
+        """Return a list of fields indicating successful movimentacao operations.
 
         Return:
             list[str]: List of field names related to movimentacao success.
@@ -110,8 +104,7 @@ class listas:  # noqa: N801
 
     @property
     def sols_pag_sucesso(self) -> list[str]:
-        """
-        Return a list of fields indicating successful sols_pag operations.
+        """Return a list of fields indicating successful sols_pag operations.
 
         Return:
             list[str]: List of field names related to sols_pag success.
@@ -127,8 +120,7 @@ class listas:  # noqa: N801
 
     @property
     def sucesso(self) -> list[str]:
-        """
-        Return a general list of success fields.
+        """Return a general list of success fields.
 
         Return:
             list[str]: List of general success field names.
@@ -138,8 +130,7 @@ class listas:  # noqa: N801
 
     @property
     def protocolo_sucesso(self) -> list[str]:
-        """
-        Return a list of fields indicating successful protocolo operations.
+        """Return a list of fields indicating successful protocolo operations.
 
         Return:
             list[str]: List of field names related to protocolo success.
@@ -149,8 +140,7 @@ class listas:  # noqa: N801
 
     @property
     def erro(self) -> list[str]:
-        """
-        Return a list of fields indicating error messages.
+        """Return a list of fields indicating error messages.
 
         Return:
             list[str]: List of error message field names.

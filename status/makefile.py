@@ -12,8 +12,7 @@ import pytz
 
 
 def makezip(pid: str) -> str:
-    """
-    Create a ZIP archive for a given process ID.
+    """Create a ZIP archive for a given process ID.
 
     This function collects all relevant files associated with the provided PID,
     excludes certain files and directories, and packages them into a ZIP file

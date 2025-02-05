@@ -4,8 +4,7 @@ from .properties import Configuracao
 
 
 class ELAW_AME(Configuracao):  # noqa: N801
-    """
-    Configuration class for ELAW automation module.
+    """Configuration class for ELAW automation module.
 
     Attributes:
         url_login (str): URL for Elaw login.

@@ -71,8 +71,7 @@ class DriverBot(CrawJUD):
 
     @list_args.setter
     def list_args(self, new_Args: List[str]) -> None:  # noqa: N803
-        """
-        Set a new list of arguments for WebDriver.
+        """Set a new list of arguments for WebDriver.
 
         Args:
             new_Args (List[str]): The new arguments to set.
@@ -81,8 +80,7 @@ class DriverBot(CrawJUD):
         self.list_args_ = new_Args
 
     def DriverLaunch(self, message: str = "Inicializando WebDriver") -> Tuple[WebDriver, WebDriverWait]:  # noqa: C901, N802
-        """
-        Launch the WebDriver with specified parameters.
+        """Launch the WebDriver with specified parameters.
 
         Args:
             message (str, optional): Initialization message. Defaults to "Inicializando WebDriver".
@@ -193,8 +191,7 @@ class SetupDriver:
 
     @property
     def code_ver(self) -> str:
-        """
-        Retrieve the major version of the installed Chrome browser.
+        """Retrieve the major version of the installed Chrome browser.
 
         Returns:
             str: The Chrome version.
@@ -226,8 +223,7 @@ class SetupDriver:
     progress_group = Group(painel)
 
     def __init__(self, destination: Path = default_dir, **kwrgs) -> None:
-        """
-        Initialize the SetupDriver with destination path and additional arguments.
+        """Initialize the SetupDriver with destination path and additional arguments.
 
         Args:
             destination (Path, optional): The destination directory for WebDriver. Defaults to current working directory.
@@ -251,8 +247,7 @@ class SetupDriver:
         self.destination = destination
 
     def __call__(self) -> str:
-        """
-        Execute the driver setup process.
+        """Execute the driver setup process.
 
         Returns:
             str: The name of the downloaded WebDriver.
@@ -266,8 +261,7 @@ class SetupDriver:
         return self.destination.name
 
     def ConfigBar(self, pool: ThreadPoolExecutor) -> None:  # noqa: N802
-        """
-        Configure the progress bar for downloading WebDriver.
+        """Configure the progress bar for downloading WebDriver.
 
         Args:
             pool (ThreadPoolExecutor): The thread pool executor for handling downloads.
@@ -294,8 +288,7 @@ class SetupDriver:
                 shutil.copy(self.file_path, self.destination)
 
     def getUrl(self) -> str:  # noqa: N802
-        """
-        Construct the download URL for the WebDriver based on Chrome version.
+        """Construct the download URL for the WebDriver based on Chrome version.
 
         Returns:
             str: The download URL.
@@ -329,8 +322,7 @@ class SetupDriver:
         return url_driver
 
     def copy_url(self, task_id: TaskID, url: str, path: Path) -> None:
-        """
-        Download and extract the WebDriver from the specified URL.
+        """Download and extract the WebDriver from the specified URL.
 
         Args:
             task_id (TaskID): The ID of the task to update progress.

@@ -4,8 +4,7 @@ from .properties import Configuracao
 
 
 class ESAJ_AM(Configuracao):  # noqa: N801
-    """
-    Configuration class for ESAJ automation module.
+    """Configuration class for ESAJ automation module.
 
     Attributes:
         get_page_custas_pagas (str): CSS selector for the 'Custas Pagas' button.

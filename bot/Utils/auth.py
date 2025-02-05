@@ -1,5 +1,4 @@
-"""
-Module: auth.
+"""Module: auth.
 
 This module provides the AuthBot class for handling authentication across different systems.
 
@@ -30,8 +29,7 @@ if platform.system() == "Windows":
 
 
 class AuthBot(CrawJUD):
-    """
-    AuthBot class for handling authentication across different systems.
+    """AuthBot class for handling authentication across different systems.
 
     Methods
     -------
@@ -53,8 +51,7 @@ class AuthBot(CrawJUD):
     """
 
     def __init__(self) -> None:
-        """
-        Initialize the AuthBot instance.
+        """Initialize the AuthBot instance.
 
         Initializes the AuthBot with necessary attributes and configurations.
         """
@@ -62,8 +59,7 @@ class AuthBot(CrawJUD):
         # Initialize any additional attributes here
 
     def auth(self) -> bool:
-        """
-        Authenticate the user based on the system attribute.
+        """Authenticate the user based on the system attribute.
 
         This method dynamically calls the appropriate authentication method
         for the system specified in the `self.system` attribute. The method
@@ -85,8 +81,7 @@ class AuthBot(CrawJUD):
         raise RuntimeError("Sistema Não encontrado!")
 
     def esaj_auth(self) -> bool:
-        """
-        Authenticate the user on the ESAJ system.
+        """Authenticate the user on the ESAJ system.
 
         This method handles both certificate-based and username/password-based
         authentication methods. It navigates to the appropriate login page,
@@ -181,8 +176,7 @@ class AuthBot(CrawJUD):
             raise e
 
     def projudi_auth(self) -> bool:
-        """
-        Authenticate the user on the Projudi platform.
+        """Authenticate the user on the Projudi platform.
 
         This method navigates to the login page, enters the username and password,
         and attempts to log in. It then checks if the login was successful.
@@ -217,8 +211,7 @@ class AuthBot(CrawJUD):
             raise e
 
     def elaw_auth(self) -> bool:
-        """
-        Authenticate the user on the eLaw platform.
+        """Authenticate the user on the eLaw platform.
 
         This method navigates to the eLaw login page, enters the username and password,
         and attempts to log in. It waits for the necessary elements to be present on the page
@@ -254,8 +247,7 @@ class AuthBot(CrawJUD):
             raise e
 
     def pje_auth(self) -> bool:
-        """
-        Authenticate the user on the PJE system.
+        """Authenticate the user on the PJE system.
 
         This method navigates to the login page, inputs the username and password,
         and attempts to log in. It waits for the login elements to be present on the page,
@@ -292,8 +284,7 @@ class AuthBot(CrawJUD):
             raise e
 
     def accept_cert(self, accepted_dir: str) -> None:
-        """
-        Accept the certificate for the user.
+        """Accept the certificate for the user.
 
         This method automates the acceptance of certificates by interacting with
         the certificate management application. It copies necessary files and ensures

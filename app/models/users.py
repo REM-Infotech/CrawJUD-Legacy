@@ -45,8 +45,7 @@ class Users(db.Model):
 
     @senhacrip.setter
     def senhacrip(self, senha_texto: str):
-        """
-        Set the hashed password from plaintext.
+        """Set the hashed password from plaintext.
 
         Args:
             senha_texto (str): The plaintext password.
@@ -55,8 +54,7 @@ class Users(db.Model):
         self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
     def check_password(self, senha_texto_claro: str) -> bool:
-        """
-        Verify the plaintext password against the hashed password.
+        """Verify the plaintext password against the hashed password.
 
         Args:
             senha_texto_claro (str): The plaintext password.

@@ -1,5 +1,4 @@
-"""
-Module: pje.
+"""Module: pje.
 
 This module provides the PJE_AM class for automating PJE-AM operations.
 """
@@ -8,8 +7,7 @@ from .properties import Configuracao
 
 
 class PJE_AM(Configuracao):  # noqa: N801
-    """
-    Handle authentication, navigation, and interactions with the PJE-AM system.
+    """Handle authentication, navigation, and interactions with the PJE-AM system.
 
     Attributes:
         url_login (str): The login URL for PJE-AM.

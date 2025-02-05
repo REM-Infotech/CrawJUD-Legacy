@@ -29,8 +29,7 @@ load_dotenv()
 
 
 def generate_pid() -> str:
-    """
-    Generate a unique process identifier.
+    """Generate a unique process identifier.
 
     Returns:
         str: A unique PID composed of interleaved letters and digits.
@@ -50,8 +49,7 @@ def generate_pid() -> str:
 
 
 def storageClient() -> Client:  # noqa: N802
-    """
-    Create a Google Cloud Storage client.
+    """Create a Google Cloud Storage client.
 
     Returns:
         Client: Configured GCS client.
@@ -65,8 +63,7 @@ def storageClient() -> Client:  # noqa: N802
 
 
 def CredentialsGCS() -> Credentials:  # noqa: N802
-    """
-    Create Google Cloud Storage credentials from environment variables.
+    """Create Google Cloud Storage credentials from environment variables.
 
     Returns:
         Credentials: GCS service account credentials.
@@ -79,8 +76,7 @@ def CredentialsGCS() -> Credentials:  # noqa: N802
 
 
 def bucketGcs(storageClient: Client) -> Bucket:  # noqa: N802, N803
-    """
-    Retrieve the GCS bucket object.
+    """Retrieve the GCS bucket object.
 
     Args:
         storageClient (Client): The GCS client.
@@ -96,8 +92,7 @@ def bucketGcs(storageClient: Client) -> Bucket:  # noqa: N802, N803
 
 
 def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
-    """
-    Stop the execution of a bot based on its PID.
+    """Stop the execution of a bot based on its PID.
 
     Args:
         app (Flask): The Flask application instance.
@@ -146,8 +141,7 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> tuple[dict
 
 
 def get_file(pid: str, app: Flask) -> str:
-    """
-    Retrieve the output file associated with a bot's PID.
+    """Retrieve the output file associated with a bot's PID.
 
     Args:
         pid (str): The process identifier of the bot.

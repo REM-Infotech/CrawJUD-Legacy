@@ -1,5 +1,4 @@
-"""
-Utility module for CrawJUD-Bots, providing various classes and functions.
+"""Utility module for CrawJUD-Bots, providing various classes and functions.
 
 for authentication, driving browsers, interacting with elements, and more.
 
@@ -57,8 +56,7 @@ TypeData = Union[
 
 
 class OtherUtils(CrawJUD):
-    """
-    Provides utility methods for data processing and interaction within CrawJUD-Bots.
+    """Provides utility methods for data processing and interaction within CrawJUD-Bots.
 
     Methods:
         nomes_colunas() -> List[str]
@@ -86,8 +84,7 @@ class OtherUtils(CrawJUD):
     """
 
     def __init__(self) -> None:
-        """
-        Initialize the OtherUtils instance.
+        """Initialize the OtherUtils instance.
 
         Sets up necessary attributes and configurations for utility operations.
         """
@@ -96,8 +93,7 @@ class OtherUtils(CrawJUD):
 
     @property
     def nomes_colunas(self) -> List[str]:
-        """
-        Retrieve a list of column names.
+        """Retrieve a list of column names.
 
         Returns:
             List[str]: A list of column names used in the application.
@@ -219,8 +215,7 @@ class OtherUtils(CrawJUD):
 
     @property
     def elaw_data(self) -> Dict[str, str]:
-        """
-        Generate a dictionary with keys related to legal case information and empty string values.
+        """Generate a dictionary with keys related to legal case information and empty string values.
 
         Returns:
             Dict[str, str]: A dictionary containing keys for legal case details with empty string values.
@@ -258,8 +253,7 @@ class OtherUtils(CrawJUD):
 
     @property
     def cities_Amazonas(self) -> Dict[str, str]:  # noqa: N802
-        """
-        Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
+        """Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
 
         Returns:
             Dict[str, str]: A dictionary where the keys are city names and the values are their categories.
@@ -331,8 +325,7 @@ class OtherUtils(CrawJUD):
         }
 
     def dataFrame(self) -> List[Dict[str, str]]:  # noqa: N802
-        """
-        Convert an Excel file to a list of dictionaries with formatted data.
+        """Convert an Excel file to a list of dictionaries with formatted data.
 
         Reads an Excel file, processes the data by formatting dates and floats,
         and returns the data as a list of dictionaries.
@@ -368,8 +361,7 @@ class OtherUtils(CrawJUD):
         return vars_df
 
     def elawFormats(self, data: Dict[str, str]) -> Dict[str, str]:  # noqa: N802, C901
-        """
-        Format the given data dictionary according to specific rules.
+        """Format the given data dictionary according to specific rules.
 
         Args:
             data (Dict[str, str]): A dictionary containing key-value pairs to be formatted.
@@ -415,8 +407,7 @@ class OtherUtils(CrawJUD):
         return data
 
     def calc_time(self) -> List[int]:
-        """
-        Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
+        """Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
 
         Returns:
             List[int]: A list containing two integers:
@@ -431,8 +422,7 @@ class OtherUtils(CrawJUD):
         return [minutes, seconds]
 
     def append_moves(self) -> None:
-        """
-        Append movements to the spreadsheet if there are any movements to append.
+        """Append movements to the spreadsheet if there are any movements to append.
 
         Checks if there are any movements stored in the `self.appends` list.
         If there are, iterates over each movement and calls the `self.append_success`
@@ -454,8 +444,7 @@ class OtherUtils(CrawJUD):
         message: str = None,
         fileN: str = None,  # noqa: N803
     ) -> None:
-        """
-        Append successful execution data to the spreadsheet.
+        """Append successful execution data to the spreadsheet.
 
         Args:
             data (TypeData): The data to append.
@@ -500,8 +489,7 @@ class OtherUtils(CrawJUD):
             self.prt()
 
     def append_error(self, data: Dict[str, str] = None) -> None:
-        """
-        Append error data to the error spreadsheet.
+        """Append error data to the error spreadsheet.
 
         Args:
             data (Dict[str, str], optional): The error data to append. Defaults to None.
@@ -518,8 +506,7 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(self.path_erro, index=False)
 
     def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
-        """
-        Append validated fields to the spreadsheet.
+        """Append validated fields to the spreadsheet.
 
         Args:
             data (List[Dict[str, str]]): The validated data to append.
@@ -538,8 +525,7 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(planilha_validar, index=False)
 
     def count_doc(self, doc: str) -> Union[str, None]:
-        """
-        Determine the type of Brazilian document based on its length.
+        """Determine the type of Brazilian document based on its length.
 
         Args:
             doc (str): The document number as a string.
@@ -556,8 +542,7 @@ class OtherUtils(CrawJUD):
         return None
 
     def get_recent(self, folder: str) -> Union[str, None]:
-        """
-        Get the most recent PDF file from a specified folder.
+        """Get the most recent PDF file from a specified folder.
 
         Args:
             folder (str): The path to the folder to search for PDF files.
@@ -575,8 +560,7 @@ class OtherUtils(CrawJUD):
         return files[0] if files else None
 
     def format_string(self, string: str) -> str:
-        """
-        Format a given string to a secure filename.
+        """Format a given string to a secure filename.
 
         Args:
             string (str): The input string to be formatted.
@@ -588,8 +572,7 @@ class OtherUtils(CrawJUD):
         return secure_filename("".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]))
 
     def normalizar_nome(self, word: str) -> str:
-        """
-        Return a normalized version of the given word.
+        """Return a normalized version of the given word.
 
         Removes spaces, replaces "_" and "-" with nothing, and converts to lowercase.
 
@@ -603,8 +586,7 @@ class OtherUtils(CrawJUD):
         return re.sub(r"[\s_\-]", "", word).lower()
 
     def similaridade(self, word1: str, word2: str) -> float:
-        """
-        Compare similarity between two words.
+        """Compare similarity between two words.
 
         Args:
             word1 (str): First word.
@@ -617,8 +599,7 @@ class OtherUtils(CrawJUD):
         return SequenceMatcher(None, word1, word2).ratio()
 
     def finalize_execution(self) -> None:
-        """
-        Finalize the execution of the bot.
+        """Finalize the execution of the bot.
 
         Performs steps to clean up and log the completion of the bot's execution.
         """
@@ -639,8 +620,7 @@ class OtherUtils(CrawJUD):
         self.prt()
 
     def install_cert(self) -> None:
-        """
-        Install a certificate if it is not already installed.
+        """Install a certificate if it is not already installed.
 
         Checks for the presence of a certificate and installs it using certutil if absent.
         """
@@ -687,8 +667,7 @@ class OtherUtils(CrawJUD):
                 raise e
 
     def group_date_all(self, data: Dict[str, Dict[str, str]]) -> List[Dict[str, str]]:
-        """
-        Group date and vara information from the input data into a list of records.
+        """Group date and vara information from the input data into a list of records.
 
         Args:
             data (Dict[str, Dict[str, str]]): A dictionary where the keys are 'vara'
@@ -708,8 +687,7 @@ class OtherUtils(CrawJUD):
         return records
 
     def group_keys(self, data: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]:
-        """
-        Group keys from a list of dictionaries.
+        """Group keys from a list of dictionaries.
 
         Args:
             data (List[Dict[str, str]]): A list of dictionaries with string keys and values.
@@ -727,8 +705,7 @@ class OtherUtils(CrawJUD):
         return record
 
     def gpt_chat(self, text_mov: str) -> str:
-        """
-        Analyzes a legal document text and adjusts the response based on the document type.
+        """Analyzes a legal document text and adjusts the response based on the document type.
 
         Uses the OpenAI GPT model to analyze the provided text and generate a response
         identifying the document type and extracting relevant information.
@@ -773,8 +750,7 @@ class OtherUtils(CrawJUD):
             raise e
 
     def text_is_a_date(self, text: str) -> bool:
-        """
-        Check if the given text is in a date-like format.
+        """Check if the given text is in a date-like format.
 
         Args:
             text (str): The text to be checked.

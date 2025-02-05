@@ -1,5 +1,4 @@
-"""
-Module: movimentacao.
+"""Module: movimentacao.
 
 This module handles movement-related operations within the Projudi system of the CrawJUD-Bots application.
 """
@@ -28,8 +27,7 @@ from ...core import CrawJUD
 
 
 class movimentacao(CrawJUD):  # noqa: N801
-    """
-    Handles movement-related operations within the Projudi system.
+    """Handles movement-related operations within the Projudi system.
 
     Inherits from CrawJUD.
 
@@ -39,8 +37,7 @@ class movimentacao(CrawJUD):  # noqa: N801
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the movimentacao instance.
+        """Initialize the movimentacao instance.
 
         Args:
             *args: Variable length argument list.
@@ -58,8 +55,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the movement processing.
+        """Execute the movement processing.
 
         Processes each row in the data frame and handles queueing and error management.
         """
@@ -107,8 +103,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Manage the queuing of movement operations.
+        """Manage the queuing of movement operations.
 
         Raises:
             ErroDeExecucao: If the process is not found or other execution errors occur.
@@ -149,8 +144,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def set_page_size(self) -> None:
-        """
-        Set the page size for the movement table.
+        """Set the page size for the movement table.
 
         Selects the value '1000' from the page size dropdown.
         """
@@ -158,8 +152,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         select.select_by_value("1000")
 
     def setup_config(self) -> None:
-        """
-        Configure the setup for movement scraping.
+        """Configure the setup for movement scraping.
 
         Sets the page size, table moves, and initiates the scraping based on keywords.
 
@@ -188,8 +181,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             raise ErroDeExecucao("Nenhuma movimentação encontrada")
 
     def filter_moves(self, move: WebElement) -> bool:  # noqa: C901
-        """
-        Filter movements based on date and keyword criteria.
+        """Filter movements based on date and keyword criteria.
 
         Args:
             move (WebElement): The movement element to filter.
@@ -208,8 +200,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
 
         def data_check(data_mov: str) -> bool:
-            """
-            Validate the given date string against multiple date formats and checks if it falls within a specified date range.
+            """Validate the given date string against multiple date formats and checks if it falls within a specified date range.
 
             Args:
                 data_mov (str): The date string to be validated.
@@ -275,8 +266,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             )
 
         def text_check(text_mov: str) -> bool:
-            """
-            Check if the given text matches certain criteria.
+            """Check if the given text matches certain criteria.
 
             This function evaluates whether the provided text (`text_mov`) meets any of the following conditions:
             - Contains a keyword that is an asterisk ("*").
@@ -306,8 +296,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             return check_palavra
 
         def check_intimado() -> bool:
-            """
-            Check if the bot is intimated based on the bot data.
+            """Check if the bot is intimated based on the bot data.
 
             This function checks if the bot has been intimated by looking for the
             "INTIMADO" key in the bot data. If the key is present, it verifies if
@@ -332,8 +321,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         return resultados
 
     def scrap_moves(self, keyword: str) -> None:  # noqa: C901
-        """
-        Scrape movements that contain the specified keyword.
+        """Scrape movements that contain the specified keyword.
 
         Args:
             keyword (str): The keyword to search for in movements.
@@ -470,8 +458,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             self.appends.append(data)
 
     def getAnotherMoveWithDoc(self, keyword: str) -> list[WebElement]:  # noqa: N802
-        """
-        Retrieve another move with the specified document keyword.
+        """Retrieve another move with the specified document keyword.
 
         Args:
             keyword (str): The keyword to search for in moves.
@@ -492,8 +479,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         return list(filter(getmovewithdoc, self.table_moves))
 
     def movecontainsdoc(self, move: WebElement) -> bool:
-        """
-        Check if a movement contains a document.
+        """Check if a movement contains a document.
 
         Args:
             move (WebElement): The movement element to check.
@@ -511,8 +497,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         return expand is not None
 
     def getdocmove(self, move: WebElement, save_in_anotherfile: bool = False) -> str:  # noqa: C901
-        """
-        Retrieve the document associated with a movement.
+        """Retrieve the document associated with a movement.
 
         Args:
             move (WebElement): The movement element.
@@ -636,8 +621,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         return text_doc_1
 
     def openfile(self, path_pdf: str) -> str:
-        """
-        Open and reads the content of a PDF file.
+        """Open and reads the content of a PDF file.
 
         Args:
             path_pdf (str): The path to the PDF file.
@@ -659,8 +643,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         return pagescontent
 
     def set_tablemoves(self) -> None:
-        """
-        Set the table of movements from the web driver.
+        """Set the table of movements from the web driver.
 
         Locates and assigns the movement table elements to the instance.
         """

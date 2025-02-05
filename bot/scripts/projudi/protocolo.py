@@ -1,5 +1,4 @@
-"""
-Module: protocolo.
+"""Module: protocolo.
 
 This module handles protocol-related functionalities within the Projudi system of the CrawJUD-Bots application.
 """
@@ -34,8 +33,7 @@ dotenv.load_dotenv()
 
 
 class protocolo(CrawJUD):  # noqa: N801
-    """
-    Handles protocol operations within the Projudi system.
+    """Handles protocol operations within the Projudi system.
 
     This class extends CrawJUD to manage the creation, handling, and finalization
     of protocols within the Projudi system. It includes functionalities such as
@@ -44,8 +42,7 @@ class protocolo(CrawJUD):  # noqa: N801
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the protocolo instance.
+        """Initialize the protocolo instance.
 
         Args:
             *args: Variable length argument list.
@@ -63,8 +60,7 @@ class protocolo(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the protocol processing.
+        """Execute the protocol processing.
 
         Iterates through each entry in the data frame, managing the execution flow,
         handling session expirations, and logging any errors that occur during processing.
@@ -162,8 +158,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def confirm_protocol(self) -> str | None:
-        """
-        Confirm the protocol and retrieve the success message.
+        """Confirm the protocol and retrieve the success message.
 
         Waits for the success message element to appear and extracts the protocol
         number from the message.
@@ -179,8 +174,7 @@ class protocolo(CrawJUD):  # noqa: N801
         return successMessage
 
     def set_parte(self) -> bool:  # noqa: C901
-        """
-        Select the appropriate party for the protocol.
+        """Select the appropriate party for the protocol.
 
         Navigates through the available parties and selects the one specified in
         the bot data. Ensures that the selection is successful.
@@ -262,8 +256,7 @@ class protocolo(CrawJUD):  # noqa: N801
         return selected_parte
 
     def add_new_move(self) -> None:
-        """
-        Add a new move to the protocol.
+        """Add a new move to the protocol.
 
         Initiates the process of adding a new move by interacting with the web
         elements, entering the type of protocol, and confirming the addition.
@@ -312,8 +305,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def add_new_file(self) -> None:
-        """
-        Add a new file to the protocol.
+        """Add a new file to the protocol.
 
         Handles the uploading of the primary petition and any additional attachments.
         Interacts with the file input elements and ensures that files are uploaded
@@ -378,8 +370,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def set_file_principal(self) -> None:
-        """
-        Set the principal file for the protocol.
+        """Set the principal file for the protocol.
 
         Selects the main file from the list of uploaded files to designate it as
         the primary document for the protocol.
@@ -398,8 +389,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def more_files(self) -> None:
-        """
-        Add more files to the protocol.
+        """Add more files to the protocol.
 
         Uploads additional files if specified in the bot data. Iterates through
         the list of attachments and uploads each one, setting their types accordingly.
@@ -451,8 +441,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def sign_files(self) -> None:
-        """
-        Sign the protocol files.
+        """Sign the protocol files.
 
         Automates the signing process by entering the certificate password and
         confirming the signing action. Handles any errors related to incorrect passwords.
@@ -501,8 +490,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def finish_move(self) -> None:
-        """
-        Finalize the protocol move.
+        """Finalize the protocol move.
 
         Completes the protocol by confirming the selection and concluding the
         move process. Ensures that the protocol is properly finalized in the system.
@@ -525,8 +513,7 @@ class protocolo(CrawJUD):  # noqa: N801
         finish_button.click()
 
     def screenshot_sucesso(self):
-        """
-        Capture a screenshot upon successful protocol processing.
+        """Capture a screenshot upon successful protocol processing.
 
         Takes screenshots of the protocol confirmation and combines them into a
         single image for verification. Saves the final screenshot to the specified
@@ -593,8 +580,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def remove_files(self) -> None:
-        """
-        Remove files from the protocol.
+        """Remove files from the protocol.
 
         Deletes uploaded files from the protocol by interacting with the web
         elements responsible for file management. Confirms deletions through alerts.
@@ -629,8 +615,7 @@ class protocolo(CrawJUD):  # noqa: N801
                 sleep(2)
 
     def wait_progressbar(self) -> None:
-        """
-        Wait for the progress bar to complete.
+        """Wait for the progress bar to complete.
 
         Continuously checks the state of the progress bar and waits until
         the upload or processing is finished. Handles any exceptions related

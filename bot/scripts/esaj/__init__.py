@@ -1,5 +1,4 @@
-"""
-Module: esaj.
+"""Module: esaj.
 
 This module initializes and manages the ESaj bot within the CrawJUD-Bots application.
 """
@@ -13,15 +12,13 @@ from ...common import StartError
 
 
 class esaj:  # noqa: N801
-    """
-    esaj class.
+    """esaj class.
 
     Initializes and executes the ESaj bot based on provided configurations.
     """
 
     def __init__(self, **kwrgs) -> None:
-        """
-        Initialize a new esaj instance.
+        """Initialize a new esaj instance.
 
         Args:
             **kwrgs: Variable keyword arguments for bot configuration.
@@ -42,8 +39,7 @@ class esaj:  # noqa: N801
 
     @property
     def Bot(self) -> Any:  # noqa: N802
-        """
-        Bot property.
+        """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
 

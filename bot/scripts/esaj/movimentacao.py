@@ -1,5 +1,4 @@
-"""
-Module: movimentacao.
+"""Module: movimentacao.
 
 This module manages movement-related functionalities within the Esaj system of the CrawJUD-Bots application.
 """
@@ -20,8 +19,7 @@ from ...core import CrawJUD
 
 
 class Movimentacao(CrawJUD):
-    """
-    The Movimentacao class extends CrawJUD to handle movement-related tasks within the Esaj system.
+    """The Movimentacao class extends CrawJUD to handle movement-related tasks within the Esaj system.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -30,8 +28,7 @@ class Movimentacao(CrawJUD):
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the Movimentacao instance.
+        """Initialize the Movimentacao instance.
 
         Args:
             *args: Variable length argument list.
@@ -94,8 +91,7 @@ class Movimentacao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Queue the tasks for processing.
+        """Queue the tasks for processing.
 
         Raises:
             ErroDeExecucao: If an error occurs during execution.

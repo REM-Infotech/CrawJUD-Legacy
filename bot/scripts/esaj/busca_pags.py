@@ -1,5 +1,4 @@
-"""
-Module: busca_pags.
+"""Module: busca_pags.
 
 This module handles page search functionalities within the CrawJUD-Bots application.
 """
@@ -18,8 +17,7 @@ from ...core import CrawJUD
 
 
 class busca_pags(CrawJUD):  # noqa: N801
-    """
-    The busca_pags class manages page search operations.
+    """The busca_pags class manages page search operations.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -28,8 +26,7 @@ class busca_pags(CrawJUD):  # noqa: N801
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the busca_pags instance.
+        """Initialize the busca_pags instance.
 
         Args:
             *args: Variable length argument list.
@@ -89,8 +86,7 @@ class busca_pags(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Perform the queue operation.
+        """Perform the queue operation.
 
         Raises:
             ErroDeExecucao: If an error occurs during the queue operation.

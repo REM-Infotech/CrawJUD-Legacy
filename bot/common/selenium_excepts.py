@@ -12,8 +12,7 @@ from urllib3.exceptions import MaxRetryError, ProtocolError
 
 
 def webdriver_exepts() -> list[Exception]:
-    """
-    Return a list of Selenium and related exceptions.
+    """Return a list of Selenium and related exceptions.
 
     Returns:
         list[Exception]: A list containing various exception classes.
@@ -34,8 +33,7 @@ def webdriver_exepts() -> list[Exception]:
 
 
 def exceptionsBot() -> dict[str, str]:  # noqa: N802
-    """
-    Provide a mapping of exception names to their corresponding messages.
+    """Provide a mapping of exception names to their corresponding messages.
 
     Returns:
         dict[str, str]: A dictionary mapping exception class names to error messages.

@@ -1,5 +1,4 @@
-"""
-Package: scripts.
+"""Package: scripts.
 
 This package contains various scripts for different systems within the CrawJUD-Bots application, including projudi, esaj, elaw, pje, calculadoras, and caixa.
 """

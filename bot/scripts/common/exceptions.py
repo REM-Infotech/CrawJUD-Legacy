@@ -1,5 +1,4 @@
-"""
-Module: exceptions.
+"""Module: exceptions.
 
 This module defines custom exception classes for the CrawJUD-Bots application, facilitating error handling and reporting.
 """
@@ -8,8 +7,7 @@ from bot.common.selenium_excepts import exceptionsBot, webdriver_exepts
 
 
 class StartError(Exception):
-    """
-    StartError Exception.
+    """StartError Exception.
 
     Raised for errors that occur during the initialization or start of the bot.
     """
@@ -18,8 +16,7 @@ class StartError(Exception):
 
 
 class CrawJUDExceptions(Exception):  # noqa: N818
-    """
-    CrawJUDExceptions Class.
+    """CrawJUDExceptions Class.
 
     Base class for all CrawJUD-related exceptions, providing a standardized way to handle errors.
     """
@@ -33,8 +30,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
 
     @message.setter
     def message(self, message: str):
-        """
-        Set the error message for the exception.
+        """Set the error message for the exception.
 
         Args:
             message (str): The error message to associate with the exception.
@@ -43,8 +39,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         self.message_ = message
 
     def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
-        """
-        Initialize a new CrawJUDExceptions instance.
+        """Initialize a new CrawJUDExceptions instance.
 
         Args:
             message (str, optional): The error message.
@@ -71,8 +66,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         return self.message
 
     def __instancecheck__(self, instance: Exception) -> bool:
-        """
-        Check if the instance is a recognized CrawJUD exception.
+        """Check if the instance is a recognized CrawJUD exception.
 
         Args:
             instance (Exception): The exception instance to check.
@@ -86,15 +80,13 @@ class CrawJUDExceptions(Exception):  # noqa: N818
 
 
 class ItemNaoEcontrado(CrawJUDExceptions):
-    """
-    ItemNaoEcontrado Exception.
+    """ItemNaoEcontrado Exception.
 
     Raised when a required item or resource is not found.
     """
 
     def __init__(self, message="Item não encontrado"):
-        """
-        Initialize a new ItemNaoEcontrado instance.
+        """Initialize a new ItemNaoEcontrado instance.
 
         Args:
             message (str, optional): The error message. Defaults to "Item não encontrado".
@@ -103,8 +95,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
         super().__init__(message)
 
     def __instancecheck__(self, instance: Exception) -> bool:
-        """
-        Check if the instance is an ItemNaoEcontrado exception.
+        """Check if the instance is an ItemNaoEcontrado exception.
 
         Args:
             instance (Exception): The exception instance to check.
@@ -121,15 +112,13 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
 
 class ErroDeExecucao(CrawJUDExceptions):
-    """
-    ErroDeExecucao Exception.
+    """ErroDeExecucao Exception.
 
     Raised for errors that occur during the execution of CrawJUD processes.
     """
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialize a new ErroDeExecucao instance.
+        """Initialize a new ErroDeExecucao instance.
 
         Args:
             *args: Variable length argument list.
@@ -139,8 +128,7 @@ class ErroDeExecucao(CrawJUDExceptions):
         super().__init__(*args, **kwargs)
 
     def __instancecheck__(self, instance: Exception) -> bool:
-        """
-        Check if the instance is an ErroDeExecucao exception.
+        """Check if the instance is an ErroDeExecucao exception.
 
         Args:
             instance (Exception): The exception instance to check.

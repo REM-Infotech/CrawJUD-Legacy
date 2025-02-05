@@ -1,5 +1,4 @@
-"""
-Module: selenium_excepts.
+"""Module: selenium_excepts.
 
 This module defines exceptions related to Selenium WebDriver interactions and provides utility functions for handling them.
 """
@@ -16,8 +15,7 @@ from urllib3.exceptions import MaxRetryError, ProtocolError
 
 
 def webdriver_exepts() -> list[Exception]:
-    """
-    Retrieve a list of Selenium and related WebDriver exceptions.
+    """Retrieve a list of Selenium and related WebDriver exceptions.
 
     Returns:
         list[Exception]: A list containing various exception classes related to Selenium WebDriver.
@@ -38,8 +36,7 @@ def webdriver_exepts() -> list[Exception]:
 
 
 def exceptionsBot() -> dict[str, str]:  # noqa: N802
-    """
-    Provide a mapping of exception names to user-friendly error messages.
+    """Provide a mapping of exception names to user-friendly error messages.
 
     Returns:
         dict[str, str]: A dictionary where keys are exception class names and values are descriptive error messages.

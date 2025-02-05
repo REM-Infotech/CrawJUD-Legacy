@@ -15,8 +15,7 @@ load_dotenv()
 
 
 def make_celery(app: Flask) -> Celery:
-    """
-    Create and configure a Celery instance with Flask application context.
+    """Create and configure a Celery instance with Flask application context.
 
     Args:
         app (Flask): The Flask application instance.
@@ -38,8 +37,7 @@ def make_celery(app: Flask) -> Celery:
 
 
 def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cover
-    """
-    Check if the origin is allowed based on predefined patterns.
+    """Check if the origin is allowed based on predefined patterns.
 
     Args:
         origin (str, optional): The origin to check. Defaults to "https://google.com".

@@ -1,5 +1,4 @@
-"""
-Initialize the CrawJUD-Bots app with Flask, Celery, SocketIO, and extension.
+"""Initialize the CrawJUD-Bots app with Flask, Celery, SocketIO, and extension.
 
 This module creates the Flask app and configures extensions like Celery,
 SocketIO, Flask-Mail, SQLAlchemy, and Talisman.
@@ -57,8 +56,7 @@ class AppFactory:
     """Factory to create and configure the Flask app, SocketIO, and Celery."""
 
     def create_app(self) -> tuple[Flask, SocketIO, Celery]:
-        """
-        Create and configure the Flask app, SocketIO, and Celery worker.
+        """Create and configure the Flask app, SocketIO, and Celery worker.
 
         Returns:
             tuple: A tuple containing Flask app, SocketIO, and Celery worker.
@@ -102,8 +100,7 @@ class AppFactory:
         register_routes(app)
 
     def init_talisman(self, app: Flask) -> Talisman:
-        """
-        Initialize Talisman for security headers.
+        """Initialize Talisman for security headers.
 
         Args:
             app (Flask): The Flask application.
@@ -124,8 +121,7 @@ class AppFactory:
         return tslm
 
     def init_socket(self, app: Flask) -> SocketIO:
-        """
-        Initialize the SocketIO instance.
+        """Initialize the SocketIO instance.
 
         Args:
             app (Flask): The Flask application.
@@ -159,8 +155,7 @@ class AppFactory:
         mail.init_app(app)
 
     def init_redis(self, app: Flask) -> Redis:
-        """
-        Initialize the Redis extension.
+        """Initialize the Redis extension.
 
         Args:
             app (Flask): The Flask application.
@@ -175,8 +170,7 @@ class AppFactory:
         return redis
 
     def init_database(self, app: Flask) -> SQLAlchemy:
-        """
-        Initialize the database and create tables if they do not exist.
+        """Initialize the database and create tables if they do not exist.
 
         Args:
             app (Flask): The Flask application.

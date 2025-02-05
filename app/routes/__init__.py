@@ -11,8 +11,7 @@ load_dotenv()
 
 
 def register_routes(app: Flask) -> None:
-    """
-    Register blueprints and error handlers with the Flask application.
+    """Register blueprints and error handlers with the Flask application.
 
     Args:
         app (Flask): The Flask application instance.

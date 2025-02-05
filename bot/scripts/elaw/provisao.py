@@ -1,5 +1,4 @@
-"""
-Module: provisao.
+"""Module: provisao.
 
 This module handles provision-related functionalities within the Elaw system of the CrawJUD-Bots application.
 """
@@ -26,8 +25,7 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 
 class Provisao(CrawJUD):
-    """
-    The Provisao class extends CrawJUD to manage provisions within the application.
+    """The Provisao class extends CrawJUD to manage provisions within the application.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -36,8 +34,7 @@ class Provisao(CrawJUD):
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the Provisao instance.
+        """Initialize the Provisao instance.
 
         Args:
             *args: Variable length argument list.
@@ -100,8 +97,7 @@ class Provisao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Handle the provision queue processing.
+        """Handle the provision queue processing.
 
         Raises:
             ErroDeExecucao: If an error occurs during execution.
@@ -130,8 +126,7 @@ class Provisao(CrawJUD):
             raise e
 
     def chk_risk(self):
-        """
-        Check and select the appropriate risk type based on the provision label.
+        """Check and select the appropriate risk type based on the provision label.
 
         Raises:
             None
@@ -143,8 +138,7 @@ class Provisao(CrawJUD):
             self.Select2_ELAW(self.elements.type_risk_select, "Risco")
 
     def setup_calls(self):
-        """
-        Configure sequence of method calls based on the provision data.
+        """Configure sequence of method calls based on the provision data.
 
         Returns:
             list: A list of method references to be called.
@@ -187,8 +181,7 @@ class Provisao(CrawJUD):
         return calls
 
     def get_valores_proc(self) -> str:
-        """
-        Retrieve the values related to the process.
+        """Retrieve the values related to the process.
 
         Returns:
             str: Description of the process values.
@@ -213,8 +206,7 @@ class Provisao(CrawJUD):
         return "Contém valores"
 
     def add_new_valor(self):
-        """
-        Add a new value entry.
+        """Add a new value entry.
 
         Raises:
             ErroDeExecucao: If unable to update the provision.
@@ -248,8 +240,7 @@ class Provisao(CrawJUD):
         editar_pedido.click()
 
     def set_valores(self):
-        """
-        Set the provision values.
+        """Set the provision values.
 
         Raises:
             None
@@ -280,8 +271,7 @@ class Provisao(CrawJUD):
             raise e
 
     def set_risk(self) -> None:
-        """
-        Set the risk type for the provision.
+        """Set the risk type for the provision.
 
         Raises:
             None
@@ -320,8 +310,7 @@ class Provisao(CrawJUD):
             raise e
 
     def informar_datas(self) -> None:
-        """
-        Inform the correction base date and interest date.
+        """Inform the correction base date and interest date.
 
         Raises:
             None
@@ -367,8 +356,7 @@ class Provisao(CrawJUD):
             raise e
 
     def informar_motivo(self):
-        """
-        Inform the justification for the provision.
+        """Inform the justification for the provision.
 
         Raises:
             None
@@ -401,8 +389,7 @@ class Provisao(CrawJUD):
             raise e
 
     def save_changes(self) -> None:
-        """
-        Save all changes made during the provision process.
+        """Save all changes made during the provision process.
 
         Raises:
             ErroDeExecucao: If unable to save the provision.
@@ -428,8 +415,7 @@ class Provisao(CrawJUD):
         self.append_success(data, message="Provisão atualizada com sucesso!")
 
     def print_comprovante(self) -> str:
-        """
-        Capture and save a screenshot as proof of the provision.
+        """Capture and save a screenshot as proof of the provision.
 
         Returns:
             str: The name of the saved screenshot file.

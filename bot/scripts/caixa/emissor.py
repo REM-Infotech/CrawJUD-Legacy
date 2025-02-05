@@ -1,5 +1,4 @@
-"""
-Module: emissor.
+"""Module: emissor.
 
 This module handles the emission of judicial deposit documents within the
 Caixa system of the CrawJUD-Bots application.
@@ -25,8 +24,7 @@ from ...Utils import OtherUtils
 
 
 class emissor(CrawJUD):  # noqa: N801
-    """
-    Class emissor.
+    """Class emissor.
 
     Manages the emission and processing of judicial deposit documents within
     the Caixa system of the CrawJUD-Bots application.
@@ -35,8 +33,7 @@ class emissor(CrawJUD):  # noqa: N801
     count_doc = OtherUtils.count_doc
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize a new emissor instance.
+        """Initialize a new emissor instance.
 
         Sets up authentication, initializes variables, and prepares the
         processing environment.
@@ -60,8 +57,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the main processing loop.
+        """Execute the main processing loop.
 
         Processes each entry in the data frame, handling session expiration
         and errors.
@@ -110,8 +106,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Manage the processing queue.
+        """Manage the processing queue.
 
         Executes emission steps and handles any exceptions raised.
         """
@@ -131,8 +126,7 @@ class emissor(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def get_site(self) -> None:
-        """
-        Access the emission site.
+        """Access the emission site.
 
         Navigates to the Caixa deposit page and handles CAPTCHA and navigation.
         """
@@ -177,8 +171,7 @@ class emissor(CrawJUD):  # noqa: N801
         next_btn.click()
 
     def locale_proc(self) -> None:
-        """
-        Configure the tribunal locale.
+        """Configure the tribunal locale.
 
         Selects the tribunal, comarca, vara, and agency based on provided data.
         """
@@ -254,8 +247,7 @@ class emissor(CrawJUD):  # noqa: N801
                 break
 
     def proc_nattribut(self) -> None:
-        """
-        Process the nature of the tributary.
+        """Process the nature of the tributary.
 
         Inputs the process number, action type, and tributary nature.
         """
@@ -295,8 +287,7 @@ class emissor(CrawJUD):  # noqa: N801
         natureza_tributaria.click()
 
     def dados_partes(self) -> None:
-        """
-        Input party data.
+        """Input party data.
 
         Provides information about the author and defendant, including names
         and document types.
@@ -367,8 +358,7 @@ class emissor(CrawJUD):  # noqa: N801
         campo_doc_reu.send_keys(doc_reu)
 
     def info_deposito(self) -> None:
-        """
-        Provide deposit information.
+        """Provide deposit information.
 
         Inputs the deposit indicator and value into the system.
         """
@@ -399,8 +389,7 @@ class emissor(CrawJUD):  # noqa: N801
         campo_val_deposito.send_keys(val_deposito)
 
     def make_doc(self) -> None:
-        """
-        Generate and download the deposit document.
+        """Generate and download the deposit document.
 
         Initiates document generation and handles the download process.
         """
@@ -419,8 +408,7 @@ class emissor(CrawJUD):  # noqa: N801
         download_pdf.click()
 
     def rename_pdf(self) -> str:
-        """
-        Rename the downloaded PDF document.
+        """Rename the downloaded PDF document.
 
         Renames the PDF file based on the process number, author, and PID.
 
@@ -443,8 +431,7 @@ class emissor(CrawJUD):  # noqa: N801
         return pdf_name
 
     def get_val_doc_and_codebar(self, pdf_name: str) -> None:
-        """
-        Extract values and barcode from the PDF document.
+        """Extract values and barcode from the PDF document.
 
         Parses the PDF to retrieve necessary information and formats the
         barcode.

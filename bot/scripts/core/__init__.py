@@ -1,5 +1,4 @@
-"""
-Module: core.
+"""Module: core.
 
 This module contains the CrawJUD class, which serves as the core framework for managing bot operations within the CrawJUD-Bots application.
 """
@@ -55,8 +54,7 @@ __all__ = [
 
 
 class CrawJUD(PropertiesCrawJUD):
-    """
-    CrawJUD class.
+    """CrawJUD class.
 
     Serves as the core framework for managing bot operations, including setup, authentication, and attribute management.
     """
@@ -68,16 +66,14 @@ class CrawJUD(PropertiesCrawJUD):
     }
 
     def prt(self) -> None:
-        """
-        Print a message using the PrintBot instance.
+        """Print a message using the PrintBot instance.
 
         This method delegates the printing of messages to the PrintBot's print_msg method.
         """
         self.PrintBot.print_msg()
 
     def end_prt(self, status: str) -> None:
-        """
-        End the print session with a given status.
+        """End the print session with a given status.
 
         Args:
             status (str): The status message to log upon ending the print session.
@@ -86,8 +82,7 @@ class CrawJUD(PropertiesCrawJUD):
         self.PrintBot.end_prt(status)
 
     def __init__(self, *args, **kwargs) -> None:
-        """
-        Initialize a new CrawJUD instance.
+        """Initialize a new CrawJUD instance.
 
         Sets up configurations, loads settings from a JSON file, and launches the web driver.
 
@@ -118,8 +113,7 @@ class CrawJUD(PropertiesCrawJUD):
         self.state_or_client = self.state if self.state is not None else self.client
 
     def __getattr__(self, nome: str) -> TypeHint:
-        """
-        Retrieve an attribute by name.
+        """Retrieve an attribute by name.
 
         Args:
             nome (str): The name of the attribute to retrieve.
@@ -142,8 +136,7 @@ class CrawJUD(PropertiesCrawJUD):
         return item
 
     def setup(self) -> None:
-        """
-        Set up the bot by loading configuration and preparing the environment.
+        """Set up the bot by loading configuration and preparing the environment.
 
         This method performs the following steps:
         1. Loads configuration from a JSON file specified by `self.path_args`.
@@ -214,8 +207,7 @@ class CrawJUD(PropertiesCrawJUD):
             raise e
 
     def auth_bot(self) -> None:
-        """
-        Authenticate the bot using the specified login method.
+        """Authenticate the bot using the specified login method.
 
         This method checks if the bot is logged in using the provided authentication method.
         If the login is successful, it logs a success message.

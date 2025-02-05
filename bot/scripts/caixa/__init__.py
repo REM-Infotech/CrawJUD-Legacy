@@ -1,5 +1,4 @@
-"""
-Module: caixa.
+"""Module: caixa.
 
 This module initializes and manages the Caixa bot within the CrawJUD-Bots application.
 """
@@ -13,15 +12,13 @@ from ...common import StartError
 
 
 class caixa:  # noqa: N801
-    """
-    caixa class.
+    """caixa class.
 
     Initializes and executes the Caixa bot based on provided configurations.
     """
 
     def __init__(self, **kwrgs) -> None:
-        """
-        Initialize a new caixa instance.
+        """Initialize a new caixa instance.
 
         Args:
             **kwrgs: Variable keyword arguments for bot configuration.
@@ -42,8 +39,7 @@ class caixa:  # noqa: N801
 
     @property
     def Bot(self) -> Any:  # noqa: N802
-        """
-        Bot property.
+        """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
 

@@ -1,5 +1,4 @@
-"""
-Module: calculadoras.
+"""Module: calculadoras.
 
 This module initializes and manages the Calculadoras bot within the CrawJUD-Bots application.
 """
@@ -13,15 +12,13 @@ from ...common import StartError
 
 
 class calculadoras:  # noqa: N801
-    """
-    calculadoras class.
+    """calculadoras class.
 
     Initializes and executes the Calculadoras bot based on provided configurations.
     """
 
     def __init__(self, **kwrgs) -> None:
-        """
-        Initialize a new calculadoras instance.
+        """Initialize a new calculadoras instance.
 
         Args:
             **kwrgs: Variable keyword arguments for bot configuration.
@@ -43,8 +40,7 @@ class calculadoras:  # noqa: N801
 
     @property
     def Bot(self) -> Any:  # noqa: N802
-        """
-        Bot property.
+        """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
 

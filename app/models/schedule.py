@@ -17,8 +17,7 @@ class ScheduleModel(db.Model):
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self) -> str:
-        """
-        Return a string representation of the scheduled job.
+        """Return a string representation of the scheduled job.
 
         Returns:
             str: The task name of the scheduled job.

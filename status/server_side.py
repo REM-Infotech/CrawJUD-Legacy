@@ -10,8 +10,7 @@ from status import SetStatus
 
 
 def load_cache(pid: str, app: Flask) -> Dict[str, str]:
-    """
-    Load cache data for a given PID from Redis.
+    """Load cache data for a given PID from Redis.
 
     Args:
         pid (str): The process ID for which to load the cache.
@@ -48,8 +47,7 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
 
 
 def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask = None) -> Dict[str, str | int]:  # noqa: C901, N802
-    """
-    Format and update the status message for a given process.
+    """Format and update the status message for a given process.
 
     This function interacts with a SQLAlchemy database and a Redis client to
     manage and update the status of a process identified by a PID. It ensures

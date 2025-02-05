@@ -1,5 +1,4 @@
-"""
-Module: search.
+"""Module: search.
 
 This module provides the SearchBot class for handling the search of processes.
 
@@ -37,8 +36,7 @@ from ..core import CrawJUD
 
 
 class SearchBot(CrawJUD):
-    """
-    A class to handle the search of processes on the Web.
+    """A class to handle the search of processes on the Web.
 
     Subclasses are responsible for implementing the logic of the search in the
     respective system.
@@ -56,8 +54,7 @@ class SearchBot(CrawJUD):
         """Initialize the SearchBot class."""
 
     def search_(self) -> bool:
-        """
-        Perform a search for a process based on the type of bot.
+        """Perform a search for a process based on the type of bot.
 
         This method constructs a search message based on the type of bot
         and initiates the search process by calling a system-specific search
@@ -81,8 +78,7 @@ class SearchBot(CrawJUD):
         return src
 
     def elaw_search(self) -> bool:
-        """
-        Perform a search for a process using the ELAW system.
+        """Perform a search for a process using the ELAW system.
 
         This method navigates to the ELAW search page, inputs the process number,
         and initiates the search. It handles the search results and determines
@@ -121,8 +117,7 @@ class SearchBot(CrawJUD):
         return False
 
     def esaj_search(self) -> bool:
-        """
-        Perform a search for a process using the ESAJ system.
+        """Perform a search for a process using the ESAJ system.
 
         This method constructs a search message based on the type of bot
         and initiates the search process by calling a system-specific search
@@ -202,8 +197,7 @@ class SearchBot(CrawJUD):
         return check_process is not None
 
     def projudi_search(self) -> bool:
-        """
-        Perform a search for a process using the PROJUDI system.
+        """Perform a search for a process using the PROJUDI system.
 
         This method navigates to the PROJUDI search page and initiates the search
         based on the type of bot. It handles the search results and determines
@@ -224,8 +218,7 @@ class SearchBot(CrawJUD):
         return returns
 
     def search_proc(self) -> bool:
-        """
-        Perform a search for a process using the PROJUDI system.
+        """Perform a search for a process using the PROJUDI system.
 
         This method constructs a search message based on the type of bot
         and initiates the search process by calling a system-specific search
@@ -246,8 +239,7 @@ class SearchBot(CrawJUD):
                 raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
 
         def get_link_grau2() -> str | None:
-            """
-            Retrieve the link to access the resources related to the process for the second grade.
+            """Retrieve the link to access the resources related to the process for the second grade.
 
             This method waits for the presence of the link to access the resources related to the process
             and filters the last element in the list of elements that contains the text "Clique aqui para
@@ -321,8 +313,7 @@ class SearchBot(CrawJUD):
         return False
 
     def search_proc_parte(self) -> bool:
-        """
-        Perform a search for a process by party name using the PROJUDI system.
+        """Perform a search for a process by party name using the PROJUDI system.
 
         This method inputs the party name and other relevant details to search
         for the process. It handles the search results and determines if the

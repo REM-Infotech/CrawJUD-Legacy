@@ -1,5 +1,4 @@
-"""
-Module: protocolo.
+"""Module: protocolo.
 
 This module handles protocol-related operations within the ESaj system of the CrawJUD-Bots application.
 """
@@ -26,15 +25,13 @@ from ...core import CrawJUD
 
 
 class protocolo(CrawJUD):  # noqa: N801
-    """
-    protocolo class.
+    """protocolo class.
 
     Manages the protocoling process within the ESaj system using the CrawJUD framework.
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize a new protocolo instance.
+        """Initialize a new protocolo instance.
 
         Sets up authentication, initializes necessary variables, and prepares the processing environment.
         """
@@ -49,8 +46,7 @@ class protocolo(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the main processing loop.
+        """Execute the main processing loop.
 
         Processes each entry in the data frame, handling session expiration and errors appropriately.
         """
@@ -98,8 +94,7 @@ class protocolo(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Manage the processing queue.
+        """Manage the processing queue.
 
         Executes the protocoling steps and handles any exceptions that may occur during the process.
         """
@@ -118,8 +113,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def init_protocolo(self) -> None:
-        """
-        Initialize the protocoling process.
+        """Initialize the protocoling process.
 
         Navigates to the petitioning section and prepares the environment for protocoling.
         """
@@ -145,8 +139,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao("Erro ao inicializar peticionamento") from None
 
     def set_tipo_protocolo(self) -> None:
-        """
-        Set the type of protocol.
+        """Set the type of protocol.
 
         Selects and inputs the protocol type based on the provided data.
         """
@@ -169,8 +162,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao("Erro ao informar tipo de protocolo") from None
 
     def set_subtipo_protocolo(self) -> None:
-        """
-        Set the subtype of protocol.
+        """Set the subtype of protocol.
 
         Selects and inputs the protocol subtype based on the provided data.
         """
@@ -191,8 +183,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao("Erro ao informar subtipo de protocolo") from None
 
     def set_petition_file(self) -> None:
-        """
-        Attach the petition file.
+        """Attach the petition file.
 
         Uploads the main petition document and verifies the upload.
         """
@@ -226,8 +217,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao("Erro ao enviar petição") from None
 
     def vincular_parte(self) -> None:
-        """
-        Link the party to the petition.
+        """Link the party to the petition.
 
         Associates the specified party with the petition, handling any exceptions during the process.
         """
@@ -278,8 +268,7 @@ class protocolo(CrawJUD):  # noqa: N801
             raise ErroDeExecucao("Não foi possivel vincular parte a petição") from None
 
     def finish_petition(self) -> None:
-        """
-        Finalize the petitioning process.
+        """Finalize the petitioning process.
 
         Completes the protocoling by confirming and saving the petition details.
         """
@@ -294,8 +283,7 @@ class protocolo(CrawJUD):  # noqa: N801
         confirm_button.click()
 
     def get_confirm_protocol(self) -> list:
-        """
-        Confirm and retrieve protocol details.
+        """Confirm and retrieve protocol details.
 
         Captures the receipt of the protocoling process and moves the receipt to the designated directory.
 

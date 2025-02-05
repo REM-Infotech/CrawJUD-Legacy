@@ -1,5 +1,4 @@
-"""
-Module: common.
+"""Module: common.
 
 This module aggregates and exposes common exception classes used throughout the CrawJUD-Bots application.
 """

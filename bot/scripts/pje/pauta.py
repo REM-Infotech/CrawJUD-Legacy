@@ -1,5 +1,4 @@
-"""
-Module: pje.pauta.
+"""Module: pje.pauta.
 
 This module fetches and processes court hearing schedules (pautas).
 """
@@ -123,8 +122,7 @@ class pauta(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def get_pautas(self, current_date: Type[datetime], vara: str) -> None:
-        """
-        Get and parse pautas from the appropriate page.
+        """Get and parse pautas from the appropriate page.
 
         Args:
             current_date (datetime): The date for retrieving pautas.

@@ -1,5 +1,4 @@
-"""
-Package: CrawJUD-Bots.
+"""Package: CrawJUD-Bots.
 
 CrawJUD-Bots is a web scraper and bot for automated interaction with the
 Brazilian Justice System.
@@ -75,8 +74,7 @@ process_type = Union[psutil.Process, None]
 
 
 class BotThread(Process):
-    """
-    A BotThread that extends Process to handle bot execution.
+    """A BotThread that extends Process to handle bot execution.
 
     Attributes:
         exc_bot (Exception): Stores any exception raised during execution.
@@ -86,8 +84,7 @@ class BotThread(Process):
     exc_bot: Exception = None
 
     def join(self) -> None:
-        """
-        Wait for the BotThread to finish execution.
+        """Wait for the BotThread to finish execution.
 
         If an exception occurred during execution, it is raised.
         """
@@ -96,8 +93,7 @@ class BotThread(Process):
             raise self.exc_bot
 
     def run(self) -> None:
-        """
-        Run the target function in the BotThread.
+        """Run the target function in the BotThread.
 
         Captures any exceptions raised during execution.
         """
@@ -110,8 +106,7 @@ class BotThread(Process):
 
 
 class WorkerBot:
-    """
-    Manage the lifecycle of bot processes.
+    """Manage the lifecycle of bot processes.
 
     Attributes:
         system (str): The operating system.
@@ -126,8 +121,7 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
-        """
-        Start a new bot process with the provided arguments.
+        """Start a new bot process with the provided arguments.
 
         Args:
             path_args (str): Path to the JSON file with bot arguments.
@@ -182,8 +176,7 @@ class WorkerBot:
         *args: Tuple[str],
         **kwargs: Dict[str, str],
     ) -> None:
-        """
-        Initialize a WorkerBot instance.
+        """Initialize a WorkerBot instance.
 
         Sets up the bot and executes the bot module based on the system type.
 
@@ -229,8 +222,7 @@ class WorkerBot:
 
     @classmethod
     def stop(cls, processID: int, pid: str, app: Flask = None) -> str:  # noqa: N802, N803
-        """
-        Stop a process with the given processID.
+        """Stop a process with the given processID.
 
         Args:
             processID (int): The process ID to stop.
@@ -266,8 +258,7 @@ class WorkerBot:
 
     @classmethod
     def check_status(cls, processID: str) -> str:  # noqa: N802, N803
-        """
-        Check the status of a process.
+        """Check the status of a process.
 
         Args:
             processID (str): The process ID to check.

@@ -1,5 +1,4 @@
-"""
-Module: socketio2.
+"""Module: socketio2.
 
 This module provides a SocketBot class for handling socket.io connections and emitting events.
 """
@@ -24,8 +23,7 @@ class SocketBot:
         self.tries = 0
 
     def with_context(self, event: str, data: Dict, url: str) -> None:
-        """
-        Handle the context for connecting and emitting messages.
+        """Handle the context for connecting and emitting messages.
 
         Args:
             event (str): The event to emit.
@@ -92,8 +90,7 @@ class SocketBot:
             logging.info(exc)
 
     def emit_message(self, event: str, data: Dict) -> None:
-        """
-        Emit a message to the socket.
+        """Emit a message to the socket.
 
         Args:
             event (str): The event to emit.
@@ -103,8 +100,7 @@ class SocketBot:
         sio.emit(event, data, namespace="/log")
 
     def connect_socket(self, url: str) -> None:
-        """
-        Connect to the socket.
+        """Connect to the socket.
 
         Args:
             url (str): The URL to connect to.
@@ -115,8 +111,7 @@ class SocketBot:
             self.connected = True
 
     def send_message(self, data: dict[str, str | int], url: str) -> None:
-        """
-        Send a log message.
+        """Send a log message.
 
         Args:
             data (dict[str, str | int]): The data to send.
@@ -129,8 +124,7 @@ class SocketBot:
             self.with_context("log_message", data, url)
 
     def end_message(self, data: dict, url: str) -> None:
-        """
-        Send a stop bot message and a status bot message.
+        """Send a stop bot message and a status bot message.
 
         Args:
             data (dict): The data to send.

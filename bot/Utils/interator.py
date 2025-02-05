@@ -1,5 +1,4 @@
-"""
-Utility module for interacting with web elements using Selenium WebDriver.
+"""Utility module for interacting with web elements using Selenium WebDriver.
 
 Provides the Interact class with methods to perform various interactions
 such as clicking, sending keys, and selecting items.
@@ -29,8 +28,7 @@ class Interact(CrawJUD):
         super().__init__()
 
     def send_key(self, element: WebElement, word: any) -> None:
-        """
-        Send a sequence of keys to a web element.
+        """Send a sequence of keys to a web element.
 
         Args:
             element (WebElement): The web element to send keys to.
@@ -52,8 +50,7 @@ class Interact(CrawJUD):
                 element.send_keys(c)
 
     def click(self, element: WebElement) -> None:
-        """
-        Click on a web element with a short delay before and after.
+        """Click on a web element with a short delay before and after.
 
         Args:
             element (WebElement): The web element to click.
@@ -64,8 +61,7 @@ class Interact(CrawJUD):
         sleep(0.05)
 
     def double_click(self, element: WebElement) -> None:
-        """
-        Perform a double-click action on a web element.
+        """Perform a double-click action on a web element.
 
         Args:
             element (WebElement): The web element to double-click.
@@ -75,8 +71,7 @@ class Interact(CrawJUD):
         action.double_click(element).perform()
 
     def select_item(self, elemento: str, text: str) -> bool:
-        """
-        Select an item from a dropdown or list based on the provided text.
+        """Select an item from a dropdown or list based on the provided text.
 
         Args:
             elemento (str): The CSS selector of the element containing the items.
@@ -116,8 +111,7 @@ class Interact(CrawJUD):
         return True
 
     def clear(self, element: WebElement) -> None:
-        """
-        Clear the content of a web element.
+        """Clear the content of a web element.
 
         Args:
             element (WebElement): The web element to clear.
@@ -129,8 +123,7 @@ class Interact(CrawJUD):
         sleep(1)
 
     def sleep_load(self, element: str = 'div[id="j_id_3x"]') -> None:
-        """
-        Wait until a specific element is no longer loading.
+        """Wait until a specific element is no longer loading.
 
         Args:
             element (str, optional): The CSS selector of the loading element.
@@ -167,8 +160,7 @@ class Interact(CrawJUD):
                 break
 
     def display_none(self, elemento: WebElement) -> None:
-        """
-        Wait until the display style of an element is set to 'none'.
+        """Wait until the display style of an element is set to 'none'.
 
         Args:
             elemento (WebElement): The web element to check.
@@ -213,8 +205,7 @@ class Interact(CrawJUD):
                 break
 
     def scroll_to(self, element: WebElement) -> None:
-        """
-        Scroll to a specific web element.
+        """Scroll to a specific web element.
 
         Args:
             element (WebElement): The web element to scroll to.
@@ -225,8 +216,7 @@ class Interact(CrawJUD):
         sleep(0.5)
 
     def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:  # noqa: N802, N803
-        """
-        Select an option from a Select2 dropdown based on the search text.
+        """Select an option from a Select2 dropdown based on the search text.
 
         Args:
             elementSelect (str): The CSS selector of the Select2 element.

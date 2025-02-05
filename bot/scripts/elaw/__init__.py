@@ -1,5 +1,4 @@
-"""
-Module: elaw.
+"""Module: elaw.
 
 This module initializes and manages the elaw bots within the CrawJUD-Bots application.
 """
@@ -13,8 +12,7 @@ from ...common import StartError
 
 
 class Elaw:
-    """
-    The Elaw class manages the initialization and execution of elaw bots.
+    """The Elaw class manages the initialization and execution of elaw bots.
 
     Attributes:
         kwrgs (dict): Keyword arguments for bot configuration.
@@ -22,8 +20,7 @@ class Elaw:
     """
 
     def __init__(self, **kwrgs) -> None:
-        """
-        Initialize the Elaw instance.
+        """Initialize the Elaw instance.
 
         This method updates the instance's dictionary with the provided keyword arguments
         and executes the bot. Errors during execution are logged and raised as StartError.
@@ -47,8 +44,7 @@ class Elaw:
 
     @property
     def Bot(self) -> Any:  # noqa: N802
-        """
-        Retrieve the bot instance based on the typebot attribute.
+        """Retrieve the bot instance based on the typebot attribute.
 
         Returns:
             Any: An instance of the specified bot class.

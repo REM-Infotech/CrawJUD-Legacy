@@ -1,5 +1,4 @@
-"""
-Module: download.
+"""Module: download.
 
 This module manages the download functionalities within the CrawJUD-Bots application.
 """
@@ -21,8 +20,7 @@ from ...core import CrawJUD
 
 
 class Download(CrawJUD):
-    """
-    The Download class extends CrawJUD to handle download tasks within the application.
+    """The Download class extends CrawJUD to handle download tasks within the application.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -31,8 +29,7 @@ class Download(CrawJUD):
     """
 
     def __init__(self, *args, **kwargs) -> None:
-        """
-        Initialize the Download instance.
+        """Initialize the Download instance.
 
         Args:
             *args: Variable length argument list.
@@ -50,8 +47,7 @@ class Download(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the download process.
+        """Execute the download process.
 
         Raises:
             DownloadError: If an error occurs during execution.
@@ -101,8 +97,7 @@ class Download(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Handle the download queue processing.
+        """Handle the download queue processing.
 
         Raises:
             DownloadQueueError: If an error occurs during queue processing.
@@ -136,8 +131,7 @@ class Download(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def buscar_doc(self) -> None:
-        """
-        Access the attachments page.
+        """Access the attachments page.
 
         Raises:
             DocumentSearchError: If an error occurs while accessing the page.
@@ -154,8 +148,7 @@ class Download(CrawJUD):
         self.prt()
 
     def download_docs(self) -> None:
-        """
-        Download the documents.
+        """Download the documents.
 
         Raises:
             DocumentDownloadError: If an error occurs during downloading.
@@ -195,8 +188,7 @@ class Download(CrawJUD):
                     self.prt()
 
     def rename_doc(self, namefile: str) -> None:
-        """
-        Rename the downloaded document.
+        """Rename the downloaded document.
 
         Args:
             namefile (str): The new name for the file.

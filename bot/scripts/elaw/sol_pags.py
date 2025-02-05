@@ -1,5 +1,4 @@
-"""
-Module: sol_pags.
+"""Module: sol_pags.
 
 This module handles the solution of pages within the Elaw system of the CrawJUD-Bots application.
 """
@@ -27,8 +26,7 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 
 class SolPags(CrawJUD):
-    """
-    The SolPags class extends CrawJUD to manage page solutions within the application.
+    """The SolPags class extends CrawJUD to manage page solutions within the application.
 
     Attributes:
         attribute_name (type): Description of the attribute.
@@ -37,8 +35,7 @@ class SolPags(CrawJUD):
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the SolPags instance.
+        """Initialize the SolPags instance.
 
         Args:
             *args: Variable length argument list.
@@ -101,8 +98,7 @@ class SolPags(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Handle the solution queue processing.
+        """Handle the solution queue processing.
 
         Raises:
             ErroDeExecucao: If an error occurs during execution.
@@ -128,8 +124,7 @@ class SolPags(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def new_payment(self) -> None:
-        """
-        Create a new payment entry.
+        """Create a new payment entry.
 
         Raises:
             ErroDeExecucao: If an error occurs during payment creation.
@@ -160,8 +155,7 @@ class SolPags(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def set_pgto(self, namedef: str):
-        """
-        Set the payment type.
+        """Set the payment type.
 
         Args:
             namedef (str): The name definition for the payment type.
@@ -205,8 +199,7 @@ class SolPags(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def condenacao(self) -> None:  # noqa: C901
-        """
-        Handle condemnation details.
+        """Handle condemnation details.
 
         Raises:
             ErroDeExecucao: If an error occurs during condemnation handling.
@@ -396,8 +389,7 @@ class SolPags(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def custas(self) -> None:
-        """
-        Manage cost-related operations.
+        """Manage cost-related operations.
 
         Raises:
             ErroDeExecucao: If an error occurs during cost management.
@@ -595,8 +587,7 @@ class SolPags(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def confirm_save(self) -> None:
-        """
-        Confirm the saving of payment details.
+        """Confirm the saving of payment details.
 
         Raises:
             ErroDeExecucao: If the save operation fails.
@@ -746,8 +737,7 @@ class SolPags(CrawJUD):
             raise ErroDeExecucao(e=e) from e
 
     def getScreenShot(self, url_page: str, Name_Comprovante1: str) -> None:  # noqa: N802, N803
-        """
-        Capture a screenshot of the specified page.
+        """Capture a screenshot of the specified page.
 
         Args:
             url_page (str): The URL of the page to capture.

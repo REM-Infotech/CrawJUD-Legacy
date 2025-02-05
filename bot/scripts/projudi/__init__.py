@@ -1,5 +1,4 @@
-"""
-Module: projudi.
+"""Module: projudi.
 
 This module defines the projudi class, which manages the initialization and execution
 of different bot types within the CrawJUD-Bots application.
@@ -16,8 +15,7 @@ from ...common.exceptions import StartError
 
 
 class projudi:  # noqa: N801
-    """
-    The projudi class initializes and executes the specified bot based on provided configurations.
+    """The projudi class initializes and executes the specified bot based on provided configurations.
 
     Attributes:
         kwrgs (dict): Keyword arguments containing configuration parameters for the bot.
@@ -25,8 +23,7 @@ class projudi:  # noqa: N801
     """
 
     def __init__(self, **kwrgs) -> None:
-        """
-        Initialize the projudi instance with the given keyword arguments.
+        """Initialize the projudi instance with the given keyword arguments.
 
         Args:
             **kwrgs: Arbitrary keyword arguments for bot configuration.
@@ -48,8 +45,7 @@ class projudi:  # noqa: N801
 
     @property
     def Bot(self) -> ClassBots:  # noqa: N802
-        """
-        Get the bot instance based on the 'typebot' configuration.
+        """Get the bot instance based on the 'typebot' configuration.
 
         Returns:
             ClassBots: An instance of the specified bot class.

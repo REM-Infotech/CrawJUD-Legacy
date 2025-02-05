@@ -1,5 +1,4 @@
-"""
-Module for "Complemento de Cadastro".
+"""Module for "Complemento de Cadastro".
 
 This module contains the `complement` class which configures and retrieves an elements bot instance
 and interacts with the ELAW system to complete the registration of a process.
@@ -52,15 +51,13 @@ campos_validar: List[str] = [
 
 
 class complement(CrawJUD):  # noqa: N801
-    """
-    A class that configures and retrieves an elements bot instance.
+    """A class that configures and retrieves an elements bot instance.
 
     This class interacts with the ELAW system to complete the registration of a process.
     """
 
     def __init__(self, *args, **kwrgs) -> None:
-        """
-        Initialize the complement class.
+        """Initialize the complement class.
 
         This method initializes the complement class by calling the base class's
         __init__ method and setting up the bot and authentication.
@@ -89,8 +86,7 @@ class complement(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """
-        Execute the complement bot.
+        """Execute the complement bot.
 
         This method executes the complement bot by calling the queue method
         for each row in the DataFrame, and handling any exceptions that may
@@ -147,8 +143,7 @@ class complement(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """
-        Execute the queue process for complementing registration.
+        """Execute the queue process for complementing registration.
 
         This method performs a series of operations to complete the registration
         process using the ELAW system. It checks the current search status, formats
@@ -240,8 +235,7 @@ class complement(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(e=e) from e
 
     def save_all(self) -> None:
-        """
-        Save all changes in the process.
+        """Save all changes in the process.
 
         This method interacts with the web elements to save all changes made
         to the process. It logs the action and clicks the save button.
@@ -259,8 +253,7 @@ class complement(CrawJUD):  # noqa: N801
         salvartudo.click()
 
     def validar_campos(self) -> None:
-        """
-        Validate the required fields.
+        """Validate the required fields.
 
         This method checks each required field in the process to ensure
         they are properly filled. It logs the validation steps and raises
@@ -310,8 +303,7 @@ class complement(CrawJUD):  # noqa: N801
         self.prt()
 
     def validar_advogado(self) -> str:
-        """
-        Validate the responsible lawyer.
+        """Validate the responsible lawyer.
 
         This method ensures that the responsible lawyer field is filled and
         properly selected. It logs the validation steps and raises an error
@@ -343,8 +335,7 @@ class complement(CrawJUD):  # noqa: N801
         return element
 
     def validar_advs_participantes(self) -> None:
-        """
-        Validate participating lawyers.
+        """Validate participating lawyers.
 
         This method ensures that the responsible lawyer is present in the
         list of participating lawyers. It logs the validation steps and
@@ -390,8 +381,7 @@ class complement(CrawJUD):  # noqa: N801
         self.prt()
 
     def confirm_save(self) -> bool:
-        """
-        Confirm the save operation.
+        """Confirm the save operation.
 
         This method checks if the process was successfully saved by verifying
         the URL or checking for error messages. It logs the outcome and raises
@@ -429,8 +419,7 @@ class complement(CrawJUD):  # noqa: N801
             raise ErroDeExecucao(ErroElaw)
 
     def print_comprovante(self) -> str:
-        """
-        Print the comprovante (receipt) of the registration.
+        """Print the comprovante (receipt) of the registration.
 
         This method captures a screenshot of the process and saves it
         as a comprovante file.
@@ -448,8 +437,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def advogado_interno(cls, self: Self) -> None:
-        """
-        Inform the internal lawyer.
+        """Inform the internal lawyer.
 
         This method inputs the internal lawyer information into the system
         and ensures it is properly selected.
@@ -507,8 +495,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def esfera(cls, self: Self, text: str = "Judicial") -> None:
-        """
-        Handle the selection of the judicial sphere in the process.
+        """Handle the selection of the judicial sphere in the process.
 
         This function performs the following steps:
         1. Selects the judicial sphere element.
@@ -544,8 +531,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def estado(cls, self: Self) -> None:
-        """
-        Update the state of the process in the system.
+        """Update the state of the process in the system.
 
         This method retrieves the state information from `self.bot_data` using the key "ESTADO",
         logs the action, and updates the state input field in the system using the `Select2_ELAW` method.
@@ -578,8 +564,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def comarca(cls, self: Self) -> None:
-        """
-        Inform the "comarca" (jurisdiction) of the process.
+        """Inform the "comarca" (jurisdiction) of the process.
 
         This method retrieves the comarca information from the bot data,
         selects the appropriate input element, and interacts with the
@@ -611,8 +596,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def foro(cls, self: Self) -> None:
-        """
-        Update the forum (foro) information for the process.
+        """Update the forum (foro) information for the process.
 
         This method selects the appropriate forum input element and updates it with the
         forum information retrieved from `self.bot_data`. It logs the actions performed
@@ -645,8 +629,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def vara(cls, self: Self) -> None:
-        """
-        Update the "vara" (court) information for the process.
+        """Update the "vara" (court) information for the process.
 
         This method retrieves the "VARA" data from the bot's data, selects the appropriate
         input element for "vara", and interacts with the ELAW system to update the information.
@@ -678,8 +661,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def unidade_consumidora(cls, self: Self) -> None:
-        """
-        Handle the process of informing the consumer unit in the web application.
+        """Handle the process of informing the consumer unit in the web application.
 
         This function performs the following steps:
         1. Logs the start of the process.
@@ -716,8 +698,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def localidade(cls, self: Self) -> None:
-        """
-        Inform the locality of the process.
+        """Inform the locality of the process.
 
         This method inputs the locality information into the system
         and ensures it is properly selected.
@@ -755,8 +736,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def bairro(cls, self: Self) -> None:
-        """
-        Inform the neighborhood of the process.
+        """Inform the neighborhood of the process.
 
         This method inputs the neighborhood information into the system
         and ensures it is properly selected.
@@ -794,8 +774,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def divisao(cls, self: Self) -> None:
-        """
-        Inform the division of the process.
+        """Inform the division of the process.
 
         This method inputs the division information into the system
         and ensures it is properly selected.
@@ -827,8 +806,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def data_citacao(cls, self: Self) -> None:
-        """
-        Inform the citation date in the process.
+        """Inform the citation date in the process.
 
         This method inputs the citation date into the system and ensures it is properly selected.
 
@@ -860,8 +838,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def fase(cls, self: Self) -> None:
-        """
-        Inform the phase of the process.
+        """Inform the phase of the process.
 
         This method inputs the phase information into the system
         and ensures it is properly selected.
@@ -892,8 +869,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def provimento(cls, self: Self) -> None:
-        """
-        Inform the anticipatory provision in the process.
+        """Inform the anticipatory provision in the process.
 
         This method inputs the anticipatory provision information into the system
         and ensures it is properly selected.
@@ -924,8 +900,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def valor_causa(cls, self: Self) -> None:
-        """
-        Inform the value of the cause.
+        """Inform the value of the cause.
 
         This method inputs the value of the cause into the system
         and ensures it is properly selected.
@@ -964,8 +939,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def fato_gerador(cls, self: Self) -> None:
-        """
-        Inform the triggering event (fato gerador).
+        """Inform the triggering event (fato gerador).
 
         This method inputs the triggering event information into the system
         and ensures it is properly selected.
@@ -996,8 +970,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def desc_objeto(cls, self: Self) -> None:
-        """
-        Fill in the description object field.
+        """Fill in the description object field.
 
         This method inputs the description of the object into the system
         and ensures it is properly selected.
@@ -1024,8 +997,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def objeto(cls, self: Self) -> None:
-        """
-        Inform the object of the process.
+        """Inform the object of the process.
 
         This method inputs the object information into the system
         and ensures it is properly selected.
@@ -1056,8 +1028,7 @@ class complement(CrawJUD):  # noqa: N801
 
     @classmethod
     def tipo_empresa(cls, self: Self) -> None:
-        """
-        Set the type of company and update relevant UI elements.
+        """Set the type of company and update relevant UI elements.
 
         This method determines the type of company (either "Ativa" or "Passiva") based on the
         "TIPO_EMPRESA" value in `self.bot_data`. It then updates the UI elements for

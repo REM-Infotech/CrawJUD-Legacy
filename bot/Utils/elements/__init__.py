@@ -1,5 +1,4 @@
-"""
-Module for the ElementsBot class, which configures and retrieves an elements bot instance based on the system and state_or_client attributes.
+"""Module for the ElementsBot class, which configures and retrieves an elements bot instance based on the system and state_or_client attributes.
 
 Classes:
     ElementsBot: A class that configures and retrieves an elements bot instance.
@@ -27,8 +26,7 @@ from .projudi import PROJUDI_AM
 
 
 class ElementsBot(CrawJUD):
-    """
-    ElementsBot class for configuring and retrieving elements bot instances.
+    """ElementsBot class for configuring and retrieving elements bot instances.
 
     This class inherits from CrawJUD and provides methods to configure the elements_bot attribute
     and retrieve the configured elements bot instance.
@@ -48,16 +46,14 @@ class ElementsBot(CrawJUD):
     def __init__(
         self,
     ) -> None:
-        """
-        Initialize the ElementsBot instance.
+        """Initialize the ElementsBot instance.
 
         This method initializes the ElementsBot instance by calling the __init__ method of the CrawJUD class.
         """
         super().__init__()
 
     def config(self) -> Self:
-        """
-        Configure the elements_bot attribute.
+        """Configure the elements_bot attribute.
 
         This method checks if the elements_bot attribute is None. If it is, it dynamically imports a module based on the
         system and state_or_client attributes of the instance, and assigns the corresponding class to the elements_bot attribute.
@@ -76,8 +72,7 @@ class ElementsBot(CrawJUD):
 
     @property
     def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:  # noqa: N802
-        """
-        Retrieve the elements bot instance.
+        """Retrieve the elements bot instance.
 
         Returns:
             Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]: The elements bot instance.
