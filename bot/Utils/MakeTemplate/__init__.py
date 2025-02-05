@@ -31,11 +31,7 @@ class MakeXlsx(CrawJUD):
             List[str]: A list of the headers used in the created Excel file.
 
         """
-        lista_colunas: List[str] = getattr(
-            listas(),
-            f"{self.typebot}_{type_xlsx}",
-            getattr(listas(), type_xlsx, None),
-        )
+        lista_colunas: List[str] = getattr(listas(), f"{self.typebot}_{type_xlsx}", getattr(listas(), type_xlsx, None))
         # Criar um novo workbook e uma planilha
         workbook = openpyxl.Workbook()
         sheet = workbook.create_sheet("Resultados", 0)

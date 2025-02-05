@@ -28,10 +28,7 @@ class pje:  # noqa: N801
     @property
     def Bot(self) -> Any:  # noqa: N802
         """Return the bot instance configured for this environment."""
-        rb = getattr(
-            import_module(f".{self.typebot.lower()}", __package__),
-            self.typebot.lower(),
-        )
+        rb = getattr(import_module(f".{self.typebot.lower()}", __package__), self.typebot.lower())
 
         # rb = self.bots.get(self.typebot)
         if not rb:

@@ -55,10 +55,7 @@ class projudi:  # noqa: N801
 
         """
         module_rb = import_module(f".{self.typebot.lower()}", __package__)
-        rb: ClassBots = getattr(
-            module_rb,
-            self.typebot.lower(),
-        )
+        rb: ClassBots = getattr(module_rb, self.typebot.lower())
 
         # rb = self.bots.get(self.typebot)
         if not rb:

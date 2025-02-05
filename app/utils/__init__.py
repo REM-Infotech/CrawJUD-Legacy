@@ -46,12 +46,7 @@ def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cov
         bool: True if origin is allowed, False otherwise.
 
     """
-    allowed_origins = [
-        r"https:\/\/.*\.nicholas\.dev\.br",
-        r"https:\/\/.*\.robotz\.dev",
-        r"https:\/\/.*\.rhsolutions\.info",
-        r"https:\/\/.*\.rhsolut\.com\.br",
-    ]
+    allowed_origins = [r"https:\/\/.*\.nicholas\.dev\.br", r"https:\/\/.*\.robotz\.dev", r"https:\/\/.*\.rhsolutions\.info", r"https:\/\/.*\.rhsolut\.com\.br"]
     if not origin:
         origin = f"https://{environ.get('HOSTNAME')}"
 

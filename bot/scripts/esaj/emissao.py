@@ -25,28 +25,12 @@ from ...Utils import OtherUtils
 
 type_docscss = {
     "custas_iniciais": {
-        "cnpj": [
-            'input[name="entity.flTipoPessoa"][value="J"]',
-            'tr[id="campoNuCnpj"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
-        ],
-        "cpf": [
-            'input[name="entity.flTipoPessoa"][value="F"]',
-            'tr[id="campoNuCpf"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
-        ],
+        "cnpj": ['input[name="entity.flTipoPessoa"][value="J"]', 'tr[id="campoNuCnpj"]', 'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]'],
+        "cpf": ['input[name="entity.flTipoPessoa"][value="F"]', 'tr[id="campoNuCpf"]', 'input[name="entity.nuCpfCnpj"][rotulo="CPF"]'],
     },
     "preparo ri": {
-        "cnpj": [
-            'input[name="entity.flTipoPessoa"][value="J"]',
-            'tr[id="campoNuCnpj"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
-        ],
-        "cpf": [
-            'input[name="entity.flTipoPessoa"][value="F"]',
-            'tr[id="campoNuCpf"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
-        ],
+        "cnpj": ['input[name="entity.flTipoPessoa"][value="J"]', 'tr[id="campoNuCnpj"]', 'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]'],
+        "cpf": ['input[name="entity.flTipoPessoa"][value="F"]', 'tr[id="campoNuCpf"]', 'input[name="entity.nuCpfCnpj"][rotulo="CPF"]'],
     },
 }
 
@@ -156,12 +140,7 @@ class Emissao(CrawJUD):
 
     def custas_iniciais(self) -> None:
         """Handle the initial costs emission process."""
-        url_custas_ini = "".join(
-            (
-                "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?",
-                "cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003",
-            )
-        )
+        url_custas_ini = "".join(("https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?", "cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"))
 
         self.driver.get(url_custas_ini)
 
@@ -371,17 +350,7 @@ class Emissao(CrawJUD):
                 numero = numero.split("  ")
                 numero = numero[2].split(".")
 
-            return [
-                self.bot_data.get("NUMERO_PROCESSO"),
-                self.tipodoc,
-                self.valor_doc,
-                self.data_lancamento,
-                "guias",
-                "JEC",
-                "SENTENÇA",
-                bar_code,
-                self.nomearquivo,
-            ]
+            return [self.bot_data.get("NUMERO_PROCESSO"), self.tipodoc, self.valor_doc, self.data_lancamento, "guias", "JEC", "SENTENÇA", bar_code, self.nomearquivo]
 
         except Exception as e:
             raise ErroDeExecucao(e=e) from e

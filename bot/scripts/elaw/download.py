@@ -112,14 +112,7 @@ class Download(CrawJUD):
                 self.buscar_doc()
                 self.download_docs()
                 self.message = "Arquivos salvos com sucesso!"
-                self.append_success(
-                    [
-                        self.bot_data.get("NUMERO_PROCESSO"),
-                        self.message,
-                        self.list_docs,
-                    ],
-                    "Arquivos salvos com sucesso!",
-                )
+                self.append_success([self.bot_data.get("NUMERO_PROCESSO"), self.message, self.list_docs], "Arquivos salvos com sucesso!")
 
             elif not search:
                 self.message = "Processo não encontrado!"

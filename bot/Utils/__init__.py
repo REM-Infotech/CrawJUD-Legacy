@@ -35,24 +35,9 @@ from .MakeTemplate import MakeXlsx
 from .PrintLogs import PrintBot
 from .search import SearchBot
 
-__all__ = [
-    "AuthBot",
-    "MakeXlsx",
-    "ElementsBot",
-    "Interact",
-    "DriverBot",
-    "SearchBot",
-    "PrintBot",
-    "ELAW_AME",
-    "ESAJ_AM",
-    "PJE_AM",
-    "PROJUDI_AM",
-]
+__all__ = ["AuthBot", "MakeXlsx", "ElementsBot", "Interact", "DriverBot", "SearchBot", "PrintBot", "ELAW_AME", "ESAJ_AM", "PJE_AM", "PROJUDI_AM"]
 
-TypeData = Union[
-    List[Dict[str, Union[str, Numbers, datetime]]],
-    Dict[str, Union[str, Numbers, datetime]],
-]
+TypeData = Union[List[Dict[str, Union[str, Numbers, datetime]]], Dict[str, Union[str, Numbers, datetime]]]
 
 
 class OtherUtils(CrawJUD):
@@ -642,23 +627,10 @@ class OtherUtils(CrawJUD):
 
         if not installed:
             path_cert = os.path.join(self.output_dir_path, self.name_cert)
-            comando = [
-                "certutil",
-                "-importpfx",
-                "-user",
-                "-f",
-                "-p",
-                self.token,
-                "-silent",
-                path_cert,
-            ]
+            comando = ["certutil", "-importpfx", "-user", "-f", "-p", self.token, "-silent", path_cert]
             try:
                 resultado = subprocess.run(  # nosec: B603 # noqa: S603
-                    comando,
-                    check=True,
-                    text=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
+                    comando, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
                 self.message = resultado.stdout
                 self.type_log = "log"
@@ -726,14 +698,8 @@ class OtherUtils(CrawJUD):
             completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
-                    {
-                        "role": "system",
-                        "content": self.headgpt,
-                    },
-                    {
-                        "role": "user",
-                        "content": (f"Analise o seguinte texto e ajuste sua resposta de acordo com o tipo de documento: {text_mov}."),
-                    },
+                    {"role": "system", "content": self.headgpt},
+                    {"role": "user", "content": (f"Analise o seguinte texto e ajuste sua resposta de acordo com o tipo de documento: {text_mov}.")},
                 ],
                 temperature=0.1,
                 max_tokens=300,

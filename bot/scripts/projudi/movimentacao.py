@@ -258,12 +258,7 @@ class movimentacao(CrawJUD):  # noqa: N801
                         data_fim = datetime.strptime(data_fim, format_d)
                         break
 
-            return all(
-                [
-                    data_mov >= data_inicio,
-                    data_mov <= data_fim,
-                ]
-            )
+            return all([data_mov >= data_inicio, data_mov <= data_fim])
 
         def text_check(text_mov: str) -> bool:
             """Check if the given text matches certain criteria.
@@ -336,10 +331,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         self.kword = keyword
         move_filter = list(filter(self.filter_moves, self.table_moves))
 
-        message_ = [
-            "\n====================================================\n",
-            "Buscando movimentações que contenham os argumentos: ",
-        ]
+        message_ = ["\n====================================================\n", "Buscando movimentações que contenham os argumentos: "]
 
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
@@ -385,10 +377,7 @@ class movimentacao(CrawJUD):  # noqa: N801
             mov_chk = False
             trazer_teor = str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
 
-            patterns = [
-                r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
-                r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
-            ]
+            patterns = [r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)", r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)"]
             for pattern in patterns:
                 match = re.match(pattern, text_mov)
 
@@ -545,10 +534,7 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         rows = table_docs.find_elements(By.TAG_NAME, "tr")
         for pos, docs in enumerate(rows):
-            nomearquivo = (
-                f"{self.bot_data.get('NUMERO_PROCESSO')}",
-                f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
-            )
+            nomearquivo = (f"{self.bot_data.get('NUMERO_PROCESSO')}", f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf")
             path_pdf = os.path.join(self.output_dir_path, "".join(nomearquivo))
 
             if os.path.exists(path_pdf):
@@ -602,18 +588,9 @@ class movimentacao(CrawJUD):  # noqa: N801
                 "Nome Arquivo (Caso Tenha)": "".join(nomearquivo),
             }
             if save_in_anotherfile is True:
-                msg = (
-                    f"Informações da movimentação '{nome_mov}'(Proc Nº{self.bot_data.get('NUMERO_PROCESSO')})",
-                    " foram salvos em uma planilha separada",
-                )
+                msg = (f"Informações da movimentação '{nome_mov}'(Proc Nº{self.bot_data.get('NUMERO_PROCESSO')})", " foram salvos em uma planilha separada")
 
-                self.another_append.append(
-                    (
-                        data,
-                        "".join(msg),
-                        f"{self.pid} - Info_Mov_Docs.xlsx",
-                    )
-                )
+                self.another_append.append((data, "".join(msg), f"{self.pid} - Info_Mov_Docs.xlsx"))
 
             if pos == 0:
                 text_doc_1 = text_mov
@@ -648,7 +625,4 @@ class movimentacao(CrawJUD):  # noqa: N801
         Locates and assigns the movement table elements to the instance.
         """
         table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
-        self.table_moves = table_moves.find_elements(
-            By.XPATH,
-            self.elements.table_moves,
-        )
+        self.table_moves = table_moves.find_elements(By.XPATH, self.elements.table_moves)

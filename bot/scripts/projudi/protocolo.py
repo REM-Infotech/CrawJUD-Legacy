@@ -12,12 +12,7 @@ from typing import Type
 
 import dotenv
 from PIL import Image
-from selenium.common.exceptions import (
-    JavascriptException,
-    NoSuchElementException,
-    StaleElementReferenceException,
-    TimeoutException,
-)
+from selenium.common.exceptions import JavascriptException, NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -131,12 +126,7 @@ class protocolo(CrawJUD):  # noqa: N801
             self.finish_move()
 
             debug = os.getenv("DEBUG", "False").lower() == "true"
-            data = [
-                {
-                    "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
-                    "tested": "true",
-                }
-            ]
+            data = [{"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"), "tested": "true"}]
 
             if debug is False:
                 confirm_protocol = self.confirm_protocol()
@@ -290,14 +280,7 @@ class protocolo(CrawJUD):  # noqa: N801
 
             sleep(1.5)
 
-            input_move_option: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)",
-                    )
-                )
-            )
+            input_move_option: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)")))
             input_move_option.click()
             """ Corrigir elements """
 
@@ -529,10 +512,7 @@ class protocolo(CrawJUD):  # noqa: N801
         """
         try:
             table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
-            table_moves = table_moves.find_elements(
-                By.XPATH,
-                './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]',
-            )
+            table_moves = table_moves.find_elements(By.XPATH, './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]')
 
             table_moves[0].screenshot(os.path.join(self.output_dir_path, "tr_0.png"))
 

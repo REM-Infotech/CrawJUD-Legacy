@@ -215,14 +215,7 @@ class complement(CrawJUD):  # noqa: N801
                     name_comprovante = self.print_comprovante()
                     self.message = "Processo salvo com sucesso!"
 
-                self.append_success(
-                    [
-                        self.bot_data.get("NUMERO_PROCESSO"),
-                        self.message,
-                        name_comprovante,
-                    ],
-                    self.message,
-                )
+                self.append_success([self.bot_data.get("NUMERO_PROCESSO"), self.message, name_comprovante], self.message)
                 self.message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
 
                 self.type_log = "log"
@@ -405,10 +398,7 @@ class complement(CrawJUD):  # noqa: N801
             ErroElaw: WebElement | str = None  # noqa: N806
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (  # noqa: N806
-                    self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
-                        message="Erro ao encontrar elemento",
-                    )
+                    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)), message="Erro ao encontrar elemento")
                     .find_element(By.TAG_NAME, "ul")
                     .text
                 )
@@ -919,10 +909,7 @@ class complement(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
 
-        valor_causa: WebElement = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
-            message="Erro ao encontrar elemento",
-        )
+        valor_causa: WebElement = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)), message="Erro ao encontrar elemento")
 
         valor_causa.click()
         sleep(0.5)

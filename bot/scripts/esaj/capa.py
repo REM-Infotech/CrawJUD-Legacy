@@ -255,12 +255,7 @@ class capa(CrawJUD):  # noqa: N801
                             with suppress(NoSuchElementException):
                                 status_proc = item.find_element(By.CLASS_NAME, self.elements.statusproc).text
 
-                            data.update(
-                                {
-                                    "NUMERO_PROCESSO": num_proc,
-                                    "STATUS": status_proc.upper(),
-                                }
-                            )
+                            data.update({"NUMERO_PROCESSO": num_proc, "STATUS": status_proc.upper()})
                             continue
 
                         title = item.find_element(By.CLASS_NAME, self.elements.nameitemsumary).text

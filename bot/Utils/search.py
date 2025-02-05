@@ -181,12 +181,7 @@ class SearchBot(CrawJUD):
         if not check_process:
             with suppress(NoSuchElementException, TimeoutException):
                 check_process: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            'div.modal__process-choice > input[type="radio"]',
-                        )
-                    )
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.modal__process-choice > input[type="radio"]'))
                 )
 
                 if check_process:
@@ -251,21 +246,9 @@ class SearchBot(CrawJUD):
 
             """
             with suppress(Exception, TimeoutException, NoSuchElementException):
-                info_proc = self.wait.until(
-                    EC.presence_of_all_elements_located(
-                        (
-                            By.CSS_SELECTOR,
-                            "table#informacoesProcessuais > tbody > tr > td > a",
-                        )
-                    )
-                )
+                info_proc = self.wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table#informacoesProcessuais > tbody > tr > td > a")))
 
-                info_proc = list(
-                    filter(
-                        lambda x: "Clique aqui para visualizar os recursos relacionados" in x.text,
-                        info_proc,
-                    )
-                )[-1]
+                info_proc = list(filter(lambda x: "Clique aqui para visualizar os recursos relacionados" in x.text, info_proc))[-1]
 
                 return info_proc.get_attribute("href")
 

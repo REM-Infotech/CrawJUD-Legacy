@@ -285,10 +285,7 @@ class Provisao(CrawJUD):
             expand_filter_risk = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk)))
             expand_filter_risk.click()
 
-            div_filter_risk = self.driver.find_element(
-                By.CSS_SELECTOR,
-                self.elements.processo_objt,
-            )
+            div_filter_risk = self.driver.find_element(By.CSS_SELECTOR, self.elements.processo_objt)
             filter_risk = div_filter_risk.find_elements(By.TAG_NAME, "li")
 
             for item in filter_risk:
@@ -373,14 +370,7 @@ class Provisao(CrawJUD):
             self.message = "Informando justificativa"
             self.type_log = "log"
             self.prt()
-            informar_motivo: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.texto_motivo,
-                    )
-                )
-            )
+            informar_motivo: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo)))
             informar_motivo.send_keys(self.bot_data.get("OBSERVACAO", "Atualização de provisão"))
             id_informar_motivo = informar_motivo.get_attribute("id")
             self.driver.execute_script(f"document.getElementById('{id_informar_motivo}').blur()")
@@ -407,11 +397,7 @@ class Provisao(CrawJUD):
             raise ErroDeExecucao("Não foi possivel atualizar provisão")
 
         comprovante = self.print_comprovante()
-        data = [
-            str(self.bot_data.get("NUMERO_PROCESSO")),
-            comprovante,
-            "Provisão atualizada com sucesso!",
-        ]
+        data = [str(self.bot_data.get("NUMERO_PROCESSO")), comprovante, "Provisão atualizada com sucesso!"]
         self.append_success(data, message="Provisão atualizada com sucesso!")
 
     def print_comprovante(self) -> str:

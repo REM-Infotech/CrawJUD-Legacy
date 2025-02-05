@@ -53,10 +53,7 @@ class Elaw:
             AttributeError: If the specified bot is not found.
 
         """
-        bot_class = getattr(
-            import_module(f".{self.typebot.lower()}", __package__),
-            self.typebot.lower(),
-        )
+        bot_class = getattr(import_module(f".{self.typebot.lower()}", __package__), self.typebot.lower())
 
         if not bot_class:
             raise AttributeError("Robô não encontrado!!")

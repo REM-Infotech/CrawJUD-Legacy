@@ -132,12 +132,7 @@ class AuthBot(CrawJUD):
                 checkloged = None
                 with suppress(TimeoutException):
                     checkloged = WebDriverWait(self.driver, 15).until(
-                        EC.presence_of_element_located(
-                            (
-                                By.CSS_SELECTOR,
-                                "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos",
-                            )
-                        )
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos"))
                     )
 
                 if not checkloged:
@@ -161,14 +156,7 @@ class AuthBot(CrawJUD):
 
             checkloged = None
             with suppress(TimeoutException):
-                checkloged = WebDriverWait(self.driver, 15).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            self.elements.chk_login,
-                        )
-                    )
-                )
+                checkloged = WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)))
 
             return checkloged is not None
 
@@ -319,21 +307,9 @@ class AuthBot(CrawJUD):
             source_directory = self.chr_dir
 
             try:
-                comando = [
-                    "xcopy",
-                    source_directory,
-                    target_directory,
-                    "/E",
-                    "/H",
-                    "/C",
-                    "/I",
-                ]
+                comando = ["xcopy", source_directory, target_directory, "/E", "/H", "/C", "/I"]
                 resultados = subprocess.run(  # noqa: S603 # nosec: B603
-                    comando,
-                    check=True,
-                    text=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
+                    comando, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
                 logging.info(str(resultados.stdout))
 

@@ -10,11 +10,7 @@ from datetime import datetime
 from time import sleep
 from typing import Type
 
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    StaleElementReferenceException,
-    TimeoutException,
-)
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
@@ -107,11 +103,7 @@ class pauta(CrawJUD):  # noqa: N801
             data_append = self.group_date_all(self.data_append)
             fileN = os.path.basename(self.path)  # noqa: N806
             if len(data_append) > 0:
-                self.append_success(
-                    data=[data_append],
-                    fileN=fileN,
-                    message="Dados extraídos com sucesso!",
-                )
+                self.append_success(data=[data_append], fileN=fileN, message="Dados extraídos com sucesso!")
 
             elif len(data_append) == 0:
                 self.message = "Nenhuma pauta encontrada"

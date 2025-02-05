@@ -131,24 +131,10 @@ class SolPags(CrawJUD):
 
         """
         try:
-            tab_pagamentos: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.valor_pagamento,
-                    )
-                )
-            )
+            tab_pagamentos: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor_pagamento)))
             tab_pagamentos.click()
 
-            novo_pgto: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.botao_novo_pagamento,
-                    )
-                )
-            )
+            novo_pgto: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_novo_pagamento)))
             novo_pgto.click()
 
         except Exception as e:
@@ -268,18 +254,12 @@ class SolPags(CrawJUD):
             tipo_condenacao = str(self.bot_data.get("TIPO_CONDENACAO"))
             if "sentença" == tipo_condenacao.lower():
                 sleep(0.5)
-                sentenca = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    self.elements.valor_sentenca,
-                )
+                sentenca = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_sentenca)
                 sentenca.click()
 
             elif "acórdão" == tipo_condenacao.lower():
                 sleep(0.5)
-                acordao = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    self.elements.valor_acordao,
-                )
+                acordao = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_acordao)
                 acordao.click()
 
             self.message = "Informando descrição do pagamento"
@@ -322,14 +302,7 @@ class SolPags(CrawJUD):
 
             input_favorecido.send_keys(self.bot_data.get("CNPJ_FAVORECIDO", "00.360.305/0001-04"))
 
-            result_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.resultado_favorecido,
-                    )
-                )
-            )
+            result_favorecido: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.resultado_favorecido)))
             result_favorecido.click()
 
             self.interact.sleep_load('div[id="j_id_2x"]')
@@ -337,17 +310,11 @@ class SolPags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            label_forma_pgto = self.driver.find_element(
-                By.CSS_SELECTOR,
-                self.elements.valor_processo,
-            )
+            label_forma_pgto = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_processo)
             label_forma_pgto.click()
 
             sleep(1)
-            boleto = self.driver.find_element(
-                By.CSS_SELECTOR,
-                self.elements.boleto,
-            )
+            boleto = self.driver.find_element(By.CSS_SELECTOR, self.elements.boleto)
             boleto.click()
 
             self.interact.sleep_load('div[id="j_id_2x"]')
@@ -379,10 +346,7 @@ class SolPags(CrawJUD):
             div_conta_debito: WebElement = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_div_conta_debito)))
             div_conta_debito.click()
             sleep(1)
-            conta_debito = self.driver.find_element(
-                By.CSS_SELECTOR,
-                'li[data-label="AMAZONAS - PAGTO CONDENAÇÕES DE LITÍGIOS CÍVEIS CONTRAPARTIDA"]',
-            )
+            conta_debito = self.driver.find_element(By.CSS_SELECTOR, 'li[data-label="AMAZONAS - PAGTO CONDENAÇÕES DE LITÍGIOS CÍVEIS CONTRAPARTIDA"]')
             conta_debito.click()
 
         except Exception as e:
@@ -430,26 +394,12 @@ class SolPags(CrawJUD):
 
             for doc in docs:
                 doc = self.format_string(doc)
-                insert_doc: WebElement = self.wait.until(
-                    EC.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            self.elements.editar_pagamento,
-                        )
-                    )
-                )
+                insert_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.editar_pagamento)))
                 insert_doc.send_keys(f"{self.output_dir_path}/{doc}")
 
                 wait_upload: WebElement = (
                     WebDriverWait(self.driver, 20)
-                    .until(
-                        EC.presence_of_element_located(
-                            (
-                                By.CSS_SELECTOR,
-                                self.elements.editar_pagamentofile,
-                            )
-                        )
-                    )
+                    .until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.editar_pagamentofile)))
                     .find_element(By.TAG_NAME, "table")
                     .find_element(By.TAG_NAME, "tbody")
                     .find_elements(By.TAG_NAME, "tr")
@@ -513,28 +463,14 @@ class SolPags(CrawJUD):
             self.prt()
 
             sleep(2)
-            input_favorecido: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.css_inputfavorecido,
-                    )
-                )
-            )
+            input_favorecido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_inputfavorecido)))
             input_favorecido.click()
             sleep(1)
             input_favorecido.clear()
 
             input_favorecido.send_keys(self.bot_data.get("CNPJ_FAVORECIDO", "04.812.509/0001-90"))
 
-            result_favorecido: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.resultado_favorecido,
-                    )
-                )
-            )
+            result_favorecido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.resultado_favorecido)))
             result_favorecido.click()
             self.driver.execute_script(f"document.querySelector('{self.elements.css_inputfavorecido}').blur()")
 
@@ -573,14 +509,7 @@ class SolPags(CrawJUD):
             self.message = "Salvando alterações"
             self.type_log = "log"
             self.prt()
-            save: WebElement = self.wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.botao_salvar_pagamento,
-                    )
-                )
-            )
+            save: WebElement = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.botao_salvar_pagamento)))
             save.click()
 
         except Exception as e:
@@ -594,33 +523,16 @@ class SolPags(CrawJUD):
 
         """
         try:
-            tab_pagamentos: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.CSS_SELECTOR,
-                        self.elements.valor_pagamento,
-                    )
-                )
-            )
+            tab_pagamentos: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor_pagamento)))
             tab_pagamentos.click()
 
             enter_table: WebElement = (
-                self.wait.until(
-                    EC.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            self.elements.valor_resultado,
-                        )
-                    )
-                )
+                self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor_resultado)))
                 .find_element(By.TAG_NAME, "table")
                 .find_element(By.TAG_NAME, "tbody")
             )
             check_solicitacoes = enter_table.find_elements(By.TAG_NAME, "tr")
-            info_sucesso = [
-                self.bot_data.get("NUMERO_PROCESSO"),
-                "Pagamento solicitado com sucesso!!",
-            ]
+            info_sucesso = [self.bot_data.get("NUMERO_PROCESSO"), "Pagamento solicitado com sucesso!!"]
             current_handle = self.driver.current_window_handle
 
             for pos, item in enumerate(check_solicitacoes):
@@ -633,12 +545,7 @@ class SolPags(CrawJUD):
                 sleep(1)
                 id_task = item.find_elements(By.TAG_NAME, "td")[2].text
                 closeContext = self.wait.until(  # noqa: N806
-                    EC.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            f'div[id="tabViewProcesso:pvp-dtProcessoValorResults:{pos}:pvp-pgBotoesValoresPagamentoBtnVer_dlg"]',
-                        )
-                    )
+                    EC.presence_of_element_located((By.CSS_SELECTOR, f'div[id="tabViewProcesso:pvp-dtProcessoValorResults:{pos}:pvp-pgBotoesValoresPagamentoBtnVer_dlg"]'))
                 ).find_element(By.TAG_NAME, "a")
 
                 WaitFrame = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor)))  # noqa: N806
@@ -653,44 +560,15 @@ class SolPags(CrawJUD):
 
                 with suppress(TimeoutException):
                     tipoCusta = str(  # noqa: N806
-                        self.wait.until(
-                            EC.presence_of_element_located(
-                                (
-                                    By.CSS_SELECTOR,
-                                    self.elements.visualizar_tipo_custas,
-                                )
-                            )
-                        )
-                        .text.split(":")[-1]
-                        .replace("\n", "")
+                        self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.visualizar_tipo_custas))).text.split(":")[-1].replace("\n", "")
                     )
 
                 with suppress(TimeoutException):
-                    cod_bars = str(
-                        self.wait.until(
-                            EC.presence_of_element_located(
-                                (
-                                    By.CSS_SELECTOR,
-                                    self.elements.visualizar_cod_barras,
-                                )
-                            )
-                        )
-                        .text.split(":")[-1]
-                        .replace("\n", "")
-                    )
+                    cod_bars = str(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.visualizar_cod_barras))).text.split(":")[-1].replace("\n", ""))
 
                 with suppress(TimeoutException):
                     tipoCondenacao = (  # noqa: N806
-                        self.wait.until(
-                            EC.presence_of_element_located(
-                                (
-                                    By.CSS_SELECTOR,
-                                    self.elements.visualizar_tipoCondenacao,
-                                )
-                            )
-                        )
-                        .text.split(":")[-1]
-                        .replace("\n", "")
+                        self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.visualizar_tipoCondenacao))).text.split(":")[-1].replace("\n", "")
                     )
 
                 namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO")).lower()
@@ -717,14 +595,7 @@ class SolPags(CrawJUD):
                     Name_Comprovante2 = f"COMPROVANTE 2 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"  # noqa: N806
                     item.screenshot(os.path.join(self.output_dir_path, Name_Comprovante2))
 
-                    info_sucesso.extend(
-                        [
-                            tipoCondenacao,
-                            Name_Comprovante1,
-                            id_task,
-                            Name_Comprovante2,
-                        ]
-                    )
+                    info_sucesso.extend([tipoCondenacao, Name_Comprovante1, id_task, Name_Comprovante2])
                     return info_sucesso
 
                 self.driver.switch_to.default_content()

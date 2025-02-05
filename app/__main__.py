@@ -80,12 +80,7 @@ def start_app():
     if system().lower() == "linux":
         start_vnc()
 
-    args_run = {
-        "host": hostname,
-        "debug": debug,
-        "port": port,
-        "allow_unsafe_werkzeug": unsafe_werkzeug,
-    }
+    args_run = {"host": hostname, "debug": debug, "port": port, "allow_unsafe_werkzeug": unsafe_werkzeug}
 
     try:
         io.run(app, **args_run, log_output=True)

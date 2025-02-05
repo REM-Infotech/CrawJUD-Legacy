@@ -38,16 +38,7 @@ if platform.system() == "Windows":
 from rich.console import Group
 from rich.live import Live
 from rich.panel import Panel
-from rich.progress import (
-    BarColumn,
-    DownloadColumn,
-    Progress,
-    TaskID,
-    TextColumn,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-    TransferSpeedColumn,
-)
+from rich.progress import BarColumn, DownloadColumn, Progress, TaskID, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn
 
 __all__ = [
     "pd",
@@ -137,15 +128,7 @@ class WorkerBot:
 
         """
         try:
-            process = BotThread(
-                target=WorkerBot,
-                args=(
-                    path_args,
-                    display_name,
-                    system,
-                    typebot,
-                ),
-            )
+            process = BotThread(target=WorkerBot, args=(path_args, display_name, system, typebot))
             process.start()
             sleep(2)
             # pid = Path(path_args).stem
@@ -167,15 +150,7 @@ class WorkerBot:
 
         return "Finalizado!"
 
-    def __init__(
-        self,
-        path_args: str,
-        display_name: str,
-        system: str,
-        typebot: str,
-        *args: Tuple[str],
-        **kwargs: Dict[str, str],
-    ) -> None:
+    def __init__(self, path_args: str, display_name: str, system: str, typebot: str, *args: Tuple[str], **kwargs: Dict[str, str]) -> None:
         """Initialize a WorkerBot instance.
 
         Sets up the bot and executes the bot module based on the system type.
@@ -203,19 +178,9 @@ class WorkerBot:
 
                 kwargs.update({"display_name": display_name})
 
-                bot_ = getattr(
-                    import_module(f".scripts.{system_}", __package__),
-                    system_.lower(),
-                )
+                bot_ = getattr(import_module(f".scripts.{system_}", __package__), system_.lower())
 
-                bot_(
-                    **{
-                        "display_name": display_name_,
-                        "path_args": path_args_,
-                        "typebot": typebot_,
-                        "system": system_,
-                    }
-                )
+                bot_(**{"display_name": display_name_, "path_args": path_args_, "typebot": typebot_, "system": system_})
 
         except Exception as e:
             raise e

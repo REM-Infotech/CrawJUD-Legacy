@@ -51,10 +51,7 @@ class calculadoras:  # noqa: N801
             AttributeError: If the specified bot type is not found.
 
         """
-        rb = getattr(
-            import_module(f".{self.typebot.lower()}", __package__),
-            self.typebot.lower(),
-        )
+        rb = getattr(import_module(f".{self.typebot.lower()}", __package__), self.typebot.lower())
 
         # rb = self.bots.get(self.typebot)
         if not rb:

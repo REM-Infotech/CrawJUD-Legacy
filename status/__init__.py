@@ -173,15 +173,7 @@ class SetStatus:
 
         return (path_args, bt.display_name)
 
-    def botstop(
-        self,
-        db: SQLAlchemy,
-        app: Flask,
-        pid: str = None,
-        status: str = "Finalizado",
-        system: str = None,
-        typebot: str = None,
-    ) -> str:
+    def botstop(self, db: SQLAlchemy, app: Flask, pid: str = None, status: str = "Finalizado", system: str = None, typebot: str = None) -> str:
         """Stop the bot and handle file uploads and database interactions.
 
         :param db: SQLAlchemy database instance.

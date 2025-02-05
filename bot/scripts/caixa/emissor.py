@@ -146,28 +146,14 @@ class emissor(CrawJUD):  # noqa: N801
         captchainput: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="autoCaptcha"')))
         val_captcha = captchainput.get_attribute("value")
 
-        inputcaptcha: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.CSS_SELECTOR,
-                    'input[id="j_id5:filtroView:j_id6:j_id17:captchaView:cpatchaTextBox"]',
-                )
-            )
-        )
+        inputcaptcha: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="j_id5:filtroView:j_id6:j_id17:captchaView:cpatchaTextBox"]')))
         inputcaptcha.send_keys(val_captcha.replace(",", ""))
 
         next_btn = self.driver.find_element(By.CSS_SELECTOR, 'input[class="hand btnConfirmar"]')
         next_btn.click()
 
         sleep(2)
-        next_btn: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.CSS_SELECTOR,
-                    'a[id="j_id5:filtroView:mensagemView:j_id77:btnProsseguir',
-                )
-            )
-        )
+        next_btn: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="j_id5:filtroView:mensagemView:j_id77:btnProsseguir')))
         next_btn.click()
 
     def locale_proc(self) -> None:
@@ -181,14 +167,9 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
 
-        lista_tribunal: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.CSS_SELECTOR,
-                    'select[id="j_id5:filtroView:formFormulario:coTribunal"]',
-                )
-            )
-        ).find_elements(By.TAG_NAME, "option")
+        lista_tribunal: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coTribunal"]'))).find_elements(
+            By.TAG_NAME, "option"
+        )
         for item in lista_tribunal:
             item: WebElement = item
             if str(self.bot_data.get("TRIBUNAL")).lower() in item.text.lower():
@@ -201,14 +182,9 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
 
-        lista_comarca: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.CSS_SELECTOR,
-                    'select[id="j_id5:filtroView:formFormulario:coComarca"]',
-                )
-            )
-        ).find_elements(By.TAG_NAME, "option")
+        lista_comarca: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coComarca"]'))).find_elements(
+            By.TAG_NAME, "option"
+        )
         for item in lista_comarca:
             item: WebElement = item
             if str(self.bot_data.get("COMARCA")).lower() in item.text.lower():
@@ -232,14 +208,9 @@ class emissor(CrawJUD):  # noqa: N801
         self.message = "Informando agencia"
         self.type_log = "log"
         self.prt()
-        lista_agencia: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.CSS_SELECTOR,
-                    'select[id="j_id5:filtroView:formFormulario:coAgencia"]',
-                )
-            )
-        ).find_elements(By.TAG_NAME, "option")
+        lista_agencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coAgencia"]'))).find_elements(
+            By.TAG_NAME, "option"
+        )
         for item in lista_agencia:
             item: WebElement = item
             if str(self.bot_data.get("AGENCIA")).lower() in item.text.lower():
@@ -258,14 +229,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.message = "Informando numero do processo"
         self.type_log = "log"
         self.prt()
-        num_process: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.CSS_SELECTOR,
-                    'input[id="j_id5:filtroView:formFormulario:nuProcessoCNJ"]',
-                )
-            )
-        )
+        num_process: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:nuProcessoCNJ"]')))
         num_process.send_keys(numproc_formated)
 
         self.interact.wait_caixa()
@@ -366,10 +330,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.message = "Informando indicador depositante"
         self.type_log = "log"
         self.prt()
-        indicador_depositante = self.driver.find_element(
-            By.CSS_SELECTOR,
-            'select[id="j_id5:filtroView:formFormulario:idDepositante"]',
-        ).find_elements(By.TAG_NAME, "option")
+        indicador_depositante = self.driver.find_element(By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:idDepositante"]').find_elements(By.TAG_NAME, "option")
 
         for item in indicador_depositante:
             if item.text.lower() == "réu":

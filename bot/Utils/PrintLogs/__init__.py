@@ -43,11 +43,7 @@ class PrintBot(CrawJUD):
             self.message_error = ""
 
         self.prompt = "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-            pid=self.pid,
-            type_log=self.type_log,
-            row=self.row,
-            dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"),
-            log=log,
+            pid=self.pid, type_log=self.type_log, row=self.row, dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"), log=log
         )
         tqdm.write(self.prompt)
 
@@ -72,12 +68,7 @@ class PrintBot(CrawJUD):
     def file_log(cls, self: Self) -> None:
         """Write log messages to a file."""
         try:
-            savelog = os.path.join(
-                pathlib.Path(__file__).cwd(),
-                "exec",
-                self.pid,
-                f"LogFile - PID {self.pid}.txt",
-            )
+            savelog = os.path.join(pathlib.Path(__file__).cwd(), "exec", self.pid, f"LogFile - PID {self.pid}.txt")
             with open(savelog, "a") as f:
                 for mensagem in self.list_messages:
                     if self.pid in mensagem:

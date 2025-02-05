@@ -38,11 +38,7 @@ class DatabaseScheduler(Scheduler):
         for entry in db_entries:
             cron_args = self.parse_cron(entry.schedule)
             schedules[entry.task_name] = ScheduleEntry(
-                name=entry.task_name,
-                task=entry.task_name,
-                schedule=crontab(**cron_args),
-                args=json.loads(entry.args or "[]"),
-                kwargs=json.loads(entry.kwargs or "{}"),
+                name=entry.task_name, task=entry.task_name, schedule=crontab(**cron_args), args=json.loads(entry.args or "[]"), kwargs=json.loads(entry.kwargs or "{}")
             )
         return schedules
 

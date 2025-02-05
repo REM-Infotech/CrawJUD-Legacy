@@ -87,12 +87,7 @@ def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask
         # Verificar informações obrigatórias
         chk_infos = [data.get("system"), data.get("typebot")]
         if all(chk_infos):
-            SetStatus(
-                status="Finalizado",
-                pid=pid,
-                system=data_system,
-                typebot=data_system,
-            ).botstop(db, app)
+            SetStatus(status="Finalizado", pid=pid, system=data_system, typebot=data_system).botstop(db, app)
 
         # Chave única para o processo no Redis
         redis_key = f"process:{data_pid}:pos:{data_pos}"

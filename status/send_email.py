@@ -66,13 +66,7 @@ def email_start(execution: None, app: Flask) -> None:
 
         msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
         if usr.email not in admins:
-            msg = Message(
-                assunto,
-                sender=robot,
-                recipients=[destinatario],
-                html=mensagem,
-                cc=admins,
-            )
+            msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins)
 
         mail.send(msg)
 
@@ -134,12 +128,6 @@ def email_stop(execution: None, app: Flask) -> None:
 
         msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
         if usr.email not in admins:
-            msg = Message(
-                assunto,
-                sender=robot,
-                recipients=[destinatario],
-                html=mensagem,
-                cc=admins,
-            )
+            msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins)
 
         mail.send(msg)

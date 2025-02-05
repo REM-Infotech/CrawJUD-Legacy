@@ -16,14 +16,7 @@ from google.oauth2.service_account import Credentials
 from git_py import _release_tag, check_latest, checkout_release, update_servers
 
 signed_url_lifetime = 300
-__all__ = [
-    "GeoLoc",
-    "_release_tag",
-    "check_latest",
-    "checkout_release",
-    "update_servers",
-    "init_log",
-]
+__all__ = ["GeoLoc", "_release_tag", "check_latest", "checkout_release", "update_servers", "init_log"]
 
 load_dotenv()
 

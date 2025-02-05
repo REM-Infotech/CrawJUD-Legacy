@@ -77,8 +77,4 @@ class LicensesUsers(db.Model):
 
     # Relacionamento de muitos para muitos com users
     admins = db.relationship("Users", secondary="admins", backref="admin")
-    bots = db.relationship(
-        "BotsCrawJUD",
-        secondary="execution_bots",
-        backref=db.backref("license", lazy=True),
-    )
+    bots = db.relationship("BotsCrawJUD", secondary="execution_bots", backref=db.backref("license", lazy=True))

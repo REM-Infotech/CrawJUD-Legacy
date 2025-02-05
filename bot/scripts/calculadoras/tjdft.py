@@ -144,14 +144,7 @@ class Tjdft(CrawJUD):
 
             check_cookies = None
             with suppress(TimeoutException):
-                check_cookies = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            'div[class="alert text-center cookiealert show"]',
-                        )
-                    )
-                )
+                check_cookies = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="alert text-center cookiealert show"]')))
 
             if check_cookies:
                 sleep(2)
@@ -271,17 +264,11 @@ class Tjdft(CrawJUD):
                 percent = f"{percent},00" if "," not in percent else percent
 
                 self.interact.click(self.driver.find_element(By.CSS_SELECTOR, 'input[id="juros_percent2"]'))
-                self.interact.send_key(
-                    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]'))),
-                    percent,
-                )
+                self.interact.send_key(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]'))), percent)
 
             if not juros_partir == "VENCIMENTO":
                 css_data_incide = 'input[name="juros_data"][id="juros_data"]'
-                self.interact.send_key(
-                    self.driver.find_element(By.CSS_SELECTOR, css_data_incide),
-                    self.bot_data.get("DATA_INCIDENCIA"),
-                )
+                self.interact.send_key(self.driver.find_element(By.CSS_SELECTOR, css_data_incide), self.bot_data.get("DATA_INCIDENCIA"))
 
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
@@ -397,10 +384,7 @@ class Tjdft(CrawJUD):
 
                     self.interact.send_key(honor_sucumb_data, self.bot_data.get("HONORARIO_SUCUMB_DATA"))
                     self.interact.send_key(honor_sucumb_valor, valor)
-                    self.interact.send_key(
-                        sucumb_juros_partir,
-                        self.bot_data.get("HONORARIO_SUCUMB_PARTIR"),
-                    )
+                    self.interact.send_key(sucumb_juros_partir, self.bot_data.get("HONORARIO_SUCUMB_PARTIR"))
 
                 self.message = "Percentual Honorários de Sucumbência informado"
                 self.type_log = "log"
@@ -448,10 +432,7 @@ class Tjdft(CrawJUD):
 
                     self.interact.send_key(honor_exec_data, self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA"))
                     self.interact.send_key(honor_exec_valor, valor)
-                    self.interact.send_key(
-                        exec_juros_partir,
-                        self.bot_data.get("HONORARIO_CUMPRIMENTO_PARTIR"),
-                    )
+                    self.interact.send_key(exec_juros_partir, self.bot_data.get("HONORARIO_CUMPRIMENTO_PARTIR"))
 
                 self.message = "Informado Honorários de Cumprimento"
                 self.type_log = "log"

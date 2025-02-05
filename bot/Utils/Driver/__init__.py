@@ -20,20 +20,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...core import (
-    BarColumn,
-    CrawJUD,
-    DownloadColumn,
-    Group,
-    Live,
-    Panel,
-    Progress,
-    TaskID,
-    TextColumn,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-    TransferSpeedColumn,
-)
+from ...core import BarColumn, CrawJUD, DownloadColumn, Group, Live, Panel, Progress, TaskID, TextColumn, TimeElapsedColumn, TimeRemainingColumn, TransferSpeedColumn
 
 try:
     from getchromeVer import chrome_ver
@@ -47,9 +34,7 @@ default_dir = Path(__file__).cwd().resolve()
 class DriverBot(CrawJUD):
     """Bot for handling WebDriver operations within CrawJUD framework."""
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self) -> None:
         """Initialize the DriverBot with default settings."""
         # init_
         ...
@@ -107,15 +92,7 @@ class DriverBot(CrawJUD):
 
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
-                self.path_accepted = Path(
-                    path.join(
-                        Path(__file__).cwd().resolve(),
-                        "Browser",
-                        state,
-                        self.username,
-                        "chrome",
-                    )
-                )
+                self.path_accepted = Path(path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome"))
                 path_exist = self.path_accepted.exists()
                 if path_exist:
                     for root, _, __ in self.path_accepted.walk():
@@ -177,10 +154,7 @@ class DriverBot(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            return (
-                driver,
-                wait,
-            )
+            return (driver, wait)
 
         except Exception as e:
             raise e
@@ -212,10 +186,7 @@ class SetupDriver:
         TimeRemainingColumn(),
     )
 
-    current_app_progress = Progress(
-        TimeElapsedColumn(),
-        TextColumn("{task.description}"),
-    )
+    current_app_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
 
     grp = Group(current_app_progress, progress)
     painel = Panel(grp)
@@ -281,10 +252,7 @@ class SetupDriver:
 
         elif root_path.exists():
             if self.file_path.exists():
-                self.current_app_progress.update(
-                    self.current_task_id,
-                    description="[bold green] Carregado webdriver salvo em cache!",
-                )
+                self.current_app_progress.update(self.current_task_id, description="[bold green] Carregado webdriver salvo em cache!")
                 shutil.copy(self.file_path, self.destination)
 
     def getUrl(self) -> str:  # noqa: N802

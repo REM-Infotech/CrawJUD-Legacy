@@ -43,9 +43,7 @@ class ElementsBot(CrawJUD):
 
     elements_bot = None
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self) -> None:
         """Initialize the ElementsBot instance.
 
         This method initializes the ElementsBot instance by calling the __init__ method of the CrawJUD class.
@@ -63,10 +61,7 @@ class ElementsBot(CrawJUD):
 
         """
         if self.elements_bot is None:
-            self.elements_bot = getattr(
-                import_module(f".{self.system.lower()}", __package__),
-                f"{self.system.upper()}_{self.state_or_client.upper()}",
-            )
+            self.elements_bot = getattr(import_module(f".{self.system.lower()}", __package__), f"{self.system.upper()}_{self.state_or_client.upper()}")
 
         return self
 

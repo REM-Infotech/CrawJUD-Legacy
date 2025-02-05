@@ -238,10 +238,7 @@ class protocolo(CrawJUD):  # noqa: N801
 
                         if not incluir_button:
                             with suppress(NoSuchElementException):
-                                incluir_button = parte.find_element(
-                                    By.CSS_SELECTOR,
-                                    self.elements.botao_incluir_partecontraria,
-                                )
+                                incluir_button = parte.find_element(By.CSS_SELECTOR, self.elements.botao_incluir_partecontraria)
 
                         incluir_button.click()
 
@@ -254,10 +251,7 @@ class protocolo(CrawJUD):  # noqa: N801
                         for parte in partes:
                             parte_name = parte.find_element(By.CSS_SELECTOR, self.elements.nome).text.lower()
                             if parte_name == parte_peticao.lower():
-                                self.prt.print_log(
-                                    "log",
-                                    "Parte já vinculada, finalizando peticionamento...",
-                                )
+                                self.prt.print_log("log", "Parte já vinculada, finalizando peticionamento...")
                                 sleep(0.3)
                                 break
 
@@ -310,11 +304,7 @@ class protocolo(CrawJUD):  # noqa: N801
                     break
 
             shutil.move(pathpdf, path)
-            return [
-                self.bot_data.get("NUMERO_PROCESSO"),
-                f"Processo nº{self.bot_data.get('NUMERO_PROCESSO')} protocolado com sucesso!",
-                name_recibo,
-            ]
+            return [self.bot_data.get("NUMERO_PROCESSO"), f"Processo nº{self.bot_data.get('NUMERO_PROCESSO')} protocolado com sucesso!", name_recibo]
 
         except Exception as e:
             raise ErroDeExecucao("Erro ao confirmar protocolo", e=e) from e

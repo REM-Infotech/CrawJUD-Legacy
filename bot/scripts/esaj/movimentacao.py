@@ -159,13 +159,4 @@ class Movimentacao(CrawJUD):
 
                     name_mov = mov.split("\n")[0]
                     text_mov = td_tr[2].find_element(By.TAG_NAME, "span").text
-                    self.appends.append(
-                        [
-                            self.bot_data.get("NUMERO_PROCESSO"),
-                            data_mov,
-                            name_mov,
-                            text_mov,
-                            "",
-                            "",
-                        ]
-                    )
+                    self.appends.append([self.bot_data.get("NUMERO_PROCESSO"), data_mov, name_mov, text_mov, "", ""])

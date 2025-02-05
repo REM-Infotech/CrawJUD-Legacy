@@ -155,16 +155,7 @@ class busca_pags(CrawJUD):  # noqa: N801
                             total += valor_custa
 
                             self.roleta = self.roleta + 1
-                            data = [
-                                self.bot_data.get("NUMERO_PROCESSO"),
-                                tipo_custa,
-                                emissor,
-                                data_calculo,
-                                valor_custa,
-                                cód_guia,
-                                parcelaguia,
-                                data_pagamento,
-                            ]
+                            data = [self.bot_data.get("NUMERO_PROCESSO"), tipo_custa, emissor, data_calculo, valor_custa, cód_guia, parcelaguia, data_pagamento]
                             self.append_success()
                         elif not checkifclass == "":
                             continue
@@ -188,16 +179,7 @@ class busca_pags(CrawJUD):  # noqa: N801
                         self.roleta = self.roleta + 1
                         total += valor_custa
 
-                        data = [
-                            self.bot_data.get("NUMERO_PROCESSO"),
-                            tipo_custa,
-                            emissor,
-                            data_calculo,
-                            valor_custa,
-                            cód_guia,
-                            parcelaguia,
-                            data_pagamento,
-                        ]
+                        data = [self.bot_data.get("NUMERO_PROCESSO"), tipo_custa, emissor, data_calculo, valor_custa, cód_guia, parcelaguia, data_pagamento]
                         self.append_success(data)
 
             elif "Lista de custas pagas" not in nomediv:

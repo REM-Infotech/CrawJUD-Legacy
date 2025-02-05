@@ -241,10 +241,7 @@ class Andamentos(CrawJUD):
             if check_save:
                 sleep(3)
 
-                self.append_success(
-                    [self.numproc, "Andamento salvo com sucesso!", ""],
-                    "Andamento salvo com sucesso!",
-                )
+                self.append_success([self.numproc, "Andamento salvo com sucesso!", ""], "Andamento salvo com sucesso!")
 
         except Exception:
             raise ErroDeExecucao("Aviso: não foi possivel validar salvamento de andamento") from None

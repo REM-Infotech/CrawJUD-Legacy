@@ -121,10 +121,7 @@ class proc_parte(CrawJUD):  # noqa: N801
             list_processos = None
             next_page = None
             with suppress(NoSuchElementException):
-                list_processos = table_processos.find_elements(
-                    By.XPATH,
-                    './/tr[contains(@class, "odd") or contains(@class, "even")]',
-                )
+                list_processos = table_processos.find_elements(By.XPATH, './/tr[contains(@class, "odd") or contains(@class, "even")]')
 
             if list_processos and not self.isStoped:
                 self.use_list_process(list_processos)
@@ -133,11 +130,7 @@ class proc_parte(CrawJUD):  # noqa: N801
                     next_page = self.driver.find_element(By.CLASS_NAME, "navRight").find_element(By.XPATH, self.elements.exception_arrow)
 
                 self.type_log = "info"
-                self.append_success(
-                    self.data_append,
-                    "Processos salvos na planilha!",
-                    fileN=os.path.basename(self.path),
-                )
+                self.append_success(self.data_append, "Processos salvos na planilha!", fileN=os.path.basename(self.path))
                 if next_page:
                     next_page.click()
                     self.get_process_list()
@@ -179,15 +172,7 @@ class proc_parte(CrawJUD):  # noqa: N801
             except Exception:
                 juizo = "Não consta ou processo em sigilo"
 
-            self.data_append.append(
-                {
-                    "NUMERO_PROCESSO": numero_processo,
-                    "ANO_REFERENCIA": anoref,
-                    "POLO_ATIVO": polo_ativo,
-                    "POLO_PASSIVO": polo_passivo,
-                    "JUIZO": juizo,
-                }
-            )
+            self.data_append.append({"NUMERO_PROCESSO": numero_processo, "ANO_REFERENCIA": anoref, "POLO_ATIVO": polo_ativo, "POLO_PASSIVO": polo_passivo, "JUIZO": juizo})
             self.row += 1
             self.message = f"Processo {numero_processo} salvo!"
             self.type_log = "success"
