@@ -97,25 +97,6 @@ def start_app():
         sys.exit(0)
 
 
-def dev_modules():
-    """Verify that development dependencies are installed.
-
-    Raises:
-        ImportError: If any development dependencies are missing.
-
-    """
-    import importlib
-
-    importlib.import_module("isort")
-    importlib.import_module("black")
-    importlib.import_module("ruff")
-    importlib.import_module("mypy")
-    # importlib.import_module("pytest")
-    # importlib.import_module("pytest-cov")
-    # importlib.import_module("pytest-mock")
-    # importlib.import_module("yamllint")
-
-
 if __name__ == "__main__":
     """
     Entry point for running the application.
@@ -123,7 +104,5 @@ if __name__ == "__main__":
     Loads environment variables, checks for debug mode,
     and starts the application.
     """
-    if getenv("DEBUG", "False").lower() == "true":
-        dev_modules()
 
     start_app()
