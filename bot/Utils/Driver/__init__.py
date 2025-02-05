@@ -41,7 +41,7 @@ except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
 default_dir = Path(__file__).cwd().resolve()
-
+logger = logging.getLogger(__name__)
 # from typing import list, tuple
 
 
@@ -115,7 +115,7 @@ class DriverBot(CrawJUD):
                             shutil.copytree(root, self.chr_dir)
                         except Exception:
                             err = traceback.format_exc()
-                            logging.exception(err)
+                            logger.exception(err)
 
                 elif not path_exist:
                     self.path_accepted.mkdir(parents=True, exist_ok=True)
@@ -309,7 +309,7 @@ class SetupDriver:
 
             url_driver += f"{item}/"
 
-        with open("is_init.txt", "w") as f:
+        with open("is_init.txt", "w") as f:  # noqa: FURB103
             f.write(url_driver)
 
         return url_driver
@@ -321,9 +321,6 @@ class SetupDriver:
             task_id (TaskID): The ID of the task to update progress.
             url (str): The URL to download the file from.
             path (Path): The path to save and extract the file to.
-
-        Raises:
-            Exception: If the download or extraction fails.
 
         """
         zip_name = path.with_name(f"{path.name}.zip")

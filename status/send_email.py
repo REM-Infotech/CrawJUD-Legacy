@@ -9,6 +9,7 @@ from flask import Flask
 from flask_mail import Mail, Message
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 
 def email_start(execution: None, app: Flask) -> None:
@@ -17,9 +18,6 @@ def email_start(execution: None, app: Flask) -> None:
     Args:
         execution (Executions): The execution instance that has started.
         app (Flask): The Flask application instance.
-
-    Raises:
-        Exception: If an error occurs while sending the email.
 
     """
     from app.models import Executions, Users
@@ -45,7 +43,7 @@ def email_start(execution: None, app: Flask) -> None:
 
     except Exception:
         err = traceback.format_exc()
-        logging.exception(err)
+        logger.exception(err)
 
     with app.app_context():
         url_web = environ.get("url_web")
@@ -78,9 +76,6 @@ def email_stop(execution: None, app: Flask) -> None:
         execution (Executions): The execution instance that has stopped.
         app (Flask): The Flask application instance.
 
-    Raises:
-        Exception: If an error occurs while sending the email.
-
     """
     from app.models import Executions, Users
 
@@ -107,7 +102,7 @@ def email_stop(execution: None, app: Flask) -> None:
 
     except Exception:
         err = traceback.format_exc()
-        logging.exception(err)
+        logger.exception(err)
 
     with app.app_context():
         url_web = environ.get("url_web")

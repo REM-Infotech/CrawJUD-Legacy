@@ -43,11 +43,21 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        """Return the string representation of the exception."""
+        """Return the string representation of the exception.
+
+        Returns:
+            str: The error message.
+
+        """
         return self.message
 
     def __instancecheck__(self, instance: Exception) -> bool:
-        """Check if the instance is a recognized exception."""
+        """Check if the instance is a recognized exception.
+
+        Returns:
+            bool: True if the instance is a recognized exception, False otherwise.
+
+        """
         check_except = instance in webdriver_exepts()
         return check_except
 
@@ -60,11 +70,21 @@ class ItemNaoEcontrado(CrawJUDExceptions):
         super().__init__(message)
 
     def __instancecheck__(self, instance: Exception) -> bool:
-        """Check if the instance is a recognized exception."""
+        """Check if the instance is a recognized exception.
+
+        Returns:
+            bool: True if the instance is a recognized exception, False otherwise.
+
+        """
         return super().__instancecheck__(instance)
 
     def __str__(self) -> str:
-        """Return the string representation of the exception."""
+        """Return the string representation of the exception.
+
+        Returns:
+            str: The error message.
+
+        """
         return super().__str__()
 
 
@@ -87,9 +107,19 @@ class ErroDeExecucao(CrawJUDExceptions):
         super().__init__(*args, **kwargs)
 
     def __instancecheck__(self, instance: Exception) -> bool:
-        """Check if the instance is a recognized exception."""
+        """Check if the instance is a recognized exception.
+
+        Returns:
+            bool: True if the instance is a recognized exception, False otherwise.
+
+        """
         return super().__instancecheck__(instance)
 
     def __str__(self) -> str:
-        """Return the string representation of the exception."""
+        """Return the string representation of the exception.
+
+        Returns:
+            str: The error message.
+
+        """
         return super().__str__()

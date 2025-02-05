@@ -51,7 +51,7 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
             request_data = request.data
             request_form = request.form
 
-            data_bot = request_data if request_data else request_form
+            data_bot = request_data or request_form
 
             if isinstance(data_bot, str):
                 data_bot = json.loads(data_bot)
@@ -148,7 +148,7 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     request_data = request.data
     request_form = request.form
 
-    data_bot = request_data if request_data else request_form
+    data_bot = request_data or request_form
 
     if isinstance(data_bot, str):
         data_bot = json.loads(data_bot)

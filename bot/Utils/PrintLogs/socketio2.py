@@ -13,6 +13,7 @@ from socketio import Client
 from socketio.exceptions import BadNamespaceError
 
 sio = Client(reconnection_attempts=5)
+logger = logging.getLogger(__name__)
 
 
 class SocketBot:
@@ -88,7 +89,7 @@ class SocketBot:
             exc = traceback.format_exc()
 
         if exc:
-            logging.info(exc)
+            logger.info(exc)
 
     def emit_message(self, event: str, data: dict) -> None:
         """Emit a message to the socket.

@@ -52,6 +52,8 @@ __all__ = [
     TransferSpeedColumn,
 ]
 
+logger = logging.getLogger(__name__)
+
 
 class CrawJUD(PropertiesCrawJUD):
     """CrawJUD class.
@@ -90,9 +92,6 @@ class CrawJUD(PropertiesCrawJUD):
             *args: Variable length argument list.
             **kwargs: Variable keyword arguments for configuration.
 
-        Raises:
-            Exception: If an error occurs during the setup process.
-
         """
         self.kwrgs = kwargs
         list_kwargs = list(kwargs.items())
@@ -121,9 +120,6 @@ class CrawJUD(PropertiesCrawJUD):
         Returns:
             TypeHint: The value of the requested attribute.
 
-        Raises:
-            AttributeError: If the attribute does not exist.
-
         """
         item = self.kwrgs.get(nome, None)
 
@@ -148,9 +144,6 @@ class CrawJUD(PropertiesCrawJUD):
         7. Parses date strings into datetime objects if `self.xlsx` is not specified.
         8. Sets the state or client attribute.
         9. Launches the driver.
-
-        Raises:
-            Exception: If any error occurs during the setup process, it logs the error and raises the exception.
 
         """
         self.row = 0
@@ -234,7 +227,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         except Exception as e:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
             self.row = 0
             self.message = "Erro ao realizar login"
             self.type_log = "error"

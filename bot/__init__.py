@@ -66,7 +66,7 @@ __all__ = [
 ]
 
 process_type = psutil.Process
-
+logger = logging.getLogger(__name__)
 # import signal
 # from pathlib import Path
 # from threading import Thread as Process
@@ -131,9 +131,6 @@ class WorkerBot:
         Returns:
             str: Status message indicating bot completion.
 
-        Raises:
-            Exception: On error during bot initialization or execution.
-
         """
         try:
             process = BotThread(target=WorkerBot, args=(path_args, display_name, system, typebot))
@@ -178,9 +175,6 @@ class WorkerBot:
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
-        Raises:
-            Exception: If an error occurs during initialization.
-
         """
         try:
             from app.run import flask_app as app
@@ -216,7 +210,7 @@ class WorkerBot:
         try:
             process = AsyncResult(processID)
 
-            logging.info(process.status)
+            logger.info(process.status)
 
             if (app and app.testing) or (process and process.status == "PENDING"):
                 path_flag = Path(__file__).cwd().joinpath("exec").joinpath(pid).joinpath(f"{pid}.flag").resolve()

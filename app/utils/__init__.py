@@ -35,7 +35,7 @@ def make_celery(app: Flask) -> Celery:
     return celery
 
 
-def check_allowed_origin(origin="https://google.com") -> bool:
+def check_allowed_origin(origin: str = "https://google.com") -> bool:
     """Check if the origin is allowed based on predefined patterns.
 
     Args:

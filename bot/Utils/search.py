@@ -133,6 +133,9 @@ class SearchBot(CrawJUD):
         Returns:
             bool: True if the process is found, False otherwise.
 
+        Raises:
+            ErroDeExecucao: If an error occurs during the execution of the search.
+
         """
         grau = self.bot_data.get("GRAU", 1)
 

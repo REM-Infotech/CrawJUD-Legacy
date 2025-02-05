@@ -375,7 +375,7 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         """ Checagens dentro do Loop de movimentações """
 
-        def check_others(text_mov: str):
+        def check_others(text_mov: str) -> tuple[bool, bool, str, bool, bool]:
             save_another_file = str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
 
             mov = ""
@@ -462,7 +462,7 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         """
 
-        def getmovewithdoc(move: WebElement):
+        def getmovewithdoc(move: WebElement) -> bool:
             def check_namemov(move: WebElement) -> bool:
                 itensmove = move.find_elements(By.TAG_NAME, "td")
                 text_mov = itensmove[3].find_element(By.TAG_NAME, "b").text

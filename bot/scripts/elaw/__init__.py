@@ -10,6 +10,8 @@ from importlib import import_module
 # from typing import any
 from ...common import StartError
 
+logger = logging.getLogger(__name__)
+
 
 class Elaw:
     """The Elaw class manages the initialization and execution of elaw bots.
@@ -38,7 +40,7 @@ class Elaw:
             self.Bot.execution()
         except Exception as e:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
 
             raise StartError(traceback.format_exc()) from e
 

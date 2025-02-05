@@ -28,7 +28,7 @@ def load_cache(pid: str, app: Flask) -> dict[str, str]:
     if get_cache:
         list_cache: list[str] = list(get_cache)
         for cache in list_cache:
-            k_process, k_pid, k_pos, k_value = cache.split(":")
+            _, k_pid, __, k_value = cache.split(":")
             cached = [{"pid": k_pid, "pos": int(k_value)}]
             list_cached.extend(cached)
 

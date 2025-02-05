@@ -148,7 +148,7 @@ class capa(CrawJUD):  # noqa: N801
                 matches = re.findall(pattern, valorDaCausa)
                 if len(matches) > 0:
 
-                    def convert_to_float(value) -> float:
+                    def convert_to_float(value: str) -> float:
                         """Convert a formatted string to float.
 
                         Args:

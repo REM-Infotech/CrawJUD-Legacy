@@ -318,7 +318,7 @@ class Emissao(CrawJUD):
         if not check:
             return f"https://consultasaj.tjam.jus.br{url}"
 
-    def downloadpdf(self, link_pdf):
+    def downloadpdf(self, link_pdf: str) -> None:
         """Download the PDF document.
 
         Args:

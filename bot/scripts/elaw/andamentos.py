@@ -50,10 +50,7 @@ class Andamentos(CrawJUD):
         """Execute the main processing loop for andamentos.
 
         Iterates over each entry in the data frame and processes it.
-        Handles session expiration and error logging.
-
-        Raises:
-            Exception: If an unexpected error occurs during execution.
+        Handles session expiration and error logger.
 
         """
         frame = self.dataFrame()

@@ -45,8 +45,6 @@ class CrawJUDExceptions(Exception):  # noqa: N818
             *args: Variable length argument list.
             **kwargs: Variable keyword arguments.
 
-        Raises:
-            CrawJUDExceptions: Raises itself with the appropriate message.
 
         """
         self.message = message
@@ -60,7 +58,12 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        """str: The string representation of the exception."""
+        """str: The string representation of the exception.
+
+        Returns:
+            str: The error message associated with the exception.
+
+        """
         return self.message
 
     def __instancecheck__(self, instance: Exception) -> bool:
@@ -105,7 +108,12 @@ class ItemNaoEcontrado(CrawJUDExceptions):
         return super().__instancecheck__(instance)
 
     def __str__(self) -> str:
-        """str: The string representation of the exception."""
+        """str: The string representation of the exception.
+
+        Returns:
+            str: The error message associated with the exception.
+
+        """
         return super().__str__()
 
 
@@ -138,5 +146,10 @@ class ErroDeExecucao(CrawJUDExceptions):
         return super().__instancecheck__(instance)
 
     def __str__(self) -> str:
-        """str: The string representation of the exception."""
+        """str: The string representation of the exception.
+
+        Returns:
+            str: The error message associated with the exception.
+
+        """
         return super().__str__()

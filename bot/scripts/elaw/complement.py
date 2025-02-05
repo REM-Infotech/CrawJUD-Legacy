@@ -70,9 +70,6 @@ class complement(CrawJUD):  # noqa: N801
             A dictionary of keyword arguments to be passed to the base class's
             __init__ method.
 
-        Returns
-        -------
-        None
 
         """
         super().__init__(*args, **kwrgs)
@@ -94,9 +91,6 @@ class complement(CrawJUD):  # noqa: N801
         reinitialized. The bot will also be stopped if the isStoped attribute
         is set to True.
 
-        Returns
-        -------
-        None
 
         """
         frame = self.dataFrame()
@@ -164,9 +158,8 @@ class complement(CrawJUD):  # noqa: N801
         3. If the search is not successful, raise an error.
         4. Handle any exceptions by raising `ErroDeExecucao`.
 
-        Returns
-        -------
-        None
+        Raises:
+            ErroDeExecucao: If the process is not found or an error occurs.
 
         """
         try:
@@ -240,9 +233,6 @@ class complement(CrawJUD):  # noqa: N801
         This method interacts with the web elements to save all changes made
         to the process. It logs the action and clicks the save button.
 
-        Returns
-        -------
-        None
 
         """
         self.interact.sleep_load('div[id="j_id_3x"]')
@@ -261,9 +251,8 @@ class complement(CrawJUD):  # noqa: N801
         they are properly filled. It logs the validation steps and raises
         an error if any required field is missing.
 
-        Returns
-        -------
-        None
+        Raises:
+            ErroDeExecucao: If any required field is missing.
 
         """
         self.message = "Validando campos"
@@ -311,10 +300,13 @@ class complement(CrawJUD):  # noqa: N801
         properly selected. It logs the validation steps and raises an error
         if the field is not properly filled.
 
-        Returns
-        -------
+        Returns:
         str
             The name of the responsible lawyer.
+
+
+        Raises:
+            ErroDeExecucao: If the responsible lawyer field is not filled.
 
         """
         self.message = "Validando advogado responsável"
@@ -343,9 +335,8 @@ class complement(CrawJUD):  # noqa: N801
         list of participating lawyers. It logs the validation steps and
         raises an error if the responsible lawyer is not found.
 
-        Returns
-        -------
-        None
+        Raises:
+            ErroDeExecucao: If the responsible lawyer is not found in the list of participating lawyers.
 
         """
         data_bot = self.bot_data
@@ -389,10 +380,12 @@ class complement(CrawJUD):  # noqa: N801
         the URL or checking for error messages. It logs the outcome and raises
         an error if the save was not successful.
 
-        Returns
-        -------
-        bool
-            True if the save was successful, False otherwise.
+        Returns:
+            bool: True if the save was successful, False otherwise.
+
+
+        Raises:
+            ErroDeExecucao: If the process was not saved successfully
 
         """
         wait_confirm_save = None
@@ -451,9 +444,9 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
+        Raises
+        ------
+            ErroDeExecucao: If the internal lawyer is not found.
 
         """
         self.message = "informando advogado interno"
@@ -524,10 +517,6 @@ class complement(CrawJUD):  # noqa: N801
         text : str, optional
             The text to set for the judicial sphere, by default "Judicial".
 
-        Returns
-        -------
-        None
-
         """
         elementSelect = self.elements.css_esfera_judge  # noqa: N806
         self.message = "Informando esfera do processo"
@@ -554,9 +543,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         key = "ESTADO"
@@ -587,9 +573,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         text = str(self.bot_data.get("COMARCA"))
@@ -620,10 +603,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
-
         """
         elementSelect = self.elements.foro_input  # noqa: N806
         text = str(self.bot_data.get("FORO"))
@@ -651,10 +630,6 @@ class complement(CrawJUD):  # noqa: N801
         ----------
         self : Self
             The instance of the class.
-
-        Returns
-        -------
-        None
 
         """
         text = self.bot_data.get("VARA")
@@ -688,9 +663,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando unidade consumidora"
@@ -722,9 +694,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando localidade"
@@ -762,9 +731,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando bairro"
@@ -802,9 +768,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando divisão"
@@ -833,9 +796,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando data de citação"
@@ -868,9 +828,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         elementSelect = self.elements.fase_input  # noqa: N806
@@ -899,9 +856,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         text = self.bot_data.get("PROVIMENTO")
@@ -930,9 +884,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando valor da causa"
@@ -969,9 +920,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando fato gerador"
@@ -1000,9 +948,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         input_descobjeto = self.wait.until(
@@ -1029,9 +974,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando objeto do processo"
@@ -1061,9 +1003,6 @@ class complement(CrawJUD):  # noqa: N801
         self : Self
             The instance of the class.
 
-        Returns
-        -------
-        None
 
         """
         self.message = "Informando contingenciamento"

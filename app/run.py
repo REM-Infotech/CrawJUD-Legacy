@@ -5,13 +5,15 @@ This module serves as the entry point for the CrawJUD-Bots application, handling
 
 import logging
 import signal
-import subprocess  # nosec: B404
+import subprocess  # nosec: B404 # noqa: S404
 import sys
 import traceback
 from os import getenv
 from platform import system
 
 from app import create_app
+
+logger = logging.getLogger(__name__)
 
 
 def handle_exit() -> None:
@@ -42,10 +44,10 @@ def start_vnc() -> None:
             ],
             check=True,  # Lança exceção se o comando falhar
         )
-        logging.info("TightVNC iniciado com sucesso!")
+        logger.info("TightVNC iniciado com sucesso!")
     except Exception:
         err = traceback.format_exc()
-        logging.exception(err)
+        logger.exception(err)
 
 
 if system().lower() == "linux" and getenv("INTO_DOCKER", None):

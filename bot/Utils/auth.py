@@ -10,7 +10,7 @@ import logging
 import os
 import platform
 import string
-import subprocess  # nosec: B404
+import subprocess  # nosec: B404 # noqa: S404
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -26,6 +26,8 @@ from ..core import CrawJUD
 
 if platform.system() == "Windows":
     from ..core import Application
+
+logger = logging.getLogger(__name__)
 
 
 class AuthBot(CrawJUD):
@@ -89,9 +91,6 @@ class AuthBot(CrawJUD):
 
         Returns:
             bool: True if authentication is successful, False otherwise.
-
-        Raises:
-            Exception: If any error occurs during the authentication process.
 
         """
         try:
@@ -181,8 +180,6 @@ class AuthBot(CrawJUD):
         Returns:
             bool: True if login was successful, False otherwise.
 
-        Raises:
-            Exception: If any error occurs during the login process.
 
         """
         try:
@@ -222,9 +219,6 @@ class AuthBot(CrawJUD):
         Returns:
             bool: True if the login was successful, False otherwise.
 
-        Raises:
-            Exception: If any error occurs during the authentication process.
-
         """
         try:
             self.driver.get("https://amazonas.elaw.com.br/login")
@@ -258,8 +252,6 @@ class AuthBot(CrawJUD):
         Returns:
             bool: True if login was successful, False otherwise.
 
-        Raises:
-            Exception: If any error occurs during the login process.
 
         """
         try:
@@ -294,8 +286,6 @@ class AuthBot(CrawJUD):
         Args:
             accepted_dir (str): The directory where accepted certificates are stored.
 
-        Raises:
-            Exception: If any error occurs during the certificate acceptance process.
 
         """
         try:
@@ -328,12 +318,12 @@ class AuthBot(CrawJUD):
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-                logging.info(str(resultados.stdout))
+                logger.info(str(resultados.stdout))
 
             except Exception as e:
                 raise e
 
-            with open(Path(accepted_dir), "w", encoding="utf-8") as f:
+            with open(Path(accepted_dir), "w", encoding="utf-8") as f:  # noqa: FURB103
                 f.write("")
 
         except Exception as e:

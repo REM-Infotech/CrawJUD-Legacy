@@ -2,7 +2,7 @@
 
 import logging
 import signal
-import subprocess  # nosec: B404
+import subprocess  # noqa: S404 # nosec: B404
 import sys
 from os import environ, getenv
 from platform import system
@@ -15,6 +15,8 @@ load_dotenv()
 
 values = environ.get
 
+logger = logging.getLogger(__name__)
+
 
 def handle_exit() -> None:
     """Handle termination signals and exit the program gracefully."""
@@ -22,12 +24,7 @@ def handle_exit() -> None:
 
 
 def start_vnc() -> None:
-    """Start the TightVNC server with specified parameters.
-
-    Raises:
-        Exception: If the TightVNC server fails to start.
-
-    """
+    """Start the TightVNC server with specified parameters."""
     try:
         # Executa o comando com verificação de erro
         subprocess.run(  # noqa: S603 # nosec: B607, B603
@@ -43,7 +40,7 @@ def start_vnc() -> None:
             ],
             check=True,  # Lança exceção se o comando falhar
         )
-        logging.info("VNC Server started successfully.")
+        logger.info("VNC Server started successfully.")
     except Exception:
         ...
 
@@ -52,14 +49,11 @@ signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
 
-def start_app():
+def start_app() -> None:
     """Initialize and start the Flask application with SocketIO.
 
     Sets up the application context, configures server settings,
     and starts the application using specified parameters.
-
-    Raises:
-        SystemExit: Exits the application on interruption.
 
     """
     from app import create_app

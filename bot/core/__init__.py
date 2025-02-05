@@ -11,6 +11,8 @@ import logging
 import platform
 import traceback
 
+from bot.common.exceptions import StartError
+
 from .. import (
     BarColumn,
     DownloadColumn,
@@ -52,6 +54,7 @@ __all__ = [
     TimeRemainingColumn,
     TransferSpeedColumn,
 ]
+logger = logging.getLogger(__name__)
 
 
 class CrawJUD(PropertiesCrawJUD):
@@ -93,24 +96,31 @@ class CrawJUD(PropertiesCrawJUD):
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
 
+        Raises:
+            StartError: If an error occurs during the setup process.
+
         """
-        self.kwrgs = kwargs
-        list_kwargs = list(kwargs.items())
-        for key, value in list_kwargs:
-            if key == "path_args":
-                value = Path(value).resolve()
+        try:
+            self.kwrgs = kwargs
+            list_kwargs = list(kwargs.items())
+            for key, value in list_kwargs:
+                if key == "path_args":
+                    value = Path(value).resolve()
 
-            setattr(self, key, value)
-
-        with open(self.path_args, "rb") as f:
-            json_f: dict[str, str | int] = json.load(f)
-
-            self.kwrgs = json_f
-
-            for key, value in json_f.items():
                 setattr(self, key, value)
 
-        self.state_or_client = self.state if self.state is not None else self.client
+            with open(self.path_args, "rb") as f:
+                json_f: dict[str, str | int] = json.load(f)
+
+                self.kwrgs = json_f
+
+                for key, value in json_f.items():
+                    setattr(self, key, value)
+
+            self.state_or_client = self.state if self.state is not None else self.client
+
+        except Exception as e:
+            raise StartError(e) from e
 
     def __getattr__(self, nome: str) -> TypeHint:
         """Retrieve an attribute dynamically.
@@ -124,9 +134,6 @@ class CrawJUD(PropertiesCrawJUD):
 
         Returns:
             TypeHint: The value of the requested attribute.
-
-        Raises:
-            AttributeError: If the attribute is not found in any sources.
 
         """
         item = self.kwrgs.get(nome, None)
@@ -168,9 +175,6 @@ class CrawJUD(PropertiesCrawJUD):
         7. Parses date strings into datetime objects if `self.xlsx` is not specified.
         8. Sets the state or client attribute.
         9. Launches the driver.
-
-        Raises:
-            Exception: If any error occurs during the setup process.
 
         """
         self.row = 0
@@ -235,7 +239,6 @@ class CrawJUD(PropertiesCrawJUD):
 
         Raises:
             ErroDeExecucao: If the login fails.
-            Exception: For any other errors during authentication.
 
         """
         try:
@@ -255,7 +258,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         except Exception as e:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
             self.row = 0
             self.message = "Erro ao realizar login"
             self.type_log = "error"

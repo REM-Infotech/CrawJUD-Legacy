@@ -58,10 +58,7 @@ class Tjdft(CrawJUD):
         """Execute the main processing loop for calculations.
 
         Iterates over each entry in the data frame and processes it.
-        Handles session expiration and error logging.
-
-        Raises:
-            Exception: If an unexpected error occurs during execution.
+        Handles session expiration and error logger.
 
         """
         frame = self.dataFrame()
@@ -339,9 +336,6 @@ class Tjdft(CrawJUD):
 
         This method handles the input of accessory financial details in the calculation form.
 
-        Raises:
-            ErroDeExecucao: If an error occurs while informing accessory values.
-
         """
 
         def multa_percentual() -> None | Exception:
@@ -553,7 +547,7 @@ class Tjdft(CrawJUD):
             )
 
             path_pdf = os.path.join(self.output_dir_path, pdf_name)
-            with open(path_pdf, "wb") as file:
+            with open(path_pdf, "wb") as file:  # noqa: FURB103
                 file.write(pdf_bytes)
 
             data = [self.bot_data.get("NUMERO_PROCESSO"), pdf_name, valor_doc]

@@ -13,6 +13,8 @@ from typing import Union
 
 from ...common.exceptions import StartError
 
+logger = logging.getLogger(__name__)
+
 
 class projudi:  # noqa: N801
     """The projudi class initializes and executes the specified bot based on provided configurations.
@@ -39,7 +41,7 @@ class projudi:  # noqa: N801
 
         except Exception as e:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
 
             raise StartError(traceback.format_exc()) from e
 

@@ -26,6 +26,7 @@ from .send_email import email_start, email_stop
 from .upload_zip import enviar_arquivo_para_gcs
 
 url_cache = []
+logger = logging.getLogger(__name__)
 
 
 class SetStatus:
@@ -41,7 +42,7 @@ class SetStatus:
         usr: str = None,
         pid: str = None,
         status: str = "Finalizado",
-        **kwargs,
+        **kwargs: dict,
     ) -> str:
         """Initialize the SetStatus instance.
 
@@ -66,8 +67,12 @@ class SetStatus:
     def format_string(self, string: str) -> str:
         """Format a string to be a secure filename.
 
-        :param string: The string to format.
-        :return: The formatted string.
+        Args:
+            string (str): The string to format.
+
+        Returns:
+                str: The formatted string.
+
         """
         return secure_filename(
             "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]),
@@ -88,7 +93,10 @@ class SetStatus:
         :param user: User name.
         :param pid: Process ID.
         :param id: Bot ID.
-        :return: tuple containing the path to the arguments file and the bot display name.
+
+        Returns:
+            tuple containing the path to the arguments file and the bot display name.
+
         """
         from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
@@ -136,7 +144,7 @@ class SetStatus:
 
         data.update({"total_rows": rows})
 
-        with open(path_args, "w") as f:
+        with open(path_args, "w") as f:  # noqa: FURB103
             f.write(json.dumps(data))
 
         name_column = Executions.__table__.columns["arquivo_xlsx"]
@@ -172,7 +180,7 @@ class SetStatus:
 
         except Exception:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
 
         return (path_args, bt.display_name)
 
@@ -193,7 +201,10 @@ class SetStatus:
         :param status: Status of the bot.
         :param system: System name.
         :param typebot: type of bot.
-        :return: The name of the output file.
+
+        Returns:
+            The name of the object destination.
+
         """
         from app.models import Executions
 
@@ -220,7 +231,7 @@ class SetStatus:
             #         self.uninstall(arg)
             #     except Exception as e:
             #         err = traceback.format_exc()
-            #         logging.exception(err)
+            #         logger.exception(err)
 
             zip_file = makezip(pid)
             objeto_destino = path.basename(zip_file)

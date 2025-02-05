@@ -2,7 +2,6 @@
 
 import hashlib
 import hmac
-import json
 import logging
 
 from flask import Blueprint, Response, abort, current_app, jsonify, make_response, request
@@ -10,6 +9,7 @@ from flask import Blueprint, Response, abort, current_app, jsonify, make_respons
 from ..misc import update_servers
 
 wh = Blueprint("webhook", __package__)
+logger = logging.getLogger(__name__)
 
 
 # Endpoint para o webhook
@@ -30,19 +30,19 @@ def github_webhook() -> Response:
 
     request_type = request.headers.get("X-GitHub-Event")
 
-    if app.debug is True:
-        with open("request.json", "w") as f:
-            f.write(json.dumps(data))
+    # if app.debug is True:
+    #     with open("request.json", "w") as f:
+    #         f.write(json.dumps(data))
 
-        headers_data_json = {}
+    #     headers_data_json = {}
 
-        headers_data = list(request.headers.items())
+    #     headers_data = list(request.headers.items())
 
-        for key, value in headers_data:
-            headers_data_json.update({key: str(value)})
+    #     for key, value in headers_data:
+    #         headers_data_json.update({key: str(value)})
 
-        with open("headers.json", "w") as f:
-            f.write(json.dumps(headers_data_json))
+    #     with open("headers.json", "w") as f:
+    #         f.write(json.dumps(headers_data_json))
 
     # Verifica se é uma nova release
     action = data.get("action")
@@ -56,7 +56,7 @@ def github_webhook() -> Response:
         return make_response(jsonify({"message": "Release processada e atualizada"}), 200)
 
     except Exception as e:
-        logging.exception(str(e))
+        logger.exception(str(e))
         return make_response(jsonify({"message": "Evento ignorado"}), 500)
 
 
@@ -73,7 +73,8 @@ def verify_signature(
         signature_header (str, optional): Signature header received from GitHub.
 
     Raises:
-        abort(403): If the signature is missing or does not match.
+        abort: If the signature is invalid or missing
+
 
     """
     if not signature_header:

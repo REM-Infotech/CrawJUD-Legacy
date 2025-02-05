@@ -523,7 +523,7 @@ class protocolo(CrawJUD):  # noqa: N801
         finish_button = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_concluir)
         finish_button.click()
 
-    def screenshot_sucesso(self):
+    def screenshot_sucesso(self) -> list:
         """Capture a screenshot upon successful protocol processing.
 
         Takes screenshots of the protocol confirmation and combines them into a

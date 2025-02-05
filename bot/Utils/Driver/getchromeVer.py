@@ -12,6 +12,8 @@ if platform.system() == "Windows":
     import winreg
 from os import popen
 
+logger = logging.getLogger(__name__)
+
 
 class ChromeVersion:
     """Represent a utility for retrieving the installed Google Chrome version."""
@@ -63,10 +65,10 @@ class ChromeVersion:
         hkey = winreg.HKEY_LOCAL_MACHINE
         reg_dict = {}
         with winreg.OpenKey(hkey, keypath, 0, winreg.KEY_READ) as key:
-            num_subkeys, num_values, last_modified = winreg.QueryInfoKey(key)
+            _, num_values, _ = winreg.QueryInfoKey(key)
 
             for i in range(num_values):
-                value_name, value_data, value_type = winreg.EnumValue(key, i)
+                value_name, value_data, _ = winreg.EnumValue(key, i)
                 reg_dict.update({value_name: value_data})
 
         return reg_dict
@@ -75,4 +77,4 @@ class ChromeVersion:
 chrome_ver = ChromeVersion().get_chrome_version
 
 if __name__ == "__main__":
-    logging.info(f"Google Chrome version: {chrome_ver()}")  # noqa: G004
+    logger.info(f"Google Chrome version: {chrome_ver()}")  # noqa: G004

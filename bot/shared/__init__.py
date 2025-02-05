@@ -169,7 +169,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.systembot_
 
     @system.setter
-    def system(self, systembot_) -> None:
+    def system(self, systembot_: str) -> None:
         """Set the system bot identifier.
 
         Args:
@@ -214,7 +214,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.pid_
 
     @pid.setter
-    def pid(self, pid_) -> None:
+    def pid(self, pid_: str) -> None:
         """Set the process ID.
 
         Args:
@@ -334,7 +334,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.message_error_
 
     @message_error.setter
-    def message_error(self, nw_m) -> str:
+    def message_error(self, nw_m: str) -> str:
         """Set the error message.
 
         Args:
@@ -349,7 +349,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.graphicMode_
 
     @graphicMode.setter
-    def graphicMode(self, new_graph) -> None:  # noqa: N802
+    def graphicMode(self, new_graph: str) -> None:  # noqa: N802
         """Set the graphic mode.
 
         Args:
@@ -379,7 +379,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.vara_
 
     @vara.setter
-    def vara(self, vara_str) -> None:
+    def vara(self, vara_str: str) -> None:
         """Set the variable A.
 
         Args:
@@ -394,7 +394,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.path_accepted_
 
     @path_accepted.setter
-    def path_accepted(self, new_path) -> None:
+    def path_accepted(self, new_path: Path) -> None:
         """Set the accepted path.
 
         Args:
@@ -423,7 +423,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.type_bot
 
     @typebot.setter
-    def typebot(self, type_bot) -> None:
+    def typebot(self, type_bot: str) -> None:
         """Set the type of bot.
 
         Args:
@@ -468,7 +468,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.name_cert_
 
     @name_cert.setter
-    def name_cert(self, name_cert) -> None:
+    def name_cert(self, name_cert: str) -> None:
         """Set the certificate name.
 
         Args:
@@ -483,7 +483,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.client_
 
     @client.setter
-    def client(self, client_) -> None:
+    def client(self, client_: str) -> None:
         """Set the client information.
 
         Args:

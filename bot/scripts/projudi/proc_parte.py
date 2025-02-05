@@ -152,7 +152,7 @@ class proc_parte(CrawJUD):  # noqa: N801
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def use_list_process(self, list_processos: list[WebElement]):
+    def use_list_process(self, list_processos: list[WebElement]) -> None:
         """Process a list of WebElement process entries.
 
         Extracts relevant details from each process and logs successful saves.

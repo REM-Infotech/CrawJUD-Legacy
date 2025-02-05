@@ -11,6 +11,8 @@ from app import app, io
 from app.misc import stop_execution
 from status.server_side import FormatMessage  # load_cache, FormatMessage
 
+logger = logging.getLogger(__name__)
+
 
 @io.on("connect", namespace="/log")
 def connect() -> None:
@@ -94,7 +96,7 @@ def log_message(data: dict[str, str]) -> None:
 
     except Exception:
         err = traceback.format_exc()
-        logging.exception(err)
+        logger.exception(err)
         send("failed to receive message")
 
 

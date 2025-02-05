@@ -97,6 +97,10 @@ class protocolo(CrawJUD):  # noqa: N801
         """Manage the processing queue.
 
         Executes the protocoling steps and handles any exceptions that may occur during the process.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+
         """
         try:
             self.search_bot()
@@ -116,6 +120,10 @@ class protocolo(CrawJUD):  # noqa: N801
         """Initialize the protocoling process.
 
         Navigates to the petitioning section and prepares the environment for protocoling.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+
         """
         try:
             try:
@@ -150,6 +158,10 @@ class protocolo(CrawJUD):  # noqa: N801
         """Set the type of protocol.
 
         Selects and inputs the protocol type based on the provided data.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+
         """
         try:
             self.interact.sleep_load('div[id="loadFeedback"]')
@@ -179,6 +191,10 @@ class protocolo(CrawJUD):  # noqa: N801
         """Set the subtype of protocol.
 
         Selects and inputs the protocol subtype based on the provided data.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+
         """
         try:
             self.prt.print_log("log", "Informando subtipo de peticionamento")
@@ -206,6 +222,10 @@ class protocolo(CrawJUD):  # noqa: N801
         """Attach the petition file.
 
         Uploads the main petition document and verifies the upload.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+
         """
         try:
             self.prt.print_log("log", "Anexando petição")
@@ -244,6 +264,10 @@ class protocolo(CrawJUD):  # noqa: N801
         """Link the party to the petition.
 
         Associates the specified party with the petition, handling any exceptions during the process.
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+
         """
         try:
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
@@ -314,6 +338,10 @@ class protocolo(CrawJUD):  # noqa: N801
 
         Returns:
             list: Contains the process number, success message, and receipt name.
+
+
+        Raises:
+            ErroDeExecucao: If an error occurs while initializing the petitioning process.
 
         """
         try:

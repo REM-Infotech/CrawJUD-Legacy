@@ -24,6 +24,7 @@ codificacao = "UTF-8"
 mensagens = []
 load_dotenv()
 
+logger = logging.getLogger(__name__)
 url_socket = environ.get("HOSTNAME")
 iobot = SocketBot()
 
@@ -85,7 +86,7 @@ class PrintBot(CrawJUD):
             err = traceback.format_exc()
 
             # Registra o erro
-            logging.exception(err)
+            logger.exception(err)
 
     def end_prt(self, status: str) -> None:
         """Send a final status message."""
@@ -108,4 +109,4 @@ class PrintBot(CrawJUD):
 
         except Exception:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)

@@ -10,7 +10,7 @@ import logging
 import os
 import re
 import ssl
-import subprocess  # nosec: B404
+import subprocess  # nosec: B404 # noqa: S404
 import time
 import traceback
 import unicodedata
@@ -50,6 +50,8 @@ __all__ = [
 ]
 
 TypeData = Union[list[dict[str, Union[str, Numbers, datetime]]], dict[str, Union[str, Numbers, datetime]]]
+
+logger = logging.getLogger(__name__)
 
 
 class OtherUtils(CrawJUD):
@@ -634,7 +636,7 @@ class OtherUtils(CrawJUD):
                         return True
                 except Exception:
                     err = traceback.format_exc()
-                    logging.exception(err)
+                    logger.exception(err)
 
             return False
 

@@ -83,6 +83,7 @@ exclude_dirs = ["tests", ".venv"]
 # skips = ["B404", "B603", "B105", "B605", "B607"]
 
 [tool.ruff]
+preview = true
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -119,26 +120,16 @@ line-length = 120
 indent-width = 4
 
 [tool.ruff.lint]
-select = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "I",
-    "N",
-    "Q",
-    "S",
-    "T",
-    "W",
-    # "ANN",
+preview = true
+select = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W"]
+
+extend-select = [
+    "ANN",
     "ASYNC",
     # "BLE",
     # "FBT",
     "COM",
-    "CPY",
+    # "CPY",
     # "DTZ",
     # "EM",
     "EXE",
@@ -172,12 +163,11 @@ select = [
     "NPY",
     # "AIR",
     # "PERF",
-    "FURB",
-    "DOC",
+    # "FURB",
+    # "DOC",
     # "RUF",
-
-
 ]
+
 ignore = ["COM812", "D203", "D211", "D212", "D213"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
@@ -186,6 +176,7 @@ unfixable = []
 
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

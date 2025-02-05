@@ -109,6 +109,10 @@ class emissor(CrawJUD):  # noqa: N801
         """Manage the processing queue.
 
         Executes emission steps and handles any exceptions raised.
+
+        Raises:
+            ErroDeExecucao: If an exception occurs during processing.
+
         """
         try:
             nameboleto = None
@@ -452,8 +456,6 @@ class emissor(CrawJUD):  # noqa: N801
             list: Process number, description text, value, payment date,
             condemnation status, JEC status, via condemnation, barcode, and PDF name.
 
-        Raises:
-            ErroDeExecucao: If an error occurs during PDF processing.
 
         """
         sleep(0.5)

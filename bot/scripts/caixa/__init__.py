@@ -10,6 +10,8 @@ from importlib import import_module
 # from typing import any
 from ...common import StartError
 
+logger = logging.getLogger(__name__)
+
 
 class caixa:  # noqa: N801
     """caixa class.
@@ -34,7 +36,7 @@ class caixa:  # noqa: N801
 
         except Exception as e:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
             raise StartError(traceback.format_exc()) from e
 
     @property

@@ -44,7 +44,7 @@ class Users(db.Model):
         return self.senhacrip
 
     @senhacrip.setter
-    def senhacrip(self, senha_texto: str):
+    def senhacrip(self, senha_texto: str) -> None:
         """Set the hashed password from plaintext.
 
         Args:

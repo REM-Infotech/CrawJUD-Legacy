@@ -10,6 +10,7 @@ from importlib import import_module
 from ...common import StartError
 
 # from typing import any
+logger = logging.getLogger(__name__)
 
 
 class esaj:  # noqa: N801
@@ -35,7 +36,7 @@ class esaj:  # noqa: N801
 
         except Exception as e:
             err = traceback.format_exc()
-            logging.exception(err)
+            logger.exception(err)
             raise StartError(traceback.format_exc()) from e
 
     @property

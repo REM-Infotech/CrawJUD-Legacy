@@ -14,7 +14,7 @@ load_dotenv()
 class GlobalExcept(Exception):  # noqa: N818
     """Base custom exception class for global errors."""
 
-    def __init__(self, message: str):
+    def __init__(self, message: str) -> None:
         """Initialize GlobalExcept with an error message.
 
         Args:
@@ -28,7 +28,7 @@ class GlobalExcept(Exception):  # noqa: N818
 class NetworkError(GlobalExcept):
     """Exception raised when a network-related error occurs."""
 
-    def __init__(self, message: str = "You are not connected to the internet!!"):
+    def __init__(self, message: str = "You are not connected to the internet!!") -> None:
         """Initialize NetworkError with a default or custom message.
 
         Args:
@@ -43,7 +43,7 @@ class InfoGeoloc:
 
     data: dict[str, str, int | bool] = {}
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize InfoGeoloc by fetching geolocation data."""
         ip_external = ip.external()
         if not ip_external:
@@ -151,7 +151,7 @@ class InfoGeoloc:
 class GeoLoc(InfoGeoloc):
     """Subclass of InfoGeoloc for extended geolocation functionalities."""
 
-    def __init__(self, *args: tuple, **kwrgs: dict):
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize GeoLoc with optional arguments.
 
         Args:

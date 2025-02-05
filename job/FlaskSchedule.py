@@ -9,7 +9,7 @@ from celery.schedules import crontab
 class DatabaseScheduler(Scheduler):
     """Scheduler that loads task schedules from the database."""
 
-    def __init__(self, *args: tuple, **kwargs: dict):
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the DatabaseScheduler.
 
         Args:
@@ -20,7 +20,7 @@ class DatabaseScheduler(Scheduler):
         super().__init__(*args, **kwargs)
         self._schedule = {}
 
-    def get_schedule(self):
+    def get_schedule(self) -> dict:
         """Load schedules from the database.
 
         Retrieves all schedule entries from the ScheduleModel and constructs
@@ -47,7 +47,7 @@ class DatabaseScheduler(Scheduler):
         return schedules
 
     @staticmethod
-    def parse_cron(cron_string):
+    def parse_cron(cron_string: str) -> dict[str, any]:
         """Parse a cron string into its respective fields.
 
         Args:
@@ -64,7 +64,7 @@ class DatabaseScheduler(Scheduler):
         return {field: value for field, value in zip(fields, cron_parts)}  # noqa: C416
 
     @property
-    def schedule(self):
+    def schedule(self) -> dict:
         """Get the current schedule.
 
         Syncs the schedule with the database and returns the updated schedule.
@@ -76,7 +76,7 @@ class DatabaseScheduler(Scheduler):
         self.sync()
         return self._schedule
 
-    def sync(self):
+    def sync(self) -> None:
         """Synchronize the schedules with the database.
 
         Updates the internal schedule dictionary by fetching the latest schedules
@@ -84,7 +84,7 @@ class DatabaseScheduler(Scheduler):
         """
         self._schedule = self.get_schedule()
 
-    def tick(self):
+    def tick(self) -> int | any:
         """Process the schedules.
 
         This method is called continuously to ensure that the scheduler stays
