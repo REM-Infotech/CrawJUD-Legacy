@@ -1,17 +1,5 @@
 repos:
-  # 1. Organiza os imports primeiro
-  - repo: "https://github.com/PyCQA/isort"
-    rev: "5.13.2"
-    hooks:
-      - id: "isort"
-
-  # 2. Formata o código depois
-  - repo: "https://github.com/psf/black"
-    rev: "24.10.0"
-    hooks:
-      - id: "black"
-
-  # 3. Faz linting e correções adicionais no final
+  # 1. Faz linting e correções adicionais no final
   - repo: "https://github.com/astral-sh/ruff-pre-commit"
     rev: "v0.9.3"
     hooks:
@@ -41,9 +29,15 @@ repos:
           - "html"
         additional_dependencies: ["bandit[toml]"]
 
-  - repo: "https://github.com/PyCQA/flake8"
-    rev: "7.0.0"
-    hooks:
-      - id: "flake8"
-        entry: pflake8
-        additional_dependencies: ["pyproject-flake8", "flake8-docstrings"]
+  # - repo: "https://github.com/PyCQA/flake8"
+  #   rev: "7.0.0"
+  #   hooks:
+  #     - id: "flake8"
+  #       entry: pflake8
+  #       additional_dependencies:
+  #         [
+  #           "pyproject-flake8",
+  #           "flake8-docstrings",
+  #           "flake8-bandit",
+  #           "flake8-bugbear",
+  #         ]

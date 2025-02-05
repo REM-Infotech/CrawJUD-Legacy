@@ -12,7 +12,7 @@ class PROJUDI_AM(Configuracao):
 
     url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
     campo_username = "#login"
-    campo_passwd = "#senha"
+    campo_passwd = "#senha"  # noqa S105 # nosec B105
     btn_entrar = "#btEntrar"
     chk_login = 'iframe[name="userMainFrame"]'
 

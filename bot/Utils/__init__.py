@@ -7,10 +7,22 @@ Classes:
     OtherUtils: Provides utility methods for data processing and interaction.
 """
 
+from ..common import ErroDeExecucao
+from ..core import CrawJUD, pd
+from ..shared import Numbers
+from .auth import AuthBot
+from .Driver import DriverBot
+from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
+from .interator import Interact
+from .MakeTemplate import MakeXlsx
+from .PrintLogs import PrintBot
+from .search import SearchBot
+
+
 import os
 import re
 import ssl
-import subprocess
+import subprocess  # noqa S404  # nosec B404
 import time
 import unicodedata
 from datetime import datetime
@@ -23,16 +35,6 @@ from cryptography.hazmat.backends import default_backend
 from pandas import Timestamp
 from werkzeug.utils import secure_filename
 
-from ..common import ErroDeExecucao
-from ..core import CrawJUD, pd
-from ..shared import Numbers
-from .auth import AuthBot
-from .Driver import DriverBot
-from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
-from .interator import Interact
-from .MakeTemplate import MakeXlsx
-from .PrintLogs import PrintBot
-from .search import SearchBot
 
 __all__ = [
     "AuthBot",
@@ -80,6 +82,7 @@ class OtherUtils(CrawJUD):
         group_keys(data: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]
         gpt_chat(text_mov: str) -> str
         text_is_a_date(text: str) -> bool
+
     """
 
     def __init__(self) -> None:
@@ -98,6 +101,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             List[str]: A list of column names used in the application.
+
         """
         all_fields = [
             "NOME_PARTE",
@@ -220,6 +224,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             Dict[str, str]: A dictionary containing keys for legal case details with empty string values.
+
         """
         return {
             "NUMERO_PROCESSO": "",
@@ -258,6 +263,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             Dict[str, str]: A dictionary where the keys are city names and the values are their categories.
+
         """
         return {
             "Alvarães": "Interior",
@@ -337,6 +343,7 @@ class OtherUtils(CrawJUD):
         Raises:
             FileNotFoundError: If the specified Excel file does not exist.
             ValueError: If there is an issue reading the Excel file.
+
         """
         input_file = Path(self.output_dir_path).joinpath(self.xlsx).resolve()
 
@@ -344,13 +351,7 @@ class OtherUtils(CrawJUD):
         df.columns = df.columns.str.upper()
 
         for col in df.columns:
-            df[col] = df[col].apply(
-                lambda x: (
-                    x.strftime("%d/%m/%Y")
-                    if isinstance(x, (datetime, Timestamp))
-                    else x
-                )
-            )
+            df[col] = df[col].apply(lambda x: (x.strftime("%d/%m/%Y") if isinstance(x, (datetime, Timestamp)) else x))
 
         for col in df.select_dtypes(include=["float"]).columns:
             df[col] = df[col].apply(lambda x: "{:.2f}".format(x).replace(".", ","))
@@ -382,6 +383,7 @@ class OtherUtils(CrawJUD):
             - If the key is "DATA_LIMITE" and "DATA_INICIO" is not present, set "DATA_INICIO" to the value of "DATA_LIMITE".
             - If the value is an integer or float, format it to two decimal places and replace the decimal point with a comma.
             - If the key is "CNPJ_FAVORECIDO" and its value is empty, set it to "04.812.509/0001-90".
+
         """
         data_listed = list(data.items())
         for key, value in data_listed:
@@ -420,6 +422,7 @@ class OtherUtils(CrawJUD):
             List[int]: A list containing two integers:
                 - minutes (int): The number of minutes of the elapsed time.
                 - seconds (int): The number of seconds of the elapsed time.
+
         """
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
@@ -437,18 +440,15 @@ class OtherUtils(CrawJUD):
 
         Raises:
             ErroDeExecucao: If no movements are found in the `self.appends` list.
+
         """
         if self.appends:
             for append in self.appends:
-                self.append_success(
-                    append, "Movimentação salva na planilha com sucesso!!"
-                )
+                self.append_success(append, "Movimentação salva na planilha com sucesso!!")
         else:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    def append_success(
-        self, data: TypeData, message: str = None, fileN: str = None
-    ) -> None:
+    def append_success(self, data: TypeData, message: str = None, fileN: str = None) -> None:
         """
         Append successful execution data to the spreadsheet.
 
@@ -459,6 +459,7 @@ class OtherUtils(CrawJUD):
 
         Raises:
             ValueError: If data is not in the expected format.
+
         """
         if not message:
             message = "Execução do processo efetuada com sucesso!"
@@ -482,9 +483,7 @@ class OtherUtils(CrawJUD):
         if isinstance(data, list) and all(isinstance(item, dict) for item in data):
             pass
         else:
-            data = [
-                {key: item.get(key, "") for key in self.nomes_colunas} for item in data
-            ]
+            data = [{key: item.get(key, "") for key in self.nomes_colunas} for item in data]
 
         save_info(data)
 
@@ -501,6 +500,7 @@ class OtherUtils(CrawJUD):
 
         Args:
             data (Dict[str, str], optional): The error data to append. Defaults to None.
+
         """
         if not os.path.exists(self.path_erro):
             df = pd.DataFrame([data])
@@ -518,6 +518,7 @@ class OtherUtils(CrawJUD):
 
         Args:
             data (List[Dict[str, str]]): The validated data to append.
+
         """
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
         planilha_validar = Path(self.path).parent.resolve().joinpath(nomeplanilha)
@@ -540,6 +541,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             Union[str, None]: The type of document ("cpf" or "cnpj") or None if invalid.
+
         """
         numero = "".join(filter(str.isdigit, doc))
         if len(numero) == 11:
@@ -557,13 +559,12 @@ class OtherUtils(CrawJUD):
 
         Returns:
             Union[str, None]: The path to the most recent PDF file, or None if none found.
+
         """
         files = [
             os.path.join(folder, f)
             for f in os.listdir(folder)
-            if os.path.isfile(os.path.join(folder, f))
-            and f.lower().endswith(".pdf")
-            and not f.lower().endswith(".crdownload")
+            if (os.path.isfile(os.path.join(folder, f)) and f.lower().endswith(".pdf")) and not f.lower().endswith(".crdownload")  # noqa: W503
         ]
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
@@ -577,16 +578,9 @@ class OtherUtils(CrawJUD):
 
         Returns:
             str: The formatted string as a secure filename.
+
         """
-        return secure_filename(
-            "".join(
-                [
-                    c
-                    for c in unicodedata.normalize("NFKD", string)
-                    if not unicodedata.combining(c)
-                ]
-            )
-        )
+        return secure_filename("".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]))
 
     def normalizar_nome(self, word: str) -> str:
         """
@@ -599,6 +593,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             str: The normalized name.
+
         """
         return re.sub(r"[\s_\-]", "", word).lower()
 
@@ -612,6 +607,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             float: Percentage of similarity.
+
         """
         return SequenceMatcher(None, word1, word2).ratio()
 
@@ -670,7 +666,7 @@ class OtherUtils(CrawJUD):
                 path_cert,
             ]
             try:
-                resultado = subprocess.run(
+                resultado = subprocess.run(  # nosec B603 # noqa S603
                     comando,
                     check=True,
                     text=True,
@@ -693,6 +689,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             List[Dict[str, str]]: A list of dictionaries containing grouped data.
+
         """
         records = []
         for vara, dates in data.items():
@@ -712,6 +709,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             Dict[str, Dict[str, str]]: A dictionary grouping keys with their corresponding values.
+
         """
         record = {}
         for pos, entry in enumerate(data):
@@ -736,6 +734,7 @@ class OtherUtils(CrawJUD):
 
         Raises:
             Exception: If an error occurs during the API call or processing.
+
         """
         try:
             time.sleep(5)
@@ -749,9 +748,7 @@ class OtherUtils(CrawJUD):
                     },
                     {
                         "role": "user",
-                        "content": (
-                            f"Analise o seguinte texto e ajuste sua resposta de acordo com o tipo de documento: {text_mov}."
-                        ),
+                        "content": (f"Analise o seguinte texto e ajuste sua resposta de acordo com o tipo de documento: {text_mov}."),
                     },
                 ],
                 temperature=0.1,
@@ -777,6 +774,7 @@ class OtherUtils(CrawJUD):
 
         Returns:
             bool: True if the text matches a date-like pattern, False otherwise.
+
         """
         date_like_pattern = r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"
         return bool(re.search(date_like_pattern, text))

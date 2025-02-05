@@ -35,6 +35,7 @@ class Interact(CrawJUD):
         Args:
             element (WebElement): The web element to send keys to.
             word (any): The keys or text to send to the element.
+
         """
         send = None
         for key in dir(Keys):
@@ -56,6 +57,7 @@ class Interact(CrawJUD):
 
         Args:
             element (WebElement): The web element to click.
+
         """
         sleep(0.05)
         element.click()
@@ -67,6 +69,7 @@ class Interact(CrawJUD):
 
         Args:
             element (WebElement): The web element to double-click.
+
         """
         action = ActionChains(self.driver)
         action.double_click(element).perform()
@@ -84,10 +87,9 @@ class Interact(CrawJUD):
 
         Raises:
             ItemNaoEcontrado: If the item with the specified text is not found.
+
         """
-        itens: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, elemento))
-        )
+        itens: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, elemento)))
 
         self.display_none(itens)
         sleep(0.5)
@@ -96,16 +98,12 @@ class Interact(CrawJUD):
             itens = list(
                 filter(
                     lambda item: not item.text.isupper(),
-                    itens.find_element(By.CSS_SELECTOR, "ul").find_elements(
-                        By.TAG_NAME, "li"
-                    ),
+                    itens.find_element(By.CSS_SELECTOR, "ul").find_elements(By.TAG_NAME, "li"),
                 )
             )
 
         elif text.isupper():
-            itens = itens.find_element(By.TAG_NAME, "ul").find_elements(
-                By.TAG_NAME, "li"
-            )
+            itens = itens.find_element(By.TAG_NAME, "ul").find_elements(By.TAG_NAME, "li")
 
         item = next(filter(lambda item: text == item.text, itens), None)
 
@@ -123,6 +121,7 @@ class Interact(CrawJUD):
 
         Args:
             element (WebElement): The web element to clear.
+
         """
         element.click()
         sleep(0.5)
@@ -136,15 +135,14 @@ class Interact(CrawJUD):
         Args:
             element (str, optional): The CSS selector of the loading element.
                                       Defaults to 'div[id="j_id_3x"]'.
+
         """
         while True:
             sleep(0.5)
             load = None
             aria_value = None
             with suppress(TimeoutException):
-                load: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, element))
-                )
+                load: WebElement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, element)))
 
             if load:
                 for attributes in ["aria-live", "aria-hidden", "class"]:
@@ -174,6 +172,7 @@ class Interact(CrawJUD):
 
         Args:
             elemento (WebElement): The web element to check.
+
         """
         while True:
             style = elemento.get_attribute("style")
@@ -219,6 +218,7 @@ class Interact(CrawJUD):
 
         Args:
             element (WebElement): The web element to scroll to.
+
         """
         action = ActionChains(self.driver)
         action.scroll_to_element(element)
@@ -231,10 +231,9 @@ class Interact(CrawJUD):
         Args:
             elementSelect (str): The CSS selector of the Select2 element.
             to_Search (str): The text to search and select.
+
         """
-        selector: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect))
-        )
+        selector: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect)))
 
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}

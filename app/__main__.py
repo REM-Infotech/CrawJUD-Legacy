@@ -1,7 +1,7 @@
 """Main entry point for the CrawJUD-Bots application."""
 
 import signal
-import subprocess
+import subprocess  # noqa S404  # nosec B404
 import sys
 from os import environ, getenv
 from platform import system
@@ -27,10 +27,11 @@ def start_vnc() -> None:
 
     Raises:
         Exception: If the TightVNC server fails to start.
+
     """
     try:
         # Executa o comando com verificação de erro
-        subprocess.run(
+        subprocess.run(  # noqa S603, S607 # nosec B607, B603
             [
                 "tightvncserver",
                 ":99",
@@ -61,6 +62,7 @@ def start_app():
 
     Raises:
         SystemExit: Exits the application on interruption.
+
     """
     from app import create_app
 
@@ -71,15 +73,9 @@ def start_app():
 
     debug = values("DEBUG", "False").lower() in ("true")
 
-    hostname = (
-        values("SERVER_HOSTNAME", "127.0.0.1")
-        if getenv("INTO_DOCKER", None)
-        else "127.0.0.1"
-    )
+    hostname = values("SERVER_HOSTNAME", "127.0.0.1") if getenv("INTO_DOCKER", None) else "127.0.0.1"
 
-    unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (
-        getenv("DEBUG", "False").lower() == "true"
-    )
+    unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (getenv("DEBUG", "False").lower() == "true")
     port = int(values("PORT", "8000"))
     version_file()
     if system().lower() == "linux":
@@ -97,7 +93,7 @@ def start_app():
     except (KeyboardInterrupt, TypeError):
         if system().lower() == "linux":
             try:
-                subprocess.run(["tightvncserver", "-kill", ":99"])
+                subprocess.run(["tightvncserver", "-kill", ":99"])  # noqa S603, S607 # nosec B603, B607
 
             except Exception:
                 # err = traceback.format_exc()
@@ -113,6 +109,7 @@ def dev_modules():
 
     Raises:
         ImportError: If any development dependencies are missing.
+
     """
     import importlib
 

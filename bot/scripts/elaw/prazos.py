@@ -25,6 +25,7 @@ class Prazos(CrawJUD):
     Attributes:
         attribute_name (type): Description of the attribute.
         # ...other attributes...
+
     """
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -33,7 +34,8 @@ class Prazos(CrawJUD):
 
         Args:
             *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            **kwrgs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwrgs)
 
@@ -69,9 +71,7 @@ class Prazos(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -98,6 +98,7 @@ class Prazos(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during execution.
+
         """
         try:
             search = self.search_bot()
@@ -106,9 +107,7 @@ class Prazos(CrawJUD):
                 raise ErroDeExecucao("Não Encontrado!")
 
             comprovante = ""
-            self.data_Concat = (
-                f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
-            )
+            self.data_Concat = f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
             self.message = "Processo Encontrado!"
             self.type_log = "log"
             self.prt()
@@ -119,9 +118,7 @@ class Prazos(CrawJUD):
             if chk_lancamento:
                 self.message = "Já existe lançamento para esta pauta"
                 self.type_log = "info"
-                chk_lancamento.update(
-                    {"MENSAGEM_COMCLUSAO": "REGISTROS ANTERIORES EXISTENTES!"}
-                )
+                chk_lancamento.update({"MENSAGEM_COMCLUSAO": "REGISTROS ANTERIORES EXISTENTES!"})
 
                 comprovante = chk_lancamento
 
@@ -130,16 +127,14 @@ class Prazos(CrawJUD):
                 self.save_Prazo()
                 comprovante = self.CheckLancamento()
                 if not comprovante:
-                    raise ErroDeExecucao(
-                        "Não foi possível comprovar lançamento, verificar manualmente"
-                    )
+                    raise ErroDeExecucao("Não foi possível comprovar lançamento, verificar manualmente")
 
                 self.message = "Pauta lançada!"
 
             self.append_success([comprovante], self.message)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def TablePautas(self) -> None:
         """
@@ -147,22 +142,19 @@ class Prazos(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during the verification process.
+
         """
         try:
-            switch_pautaAndamento = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.switch_pautaAndamento
-            )
+            switch_pautaAndamento = self.driver.find_element(By.CSS_SELECTOR, self.elements.switch_pautaAndamento)
 
             switch_pautaAndamento.click()
 
-            self.message = (
-                f"Verificando se existem pautas para o dia {self.data_Concat}"
-            )
+            self.message = f"Verificando se existem pautas para o dia {self.data_Concat}"
             self.type_log = "log"
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def NovaPauta(self) -> None:
         """
@@ -170,17 +162,14 @@ class Prazos(CrawJUD):
 
         Raises:
             ErroDeExecucao: If unable to launch a new audience.
+
         """
         try:
             self.message = "Lançando nova audiência"
             self.type_log = "log"
             self.prt()
 
-            btn_NovaAudiencia = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.btn_NovaAudiencia)
-                )
-            )
+            btn_NovaAudiencia = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_NovaAudiencia)))
 
             btn_NovaAudiencia.click()
 
@@ -189,32 +178,22 @@ class Prazos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            selectorTipoAudiencia: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.selectorTipoAudiencia)
-                )
-            )
+            selectorTipoAudiencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectorTipoAudiencia)))
 
             items = selectorTipoAudiencia.find_elements(By.TAG_NAME, "option")
             opt_itens: dict[str, str] = {}
             for item in items:
                 value_item = item.get_attribute("value")
-                text_item = self.driver.execute_script(
-                    f"return $(\"option[value='{value_item}']\").text();"
-                )
+                text_item = self.driver.execute_script(f"return $(\"option[value='{value_item}']\").text();")
 
                 opt_itens.update({text_item.upper(): value_item})
 
             value_opt = opt_itens.get(self.bot_data["TIPO_AUDIENCIA"].upper())
             if value_opt:
-                command = (
-                    f"$('{self.elements.selectorTipoAudiencia}').val(['{value_opt}']);"
-                )
+                command = f"$('{self.elements.selectorTipoAudiencia}').val(['{value_opt}']);"
                 self.driver.execute_script(command)
 
-                command2 = (
-                    f"$('{self.elements.selectorTipoAudiencia}').trigger('change');"
-                )
+                command2 = f"$('{self.elements.selectorTipoAudiencia}').trigger('change');"
                 self.driver.execute_script(command2)
 
             # Info Data Audiencia
@@ -222,16 +201,12 @@ class Prazos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            DataAudiencia: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.DataAudiencia)
-                )
-            )
+            DataAudiencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia)))
 
             DataAudiencia.send_keys(self.data_Concat)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def save_Prazo(self) -> None:
         """
@@ -239,20 +214,19 @@ class Prazos(CrawJUD):
 
         Raises:
             ErroDeExecucao: If unable to save the deadline.
+
         """
         try:
             self.message = "Salvando..."
             self.type_log = "log"
             self.prt()
 
-            btn_Salvar = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.btn_Salvar
-            )
+            btn_Salvar = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_Salvar)
 
             btn_Salvar.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def CheckLancamento(self) -> dict[str, str] | None:
         """
@@ -263,13 +237,10 @@ class Prazos(CrawJUD):
 
         Raises:
             ErroDeExecucao: If unable to verify the deadline record.
+
         """
         try:
-            tablePrazos: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.tablePrazos)
-                )
-            )
+            tablePrazos: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tablePrazos)))
 
             tablePrazos: list[WebElement] = tablePrazos.find_elements(By.TAG_NAME, "tr")
 
@@ -303,4 +274,4 @@ class Prazos(CrawJUD):
             return data
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e

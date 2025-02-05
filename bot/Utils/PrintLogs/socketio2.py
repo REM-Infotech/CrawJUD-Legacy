@@ -1,4 +1,8 @@
-"""This module provides a SocketBot class for handling socket.io connections and emitting events."""
+"""
+Module: socketio2.
+
+This module provides a SocketBot class for handling socket.io connections and emitting events.
+"""
 
 import traceback
 from time import sleep
@@ -26,6 +30,7 @@ class SocketBot:
             event (str): The event to emit.
             data (Dict): The data to send with the event.
             url (str): The URL to connect to.
+
         """
         exc = None
 
@@ -92,6 +97,7 @@ class SocketBot:
         Args:
             event (str): The event to emit.
             data (Dict): The data to send with the event.
+
         """
         sio.emit(event, data, namespace="/log")
 
@@ -101,6 +107,7 @@ class SocketBot:
 
         Args:
             url (str): The URL to connect to.
+
         """
         if self.connected is False:
             sio.connect(url, namespaces=["/log"])
@@ -113,6 +120,7 @@ class SocketBot:
         Args:
             data (dict[str, str | int]): The data to send.
             url (str): The URL to connect to.
+
         """
         try:
             pass
@@ -126,6 +134,7 @@ class SocketBot:
         Args:
             data (dict): The data to send.
             url (str): The URL to connect to.
+
         """
         try:
             pass

@@ -1,4 +1,6 @@
 """
+Module: MakeXlsx.
+
 This module provides functionality to create and customize Excel files.
 
 using openpyxl, based on the attributes of the CrawJUD framework.
@@ -29,6 +31,7 @@ class MakeXlsx(CrawJUD):
 
         Returns:
             List[str]: A list of the headers used in the created Excel file.
+
         """
         lista_colunas: List[str] = getattr(
             listas(),

@@ -1,4 +1,8 @@
-"""This module provides miscellaneous utility functions."""
+"""
+Module: miscellaneous.
+
+This module provides miscellaneous utility functions.
+"""
 
 import importlib
 import sys
@@ -12,6 +16,7 @@ def reload_module(module_name: str) -> None:  # pragma: no cover
 
     Args:
         module_name (str): The name of the module to reload.
+
     """
     if module_name in sys.modules:
         importlib.reload(sys.modules[module_name])

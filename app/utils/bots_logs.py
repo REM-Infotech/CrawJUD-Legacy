@@ -16,9 +16,12 @@ def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> 
         L_LVL (int, optional): The logging level. Defaults to logging.DEBUG.
         mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
         bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
+        *args: Variable length argument list.
+        **kwargs: Arbitrary keyword arguments.
 
     Returns:
         Logger: Configured logger instance.
+
     """
     L_F: str = L_F or str(kwargs.pop("L_F", "app.log"))
     L_LVL: int = L_LVL or int(kwargs.pop("L_LVL", DEBUG))

@@ -34,6 +34,7 @@ def generate_pid() -> str:
 
     Returns:
         str: A unique PID composed of interleaved letters and digits.
+
     """
     while True:
         # Gerar 4 letras maiúsculas e 4 dígitos
@@ -41,9 +42,7 @@ def generate_pid() -> str:
         digits = random.sample(string.digits, 6)
 
         # Intercalar letras e dígitos
-        pid = "".join(
-            [letters[i // 2] if i % 2 == 0 else digits[i // 2] for i in range(6)]
-        )
+        pid = "".join([letters[i // 2] if i % 2 == 0 else digits[i // 2] for i in range(6)])
 
         # Verificar se a string gerada não contém sequências do tipo "AABB"
         if not any(pid[i] == pid[i + 1] for i in range(len(pid) - 1)):
@@ -56,6 +55,7 @@ def storageClient() -> Client:
 
     Returns:
         Client: Configured GCS client.
+
     """
     project_id = environ.get("project_id")
     # Configure a autenticação para a conta de serviço do GCS
@@ -70,11 +70,10 @@ def CredentialsGCS() -> Credentials:
 
     Returns:
         Credentials: GCS service account credentials.
+
     """
     credentials_dict = json.loads(environ.get("credentials_dict"))
-    return Credentials.from_service_account_info(credentials_dict).with_scopes(
-        ["https://www.googleapis.com/auth/cloud-platform"]
-    )
+    return Credentials.from_service_account_info(credentials_dict).with_scopes(["https://www.googleapis.com/auth/cloud-platform"])
 
     # Configure a autenticação para a conta de serviço do GCS
 
@@ -88,6 +87,7 @@ def bucketGcs(storageClient: Client) -> Bucket:
 
     Returns:
         Bucket: The GCS bucket.
+
     """
     bucket_name = environ.get("bucket_name")
 
@@ -95,9 +95,7 @@ def bucketGcs(storageClient: Client) -> Bucket:
     return bucket_obj
 
 
-def stop_execution(
-    app: Flask, pid: str, robot_stop: bool = False
-) -> tuple[dict[str, str], int]:
+def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
     """
     Stop the execution of a bot based on its PID.
 
@@ -108,6 +106,7 @@ def stop_execution(
 
     Returns:
         tuple[dict[str, str], int]: A message and HTTP status code.
+
     """
     from app import db
     from app.models import Executions, ThreadBots
@@ -117,9 +116,7 @@ def stop_execution(
         processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()
 
         if processID:
-            get_info = (
-                db.session.query(Executions).filter(Executions.pid == pid).first()
-            )
+            get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
             system = get_info.bot.system
             typebot = get_info.bot.type
@@ -134,9 +131,7 @@ def stop_execution(
                 db.session.close()
 
             elif filename == "":
-                get_info.file_output = SetStatus(
-                    usr=user, pid=pid, system=system, typebot=typebot
-                ).botstop(db, app)
+                get_info.file_output = SetStatus(usr=user, pid=pid, system=system, typebot=typebot).botstop(db, app)
                 db.session.commit()
                 db.session.close()
 
@@ -160,6 +155,7 @@ def get_file(pid: str, app: Flask) -> str:
 
     Returns:
         str: The filename if found, else an empty string.
+
     """
     storage_client = storageClient()
 
@@ -169,9 +165,7 @@ def get_file(pid: str, app: Flask) -> str:
     arquivo = ""
     list_blobs: list[Blob] = list(bucket.list_blobs())
     for blob in list_blobs:
-        blobnames = (
-            str(blob.name).split("/")[1] if "/" in str(blob.name) else str(blob.name)
-        )
+        blobnames = str(blob.name).split("/")[1] if "/" in str(blob.name) else str(blob.name)
         arquivo = blobnames if pid in blobnames else ""
         if pid in blobnames:
             arquivo = blobnames

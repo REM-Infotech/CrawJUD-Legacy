@@ -29,9 +29,7 @@ class Users(db.Model):
     nome_usuario = db.Column(db.String(length=64), nullable=False, unique=True)
     email = db.Column(db.String(length=50), nullable=False, unique=True)
     password = db.Column(db.String(length=60), nullable=False)
-    login_time = db.Column(
-        db.DateTime, default=datetime.now(pytz.timezone("America/Manaus"))
-    )
+    login_time = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
     verification_code = db.Column(db.String(length=45), unique=True)
     login_id = db.Column(db.String(length=64), nullable=False, default=str(uuid4()))
     filename = db.Column(db.String(length=128))
@@ -52,6 +50,7 @@ class Users(db.Model):
 
         Args:
             senha_texto (str): The plaintext password.
+
         """
         self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
@@ -64,10 +63,9 @@ class Users(db.Model):
 
         Returns:
             bool: True if passwords match, False otherwise.
+
         """
-        return bcrypt.checkpw(
-            senha_texto_claro.encode("utf-8"), self.password.encode("utf-8")
-        )
+        return bcrypt.checkpw(senha_texto_claro.encode("utf-8"), self.password.encode("utf-8"))
 
 
 class LicensesUsers(db.Model):

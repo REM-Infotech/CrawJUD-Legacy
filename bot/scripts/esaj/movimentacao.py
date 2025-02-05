@@ -26,6 +26,7 @@ class Movimentacao(CrawJUD):
     Attributes:
         attribute_name (type): Description of the attribute.
         # ...other attributes...
+
     """
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -34,7 +35,8 @@ class Movimentacao(CrawJUD):
 
         Args:
             *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            **kwrgs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwrgs)
 
@@ -70,9 +72,7 @@ class Movimentacao(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -99,6 +99,7 @@ class Movimentacao(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during execution.
+
         """
         try:
             self.appends = []
@@ -113,15 +114,11 @@ class Movimentacao(CrawJUD):
                 raise ErroDeExecucao("Processo não encontrado!")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def get_moves(self) -> None:
         """Retrieve movement information."""
-        show_all: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')
-            )
-        )
+        show_all: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')))
 
         self.interact.scroll_to(show_all)
 
@@ -134,20 +131,12 @@ class Movimentacao(CrawJUD):
         sleep(0.5)
 
         try:
-            table_moves = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.movimentacoes
-            )
-            self.driver.execute_script(
-                'document.querySelector("#tabelaTodasMovimentacoes").style.display = "block"'
-            )
+            table_moves = self.driver.find_element(By.CSS_SELECTOR, self.elements.movimentacoes)
+            self.driver.execute_script('document.querySelector("#tabelaTodasMovimentacoes").style.display = "block"')
 
         except Exception:
-            table_moves = self.driver.find_element(
-                By.ID, self.elements.ultimas_movimentacoes
-            )
-            self.driver.execute_script(
-                'document.querySelector("#tabelaUltimasMovimentacoes").style.display = "block"'
-            )
+            table_moves = self.driver.find_element(By.ID, self.elements.ultimas_movimentacoes)
+            self.driver.execute_script('document.querySelector("#tabelaUltimasMovimentacoes").style.display = "block"')
 
         itens = table_moves.find_elements(By.TAG_NAME, "tr")
 
@@ -170,9 +159,7 @@ class Movimentacao(CrawJUD):
 
                     with suppress(Exception):
                         if type(data_mov) is str:
-                            data_mov = datetime.strptime(
-                                data_mov.replace("/", "-"), "%d-%m-%Y"
-                            )
+                            data_mov = datetime.strptime(data_mov.replace("/", "-"), "%d-%m-%Y")
 
                     name_mov = mov.split("\n")[0]
                     text_mov = td_tr[2].find_element(By.TAG_NAME, "span").text

@@ -54,6 +54,7 @@ tornado = "^6.4.2"
 python-dotenv-vault = "^0.6.4"
 cryptography = "41.0.7"
 python-dotenv = "0.21.1"
+flake8-bugbear = "^24.12.12"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -70,6 +71,7 @@ yamllint = "^1.35.1"
 flake8 = "7.0.0"
 pyproject-flake8 = "^7.0.0"
 flake8-docstrings = "^1.7.0"
+flake8-bandit = "^4.1.1"
 
 
 [build-system]
@@ -77,15 +79,27 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
-profile = "black" # Garante compatibilidade com Black
-line_length = 88  # O mesmo limite de linha do Black
+line_length = 88 # O mesmo limite de linha do Black
 
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
-skips = ["B404", "B603", "B105", "B605", "B607"]
+# skips = ["B404", "B603", "B105", "B605", "B607"]
 
 [tool.flake8]
 max-line-length = 180
+exclude = [
+    "__pycache__",
+    ".venv",
+    ".git",
+    ".tox",
+    ".nox",
+    "build",
+    "dist",
+    "venv",
+    "site-packages",
+    "node_modules",
+    "tests",
+]
 # extend-ignore = ["E203", "W503", "E501", "E402"]
 # --ignore=E902,E501,W503,E402
 
@@ -121,15 +135,15 @@ exclude = [
 ]
 
 # Same as Black.
-line-length = 88
+line-length = 180
 indent-width = 4
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
-select = ["E4", "E7", "E9", "F"]
-ignore = ["E402"]
+select = ["E", "F", "D", "B", "W", "B9"]
+ignore = ["E402", "D203", "D212"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]

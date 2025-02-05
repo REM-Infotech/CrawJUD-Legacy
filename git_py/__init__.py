@@ -25,6 +25,7 @@ def _release_tag() -> str:
 
     Returns:
         str: The latest release tag.
+
     """
     load_dotenv()
     values = environ
@@ -33,9 +34,7 @@ def _release_tag() -> str:
     token_git = values.get("GITHUB_API_TOKEN")
     repo_git = values.get("REPO_NAME")
 
-    repo_remote = "".join(
-        ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
-    )
+    repo_remote = "".join(["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"])
 
     git_path = cwd_dir.joinpath(".git").exists()
     if not git_path:
@@ -48,11 +47,7 @@ def _release_tag() -> str:
 
     git = repo.git
     git.fetch("--all", "--tags")
-    releases_tag = (
-        git.ls_remote("--tags", "--sort=committerdate")
-        .split("\n")[-1]
-        .split("tags/")[-1]
-    )
+    releases_tag = git.ls_remote("--tags", "--sort=committerdate").split("\n")[-1].split("tags/")[-1]
 
     # token_github = Token(GITHUB_API_TOKEN)
     # github = Github(token_github)
@@ -77,6 +72,7 @@ def check_latest() -> bool:
 
     Returns:
         bool: True if the current version is up-to-date, False otherwise.
+
     """
     with open(".version", "r") as f:
         version = f.read()
@@ -92,6 +88,7 @@ def update_servers(tag: str) -> None:  # pragma: no cover
 
     Args:
         tag (str): The release tag to update to.
+
     """
     checkout_release(tag)
 
@@ -107,6 +104,7 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
 
     Args:
         tag (str): The release tag to checkout.
+
     """
     load_dotenv()
 
@@ -116,9 +114,7 @@ def checkout_release(tag: str) -> None:  # pragma: no cover
         token_git = values.get("GITHUB_API_TOKEN")
         repo_git = values.get("REPO_NAME")
 
-        repo_remote = "".join(
-            ["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"]
-        )
+        repo_remote = "".join(["https://", user_git, ":", token_git, "@", "github.com/", repo_git, ".git"])
 
         git_path = cwd_dir.joinpath(".git").exists()
         if not git_path:

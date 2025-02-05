@@ -19,6 +19,7 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
 
     Returns:
         Dict[str, str]: A dictionary containing cached log data.
+
     """
     log_pid: Dict[str, str | int] = {}
     list_cached: List[Dict[str, str | int]] = []
@@ -34,9 +35,7 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
             cached = [{"pid": k_pid, "pos": int(k_value)}]
             list_cached.extend(cached)
 
-        sorted_cache: List[Dict[str, str | int]] = sorted(
-            list_cached, key=lambda x: x.get("pos"), reverse=True
-        )
+        sorted_cache: List[Dict[str, str | int]] = sorted(list_cached, key=lambda x: x.get("pos"), reverse=True)
 
         for item in sorted_cache:
             pos = item["pos"]
@@ -48,9 +47,7 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
     return log_pid
 
 
-def FormatMessage(
-    data: Dict[str, str | int] = {}, pid: str = None, app: Flask = None
-) -> Dict[str, str | int]:
+def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask = None) -> Dict[str, str | int]:
     """
     Format and update the status message for a given process.
 
@@ -59,19 +56,25 @@ def FormatMessage(
     that the process status is correctly initialized and updated in Redis,
     and it updates the provided data dictionary with the latest status
     information.
+
     Args:
         data (Dict[str, str | int], optional): A dictionary containing process
             information. Defaults to an empty dictionary.
         pid (str, optional): The process ID. Defaults to None.
         app (Flask, optional): The Flask application instance, used to access
             extensions like SQLAlchemy and Redis. Defaults to None.
+
     Returns:
         Dict[str, str | int]: The updated data dictionary with the latest
         process status information.
+
     Raises:
         Exception: If any error occurs during the process, the original data
         dictionary is returned without modifications.
+
     """
+    if data is None:
+        data = {}
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         redis_client: Redis = app.extensions["redis"]
@@ -164,12 +167,8 @@ def FormatMessage(
                         log_pid["success"] = int(log_pid["success"]) + 1
 
             elif data_type == "error":
-                log_pid.update(
-                    {"remaining": int(log_pid["remaining"]) - 1}
-                )  # pragma: no cover
-                log_pid.update(
-                    {"errors": int(log_pid["errors"]) + 1}
-                )  # pragma: no cover
+                log_pid.update({"remaining": int(log_pid["remaining"]) - 1})  # pragma: no cover
+                log_pid.update({"errors": int(log_pid["errors"]) + 1})  # pragma: no cover
 
                 if data_pos == 0 or app.testing:
                     log_pid["errors"] = log_pid["total"]

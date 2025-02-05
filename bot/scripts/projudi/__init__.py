@@ -21,6 +21,7 @@ class projudi:
 
     Attributes:
         kwrgs (dict): Keyword arguments containing configuration parameters for the bot.
+
     """
 
     def __init__(self, **kwrgs) -> None:
@@ -32,6 +33,7 @@ class projudi:
 
         Raises:
             StartError: If an exception occurs during bot execution.
+
         """
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
@@ -40,7 +42,7 @@ class projudi:
 
         except Exception as e:
             logging.error(f"Exception: {e}", exc_info=True)
-            raise StartError(traceback.format_exc())
+            raise StartError(traceback.format_exc()) from e
 
     @property
     def Bot(self) -> ClassBots:
@@ -52,6 +54,7 @@ class projudi:
 
         Raises:
             AttributeError: If the specified bot type is not found.
+
         """
         module_rb = import_module(f".{self.typebot.lower()}", __package__)
         rb: ClassBots = getattr(

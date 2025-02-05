@@ -5,7 +5,7 @@ This module serves as the entry point for the CrawJUD-Bots application, handling
 """
 
 import signal
-import subprocess
+import subprocess  # noqa S404  # nosec B404
 import sys
 from os import getenv
 from platform import system
@@ -30,7 +30,7 @@ def start_vnc() -> None:
     """
     try:
         # Executa o comando com verificação de erro
-        subprocess.run(
+        subprocess.run(  # noqa S607, S603 # nosec B607, B603
             [
                 "tightvncserver",
                 ":99",

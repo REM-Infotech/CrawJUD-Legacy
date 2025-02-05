@@ -16,6 +16,7 @@ def register_routes(app: Flask) -> None:
 
     Args:
         app (Flask): The Flask application instance.
+
     """
     import_module(".logs", package=__package__)
     from ..routes.bot import bot

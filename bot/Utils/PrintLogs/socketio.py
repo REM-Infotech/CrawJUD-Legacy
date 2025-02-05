@@ -1,4 +1,8 @@
-"""This module provides a SocketBot class for handling socket.io connections and emitting events."""
+"""
+Module: socketio_bots.
+
+This module provides a SocketBot class for handling socket.io connections and emitting events.
+"""
 
 from time import sleep
 
@@ -23,6 +27,7 @@ class SocketBot:
             event (str): The event name to emit.
             data (dict): The data to send with the event.
             url (str): The URL to connect to.
+
         """
         try:
             url = f"https://{url}"
@@ -47,6 +52,7 @@ class SocketBot:
             event (str): The event name to emit.
             data (dict): The data to send with the event.
             url (str): The URL to connect to.
+
         """
         if not self.connected:
             sio.connect(url, namespaces=["/log"])
@@ -61,6 +67,7 @@ class SocketBot:
         Args:
             data (dict): The data to send with the log message.
             url (str): The URL to connect to.
+
         """
         try:
             pass
@@ -74,6 +81,7 @@ class SocketBot:
         Args:
             data (dict): The data to send with the stop bot message.
             url (str): The URL to connect to.
+
         """
         try:
             pass

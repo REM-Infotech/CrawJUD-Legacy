@@ -22,7 +22,7 @@ class pje:
 
         except Exception as e:
             logging.error(f"Exception: {e}", exc_info=True)
-            raise StartError(traceback.format_exc())
+            raise StartError(traceback.format_exc()) from e
 
     @property
     def Bot(self) -> Any:

@@ -1,4 +1,8 @@
-"""This module fetches and processes court hearing schedules (pautas)."""
+"""
+Module: pje.pauta.
+
+This module fetches and processes court hearing schedules (pautas).
+"""
 
 import os
 import time
@@ -57,9 +61,7 @@ class pauta(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -83,9 +85,7 @@ class pauta(CrawJUD):
     def queue(self) -> None:
         """Process each vara (court branch) in the queue and fetch data about pautas."""
         try:
-            self.message = (
-                f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
-            )
+            self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
             self.type_log = "log"
             self.prt()
             varas: list[str] = self.varas
@@ -120,14 +120,16 @@ class pauta(CrawJUD):
                 self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def get_pautas(self, current_date: Type[datetime], vara: str) -> None:
-        """Get and parse pautas from the appropriate page.
+        """
+        Get and parse pautas from the appropriate page.
 
         Args:
             current_date (datetime): The date for retrieving pautas.
             vara (str): The vara (court branch).
+
         """
         try:
             # Interage com a tabela de pautas
@@ -135,22 +137,12 @@ class pauta(CrawJUD):
             times = 4
             itens_pautas = None
             table_pautas: WebElement = self.wait.until(
-                EC.all_of(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'pje-data-table[id="tabelaResultado"]')
-                    )
-                ),
-                (
-                    EC.visibility_of_element_located(
-                        (By.CSS_SELECTOR, 'table[name="Tabela de itens de pauta"]')
-                    )
-                ),
+                EC.all_of(EC.presence_of_element_located((By.CSS_SELECTOR, 'pje-data-table[id="tabelaResultado"]'))),
+                (EC.visibility_of_element_located((By.CSS_SELECTOR, 'table[name="Tabela de itens de pauta"]'))),
             )[-1]
 
             with suppress(NoSuchElementException, TimeoutException):
-                itens_pautas = table_pautas.find_element(
-                    By.TAG_NAME, "tbody"
-                ).find_elements(By.TAG_NAME, "tr")
+                itens_pautas = table_pautas.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")
 
             # Caso encontre a tabela, raspa os dados
             if itens_pautas:
@@ -161,9 +153,7 @@ class pauta(CrawJUD):
                 times = 6
 
                 for item in itens_pautas:
-                    vara_name = self.driver.find_element(
-                        By.CSS_SELECTOR, 'span[class="ng-tns-c11-1 ng-star-inserted"]'
-                    ).text
+                    vara_name = self.driver.find_element(By.CSS_SELECTOR, 'span[class="ng-tns-c11-1 ng-star-inserted"]').text
                     with suppress(StaleElementReferenceException):
                         item: WebElement = item
                         itens_tr = item.find_elements(By.TAG_NAME, "td")
@@ -173,31 +163,20 @@ class pauta(CrawJUD):
                             "VARA": vara_name,
                             "HORARIO": itens_tr[1].text,
                             "TIPO": itens_tr[2].text,
-                            "ATO": itens_tr[3]
-                            .find_element(By.TAG_NAME, "a")
-                            .text.split(" ")[0],
-                            "NUMERO_PROCESSO": itens_tr[3]
-                            .find_element(By.TAG_NAME, "a")
-                            .text.split(" ")[1],
-                            "PARTES": itens_tr[3]
-                            .find_element(By.TAG_NAME, "span")
-                            .find_element(By.TAG_NAME, "span")
-                            .text,
+                            "ATO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[0],
+                            "NUMERO_PROCESSO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[1],
+                            "PARTES": itens_tr[3].find_element(By.TAG_NAME, "span").find_element(By.TAG_NAME, "span").text,
                             "SALA": itens_tr[5].text,
                             "SITUACAO": itens_tr[6].text,
                         }
 
                         self.data_append[vara][current_date].append(appends)
-                        self.message = (
-                            f"Processo {appends['NUMERO_PROCESSO']} adicionado!"
-                        )
+                        self.message = f"Processo {appends['NUMERO_PROCESSO']} adicionado!"
                         self.type_log = "log"
                         self.prt()
 
                 try:
-                    btn_next = self.driver.find_element(
-                        By.CSS_SELECTOR, 'button[aria-label="Próxima página"]'
-                    )
+                    btn_next = self.driver.find_element(By.CSS_SELECTOR, 'button[aria-label="Próxima página"]')
 
                     buttondisabled = btn_next.get_attribute("disabled")
                     if not buttondisabled:
@@ -205,7 +184,7 @@ class pauta(CrawJUD):
                         self.get_pautas(current_date, vara)
 
                 except Exception as e:
-                    raise ErroDeExecucao(str(e))
+                    raise ErroDeExecucao(e) from e
 
             elif not itens_pautas:
                 times = 1
@@ -215,4 +194,4 @@ class pauta(CrawJUD):
             sleep(times)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e

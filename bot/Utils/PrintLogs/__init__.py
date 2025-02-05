@@ -1,4 +1,9 @@
-"""This module provides logging and message handling utilities for the CrawJUD project."""
+"""
+Module: PrintLogs.
+
+This module provides logging and message handling utilities for the CrawJUD project.
+
+"""
 
 import logging
 import os

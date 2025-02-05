@@ -1,4 +1,8 @@
-"""This module provides a dictionary of court names and their corresponding codes."""
+"""
+Module: varas_dict.
+
+This module provides a dictionary of court names and their corresponding codes.
+"""
 
 
 def varas() -> dict:

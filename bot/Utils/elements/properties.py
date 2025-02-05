@@ -14,6 +14,7 @@ class Configuracao:
 
         Args:
             dados: The data containing element properties.
+
         """
         self.element_data = dados
 
@@ -29,6 +30,7 @@ class Configuracao:
 
         Raises:
             AttributeError: If the element with the given name is not found.
+
         """
         element = self.element_data.get(name)
         if not element:

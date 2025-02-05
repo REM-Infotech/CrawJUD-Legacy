@@ -92,14 +92,10 @@ class proc_parte(CrawJUD):
 
         except Exception as e:
             old_message = None
-            check_window = any(
-                [isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)]
-            )
+            check_window = any([isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)])
             if check_window:
                 with suppress(Exception):
-                    self.DriverLaunch(
-                        message="Webdriver encerrado inesperadamente, reinicializando..."
-                    )
+                    self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -126,9 +122,7 @@ class proc_parte(CrawJUD):
         Extracts process information from the web interface and handles pagination.
         """
         try:
-            table_processos = self.driver.find_element(
-                By.CLASS_NAME, "resultTable"
-            ).find_element(By.TAG_NAME, "tbody")
+            table_processos = self.driver.find_element(By.CLASS_NAME, "resultTable").find_element(By.TAG_NAME, "tbody")
 
             list_processos = None
             next_page = None
@@ -142,9 +136,7 @@ class proc_parte(CrawJUD):
                 self.use_list_process(list_processos)
 
                 with suppress(NoSuchElementException):
-                    next_page = self.driver.find_element(
-                        By.CLASS_NAME, "navRight"
-                    ).find_element(By.XPATH, self.elements.exception_arrow)
+                    next_page = self.driver.find_element(By.CLASS_NAME, "navRight").find_element(By.XPATH, self.elements.exception_arrow)
 
                 self.type_log = "info"
                 self.append_success(
@@ -161,7 +153,7 @@ class proc_parte(CrawJUD):
                     self.auth_bot()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]):
         """
@@ -179,11 +171,7 @@ class proc_parte(CrawJUD):
                 anoref = numero_processo.split(".")[1]
 
             try:
-                polo_ativo = (
-                    processo.find_elements(By.TAG_NAME, "td")[2]
-                    .find_elements(By.TAG_NAME, "td")[1]
-                    .text
-                )
+                polo_ativo = processo.find_elements(By.TAG_NAME, "td")[2].find_elements(By.TAG_NAME, "td")[1].text
             except Exception:
                 polo_ativo = "Não consta ou processo em sigilo"
 

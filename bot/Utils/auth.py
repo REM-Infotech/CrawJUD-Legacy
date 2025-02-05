@@ -1,4 +1,6 @@
 """
+Module: auth.
+
 This module provides the AuthBot class for handling authentication across different systems.
 
 Classes:
@@ -8,7 +10,7 @@ Classes:
 import os
 import platform
 import string
-import subprocess
+import subprocess  # noqa S404 # nosec B404
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -46,6 +48,7 @@ class AuthBot(CrawJUD):
         Handles authentication for the PJE system.
     accept_cert(accepted_dir: str) -> None:
         Accepts the certificate for the user.
+
     """
 
     def __init__(self) -> None:
@@ -72,10 +75,9 @@ class AuthBot(CrawJUD):
 
         Raises:
             RuntimeError: If the authentication method for the specified system is not found.
+
         """
-        to_call: Callable[[], bool] = getattr(
-            AuthBot, f"{self.system.lower()}_auth", None
-        )
+        to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth", None)
         if to_call:
             return to_call(self)
 
@@ -94,49 +96,34 @@ class AuthBot(CrawJUD):
 
         Raises:
             Exception: If any error occurs during the authentication process.
+
         """
         try:
-            loginuser = "".join(
-                filter(lambda x: x not in string.punctuation, self.username)
-            )
+            loginuser = "".join(filter(lambda x: x not in string.punctuation, self.username))
             passuser = self.password
             if self.login_method == "cert":
                 self.driver.get(self.elements.url_login_cert)
                 sleep(3)
-                loginopt: WebElement = self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, 'select[id="certificados"]')
-                    )
-                )
+                loginopt: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]')))
                 loginopt = loginopt.find_elements(By.TAG_NAME, "option")
 
                 item = None
 
                 try:
-                    item = next(
-                        filter(lambda item: loginuser in item.text, loginopt), None
-                    )
+                    item = next(filter(lambda item: loginuser in item.text, loginopt), None)
 
                 except Exception as e:
                     raise e
                 if item:
                     try:
                         sencert = item.get_attribute("value")
-                        select = Select(
-                            self.driver.find_element(
-                                By.CSS_SELECTOR, 'select[id="certificados"]'
-                            )
-                        )
+                        select = Select(self.driver.find_element(By.CSS_SELECTOR, 'select[id="certificados"]'))
                         select.select_by_value(sencert)
-                        entrar = self.driver.find_element(
-                            By.XPATH, '//*[@id="submitCertificado"]'
-                        )
+                        entrar = self.driver.find_element(By.XPATH, '//*[@id="submitCertificado"]')
                         entrar.click()
                         sleep(2)
 
-                        user_accept_cert_dir = os.path.join(
-                            self.path_accepted, "ACCEPTED"
-                        )
+                        user_accept_cert_dir = os.path.join(self.path_accepted, "ACCEPTED")
                         if not os.path.exists(user_accept_cert_dir):
                             self.accept_cert(user_accept_cert_dir)
 
@@ -165,15 +152,11 @@ class AuthBot(CrawJUD):
             self.driver.get(self.elements.url_login)
             sleep(3)
 
-            userlogin = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.campo_username
-            )
+            userlogin = self.driver.find_element(By.CSS_SELECTOR, self.elements.campo_username)
             userlogin.click()
             userlogin.send_keys(loginuser)
 
-            userpass = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.campo_passwd
-            )
+            userpass = self.driver.find_element(By.CSS_SELECTOR, self.elements.campo_passwd)
             userpass.click()
             userpass.send_keys(passuser)
             entrar = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_entrar)
@@ -208,20 +191,15 @@ class AuthBot(CrawJUD):
 
         Raises:
             Exception: If any error occurs during the login process.
+
         """
         try:
             self.driver.get(self.elements.url_login)
 
-            username: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.campo_username)
-                )
-            )
+            username: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username)))
             username.send_keys(self.username)
 
-            password = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.campo_passwd
-            )
+            password = self.driver.find_element(By.CSS_SELECTOR, self.elements.campo_passwd)
             password.send_keys(self.password)
 
             entrar = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_entrar)
@@ -230,11 +208,7 @@ class AuthBot(CrawJUD):
             check_login = None
 
             with suppress(TimeoutException):
-                check_login = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.chk_login)
-                    )
-                )
+                check_login = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)))
 
             return check_login is not None
 
@@ -255,24 +229,19 @@ class AuthBot(CrawJUD):
 
         Raises:
             Exception: If any error occurs during the authentication process.
+
         """
         try:
             self.driver.get("https://amazonas.elaw.com.br/login")
 
             # wait until page load
-            username: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.ID, "username"))
-            )
+            username: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "username")))
             username.send_keys(self.username)
 
-            password: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#password"))
-            )
+            password: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#password")))
             password.send_keys(self.password)
 
-            entrar: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.ID, "j_id_a_1_5_f"))
-            )
+            entrar: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "j_id_a_1_5_f")))
             entrar.click()
 
             sleep(7)
@@ -297,25 +266,14 @@ class AuthBot(CrawJUD):
 
         Raises:
             Exception: If any error occurs during the login process.
+
         """
         try:
             self.driver.get(self.elements.url_login)
 
-            login = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.login_input)
-                )
-            )
-            password = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.password_input)
-                )
-            )
-            entrar = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.btn_entrar)
-                )
-            )
+            login = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.login_input)))
+            password = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.password_input)))
+            entrar = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_entrar)))
 
             login.send_keys(self.username)
             sleep(0.5)
@@ -325,9 +283,7 @@ class AuthBot(CrawJUD):
 
             logado = None
             with suppress(TimeoutException):
-                logado = WebDriverWait(self.driver, 10).until(
-                    EC.url_to_be(self.elements.chk_login)
-                )
+                logado = WebDriverWait(self.driver, 10).until(EC.url_to_be(self.elements.chk_login))
 
             return logado is not None
 
@@ -347,14 +303,13 @@ class AuthBot(CrawJUD):
 
         Raises:
             Exception: If any error occurs during the certificate acceptance process.
+
         """
         try:
             path = r"C:\Users\%USERNAME%\AppData\Local\Softplan Sistemas\Web Signer"
             resolved_path = os.path.expandvars(path)
 
-            app = Application(backend="uia").connect(
-                path=resolved_path, cache_enable=True
-            )
+            app = Application(backend="uia").connect(path=resolved_path, cache_enable=True)
             janela_principal = app.window()
             janela_principal.set_focus()
             button = janela_principal.descendants(control_type="Button")
@@ -381,7 +336,7 @@ class AuthBot(CrawJUD):
                     "/C",
                     "/I",
                 ]
-                resultados = subprocess.run(
+                resultados = subprocess.run(  # noqa S603 # nosec B603
                     comando,
                     check=True,
                     text=True,

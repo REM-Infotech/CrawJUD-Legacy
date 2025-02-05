@@ -1,4 +1,8 @@
-"""This module contains utility classes for template configurations."""
+"""
+Module: appends.
+
+This module contains utility classes for template configurations.
+"""
 
 
 class listas:
@@ -14,6 +18,7 @@ class listas:
         sucesso (list[str]): General success fields.
         protocolo_sucesso (list[str]): Fields indicating successful protocolo operations.
         erro (list[str]): Fields indicating error messages.
+
     """
 
     @property
@@ -23,6 +28,7 @@ class listas:
 
         Return:
             list[str]: List of field names related to emissor success.
+
         """
         return [
             "Descrição do Prazo",
@@ -42,6 +48,7 @@ class listas:
 
         Return:
             list[str]: List of field names related to ESAJ guia emission success.
+
         """
         return [
             "Tipo Guia",
@@ -61,6 +68,7 @@ class listas:
 
         Return:
             list[str]: List of field names related to capa success.
+
         """
         return [
             "AREA_DIREITO",
@@ -90,6 +98,7 @@ class listas:
 
         Return:
             list[str]: List of field names related to movimentacao success.
+
         """
         return [
             "Data movimentação",
@@ -106,6 +115,7 @@ class listas:
 
         Return:
             list[str]: List of field names related to sols_pag success.
+
         """
         return [
             "MENSAGEM_COMCLUSAO",
@@ -122,6 +132,7 @@ class listas:
 
         Return:
             list[str]: List of general success field names.
+
         """
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE"]
 
@@ -132,6 +143,7 @@ class listas:
 
         Return:
             list[str]: List of field names related to protocolo success.
+
         """
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE", "ID_PROTOCOLO"]
 
@@ -142,5 +154,6 @@ class listas:
 
         Return:
             list[str]: List of error message field names.
+
         """
         return ["MOTIVO_ERRO"]

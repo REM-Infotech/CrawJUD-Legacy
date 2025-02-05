@@ -115,6 +115,7 @@ def test_join_and_message(io: SocketIOTestClient, create_dummy_pid) -> None:
 
     Asserts:
         All test scenarios should return the expected results.
+
     """
     result_sucess: list[bool] = []
     user, pid = create_dummy_pid
@@ -136,9 +137,7 @@ def test_join_and_message(io: SocketIOTestClient, create_dummy_pid) -> None:
         io.emit("join", {"pid": pid}, namespace="/log")
         received = io.get_received(namespace="/log")
 
-        message_received_notCache = (
-            str(received[-1].get("args")) == f"Joinned room! Room: {pid}"
-        )
+        message_received_notCache = str(received[-1].get("args")) == f"Joinned room! Room: {pid}"
 
         # With PID
         io.emit("log_message", data, namespace="/log")
@@ -150,13 +149,9 @@ def test_join_and_message(io: SocketIOTestClient, create_dummy_pid) -> None:
         io.emit("join", {"pid": pid}, namespace="/log")
         received = io.get_received(namespace="/log")
 
-        message_received_Cache = (
-            str(received[-1].get("args")) == f"Joinned room! Room: {pid}"
-        )
+        message_received_Cache = str(received[-1].get("args")) == f"Joinned room! Room: {pid}"
 
-        result_sucess.extend(
-            [message_received_notCache, message_received, message_received_Cache]
-        )
+        result_sucess.extend([message_received_notCache, message_received, message_received_Cache])
 
     def pos_testing():
         # Test POS == 0

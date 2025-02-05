@@ -38,6 +38,7 @@ class CrawJUDExceptions(Exception):
 
         Args:
             message (str): The error message to associate with the exception.
+
         """
         self.message_ = message
 
@@ -53,6 +54,7 @@ class CrawJUDExceptions(Exception):
 
         Raises:
             CrawJUDExceptions: Raises itself with the appropriate message.
+
         """
         self.message = message
 
@@ -60,9 +62,7 @@ class CrawJUDExceptions(Exception):
             self.message = e.message
 
         elif message is None:
-            self.message = exceptionsBot().get(
-                e.__class__.__name__, "".join(getattr(e, "args", ["Erro Interno"]))
-            )
+            self.message = exceptionsBot().get(e.__class__.__name__, "".join(getattr(e, "args", ["Erro Interno"])))
 
         super().__init__(self.message)
 
@@ -79,6 +79,7 @@ class CrawJUDExceptions(Exception):
 
         Returns:
             bool: True if the instance is a recognized CrawJUD exception, False otherwise.
+
         """
         check_except = instance in webdriver_exepts()
         return check_except
@@ -97,6 +98,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
         Args:
             message (str, optional): The error message. Defaults to "Item não encontrado".
+
         """
         super().__init__(message)
 
@@ -109,6 +111,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
         Returns:
             bool: True if the instance is an ItemNaoEcontrado exception, False otherwise.
+
         """
         return super().__instancecheck__(instance)
 
@@ -131,6 +134,7 @@ class ErroDeExecucao(CrawJUDExceptions):
         Args:
             *args: Variable length argument list.
             **kwargs: Variable keyword arguments.
+
         """
         super().__init__(*args, **kwargs)
 
@@ -143,6 +147,7 @@ class ErroDeExecucao(CrawJUDExceptions):
 
         Returns:
             bool: True if the instance is an ErroDeExecucao exception, False otherwise.
+
         """
         return super().__instancecheck__(instance)
 

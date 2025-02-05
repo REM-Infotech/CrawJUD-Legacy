@@ -19,6 +19,7 @@ def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
 
     Raises:
         Exception: If an error occurs during the upload process.
+
     """
     try:
         arquivo_local = ""

@@ -76,6 +76,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         super().__init__(*args, **kwrgs)
 
@@ -100,6 +101,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -123,9 +125,7 @@ class complement(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -172,6 +172,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         try:
             search = self.search_bot()
@@ -181,22 +182,14 @@ class complement(CrawJUD):
                 self.message = "Inicializando complemento de cadastro"
                 self.type_log = "log"
                 self.prt()
-                edit_proc_button = self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.botao_editar_complementar)
-                    )
-                )
+                edit_proc_button = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar_complementar)))
                 edit_proc_button.click()
 
                 lista1 = list(self.bot_data.keys())
 
                 start_time = time.perf_counter()
 
-                check_esfera = self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.label_esfera)
-                    )
-                )
+                check_esfera = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.label_esfera)))
 
                 esfera_xls = self.bot_data.get("ESFERA")
 
@@ -235,9 +228,7 @@ class complement(CrawJUD):
                     ],
                     self.message,
                 )
-                self.message = (
-                    f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-                )
+                self.message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
 
                 self.type_log = "log"
                 self.prt()
@@ -246,7 +237,7 @@ class complement(CrawJUD):
                 raise ErroDeExecucao("Processo não encontrado!")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def save_all(self) -> None:
         """
@@ -258,13 +249,10 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.interact.sleep_load('div[id="j_id_3x"]')
-        salvartudo: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_salvar_proc)
-            )
-        )
+        salvartudo: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)))
         self.type_log = "log"
         self.message = "Salvando processo novo"
         self.prt()
@@ -281,14 +269,13 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Validando campos"
         self.type_log = "log"
         self.prt()
 
-        validar: Dict[str, str] = {
-            "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")
-        }
+        validar: Dict[str, str] = {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")}
         message_campo: List[str] = []
 
         for campo in campos_validar:
@@ -300,9 +287,7 @@ class complement(CrawJUD):
                 if not element or element.lower() == "selecione":
                     raise ErroDeExecucao(message=f'Campo "{campo}" não preenchido')
 
-                message_campo.append(
-                    f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>'
-                )
+                message_campo.append(f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>')
                 validar.update({campo.upper(): element})
 
             except Exception as e:
@@ -336,6 +321,7 @@ class complement(CrawJUD):
         -------
         str
             The name of the responsible lawyer.
+
         """
         self.message = "Validando advogado responsável"
         self.type_log = "log"
@@ -367,6 +353,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         data_bot = self.bot_data
         adv_name = data_bot.get("ADVOGADO_INTERNO", self.validar_advogado())
@@ -396,9 +383,7 @@ class complement(CrawJUD):
                 break
 
         else:
-            raise ErroDeExecucao(
-                message="Advogado responsável não encontrado na lista de advogados participantes!"
-            )
+            raise ErroDeExecucao(message="Advogado responsável não encontrado na lista de advogados participantes!")
 
         self.message = "Advogados participantes validados"
         self.type_log = "info"
@@ -416,13 +401,12 @@ class complement(CrawJUD):
         -------
         bool
             True if the save was successful, False otherwise.
+
         """
         wait_confirm_save = None
 
         with suppress(TimeoutException):
-            wait_confirm_save: WebElement = WebDriverWait(self.driver, 20).until(
-                EC.url_to_be(("https://amazonas.elaw.com.br/processoView.elaw"))
-            )
+            wait_confirm_save: WebElement = WebDriverWait(self.driver, 20).until(EC.url_to_be(("https://amazonas.elaw.com.br/processoView.elaw")))
 
         if wait_confirm_save:
             return True
@@ -432,9 +416,7 @@ class complement(CrawJUD):
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (
                     self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, self.elements.div_messageerro_css)
-                        ),
+                        EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
                         message="Erro ao encontrar elemento",
                     )
                     .find_element(By.TAG_NAME, "ul")
@@ -457,11 +439,10 @@ class complement(CrawJUD):
         -------
         str
             The name of the comprovante file.
+
         """
         name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
-        savecomprovante = os.path.join(
-            pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante
-        )
+        savecomprovante = os.path.join(pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante)
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante
 
@@ -481,29 +462,22 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "informando advogado interno"
         self.type_log = "log"
         self.prt()
 
-        input_adv_responsavel: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_adv_responsavel)
-            )
-        )
+        input_adv_responsavel: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)))
         input_adv_responsavel.click()
-        self.interact.send_key(
-            input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO")
-        )
+        self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
 
         css_wait_adv = r"#j_id_3k_1\:autoCompleteLawyer_panel > ul > li"
 
         wait_adv = None
 
         with suppress(TimeoutException):
-            wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv))
-            )
+            wait_adv: WebElement = WebDriverWait(self.driver, 25).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)))
 
         if wait_adv:
             wait_adv.click()
@@ -512,28 +486,18 @@ class complement(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        div_select_Adv: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_div_select_Adv)
-            )
-        )
+        div_select_Adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)))
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        input_select_adv: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_input_select_Adv)
-            )
-        )
+        input_select_adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)))
         input_select_adv.click()
 
         self.interact.send_key(input_select_adv, self.bot_data.get("ADVOGADO_INTERNO"))
         input_select_adv.send_keys(Keys.ENTER)
 
-        self.driver.execute_script(
-            f"document.querySelector('{self.elements.css_div_select_Adv}').blur()"
-        )
+        self.driver.execute_script(f"document.querySelector('{self.elements.css_div_select_Adv}').blur()")
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -564,6 +528,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         elementSelect = self.elements.css_esfera_judge
 
@@ -595,6 +560,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         key = "ESTADO"
         elementSelect = self.elements.estado_input
@@ -628,6 +594,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         text = str(self.bot_data.get("COMARCA"))
         elementSelect = self.elements.comarca_input
@@ -661,6 +628,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         elementSelect = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
@@ -693,6 +661,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         text = self.bot_data.get("VARA")
         elementSelect = self.elements.vara_input
@@ -729,16 +698,13 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando unidade consumidora"
         self.type_log = "log"
         self.prt()
 
-        input_uc: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_input_uc)
-            )
-        )
+        input_uc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc)))
         input_uc.click()
 
         self.interact.clear(input_uc)
@@ -765,6 +731,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando localidade"
         self.type_log = "log"
@@ -779,9 +746,7 @@ class complement(CrawJUD):
         self.interact.clear(input_bairro)
         self.interact.send_key(input_bairro, bairro_)
 
-        self.driver.execute_script(
-            f"document.querySelector('{self.elements.css_valor_causa}').blur()"
-        )
+        self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -805,6 +770,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando bairro"
         self.type_log = "log"
@@ -819,9 +785,7 @@ class complement(CrawJUD):
         self.interact.clear(input_bairro)
         self.interact.send_key(input_bairro, bairro_)
 
-        self.driver.execute_script(
-            f"document.querySelector('{self.elements.css_valor_causa}').blur()"
-        )
+        self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -845,6 +809,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando divisão"
         self.type_log = "log"
@@ -876,23 +841,18 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando data de citação"
         self.type_log = "log"
         self.prt()
 
-        data_citacao: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_data_citacao)
-            )
-        )
+        data_citacao: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao)))
         self.interact.clear(data_citacao)
         self.interact.sleep_load('div[id="j_id_3x"]')
         self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
         sleep(2)
-        self.driver.execute_script(
-            f"document.querySelector('{self.elements.css_data_citacao}').blur()"
-        )
+        self.driver.execute_script(f"document.querySelector('{self.elements.css_data_citacao}').blur()")
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Data de citação informada!"
@@ -915,6 +875,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         elementSelect = self.elements.fase_input
         text = self.bot_data.get("FASE")
@@ -946,6 +907,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         text = self.bot_data.get("PROVIMENTO")
         elementSelect = self.elements.provimento_input
@@ -977,15 +939,14 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando valor da causa"
         self.type_log = "log"
         self.prt()
 
         valor_causa: WebElement = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.CSS_SELECTOR, self.elements.css_valor_causa)
-            ),
+            EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
             message="Erro ao encontrar elemento",
         )
 
@@ -994,9 +955,7 @@ class complement(CrawJUD):
         valor_causa.clear()
 
         self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
-        self.driver.execute_script(
-            f"document.querySelector('{self.elements.css_valor_causa}').blur()"
-        )
+        self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -1020,6 +979,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando fato gerador"
         self.type_log = "log"
@@ -1051,21 +1011,16 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
-        input_descobjeto = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.input_descobjeto_css)
-            )
-        )
+        input_descobjeto = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_descobjeto_css)))
         self.interact.click(input_descobjeto)
 
         text = self.bot_data.get("DESC_OBJETO")
 
         self.interact.clear(input_descobjeto)
         self.interact.send_key(input_descobjeto, text)
-        self.driver.execute_script(
-            f"document.querySelector('{self.elements.input_descobjeto_css}').blur()"
-        )
+        self.driver.execute_script(f"document.querySelector('{self.elements.input_descobjeto_css}').blur()")
         self.interact.sleep_load('div[id="j_id_3x"]')
 
     @classmethod
@@ -1084,6 +1039,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando objeto do processo"
         self.type_log = "log"
@@ -1116,6 +1072,7 @@ class complement(CrawJUD):
         Returns
         -------
         None
+
         """
         self.message = "Informando contingenciamento"
         self.type_log = "log"

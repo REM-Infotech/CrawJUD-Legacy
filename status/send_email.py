@@ -19,6 +19,7 @@ def email_start(execution: None, app: Flask) -> None:
 
     Raises:
         Exception: If an error occurs while sending the email.
+
     """
     from app.models import Executions, Users
 
@@ -84,6 +85,7 @@ def email_stop(execution: None, app: Flask) -> None:
 
     Raises:
         Exception: If an error occurs while sending the email.
+
     """
     from app.models import Executions, Users
 

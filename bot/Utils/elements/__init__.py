@@ -32,12 +32,15 @@ class ElementsBot(CrawJUD):
 
     This class inherits from CrawJUD and provides methods to configure the elements_bot attribute
     and retrieve the configured elements bot instance.
+
     Attributes:
         elements_bot (Optional[Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]]): The elements bot instance.
+
     Methods:
         __init__(): Initializes the ElementsBot instance.
         Config() -> Self: Configures the elements_bot attribute.
         Elements() -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]: Retrieves the elements bot instance.
+
     """
 
     elements_bot = None
@@ -58,8 +61,10 @@ class ElementsBot(CrawJUD):
 
         This method checks if the elements_bot attribute is None. If it is, it dynamically imports a module based on the
         system and state_or_client attributes of the instance, and assigns the corresponding class to the elements_bot attribute.
+
         Returns:
             Self: The instance with the configured elements_bot attribute.
+
         """
         if self.elements_bot is None:
             self.elements_bot = getattr(
@@ -76,6 +81,7 @@ class ElementsBot(CrawJUD):
 
         Returns:
             Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]: The elements bot instance.
+
         """
         return self.elements_bot
 

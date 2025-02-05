@@ -26,7 +26,8 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 @bot.post("/bot/<id>/<system>/<typebot>")
 def botlaunch(id: int, system: str, typebot: str) -> Response:
-    """Launch a new bot with the specified parameters.
+    """
+    Launch a new bot with the specified parameters.
 
     Args:
         id (int): The identifier for the bot.
@@ -35,6 +36,7 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
     Returns:
         Response: JSON response indicating the success or error of the launch operation.
+
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
@@ -111,7 +113,8 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
 def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
-    """Stop a running bot based on user and PID.
+    """
+    Stop a running bot based on user and PID.
 
     Args:
         user (str): The user requesting the stop.
@@ -119,6 +122,7 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
 
     Returns:
         Response: JSON response indicating the result of the stop operation.
+
     """
     from flask import current_app as app
 
@@ -138,7 +142,8 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
 
 @bot.post("/periodic_bot/<id>/<system>/<typebot>")
 def periodic_bot(id: int, system: str, typebot: str) -> Response:
-    """Schedule a bot to run periodically based on provided cron arguments.
+    """
+    Schedule a bot to run periodically based on provided cron arguments.
 
     Args:
         id (int): The identifier for the bot.
@@ -147,6 +152,7 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:
 
     Returns:
         Response: JSON response indicating the success of the scheduling operation.
+
     """
     from status import SetStatus
 
@@ -160,9 +166,7 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:
     if isinstance(data_bot, str):  # pragma: no cover
         data_bot = json.loads(data_bot)
 
-    cron = crontab(
-        minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*"
-    )
+    cron = crontab(minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*")
 
     cron = crontab(**data_bot.get("CRONTAB_ARGS"))
 
@@ -180,9 +184,7 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:
     args = json.dumps([path_args, display_name, system, typebot])
     kwargs = json.dumps({})
 
-    new_schedule = ScheduleModel(
-        task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs
-    )
+    new_schedule = ScheduleModel(task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs)
     db.session.add(new_schedule)
     db.session.commit()
 

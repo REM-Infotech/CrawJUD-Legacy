@@ -79,6 +79,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         Args:
             status (str): The status message to log upon ending the print session.
+
         """
         self.PrintBot.end_prt(status)
 
@@ -94,6 +95,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         Raises:
             Exception: If an error occurs during the setup process.
+
         """
         self.kwrgs = kwargs
         list_kwargs = list(kwargs.items())
@@ -125,6 +127,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         Raises:
             AttributeError: If the attribute does not exist.
+
         """
         item = self.kwrgs.get(nome, None)
 
@@ -153,6 +156,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         Raises:
             Exception: If any error occurs during the setup process, it logs the error and raises the exception.
+
         """
         self.row = 0
 
@@ -177,17 +181,9 @@ class CrawJUD(PropertiesCrawJUD):
 
             time_xlsx = datetime.now(timezone("America/Manaus")).strftime("%d-%m-%y")
 
-            self.path = (
-                Path(self.output_dir_path)
-                .joinpath(f"Sucessos - PID {self.pid} {time_xlsx}.xlsx")
-                .resolve()
-            )
+            self.path = Path(self.output_dir_path).joinpath(f"Sucessos - PID {self.pid} {time_xlsx}.xlsx").resolve()
 
-            self.path_erro = (
-                Path(self.output_dir_path)
-                .joinpath(f"Erros - PID {self.pid} {time_xlsx}.xlsx")
-                .resolve()
-            )
+            self.path_erro = Path(self.output_dir_path).joinpath(f"Erros - PID {self.pid} {time_xlsx}.xlsx").resolve()
 
             self.name_colunas = self.MakeXlsx.make_output("sucesso", self.path)
             self.MakeXlsx.make_output("erro", self.path_erro)
@@ -225,6 +221,7 @@ class CrawJUD(PropertiesCrawJUD):
 
         Raises:
             ErroDeExecucao: If the login fails.
+
         """
         try:
             if self.login_method:

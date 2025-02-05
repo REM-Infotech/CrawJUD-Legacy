@@ -37,6 +37,7 @@ class capa(CrawJUD):
         Args:
             *args: Variable length argument list.
             **kwrgs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwrgs)
 
@@ -54,6 +55,7 @@ class capa(CrawJUD):
 
         Raises:
             Exception: If an unexpected error occurs during execution.
+
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -77,9 +79,7 @@ class capa(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -107,6 +107,7 @@ class capa(CrawJUD):
 
         Raises:
             ErroDeExecucao: If the process is not found or extraction fails.
+
         """
         try:
             search = self.search_bot()
@@ -119,7 +120,7 @@ class capa(CrawJUD):
             self.append_success(data, "Informações do processo extraidas com sucesso!")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def get_process_informations(self) -> list:
         """
@@ -130,13 +131,12 @@ class capa(CrawJUD):
 
         Raises:
             Exception: If an error occurs during information extraction.
+
         """
         try:
             grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
             process_info: Dict[str, str | int | datetime] = {}
-            process_info.update(
-                {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")}
-            )
+            process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
 
             def format_vl_causa(valorDaCausa: str) -> float | str:
                 """
@@ -147,6 +147,7 @@ class capa(CrawJUD):
 
                 Returns:
                     float | str: The formatted value as float or original string if no match.
+
                 """
                 if "¤" in valorDaCausa:
                     valorDaCausa = valorDaCausa.replace("¤", "")
@@ -164,6 +165,7 @@ class capa(CrawJUD):
 
                         Returns:
                             float: The converted float value.
+
                         """
                         # Remover símbolos de moeda e espaços
                         value = re.sub(r"[^\d.,]", "", value)
@@ -193,9 +195,7 @@ class capa(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            btn_infogeral = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.btn_infogeral
-            )
+            btn_infogeral = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_infogeral)
             btn_infogeral.click()
 
             includeContent: list[WebElement] = []
@@ -207,20 +207,14 @@ class capa(CrawJUD):
                 element_content = self.elements.segunda_instform
                 element_content2 = element_content
 
-            includeContent.append(
-                self.driver.find_element(By.CSS_SELECTOR, element_content)
-            )
-            includeContent.append(
-                self.driver.find_element(By.CSS_SELECTOR, element_content2)
-            )
+            includeContent.append(self.driver.find_element(By.CSS_SELECTOR, element_content))
+            includeContent.append(self.driver.find_element(By.CSS_SELECTOR, element_content2))
 
             for incl in includeContent:
                 itens = list(
                     filter(
                         lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
-                        incl.find_element(By.TAG_NAME, "tbody").find_elements(
-                            By.TAG_NAME, "tr"
-                        ),
+                        incl.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr"),
                     )
                 )
 
@@ -240,20 +234,17 @@ class capa(CrawJUD):
 
                     values = list(
                         filter(
-                            lambda x: x.text.strip() != ""
-                            and not x.get_attribute("class"),
+                            lambda x: x.text.strip() != "" and not x.get_attribute("class"),
                             item.find_elements(By.TAG_NAME, "td"),
                         )
                     )
 
-                    for pos, label in enumerate(labels):
+                    for _, label in enumerate(labels):
                         if len(labels) != len(values):
                             continue
 
                         not_formated_label = label.text
-                        label_text = (
-                            self.format_String(label.text).upper().replace(" ", "_")
-                        )
+                        label_text = self.format_String(label.text).upper().replace(" ", "_")
 
                         indice = labels.index(label)
                         value_text = values[indice].text
@@ -261,11 +252,7 @@ class capa(CrawJUD):
                         if label_text == "VALOR_DA_CAUSA":
                             value_text = format_vl_causa(value_text)
 
-                        elif (
-                            "DATA" in label_text
-                            or "DISTRIBUICAO" in label_text
-                            or "AUTUACAO" in label_text
-                        ):
+                        elif "DATA" in label_text or "DISTRIBUICAO" in label_text or "AUTUACAO" in label_text:
                             if " às " in value_text:
                                 value_text = value_text.split(" às ")[0]
 
@@ -288,20 +275,14 @@ class capa(CrawJUD):
             btn_partes.click()
 
             try:
-                includeContent = self.driver.find_element(
-                    By.ID, self.elements.includeContent_capa
-                )
+                includeContent = self.driver.find_element(By.ID, self.elements.includeContent_capa)
             except Exception:
                 time.sleep(3)
                 self.driver.refresh()
                 time.sleep(1)
-                includeContent = self.driver.find_element(
-                    By.ID, self.elements.includeContent_capa
-                )
+                includeContent = self.driver.find_element(By.ID, self.elements.includeContent_capa)
 
-            result_table = includeContent.find_elements(
-                By.CLASS_NAME, self.elements.resulttable
-            )
+            result_table = includeContent.find_elements(By.CLASS_NAME, self.elements.resulttable)
 
             for pos, parte_info in enumerate(result_table):
                 h4_name = list(
@@ -310,26 +291,18 @@ class capa(CrawJUD):
                         includeContent.find_elements(By.TAG_NAME, "h4"),
                     )
                 )
-                tipo_parte = (
-                    self.format_String(h4_name[pos].text).replace(" ", "_").upper()
-                )
+                tipo_parte = self.format_String(h4_name[pos].text).replace(" ", "_").upper()
 
                 nome_colunas = []
 
-                for column in parte_info.find_element(
-                    By.TAG_NAME, "thead"
-                ).find_elements(By.TAG_NAME, "th"):
+                for column in parte_info.find_element(By.TAG_NAME, "thead").find_elements(By.TAG_NAME, "th"):
                     nome_colunas.append(column.text.upper())
 
-                for parte in parte_info.find_element(
-                    By.TAG_NAME, "tbody"
-                ).find_elements(By.XPATH, self.elements.table_moves):
+                for parte in parte_info.find_element(By.TAG_NAME, "tbody").find_elements(By.XPATH, self.elements.table_moves):
                     for pos_, nome_coluna in enumerate(nome_colunas):
                         key = "_".join(
                             (
-                                self.format_String(nome_coluna)
-                                .replace(" ", "_")
-                                .upper(),
+                                self.format_String(nome_coluna).replace(" ", "_").upper(),
                                 tipo_parte,
                             )
                         )

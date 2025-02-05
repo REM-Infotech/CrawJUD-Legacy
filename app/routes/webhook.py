@@ -24,12 +24,14 @@ wh = Blueprint("webhook", __package__)
 # Endpoint para o webhook
 @wh.post("/webhook")
 def github_webhook() -> Response:  # pragma: no cover
-    """Handle incoming GitHub webhook events.
+    """
+    Handle incoming GitHub webhook events.
 
     Verifies the signature, processes release events, and updates servers accordingly.
 
     Returns:
         Response: JSON response indicating the result of the webhook processing.
+
     """
     app = current_app
     data = request.json
@@ -65,9 +67,7 @@ def github_webhook() -> Response:  # pragma: no cover
             # Alterna para a tag da nova release
             update_servers(f"refs/tags/{ref}")
 
-        return make_response(
-            jsonify({"message": "Release processada e atualizada"}), 200
-        )
+        return make_response(jsonify({"message": "Release processada e atualizada"}), 200)
 
     except Exception as e:
         logging.exception(str(e))
@@ -79,7 +79,8 @@ def verify_signature(
     secret_token: str = None,
     signature_header: str = None,
 ) -> None:  # pragma: no cover
-    """Verify that the payload was sent from GitHub by validating SHA256.
+    """
+    Verify that the payload was sent from GitHub by validating SHA256.
 
     Args:
         payload_body (Dict[str, str], optional): Original request body to verify.
@@ -88,6 +89,7 @@ def verify_signature(
 
     Raises:
         abort(403): If the signature is missing or does not match.
+
     """
     if not signature_header:
         raise abort(403, detail="x-hub-signature-256 header is missing!")

@@ -16,6 +16,7 @@ class DatabaseScheduler(Scheduler):
         Args:
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwargs)
         self._schedule = {}
@@ -29,6 +30,7 @@ class DatabaseScheduler(Scheduler):
 
         Returns:
             dict: A dictionary where the key is the task name and the value is the ScheduleEntry.
+
         """
         schedules = {}
 
@@ -58,6 +60,7 @@ class DatabaseScheduler(Scheduler):
             dict: A dictionary with keys "minute", "hour", "day_of_month",
                   "month_of_year", and "day_of_week" mapping to their respective values
                   from the cron string.
+
         """
         fields = ["minute", "hour", "day_of_month", "month_of_year", "day_of_week"]
         cron_parts = cron_string.split()
@@ -72,6 +75,7 @@ class DatabaseScheduler(Scheduler):
 
         Returns:
             dict: The current schedule dictionary.
+
         """
         self.sync()
         return self._schedule
@@ -94,6 +98,7 @@ class DatabaseScheduler(Scheduler):
 
         Returns:
             float: The remaining time until the next scheduled task.
+
         """
         remaining_times = super().tick()
         self.sync()

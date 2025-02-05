@@ -50,6 +50,7 @@ class protocolo(CrawJUD):
         Args:
             *args: Variable length argument list.
             **kwrgs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwrgs)
 
@@ -90,9 +91,7 @@ class protocolo(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -160,7 +159,7 @@ class protocolo(CrawJUD):
             self.append_success(data)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def confirm_protocol(self) -> str | None:
         """
@@ -171,18 +170,11 @@ class protocolo(CrawJUD):
 
         Returns:
             str | None: The extracted protocol number if available, otherwise None.
+
         """
         successMessage = None
         with suppress(TimeoutException):
-            successMessage = (
-                self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, "#successMessages")
-                    )
-                )
-                .text.split("Protocolo:")[1]
-                .replace(" ", "")
-            )
+            successMessage = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#successMessages"))).text.split("Protocolo:")[1].replace(" ", "")
 
         return successMessage
 
@@ -198,18 +190,15 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If unable to select the specified party.
+
         """
         # self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, 'iframe[name="userMainFrame"]'))
         self.message = "Selecionando parte"
         self.type_log = "log"
         self.prt()
 
-        table_partes = self.driver.find_element(
-            By.CSS_SELECTOR, "#juntarDocumentoForm > table:nth-child(28)"
-        )
-        table_partes = table_partes.find_element(By.TAG_NAME, "tbody").find_elements(
-            By.TAG_NAME, "tr"
-        )
+        table_partes = self.driver.find_element(By.CSS_SELECTOR, "#juntarDocumentoForm > table:nth-child(28)")
+        table_partes = table_partes.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")
 
         selected_parte = False
 
@@ -221,16 +210,12 @@ class protocolo(CrawJUD):
                 return True
 
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").upper()
-            chk_info = (td_partes.text.upper() == parte_peticao.upper()) or (
-                parte_peticao.upper() in td_partes.text.upper()
-            )
+            chk_info = (td_partes.text.upper() == parte_peticao.upper()) or (parte_peticao.upper() in td_partes.text.upper())
             if "\n" in td_partes.text:
                 partes = td_partes.text.split("\n")
                 for enum, parte in enumerate(partes):
                     if parte.upper() == self.bot_data.get("PARTE_PETICIONANTE").upper():
-                        radio_item = item.find_element(
-                            By.CSS_SELECTOR, "input[type='radio']"
-                        )
+                        radio_item = item.find_element(By.CSS_SELECTOR, "input[type='radio']")
                         id_radio = radio_item.get_attribute("id")
 
                         command = f'document.getElementById("{id_radio}").removeAttribute("disabled");'
@@ -240,9 +225,7 @@ class protocolo(CrawJUD):
                         set_parte = td_partes.find_elements(By.TAG_NAME, "input")[enum]
 
                         self.id_part = set_parte.get_attribute("id")
-                        cmd2 = (
-                            f"return document.getElementById('{self.id_part}').checked"
-                        )
+                        cmd2 = f"return document.getElementById('{self.id_part}').checked"
                         return_cmd = self.driver.execute_script(cmd2)
                         if return_cmd is False:
                             set_parte.click()
@@ -255,9 +238,7 @@ class protocolo(CrawJUD):
                         break
 
             elif chk_info:
-                radio_item = item.find_element(
-                    By.CSS_SELECTOR, self.elements.input_radio
-                )
+                radio_item = item.find_element(By.CSS_SELECTOR, self.elements.input_radio)
                 radio_item.click()
 
                 set_parte = td_partes.find_element(By.TAG_NAME, "input")
@@ -289,6 +270,7 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during the addition of a new move.
+
         """
         try:
             self.message = "Inicializando peticionamento..."
@@ -299,9 +281,7 @@ class protocolo(CrawJUD):
 
             alert = None
             with suppress(TimeoutException):
-                alert: Type[Alert] = WebDriverWait(self.driver, 5).until(
-                    EC.alert_is_present()
-                )
+                alert: Type[Alert] = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
 
             if alert:
                 alert.accept()
@@ -310,11 +290,7 @@ class protocolo(CrawJUD):
             self.message = "Informando tipo de protocolo..."
             self.type_log = "log"
             self.prt()
-            input_tipo_move: WebElement = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')
-                )
-            )
+            input_tipo_move: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')))
             input_tipo_move.click()
             sleep(1)
             input_tipo_move.send_keys(self.bot_data.get("TIPO_PROTOCOLO"))
@@ -333,7 +309,7 @@ class protocolo(CrawJUD):
             """ Corrigir elements """
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def add_new_file(self) -> None:
         """
@@ -345,6 +321,7 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during file upload.
+
         """
         try:
             """PARA CORRIGIR"""
@@ -362,30 +339,22 @@ class protocolo(CrawJUD):
             self.message = "Inserindo Petição/Anexos..."
             self.type_log = "log"
             self.prt()
-            button_new_file = self.driver.find_element(
-                By.CSS_SELECTOR, 'input#editButton[value="Adicionar"]'
-            )
+            button_new_file = self.driver.find_element(By.CSS_SELECTOR, 'input#editButton[value="Adicionar"]')
             button_new_file.click()
 
             sleep(2.5)
 
-            self.driver.switch_to.frame(
-                self.driver.find_element(By.CSS_SELECTOR, self.elements.border)
-            )
+            self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, self.elements.border))
             self.message = f"Enviando arquivo '{file}'"
             self.type_log = "log"
             self.prt()
 
             css_inptfile = 'input[id="conteudo"]'
-            input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile))
-            )
+            input_file_element: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile)))
 
             file_to_upload = self.format_String(file)
 
-            path_file = os.path.join(
-                pathlib.Path(self.path_args).parent.resolve(), file_to_upload
-            )
+            path_file = os.path.join(pathlib.Path(self.path_args).parent.resolve(), file_to_upload)
 
             input_file_element.send_keys(path_file)
 
@@ -396,9 +365,7 @@ class protocolo(CrawJUD):
             self.prt()
 
             sleep(1)
-            type_file: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.ID, "tipo0"))
-            )
+            type_file: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "tipo0")))
             type_file.click()
             sleep(0.25)
             type_options = type_file.find_elements(By.TAG_NAME, "option")
@@ -408,7 +375,7 @@ class protocolo(CrawJUD):
                     break
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def set_file_principal(self) -> None:
         """
@@ -419,21 +386,16 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If unable to set the principal file.
+
         """
         try:
-            tablefiles: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
-            )
-            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
-                By.TAG_NAME, "tr"
-            )[0]
-            radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(
-                By.CSS_SELECTOR, self.elements.input_radio
-            )
+            tablefiles: WebElement = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "resultTable")))
+            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[0]
+            radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(By.CSS_SELECTOR, self.elements.input_radio)
             radiobutton.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def more_files(self) -> None:
         """
@@ -444,6 +406,7 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during the uploading of additional files.
+
         """
         try:
             sleep(0.5)
@@ -457,26 +420,18 @@ class protocolo(CrawJUD):
                 file_to_upload = self.format_String(file)
                 self.type_log = "log"
                 self.prt()
-                input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, self.elements.conteudo))
-                )
-                input_file_element.send_keys(
-                    f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}"
-                )
+                input_file_element: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.elements.conteudo)))
+                input_file_element.send_keys(f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}")
                 self.wait_progressbar()
                 self.message = f"Arquivo '{file}' enviado com sucesso!"
                 self.type_log = "log"
             self.prt()
 
             sleep(3)
-            tablefiles: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
-            )
-            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
-                By.TAG_NAME, "tr"
-            )
+            tablefiles: WebElement = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "resultTable")))
+            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")
 
-            for pos, file in enumerate(checkfiles):
+            for pos, _ in enumerate(checkfiles):
                 numbertipo = pos + 1
                 sleep(0.75)
                 try:
@@ -493,7 +448,7 @@ class protocolo(CrawJUD):
                         break
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def sign_files(self) -> None:
         """
@@ -504,6 +459,7 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If signing fails due to incorrect password or other issues.
+
         """
         try:
             self.message = "Assinando arquivos..."
@@ -514,20 +470,14 @@ class protocolo(CrawJUD):
             senhatoken = f"{self.token}"
             password_input.send_keys(senhatoken)
 
-            sign_button = self.driver.find_element(
-                By.CSS_SELECTOR, self.elements.botao_assinar
-            )
+            sign_button = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_assinar)
             sign_button.click()
 
-            check_password = ""
+            check_p_element = ""
             with suppress(TimeoutException):
-                check_password: WebElement = WebDriverWait(self.driver, 5, 0.01).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, "#errorMessages > div.box-content")
-                    )
-                )
+                check_p_element: WebElement = WebDriverWait(self.driver, 5, 0.01).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#errorMessages > div.box-content")))
 
-            if check_password != "":
+            if check_p_element != "":
                 raise ErroDeExecucao("Senha Incorreta!")
 
             """ PARA CORRIGIR """
@@ -538,9 +488,7 @@ class protocolo(CrawJUD):
             # sleep(1)
             """ PARA CORRIGIR """
 
-            confirm_button = self.driver.find_element(
-                By.CSS_SELECTOR, 'input#closeButton[value="Confirmar Inclusão"]'
-            )
+            confirm_button = self.driver.find_element(By.CSS_SELECTOR, 'input#closeButton[value="Confirmar Inclusão"]')
             confirm_button.click()
             sleep(1)
 
@@ -550,7 +498,7 @@ class protocolo(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def finish_move(self) -> None:
         """
@@ -573,9 +521,7 @@ class protocolo(CrawJUD):
             if return_cmd is False:
                 self.driver.find_element(By.ID, self.id_part).click()
 
-        finish_button = self.driver.find_element(
-            By.CSS_SELECTOR, self.elements.botao_concluir
-        )
+        finish_button = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_concluir)
         finish_button.click()
 
     def screenshot_sucesso(self):
@@ -592,6 +538,7 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during the screenshot process.
+
         """
         try:
             table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
@@ -602,9 +549,7 @@ class protocolo(CrawJUD):
 
             table_moves[0].screenshot(os.path.join(self.output_dir_path, "tr_0.png"))
 
-            expand = table_moves[0].find_element(
-                By.CSS_SELECTOR, self.elements.expand_btn_projudi
-            )
+            expand = table_moves[0].find_element(By.CSS_SELECTOR, self.elements.expand_btn_projudi)
             expand.click()
 
             sleep(1.5)
@@ -635,9 +580,7 @@ class protocolo(CrawJUD):
             combined_image.save(os.path.join(self.output_dir_path, comprovante1))
 
             filename = f"Protocolo - {self.bot_data.get('NUMERO_PROCESSO')} - PID{self.pid}.png"
-            self.driver.get_screenshot_as_file(
-                os.path.join(self.output_dir_path, filename)
-            )
+            self.driver.get_screenshot_as_file(os.path.join(self.output_dir_path, filename))
 
             self.message = f"Peticionamento do processo Nº{self.bot_data.get('NUMERO_PROCESSO')} concluído com sucesso!"
 
@@ -647,7 +590,7 @@ class protocolo(CrawJUD):
             return [self.bot_data.get("NUMERO_PROCESSO"), self.message, comprovante1]
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def remove_files(self) -> None:
         """
@@ -658,36 +601,27 @@ class protocolo(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during file removal.
+
         """
         tablefiles = None
         with suppress(TimeoutException):
-            tablefiles: WebElement = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
-            )
+            tablefiles: WebElement = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultTable")))
 
         if tablefiles:
             sleep(1)
-            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
-                By.TAG_NAME, "tr"
-            )
+            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")
 
             for file in checkfiles:
                 with suppress(NoSuchElementException, StaleElementReferenceException):
-                    radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(
-                        By.CSS_SELECTOR, self.elements.input_radio
-                    )
+                    radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(By.CSS_SELECTOR, self.elements.input_radio)
                     radiobutton.click()
 
-                    delete_file = self.driver.find_element(
-                        By.CSS_SELECTOR, self.elements.botao_deletar
-                    )
+                    delete_file = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_deletar)
                     delete_file.click()
 
                     alert = None
                     with suppress(TimeoutException):
-                        alert: Type[Alert] = WebDriverWait(self.driver, 5).until(
-                            EC.alert_is_present()
-                        )
+                        alert: Type[Alert] = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
 
                     if alert:
                         alert.accept()
@@ -704,14 +638,8 @@ class protocolo(CrawJUD):
         """
         while True:
             try:
-                divprogressbar: WebElement = self.wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, self.elements.css_containerprogressbar)
-                    )
-                )
-                divprogressbar = divprogressbar.find_element(
-                    By.CSS_SELECTOR, self.elements.css_divprogressbar
-                )
+                divprogressbar: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_containerprogressbar)))
+                divprogressbar = divprogressbar.find_element(By.CSS_SELECTOR, self.elements.css_divprogressbar)
                 sleep(1)
                 try:
                     # adicionar um suppress StaleElementReferenceException

@@ -1,4 +1,8 @@
-"""This module provides functionality to retrieve the installed version of Google Chrome."""
+"""
+Module: getchromeVer.
+
+This module provides functionality to retrieve the installed version of Google Chrome.
+"""
 
 import platform
 
@@ -11,7 +15,8 @@ class ChromeVersion:
     """Represent a utility for retrieving the installed Google Chrome version."""
 
     def get_chrome_version(self) -> str | None:
-        """Return the version of Google Chrome installed on the system, or None if undetected.
+        """
+        Return the version of Google Chrome installed on the system, or None if undetected.
 
         This method determines the operating system and retrieves the version
         of Google Chrome accordingly. For Windows, it attempts to read the
@@ -21,6 +26,7 @@ class ChromeVersion:
         Returns:
             str: The version of Google Chrome installed on the system, or None
             if the version could not be determined.
+
         """
         result = None
         system = platform.system()
@@ -30,26 +36,30 @@ class ChromeVersion:
             return self.traverse_registry_tree(keypath=key_path).get("Version")
 
         if system.upper() == "DARWIN":
-            result = popen(
+            result = popen(  # noqa S605 # nosec B605
                 r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version"
             ).read()
 
         elif system.upper() == "LINUX":
-            result = popen("/usr/bin/google-chrome --version").read()
+            result = popen("/usr/bin/google-chrome --version").read()  # noqa S605 # nosec B605
 
         if result:
-            result = str(result.strip("Google Chrome ").strip())
+            if result.startswith("Google Chrome "):
+                result = result[len("Google Chrome ") :]
+            result = str(result).strip()
 
         return result
 
     def traverse_registry_tree(self, keypath: str) -> dict[str, str]:
-        """Return a dictionary of registry values from the given key path on Windows.
+        """
+        Return a dictionary of registry values from the given key path on Windows.
 
         Args:
             keypath (str): The registry key path to traverse.
 
         Returns:
             dict[str, str]: A dictionary containing the registry values.
+
         """
         hkey = winreg.HKEY_LOCAL_MACHINE
         reg_dict = {}

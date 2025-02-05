@@ -35,6 +35,7 @@ class movimentacao(CrawJUD):
 
     Attributes:
         start_time (float): The start time of execution.
+
     """
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -44,6 +45,7 @@ class movimentacao(CrawJUD):
         Args:
             *args: Variable length argument list.
             **kwrgs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwrgs)
 
@@ -83,9 +85,7 @@ class movimentacao(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -112,6 +112,7 @@ class movimentacao(CrawJUD):
 
         Raises:
             ErroDeExecucao: If the process is not found or other execution errors occur.
+
         """
         try:
             self.appends = []
@@ -145,7 +146,7 @@ class movimentacao(CrawJUD):
                     self.append_success([data], msg, fileN)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def set_page_size(self) -> None:
         """
@@ -153,13 +154,7 @@ class movimentacao(CrawJUD):
 
         Selects the value '1000' from the page size dropdown.
         """
-        select = Select(
-            self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.select_page_size)
-                )
-            )
-        )
+        select = Select(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size))))
         select.select_by_value("1000")
 
     def setup_config(self) -> None:
@@ -170,15 +165,14 @@ class movimentacao(CrawJUD):
 
         Raises:
             ErroDeExecucao: If no movements are found.
+
         """
         encontrado = False
         keywords = []
         self.set_page_size()
         self.set_tablemoves()
 
-        keyword = self.bot_data.get(
-            "PALAVRA_CHAVE", self.bot_data.get("PALAVRAS_CHAVE", "*")
-        )
+        keyword = self.bot_data.get("PALAVRA_CHAVE", self.bot_data.get("PALAVRAS_CHAVE", "*"))
 
         if keyword != "*":
             keywords.extend(keyword.split(",") if "," in keyword else [keyword])
@@ -202,6 +196,7 @@ class movimentacao(CrawJUD):
 
         Returns:
             bool: True if the movement meets all filtering criteria, False otherwise.
+
         """
         keyword = self.kword
         itensmove = move.find_elements(By.TAG_NAME, "td")
@@ -213,10 +208,12 @@ class movimentacao(CrawJUD):
         data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
 
         def data_check(data_mov: str) -> bool:
-            """Validate the given date string against multiple date formats and checks if it falls within a specified date range.
+            """
+            Validate the given date string against multiple date formats and checks if it falls within a specified date range.
 
             Args:
                 data_mov (str): The date string to be validated.
+
             Returns:
                 bool: True if the date string is valid and falls within the specified date range, False otherwise.
             The function performs the following steps:
@@ -230,6 +227,7 @@ class movimentacao(CrawJUD):
             - "%m/%d/%Y"
             - "%Y/%m/%d"
             - "%Y/%d/%m"
+
             """
             patterns = [
                 ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
@@ -277,7 +275,8 @@ class movimentacao(CrawJUD):
             )
 
         def text_check(text_mov: str) -> bool:
-            """Check if the given text matches certain criteria.
+            """
+            Check if the given text matches certain criteria.
 
             This function evaluates whether the provided text (`text_mov`) meets any of the following conditions:
             - Contains a keyword that is an asterisk ("*").
@@ -288,8 +287,10 @@ class movimentacao(CrawJUD):
 
             Args:
                 text_mov (str): The text to be checked.
+
             Returns:
                 bool: True if any of the conditions are met, False otherwise.
+
             """
             check_palavra = any(
                 chk is True
@@ -298,15 +299,15 @@ class movimentacao(CrawJUD):
                     keyword.lower() == text_mov.split("\n")[0].lower(),
                     keyword.lower() == text_mov.lower(),
                     keyword.lower() in text_mov.lower(),
-                    self.similaridade(keyword.lower(), text_mov.split("\n")[0].lower())
-                    > 0.8,
+                    self.similaridade(keyword.lower(), text_mov.split("\n")[0].lower()) > 0.8,
                 ]
             )
 
             return check_palavra
 
         def check_intimado() -> bool:
-            """Check if the bot is intimated based on the bot data.
+            """
+            Check if the bot is intimated based on the bot data.
 
             This function checks if the bot has been intimated by looking for the
             "INTIMADO" key in the bot data. If the key is present, it verifies if
@@ -316,6 +317,7 @@ class movimentacao(CrawJUD):
             Returns:
                 bool: True if the bot is intimated or if the "INTIMADO" key is not
                 present in the bot data, False otherwise.
+
             """
             intimado_chk = True
             intimado = self.bot_data.get("INTIMADO", None)
@@ -341,6 +343,7 @@ class movimentacao(CrawJUD):
 
         Returns:
             bool: True if any movements are found, False otherwise.
+
         """
         self.kword = keyword
         move_filter = list(filter(self.filter_moves, self.table_moves))
@@ -355,15 +358,13 @@ class movimentacao(CrawJUD):
 
         message_.append(f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>')
         if data_inicio:
-            message_.append(
-                f'\nDATA_INICIO: <span class="fw-bold">{data_inicio}</span>'
-            )
+            message_.append(f'\nDATA_INICIO: <span class="fw-bold">{data_inicio}</span>')
         if data_fim:
             message_.append(f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>')
 
         args = list(self.bot_data.items())
         pos = 0
-        for pos, row in enumerate(args):
+        for _, row in enumerate(args):
             key, value = row
 
             _add_msg = f"   - {key}: {value} "
@@ -390,9 +391,7 @@ class movimentacao(CrawJUD):
         """ Checagens dentro do Loop de movimentações """
 
         def check_others(text_mov: str):
-            save_another_file = (
-                str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
-            )
+            save_another_file = str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
 
             mov = ""
             mov_chk = False
@@ -422,9 +421,7 @@ class movimentacao(CrawJUD):
             data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
 
             """ Outros Checks """
-            mov_chk, trazerteor, mov_name, use_gpt, save_another_file = check_others(
-                text_mov
-            )
+            mov_chk, trazerteor, mov_name, use_gpt, save_another_file = check_others(text_mov)
 
             nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
             movimentador = itensmove[4].text
@@ -481,6 +478,7 @@ class movimentacao(CrawJUD):
 
         Returns:
             list: A list of moves that match the keyword.
+
         """
 
         def getmovewithdoc(move: WebElement):
@@ -502,12 +500,11 @@ class movimentacao(CrawJUD):
 
         Returns:
             bool: True if the movement contains a document, False otherwise.
+
         """
         expand = None
         with suppress(NoSuchElementException):
-            self.expand_btn = move.find_element(
-                By.CSS_SELECTOR, self.elements.expand_btn_projudi
-            )
+            self.expand_btn = move.find_element(By.CSS_SELECTOR, self.elements.expand_btn_projudi)
 
             expand = self.expand_btn
 
@@ -523,6 +520,7 @@ class movimentacao(CrawJUD):
 
         Returns:
             str: The text content of the document.
+
         """
         itensmove = move.find_elements(By.TAG_NAME, "td")
 
@@ -548,9 +546,7 @@ class movimentacao(CrawJUD):
         id_tr = expandattrib.replace("linkArquivos", "row")
         css_tr = f'tr[id="{id_tr}"]'
 
-        table_docs: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, css_tr))
-        )
+        table_docs: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
         style_expand = table_docs.get_attribute("style")
 
         if style_expand == "display: none;":
@@ -558,9 +554,7 @@ class movimentacao(CrawJUD):
             while table_docs.get_attribute("style") == "display: none;":
                 sleep(0.25)
 
-            table_docs: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_tr))
-            )
+            table_docs: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
 
         text_doc_1 = ""
 
@@ -650,6 +644,7 @@ class movimentacao(CrawJUD):
 
         Returns:
             str: The extracted text content from the PDF.
+
         """
         with open(path_pdf, "rb") as pdf:
             read = PdfReader(pdf)

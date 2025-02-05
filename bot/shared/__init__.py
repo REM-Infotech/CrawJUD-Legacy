@@ -1,4 +1,5 @@
-"""Shared utilities and configuration for the CrawJUD-Bots application.
+"""
+Shared utilities and configuration for the CrawJUD-Bots application.
 
 This module defines shared properties and utilities used across the CrawJUD-Bots
 application, including configuration for paths, WebDriver instances, and bot settings.
@@ -14,9 +15,9 @@ from typing import (
     Dict,
     List,
     LiteralString,
-    Tuple,
+    Tuple,  # , get_type_hints
     Union,
-)  # , get_type_hints
+)
 
 from dotenv_vault import load_dotenv
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -34,7 +35,8 @@ TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
 
 
 class PropertiesCrawJUD:
-    """Configuration and state holder for the CrawJUD bot.
+    """
+    Configuration and state holder for the CrawJUD bot.
 
     This class provides properties to manage configuration and state of the CrawJUD bot,
     including paths, WebDriver instances, and various runtime parameters.
@@ -54,6 +56,7 @@ class PropertiesCrawJUD:
         type_log_ (str): Type of log (default "info").
         graphicMode_ (str): Mode of graphics (default "doughnut").
         # ...other attributes...
+
     """
 
     load_dotenv()
@@ -98,10 +101,12 @@ class PropertiesCrawJUD:
 
     @start_time.setter
     def start_time(self, start_time: int | float) -> None:
-        """Set the start time.
+        """
+        Set the start time.
 
         Args:
             start_time (int | float): The start time value.
+
         """
         self._start_time_ = start_time
 
@@ -112,10 +117,12 @@ class PropertiesCrawJUD:
 
     @path.setter
     def path(self, new_var: Path) -> None:
-        """Set a new path.
+        """
+        Set a new path.
 
         Args:
             new_var (Path): The new path value.
+
         """
         PropertiesCrawJUD.path_ = new_var
 
@@ -126,10 +133,12 @@ class PropertiesCrawJUD:
 
     @path_args.setter
     def path_args(self, new_var: Path) -> None:
-        """Set new path arguments.
+        """
+        Set new path arguments.
 
         Args:
             new_var (Path): The new path arguments value.
+
         """
         PropertiesCrawJUD.path_args_ = new_var
 
@@ -140,10 +149,12 @@ class PropertiesCrawJUD:
 
     @appends.setter
     def appends(self, new_var: List) -> None:
-        """Set a new list of appends.
+        """
+        Set a new list of appends.
 
         Args:
             new_var (List): The new list of appends.
+
         """
         PropertiesCrawJUD.appends_ = new_var
 
@@ -154,10 +165,12 @@ class PropertiesCrawJUD:
 
     @another_append.setter
     def another_append(self, new_var: list) -> None:
-        """Set another list of appends.
+        """
+        Set another list of appends.
 
         Args:
             new_var (list): The new list of appends.
+
         """
         PropertiesCrawJUD.another_append_ = new_var
 
@@ -168,10 +181,12 @@ class PropertiesCrawJUD:
 
     @system.setter
     def system(self, systembot_) -> None:
-        """Set the system bot identifier.
+        """
+        Set the system bot identifier.
 
         Args:
             systembot_ (str): The new system bot identifier.
+
         """
         PropertiesCrawJUD.systembot_ = systembot_
 
@@ -182,10 +197,12 @@ class PropertiesCrawJUD:
 
     @state_or_client.setter
     def state_or_client(self, new_var: str) -> None:
-        """Set the state or client identifier.
+        """
+        Set the state or client identifier.
 
         Args:
             new_var (str): The new state or client identifier.
+
         """
         PropertiesCrawJUD.state_or_client_ = new_var
 
@@ -196,10 +213,12 @@ class PropertiesCrawJUD:
 
     @type_log.setter
     def type_log(self, new_var: str) -> None:
-        """Set the type of log.
+        """
+        Set the type of log.
 
         Args:
             new_var (str): The new type of log.
+
         """
         PropertiesCrawJUD.type_log_ = new_var
 
@@ -210,10 +229,12 @@ class PropertiesCrawJUD:
 
     @pid.setter
     def pid(self, pid_) -> None:
-        """Set the process ID.
+        """
+        Set the process ID.
 
         Args:
             pid_ (str): The new process ID.
+
         """
         PropertiesCrawJUD.pid_ = pid_
 
@@ -224,10 +245,12 @@ class PropertiesCrawJUD:
 
     @message.setter
     def message(self, new_msg: str) -> None:
-        """Set the current message.
+        """
+        Set the current message.
 
         Args:
             new_msg (str): The new message.
+
         """
         PropertiesCrawJUD.message_ = new_msg
 
@@ -238,10 +261,12 @@ class PropertiesCrawJUD:
 
     @driver.setter
     def driver(self, new_driver_: WebDriver) -> None:
-        """Set the WebDriver instance.
+        """
+        Set the WebDriver instance.
 
         Args:
             new_driver_ (WebDriver): The new WebDriver instance.
+
         """
         PropertiesCrawJUD.driver_ = new_driver_
 
@@ -252,10 +277,12 @@ class PropertiesCrawJUD:
 
     @wait.setter
     def wait(self, new_webdriverwait_: WebDriverWait) -> None:
-        """Set the WebDriverWait instance.
+        """
+        Set the WebDriverWait instance.
 
         Args:
             new_webdriverwait_ (WebDriverWait): The new WebDriverWait instance.
+
         """
         PropertiesCrawJUD.webdriverwait_ = new_webdriverwait_
 
@@ -266,10 +293,12 @@ class PropertiesCrawJUD:
 
     @chr_dir.setter
     def chr_dir(self, new_path: Path) -> None:
-        """Set the user data directory path.
+        """
+        Set the user data directory path.
 
         Args:
             new_path (Path): The new user data directory path.
+
         """
         PropertiesCrawJUD.user_data_dir = new_path
 
@@ -280,10 +309,12 @@ class PropertiesCrawJUD:
 
     @output_dir_path.setter
     def output_dir_path(self, new_path: Path) -> None:
-        """Set the output directory path.
+        """
+        Set the output directory path.
 
         Args:
             new_path (Path): The new output directory path.
+
         """
         PropertiesCrawJUD.out_dir = new_path
 
@@ -294,10 +325,12 @@ class PropertiesCrawJUD:
 
     @kwrgs.setter
     def kwrgs(self, new_kwg: Dict[str, Any]) -> None:
-        """Set the keyword arguments.
+        """
+        Set the keyword arguments.
 
         Args:
             new_kwg (Dict[str, Any]): The new keyword arguments.
+
         """
         PropertiesCrawJUD.kwrgs_ = new_kwg
 
@@ -308,10 +341,12 @@ class PropertiesCrawJUD:
 
     @row.setter
     def row(self, new_row: int) -> None:
-        """Set the current row index.
+        """
+        Set the current row index.
 
         Args:
             new_row (int): The new row index.
+
         """
         PropertiesCrawJUD.row_ = new_row
 
@@ -322,10 +357,12 @@ class PropertiesCrawJUD:
 
     @message_error.setter
     def message_error(self, nw_m) -> str:
-        """Set the error message.
+        """
+        Set the error message.
 
         Args:
             nw_m (str): The new error message.
+
         """
         PropertiesCrawJUD.message_error_ = nw_m
 
@@ -336,10 +373,12 @@ class PropertiesCrawJUD:
 
     @graphicMode.setter
     def graphicMode(self, new_graph) -> None:
-        """Set the graphic mode.
+        """
+        Set the graphic mode.
 
         Args:
             new_graph (str): The new graphic mode.
+
         """
         PropertiesCrawJUD.graphicMode_ = new_graph
 
@@ -350,10 +389,12 @@ class PropertiesCrawJUD:
 
     @bot_data.setter
     def bot_data(self, new_botdata: Dict[str, TypeValues | SubDict]) -> None:
-        """Set the bot data.
+        """
+        Set the bot data.
 
         Args:
             new_botdata (Dict[str, TypeValues | SubDict]): The new bot data.
+
         """
         PropertiesCrawJUD.bot_data_ = new_botdata
 
@@ -364,10 +405,12 @@ class PropertiesCrawJUD:
 
     @vara.setter
     def vara(self, vara_str) -> None:
-        """Set the variable A.
+        """
+        Set the variable A.
 
         Args:
             vara_str (str): The new variable A.
+
         """
         PropertiesCrawJUD.vara_ = vara_str
 
@@ -378,10 +421,12 @@ class PropertiesCrawJUD:
 
     @path_accepted.setter
     def path_accepted(self, new_path) -> None:
-        """Set the accepted path.
+        """
+        Set the accepted path.
 
         Args:
             new_path (Path): The new accepted path.
+
         """
         PropertiesCrawJUD.path_accepted_ = new_path
 
@@ -406,10 +451,12 @@ class PropertiesCrawJUD:
 
     @typebot.setter
     def typebot(self, type_bot) -> None:
-        """Set the type of bot.
+        """
+        Set the type of bot.
 
         Args:
             type_bot (str): The new type of bot.
+
         """
         PropertiesCrawJUD.type_bot = type_bot
 
@@ -420,10 +467,12 @@ class PropertiesCrawJUD:
 
     @state.setter
     def state(self, state_: str) -> None:
-        """Set the current state.
+        """
+        Set the current state.
 
         Args:
             state_ (str): The new state.
+
         """
         PropertiesCrawJUD.state_ = state_
 
@@ -434,10 +483,12 @@ class PropertiesCrawJUD:
 
     @path_erro.setter
     def path_erro(self, new_path: Path) -> None:
-        """Set the error path.
+        """
+        Set the error path.
 
         Args:
             new_path (Path): The new error path.
+
         """
         PropertiesCrawJUD.path_erro_ = new_path
 
@@ -448,10 +499,12 @@ class PropertiesCrawJUD:
 
     @name_cert.setter
     def name_cert(self, name_cert) -> None:
-        """Set the certificate name.
+        """
+        Set the certificate name.
 
         Args:
             name_cert (str): The new certificate name.
+
         """
         PropertiesCrawJUD.name_cert_ = name_cert
 
@@ -462,10 +515,12 @@ class PropertiesCrawJUD:
 
     @client.setter
     def client(self, client_) -> None:
-        """Set the client information.
+        """
+        Set the client information.
 
         Args:
             client_ (str): The new client information.
+
         """
         PropertiesCrawJUD.client_ = client_
 
@@ -618,7 +673,8 @@ class PropertiesCrawJUD:
 
     @property
     def gpt_chat(self) -> Callable[..., str]:
-        """Analyze a given legal document text and adjust the response based on the document type.
+        """
+        Analyze a given legal document text and adjust the response based on the document type.
 
         Uses the OpenAI GPT model to analyze the provided text and generate a response that
         identifies the type of legal document and extracts relevant information based on the
@@ -626,6 +682,7 @@ class PropertiesCrawJUD:
 
         Returns:
             Callable[..., str]: The GPT chat function.
+
         """
         return self.OtherUtils.gpt_chat
 

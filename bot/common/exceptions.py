@@ -23,11 +23,15 @@ class CrawJUDExceptions(Exception):
         self.message_ = message
 
     def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
-        """Initialize CrawJUDExceptions with an optional message and exception.
+        """
+        Initialize CrawJUDExceptions with an optional message and exception.
 
         Args:
             message (str, optional): Error message. Defaults to None.
             e (Exception, optional): Original exception. Defaults to None.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
         """
         self.message = message
 
@@ -35,9 +39,7 @@ class CrawJUDExceptions(Exception):
             self.message = e.message
 
         elif message is None:
-            self.message = exceptionsBot().get(
-                e.__class__.__name__, "".join(getattr(e, "args", ["Erro Interno"]))
-            )
+            self.message = exceptionsBot().get(e.__class__.__name__, "".join(getattr(e, "args", ["Erro Interno"])))
 
         super().__init__(self.message)
 
@@ -68,7 +70,8 @@ class ItemNaoEcontrado(CrawJUDExceptions):
 
 
 class ErroDeExecucao(CrawJUDExceptions):
-    """Exception raised for errors during CrawJUD execution.
+    """
+    Exception raised for errors during CrawJUD execution.
 
     This exception is a subclass of CrawJUDExceptions and is used to indicate
     that an error occurred during the execution of a CrawJUD process.
@@ -78,6 +81,7 @@ class ErroDeExecucao(CrawJUDExceptions):
             Check if the instance is an exception.
         __str__() -> str:
             Return the string representation of the exception.
+
     """
 
     def __init__(self, *args, **kwargs):

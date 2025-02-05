@@ -18,6 +18,7 @@ class Elaw:
 
     Attributes:
         kwrgs (dict): Keyword arguments for bot configuration.
+
     """
 
     def __init__(self, **kwrgs) -> None:
@@ -32,6 +33,7 @@ class Elaw:
 
         Raises:
             StartError: If an exception occurs during bot execution.
+
         """
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
@@ -39,7 +41,7 @@ class Elaw:
             self.Bot.execution()
         except Exception as e:
             logging.error(f"Exception: {e}", exc_info=True)
-            raise StartError(traceback.format_exc())
+            raise StartError(traceback.format_exc()) from e
 
     @property
     def Bot(self) -> Any:
@@ -51,6 +53,7 @@ class Elaw:
 
         Raises:
             AttributeError: If the specified bot is not found.
+
         """
         bot_class = getattr(
             import_module(f".{self.typebot.lower()}", __package__),

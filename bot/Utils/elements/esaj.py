@@ -61,6 +61,7 @@ class ESAJ_AM(Configuracao):
         botao_protocolar (str): XPath selector for the protocol button.
         botao_confirmar (str): CSS selector for the confirm button in popover content.
         botao_recibo (str): CSS selector for the receipt consultation button.
+
     """
 
     css_val_doc_custas_ini = "".join(
@@ -92,7 +93,7 @@ class ESAJ_AM(Configuracao):
     url_login_cert = "https://consultasaj.tjam.jus.br/sajcas/login#aba-certificado"
 
     campo_username = 'input[id="usernameForm"]'
-    campo_passwd = 'input[id="passwordForm"]'
+    campo_passwd = 'input[id="passwordForm"]'  # noqa S105 # nosec B105
     btn_entrar = 'input[name="pbEntrar"]'
     chk_login = "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos"
 
@@ -139,12 +140,8 @@ class ESAJ_AM(Configuracao):
     documento = '//nav[@class="document-data__nav"]/div/ul/li[5]/button[2]'
     processo_view = 'div[ui-view="parteProcessoView"]'
     nome = 'span[ng-bind="parte.nome"]'
-    botao_incluir_peticao = (
-        'button[ng-click="incluirParteDoProcessoPeticaoDiversa(parte)"]'
-    )
-    botao_incluir_partecontraria = (
-        'button[ng-click="incluirParteDoProcessoNoPoloContrario(parte)"]'
-    )
+    botao_incluir_peticao = 'button[ng-click="incluirParteDoProcessoPeticaoDiversa(parte)"]'
+    botao_incluir_partecontraria = 'button[ng-click="incluirParteDoProcessoNoPoloContrario(parte)"]'
     parte_view = 'div[ui-view="parteView"]'
     botao_protocolar = '//*[@id="botaoProtocolar"]'
     botao_confirmar = "div.popover-content button.confirm-button"

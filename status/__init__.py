@@ -1,4 +1,8 @@
-"""This module manages the status of bots (Start and Stop)."""
+"""
+Module: status.
+
+This module manages the status of bots (Start and Stop).
+"""
 
 import json
 import unicodedata
@@ -27,8 +31,8 @@ class SetStatus:
 
     def __init__(
         self,
-        form: Dict[str, str] = {},
-        files: Dict[str, FileStorage] = {},
+        form: Dict[str, str] = None,
+        files: Dict[str, FileStorage] = None,
         id: int = 0,
         system: str = None,
         typebot: str = None,
@@ -65,15 +69,7 @@ class SetStatus:
         :param string: The string to format.
         :return: The formatted string.
         """
-        return secure_filename(
-            "".join(
-                [
-                    c
-                    for c in unicodedata.normalize("NFKD", string)
-                    if not unicodedata.combining(c)
-                ]
-            )
-        )
+        return secure_filename("".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]))
 
     def start_bot(
         self,
@@ -102,7 +98,7 @@ class SetStatus:
         path_pid = Path(path.join(Path(__file__).cwd(), "exec", pid))
         path_pid.mkdir(parents=True, exist_ok=True)
 
-        if self.files:
+        if self.files is not None:
             for f, value in self.files.items():
                 if "xlsx" not in f or app.testing is True:
                     f = self.format_String(f)
@@ -113,7 +109,7 @@ class SetStatus:
         data = {}
 
         path_args = path.join(path_pid, f"{pid}.json")
-        if self.form:
+        if self.form is not None:
             for key, value in self.form.items():
                 data.update({key: value})
 
@@ -127,9 +123,7 @@ class SetStatus:
                 rows = ws.max_row
 
         elif data.get("typebot") == "pauta":
-            data_inicio_formated = datetime.strptime(
-                data.get("data_inicio"), "%Y-%m-%d"
-            )
+            data_inicio_formated = datetime.strptime(data.get("data_inicio"), "%Y-%m-%d")
 
             data_fim_formated = datetime.strptime(data.get("data_fim"), "%Y-%m-%d")
 
@@ -163,9 +157,7 @@ class SetStatus:
 
         usr = Users.query.filter(Users.login == user).first()
         bt = BotsCrawJUD.query.filter(BotsCrawJUD.id == id).first()
-        license_ = LicensesUsers.query.filter(
-            LicensesUsers.license_token == usr.licenseusr.license_token
-        ).first()
+        license_ = LicensesUsers.query.filter(LicensesUsers.license_token == usr.licenseusr.license_token).first()
 
         execut.user = usr
         execut.bot = bt

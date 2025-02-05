@@ -17,6 +17,7 @@ def webdriver_exepts() -> list[Exception]:
 
     Returns:
         list[Exception]: A list containing various exception classes.
+
     """
     return [
         TimeoutException,
@@ -38,6 +39,7 @@ def exceptionsBot() -> dict[str, str]:
 
     Returns:
         dict[str, str]: A dictionary mapping exception class names to error messages.
+
     """
     return {
         "TimeoutException": "Falha ao encontrar elemento",

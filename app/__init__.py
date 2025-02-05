@@ -1,4 +1,5 @@
-"""Initialize the CrawJUD-Bots app with Flask, Celery, SocketIO, and extension.
+"""
+Initialize the CrawJUD-Bots app with Flask, Celery, SocketIO, and extension.
 
 This module creates the Flask app and configures extensions like Celery,
 SocketIO, Flask-Mail, SQLAlchemy, and Talisman.
@@ -56,10 +57,12 @@ class AppFactory:
     """Factory to create and configure the Flask app, SocketIO, and Celery."""
 
     def create_app(self) -> tuple[Flask, SocketIO, Celery]:
-        """Create and configure the Flask app, SocketIO, and Celery worker.
+        """
+        Create and configure the Flask app, SocketIO, and Celery worker.
 
         Returns:
             tuple: A tuple containing Flask app, SocketIO, and Celery worker.
+
         """
         global app
 
@@ -99,13 +102,15 @@ class AppFactory:
         register_routes(app)
 
     def init_talisman(self, app: Flask) -> Talisman:
-        """Initialize Talisman for security headers.
+        """
+        Initialize Talisman for security headers.
 
         Args:
             app (Flask): The Flask application.
 
         Returns:
             Talisman: The Talisman instance.
+
         """
         tslm.init_app(
             app,
@@ -119,13 +124,15 @@ class AppFactory:
         return tslm
 
     def init_socket(self, app: Flask) -> SocketIO:
-        """Initialize the SocketIO instance.
+        """
+        Initialize the SocketIO instance.
 
         Args:
             app (Flask): The Flask application.
 
         Returns:
             SocketIO: The initialized SocketIO instance.
+
         """
         global io
 
@@ -152,13 +159,15 @@ class AppFactory:
         mail.init_app(app)
 
     def init_redis(self, app: Flask) -> Redis:
-        """Initialize the Redis extension.
+        """
+        Initialize the Redis extension.
 
         Args:
             app (Flask): The Flask application.
 
         Returns:
             Redis: The Redis instance.
+
         """
         global redis
 
@@ -166,13 +175,15 @@ class AppFactory:
         return redis
 
     def init_database(self, app: Flask) -> SQLAlchemy:
-        """Initialize the database and create tables if they do not exist.
+        """
+        Initialize the database and create tables if they do not exist.
 
         Args:
             app (Flask): The Flask application.
 
         Returns:
             SQLAlchemy: The database instance.
+
         """
         import platform
 
@@ -187,9 +198,7 @@ class AppFactory:
 
             from app.models import Servers, ThreadBots
 
-            if not db.engine.dialect.has_table(
-                db.engine.connect(), ThreadBots.__tablename__
-            ):
+            if not db.engine.dialect.has_table(db.engine.connect(), ThreadBots.__tablename__):
                 with open("is_init.txt", "w") as f:
                     db.create_all()
                     f.write("True")
@@ -198,9 +207,7 @@ class AppFactory:
             HOST = environ.get("HOSTNAME")
 
             if not Servers.query.filter(Servers.name == NAMESERVER).first():
-                server = Servers(
-                    name=NAMESERVER, address=HOST, system=platform.system()
-                )
+                server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
                 db.session.add(server)
                 db.session.commit()
 

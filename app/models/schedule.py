@@ -22,5 +22,6 @@ class ScheduleModel(db.Model):
 
         Returns:
             str: The task name of the scheduled job.
+
         """
         return f"<Schedule {self.task_name}>"

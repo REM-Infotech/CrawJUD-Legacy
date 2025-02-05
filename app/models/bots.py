@@ -37,9 +37,7 @@ class Credentials(db.Model):
     certficate_blob = db.Column(db.LargeBinary(length=(2**32) - 1))
 
     license_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
-    license_usr = db.relationship(
-        "LicensesUsers", backref=db.backref("credentials", lazy=True)
-    )
+    license_usr = db.relationship("LicensesUsers", backref=db.backref("credentials", lazy=True))
 
 
 class Executions(db.Model):
@@ -52,12 +50,8 @@ class Executions(db.Model):
     file_output = db.Column(db.String(length=512))
     total_rows = db.Column(db.String(length=45))
     url_socket = db.Column(db.String(length=64))
-    data_execucao = db.Column(
-        db.DateTime, default=datetime.now(pytz.timezone("America/Manaus"))
-    )
-    data_finalizacao = db.Column(
-        db.DateTime, default=datetime.now(pytz.timezone("America/Manaus"))
-    )
+    data_execucao = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
+    data_finalizacao = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
     arquivo_xlsx = db.Column(db.String(length=64))
 
     bot_id = db.Column(db.Integer, db.ForeignKey("bots.id"))
@@ -67,9 +61,7 @@ class Executions(db.Model):
     user = db.relationship("Users", backref=db.backref("executions", lazy=True))
 
     license_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
-    license_usr = db.relationship(
-        "LicensesUsers", backref=db.backref("executions", lazy=True)
-    )
+    license_usr = db.relationship("LicensesUsers", backref=db.backref("executions", lazy=True))
 
 
 class CacheLogs(db.Model):

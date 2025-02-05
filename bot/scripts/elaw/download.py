@@ -27,6 +27,7 @@ class Download(CrawJUD):
     Attributes:
         attribute_name (type): Description of the attribute.
         # ...other attributes...
+
     """
 
     def __init__(self, *args, **kwargs) -> None:
@@ -36,6 +37,7 @@ class Download(CrawJUD):
         Args:
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwargs)
 
@@ -53,6 +55,7 @@ class Download(CrawJUD):
 
         Raises:
             DownloadError: If an error occurs during execution.
+
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -76,9 +79,7 @@ class Download(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -105,6 +106,7 @@ class Download(CrawJUD):
 
         Raises:
             DownloadQueueError: If an error occurs during queue processing.
+
         """
         try:
             search = self.search_bot()
@@ -131,7 +133,7 @@ class Download(CrawJUD):
                 self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def buscar_doc(self) -> None:
         """
@@ -139,15 +141,12 @@ class Download(CrawJUD):
 
         Raises:
             DocumentSearchError: If an error occurs while accessing the page.
+
         """
         self.message = "Acessando página de anexos"
         self.type_log = "log"
         self.prt()
-        anexosbutton: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.anexosbutton_css)
-            )
-        )
+        anexosbutton: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css)))
         anexosbutton.click()
         sleep(1.5)
         self.message = "Acessando tabela de documentos"
@@ -160,21 +159,13 @@ class Download(CrawJUD):
 
         Raises:
             DocumentDownloadError: If an error occurs during downloading.
+
         """
-        table_doc: WebElement = self.wait.until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, self.elements.css_table_doc)
-            )
-        )
+        table_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc)))
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
 
         if "," in self.bot_data.get("TERMOS"):
-            termos = (
-                str(self.bot_data.get("TERMOS"))
-                .replace(", ", ",")
-                .replace(" ,", ",")
-                .split(",")
-            )
+            termos = str(self.bot_data.get("TERMOS")).replace(", ", ",").replace(" ,", ",").split(",")
 
         elif "," not in self.bot_data.get("TERMOS"):
             termos = [str(self.bot_data.get("TERMOS"))]
@@ -185,11 +176,7 @@ class Download(CrawJUD):
 
         for item in table_doc:
             item: WebElement = item
-            get_name_file = str(
-                item.find_elements(By.TAG_NAME, "td")[3]
-                .find_element(By.TAG_NAME, "a")
-                .text
-            )
+            get_name_file = str(item.find_elements(By.TAG_NAME, "td")[3].find_element(By.TAG_NAME, "a").text)
 
             for termo in termos:
                 if str(termo).lower() in get_name_file.lower():
@@ -199,9 +186,7 @@ class Download(CrawJUD):
                     self.type_log = "log"
                     self.prt()
 
-                    baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
-                        By.CSS_SELECTOR, self.elements.botao_baixar
-                    )
+                    baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(By.CSS_SELECTOR, self.elements.botao_baixar)
                     baixar.click()
 
                     self.rename_doc(get_name_file)
@@ -218,10 +203,11 @@ class Download(CrawJUD):
 
         Raises:
             DocumentRenameError: If an error occurs during renaming.
+
         """
         filedownloaded = False
         while True:
-            for root, dirs, files in os.walk(os.path.join(self.output_dir_path)):
+            for _, __, files in os.walk(os.path.join(self.output_dir_path)):
                 for file in files:
                     if file.replace(" ", "") == namefile.replace(" ", ""):
                         filedownloaded = True

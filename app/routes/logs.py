@@ -24,10 +24,12 @@ def disconnect() -> None:
 
 @io.on("leave", namespace="/log")
 def leave(data) -> None:
-    """Handle a client leaving a specific logging room.
+    """
+    Handle a client leaving a specific logging room.
 
     Args:
         data: Data containing the room identifier (pid).
+
     """
     room = data["pid"]
     leave_room(room)
@@ -36,10 +38,12 @@ def leave(data) -> None:
 
 @io.on("stop_bot", namespace="/log")
 def stop_bot(data: dict[str, str]) -> None:
-    """Stop a running bot identified by its PID.
+    """
+    Stop a running bot identified by its PID.
 
     Args:
         data (dict[str, str]): Data containing the PID of the bot to stop.
+
     """
     pid = data["pid"]
     stop_execution(app, pid)
@@ -48,10 +52,12 @@ def stop_bot(data: dict[str, str]) -> None:
 
 @io.on("terminate_bot", namespace="/log")
 def terminate_bot(data: dict[str, str]) -> None:
-    """Terminate a running bot identified by its PID.
+    """
+    Terminate a running bot identified by its PID.
 
     Args:
         data (dict[str, str]): Data containing the PID of the bot to terminate.
+
     """
     from app import db
     from app.models import ThreadBots
@@ -72,10 +78,12 @@ def terminate_bot(data: dict[str, str]) -> None:
 
 @io.on("log_message", namespace="/log")
 def log_message(data: dict[str, str]) -> None:
-    """Handle incoming log messages from bots.
+    """
+    Handle incoming log messages from bots.
 
     Args:
         data (dict[str, str]): Data containing the log message and PID.
+
     """
     try:
         pid = data["pid"]
@@ -93,20 +101,24 @@ def log_message(data: dict[str, str]) -> None:
 
 @io.on("statusbot", namespace="/log")
 def statusbot(data: dict) -> None:
-    """Handle status updates from bots.
+    """
+    Handle status updates from bots.
 
     Args:
         data (dict): Data containing status information.
+
     """
     send("Bot stopped!")
 
 
 @io.on("join", namespace="/log")
 def join(data: dict[str, str]) -> None:
-    """Handle a client joining a specific logging room.
+    """
+    Handle a client joining a specific logging room.
 
     Args:
         data (dict[str, str]): Data containing the room identifier (pid).
+
     """
     room = data["pid"]
     join_room(room)
@@ -134,9 +146,7 @@ def join(data: dict[str, str]) -> None:
                             pid=pid,
                             type_log="success",
                             row=0,
-                            dateTime=datetime.now(timezone("America/Manaus")).strftime(
-                                "%H:%M:%S"
-                            ),
+                            dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
                             log="fim da execução",
                         )
                     }

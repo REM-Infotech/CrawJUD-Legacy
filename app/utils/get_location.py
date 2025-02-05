@@ -15,10 +15,12 @@ class GlobalExcept(Exception):
     """Base custom exception class for global errors."""
 
     def __init__(self, message: str):
-        """Initialize GlobalExcept with an error message.
+        """
+        Initialize GlobalExcept with an error message.
 
         Args:
             message (str): The error message.
+
         """
         super().__init__(message)
         self.message = message
@@ -28,10 +30,12 @@ class NetworkError(GlobalExcept):
     """Exception raised when a network-related error occurs."""
 
     def __init__(self, message: str = "You are not connected to the internet!!"):
-        """Initialize NetworkError with a default or custom message.
+        """
+        Initialize NetworkError with a default or custom message.
 
         Args:
             message (str, optional): The error message. Defaults to a predefined message.
+
         """
         super().__init__(message)
 
@@ -52,7 +56,8 @@ class InfoGeoloc:
             self.data.update({f"_{key}": value})
 
     def __getattr__(self, name: str) -> str:
-        """Retrieve attribute from geolocation data.
+        """
+        Retrieve attribute from geolocation data.
 
         Args:
             name (str): The name of the attribute to retrieve.
@@ -62,23 +67,24 @@ class InfoGeoloc:
 
         Returns:
             str: The value of the requested attribute.
+
         """
         item = self.data.get(name, None)
         if not item:
-            raise AttributeError(
-                f"Atributo '{name}' não encontrado na classe '{self.__class__.__name__}'"
-            )
+            raise AttributeError(f"Atributo '{name}' não encontrado na classe '{self.__class__.__name__}'")
 
         return item
 
     def IP2Location(self, ip: str) -> dict[str, str] | None:
-        """Fetch geolocation data for a given IP address using IP2Location API.
+        """
+        Fetch geolocation data for a given IP address using IP2Location API.
 
         Args:
             ip (str): The IP address to lookup.
 
         Returns:
             dict[str, str] | None: Geolocation data if successful, else None.
+
         """
         client = HTTPClient()
         url = "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
@@ -150,10 +156,12 @@ class GeoLoc(InfoGeoloc):
     """Subclass of InfoGeoloc for extended geolocation functionalities."""
 
     def __init__(self, *args, **kwrgs):
-        """Initialize GeoLoc with optional arguments.
+        """
+        Initialize GeoLoc with optional arguments.
 
         Args:
             *args: Variable length argument list.
             **kwrgs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwrgs)

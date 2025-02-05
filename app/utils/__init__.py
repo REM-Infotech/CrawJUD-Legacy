@@ -23,6 +23,7 @@ def make_celery(app: Flask) -> Celery:
 
     Returns:
         Celery: Configured Celery instance.
+
     """
     celery = Celery(app.import_name)
     celery.conf.update(app.config["CELERY"])
@@ -45,6 +46,7 @@ def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cov
 
     Returns:
         bool: True if origin is allowed, False otherwise.
+
     """
     allowed_origins = [
         r"https:\/\/.*\.nicholas\.dev\.br",

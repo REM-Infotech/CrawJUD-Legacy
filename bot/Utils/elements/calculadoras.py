@@ -1,4 +1,6 @@
 """
+Module: calculadoras.
+
 This module contains the TJDFT class which includes elements related to TJDFT.
 
 Classes:

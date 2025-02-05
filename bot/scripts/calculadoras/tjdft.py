@@ -33,6 +33,7 @@ class Tjdft(CrawJUD):
     Attributes:
         cookieaceito (list): List to track accepted cookies.
         # ...other attributes...
+
     """
 
     def __init__(self, *args, **kwargs) -> None:
@@ -42,6 +43,7 @@ class Tjdft(CrawJUD):
         Args:
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
+
         """
         super().__init__(*args, **kwargs)
 
@@ -62,6 +64,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             Exception: If an unexpected error occurs during execution.
+
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -85,9 +88,7 @@ class Tjdft(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(
-                            message="Webdriver encerrado inesperadamente, reinicializando..."
-                        )
+                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -116,6 +117,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during queue processing.
+
         """
         try:
             self.get_calcular()
@@ -128,7 +130,7 @@ class Tjdft(CrawJUD):
             self.finalizar_execucao()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def get_calcular(self) -> None:
         """
@@ -138,14 +140,13 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while accessing the calculation page.
+
         """
         try:
             self.message = "Acessando Página de cálculo.."
             self.type_log = "log"
             self.prt()
-            self.driver.get(
-                "https://www.tjdft.jus.br/servicos/atualizacao-monetaria-1/calculo"
-            )
+            self.driver.get("https://www.tjdft.jus.br/servicos/atualizacao-monetaria-1/calculo")
 
             check_cookies = None
             with suppress(TimeoutException):
@@ -161,17 +162,13 @@ class Tjdft(CrawJUD):
             if check_cookies:
                 sleep(2)
 
-                aceitar_cookies_css = (
-                    'button[class="btn btn-primary btn-sm acceptcookies"]'
-                )
-                aceitar_cookies: WebElement = self.driver.find_element(
-                    By.CSS_SELECTOR, aceitar_cookies_css
-                )
+                aceitar_cookies_css = 'button[class="btn btn-primary btn-sm acceptcookies"]'
+                aceitar_cookies: WebElement = self.driver.find_element(By.CSS_SELECTOR, aceitar_cookies_css)
                 aceitar_cookies.click()
                 self.driver.switch_to.default_content()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def info_numproc(self) -> None:
         """
@@ -181,6 +178,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while informing the process number.
+
         """
         try:
             sleep(2)
@@ -188,9 +186,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
-            get_input_process: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc))
-            )
+            get_input_process: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc)))
             get_input_process.click()
             get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
 
@@ -199,7 +195,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao("Erro ao informar número do processo", e)
+            raise ErroDeExecucao("Erro ao informar número do processo", e) from e
 
     def info_requerente(self) -> None:
         """
@@ -209,6 +205,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while informing the petitioner.
+
         """
         try:
             sleep(2)
@@ -216,9 +213,7 @@ class Tjdft(CrawJUD):
             self.message = "Informando requerente"
             self.type_log = "log"
             self.prt()
-            get_name_requerente: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente))
-            )
+            get_name_requerente: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente)))
             get_name_requerente.click()
             get_name_requerente.send_keys(self.bot_data.get("REQUERENTE"))
 
@@ -227,7 +222,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def info_requerido(self) -> None:
         """
@@ -237,6 +232,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while informing the required party.
+
         """
         try:
             sleep(2)
@@ -244,9 +240,7 @@ class Tjdft(CrawJUD):
             self.message = "Informado requerido"
             self.type_log = "log"
             self.prt()
-            get_name_requerido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido))
-            )
+            get_name_requerido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido)))
             get_name_requerido.click()
             get_name_requerido.send_keys(self.bot_data.get("REQUERIDO"))
 
@@ -255,7 +249,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def info_jurosapartir(self) -> None:
         """
@@ -265,6 +259,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while informing the interest starting point.
+
         """
         try:
             self.message = "Informando incidencia de juros e data de incidencia"
@@ -274,36 +269,20 @@ class Tjdft(CrawJUD):
             juros_partir = str(self.bot_data.get("JUROS_PARTIR")).upper()
 
             css_select_juros = 'select[id="juros_partir"][class="select-consultas"]'
-            select = Select(
-                self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, css_select_juros))
-                )
-            )
+            select = Select(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_select_juros))))
             select.select_by_value(juros_partir)
 
             juros_percent = str(self.bot_data.get("JUROS_PERCENT", "1"))
             if juros_percent == "1":
-                self.interact.click(
-                    self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="juros_percent1"]'
-                    )
-                )
+                self.interact.click(self.driver.find_element(By.CSS_SELECTOR, 'input[id="juros_percent1"]'))
 
             elif juros_percent != "1":
                 percent = juros_percent
                 percent = f"{percent},00" if "," not in percent else percent
 
-                self.interact.click(
-                    self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="juros_percent2"]'
-                    )
-                )
+                self.interact.click(self.driver.find_element(By.CSS_SELECTOR, 'input[id="juros_percent2"]'))
                 self.interact.send_key(
-                    self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]')
-                        )
-                    ),
+                    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]'))),
                     percent,
                 )
 
@@ -315,7 +294,7 @@ class Tjdft(CrawJUD):
                 )
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def valores_devidos(self) -> None:
         """
@@ -325,15 +304,14 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while informing the owed values.
+
         """
         try:
             css_data_valor_devido = 'input[id="data-0"][name="parcela_data:list"]'
             self.message = "Informando data valor devido"
             self.type_log = "log"
             self.prt()
-            data_valor_devido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido))
-            )
+            data_valor_devido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido)))
             data_valor_devido.click()
             data_valor_devido.send_keys(self.bot_data.get("DATA_CALCULO"))
 
@@ -342,9 +320,7 @@ class Tjdft(CrawJUD):
             self.message = "Informando valor devido"
             self.type_log = "log"
             self.prt()
-            valor_devido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido))
-            )
+            valor_devido: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido)))
             valor_devido.click()
 
             valor = str(self.bot_data.get("VALOR_CALCULO"))
@@ -356,7 +332,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e
 
     def acessorios(self) -> None:
         """
@@ -366,6 +342,7 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs while informing accessory values.
+
         """
 
         def multa_percentual() -> None | Exception:
@@ -377,11 +354,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
                 if self.bot_data.get("MULTA_PERCENTUAL", None):
-                    multa_percentual: WebElement = self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, css_multa_percentual)
-                        )
-                    )
+                    multa_percentual: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual)))
                     multa_percentual.click()
 
                     percent = str(self.bot_data.get("MULTA_PERCENTUAL"))
@@ -389,12 +362,8 @@ class Tjdft(CrawJUD):
                     multa_percentual.send_keys(percent)
 
                 if self.bot_data.get("MULTA_DATA", None):
-                    multa_data = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="multa_data"]'
-                    )
-                    multa_valor = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="multa_valor"]'
-                    )
+                    multa_data = self.driver.find_element(By.CSS_SELECTOR, 'input[id="multa_data"]')
+                    multa_valor = self.driver.find_element(By.CSS_SELECTOR, 'input[id="multa_valor"]')
 
                     valor = str(self.bot_data.get("MULTA_VALOR"))
                     valor = f"{valor},00" if "," not in valor else valor
@@ -407,13 +376,11 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e)
+                raise ErroDeExecucao(e=e) from e
 
         def honorario_sucumb() -> None | Exception:
             try:
-                css_honorario_sucumb = (
-                    'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
-                )
+                css_honorario_sucumb = 'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
                 self.message = "Informando Honorários de Sucumbência"
                 self.type_log = "log"
                 self.prt()
@@ -421,45 +388,26 @@ class Tjdft(CrawJUD):
                 disabled_state = ""
 
                 if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
-                    honorario_sucumb: WebElement = self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, css_honorario_sucumb)
-                        )
-                    )
+                    honorario_sucumb: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb)))
                     honorario_sucumb.click()
                     percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
                     percent = f"{percent},00" if "," not in percent else percent
 
                     honorario_sucumb.send_keys(percent)
-                    self.driver.execute_script(
-                        f"document.querySelector('{css_honorario_sucumb}').blur()"
-                    )
+                    self.driver.execute_script(f"document.querySelector('{css_honorario_sucumb}').blur()")
                     sleep(0.5)
 
-                    disabled_state = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]'
-                    ).get_attribute("disabled")
+                    disabled_state = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]').get_attribute("disabled")
 
-                elif (
-                    self.bot_data.get("HONORARIO_SUCUMB_DATA", None)
-                    and disabled_state == ""
-                ):
-                    honor_sucumb_data = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]'
-                    )
-                    honor_sucumb_valor = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_sucumb_valor"]'
-                    )
-                    sucumb_juros_partir = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_sucumb_juros_partir"]'
-                    )
+                elif self.bot_data.get("HONORARIO_SUCUMB_DATA", None) and disabled_state == "":
+                    honor_sucumb_data = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]')
+                    honor_sucumb_valor = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_valor"]')
+                    sucumb_juros_partir = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_juros_partir"]')
 
                     valor = str(self.bot_data.get("HONORARIO_SUCUMB_VALOR"))
                     valor = f"{valor},00" if "," not in valor else valor
 
-                    self.interact.send_key(
-                        honor_sucumb_data, self.bot_data.get("HONORARIO_SUCUMB_DATA")
-                    )
+                    self.interact.send_key(honor_sucumb_data, self.bot_data.get("HONORARIO_SUCUMB_DATA"))
                     self.interact.send_key(honor_sucumb_valor, valor)
                     self.interact.send_key(
                         sucumb_juros_partir,
@@ -471,19 +419,15 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e)
+                raise ErroDeExecucao(e=e) from e
 
         def percent_multa_475J():
             try:
-                percent_multa_ = self.driver.find_element(
-                    By.CSS_SELECTOR, 'input[id="multa475_exec_percent"]'
-                )
-                self.interact.send_key(
-                    percent_multa_, self.bot_data.get("PERCENT_MULTA_475J")
-                )
+                percent_multa_ = self.driver.find_element(By.CSS_SELECTOR, 'input[id="multa475_exec_percent"]')
+                self.interact.send_key(percent_multa_, self.bot_data.get("PERCENT_MULTA_475J"))
 
             except Exception as e:
-                raise ErroDeExecucao(e=e)
+                raise ErroDeExecucao(e=e) from e
 
         def honorario_cumprimento() -> None | Exception:
             try:
@@ -495,45 +439,26 @@ class Tjdft(CrawJUD):
                 disabled_state = ""
 
                 if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
-                    honorario_exec: WebElement = self.wait.until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, css_honorario_exec)
-                        )
-                    )
+                    honorario_exec: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec)))
                     honorario_exec.click()
                     percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
                     percent = f"{percent},00" if "," not in percent else percent
 
                     honorario_exec.send_keys(percent)
-                    self.driver.execute_script(
-                        f"document.querySelector('{css_honorario_exec}').blur()"
-                    )
+                    self.driver.execute_script(f"document.querySelector('{css_honorario_exec}').blur()")
                     sleep(0.5)
 
-                    disabled_state = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_exec_data"]'
-                    ).get_attribute("disabled")
+                    disabled_state = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_exec_data"]').get_attribute("disabled")
 
-                elif (
-                    self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None)
-                    and disabled_state == ""
-                ):
-                    honor_exec_data = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_exec_data"]'
-                    )
-                    honor_exec_valor = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_exec_valor"]'
-                    )
-                    exec_juros_partir = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_exec_juros_partir"]'
-                    )
+                elif self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None) and disabled_state == "":
+                    honor_exec_data = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_exec_data"]')
+                    honor_exec_valor = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_exec_valor"]')
+                    exec_juros_partir = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_exec_juros_partir"]')
 
                     valor = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_VALOR"))
                     valor = f"{valor},00" if "," not in valor else valor
 
-                    self.interact.send_key(
-                        honor_exec_data, self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA")
-                    )
+                    self.interact.send_key(honor_exec_data, self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA"))
                     self.interact.send_key(honor_exec_valor, valor)
                     self.interact.send_key(
                         exec_juros_partir,
@@ -545,7 +470,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e)
+                raise ErroDeExecucao(e=e) from e
 
         def custas() -> None | Exception:
             try:
@@ -553,9 +478,7 @@ class Tjdft(CrawJUD):
                 self.message = "Informando valor custas"
                 self.type_log = "log"
                 self.prt()
-                data_custas: WebElement = self.driver.find_element(
-                    By.CSS_SELECTOR, css_data_custas
-                )
+                data_custas: WebElement = self.driver.find_element(By.CSS_SELECTOR, css_data_custas)
                 data_custas.click()
                 data_custas.send_keys(self.bot_data.get("CUSTAS_DATA"))
 
@@ -564,9 +487,7 @@ class Tjdft(CrawJUD):
                 self.message = "Informando valor devido"
                 self.type_log = "log"
                 self.prt()
-                custas_valor: WebElement = self.driver.find_element(
-                    By.CSS_SELECTOR, css_custas_valor
-                )
+                custas_valor: WebElement = self.driver.find_element(By.CSS_SELECTOR, css_custas_valor)
                 custas_valor.click()
 
                 valor = str(self.bot_data.get("CUSTAS_VALOR"))
@@ -578,7 +499,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e)
+                raise ErroDeExecucao(e=e) from e
 
         local_functions = list(locals().items())
         for name, func in local_functions:
@@ -597,25 +518,16 @@ class Tjdft(CrawJUD):
 
         Raises:
             ErroDeExecucao: If an error occurs during finalization.
+
         """
         try:
             css_calcular = 'input[type="submit"][value="Calcular"][id="calcular"]'
             calcular = self.driver.find_element(By.CSS_SELECTOR, css_calcular)
             calcular.click()
 
-            table_valorcalc: WebElement = self.wait.until(
-                EC.presence_of_all_elements_located(
-                    (By.CSS_SELECTOR, 'table[class="grid listing"]')
-                )
-            )[-1]
-            row_valorcalc = table_valorcalc.find_element(
-                By.TAG_NAME, "tbody"
-            ).find_elements(By.TAG_NAME, "tr")[-1]
-            valor_doc = float(
-                row_valorcalc.find_elements(By.TAG_NAME, "td")[-1]
-                .text.replace(".", "")
-                .replace(",", ".")
-            )
+            table_valorcalc: WebElement = self.wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]')))[-1]
+            row_valorcalc = table_valorcalc.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[-1]
+            valor_doc = float(row_valorcalc.find_elements(By.TAG_NAME, "td")[-1].text.replace(".", "").replace(",", "."))
 
             print_options = PrintOptions()
             print_options.orientation = "portrait"
@@ -636,4 +548,4 @@ class Tjdft(CrawJUD):
             self.append_success(data)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e)
+            raise ErroDeExecucao(e=e) from e

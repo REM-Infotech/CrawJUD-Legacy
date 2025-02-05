@@ -28,6 +28,7 @@ class calculadoras:
 
         Raises:
             StartError: If an exception occurs during bot execution.
+
         """
         self.kwrgs = kwrgs
         self.__dict__.update(kwrgs)
@@ -36,7 +37,7 @@ class calculadoras:
 
         except Exception as e:
             logging.error(f"Exception: {e}", exc_info=True)
-            raise StartError(traceback.format_exc())
+            raise StartError(traceback.format_exc()) from e
 
     @property
     def Bot(self) -> Any:
@@ -50,6 +51,7 @@ class calculadoras:
 
         Raises:
             AttributeError: If the specified bot type is not found.
+
         """
         rb = getattr(
             import_module(f".{self.typebot.lower()}", __package__),

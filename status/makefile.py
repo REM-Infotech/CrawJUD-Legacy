@@ -27,12 +27,13 @@ def makezip(pid: str) -> str:
 
     Raises:
         Exception: If an error occurs during the ZIP creation process.
+
     """
     file_paths = []
     exec_path = Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec", pid)
 
     exec_path.mkdir(exist_ok=True)
-    for root, dirs, files in exec_path.walk():
+    for root, _, __ in exec_path.walk():
         if "chrome" in str(root) and Path(root).is_dir():
             rmtree(root, ignore_errors=True)
         elif "chrome" in str(root) and Path(root).is_file():

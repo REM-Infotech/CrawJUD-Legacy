@@ -39,6 +39,8 @@ try:
 except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
+default_dir = Path(__file__).cwd().resolve()
+
 
 class DriverBot(CrawJUD):
     """Bot for handling WebDriver operations within CrawJUD framework."""
@@ -67,23 +69,25 @@ class DriverBot(CrawJUD):
 
     @list_args.setter
     def list_args(self, new_Args: List[str]) -> None:
-        """Set a new list of arguments for WebDriver.
+        """
+        Set a new list of arguments for WebDriver.
 
         Args:
             new_Args (List[str]): The new arguments to set.
+
         """
         self.list_args_ = new_Args
 
-    def DriverLaunch(
-        self, message: str = "Inicializando WebDriver"
-    ) -> Tuple[WebDriver, WebDriverWait]:
-        """Launch the WebDriver with specified parameters.
+    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> Tuple[WebDriver, WebDriverWait]:
+        """
+        Launch the WebDriver with specified parameters.
 
         Args:
             message (str, optional): Initialization message. Defaults to "Inicializando WebDriver".
 
         Returns:
             Tuple[WebDriver, WebDriverWait]: The WebDriver instance and its WebDriverWait.
+
         """
         try:
             pid_path = self.output_dir_path.resolve()
@@ -97,9 +101,7 @@ class DriverBot(CrawJUD):
             chrome_options = Options()
             self.chr_dir = Path(pid_path).joinpath("chrome").resolve()
 
-            user = environ.get(
-                "USER", environ.get("LOGNAME", environ.get("USERNAME", "root"))
-            )
+            user = environ.get("USER", environ.get("LOGNAME", environ.get("USERNAME", "root")))
             if user != "root" or platform.system() != "Linux":
                 list_args.remove("--no-sandbox")
 
@@ -116,7 +118,7 @@ class DriverBot(CrawJUD):
                 )
                 path_exist = self.path_accepted.exists()
                 if path_exist:
-                    for root, _, files in self.path_accepted.walk():
+                    for root, _, __ in self.path_accepted.walk():
                         try:
                             shutil.copytree(root, self.chr_dir)
                         except Exception as e:
@@ -140,9 +142,7 @@ class DriverBot(CrawJUD):
                 "download.prompt_for_download": False,
                 "plugins.always_open_pdf_externally": True,
                 "profile.default_content_settings.popups": 0,
-                "printing.print_preview_sticky_settings.appState": json.dumps(
-                    self.settings
-                ),
+                "printing.print_preview_sticky_settings.appState": json.dumps(self.settings),
                 "download.default_directory": "{}".format(str(pid_path)),
             }
 
@@ -165,9 +165,7 @@ class DriverBot(CrawJUD):
 
             path_chrome.chmod(0o777, follow_symlinks=True)
 
-            driver = webdriver.Chrome(
-                service=Service(path_chrome), options=chrome_options
-            )
+            driver = webdriver.Chrome(service=Service(path_chrome), options=chrome_options)
 
             # driver.maximize_window()
 
@@ -192,10 +190,12 @@ class SetupDriver:
 
     @property
     def code_ver(self) -> str:
-        """Retrieve the major version of the installed Chrome browser.
+        """
+        Retrieve the major version of the installed Chrome browser.
 
         Returns:
             str: The Chrome version.
+
         """
         return ".".join(chrome_ver().split(".")[:-1])
 
@@ -217,26 +217,22 @@ class SetupDriver:
         TextColumn("{task.description}"),
     )
 
-    progress_group = Group(Panel(Group(current_app_progress, progress)))
+    grp = Group(current_app_progress, progress)
+    painel = Panel(grp)
 
-    def __init__(
-        self, destination: Path = Path(__file__).cwd().resolve(), **kwrgs
-    ) -> None:
-        """Initialize the SetupDriver with destination path and additional arguments.
+    progress_group = Group(painel)
+
+    def __init__(self, destination: Path = default_dir, **kwrgs) -> None:
+        """
+        Initialize the SetupDriver with destination path and additional arguments.
 
         Args:
             destination (Path, optional): The destination directory for WebDriver. Defaults to current working directory.
             **kwrgs: Additional keyword arguments.
+
         """
         new_stem = f"chromedriver{self.code_ver}.zip"
-        self.file_path = (
-            pathlib.Path(__file__)
-            .parent.cwd()
-            .resolve()
-            .joinpath("webdriver")
-            .joinpath("chromedriver")
-            .with_stem(new_stem)
-        )
+        self.file_path = pathlib.Path(__file__).parent.cwd().resolve().joinpath("webdriver").joinpath("chromedriver").with_stem(new_stem)
 
         if platform.system() == "Linux":
             self.file_path = self.file_path.with_suffix("")
@@ -252,10 +248,12 @@ class SetupDriver:
         self.destination = destination
 
     def __call__(self) -> str:
-        """Execute the driver setup process.
+        """
+        Execute the driver setup process.
 
         Returns:
             str: The name of the downloaded WebDriver.
+
         """
         with Live(self.progress_group):
             with ThreadPoolExecutor() as pool:
@@ -265,17 +263,15 @@ class SetupDriver:
         return self.destination.name
 
     def ConfigBar(self, pool: ThreadPoolExecutor):
-        """Configure the progress bar for downloading WebDriver.
+        """
+        Configure the progress bar for downloading WebDriver.
 
         Args:
             pool (ThreadPoolExecutor): The thread pool executor for handling downloads.
+
         """
-        self.current_task_id = self.current_app_progress.add_task(
-            "[bold blue] Baixando Chromedriver"
-        )
-        task_id = self.progress.add_task(
-            "download", filename=self.fileN.upper(), start=False
-        )
+        self.current_task_id = self.current_app_progress.add_task("[bold blue] Baixando Chromedriver")
+        task_id = self.progress.add_task("download", filename=self.fileN.upper(), start=False)
 
         self.destination = self.destination.joinpath(self.fileN).resolve()
         root_path = Path(self.file_path).parent.resolve()
@@ -295,10 +291,12 @@ class SetupDriver:
                 shutil.copy(self.file_path, self.destination)
 
     def getUrl(self) -> str:
-        """Construct the download URL for the WebDriver based on Chrome version.
+        """
+        Construct the download URL for the WebDriver based on Chrome version.
 
         Returns:
             str: The download URL.
+
         """
         # Verifica no endpoint qual a versão disponivel do WebDriver
         url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
@@ -328,7 +326,8 @@ class SetupDriver:
         return url_driver
 
     def copy_url(self, task_id: TaskID, url: str, path: Path) -> None:
-        """Download and extract the WebDriver from the specified URL.
+        """
+        Download and extract the WebDriver from the specified URL.
 
         Args:
             task_id (TaskID): The ID of the task to update progress.
@@ -337,6 +336,7 @@ class SetupDriver:
 
         Raises:
             Exception: If the download or extraction fails.
+
         """
         zip_name = path.with_name(f"{path.name}.zip")
         response = requests.get(f"https://{url}", stream=True, timeout=60)
@@ -376,6 +376,4 @@ class SetupDriver:
                     shutil.move(extracted_path, path)
 
         zip_name.unlink()
-        self.current_app_progress.update(
-            self.current_task_id, description="[bold green] ChromeDriver Baixado!"
-        )
+        self.current_app_progress.update(self.current_task_id, description="[bold green] ChromeDriver Baixado!")

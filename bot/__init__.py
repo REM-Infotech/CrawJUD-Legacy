@@ -1,4 +1,5 @@
-"""Package: CrawJUD-Bots.
+"""
+Package: CrawJUD-Bots.
 
 CrawJUD-Bots is a web scraper and bot for automated interaction with the
 Brazilian Justice System.
@@ -73,16 +74,19 @@ process_type = Union[psutil.Process, None]
 
 
 class BotThread(Process):
-    """A BotThread that extends Process to handle bot execution.
+    """
+    A BotThread that extends Process to handle bot execution.
 
     Attributes:
         exc_bot (Exception): Stores any exception raised during execution.
+
     """
 
     exc_bot: Exception = None
 
     def join(self) -> None:
-        """Wait for the BotThread to finish execution.
+        """
+        Wait for the BotThread to finish execution.
 
         If an exception occurred during execution, it is raised.
         """
@@ -91,7 +95,8 @@ class BotThread(Process):
             raise self.exc_bot
 
     def run(self) -> None:
-        """Run the target function in the BotThread.
+        """
+        Run the target function in the BotThread.
 
         Captures any exceptions raised during execution.
         """
@@ -104,11 +109,13 @@ class BotThread(Process):
 
 
 class WorkerBot:
-    """Manage the lifecycle of bot processes.
+    """
+    Manage the lifecycle of bot processes.
 
     Attributes:
         system (str): The operating system.
         kwrgs (Dict[str, str]): Keyword arguments for bot configuration.
+
     """
 
     system: str
@@ -118,7 +125,8 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
-        """Start a new bot process with the provided arguments.
+        """
+        Start a new bot process with the provided arguments.
 
         Args:
             path_args (str): Path to the JSON file with bot arguments.
@@ -131,6 +139,7 @@ class WorkerBot:
 
         Raises:
             Exception: On error during bot initialization or execution.
+
         """
         try:
             process = BotThread(
@@ -172,7 +181,8 @@ class WorkerBot:
         *args: Tuple[str],
         **kwargs: Dict[str, str],
     ) -> None:
-        """Initialize a WorkerBot instance.
+        """
+        Initialize a WorkerBot instance.
 
         Sets up the bot and executes the bot module based on the system type.
 
@@ -186,14 +196,13 @@ class WorkerBot:
 
         Raises:
             Exception: If an error occurs during initialization.
+
         """
         try:
             from app.run import flask_app as app
 
             with app.app_context():
-                display_name_ = (
-                    args[0] if args else kwargs.pop("display_name", display_name)
-                )
+                display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
                 path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
                 system_ = args[2] if args else kwargs.pop("system", system)
                 typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
@@ -219,7 +228,8 @@ class WorkerBot:
 
     @classmethod
     def stop(cls, processID: int, pid: str, app: Flask = None) -> str:
-        """Stop a process with the given processID.
+        """
+        Stop a process with the given processID.
 
         Args:
             processID (int): The process ID to stop.
@@ -228,6 +238,7 @@ class WorkerBot:
 
         Returns:
             str: A message indicating the stop result.
+
         """
         try:
             process = AsyncResult(processID)
@@ -235,14 +246,7 @@ class WorkerBot:
             print(process.status)
 
             if app and app.testing or (process and process.status == "PENDING"):
-                path_flag = (
-                    Path(__file__)
-                    .cwd()
-                    .joinpath("exec")
-                    .joinpath(pid)
-                    .joinpath(f"{pid}.flag")
-                    .resolve()
-                )
+                path_flag = Path(__file__).cwd().joinpath("exec").joinpath(pid).joinpath(f"{pid}.flag").resolve()
                 if not path_flag.exists():
                     path_flag.parent.mkdir(parents=True, exist_ok=True)
                     with path_flag.open("w") as f:
@@ -261,13 +265,15 @@ class WorkerBot:
 
     @classmethod
     def check_status(cls, processID: str) -> str:
-        """Check the status of a process.
+        """
+        Check the status of a process.
 
         Args:
             processID (str): The process ID to check.
 
         Returns:
             str: A status message regarding the process.
+
         """
         try:
             process = AsyncResult(processID)
