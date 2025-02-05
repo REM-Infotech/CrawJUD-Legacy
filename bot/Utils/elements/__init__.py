@@ -55,7 +55,7 @@ class ElementsBot(CrawJUD):
         """
         super().__init__()
 
-    def Config(self) -> Self:
+    def config(self) -> Self:
         """
         Configure the elements_bot attribute.
 
@@ -75,7 +75,7 @@ class ElementsBot(CrawJUD):
         return self
 
     @property
-    def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:
+    def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:  # noqa: N802
         """
         Retrieve the elements bot instance.
 

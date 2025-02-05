@@ -7,7 +7,7 @@ This module provides the PJE_AM class for automating PJE-AM operations.
 from .properties import Configuracao
 
 
-class PJE_AM(Configuracao):
+class PJE_AM(Configuracao):  # noqa: N801
     """
     Handle authentication, navigation, and interactions with the PJE-AM system.
 
@@ -27,7 +27,7 @@ class PJE_AM(Configuracao):
     chk_login: str = "https://pje.trt11.jus.br/pjekz/painel/usuario-externo"
 
     login_input: str = 'input[id="username"]'
-    password_input: str = 'input[id="password"]'
+    password_input: str = 'input[id="password"]'  # noqa: S105
     btn_entrar: str = 'button[id="btnEntrar"]'
     url_pautas: str = "https://pje.trt11.jus.br/consultaprocessual/pautas"
 

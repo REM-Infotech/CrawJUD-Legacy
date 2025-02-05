@@ -2,8 +2,9 @@
 Module: getchromeVer.
 
 This module provides functionality to retrieve the installed version of Google Chrome.
-"""
+"""  # noqa: N999
 
+import logging
 import platform
 
 if platform.system() == "Windows":
@@ -36,12 +37,12 @@ class ChromeVersion:
             return self.traverse_registry_tree(keypath=key_path).get("Version")
 
         if system.upper() == "DARWIN":
-            result = popen(  # noqa S605 # nosec B605
+            result = popen(  # noqa: S605 # nosec: B605
                 r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version"
             ).read()
 
         elif system.upper() == "LINUX":
-            result = popen("/usr/bin/google-chrome --version").read()  # noqa S605 # nosec B605
+            result = popen("/usr/bin/google-chrome --version").read()  # noqa: S605 # nosec: B605
 
         if result:
             if result.startswith("Google Chrome "):
@@ -76,4 +77,4 @@ class ChromeVersion:
 chrome_ver = ChromeVersion().get_chrome_version
 
 if __name__ == "__main__":
-    print(chrome_ver())
+    logging.info(f"Google Chrome version: {chrome_ver()}")  # noqa: G004

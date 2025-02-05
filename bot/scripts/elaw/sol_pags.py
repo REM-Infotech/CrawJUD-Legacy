@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -112,7 +112,7 @@ class SolPags(CrawJUD):
             search = self.search_bot()
 
             if search is True:
-                namedef = self.format_String(self.bot_data.get("TIPO_PAGAMENTO"))
+                namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO"))
                 self.new_payment()
                 self.set_pgto(namedef)
                 pgto = getattr(self, namedef.lower())
@@ -186,7 +186,7 @@ class SolPags(CrawJUD):
             for item in list_itens:
                 item: WebElement = item
 
-                normalizado_text = self.format_String(item.text)
+                normalizado_text = self.format_string(item.text)
 
                 if normalizado_text.lower() == namedef.lower():
                     item.click()
@@ -204,7 +204,7 @@ class SolPags(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def condenacao(self) -> None:
+    def condenacao(self) -> None:  # noqa: C901
         """
         Handle condemnation details.
 
@@ -258,7 +258,7 @@ class SolPags(CrawJUD):
                 docs.extend(calculos)
 
             for doc in docs:
-                doc = self.format_String(doc.upper())
+                doc = self.format_string(doc.upper())
                 insert_doc: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.editar_pagamento)))
                 path_doc = os.path.join(self.output_dir_path, doc)
                 insert_doc.send_keys(path_doc)
@@ -437,7 +437,7 @@ class SolPags(CrawJUD):
             docs = [self.bot_data.get("DOC_GUIA")]
 
             for doc in docs:
-                doc = self.format_String(doc)
+                doc = self.format_string(doc)
                 insert_doc: WebElement = self.wait.until(
                     EC.presence_of_element_located(
                         (
@@ -641,7 +641,7 @@ class SolPags(CrawJUD):
 
                 sleep(1)
                 id_task = item.find_elements(By.TAG_NAME, "td")[2].text
-                closeContext = self.wait.until(
+                closeContext = self.wait.until(  # noqa: N806
                     EC.presence_of_element_located(
                         (
                             By.CSS_SELECTOR,
@@ -650,18 +650,18 @@ class SolPags(CrawJUD):
                     )
                 ).find_element(By.TAG_NAME, "a")
 
-                WaitFrame = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor)))
+                WaitFrame = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor)))  # noqa: N806
                 self.driver.switch_to.frame(WaitFrame)
 
-                tipoCusta = ""
-                cod_bars = ""
-                tipoCondenacao = ""
+                tipoCusta = ""  # noqa: N806
+                cod_bars = ""  # noqa: N806
+                tipoCondenacao = ""  # noqa: N806
                 now = datetime.now(timezone("America/Manaus")).strftime("%d-%m-%Y %H.%M.%S")
-                Name_Comprovante1 = f"COMPROVANTE 1 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
+                Name_Comprovante1 = f"COMPROVANTE 1 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"  # noqa: N806
                 cod_bars_xls = str(self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", ""))
 
                 with suppress(TimeoutException):
-                    tipoCusta = str(
+                    tipoCusta = str(  # noqa: N806
                         self.wait.until(
                             EC.presence_of_element_located(
                                 (
@@ -689,7 +689,7 @@ class SolPags(CrawJUD):
                     )
 
                 with suppress(TimeoutException):
-                    tipoCondenacao = (
+                    tipoCondenacao = (  # noqa: N806
                         self.wait.until(
                             EC.presence_of_element_located(
                                 (
@@ -702,7 +702,7 @@ class SolPags(CrawJUD):
                         .replace("\n", "")
                     )
 
-                namedef = self.format_String(self.bot_data.get("TIPO_PAGAMENTO")).lower()
+                namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO")).lower()
 
                 chk_bars = cod_bars == cod_bars_xls
 
@@ -723,7 +723,7 @@ class SolPags(CrawJUD):
                     self.driver.switch_to.window(current_handle)
 
                     closeContext.click()
-                    Name_Comprovante2 = f"COMPROVANTE 2 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
+                    Name_Comprovante2 = f"COMPROVANTE 2 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"  # noqa: N806
                     item.screenshot(os.path.join(self.output_dir_path, Name_Comprovante2))
 
                     info_sucesso.extend(
@@ -745,7 +745,7 @@ class SolPags(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def getScreenShot(self, url_page: str, Name_Comprovante1: str):
+    def getScreenShot(self, url_page: str, Name_Comprovante1: str) -> None:  # noqa: N802, N803
         """
         Capture a screenshot of the specified page.
 

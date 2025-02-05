@@ -1,5 +1,7 @@
 """Module for sending email notifications related to CrawJUD-Bots executions."""
 
+import logging
+import traceback
 from os import environ
 
 from dotenv_vault import load_dotenv
@@ -42,8 +44,9 @@ def email_start(execution: None, app: Flask) -> None:
         for adm in usr.licenseusr.admins:
             admins.append(adm.email)
 
-    except Exception as e:
-        print(e)
+    except Exception:
+        err = traceback.format_exc()
+        logging.exception(err)
 
     with app.app_context():
         url_web = environ.get("url_web")
@@ -110,8 +113,9 @@ def email_stop(execution: None, app: Flask) -> None:
         for adm in usr.licenseusr.admins:
             admins.append(adm.email)
 
-    except Exception as e:
-        print(e)
+    except Exception:
+        err = traceback.format_exc()
+        logging.exception(err)
 
     with app.app_context():
         url_web = environ.get("url_web")

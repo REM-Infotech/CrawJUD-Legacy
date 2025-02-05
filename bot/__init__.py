@@ -18,6 +18,7 @@ Modules:
 
 from __future__ import annotations
 
+import logging
 import platform
 from importlib import import_module
 from pathlib import Path
@@ -227,7 +228,7 @@ class WorkerBot:
             raise e
 
     @classmethod
-    def stop(cls, processID: int, pid: str, app: Flask = None) -> str:
+    def stop(cls, processID: int, pid: str, app: Flask = None) -> str:  # noqa: N802, N803
         """
         Stop a process with the given processID.
 
@@ -243,7 +244,7 @@ class WorkerBot:
         try:
             process = AsyncResult(processID)
 
-            print(process.status)
+            logging.info(process.status)
 
             if app and app.testing or (process and process.status == "PENDING"):
                 path_flag = Path(__file__).cwd().joinpath("exec").joinpath(pid).joinpath(f"{pid}.flag").resolve()
@@ -264,7 +265,7 @@ class WorkerBot:
             return str(e)
 
     @classmethod
-    def check_status(cls, processID: str) -> str:
+    def check_status(cls, processID: str) -> str:  # noqa: N802, N803
         """
         Check the status of a process.
 

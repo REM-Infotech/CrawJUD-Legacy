@@ -5,7 +5,7 @@ This module contains utility classes for template configurations.
 """
 
 
-class listas:
+class listas:  # noqa: N801
     """
     Utility class providing predefined lists for template processing.
 

@@ -8,6 +8,7 @@ This module provides logging and message handling utilities for the CrawJUD proj
 import logging
 import os
 import pathlib
+import traceback
 from datetime import datetime
 from os import environ
 from time import sleep
@@ -84,15 +85,14 @@ class PrintBot(CrawJUD):
                         f.write(f"{mensagem}\n")
                 pass
 
-        except Exception as e:
+        except Exception:
             # Aguarda 2 segundos
             sleep(2)
 
-            # Registra o erro
-            logging.error(f"Exception: {e}", exc_info=True)
+            err = traceback.format_exc()
 
-            # Exibe o erro
-            tqdm.write(f"{e}")
+            # Registra o erro
+            logging.exception(err)
 
     def end_prt(self, status: str) -> None:
         """Send a final status message."""
@@ -113,5 +113,6 @@ class PrintBot(CrawJUD):
 
             iobot.send_message(data, url_socket)
 
-        except Exception as e:
-            print(e)
+        except Exception:
+            err = traceback.format_exc()
+            logging.exception(err)

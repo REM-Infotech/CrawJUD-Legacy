@@ -1,5 +1,7 @@
 """Socket.IO event handlers for logging and managing bot executions."""
 
+import logging
+import traceback
 from datetime import datetime
 
 from flask_socketio import emit, join_room, leave_room, send
@@ -65,10 +67,10 @@ def terminate_bot(data: dict[str, str]) -> None:
 
     try:
         pid = data["pid"]
-        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
 
         if processID:
-            processID = str(processID.processID)
+            processID = str(processID.processID)  # noqa: N806
             WorkerBot.stop(processID, pid, app)
             send("Bot stopped!")
 
@@ -94,8 +96,9 @@ def log_message(data: dict[str, str]) -> None:
 
         send("message received!")
 
-    except Exception as e:
-        print(e)
+    except Exception:
+        err = traceback.format_exc()
+        logging.exception(err)
         send("failed to receive message")
 
 
@@ -130,12 +133,12 @@ def join(data: dict[str, str]) -> None:
         from bot import WorkerBot
 
         pid = room
-        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
 
         message = "Fim da Execução"
 
         if processID:
-            processID = processID.processID
+            processID = processID.processID  # noqa: N806
             message = WorkerBot.check_status(processID)
 
             if message == f"Process {processID} stopped!":

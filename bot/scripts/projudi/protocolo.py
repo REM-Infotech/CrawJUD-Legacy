@@ -22,7 +22,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -33,7 +33,7 @@ from ...core import CrawJUD
 dotenv.load_dotenv()
 
 
-class protocolo(CrawJUD):
+class protocolo(CrawJUD):  # noqa: N801
     """
     Handles protocol operations within the Projudi system.
 
@@ -172,13 +172,13 @@ class protocolo(CrawJUD):
             str | None: The extracted protocol number if available, otherwise None.
 
         """
-        successMessage = None
+        successMessage = None  # noqa: N806
         with suppress(TimeoutException):
-            successMessage = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#successMessages"))).text.split("Protocolo:")[1].replace(" ", "")
+            successMessage = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#successMessages"))).text.split("Protocolo:")[1].replace(" ", "")  # noqa: N806
 
         return successMessage
 
-    def set_parte(self) -> bool:
+    def set_parte(self) -> bool:  # noqa: C901
         """
         Select the appropriate party for the protocol.
 
@@ -352,7 +352,7 @@ class protocolo(CrawJUD):
             css_inptfile = 'input[id="conteudo"]'
             input_file_element: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile)))
 
-            file_to_upload = self.format_String(file)
+            file_to_upload = self.format_string(file)
 
             path_file = os.path.join(pathlib.Path(self.path_args).parent.resolve(), file_to_upload)
 
@@ -417,7 +417,7 @@ class protocolo(CrawJUD):
 
             for file in anexos_list:
                 self.message = f"Enviando arquivo '{file}'"
-                file_to_upload = self.format_String(file)
+                file_to_upload = self.format_string(file)
                 self.type_log = "log"
                 self.prt()
                 input_file_element: WebElement = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.elements.conteudo)))

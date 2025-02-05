@@ -7,23 +7,13 @@ Classes:
     OtherUtils: Provides utility methods for data processing and interaction.
 """
 
-from ..common import ErroDeExecucao
-from ..core import CrawJUD, pd
-from ..shared import Numbers
-from .auth import AuthBot
-from .Driver import DriverBot
-from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
-from .interator import Interact
-from .MakeTemplate import MakeXlsx
-from .PrintLogs import PrintBot
-from .search import SearchBot
-
-
+import logging
 import os
 import re
 import ssl
-import subprocess  # noqa S404  # nosec B404
+import subprocess  # noqa: S404  # nosec: B404
 import time
+import traceback
 import unicodedata
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -35,6 +25,16 @@ from cryptography.hazmat.backends import default_backend
 from pandas import Timestamp
 from werkzeug.utils import secure_filename
 
+from ..common import ErroDeExecucao
+from ..core import CrawJUD, pd
+from ..shared import Numbers
+from .auth import AuthBot
+from .Driver import DriverBot
+from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
+from .interator import Interact
+from .MakeTemplate import MakeXlsx
+from .PrintLogs import PrintBot
+from .search import SearchBot
 
 __all__ = [
     "AuthBot",
@@ -73,7 +73,7 @@ class OtherUtils(CrawJUD):
         append_validarcampos(data: List[Dict[str, str]]) -> None
         count_doc(doc: str) -> Union[str, None]
         get_recent(folder: str) -> Union[str, None]
-        format_String(string: str) -> str
+        format_string(string: str) -> str
         normalizar_nome(word: str) -> str
         similaridade(word1: str, word2: str) -> float
         finalize_execution() -> None
@@ -257,7 +257,7 @@ class OtherUtils(CrawJUD):
         }
 
     @property
-    def cities_Amazonas(self) -> Dict[str, str]:
+    def cities_Amazonas(self) -> Dict[str, str]:  # noqa: N802
         """
         Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
 
@@ -330,7 +330,7 @@ class OtherUtils(CrawJUD):
             "Urucurituba": "Interior",
         }
 
-    def dataFrame(self) -> List[Dict[str, str]]:
+    def dataFrame(self) -> List[Dict[str, str]]:  # noqa: N802
         """
         Convert an Excel file to a list of dictionaries with formatted data.
 
@@ -367,7 +367,7 @@ class OtherUtils(CrawJUD):
 
         return vars_df
 
-    def elawFormats(self, data: Dict[str, str]) -> Dict[str, str]:
+    def elawFormats(self, data: Dict[str, str]) -> Dict[str, str]:  # noqa: N802, C901
         """
         Format the given data dictionary according to specific rules.
 
@@ -448,7 +448,12 @@ class OtherUtils(CrawJUD):
         else:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    def append_success(self, data: TypeData, message: str = None, fileN: str = None) -> None:
+    def append_success(  # noqa: N802
+        self,
+        data: TypeData,
+        message: str = None,
+        fileN: str = None,  # noqa: N803
+    ) -> None:
         """
         Append successful execution data to the spreadsheet.
 
@@ -569,7 +574,7 @@ class OtherUtils(CrawJUD):
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
 
-    def format_String(self, string: str) -> str:
+    def format_string(self, string: str) -> str:
         """
         Format a given string to a secure filename.
 
@@ -640,15 +645,17 @@ class OtherUtils(CrawJUD):
         Checks for the presence of a certificate and installs it using certutil if absent.
         """
 
-        def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:
+        def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:  # noqa: N802
             for cert, _, _ in ssl.enum_certificates(store):
                 try:
                     x509_cert = x509.load_der_x509_certificate(cert, default_backend())
                     subject_name = x509_cert.subject.rfc4514_string()
                     if crt_sbj_nm in subject_name:
                         return True
-                except Exception as e:
-                    print(f"Erro ao processar o certificado: {e}")
+                except Exception:
+                    err = traceback.format_exc()
+                    logging.exception(err)
+
             return False
 
         installed = CertIsInstall(self.name_cert.split(".pfx")[0])
@@ -666,7 +673,7 @@ class OtherUtils(CrawJUD):
                 path_cert,
             ]
             try:
-                resultado = subprocess.run(  # nosec B603 # noqa S603
+                resultado = subprocess.run(  # nosec: B603 # noqa: S603
                     comando,
                     check=True,
                     text=True,

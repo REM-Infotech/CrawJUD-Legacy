@@ -13,7 +13,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ItemNaoEcontrado
@@ -224,7 +224,7 @@ class Interact(CrawJUD):
         action.scroll_to_element(element)
         sleep(0.5)
 
-    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:
+    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:  # noqa: N802, N803
         """
         Select an option from a Select2 dropdown based on the search text.
 
@@ -238,9 +238,9 @@ class Interact(CrawJUD):
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}
 
-        elementsSelecting = elementSelect.replace("'", "'")
+        elementsSelecting = elementSelect.replace("'", "'")  # noqa: N806
         if '"' in elementsSelecting:
-            elementsSelecting = elementSelect.replace('"', "'")
+            elementsSelecting = elementSelect.replace('"', "'")  # noqa: N806
 
         for item in items:
             value_item = item.get_attribute("value")

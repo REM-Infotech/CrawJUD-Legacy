@@ -15,7 +15,7 @@ from time import sleep
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -24,7 +24,7 @@ from ...core import CrawJUD
 from ...Utils import OtherUtils
 
 
-class emissor(CrawJUD):
+class emissor(CrawJUD):  # noqa: N801
     """
     Class emissor.
 

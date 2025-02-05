@@ -15,7 +15,7 @@ from typing import Union
 from ...common.exceptions import StartError
 
 
-class projudi:
+class projudi:  # noqa: N801
     """
     The projudi class initializes and executes the specified bot based on provided configurations.
 
@@ -41,11 +41,13 @@ class projudi:
             self.Bot.execution()
 
         except Exception as e:
-            logging.error(f"Exception: {e}", exc_info=True)
+            err = traceback.format_exc()
+            logging.exception(err)
+
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> ClassBots:
+    def Bot(self) -> ClassBots:  # noqa: N802
         """
         Get the bot instance based on the 'typebot' configuration.
 

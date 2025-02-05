@@ -16,7 +16,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -25,7 +25,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class protocolo(CrawJUD):
+class protocolo(CrawJUD):  # noqa: N801
     """
     protocolo class.
 

@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -233,14 +233,14 @@ class Cadastro(CrawJUD):
         self.prt()
 
         expand_areasub: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboAreaSub_css)),
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboareasub_css)),
             message="Erro ao encontrar elemento",
         )
         expand_areasub.click()
         text = str(self.bot_data.get("SUBAREA_DIREITO"))
         sleep(0.5)
 
-        self.interact.select_item(self.elements.elemento_ComboAreaSub, text)
+        self.interact.select_item(self.elements.elemento_comboareasub, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
         self.message = "Sub-Área do direito selecionada!"
         self.type_log = "info"
@@ -274,7 +274,7 @@ class Cadastro(CrawJUD):
             None
 
         """
-        elementSelect = self.elements.css_esfera_judge
+        elementSelect = self.elements.css_esfera_judge  # noqa: N806
         text = "Judicial"
 
         self.message = "Informando esfera do processo"
@@ -301,7 +301,7 @@ class Cadastro(CrawJUD):
 
         """
         key = "ESTADO"
-        elementSelect = self.elements.estado_input
+        elementSelect = self.elements.estado_input  # noqa: N806
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
@@ -334,7 +334,7 @@ class Cadastro(CrawJUD):
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        elementSelect = self.elements.comarca_input
+        elementSelect = self.elements.comarca_input  # noqa: N806
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
@@ -364,7 +364,7 @@ class Cadastro(CrawJUD):
             None
 
         """
-        elementSelect = self.elements.foro_input
+        elementSelect = self.elements.foro_input  # noqa: N806
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
@@ -397,7 +397,7 @@ class Cadastro(CrawJUD):
 
         """
         text = self.bot_data.get("VARA")
-        elementSelect = self.elements.vara_input
+        elementSelect = self.elements.vara_input  # noqa: N806
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
@@ -458,7 +458,7 @@ class Cadastro(CrawJUD):
 
         """
         text = self.bot_data.get("EMPRESA")
-        elementSelect = self.elements.empresa_input
+        elementSelect = self.elements.empresa_input  # noqa: N806
 
         self.message = "Informando Empresa"
         self.type_log = "log"
@@ -485,7 +485,7 @@ class Cadastro(CrawJUD):
 
         """
         key = "TIPO_EMPRESA"
-        elementSelect = self.elements.tipo_empresa_input
+        elementSelect = self.elements.tipo_empresa_input  # noqa: N806
         text = self.bot_data.get(key).__str__().capitalize()
 
         self.message = "Informando classificação da Empresa"
@@ -516,7 +516,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
-        elementSelect = self.elements.tipo_parte_contraria_input
+        elementSelect = self.elements.tipo_parte_contraria_input  # noqa: N806
         self.Select2_ELAW(elementSelect, text)
 
         table_tipo_doc: WebElement = self.wait.until(
@@ -616,7 +616,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        div_comboProcessoTipo: WebElement = self.wait.until(
+        div_comboProcessoTipo: WebElement = self.wait.until(  # noqa: N806
             EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.comboProcessoTipo)),
             message="Erro ao encontrar elemento",
         )
@@ -702,7 +702,7 @@ class Cadastro(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        div_select_Adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)))
+        div_select_Adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)))  # noqa: N806
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
@@ -744,11 +744,11 @@ class Cadastro(CrawJUD):
         campo_adv.clear()
         sleep(0.02)
 
-        Text = str(self.bot_data.get("ADV_PARTE_CONTRARIA"))
+        Text = str(self.bot_data.get("ADV_PARTE_CONTRARIA"))  # noqa: N806
 
         for i in ["\t", "\n"]:
             if i in Text:
-                Text = Text.split(i)[0]
+                Text = Text.split(i)[0]  # noqa: N806
                 break
 
         self.interact.send_key(campo_adv, Text)
@@ -857,7 +857,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.contingencia
+        elementSelect = self.elements.contingencia  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -866,7 +866,7 @@ class Cadastro(CrawJUD):
         self.Select2_ELAW(elementSelect, text[0])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        elementSelect = self.elements.tipo_polo
+        elementSelect = self.elements.tipo_polo  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -1179,9 +1179,9 @@ class Cadastro(CrawJUD):
             return True
 
         elif not wait_confirm_save:
-            ErroElaw: WebElement | str = None
+            ErroElaw: WebElement | str = None  # noqa: N806
             with suppress(TimeoutException, NoSuchElementException):
-                ErroElaw = (
+                ErroElaw = (  # noqa: N806
                     self.wait.until(
                         EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
                         message="Erro ao encontrar elemento",
@@ -1191,6 +1191,6 @@ class Cadastro(CrawJUD):
                 )
 
             if not ErroElaw:
-                ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"
+                ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"  # noqa: N806
 
             raise ErroDeExecucao(ErroElaw)

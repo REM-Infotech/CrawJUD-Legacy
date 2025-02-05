@@ -73,7 +73,7 @@ class PropertiesCrawJUD:
     message_error_: str = None
     state_or_client_: str = None
     type_log_: str = str("info")
-    graphicMode_: str = str("doughnut")
+    graphicMode_: str = str("doughnut")  # noqa: N815
 
     _start_time_ = 0.0
 
@@ -367,12 +367,12 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.message_error_ = nw_m
 
     @property
-    def graphicMode(self) -> str:
+    def graphicMode(self) -> str:  # noqa: N802
         """Return the graphic mode."""
         return PropertiesCrawJUD.graphicMode_
 
     @graphicMode.setter
-    def graphicMode(self, new_graph) -> None:
+    def graphicMode(self, new_graph) -> None:  # noqa: N802
         """
         Set the graphic mode.
 
@@ -431,7 +431,7 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.path_accepted_ = new_path
 
     @property
-    def OpenAI_client(self) -> OpenAI:
+    def OpenAI_client(self) -> OpenAI:  # noqa: N802
         """Return the OpenAI client."""
         load_dotenv()
 
@@ -525,42 +525,42 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.client_ = client_
 
     @property
-    def AuthBot(self) -> Callable[[], bool]:
+    def AuthBot(self) -> Callable[[], bool]:  # noqa: N802
         """Return the AuthBot callable."""
         from ..Utils import AuthBot as _AuthBot_
 
         return _AuthBot_().auth
 
     @property
-    def MakeXlsx(self) -> _MakeXlsx_:
+    def MakeXlsx(self) -> _MakeXlsx_:  # noqa: N802
         """Return the MakeXlsx instance."""
         from ..Utils import MakeXlsx as _MakeXlsx_
 
         return _MakeXlsx_()
 
     @property
-    def Interact(self) -> _Interact_:
+    def Interact(self) -> _Interact_:  # noqa: N802
         """Return the Interact instance."""
         from ..Utils import Interact as _Interact_
 
         return _Interact_()
 
     @property
-    def PrintBot(self) -> _PrintBot_:
+    def PrintBot(self) -> _PrintBot_:  # noqa: N802
         """Return the PrintBot instance."""
         from ..Utils import PrintBot as _PrintBot_
 
         return _PrintBot_()
 
     @property
-    def SearchBot(self) -> _SearchBot_:
+    def SearchBot(self) -> _SearchBot_:  # noqa: N802
         """Return the SearchBot instance."""
         from ..Utils import SearchBot as _SearchBot_
 
         return _SearchBot_()
 
     @property
-    def OtherUtils(self) -> _OtherUtils_:
+    def OtherUtils(self) -> _OtherUtils_:  # noqa: N802
         """Return the OtherUtils instance."""
         from ..Utils import OtherUtils as _OtherUtils_
 
@@ -571,10 +571,10 @@ class PropertiesCrawJUD:
         """Return the elements configuration."""
         from ..Utils import ElementsBot as _ElementsBot_
 
-        return _ElementsBot_().Config().Elements
+        return _ElementsBot_().config().Elements
 
     @property
-    def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:
+    def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:  # noqa: N802
         """Return the DriverLaunch callable."""
         from ..Utils import DriverBot as _DriverBot_
 
@@ -586,18 +586,18 @@ class PropertiesCrawJUD:
         return self.SearchBot.search_
 
     @property
-    def dataFrame(self) -> Callable[[], list[dict[str, str]]]:
+    def dataFrame(self) -> Callable[[], list[dict[str, str]]]:  # noqa: N802
         """Return the dataFrame callable."""
         return self.OtherUtils.dataFrame
 
     @property
-    def isStoped(self) -> bool:
+    def isStoped(self) -> bool:  # noqa: N802
         """Check if the process is stopped."""
         stopped = Path(self.output_dir_path).joinpath(f"{self.pid}.flag").exists()
         return stopped
 
     @property
-    def elawFormats(self) -> Callable[..., dict[str, str]]:
+    def elawFormats(self) -> Callable[..., dict[str, str]]:  # noqa: N802
         """Return the elawFormats callable."""
         return self.OtherUtils.elawFormats
 
@@ -637,9 +637,9 @@ class PropertiesCrawJUD:
         return self.OtherUtils.get_recent
 
     @property
-    def format_String(self) -> Callable[..., str]:
-        """Return the format_String callable."""
-        return self.OtherUtils.format_String
+    def format_string(self) -> Callable[..., str]:
+        """Return the format_string callable."""
+        return self.OtherUtils.format_string
 
     @property
     def normalizar_nome(self) -> Callable[..., str]:

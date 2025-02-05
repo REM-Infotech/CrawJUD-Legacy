@@ -14,7 +14,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -334,7 +334,7 @@ class Tjdft(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def acessorios(self) -> None:
+    def acessorios(self) -> None:  # noqa: C901
         """
         Inform accessory values like penalties and fees.
 
@@ -421,7 +421,7 @@ class Tjdft(CrawJUD):
             except Exception as e:
                 raise ErroDeExecucao(e=e) from e
 
-        def percent_multa_475J():
+        def percent_multa_475J() -> None:  # noqa: N802
             try:
                 percent_multa_ = self.driver.find_element(By.CSS_SELECTOR, 'input[id="multa475_exec_percent"]')
                 self.interact.send_key(percent_multa_, self.bot_data.get("PERCENT_MULTA_475J"))

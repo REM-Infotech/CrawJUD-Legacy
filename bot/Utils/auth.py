@@ -7,10 +7,11 @@ Classes:
     AuthBot: A class for handling authentication across different systems.
 """
 
+import logging
 import os
 import platform
 import string
-import subprocess  # noqa S404 # nosec B404
+import subprocess  # noqa: S404 # nosec: B404
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -19,7 +20,7 @@ from typing import Callable
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from ..core import CrawJUD
@@ -336,14 +337,14 @@ class AuthBot(CrawJUD):
                     "/C",
                     "/I",
                 ]
-                resultados = subprocess.run(  # noqa S603 # nosec B603
+                resultados = subprocess.run(  # noqa: S603 # nosec: B603
                     comando,
                     check=True,
                     text=True,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-                print(resultados.stdout)
+                logging.info(str(resultados.stdout))
 
             except Exception as e:
                 raise e

@@ -18,7 +18,7 @@ from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import Select
 
 from ...common import ErroDeExecucao
@@ -27,7 +27,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class movimentacao(CrawJUD):
+class movimentacao(CrawJUD):  # noqa: N801
     """
     Handles movement-related operations within the Projudi system.
 
@@ -142,7 +142,7 @@ class movimentacao(CrawJUD):
                 self.append_success(self.appends)
 
             if len(self.another_append) > 0:
-                for data, msg, fileN in self.another_append:
+                for data, msg, fileN in self.another_append:  # noqa: N806
                     self.append_success([data], msg, fileN)
 
         except Exception as e:
@@ -187,7 +187,7 @@ class movimentacao(CrawJUD):
         if encontrado is False:
             raise ErroDeExecucao("Nenhuma movimentação encontrada")
 
-    def filter_moves(self, move: WebElement) -> bool:
+    def filter_moves(self, move: WebElement) -> bool:  # noqa: C901
         """
         Filter movements based on date and keyword criteria.
 
@@ -331,7 +331,7 @@ class movimentacao(CrawJUD):
 
         return resultados
 
-    def scrap_moves(self, keyword: str):
+    def scrap_moves(self, keyword: str) -> None:  # noqa: C901
         """
         Scrape movements that contain the specified keyword.
 
@@ -469,7 +469,7 @@ class movimentacao(CrawJUD):
 
             self.appends.append(data)
 
-    def getAnotherMoveWithDoc(self, keyword: str):
+    def getAnotherMoveWithDoc(self, keyword: str) -> list[WebElement]:  # noqa: N802
         """
         Retrieve another move with the specified document keyword.
 
@@ -510,7 +510,7 @@ class movimentacao(CrawJUD):
 
         return expand is not None
 
-    def getdocmove(self, move: WebElement, save_in_anotherfile: bool = False) -> str:
+    def getdocmove(self, move: WebElement, save_in_anotherfile: bool = False) -> str:  # noqa: C901
         """
         Retrieve the document associated with a movement.
 
@@ -571,7 +571,7 @@ class movimentacao(CrawJUD):
 
             doc = docs.find_elements(By.TAG_NAME, "td")[4]
             link_doc = doc.find_element(By.TAG_NAME, "a")
-            name_pdf = self.format_String(str(link_doc.text))
+            name_pdf = self.format_string(str(link_doc.text))
             old_pdf = Path(os.path.join(self.output_dir_path), name_pdf)
             url = link_doc.get_attribute("href")
 

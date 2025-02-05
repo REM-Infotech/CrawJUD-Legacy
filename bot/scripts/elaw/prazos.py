@@ -10,7 +10,7 @@ from contextlib import suppress
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -136,7 +136,7 @@ class Prazos(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def TablePautas(self) -> None:
+    def TablePautas(self) -> None:  # noqa: N802
         """
         Verify if there are existing schedules for the specified day.
 
@@ -145,9 +145,9 @@ class Prazos(CrawJUD):
 
         """
         try:
-            switch_pautaAndamento = self.driver.find_element(By.CSS_SELECTOR, self.elements.switch_pautaAndamento)
+            switch_pautaandamento = self.driver.find_element(By.CSS_SELECTOR, self.elements.switch_pautaandamento)
 
-            switch_pautaAndamento.click()
+            switch_pautaandamento.click()
 
             self.message = f"Verificando se existem pautas para o dia {self.data_Concat}"
             self.type_log = "log"
@@ -156,7 +156,7 @@ class Prazos(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def NovaPauta(self) -> None:
+    def NovaPauta(self) -> None:  # noqa: N802
         """
         Launch a new audience schedule.
 
@@ -169,18 +169,18 @@ class Prazos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            btn_NovaAudiencia = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_NovaAudiencia)))
+            btn_novaaudiencia = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_novaaudiencia)))
 
-            btn_NovaAudiencia.click()
+            btn_novaaudiencia.click()
 
             # Info tipo Audiencia
             self.message = "Informando tipo de audiência"
             self.type_log = "log"
             self.prt()
 
-            selectorTipoAudiencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectorTipoAudiencia)))
+            selectortipoaudiencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectortipoaudiencia)))
 
-            items = selectorTipoAudiencia.find_elements(By.TAG_NAME, "option")
+            items = selectortipoaudiencia.find_elements(By.TAG_NAME, "option")
             opt_itens: dict[str, str] = {}
             for item in items:
                 value_item = item.get_attribute("value")
@@ -190,10 +190,10 @@ class Prazos(CrawJUD):
 
             value_opt = opt_itens.get(self.bot_data["TIPO_AUDIENCIA"].upper())
             if value_opt:
-                command = f"$('{self.elements.selectorTipoAudiencia}').val(['{value_opt}']);"
+                command = f"$('{self.elements.selectortipoaudiencia}').val(['{value_opt}']);"
                 self.driver.execute_script(command)
 
-                command2 = f"$('{self.elements.selectorTipoAudiencia}').trigger('change');"
+                command2 = f"$('{self.elements.selectortipoaudiencia}').trigger('change');"
                 self.driver.execute_script(command2)
 
             # Info Data Audiencia
@@ -201,14 +201,14 @@ class Prazos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            DataAudiencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia)))
+            DataAudiencia: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia)))  # noqa: N806
 
             DataAudiencia.send_keys(self.data_Concat)
 
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def save_Prazo(self) -> None:
+    def save_Prazo(self) -> None:  # noqa: N802
         """
         Save the newly created deadline.
 
@@ -221,14 +221,14 @@ class Prazos(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            btn_Salvar = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_Salvar)
+            btn_salvar = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_salvar)
 
-            btn_Salvar.click()
+            btn_salvar.click()
 
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def CheckLancamento(self) -> dict[str, str] | None:
+    def CheckLancamento(self) -> dict[str, str] | None:  # noqa: N802
         """
         Check if the deadline has been successfully recorded.
 
@@ -240,27 +240,27 @@ class Prazos(CrawJUD):
 
         """
         try:
-            tablePrazos: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tablePrazos)))
+            tableprazos: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tableprazos)))
 
-            tablePrazos: list[WebElement] = tablePrazos.find_elements(By.TAG_NAME, "tr")
+            tableprazos: list[WebElement] = tableprazos.find_elements(By.TAG_NAME, "tr")
 
             data = None
-            for item in tablePrazos:
+            for item in tableprazos:
                 if item.text == "Nenhum registro encontrado!":
                     return None
 
-                data_Prazo = str(item.find_elements(By.TAG_NAME, "td")[4].text)
+                data_Prazo = str(item.find_elements(By.TAG_NAME, "td")[4].text)  # noqa: N806
 
                 tipo = str(item.find_elements(By.TAG_NAME, "td")[5].text)
 
                 chk_tipo = tipo.upper() == "AUDIÊNCIA"
-                chk_dataAudiencia = data_Prazo == self.data_Concat
+                chk_dataAudiencia = data_Prazo == self.data_Concat  # noqa: N806
 
                 if chk_tipo and chk_dataAudiencia:
-                    nProc_pid = f"{self.bot_data['NUMERO_PROCESSO']} - {self.pid}"
+                    nProc_pid = f"{self.bot_data['NUMERO_PROCESSO']} - {self.pid}"  # noqa: N806
 
-                    nameComprovante = f"Comprovante - {nProc_pid}.png"
-                    idPrazo = str(item.find_elements(By.TAG_NAME, "td")[2].text)
+                    nameComprovante = f"Comprovante - {nProc_pid}.png"  # noqa: N806
+                    idPrazo = str(item.find_elements(By.TAG_NAME, "td")[2].text)  # noqa: N806
 
                     item.screenshot(os.path.join(self.output_dir_path, nameComprovante))
 

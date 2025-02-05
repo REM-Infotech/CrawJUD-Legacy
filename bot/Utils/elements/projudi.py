@@ -7,12 +7,12 @@ Defines the PROJUDI_AM class that manages property selectors for the PROJUDI_AM 
 from .properties import Configuracao
 
 
-class PROJUDI_AM(Configuracao):
+class PROJUDI_AM(Configuracao):  # noqa: N801
     """Configuration selectors for the PROJUDI_AM system."""
 
     url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
     campo_username = "#login"
-    campo_passwd = "#senha"  # noqa S105 # nosec B105
+    campo_passwd = "#senha"  # noqa: S105 # nosec: B105
     btn_entrar = "#btEntrar"
     chk_login = 'iframe[name="userMainFrame"]'
 
@@ -26,7 +26,7 @@ class PROJUDI_AM(Configuracao):
 
     btn_partes = "#tabItemprefix2"
     btn_infogeral = "#tabItemprefix0"
-    includeContent_capa = "includeContent"
+    includeContent_capa = "includeContent"  # noqa: N815
 
     infoproc = 'table[id="informacoesProcessuais"]'
     assunto_proc = 'a[class="definitionAssuntoPrincipal"]'
@@ -52,7 +52,7 @@ class PROJUDI_AM(Configuracao):
 
     tipo_documento = 'input[name="descricaoTipoDocumento"]'
     descricao_documento = "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)"
-    includeContent = 'input#editButton[value="Adicionar"]'
+    includeContent = 'input#editButton[value="Adicionar"]'  # noqa: N815
     border = 'iframe[frameborder="0"][id]'
     conteudo = '//*[@id="conteudo"]'
     botao_assinar = 'input[name="assinarButton"]'

@@ -37,7 +37,7 @@ def webdriver_exepts() -> list[Exception]:
     ]
 
 
-def exceptionsBot() -> dict[str, str]:
+def exceptionsBot() -> dict[str, str]:  # noqa: N802
     """
     Provide a mapping of exception names to user-friendly error messages.
 

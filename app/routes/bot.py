@@ -9,9 +9,8 @@ from typing import Type
 
 from celery import Task
 from celery.schedules import crontab
-from flask import Blueprint, Response
+from flask import Blueprint, Response, jsonify, make_response, request
 from flask import current_app as app
-from flask import jsonify, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 
 from miscellaneous import reload_module
@@ -102,9 +101,10 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:
             elif app.testing is True:
                 is_started = 200 if data_bot else 500
 
-        except Exception as e:  # pragma: no cover
-            print(traceback.format_exc())
-            message = {"error": str(e)}
+        except Exception:  # pragma: no cover
+            err = traceback.format_exc()
+            app.logger.exception(err)
+            message = {"error": err}
             is_started: Type[int] = 500
 
     resp = make_response(jsonify(message), is_started)

@@ -10,7 +10,7 @@ from typing import Any
 from ...common import StartError
 
 
-class pje:
+class pje:  # noqa: N801
     """Represent the pje Bot environment and handle its execution."""
 
     def __init__(self, **kwrgs) -> None:
@@ -21,11 +21,12 @@ class pje:
             self.Bot.execution()
 
         except Exception as e:
-            logging.error(f"Exception: {e}", exc_info=True)
+            err = traceback.format_exc()
+            logging.exception(err)
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> Any:
+    def Bot(self) -> Any:  # noqa: N802
         """Return the bot instance configured for this environment."""
         rb = getattr(
             import_module(f".{self.typebot.lower()}", __package__),

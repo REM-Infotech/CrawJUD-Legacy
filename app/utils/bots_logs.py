@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 
-def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> Logger:
+def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> Logger:  # noqa: N803
     """
     Initialize and configure logging for the application.
 
@@ -23,8 +23,8 @@ def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> 
         Logger: Configured logger instance.
 
     """
-    L_F: str = L_F or str(kwargs.pop("L_F", "app.log"))
-    L_LVL: int = L_LVL or int(kwargs.pop("L_LVL", DEBUG))
+    L_F: str = L_F or str(kwargs.pop("L_F", "app.log"))  # noqa: N806
+    L_LVL: int = L_LVL or int(kwargs.pop("L_LVL", DEBUG))  # noqa: N806
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024 * 1024))
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 1))
 

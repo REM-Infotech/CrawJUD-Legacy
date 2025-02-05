@@ -3,7 +3,7 @@
 from .properties import Configuracao
 
 
-class ESAJ_AM(Configuracao):
+class ESAJ_AM(Configuracao):  # noqa: N801
     """
     Configuration class for ESAJ automation module.
 
@@ -93,7 +93,7 @@ class ESAJ_AM(Configuracao):
     url_login_cert = "https://consultasaj.tjam.jus.br/sajcas/login#aba-certificado"
 
     campo_username = 'input[id="usernameForm"]'
-    campo_passwd = 'input[id="passwordForm"]'  # noqa S105 # nosec B105
+    campo_passwd = 'input[id="passwordForm"]'  # noqa: S105 # nosec: B105
     btn_entrar = 'input[name="pbEntrar"]'
     chk_login = "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos"
 

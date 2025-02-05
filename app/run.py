@@ -4,9 +4,11 @@ Module: run.
 This module serves as the entry point for the CrawJUD-Bots application, handling signal management and initializing the Flask app.
 """
 
+import logging
 import signal
-import subprocess  # noqa S404  # nosec B404
+import subprocess  # noqa: S404  # nosec: B404
 import sys
+import traceback
 from os import getenv
 from platform import system
 
@@ -30,8 +32,8 @@ def start_vnc() -> None:
     """
     try:
         # Executa o comando com verificação de erro
-        subprocess.run(  # noqa S607, S603 # nosec B607, B603
-            [
+        subprocess.run(  # noqa: S607, S603 # nosec: B607, B603
+            [  # noqa: S607
                 "tightvncserver",
                 ":99",
                 "-geometry",
@@ -43,9 +45,10 @@ def start_vnc() -> None:
             ],
             check=True,  # Lança exceção se o comando falhar
         )
-        print("TightVNC iniciado com sucesso!")
-    except Exception as e:
-        print(e)
+        logging.info(str("TightVNC iniciado com sucesso!"))
+    except Exception:
+        err = traceback.format_exc()
+        logging.exception(err)
 
 
 if system().lower() == "linux" and getenv("INTO_DOCKER", None):

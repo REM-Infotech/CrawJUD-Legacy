@@ -1,7 +1,8 @@
 """Main entry point for the CrawJUD-Bots application."""
 
+import logging
 import signal
-import subprocess  # noqa S404  # nosec B404
+import subprocess  # noqa: S404  # nosec: B404
 import sys
 from os import environ, getenv
 from platform import system
@@ -31,8 +32,8 @@ def start_vnc() -> None:
     """
     try:
         # Executa o comando com verificação de erro
-        subprocess.run(  # noqa S603, S607 # nosec B607, B603
-            [
+        subprocess.run(  # noqa: S603, S607 # nosec: B607, B603
+            [  # noqa: S607
                 "tightvncserver",
                 ":99",
                 "-geometry",
@@ -44,7 +45,7 @@ def start_vnc() -> None:
             ],
             check=True,  # Lança exceção se o comando falhar
         )
-        print("TightVNC iniciado com sucesso!")
+        logging.info("VNC Server started successfully.")
     except Exception:
         ...
 
@@ -93,7 +94,7 @@ def start_app():
     except (KeyboardInterrupt, TypeError):
         if system().lower() == "linux":
             try:
-                subprocess.run(["tightvncserver", "-kill", ":99"])  # noqa S603, S607 # nosec B603, B607
+                subprocess.run(["tightvncserver", "-kill", ":99"])  # noqa: S603, S607 # nosec: B603, B607
 
             except Exception:
                 # err = traceback.format_exc()

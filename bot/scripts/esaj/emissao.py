@@ -15,7 +15,7 @@ from pypdf import PdfReader
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -242,7 +242,7 @@ class Emissao(CrawJUD):
             avançar.click()
 
             sleep(1)
-            set_RI: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.check)))
+            set_RI: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.check)))  # noqa: N806
             set_RI.click()
 
             sleep(1)

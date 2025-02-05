@@ -5,6 +5,8 @@ This module manages the status of bots (Start and Stop).
 """
 
 import json
+import logging
+import traceback
 import unicodedata
 from datetime import datetime
 from os import path
@@ -62,7 +64,7 @@ class SetStatus:
         self.pid = form.get("pid", pid)
         self.status = status
 
-    def format_String(self, string: str) -> str:
+    def format_string(self, string: str) -> str:
         """
         Format a string to be a secure filename.
 
@@ -71,7 +73,7 @@ class SetStatus:
         """
         return secure_filename("".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]))
 
-    def start_bot(
+    def start_bot(  # noqa: C901
         self,
         app: Flask,
         db: SQLAlchemy,
@@ -101,7 +103,7 @@ class SetStatus:
         if self.files is not None:
             for f, value in self.files.items():
                 if "xlsx" not in f or app.testing is True:
-                    f = self.format_String(f)
+                    f = self.format_string(f)
 
                 filesav = path.join(path_pid, f)
                 value.save(filesav)
@@ -169,8 +171,9 @@ class SetStatus:
         try:
             email_start(execut, app)
 
-        except Exception as e:  # pragma: no cover
-            print(e)
+        except Exception:
+            err = traceback.format_exc()
+            logging.exception(err)
 
         return (path_args, bt.display_name)
 
@@ -218,7 +221,8 @@ class SetStatus:
             #     try:
             #         self.uninstall(arg)
             #     except Exception as e:
-            #         print(e)
+            #         err = traceback.format_exc()
+            #         logging.exception(err)
 
             zip_file = makezip(pid)
             objeto_destino = path.basename(zip_file)

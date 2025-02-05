@@ -3,7 +3,7 @@
 import json
 from os import environ
 
-import FindMyIP as ip
+import FindMyIP as ip  # noqa: N813
 from dotenv_vault import load_dotenv
 from tornado.httpclient import HTTPClient
 
@@ -11,7 +11,7 @@ TOKEN = environ.get("TOKEN_IP2")
 load_dotenv()
 
 
-class GlobalExcept(Exception):
+class GlobalExcept(Exception):  # noqa: N818
     """Base custom exception class for global errors."""
 
     def __init__(self, message: str):
@@ -75,7 +75,7 @@ class InfoGeoloc:
 
         return item
 
-    def IP2Location(self, ip: str) -> dict[str, str] | None:
+    def IP2Location(self, ip: str) -> dict[str, str] | None:  # noqa: N802
         """
         Fetch geolocation data for a given IP address using IP2Location API.
 

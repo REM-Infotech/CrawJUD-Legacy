@@ -44,7 +44,7 @@ def test_client_flask(client: FlaskClient, app: Flask, args_bot: dict[str, str |
     chk_botstop_error = botstop_error.status_code == 404 or botstop_error.status_code == 500
     chk_botstop_success = botstop_success.status_code == 200
 
-    assert all(  # nosec B011
+    assert all(  # nosec: B011
         [
             chk_index,
             chk_bot_error,

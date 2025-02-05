@@ -20,7 +20,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -51,7 +51,7 @@ campos_validar: List[str] = [
 ]
 
 
-class complement(CrawJUD):
+class complement(CrawJUD):  # noqa: N801
     """
     A class that configures and retrieves an elements bot instance.
 
@@ -365,7 +365,7 @@ class complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        tb_Advs = self.driver.find_element(By.CSS_SELECTOR, self.elements.tb_advs_resp)
+        tb_Advs = self.driver.find_element(By.CSS_SELECTOR, self.elements.tb_advs_resp)  # noqa: N806
 
         not_adv = None
         with suppress(NoSuchElementException):
@@ -412,9 +412,9 @@ class complement(CrawJUD):
             return True
 
         elif not wait_confirm_save:
-            ErroElaw: WebElement | str = None
+            ErroElaw: WebElement | str = None  # noqa: N806
             with suppress(TimeoutException, NoSuchElementException):
-                ErroElaw = (
+                ErroElaw = (  # noqa: N806
                     self.wait.until(
                         EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
                         message="Erro ao encontrar elemento",
@@ -424,7 +424,7 @@ class complement(CrawJUD):
                 )
 
             if not ErroElaw:
-                ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"
+                ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"  # noqa: N806
 
             raise ErroDeExecucao(ErroElaw)
 
@@ -486,7 +486,7 @@ class complement(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        div_select_Adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)))
+        div_select_Adv: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)))  # noqa: N806
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
@@ -530,8 +530,7 @@ class complement(CrawJUD):
         None
 
         """
-        elementSelect = self.elements.css_esfera_judge
-
+        elementSelect = self.elements.css_esfera_judge  # noqa: N806
         self.message = "Informando esfera do processo"
         self.type_log = "log"
         self.prt()
@@ -563,7 +562,7 @@ class complement(CrawJUD):
 
         """
         key = "ESTADO"
-        elementSelect = self.elements.estado_input
+        elementSelect = self.elements.estado_input  # noqa: N806
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
@@ -597,7 +596,7 @@ class complement(CrawJUD):
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        elementSelect = self.elements.comarca_input
+        elementSelect = self.elements.comarca_input  # noqa: N806
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
@@ -630,7 +629,7 @@ class complement(CrawJUD):
         None
 
         """
-        elementSelect = self.elements.foro_input
+        elementSelect = self.elements.foro_input  # noqa: N806
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
@@ -664,7 +663,7 @@ class complement(CrawJUD):
 
         """
         text = self.bot_data.get("VARA")
-        elementSelect = self.elements.vara_input
+        elementSelect = self.elements.vara_input  # noqa: N806
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
@@ -877,7 +876,7 @@ class complement(CrawJUD):
         None
 
         """
-        elementSelect = self.elements.fase_input
+        elementSelect = self.elements.fase_input  # noqa: N806
         text = self.bot_data.get("FASE")
 
         self.message = "Informando fase do processo"
@@ -910,7 +909,7 @@ class complement(CrawJUD):
 
         """
         text = self.bot_data.get("PROVIMENTO")
-        elementSelect = self.elements.provimento_input
+        elementSelect = self.elements.provimento_input  # noqa: N806
 
         self.message = "Informando provimento antecipatório"
         self.type_log = "log"
@@ -985,7 +984,7 @@ class complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.fato_gerador_input
+        elementSelect = self.elements.fato_gerador_input  # noqa: N806
         text = self.bot_data.get("FATO_GERADOR")
 
         self.Select2_ELAW(elementSelect, text)
@@ -1045,7 +1044,7 @@ class complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.objeto_input
+        elementSelect = self.elements.objeto_input  # noqa: N806
         text = self.bot_data.get("OBJETO")
 
         self.Select2_ELAW(elementSelect, text)
@@ -1078,7 +1077,7 @@ class complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.contingencia
+        elementSelect = self.elements.contingencia  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -1087,7 +1086,7 @@ class complement(CrawJUD):
         self.Select2_ELAW(elementSelect, text[0])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        elementSelect = self.elements.tipo_polo
+        elementSelect = self.elements.tipo_polo  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":

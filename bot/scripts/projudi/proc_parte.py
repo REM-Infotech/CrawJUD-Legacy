@@ -19,7 +19,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class proc_parte(CrawJUD):
+class proc_parte(CrawJUD):  # noqa: N801
     """
     proc_parte class.
 

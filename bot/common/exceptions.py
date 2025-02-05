@@ -7,7 +7,7 @@ class StartError(Exception):
     """Exception raised for errors that occur during the start of the bot."""
 
 
-class CrawJUDExceptions(Exception):
+class CrawJUDExceptions(Exception):  # noqa: N818
     """Base exception class for CrawJUD-specific errors."""
 
     message_: str = None

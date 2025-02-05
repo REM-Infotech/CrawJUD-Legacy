@@ -40,11 +40,13 @@ class Elaw:
         try:
             self.Bot.execution()
         except Exception as e:
-            logging.error(f"Exception: {e}", exc_info=True)
+            err = traceback.format_exc()
+            logging.exception(err)
+
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> Any:
+    def Bot(self) -> Any:  # noqa: N802
         """
         Retrieve the bot instance based on the typebot attribute.
 

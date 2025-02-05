@@ -4,6 +4,7 @@ Module: socketio2.
 This module provides a SocketBot class for handling socket.io connections and emitting events.
 """
 
+import logging
 import traceback
 from time import sleep
 from typing import Dict
@@ -88,7 +89,7 @@ class SocketBot:
             exc = traceback.format_exc()
 
         if exc:
-            print(exc)
+            logging.info(exc)
 
     def emit_message(self, event: str, data: Dict) -> None:
         """

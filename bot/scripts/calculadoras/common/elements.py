@@ -5,7 +5,7 @@ This module defines the elements_calculadoras class, which contains element defi
 """
 
 
-class elements_calculadoras:
+class elements_calculadoras:  # noqa: N801
     """
     elements_calculadoras class.
 

@@ -23,7 +23,7 @@ from ...core import CrawJUD
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
-class capa(CrawJUD):
+class capa(CrawJUD):  # noqa: N801
     """
     The capa class extends CrawJUD to handle specific execution tasks related to process.
 
@@ -122,7 +122,7 @@ class capa(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def get_process_informations(self) -> list:
+    def get_process_informations(self) -> list:  # noqa: C901
         """
         Extract information from the current process in the web driver.
 
@@ -138,7 +138,7 @@ class capa(CrawJUD):
             process_info: Dict[str, str | int | datetime] = {}
             process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
 
-            def format_vl_causa(valorDaCausa: str) -> float | str:
+            def format_vl_causa(valorDaCausa: str) -> float | str:  # noqa: N803
                 """
                 Format the value of the cause by removing currency symbols and converting to float.
 
@@ -150,7 +150,7 @@ class capa(CrawJUD):
 
                 """
                 if "¤" in valorDaCausa:
-                    valorDaCausa = valorDaCausa.replace("¤", "")
+                    valorDaCausa = valorDaCausa.replace("¤", "")  # noqa: N806
 
                 pattern = r"(?<!\S)(?:US\$[\s]?|R\$[\s]?|[\$]?)\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?(?!\S)"
                 matches = re.findall(pattern, valorDaCausa)
@@ -198,7 +198,7 @@ class capa(CrawJUD):
             btn_infogeral = self.driver.find_element(By.CSS_SELECTOR, self.elements.btn_infogeral)
             btn_infogeral.click()
 
-            includeContent: list[WebElement] = []
+            includecontent: list[WebElement] = []
 
             element_content = self.elements.primeira_instform1
             element_content2 = self.elements.primeira_instform2
@@ -207,10 +207,10 @@ class capa(CrawJUD):
                 element_content = self.elements.segunda_instform
                 element_content2 = element_content
 
-            includeContent.append(self.driver.find_element(By.CSS_SELECTOR, element_content))
-            includeContent.append(self.driver.find_element(By.CSS_SELECTOR, element_content2))
+            includecontent.append(self.driver.find_element(By.CSS_SELECTOR, element_content))
+            includecontent.append(self.driver.find_element(By.CSS_SELECTOR, element_content2))
 
-            for incl in includeContent:
+            for incl in includecontent:
                 itens = list(
                     filter(
                         lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
@@ -244,7 +244,7 @@ class capa(CrawJUD):
                             continue
 
                         not_formated_label = label.text
-                        label_text = self.format_String(label.text).upper().replace(" ", "_")
+                        label_text = self.format_string(label.text).upper().replace(" ", "_")
 
                         indice = labels.index(label)
                         value_text = values[indice].text
@@ -275,23 +275,23 @@ class capa(CrawJUD):
             btn_partes.click()
 
             try:
-                includeContent = self.driver.find_element(By.ID, self.elements.includeContent_capa)
+                includecontent = self.driver.find_element(By.ID, self.elements.includecontent_capa)
             except Exception:
                 time.sleep(3)
                 self.driver.refresh()
                 time.sleep(1)
-                includeContent = self.driver.find_element(By.ID, self.elements.includeContent_capa)
+                includecontent = self.driver.find_element(By.ID, self.elements.includecontent_capa)
 
-            result_table = includeContent.find_elements(By.CLASS_NAME, self.elements.resulttable)
+            result_table = includecontent.find_elements(By.CLASS_NAME, self.elements.resulttable)
 
             for pos, parte_info in enumerate(result_table):
                 h4_name = list(
                     filter(
                         lambda x: x.text != "" and x is not None,
-                        includeContent.find_elements(By.TAG_NAME, "h4"),
+                        includecontent.find_elements(By.TAG_NAME, "h4"),
                     )
                 )
-                tipo_parte = self.format_String(h4_name[pos].text).replace(" ", "_").upper()
+                tipo_parte = self.format_string(h4_name[pos].text).replace(" ", "_").upper()
 
                 nome_colunas = []
 
@@ -302,7 +302,7 @@ class capa(CrawJUD):
                     for pos_, nome_coluna in enumerate(nome_colunas):
                         key = "_".join(
                             (
-                                self.format_String(nome_coluna).replace(" ", "_").upper(),
+                                self.format_string(nome_coluna).replace(" ", "_").upper(),
                                 tipo_parte,
                             )
                         )

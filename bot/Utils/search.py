@@ -29,7 +29,7 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ..common import ErroDeExecucao
@@ -112,7 +112,7 @@ class SearchBot(CrawJUD):
         diff_cad = str(self.typebot.upper()) != "CADASTRO"
         diff_complement = str(self.typebot.upper()) != "COMPLEMENT"
         if open_proc:
-            chkTypeBot = diff_cad and diff_complement
+            chkTypeBot = diff_cad and diff_complement  # noqa: N806
             if chkTypeBot:
                 open_proc.click()
 
@@ -153,7 +153,7 @@ class SearchBot(CrawJUD):
 
         sleep(1)
         # Coloca o campo em formato "Outros" para inserir o número do processo
-        ratioNumberOld: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "radioNumeroAntigo")))
+        ratioNumberOld: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "radioNumeroAntigo")))  # noqa: N806
         self.interact.click(ratioNumberOld)
 
         # Insere o processo no Campo
@@ -196,7 +196,7 @@ class SearchBot(CrawJUD):
 
                 if check_process:
                     check_process.click()
-                    btEnviarIncidente = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btEnviarIncidente"]')
+                    btEnviarIncidente = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btEnviarIncidente"]')  # noqa: N806
                     btEnviarIncidente.click()
 
         return check_process is not None

@@ -12,7 +12,7 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -21,7 +21,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class capa(CrawJUD):
+class capa(CrawJUD):  # noqa: N801
     """
     Manages 'capa' related tasks within the application.
 
@@ -129,7 +129,7 @@ class capa(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def get_process_informations(self) -> list:
+    def get_process_informations(self) -> list:  # noqa: C901
         """
         Retrieve process information.
 
@@ -204,9 +204,9 @@ class capa(CrawJUD):
                     valor_causa = float(valor_causa.replace("$", "").replace("R", "").replace(" ", "").replace(",", ""))
                     return "{:.2f}".format(valor_causa).replace(".", ",")
 
-            valorDaCausa = valor
+            valorDaCausa = valor  # noqa: N806
             if valor != "":
-                valorDaCausa = converte_valor_causa(valor)
+                valorDaCausa = converte_valor_causa(valor)  # noqa: N806
 
             sleep(0.5)
             distnotformated: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, self.elements.data_processual))).text.replace(" às ", "|").replace(" - ", "|")
@@ -278,7 +278,7 @@ class capa(CrawJUD):
             table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
             for group_parte in table_partes.find_elements(By.TAG_NAME, "tr"):
                 pos_repr = 0
-                type_parte = self.format_String(group_parte.find_elements(By.TAG_NAME, "td")[0].text.upper())
+                type_parte = self.format_string(group_parte.find_elements(By.TAG_NAME, "td")[0].text.upper())
 
                 info_parte = group_parte.find_elements(By.TAG_NAME, "td")[1]
                 info_parte_text = info_parte.text.split("\n")

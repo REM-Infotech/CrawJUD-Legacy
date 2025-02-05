@@ -12,7 +12,7 @@ from typing import Any
 from ...common import StartError
 
 
-class calculadoras:
+class calculadoras:  # noqa: N801
     """
     calculadoras class.
 
@@ -36,11 +36,13 @@ class calculadoras:
             self.Bot.execution()
 
         except Exception as e:
-            logging.error(f"Exception: {e}", exc_info=True)
+            err = traceback.format_exc()
+            logging.exception(err)
+
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> Any:
+    def Bot(self) -> Any:  # noqa: N802
         """
         Bot property.
 

@@ -11,13 +11,13 @@ from datetime import datetime
 import pytz
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
 
-class busca_pags(CrawJUD):
+class busca_pags(CrawJUD):  # noqa: N801
     """
     The busca_pags class manages page search operations.
 
@@ -207,5 +207,5 @@ class busca_pags(CrawJUD):
             elif "Lista de custas pagas" not in nomediv:
                 continue
 
-            fileN = f"Total - {self.pid} - {self.datetimeNOW}.xlsx"
+            fileN = f"Total - {self.pid} - {self.datetimeNOW}.xlsx"  # noqa: N806
             self.append_success([self.bot_data.get("NUMERO_PROCESSO"), total], fileN=fileN)

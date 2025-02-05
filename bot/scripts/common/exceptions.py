@@ -17,7 +17,7 @@ class StartError(Exception):
     pass
 
 
-class CrawJUDExceptions(Exception):
+class CrawJUDExceptions(Exception):  # noqa: N818
     """
     CrawJUDExceptions Class.
 

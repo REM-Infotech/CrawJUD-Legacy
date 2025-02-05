@@ -7,7 +7,9 @@ This module contains the CrawJUD class, which serves as the core framework for m
 from __future__ import annotations
 
 import json
+import logging
 import platform
+import traceback
 
 from .. import (
     BarColumn,
@@ -239,7 +241,8 @@ class CrawJUD(PropertiesCrawJUD):
                     raise ErroDeExecucao(message=self.message)
 
         except Exception as e:
-            print(e)
+            err = traceback.format_exc()
+            logging.exception(err)
             self.row = 0
             self.message = "Erro ao realizar login"
             self.type_log = "error"

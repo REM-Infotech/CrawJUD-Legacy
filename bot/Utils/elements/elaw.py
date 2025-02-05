@@ -3,7 +3,7 @@
 from .properties import Configuracao
 
 
-class ELAW_AME(Configuracao):
+class ELAW_AME(Configuracao):  # noqa: N801
     """
     Configuration class for ELAW automation module.
 
@@ -20,18 +20,18 @@ class ELAW_AME(Configuracao):
         inpt_ocorrencia (str): CSS selector for the occurrence textarea.
         inpt_obs (str): CSS selector for the observation textarea.
         botao_salvar_andamento (str): ID for the save andamento button.
-        switch_pautaAndamento (str): CSS selector to switch pauta andamento.
-        btn_NovaAudiencia (str): CSS selector for the new audiência button.
-        selectorTipoAudiencia (str): CSS selector for the tipo audiência selector.
+        switch_pautaandamento (str): CSS selector to switch pauta andamento.
+        btn_novaaudiencia (str): CSS selector for the new audiência button.
+        selectortipoaudiencia (str): CSS selector for the tipo audiência selector.
         DataAudiencia (str): CSS selector for the data audiência input.
-        btn_Salvar (str): CSS selector for the save button.
-        tablePrazos (str): CSS selector for the prazos table.
+        btn_salvar (str): CSS selector for the save button.
+        tableprazos (str): CSS selector for the prazos table.
         tipo_polo (str): CSS selector for the tipo polo selector.
         botao_novo (str): CSS selector for the new button.
         css_label_area (str): CSS selector for the area label.
         elemento (str): CSS selector for the area element.
-        comboAreaSub_css (str): CSS selector for the combo area sub.
-        elemento_ComboAreaSub (str): CSS selector for the combo area sub element.
+        comboareasub_css (str): CSS selector for the combo area sub.
+        elemento_comboareasub (str): CSS selector for the combo area sub element.
         css_button (str): CSS selector for the continue button.
         label_esfera (str): CSS selector for the esfera label.
         css_esfera_judge (str): CSS selector for the esfera judge selector.
@@ -156,7 +156,7 @@ class ELAW_AME(Configuracao):
     # Login Elaw
     url_login = ""
     campo_username = ""
-    campo_passwd = ""  # noqa S105 # nosec B105
+    campo_passwd = ""  # noqa: S105 # nosec: B105
     btn_entrar = ""
     chk_login = ""
 
@@ -172,12 +172,12 @@ class ELAW_AME(Configuracao):
     botao_salvar_andamento = "btnSalvarAndamentoProcesso"
 
     # Robô Lançar Audiências
-    switch_pautaAndamento = 'a[href="#tabViewProcesso:agendamentosAndamentos"]'
-    btn_NovaAudiencia = 'button[id="tabViewProcesso:novaAudienciaBtn"]'
-    selectorTipoAudiencia = 'select[id="j_id_2l:comboTipoAudiencia_input"]'
+    switch_pautaandamento = 'a[href="#tabViewProcesso:agendamentosAndamentos"]'
+    btn_novaaudiencia = 'button[id="tabViewProcesso:novaAudienciaBtn"]'
+    selectortipoaudiencia = 'select[id="j_id_2l:comboTipoAudiencia_input"]'
     DataAudiencia = 'input[id="j_id_2l:j_id_2p_2_8_8:dataAudienciaField_input"]'
-    btn_Salvar = 'button[id="btnSalvarNovaAudiencia"]'
-    tablePrazos = 'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
+    btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
+    tableprazos = 'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
 
     tipo_polo = "".join(
         [
@@ -190,8 +190,8 @@ class ELAW_AME(Configuracao):
     botao_novo = 'button[id="btnNovo"]'
     css_label_area = 'div[id="comboArea"]'
     elemento = 'div[id="comboArea_panel"]'
-    comboAreaSub_css = 'div[id="comboAreaSub"]'
-    elemento_ComboAreaSub = 'div[id="comboAreaSub_panel"]'
+    comboareasub_css = 'div[id="comboAreaSub"]'
+    elemento_comboareasub = 'div[id="comboAreaSub_panel"]'
     css_button = 'button[id="btnContinuar"]'
 
     label_esfera = 'label[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_label"]'
@@ -228,12 +228,12 @@ class ELAW_AME(Configuracao):
             '_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]',
         )
     )
-    comboProcessoTipo = 'div[id="j_id_3k_1:comboProcessoTipo"]'
+    comboProcessoTipo = 'div[id="j_id_3k_1:comboProcessoTipo"]'  # noqa: N815
     filtro_processo = 'input[id="j_id_3k_1:comboProcessoTipo_filter"]'
     css_data_distribuicao = 'input[id="j_id_3k_1:dataDistribuicao_input"]'
     css_adv_responsavel = 'input[id="j_id_3k_1:autoCompleteLawyer_input"]'
-    css_div_select_Adv = 'div[id="j_id_3k_1:comboAdvogadoResponsavelProcesso"]'
-    css_input_select_Adv = 'input[id="j_id_3k_1:comboAdvogadoResponsavelProcesso_filter"]'
+    css_div_select_Adv = 'div[id="j_id_3k_1:comboAdvogadoResponsavelProcesso"]'  # noqa: N815
+    css_input_select_Adv = 'input[id="j_id_3k_1:comboAdvogadoResponsavelProcesso_filter"]'  # noqa: N815
     css_input_adv = 'input[id="j_id_3k_1:autoCompleteLawyerOutraParte_input"]'
     css_check_adv = "".join(
         (
@@ -274,7 +274,7 @@ class ELAW_AME(Configuracao):
     # COMPLEMENTAR
     botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
     css_input_uc = 'textarea[id="j_id_3k_1:j_id_3k_4_2_2_6_9_44_2:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]'
-    elementSelect = 'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]'
+    elementSelect = 'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]'  # noqa: N815
     css_data_citacao = 'input[id="j_id_3k_1:dataRecebimento_input"]'
     fase_input = 'select[id="j_id_3k_1:processoFaseCombo_input"]'
     provimento_input = 'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]'
@@ -332,7 +332,7 @@ class ELAW_AME(Configuracao):
             r"2_7_8_4_23_2_1_2_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > tr:nth-child(3)",
         )
     )
-    visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"
+    visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"  # noqa: N815
 
     # PROVISIONAMENTO
     css_btn_edit = 'button[id="tabViewProcesso:j_id_i3_c_1_5_2:processoValoresEditarBtn"]'

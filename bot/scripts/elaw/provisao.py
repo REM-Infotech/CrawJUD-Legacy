@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -279,7 +279,7 @@ class Provisao(CrawJUD):
         except Exception as e:
             raise e
 
-    def set_risk(self):
+    def set_risk(self) -> None:
         """
         Set the risk type for the provision.
 
@@ -319,7 +319,7 @@ class Provisao(CrawJUD):
         except Exception as e:
             raise e
 
-    def informar_datas(self):
+    def informar_datas(self) -> None:
         """
         Inform the correction base date and interest date.
 
@@ -332,34 +332,34 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            def set_dataCorrecao(dataBaseCorrecao: str):
-                DataCorrecao = self.driver.find_element(By.CSS_SELECTOR, self.elements.DataCorrecaoCss)
-                css_DataCorrecao = DataCorrecao.get_attribute("id")
+            def set_dataCorrecao(dataBaseCorrecao: str) -> None:  # noqa: N803, N802
+                DataCorrecao = self.driver.find_element(By.CSS_SELECTOR, self.elements.DataCorrecaoCss)  # noqa: N806
+                css_DataCorrecao = DataCorrecao.get_attribute("id")  # noqa: N806
                 self.interact.clear(DataCorrecao)
                 self.interact.send_key(DataCorrecao, dataBaseCorrecao)
 
                 self.driver.execute_script(f"document.getElementById('{css_DataCorrecao}').blur()")
                 self.interact.sleep_load('div[id="j_id_2z"]')
 
-            def set_DataJuros(dataBaseJuros: str):
-                DataJuros = self.driver.find_element(By.CSS_SELECTOR, self.elements.DataJurosCss)
+            def set_DataJuros(dataBaseJuros: str) -> None:  # noqa: N803, N802
+                DataJuros = self.driver.find_element(By.CSS_SELECTOR, self.elements.DataJurosCss)  # noqa: N806
                 css_data = DataJuros.get_attribute("id")
                 self.interact.clear(DataJuros)
                 self.interact.send_key(DataJuros, dataBaseJuros)
                 self.driver.execute_script(f"document.getElementById('{css_data}').blur()")
                 self.interact.sleep_load('div[id="j_id_2z"]')
 
-            dataBaseCorrecao = self.bot_data.get("DATA_BASE_CORRECAO")
-            dataBaseJuros = self.bot_data.get("DATA_BASE_JUROS")
+            dataBaseCorrecao = self.bot_data.get("DATA_BASE_CORRECAO")  # noqa: N806
+            dataBaseJuros = self.bot_data.get("DATA_BASE_JUROS")  # noqa: N806
             if dataBaseCorrecao is not None:
                 if isinstance(dataBaseCorrecao, datetime):
-                    dataBaseCorrecao = dataBaseCorrecao.strftime("%d/%m/%Y")
+                    dataBaseCorrecao = dataBaseCorrecao.strftime("%d/%m/%Y")  # noqa: N806
 
                 set_dataCorrecao(dataBaseCorrecao)
 
             if dataBaseJuros is not None:
                 if isinstance(dataBaseJuros, datetime):
-                    dataBaseJuros = dataBaseJuros.strftime("%d/%m/%Y")
+                    dataBaseJuros = dataBaseJuros.strftime("%d/%m/%Y")  # noqa: N806
 
                 set_DataJuros(dataBaseJuros)
 

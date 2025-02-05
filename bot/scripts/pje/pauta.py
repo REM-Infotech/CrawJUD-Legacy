@@ -18,13 +18,13 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
 
-class pauta(CrawJUD):
+class pauta(CrawJUD):  # noqa: N801
     """Represents the main class to retrieve hearing data (pautas)."""
 
     def __init__(self, *args, **kwrgs) -> None:
@@ -102,11 +102,11 @@ class pauta(CrawJUD):
 
                 elif len(data_append) > 0:
                     vara = vara.replace("#", "").upper()
-                    fileN = f"{vara} - {date.replace('-', '.')} - {self.pid}.xlsx"
+                    fileN = f"{vara} - {date.replace('-', '.')} - {self.pid}.xlsx"  # noqa: N806
                     self.append_success(data=data_append, fileN=fileN)
 
             data_append = self.group_date_all(self.data_append)
-            fileN = os.path.basename(self.path)
+            fileN = os.path.basename(self.path)  # noqa: N806
             if len(data_append) > 0:
                 self.append_success(
                     data=[data_append],

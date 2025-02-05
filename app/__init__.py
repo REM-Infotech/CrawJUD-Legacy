@@ -203,8 +203,8 @@ class AppFactory:
                     db.create_all()
                     f.write("True")
 
-            NAMESERVER = environ.get("NAMESERVER")
-            HOST = environ.get("HOSTNAME")
+            NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
+            HOST = environ.get("HOSTNAME")  # noqa: N806
 
             if not Servers.query.filter(Servers.name == NAMESERVER).first():
                 server = Servers(name=NAMESERVER, address=HOST, system=platform.system())

@@ -47,7 +47,7 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
     return log_pid
 
 
-def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask = None) -> Dict[str, str | int]:
+def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask = None) -> Dict[str, str | int]:  # noqa: C901, N802
     """
     Format and update the status message for a given process.
 
@@ -152,11 +152,11 @@ def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask
                         "message": data_message,
                     }
 
-            type_S1 = data_type == "success"
-            type_S2 = data_type == "info"
-            type_S3 = data_graphic != "doughnut"
+            type_S1 = data_type == "success"  # noqa: N806
+            type_S2 = data_type == "info"  # noqa: N806
+            type_S3 = data_graphic != "doughnut"  # noqa: N806
 
-            typeSuccess = type_S1 or type_S2 and type_S3
+            typeSuccess = type_S1 or type_S2 and type_S3  # noqa: N806
 
             log_pid["pos"] = data_pos
 

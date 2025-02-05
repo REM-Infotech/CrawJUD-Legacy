@@ -1,9 +1,11 @@
 """Module for managing WebDriver instances and related utilities."""
 
 import json
+import logging
 import pathlib
 import platform
 import shutil
+import traceback
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
@@ -68,7 +70,7 @@ class DriverBot(CrawJUD):
         return self.list_args_
 
     @list_args.setter
-    def list_args(self, new_Args: List[str]) -> None:
+    def list_args(self, new_Args: List[str]) -> None:  # noqa: N803
         """
         Set a new list of arguments for WebDriver.
 
@@ -78,7 +80,7 @@ class DriverBot(CrawJUD):
         """
         self.list_args_ = new_Args
 
-    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> Tuple[WebDriver, WebDriverWait]:
+    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> Tuple[WebDriver, WebDriverWait]:  # noqa: C901, N802
         """
         Launch the WebDriver with specified parameters.
 
@@ -121,8 +123,9 @@ class DriverBot(CrawJUD):
                     for root, _, __ in self.path_accepted.walk():
                         try:
                             shutil.copytree(root, self.chr_dir)
-                        except Exception as e:
-                            print(e)
+                        except Exception:
+                            err = traceback.format_exc()
+                            logging.exception(err)
 
                 elif not path_exist:
                     self.path_accepted.mkdir(parents=True, exist_ok=True)
@@ -262,7 +265,7 @@ class SetupDriver:
         shutil.copy(self.file_path, self.destination)
         return self.destination.name
 
-    def ConfigBar(self, pool: ThreadPoolExecutor):
+    def ConfigBar(self, pool: ThreadPoolExecutor) -> None:  # noqa: N802
         """
         Configure the progress bar for downloading WebDriver.
 
@@ -290,7 +293,7 @@ class SetupDriver:
                 )
                 shutil.copy(self.file_path, self.destination)
 
-    def getUrl(self) -> str:
+    def getUrl(self) -> str:  # noqa: N802
         """
         Construct the download URL for the WebDriver based on Chrome version.
 
@@ -312,7 +315,7 @@ class SetupDriver:
         # Baixa o WebDriver conforme disponivel no repositório
         url_driver = "storage.googleapis.com/chrome-for-testing-public/"
 
-        set_URL = [chrome_version, os_sys, os_sys]
+        set_URL = [chrome_version, os_sys, os_sys]  # noqa: N806
         for pos, item in enumerate(set_URL):
             if pos == len(set_URL) - 1:
                 url_driver += f"chromedriver-{item}.zip"
@@ -360,8 +363,8 @@ class SetupDriver:
                 self.progress.print(member)
                 self.progress.update(task_id)
 
-                not_Cr1 = member.split("/")[-1].lower() == "chromedriver.exe"
-                not_Cr2 = member.split("/")[-1].lower() == "chromedriver"
+                not_Cr1 = member.split("/")[-1].lower() == "chromedriver.exe"  # noqa: N806
+                not_Cr2 = member.split("/")[-1].lower() == "chromedriver"  # noqa: N806
 
                 if not_Cr1 or not_Cr2:
                     # Get the original file name without any directory structure

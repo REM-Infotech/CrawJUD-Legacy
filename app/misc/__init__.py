@@ -49,7 +49,7 @@ def generate_pid() -> str:
             return pid
 
 
-def storageClient() -> Client:
+def storageClient() -> Client:  # noqa: N802
     """
     Create a Google Cloud Storage client.
 
@@ -64,7 +64,7 @@ def storageClient() -> Client:
     return Client(credentials=credentials, project=project_id)
 
 
-def CredentialsGCS() -> Credentials:
+def CredentialsGCS() -> Credentials:  # noqa: N802
     """
     Create Google Cloud Storage credentials from environment variables.
 
@@ -78,7 +78,7 @@ def CredentialsGCS() -> Credentials:
     # Configure a autenticação para a conta de serviço do GCS
 
 
-def bucketGcs(storageClient: Client) -> Bucket:
+def bucketGcs(storageClient: Client) -> Bucket:  # noqa: N802, N803
     """
     Retrieve the GCS bucket object.
 
@@ -113,7 +113,7 @@ def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> tuple[dict
     from status import SetStatus
 
     try:
-        processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()
+        processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()  # noqa: N806
 
         if processID:
             get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
