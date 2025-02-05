@@ -1,72 +1,73 @@
 """Configuration module for CrawJUD-Bots application."""
 
+from __future__ import annotations
+
 import secrets
 from datetime import timedelta
 from os import environ
 from pathlib import Path
-from typing import Dict, List, Type
 
 from dotenv_vault import load_dotenv
 
 load_dotenv()
 
 
-class Config(object):
+class Config:
     """Base configuration class."""
 
-    DEBUG: Type[bool] = False
-    TESTING: Type[bool] = False
-    SECRET_KEY: Type[str] = secrets.token_hex()
-    TEMPLATES_AUTO_RELOAD: Type[bool] = False
+    DEBUG: type[bool] = False
+    TESTING: type[bool] = False
+    SECRET_KEY: type[str] = secrets.token_hex()
+    TEMPLATES_AUTO_RELOAD: type[bool] = False
 
     # FLASK-MAIL CONFIG
-    MAIL_SERVER: Type[str] = ""
-    MAIL_PORT: Type[int] = 587
-    MAIL_USE_TLS: Type[bool] = False
-    MAIL_USE_SSL: Type[bool] = False
-    MAIL_USERNAME: Type[str] = ""
-    MAIL_PASSWORD: Type[str] = ""
-    MAIL_DEFAULT_SENDER: Type[str] = ""
+    MAIL_SERVER: type[str] = ""
+    MAIL_PORT: type[int] = 587
+    MAIL_USE_TLS: type[bool] = False
+    MAIL_USE_SSL: type[bool] = False
+    MAIL_USERNAME: type[str] = ""
+    MAIL_PASSWORD: type[str] = ""
+    MAIL_DEFAULT_SENDER: type[str] = ""
 
     # SQLALCHEMY CONFIG
-    SQLALCHEMY_POOL_SIZE: Type[int] = 30  # Número de conexões na pool
+    SQLALCHEMY_POOL_SIZE: type[int] = 30  # Número de conexões na pool
 
     # Número de conexões extras além da pool_size
-    SQLALCHEMY_MAX_OVERFLOW: Type[int] = 10
+    SQLALCHEMY_MAX_OVERFLOW: type[int] = 10
 
     # Tempo de espera para obter uma conexão
-    SQLALCHEMY_POOL_TIMEOUT: Type[int] = 30
+    SQLALCHEMY_POOL_TIMEOUT: type[int] = 30
 
     # Tempo (em segundos) para reciclar as conexões ociosas
-    SQLALCHEMY_POOL_RECYCLE: Type[int] = 1800
+    SQLALCHEMY_POOL_RECYCLE: type[int] = 1800
 
     # Verificar a saúde da conexão antes de usá-la
-    SQLALCHEMY_POOL_PRE_PING: Type[bool] = True
+    SQLALCHEMY_POOL_PRE_PING: type[bool] = True
 
-    SQLALCHEMY_BINDS: Dict[str, str] = {"cachelogs": "sqlite:///cachelogs.db"}
-    SQLALCHEMY_DATABASE_URI: Type[str] = "sqlite:///local.db"
-    SQLALCHEMY_ENGINE_OPTIONS: Dict[str, str | bool] = {"pool_pre_ping": True}
-    SQLALCHEMY_TRACK_MODIFICATIONS: Type[bool] = False
+    SQLALCHEMY_BINDS: dict[str, str] = {"cachelogs": "sqlite:///cachelogs.db"}
+    SQLALCHEMY_DATABASE_URI: type[str] = "sqlite:///local.db"
+    SQLALCHEMY_ENGINE_OPTIONS: dict[str, str | bool] = {"pool_pre_ping": True}
+    SQLALCHEMY_TRACK_MODIFICATIONS: type[bool] = False
 
     # FLASK CONFIG
-    PREFERRED_URL_SCHEME: Type[str] = "https"
-    SESSION_COOKIE_HTTPONLY: Type[bool] = False
-    SESSION_COOKIE_SECURE: Type[bool] = True
-    PERMANENT_SESSION_LIFETIME: Type[int] = timedelta(days=31).max.seconds
+    PREFERRED_URL_SCHEME: type[str] = "https"
+    SESSION_COOKIE_HTTPONLY: type[bool] = False
+    SESSION_COOKIE_SECURE: type[bool] = True
+    PERMANENT_SESSION_LIFETIME: type[int] = timedelta(days=31).max.seconds
 
-    TEMP_PATH: Type[Path] = Path(__file__).cwd().resolve().joinpath("temp")
-    ARCHIVES: Type[Path] = Path(__file__).cwd().resolve().joinpath("Archives")
+    TEMP_PATH: type[Path] = Path(__file__).cwd().resolve().joinpath("temp")
+    ARCHIVES: type[Path] = Path(__file__).cwd().resolve().joinpath("Archives")
     TEMP_PATH.mkdir(exist_ok=True)
     ARCHIVES.mkdir(exist_ok=True)
 
-    WEBHOOK_SECRET: Type[str] = ""
+    WEBHOOK_SECRET: type[str] = ""
 
-    REDIS_HOST: Type[str] = ""
-    REDIS_PORT: Type[int] = 6379
-    REDIS_DB: Type[str] = ""
-    REDIS_PASSWORD: Type[str] = ""
+    REDIS_HOST: type[str] = ""
+    REDIS_PORT: type[int] = 6379
+    REDIS_DB: type[str] = ""
+    REDIS_PASSWORD: type[str] = ""
 
-    CSP: Dict[str, str | List[str] | List[List[str]]] = {
+    CSP: dict[str, str | list[str] | list[list[str]]] = {
         "default-src": ["'self'"],
         "script-src": [
             "'self'",
@@ -149,7 +150,7 @@ class ProductionConfig(Config):
                 str(env["DATABASE_PORT"]),
                 "/",
                 str(env["DATABASE_SCHEMA"]),
-            ]
+            ],
         )
 
         REDIS_HOST = env["REDIS_HOST"]
@@ -159,7 +160,7 @@ class ProductionConfig(Config):
 
         WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
-        CELERY: Dict[str, str | bool] = {
+        CELERY: dict[str, str | bool] = {
             "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
             "task_ignore_result": True,
@@ -204,7 +205,7 @@ class DevelopmentConfig(Config):
                     str(env["DATABASE_PORT"]),
                     "/",
                     str(env["DATABASE_SCHEMA"]),
-                ]
+                ],
             )
 
         REDIS_HOST = env["REDIS_HOST"]
@@ -214,7 +215,7 @@ class DevelopmentConfig(Config):
 
         WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
-        CELERY: Dict[str, str | bool] = {
+        CELERY: dict[str, str | bool] = {
             "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
             "task_ignore_result": True,
@@ -260,7 +261,7 @@ class TestingConfig(Config):
                     str(env["DATABASE_PORT"]),
                     "/",
                     str(env["DATABASE_SCHEMA"]),
-                ]
+                ],
             )
 
         REDIS_HOST = env["REDIS_HOST"]
@@ -270,7 +271,7 @@ class TestingConfig(Config):
 
         WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
-        CELERY: Dict[str, str | bool] = {
+        CELERY: dict[str, str | bool] = {
             "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
             "task_ignore_result": True,

@@ -5,7 +5,7 @@ This module serves as the entry point for the CrawJUD-Bots application, handling
 
 import logging
 import signal
-import subprocess  # noqa: S404  # nosec: B404
+import subprocess  # nosec: B404
 import sys
 import traceback
 from os import getenv
@@ -29,7 +29,7 @@ def start_vnc() -> None:
     """
     try:
         # Executa o comando com verificação de erro
-        subprocess.run(  # noqa: S607, S603 # nosec: B607, B603
+        subprocess.run(  # noqa: S603 # nosec: B607, B603
             [  # noqa: S607
                 "tightvncserver",
                 ":99",
@@ -42,7 +42,7 @@ def start_vnc() -> None:
             ],
             check=True,  # Lança exceção se o comando falhar
         )
-        logging.info(str("TightVNC iniciado com sucesso!"))
+        logging.info("TightVNC iniciado com sucesso!")
     except Exception:
         err = traceback.format_exc()
         logging.exception(err)

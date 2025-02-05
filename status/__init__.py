@@ -3,6 +3,8 @@
 This module manages the status of bots (Start and Stop).
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import traceback
@@ -10,7 +12,6 @@ import unicodedata
 from datetime import datetime
 from os import path
 from pathlib import Path
-from typing import Dict
 
 import openpyxl
 import pytz
@@ -32,8 +33,8 @@ class SetStatus:
 
     def __init__(
         self,
-        form: Dict[str, str] = None,
-        files: Dict[str, FileStorage] = None,
+        form: dict[str, str] = None,
+        files: dict[str, FileStorage] = None,
         id: int = 0,  # noqa: A002
         system: str = None,
         typebot: str = None,
@@ -48,7 +49,7 @@ class SetStatus:
         :param files: Dictionary containing file data.
         :param id: Bot ID.
         :param system: System name.
-        :param typebot: Type of bot.
+        :param typebot: type of bot.
         :param usr: User name.
         :param pid: Process ID.
         :param status: Status of the bot.
@@ -69,7 +70,7 @@ class SetStatus:
         :return: The formatted string.
         """
         return secure_filename(
-            "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)])
+            "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]),
         )
 
     def start_bot(  # noqa: C901
@@ -87,7 +88,7 @@ class SetStatus:
         :param user: User name.
         :param pid: Process ID.
         :param id: Bot ID.
-        :return: Tuple containing the path to the arguments file and the bot display name.
+        :return: tuple containing the path to the arguments file and the bot display name.
         """
         from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
@@ -191,7 +192,7 @@ class SetStatus:
         :param pid: Process ID.
         :param status: Status of the bot.
         :param system: System name.
-        :param typebot: Type of bot.
+        :param typebot: type of bot.
         :return: The name of the output file.
         """
         from app.models import Executions

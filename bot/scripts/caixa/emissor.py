@@ -32,7 +32,7 @@ class emissor(CrawJUD):  # noqa: N801
 
     count_doc = OtherUtils.count_doc
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize a new emissor instance.
 
         Sets up authentication, initializes variables, and prepares the
@@ -136,7 +136,7 @@ class emissor(CrawJUD):  # noqa: N801
 
         self.driver.get("https://depositojudicial.caixa.gov.br/sigsj_internet/depositos-judiciais/justica-estadual/")
         list_opt: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:j_id6:tpDeposito"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:j_id6:tpDeposito"]')),
         )
         list_options = list_opt.find_elements(By.TAG_NAME, "option")
 
@@ -146,14 +146,14 @@ class emissor(CrawJUD):  # noqa: N801
                 break
 
         captchainput: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="autoCaptcha"'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="autoCaptcha"')),
         )
         val_captcha = captchainput.get_attribute("value")
 
         inputcaptcha: WebElement = self.wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'input[id="j_id5:filtroView:j_id6:j_id17:captchaView:cpatchaTextBox"]')
-            )
+                (By.CSS_SELECTOR, 'input[id="j_id5:filtroView:j_id6:j_id17:captchaView:cpatchaTextBox"]'),
+            ),
         )
         inputcaptcha.send_keys(val_captcha.replace(",", ""))
 
@@ -163,8 +163,8 @@ class emissor(CrawJUD):  # noqa: N801
         sleep(2)
         next_btn: WebElement = self.wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'a[id="j_id5:filtroView:mensagemView:j_id77:btnProsseguir')
-            )
+                (By.CSS_SELECTOR, 'a[id="j_id5:filtroView:mensagemView:j_id77:btnProsseguir'),
+            ),
         )
         next_btn.click()
 
@@ -180,7 +180,9 @@ class emissor(CrawJUD):  # noqa: N801
         self.prt()
 
         lista_tribunal: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coTribunal"]'))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coTribunal"]'),
+            ),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_tribunal:
             item: WebElement = item
@@ -195,7 +197,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.prt()
 
         lista_comarca: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coComarca"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coComarca"]')),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_comarca:
             item: WebElement = item
@@ -208,7 +210,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         lista_vara: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coVara"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coVara"]')),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_vara:
             item: WebElement = item
@@ -221,7 +223,7 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         lista_agencia: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coAgencia"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coAgencia"]')),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_agencia:
             item: WebElement = item
@@ -243,8 +245,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.prt()
         num_process: WebElement = self.wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:nuProcessoCNJ"]')
-            )
+                (By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:nuProcessoCNJ"]'),
+            ),
         )
         num_process.send_keys(numproc_formated)
 
@@ -253,7 +255,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         list_type_acao_process = self.driver.find_element(
-            By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:idOrigemAcao"]'
+            By.CSS_SELECTOR,
+            'select[id="j_id5:filtroView:formFormulario:idOrigemAcao"]',
         ).find_elements(By.TAG_NAME, "option")
         for item in list_type_acao_process:
             item: WebElement = item
@@ -266,7 +269,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         natureza_tributaria = self.driver.find_element(
-            By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:naturezaAcao"]'
+            By.CSS_SELECTOR,
+            'select[id="j_id5:filtroView:formFormulario:naturezaAcao"]',
         ).find_elements(By.TAG_NAME, "option")[2]
         natureza_tributaria.click()
 
@@ -281,7 +285,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         campo_nome_autor = self.driver.find_element(
-            By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:nomeAutor"]'
+            By.CSS_SELECTOR,
+            'input[id="j_id5:filtroView:formFormulario:nomeAutor"]',
         )
         campo_nome_autor.send_keys(self.bot_data.get("AUTOR"))
 
@@ -295,7 +300,8 @@ class emissor(CrawJUD):  # noqa: N801
             return
 
         doctype_autor = self.driver.find_element(
-            By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:tipoDocAutor"]'
+            By.CSS_SELECTOR,
+            'select[id="j_id5:filtroView:formFormulario:tipoDocAutor"]',
         ).find_elements(By.TAG_NAME, "option")
 
         for item in doctype_autor:
@@ -311,7 +317,8 @@ class emissor(CrawJUD):  # noqa: N801
 
         self.interact.wait_caixa()
         campo_doc_autor = self.driver.find_element(
-            By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:codDocAutor"]'
+            By.CSS_SELECTOR,
+            'input[id="j_id5:filtroView:formFormulario:codDocAutor"]',
         )
         doc_autor = str(self.bot_data.get("CPF_CNPJ_AUTOR")).replace("-", "").replace(".", "").replace("/", "")
         campo_doc_autor.send_keys(doc_autor)
@@ -321,7 +328,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         campo_nome_reu = self.driver.find_element(
-            By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:nomeReu"]'
+            By.CSS_SELECTOR,
+            'input[id="j_id5:filtroView:formFormulario:nomeReu"]',
         )
 
         contraria = None
@@ -336,7 +344,8 @@ class emissor(CrawJUD):  # noqa: N801
 
         self.interact.wait_caixa()
         doctype_reu = self.driver.find_element(
-            By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:tipoDocReu"]'
+            By.CSS_SELECTOR,
+            'select[id="j_id5:filtroView:formFormulario:tipoDocReu"]',
         ).find_elements(By.TAG_NAME, "option")
         for item in doctype_reu:
             if item.text.lower() == doct_type.lower():
@@ -348,7 +357,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         campo_doc_reu = self.driver.find_element(
-            By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:codDocReu"]'
+            By.CSS_SELECTOR,
+            'input[id="j_id5:filtroView:formFormulario:codDocReu"]',
         )
         doc_reu = str(self.bot_data.get("CPF_CNPJ_REU")).replace(".", "").replace("-", "").replace("/", "")
         campo_doc_reu.send_keys(doc_reu)
@@ -363,7 +373,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         indicador_depositante = self.driver.find_element(
-            By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:idDepositante"]'
+            By.CSS_SELECTOR,
+            'select[id="j_id5:filtroView:formFormulario:idDepositante"]',
         ).find_elements(By.TAG_NAME, "option")
 
         for item in indicador_depositante:
@@ -376,7 +387,8 @@ class emissor(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
         campo_val_deposito = self.driver.find_element(
-            By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:valorDeposito"]'
+            By.CSS_SELECTOR,
+            'input[id="j_id5:filtroView:formFormulario:valorDeposito"]',
         )
 
         val_deposito = str(self.bot_data.get("VALOR_CALCULADO"))

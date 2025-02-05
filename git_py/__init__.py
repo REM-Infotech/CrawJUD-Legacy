@@ -54,7 +54,7 @@ def _release_tag() -> str:
 
     # debug = config_vals.get("DEBUG", "False").lower() in ("true")
 
-    # if debug is False:  # pragma: no cover
+    # if debug is False:
     #     releases = list(filter(lambda release: "stable" in release.tag_name, releases))
 
     # latest_release = sorted(
@@ -71,7 +71,7 @@ def check_latest() -> bool:
         bool: True if the current version is up-to-date, False otherwise.
 
     """
-    with open(".version", "r") as f:
+    with open(".version") as f:
         version = f.read()
 
     latest = _release_tag()
@@ -79,7 +79,7 @@ def check_latest() -> bool:
     return version == latest
 
 
-def update_servers(tag: str) -> None:  # pragma: no cover
+def update_servers(tag: str) -> None:
     """Update servers to the specified release tag.
 
     Args:
@@ -94,7 +94,7 @@ def update_servers(tag: str) -> None:  # pragma: no cover
         f.write(_release_tag())
 
 
-def checkout_release(tag: str) -> None:  # pragma: no cover
+def checkout_release(tag: str) -> None:
     """Checkout the specified release tag in the Git repository.
 
     Args:
@@ -141,7 +141,7 @@ def version_file() -> None:
 
     checkout_Version = _release_tag()  # noqa: N806
 
-    if version_ and (version_ != checkout_Version) or (not version_Path.exists()):
+    if (version_ and (version_ != checkout_Version)) or (not version_Path.exists()):
         with open(".version", "w") as f:
             f.write(checkout_Version)
 

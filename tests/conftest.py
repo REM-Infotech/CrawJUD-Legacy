@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Generator
+# from typing import any, dict, Generator
 from uuid import uuid4
 
 from status import SetStatus
@@ -77,7 +77,7 @@ def client(app: Flask) -> FlaskClient:
 
 
 @pytest.fixture()
-def args_bot() -> Generator[Dict[str, Any], Any, None]:
+def args_bot() -> Generator[dict[str, any], any, None]:
     """
     Generate and yield a dictionary containing test data for a bot.
 
@@ -130,7 +130,7 @@ def args_bot() -> Generator[Dict[str, Any], Any, None]:
 
 
 @pytest.fixture()
-def args_statusbot() -> Generator[Dict[str, Any], Any, None]:
+def args_statusbot() -> Generator[dict[str, any], any, None]:
     """
     Generate and yield a dictionary containing test data for a bot's status.
 
@@ -174,7 +174,7 @@ def args_statusbot() -> Generator[Dict[str, Any], Any, None]:
 
 
 @pytest.fixture()
-def SetStatus(args_statusbot: dict[str, str]) -> Generator[SetStatus, Any, None]:
+def SetStatus(args_statusbot: dict[str, str]) -> Generator[SetStatus, any, None]:
     """
     Set the status using the provided arguments.
 
@@ -192,7 +192,7 @@ def SetStatus(args_statusbot: dict[str, str]) -> Generator[SetStatus, Any, None]
 
 
 @pytest.fixture(scope="function")
-def io(app: Flask, client: FlaskClient) -> Generator[SocketIOTestClient, Any, None]:
+def io(app: Flask, client: FlaskClient) -> Generator[SocketIOTestClient, any, None]:
     """
     Fixture to provide a SocketIO test client for the Flask application.
 
@@ -216,7 +216,7 @@ def io(app: Flask, client: FlaskClient) -> Generator[SocketIOTestClient, Any, No
 
 
 @pytest.fixture(scope="function")
-def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]) -> Generator[tuple[str | dict[str, str] | None, str | dict[str, str] | None], Any, None]:
+def create_dummy_pid(app: Flask, args_bot: dict[str, str | any]) -> Generator[tuple[str | dict[str, str] | None, str | dict[str, str] | None], any, None]:
     """
     Create a dummy process ID and populate the database with test data.
 
@@ -227,7 +227,7 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]) -> Generator[tu
 
     Args:
         app (Flask): The Flask application instance.
-        args_bot (dict[str, str | Any]): A dictionary containing bot arguments.
+        args_bot (dict[str, str | any]): A dictionary containing bot arguments.
             Expected keys:
                 - "data" (dict[str, str]): A dictionary containing user data.
                     Expected keys:

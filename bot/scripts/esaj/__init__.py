@@ -6,9 +6,10 @@ This module initializes and manages the ESaj bot within the CrawJUD-Bots applica
 import logging
 import traceback
 from importlib import import_module
-from typing import Any
 
 from ...common import StartError
+
+# from typing import any
 
 
 class esaj:  # noqa: N801
@@ -17,7 +18,7 @@ class esaj:  # noqa: N801
     Initializes and executes the ESaj bot based on provided configurations.
     """
 
-    def __init__(self, **kwrgs) -> None:
+    def __init__(self, **kwrgs: dict) -> None:
         """Initialize a new esaj instance.
 
         Args:
@@ -38,13 +39,13 @@ class esaj:  # noqa: N801
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> Any:  # noqa: N802
+    def Bot(self) -> any:  # noqa: N802
         """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
 
         Returns:
-            Any: An instance of the specified bot.
+            any: An instance of the specified bot.
 
         Raises:
             AttributeError: If the specified bot type is not found.

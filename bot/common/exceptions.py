@@ -13,16 +13,16 @@ class CrawJUDExceptions(Exception):  # noqa: N818
     message_: str = None
 
     @property
-    def message(self):
+    def message(self) -> str:
         """Get the error message."""
         return self.message_
 
     @message.setter
-    def message(self, message: str):
+    def message(self, message: str) -> None:
         """Set the error message."""
         self.message_ = message
 
-    def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
+    def __init__(self, message: str = None, e: Exception = None, *args: tuple, **kwargs: dict) -> None:
         """Initialize CrawJUDExceptions with an optional message and exception.
 
         Args:
@@ -42,7 +42,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
 
         super().__init__(self.message)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the string representation of the exception."""
         return self.message
 
@@ -55,7 +55,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
 class ItemNaoEcontrado(CrawJUDExceptions):
     """Exception raised when a required item is not found."""
 
-    def __init__(self, message="Item não encontrado"):
+    def __init__(self, message: str = "Item não encontrado") -> None:
         """Initialize ItemNaoEcontrado with a default message."""
         super().__init__(message)
 
@@ -63,7 +63,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
         """Check if the instance is a recognized exception."""
         return super().__instancecheck__(instance)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the string representation of the exception."""
         return super().__str__()
 
@@ -82,7 +82,7 @@ class ErroDeExecucao(CrawJUDExceptions):
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize ErroDeExecucao with optional arguments."""
         super().__init__(*args, **kwargs)
 
@@ -90,6 +90,6 @@ class ErroDeExecucao(CrawJUDExceptions):
         """Check if the instance is a recognized exception."""
         return super().__instancecheck__(instance)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the string representation of the exception."""
         return super().__str__()

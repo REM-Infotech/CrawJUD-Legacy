@@ -21,10 +21,13 @@ Raises:
 
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
+import pytz
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -169,14 +172,14 @@ class SearchBot(CrawJUD):
         check_process = None
         with suppress(NoSuchElementException, TimeoutException):
             check_process = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno")),
             )
 
         # Retry 1
         if not check_process:
             with suppress(NoSuchElementException, TimeoutException):
                 check_process: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]'))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]')),
                 )
 
                 if check_process:
@@ -193,7 +196,9 @@ class SearchBot(CrawJUD):
         if not check_process:
             with suppress(NoSuchElementException, TimeoutException):
                 check_process: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.modal__process-choice > input[type="radio"]'))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'div.modal__process-choice > input[type="radio"]'),
+                    ),
                 )
 
                 if check_process:
@@ -260,12 +265,12 @@ class SearchBot(CrawJUD):
             with suppress(Exception, TimeoutException, NoSuchElementException):
                 info_proc = self.wait.until(
                     EC.presence_of_all_elements_located(
-                        (By.CSS_SELECTOR, "table#informacoesProcessuais > tbody > tr > td > a")
-                    )
+                        (By.CSS_SELECTOR, "table#informacoesProcessuais > tbody > tr > td > a"),
+                    ),
                 )
 
                 info_proc = list(
-                    filter(lambda x: "Clique aqui para visualizar os recursos relacionados" in x.text, info_proc)
+                    filter(lambda x: "Clique aqui para visualizar os recursos relacionados" in x.text, info_proc),
                 )[-1]
 
                 return info_proc.get_attribute("href")
@@ -274,7 +279,7 @@ class SearchBot(CrawJUD):
 
         with suppress(TimeoutException):
             inputproc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
             )
 
         if inputproc:
@@ -310,7 +315,7 @@ class SearchBot(CrawJUD):
 
                 return True
 
-            elif not enterproc:
+            if not enterproc:
                 return False
 
         return False
@@ -327,23 +332,25 @@ class SearchBot(CrawJUD):
 
         """
         allprocess = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')),
         )
         allprocess.click()
         data_inicio_xls = self.data_inicio
         data_fim_xls = self.data_fim
 
         if type(data_inicio_xls) is str:
-            data_inicio_xls = datetime.strptime(data_inicio_xls, "%Y-%m-%d")
+            data_inicio_xls = datetime.strptime(data_inicio_xls, "%Y-%m-%d").replace(
+                tzinfo=pytz.timezone("America/Manaus")
+            )
             data_inicio_xls = data_inicio_xls.strftime("%d/%m/%Y")
 
         if type(data_fim_xls) is str:
-            data_fim_xls = datetime.strptime(data_fim_xls, "%Y-%m-%d")
+            data_fim_xls = datetime.strptime(data_fim_xls, "%Y-%m-%d").replace(tzinfo=pytz.timezone("America/Manaus"))
             data_fim_xls = data_fim_xls.strftime("%d/%m/%Y")
 
         if self.vara == "TODAS AS COMARCAS":
             alljudge = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="pesquisarTodos"]'))
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="pesquisarTodos"]')),
             )
             alljudge.click()
 

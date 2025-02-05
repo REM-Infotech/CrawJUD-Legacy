@@ -25,7 +25,7 @@ def disconnect() -> None:
 
 
 @io.on("leave", namespace="/log")
-def leave(data) -> None:
+def leave(data: dict) -> None:  # noqa: ARG001, RUF100
     """Handle a client leaving a specific logging room.
 
     Args:
@@ -120,8 +120,7 @@ def join(data: dict[str, str]) -> None:
     room = data["pid"]
     join_room(room)
 
-    # data = load_cache(room, app)
-    try:  # pragma: no cover
+    try:
         from app import db
         from app.models import ThreadBots
         from bot import WorkerBot
@@ -145,20 +144,14 @@ def join(data: dict[str, str]) -> None:
                             row=0,
                             dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
                             log="fim da execução",
-                        )
-                    }
+                        ),
+                    },
                 )
             elif message == "Erro ao inicializar robô":
-                # data = FormatMessage(
-                #     {"type": "error", "pid": room, "message": message}, room, app
-                # )
                 stop_execution(app, pid)
 
     except Exception:
         send("Failed to check bot has stopped")
-        # data = FormatMessage(
-        #     {"type": "error", "pid": room, "message": message}, room, app
-        # )
         stop_execution(app, pid)
 
     emit("log_message", data, room=room)

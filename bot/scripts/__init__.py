@@ -14,4 +14,4 @@ from .projudi import projudi
 
 __all__ = [projudi, esaj, elaw, pje, calculadoras, caixa]
 
-ClassesSystems = Union[caixa, elaw, esaj, projudi, pje, caixa, calculadoras]
+ClassesSystems = Union[caixa, elaw, esaj, projudi, pje, calculadoras]

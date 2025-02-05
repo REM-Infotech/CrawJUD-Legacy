@@ -9,7 +9,7 @@ from celery.schedules import crontab
 class DatabaseScheduler(Scheduler):
     """Scheduler that loads task schedules from the database."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: tuple, **kwargs: dict):
         """Initialize the DatabaseScheduler.
 
         Args:

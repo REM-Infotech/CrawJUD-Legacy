@@ -3,6 +3,8 @@
 This module provides functionality to retrieve the installed version of Google Chrome.
 """  # noqa: N999
 
+from __future__ import annotations
+
 import logging
 import platform
 
@@ -36,15 +38,14 @@ class ChromeVersion:
 
         if system.upper() == "DARWIN":
             result = popen(  # noqa: S605 # nosec: B605
-                r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version"
+                r"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version",
             ).read()
 
         elif system.upper() == "LINUX":
             result = popen("/usr/bin/google-chrome --version").read()  # noqa: S605 # nosec: B605
 
         if result:
-            if result.startswith("Google Chrome "):
-                result = result[len("Google Chrome ") :]
+            result = result.removeprefix("Google Chrome ")
             result = str(result).strip()
 
         return result
@@ -64,7 +65,7 @@ class ChromeVersion:
         with winreg.OpenKey(hkey, keypath, 0, winreg.KEY_READ) as key:
             num_subkeys, num_values, last_modified = winreg.QueryInfoKey(key)
 
-            for i in range(0, num_values):
+            for i in range(num_values):
                 value_name, value_data, value_type = winreg.EnumValue(key, i)
                 reg_dict.update({value_name: value_data})
 

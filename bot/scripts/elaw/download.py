@@ -28,7 +28,7 @@ class Download(CrawJUD):
 
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Download instance.
 
         Args:
@@ -113,7 +113,8 @@ class Download(CrawJUD):
                 self.download_docs()
                 self.message = "Arquivos salvos com sucesso!"
                 self.append_success(
-                    [self.bot_data.get("NUMERO_PROCESSO"), self.message, self.list_docs], "Arquivos salvos com sucesso!"
+                    [self.bot_data.get("NUMERO_PROCESSO"), self.message, self.list_docs],
+                    "Arquivos salvos com sucesso!",
                 )
 
             elif not search:
@@ -136,7 +137,7 @@ class Download(CrawJUD):
         self.type_log = "log"
         self.prt()
         anexosbutton: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css)),
         )
         anexosbutton.click()
         sleep(1.5)
@@ -152,7 +153,7 @@ class Download(CrawJUD):
 
         """
         table_doc: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc)),
         )
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
 
@@ -179,7 +180,8 @@ class Download(CrawJUD):
                     self.prt()
 
                     baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
-                        By.CSS_SELECTOR, self.elements.botao_baixar
+                        By.CSS_SELECTOR,
+                        self.elements.botao_baixar,
                     )
                     baixar.click()
 

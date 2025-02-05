@@ -2,11 +2,10 @@
 
 import logging
 import signal
-import subprocess  # noqa: S404  # nosec: B404
+import subprocess  # nosec: B404
 import sys
 from os import environ, getenv
 from platform import system
-from typing import Dict
 
 from dotenv_vault import load_dotenv
 
@@ -31,7 +30,7 @@ def start_vnc() -> None:
     """
     try:
         # Executa o comando com verificação de erro
-        subprocess.run(  # noqa: S603, S607 # nosec: B607, B603
+        subprocess.run(  # noqa: S603 # nosec: B607, B603
             [  # noqa: S607
                 "tightvncserver",
                 ":99",
@@ -67,7 +66,7 @@ def start_app():
 
     app, io, _ = create_app()
 
-    args_run: Dict[str, str | int | bool] = {}
+    args_run: dict[str, str | int | bool] = {}
     app.app_context().push()
 
     debug = values("DEBUG", "False").lower() in ("true")
@@ -87,7 +86,7 @@ def start_app():
     except (KeyboardInterrupt, TypeError):
         if system().lower() == "linux":
             try:
-                subprocess.run(["tightvncserver", "-kill", ":99"])  # noqa: S603, S607 # nosec: B603, B607
+                subprocess.run(["tightvncserver", "-kill", ":99"], check=False)  # noqa: S603, S607 # nosec: B603, B607
 
             except Exception:
                 # err = traceback.format_exc()

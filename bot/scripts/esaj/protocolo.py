@@ -30,7 +30,7 @@ class protocolo(CrawJUD):  # noqa: N801
     Manages the protocoling process within the ESaj system using the CrawJUD framework.
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize a new protocolo instance.
 
         Sets up authentication, initializes necessary variables, and prepares the processing environment.
@@ -121,27 +121,27 @@ class protocolo(CrawJUD):  # noqa: N801
             try:
                 self.prt.print_log("log", "Processo encontrado! Inicializando peticionamento...")
                 button_peticionamento: WebElement = WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.ID, "pbPeticionar"))
+                    EC.element_to_be_clickable((By.ID, "pbPeticionar")),
                 )
                 link = button_peticionamento.get_attribute("onclick").split("'")[1]
-                self.driver.execute_script("return window.location.href = '{link}';".format(link=link))
+                self.driver.execute_script(f"return window.location.href = '{link}';")
                 sleep(5)
 
             except Exception:
                 button_enterproc: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#processoSelecionado"))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "#processoSelecionado")),
                 )
                 button_enterproc.click()
 
                 enterproc: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "#botaoEnviarIncidente"))
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "#botaoEnviarIncidente")),
                 )
                 enterproc.click()
                 button_peticionamento: WebElement = WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.ID, "pbPeticionar"))
+                    EC.element_to_be_clickable((By.ID, "pbPeticionar")),
                 )
                 link = button_peticionamento.get_attribute("onclick").split("'")[1]
-                self.driver.execute_script("return window.location.href = '{link}';".format(link=link))
+                self.driver.execute_script(f"return window.location.href = '{link}';")
 
         except Exception:
             raise ErroDeExecucao("Erro ao inicializar peticionamento") from None
@@ -155,18 +155,18 @@ class protocolo(CrawJUD):  # noqa: N801
             self.interact.sleep_load('div[id="loadFeedback"]')
             self.prt.print_log("log", "Informando tipo de peticionamento")
             button_classification: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.ID, self.elements.editar_classificacao))
+                EC.presence_of_element_located((By.ID, self.elements.editar_classificacao)),
             )
             self.interact.click(button_classification)
 
             select_tipo_peticao: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selecionar_classe))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selecionar_classe)),
             )
             select_tipo_peticao = select_tipo_peticao.find_element(By.CSS_SELECTOR, self.elements.toggle)
             self.interact.click(select_tipo_peticao)
 
             input_tipo_peticao: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_classe))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_classe)),
             )
             self.interact.send_key(input_tipo_peticao, self.bot_data.get("TIPO_PROTOCOLO"))
             sleep(1.5)
@@ -183,18 +183,18 @@ class protocolo(CrawJUD):  # noqa: N801
         try:
             self.prt.print_log("log", "Informando subtipo de peticionamento")
             select_categoria_peticao: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_categoria))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_categoria)),
             )
             select_categoria_peticao = select_categoria_peticao.find_element(By.CSS_SELECTOR, self.elements.toggle)
             self.interact.click(select_categoria_peticao)
 
             input_categoria_peticao: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_categoria))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_categoria)),
             )
             self.interact.send_key(input_categoria_peticao, self.bot_data.get("SUBTIPO_PROTOCOLO"))
 
             input_categoria_peticao_option: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.XPATH, self.elements.selecionar_grupo))
+                EC.presence_of_element_located((By.XPATH, self.elements.selecionar_grupo)),
             )
             input_categoria_peticao_option.click()
             sleep(1)
@@ -210,7 +210,7 @@ class protocolo(CrawJUD):  # noqa: N801
         try:
             self.prt.print_log("log", "Anexando petição")
             input_file: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_documento))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_documento)),
             )
             sleep(2)
 
@@ -229,7 +229,7 @@ class protocolo(CrawJUD):  # noqa: N801
             file_uploaded = ""
             with suppress(TimeoutException):
                 file_uploaded: WebElement = WebDriverWait(self.driver, 25).until(
-                    EC.presence_of_element_located((By.XPATH, self.elements.documento))
+                    EC.presence_of_element_located((By.XPATH, self.elements.documento)),
                 )
 
             if file_uploaded == "":
@@ -249,7 +249,7 @@ class protocolo(CrawJUD):  # noqa: N801
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
             self.prt.print_log("log", "Vinculando parte a petição...")
             partes: WebElement = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.processo_view))
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.processo_view)),
             )
             if partes:
                 for parte in partes:
@@ -265,7 +265,8 @@ class protocolo(CrawJUD):  # noqa: N801
                         if not incluir_button:
                             with suppress(NoSuchElementException):
                                 incluir_button = parte.find_element(
-                                    By.CSS_SELECTOR, self.elements.botao_incluir_partecontraria
+                                    By.CSS_SELECTOR,
+                                    self.elements.botao_incluir_partecontraria,
                                 )
 
                         incluir_button.click()
@@ -302,7 +303,7 @@ class protocolo(CrawJUD):  # noqa: N801
         sleep(5)
 
         confirm_button: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_confirmar))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_confirmar)),
         )
         confirm_button.click()
 
@@ -317,7 +318,7 @@ class protocolo(CrawJUD):  # noqa: N801
         """
         try:
             getlinkrecibo: WebElement = WebDriverWait(self.driver, 60).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_recibo))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_recibo)),
             )
 
             sleep(3)

@@ -7,7 +7,7 @@ Defines the Configuracao class that manages properties for each expected element
 class Configuracao:
     """Define propriedades específicas para cada elemento esperado."""
 
-    def __init__(self, dados):
+    def __init__(self, dados: object) -> None:
         """Initialize the Configuracao with element data.
 
         Args:

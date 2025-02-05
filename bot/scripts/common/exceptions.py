@@ -12,8 +12,6 @@ class StartError(Exception):
     Raised for errors that occur during the initialization or start of the bot.
     """
 
-    pass
-
 
 class CrawJUDExceptions(Exception):  # noqa: N818
     """CrawJUDExceptions Class.
@@ -24,12 +22,12 @@ class CrawJUDExceptions(Exception):  # noqa: N818
     message_: str = None
 
     @property
-    def message(self):
+    def message(self) -> str:
         """str: The error message associated with the exception."""
         return self.message_
 
     @message.setter
-    def message(self, message: str):
+    def message(self, message: str) -> None:
         """Set the error message for the exception.
 
         Args:
@@ -38,7 +36,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         """
         self.message_ = message
 
-    def __init__(self, message: str = None, e: Exception = None, *args, **kwargs):
+    def __init__(self, message: str = None, e: Exception = None, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new CrawJUDExceptions instance.
 
         Args:
@@ -61,7 +59,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
 
         super().__init__(self.message)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str: The string representation of the exception."""
         return self.message
 
@@ -85,7 +83,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
     Raised when a required item or resource is not found.
     """
 
-    def __init__(self, message="Item não encontrado"):
+    def __init__(self, message: str = "Item não encontrado") -> None:
         """Initialize a new ItemNaoEcontrado instance.
 
         Args:
@@ -106,7 +104,7 @@ class ItemNaoEcontrado(CrawJUDExceptions):
         """
         return super().__instancecheck__(instance)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str: The string representation of the exception."""
         return super().__str__()
 
@@ -117,7 +115,7 @@ class ErroDeExecucao(CrawJUDExceptions):
     Raised for errors that occur during the execution of CrawJUD processes.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new ErroDeExecucao instance.
 
         Args:
@@ -139,6 +137,6 @@ class ErroDeExecucao(CrawJUDExceptions):
         """
         return super().__instancecheck__(instance)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """str: The string representation of the exception."""
         return super().__str__()

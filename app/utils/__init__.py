@@ -2,7 +2,6 @@
 
 import re
 from os import environ
-from typing import Any
 
 from celery import Celery
 from dotenv_vault import load_dotenv
@@ -28,7 +27,7 @@ def make_celery(app: Flask) -> Celery:
     celery.conf.update(app.config["CELERY"])
 
     class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs) -> Any:  # -> Any:
+        def __call__(self, *args: tuple, **kwargs: dict) -> any:  # -> any:
             with app.app_context():
                 return self.run(*args, **kwargs)
 
@@ -36,7 +35,7 @@ def make_celery(app: Flask) -> Celery:
     return celery
 
 
-def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cover
+def check_allowed_origin(origin="https://google.com") -> bool:
     """Check if the origin is allowed based on predefined patterns.
 
     Args:
@@ -64,4 +63,4 @@ def check_allowed_origin(origin="https://google.com") -> bool:  # pragma: no cov
     return False
 
 
-__all__ = ["make_celery", "check_allowed_origin", "init_log", "GeoLoc"]
+__all__ = ["GeoLoc", "check_allowed_origin", "init_log", "make_celery"]

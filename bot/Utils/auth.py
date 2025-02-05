@@ -10,7 +10,7 @@ import logging
 import os
 import platform
 import string
-import subprocess  # noqa: S404 # nosec: B404
+import subprocess  # nosec: B404
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -101,7 +101,7 @@ class AuthBot(CrawJUD):
                 self.driver.get(self.elements.url_login_cert)
                 sleep(3)
                 loginopt: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]'))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]')),
                 )
                 loginopt = loginopt.find_elements(By.TAG_NAME, "option")
 
@@ -138,8 +138,8 @@ class AuthBot(CrawJUD):
                             (
                                 By.CSS_SELECTOR,
                                 "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos",
-                            )
-                        )
+                            ),
+                        ),
                     )
 
                 if not checkloged:
@@ -164,7 +164,7 @@ class AuthBot(CrawJUD):
             checkloged = None
             with suppress(TimeoutException):
                 checkloged = WebDriverWait(self.driver, 15).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
                 )
 
             return checkloged is not None
@@ -189,7 +189,7 @@ class AuthBot(CrawJUD):
             self.driver.get(self.elements.url_login)
 
             username: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username)),
             )
             username.send_keys(self.username)
 
@@ -203,7 +203,7 @@ class AuthBot(CrawJUD):
 
             with suppress(TimeoutException):
                 check_login = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
                 )
 
             return check_login is not None
@@ -322,7 +322,11 @@ class AuthBot(CrawJUD):
             try:
                 comando = ["xcopy", source_directory, target_directory, "/E", "/H", "/C", "/I"]
                 resultados = subprocess.run(  # noqa: S603 # nosec: B603
-                    comando, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    comando,
+                    check=True,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                 )
                 logging.info(str(resultados.stdout))
 

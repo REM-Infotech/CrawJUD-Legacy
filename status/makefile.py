@@ -35,9 +35,7 @@ def makezip(pid: str) -> str:
     for root, _, __ in exec_path.walk():
         if "chrome" in str(root) and Path(root).is_dir():
             rmtree(root, ignore_errors=True)
-        elif "chrome" in str(root) and Path(root).is_file():
-            Path(root).unlink()
-        elif Path(root).suffix in {".json", ".flag"}:
+        elif ("chrome" in str(root) and Path(root).is_file()) or Path(root).suffix in {".json", ".flag"}:
             Path(root).unlink()
 
     files = [str(f) for f in exec_path.iterdir() if f.is_file() and pid in f.stem]

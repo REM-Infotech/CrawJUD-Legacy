@@ -24,7 +24,7 @@ class listas:  # noqa: N801
         """Return a list of fields indicating successful emissor operations.
 
         Return:
-            list[str]: List of field names related to emissor success.
+            list[str]: list of field names related to emissor success.
 
         """
         return [
@@ -43,7 +43,7 @@ class listas:  # noqa: N801
         """Return a list of fields indicating successful ESAJ guia emissions.
 
         Return:
-            list[str]: List of field names related to ESAJ guia emission success.
+            list[str]: list of field names related to ESAJ guia emission success.
 
         """
         return [
@@ -62,7 +62,7 @@ class listas:  # noqa: N801
         """Return a list of fields for successful capa operations.
 
         Return:
-            list[str]: List of field names related to capa success.
+            list[str]: list of field names related to capa success.
 
         """
         return [
@@ -91,7 +91,7 @@ class listas:  # noqa: N801
         """Return a list of fields indicating successful movimentacao operations.
 
         Return:
-            list[str]: List of field names related to movimentacao success.
+            list[str]: list of field names related to movimentacao success.
 
         """
         return [
@@ -107,7 +107,7 @@ class listas:  # noqa: N801
         """Return a list of fields indicating successful sols_pag operations.
 
         Return:
-            list[str]: List of field names related to sols_pag success.
+            list[str]: list of field names related to sols_pag success.
 
         """
         return ["MENSAGEM_COMCLUSAO", "TIPO_PGTO", "COMPROVANTE_1", "ID_PGTO", "COMPROVANTE_2"]
@@ -117,7 +117,7 @@ class listas:  # noqa: N801
         """Return a general list of success fields.
 
         Return:
-            list[str]: List of general success field names.
+            list[str]: list of general success field names.
 
         """
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE"]
@@ -127,7 +127,7 @@ class listas:  # noqa: N801
         """Return a list of fields indicating successful protocolo operations.
 
         Return:
-            list[str]: List of field names related to protocolo success.
+            list[str]: list of field names related to protocolo success.
 
         """
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE", "ID_PROTOCOLO"]
@@ -137,7 +137,7 @@ class listas:  # noqa: N801
         """Return a list of fields indicating error messages.
 
         Return:
-            list[str]: List of error message field names.
+            list[str]: list of error message field names.
 
         """
         return ["MOTIVO_ERRO"]

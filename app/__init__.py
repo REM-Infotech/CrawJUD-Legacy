@@ -29,7 +29,7 @@ valides = [
 
 asc = any(valides)
 
-async_mode = str("threading") if asc is True else str("eventlet")
+async_mode = "threading" if asc is True else "eventlet"
 
 load_dotenv()
 
@@ -38,7 +38,6 @@ tslm = Talisman()
 db = SQLAlchemy()
 
 io = None
-app = None
 app = Flask(__name__)
 clean_prompt = False
 
@@ -62,12 +61,6 @@ class AppFactory:
             tuple: A tuple containing Flask app, SocketIO, and Celery worker.
 
         """
-        global app
-
-        # Temporarily disable Redis client
-        # redis_client = redis.Redis(host='localhost', port=6379,
-        # decode_responses=True, password=)
-
         env_ambient = environ["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
@@ -78,7 +71,7 @@ class AppFactory:
 
         celery.autodiscover_tasks(["bot"])
 
-        if not app.testing:  # pragma: no cover
+        if not app.testing:
             with app.app_context():
                 self.init_database(app)
                 self.init_mail(app)
@@ -142,7 +135,7 @@ class AppFactory:
 
         return io
 
-    def init_mail(self, app) -> None:
+    def init_mail(self, app: Flask) -> None:
         """Initialize the Flask-Mail extension."""
         mail.init_app(app)
 
@@ -200,4 +193,4 @@ class AppFactory:
             return db
 
 
-create_app = AppFactory().create_app  # pragma: no cover
+create_app = AppFactory().create_app

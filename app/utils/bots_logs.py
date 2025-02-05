@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 
-def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> Logger:  # noqa: N803
+def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args: tuple, **kwargs: dict) -> Logger:  # noqa: N803
     """Initialize and configure logging for the application.
 
     Args:
@@ -37,7 +37,9 @@ def init_log(L_F=None, L_LVL=None, mx_bt=None, bkp_ct=None, *args, **kwargs) -> 
 
     # File handler
     file_handler = RotatingFileHandler(
-        os.path.join(Path(__file__).parent.resolve(), L_F), maxBytes=mx_bt, backupCount=bkp_ct
+        os.path.join(Path(__file__).parent.resolve(), L_F),
+        maxBytes=mx_bt,
+        backupCount=bkp_ct,
     )
     # file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)

@@ -10,14 +10,14 @@ import logging
 import os
 import re
 import ssl
-import subprocess  # noqa: S404  # nosec: B404
+import subprocess  # nosec: B404
 import time
 import traceback
 import unicodedata
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Union
 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -36,36 +36,36 @@ from .PrintLogs import PrintBot
 from .search import SearchBot
 
 __all__ = [
-    "AuthBot",
-    "MakeXlsx",
-    "ElementsBot",
-    "Interact",
-    "DriverBot",
-    "SearchBot",
-    "PrintBot",
     "ELAW_AME",
     "ESAJ_AM",
     "PJE_AM",
     "PROJUDI_AM",
+    "AuthBot",
+    "DriverBot",
+    "ElementsBot",
+    "Interact",
+    "MakeXlsx",
+    "PrintBot",
+    "SearchBot",
 ]
 
-TypeData = Union[List[Dict[str, Union[str, Numbers, datetime]]], Dict[str, Union[str, Numbers, datetime]]]
+TypeData = Union[list[dict[str, Union[str, Numbers, datetime]]], dict[str, Union[str, Numbers, datetime]]]
 
 
 class OtherUtils(CrawJUD):
     """Provides utility methods for data processing and interaction within CrawJUD-Bots.
 
     Methods:
-        nomes_colunas() -> List[str]
-        elaw_data() -> Dict[str, str]
-        cities_Amazonas() -> Dict[str, str]
-        dataFrame() -> List[Dict[str, str]]
-        elawFormats(data: Dict[str, str]) -> Dict[str, str]
-        calc_time() -> List[int]
+        nomes_colunas() -> list[str]
+        elaw_data() -> dict[str, str]
+        cities_Amazonas() -> dict[str, str]
+        dataFrame() -> list[dict[str, str]]
+        elawFormats(data: dict[str, str]) -> dict[str, str]
+        calc_time() -> list[int]
         append_moves() -> None
         append_success(data: TypeData, message: str = None, fileN: str = None) -> None
-        append_error(data: Dict[str, str] = None) -> None
-        append_validarcampos(data: List[Dict[str, str]]) -> None
+        append_error(data: dict[str, str] = None) -> None
+        append_validarcampos(data: list[dict[str, str]]) -> None
         count_doc(doc: str) -> Union[str, None]
         get_recent(folder: str) -> Union[str, None]
         format_string(string: str) -> str
@@ -73,8 +73,8 @@ class OtherUtils(CrawJUD):
         similaridade(word1: str, word2: str) -> float
         finalize_execution() -> None
         install_cert() -> None
-        group_date_all(data: Dict[str, Dict[str, str]]) -> List[Dict[str, str]]
-        group_keys(data: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]
+        group_date_all(data: dict[str, dict[str, str]]) -> list[dict[str, str]]
+        group_keys(data: list[dict[str, str]]) -> dict[str, dict[str, str]]
         gpt_chat(text_mov: str) -> str
         text_is_a_date(text: str) -> bool
 
@@ -89,11 +89,11 @@ class OtherUtils(CrawJUD):
         # Initialize any additional attributes here
 
     @property
-    def nomes_colunas(self) -> List[str]:
+    def nomes_colunas(self) -> list[str]:
         """Retrieve a list of column names.
 
         Returns:
-            List[str]: A list of column names used in the application.
+            list[str]: A list of column names used in the application.
 
         """
         all_fields = [
@@ -211,11 +211,11 @@ class OtherUtils(CrawJUD):
         return all_fields
 
     @property
-    def elaw_data(self) -> Dict[str, str]:
+    def elaw_data(self) -> dict[str, str]:
         """Generate a dictionary with keys related to legal case information and empty string values.
 
         Returns:
-            Dict[str, str]: A dictionary containing keys for legal case details with empty string values.
+            dict[str, str]: A dictionary containing keys for legal case details with empty string values.
 
         """
         return {
@@ -249,11 +249,11 @@ class OtherUtils(CrawJUD):
         }
 
     @property
-    def cities_Amazonas(self) -> Dict[str, str]:  # noqa: N802
+    def cities_Amazonas(self) -> dict[str, str]:  # noqa: N802
         """Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
 
         Returns:
-            Dict[str, str]: A dictionary where the keys are city names and the values are their categories.
+            dict[str, str]: A dictionary where the keys are city names and the values are their categories.
 
         """  # noqa: E501
         return {
@@ -321,14 +321,14 @@ class OtherUtils(CrawJUD):
             "Urucurituba": "Interior",
         }
 
-    def dataFrame(self) -> List[Dict[str, str]]:  # noqa: N802
+    def dataFrame(self) -> list[dict[str, str]]:  # noqa: N802
         """Convert an Excel file to a list of dictionaries with formatted data.
 
         Reads an Excel file, processes the data by formatting dates and floats,
         and returns the data as a list of dictionaries.
 
         Returns:
-            List[Dict[str, str]]: A list of dictionaries representing each row in the Excel file.
+            list[dict[str, str]]: A list of dictionaries representing each row in the Excel file.
 
         Raises:
             FileNotFoundError: If the specified Excel file does not exist.
@@ -344,7 +344,7 @@ class OtherUtils(CrawJUD):
             df[col] = df[col].apply(lambda x: (x.strftime("%d/%m/%Y") if isinstance(x, (datetime, Timestamp)) else x))
 
         for col in df.select_dtypes(include=["float"]).columns:
-            df[col] = df[col].apply(lambda x: "{:.2f}".format(x).replace(".", ","))
+            df[col] = df[col].apply(lambda x: f"{x:.2f}".replace(".", ","))
 
         vars_df = []
 
@@ -357,14 +357,14 @@ class OtherUtils(CrawJUD):
 
         return vars_df
 
-    def elawFormats(self, data: Dict[str, str]) -> Dict[str, str]:  # noqa: N802, C901
+    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:  # noqa: N802, C901
         """Format the given data dictionary according to specific rules.
 
         Args:
-            data (Dict[str, str]): A dictionary containing key-value pairs to be formatted.
+            data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
 
         Returns:
-            Dict[str, str]: The formatted dictionary.
+            dict[str, str]: The formatted dictionary.
 
         Rules:
             - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
@@ -396,18 +396,18 @@ class OtherUtils(CrawJUD):
                 data["DATA_INICIO"] = value
 
             elif isinstance(value, (int, float)):
-                data[key] = "{:.2f}".format(value).replace(".", ",")
+                data[key] = f"{value:.2f}".replace(".", ",")
 
             elif key == "CNPJ_FAVORECIDO" and not value:
                 data["CNPJ_FAVORECIDO"] = "04.812.509/0001-90"
 
         return data
 
-    def calc_time(self) -> List[int]:
+    def calc_time(self) -> list[int]:
         """Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
 
         Returns:
-            List[int]: A list containing two integers:
+            list[int]: A list containing two integers:
                 - minutes (int): The number of minutes of the elapsed time.
                 - seconds (int): The number of seconds of the elapsed time.
 
@@ -415,7 +415,7 @@ class OtherUtils(CrawJUD):
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
         minutes = int(execution_time / 60)
-        seconds = int((execution_time - minutes * 60))
+        seconds = int(execution_time - minutes * 60)
         return [minutes, seconds]
 
     def append_moves(self) -> None:
@@ -435,7 +435,7 @@ class OtherUtils(CrawJUD):
         else:
             raise ErroDeExecucao("Nenhuma Movimentação encontrada")
 
-    def append_success(  # noqa: N802
+    def append_success(
         self,
         data: TypeData,
         message: str = None,
@@ -455,7 +455,7 @@ class OtherUtils(CrawJUD):
         if not message:
             message = "Execução do processo efetuada com sucesso!"
 
-        def save_info(data: List[Dict[str, str]]) -> None:
+        def save_info(data: list[dict[str, str]]) -> None:
             output_success = self.path
 
             if fileN or not output_success:
@@ -485,11 +485,11 @@ class OtherUtils(CrawJUD):
             self.message = message
             self.prt()
 
-    def append_error(self, data: Dict[str, str] = None) -> None:
+    def append_error(self, data: dict[str, str] = None) -> None:
         """Append error data to the error spreadsheet.
 
         Args:
-            data (Dict[str, str], optional): The error data to append. Defaults to None.
+            data (dict[str, str], optional): The error data to append. Defaults to None.
 
         """
         if not os.path.exists(self.path_erro):
@@ -502,11 +502,11 @@ class OtherUtils(CrawJUD):
         new_data = pd.DataFrame(df)
         new_data.to_excel(self.path_erro, index=False)
 
-    def append_validarcampos(self, data: List[Dict[str, str]]) -> None:
+    def append_validarcampos(self, data: list[dict[str, str]]) -> None:
         """Append validated fields to the spreadsheet.
 
         Args:
-            data (List[Dict[str, str]]): The validated data to append.
+            data (list[dict[str, str]]): The validated data to append.
 
         """
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
@@ -534,7 +534,7 @@ class OtherUtils(CrawJUD):
         numero = "".join(filter(str.isdigit, doc))
         if len(numero) == 11:
             return "cpf"
-        elif len(numero) == 14:
+        if len(numero) == 14:
             return "cnpj"
         return None
 
@@ -552,7 +552,7 @@ class OtherUtils(CrawJUD):
             os.path.join(folder, f)
             for f in os.listdir(folder)
             if (os.path.isfile(os.path.join(folder, f)) and f.lower().endswith(".pdf"))
-            and not f.lower().endswith(".crdownload")  # noqa: W503
+            and not f.lower().endswith(".crdownload")
         ]
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None
@@ -568,7 +568,7 @@ class OtherUtils(CrawJUD):
 
         """
         return secure_filename(
-            "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)])
+            "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]),
         )
 
     def normalizar_nome(self, word: str) -> str:
@@ -645,7 +645,11 @@ class OtherUtils(CrawJUD):
             comando = ["certutil", "-importpfx", "-user", "-f", "-p", self.token, "-silent", path_cert]
             try:
                 resultado = subprocess.run(  # nosec: B603 # noqa: S603
-                    comando, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    comando,
+                    check=True,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                 )
                 self.message = resultado.stdout
                 self.type_log = "log"
@@ -653,15 +657,15 @@ class OtherUtils(CrawJUD):
             except subprocess.CalledProcessError as e:
                 raise e
 
-    def group_date_all(self, data: Dict[str, Dict[str, str]]) -> List[Dict[str, str]]:
+    def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
         """Group date and vara information from the input data into a list of records.
 
         Args:
-            data (Dict[str, Dict[str, str]]): A dictionary where the keys are 'vara'
+            data (dict[str, dict[str, str]]): A dictionary where the keys are 'vara'
                 and the values are dictionaries with dates as keys and entries as values.
 
         Returns:
-            List[Dict[str, str]]: A list of dictionaries containing grouped data.
+            list[dict[str, str]]: A list of dictionaries containing grouped data.
 
         """
         records = []
@@ -673,14 +677,14 @@ class OtherUtils(CrawJUD):
                     records.append(record)
         return records
 
-    def group_keys(self, data: List[Dict[str, str]]) -> Dict[str, Dict[str, str]]:
+    def group_keys(self, data: list[dict[str, str]]) -> dict[str, dict[str, str]]:
         """Group keys from a list of dictionaries.
 
         Args:
-            data (List[Dict[str, str]]): A list of dictionaries with string keys and values.
+            data (list[dict[str, str]]): A list of dictionaries with string keys and values.
 
         Returns:
-            Dict[str, Dict[str, str]]: A dictionary grouping keys with their corresponding values.
+            dict[str, dict[str, str]]: A dictionary grouping keys with their corresponding values.
 
         """
         record = {}

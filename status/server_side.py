@@ -1,7 +1,5 @@
 """Module for server-side operations in CrawJUD-Bots."""
 
-from typing import Dict, List
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from redis_flask import Redis
@@ -9,7 +7,7 @@ from redis_flask import Redis
 from status import SetStatus
 
 
-def load_cache(pid: str, app: Flask) -> Dict[str, str]:
+def load_cache(pid: str, app: Flask) -> dict[str, str]:
     """Load cache data for a given PID from Redis.
 
     Args:
@@ -17,24 +15,24 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
         app (Flask): The Flask application instance.
 
     Returns:
-        Dict[str, str]: A dictionary containing cached log data.
+        dict[str, str]: A dictionary containing cached log data.
 
     """
-    log_pid: Dict[str, str | int] = {}
-    list_cached: List[Dict[str, str | int]] = []
+    log_pid: dict[str, str | int] = {}
+    list_cached: list[dict[str, str | int]] = []
 
     redis_client: Redis = app.extensions["redis"]
     redis_key = f"*{pid}*"
 
-    get_cache: List | None = redis_client.keys(redis_key)
+    get_cache: list | None = redis_client.keys(redis_key)
     if get_cache:
-        list_cache: List[str] = list(get_cache)
+        list_cache: list[str] = list(get_cache)
         for cache in list_cache:
             k_process, k_pid, k_pos, k_value = cache.split(":")
             cached = [{"pid": k_pid, "pos": int(k_value)}]
             list_cached.extend(cached)
 
-        sorted_cache: List[Dict[str, str | int]] = sorted(list_cached, key=lambda x: x.get("pos"), reverse=True)
+        sorted_cache: list[dict[str, str | int]] = sorted(list_cached, key=lambda x: x.get("pos"), reverse=True)
 
         for item in sorted_cache:
             pos = item["pos"]
@@ -46,7 +44,7 @@ def load_cache(pid: str, app: Flask) -> Dict[str, str]:
     return log_pid
 
 
-def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask = None) -> Dict[str, str | int]:  # noqa: C901, N802
+def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Flask = None) -> dict[str, str | int]:  # noqa: C901, N802
     """Format and update the status message for a given process.
 
     This function interacts with a SQLAlchemy database and a Redis client to
@@ -56,14 +54,14 @@ def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask
     information.
 
     Args:
-        data (Dict[str, str | int], optional): A dictionary containing process
+        data (dict[str, str | int], optional): A dictionary containing process
             information. Defaults to an empty dictionary.
         pid (str, optional): The process ID. Defaults to None.
         app (Flask, optional): The Flask application instance, used to access
             extensions like SQLAlchemy and Redis. Defaults to None.
 
     Returns:
-        Dict[str, str | int]: The updated data dictionary with the latest
+        dict[str, str | int]: The updated data dictionary with the latest
         process status information.
 
     Raises:
@@ -149,7 +147,7 @@ def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask
             type_S2 = data_type == "info"  # noqa: N806
             type_S3 = data_graphic != "doughnut"  # noqa: N806
 
-            typeSuccess = type_S1 or type_S2 and type_S3  # noqa: N806
+            typeSuccess = type_S1 or (type_S2 and type_S3)  # noqa: N806
 
             log_pid["pos"] = data_pos
 
@@ -160,8 +158,8 @@ def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask
                         log_pid["success"] = int(log_pid["success"]) + 1
 
             elif data_type == "error":
-                log_pid.update({"remaining": int(log_pid["remaining"]) - 1})  # pragma: no cover
-                log_pid.update({"errors": int(log_pid["errors"]) + 1})  # pragma: no cover
+                log_pid.update({"remaining": int(log_pid["remaining"]) - 1})
+                log_pid.update({"errors": int(log_pid["errors"]) + 1})
 
                 if data_pos == 0 or app.testing:
                     log_pid["errors"] = log_pid["total"]
@@ -181,7 +179,7 @@ def FormatMessage(data: Dict[str, str | int] = None, pid: str = None, app: Flask
                 "errors": log_pid["errors"],
                 "status": log_pid["status"],
                 "message": log_pid["message"],
-            }
+            },
         )
 
     except Exception:

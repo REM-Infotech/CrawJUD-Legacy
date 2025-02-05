@@ -26,7 +26,7 @@ class Prazos(CrawJUD):
 
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the Prazos instance.
 
         Args:
@@ -164,7 +164,7 @@ class Prazos(CrawJUD):
             self.prt()
 
             btn_novaaudiencia = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_novaaudiencia))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_novaaudiencia)),
             )
 
             btn_novaaudiencia.click()
@@ -175,7 +175,7 @@ class Prazos(CrawJUD):
             self.prt()
 
             selectortipoaudiencia: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectortipoaudiencia))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectortipoaudiencia)),
             )
 
             items = selectortipoaudiencia.find_elements(By.TAG_NAME, "option")
@@ -200,8 +200,8 @@ class Prazos(CrawJUD):
             self.prt()
 
             DataAudiencia: WebElement = self.wait.until(  # noqa: N806
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia))
-            )  # noqa: N806
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia)),
+            )
 
             DataAudiencia.send_keys(self.data_Concat)
 
@@ -239,7 +239,7 @@ class Prazos(CrawJUD):
         """
         try:
             tableprazos: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tableprazos))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tableprazos)),
             )
 
             tableprazos: list[WebElement] = tableprazos.find_elements(By.TAG_NAME, "tr")

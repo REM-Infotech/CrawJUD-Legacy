@@ -77,7 +77,6 @@ class PrintBot(CrawJUD):
                 for mensagem in self.list_messages:
                     if self.pid in mensagem:
                         f.write(f"{mensagem}\n")
-                pass
 
         except Exception:
             # Aguarda 2 segundos

@@ -6,8 +6,8 @@ This module initializes and manages the Calculadoras bot within the CrawJUD-Bots
 import logging
 import traceback
 from importlib import import_module
-from typing import Any
 
+# from typing import any
 from ...common import StartError
 
 
@@ -17,7 +17,7 @@ class calculadoras:  # noqa: N801
     Initializes and executes the Calculadoras bot based on provided configurations.
     """
 
-    def __init__(self, **kwrgs) -> None:
+    def __init__(self, **kwrgs: dict) -> None:
         """Initialize a new calculadoras instance.
 
         Args:
@@ -39,13 +39,13 @@ class calculadoras:  # noqa: N801
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> Any:  # noqa: N802
+    def Bot(self) -> any:  # noqa: N802
         """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
 
         Returns:
-            Any: An instance of the specified bot.
+            any: An instance of the specified bot.
 
         Raises:
             AttributeError: If the specified bot type is not found.

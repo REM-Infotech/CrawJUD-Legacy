@@ -11,8 +11,8 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Any
 
+# from typing import any
 from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -36,7 +36,7 @@ class movimentacao(CrawJUD):  # noqa: N801
 
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the movimentacao instance.
 
         Args:
@@ -111,7 +111,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         """
         try:
             self.appends = []
-            self.another_append: list[tuple[Any, str, str]] = []
+            self.another_append: list[tuple[any, str, str]] = []
             self.resultados = []
 
             self.table_moves = None
@@ -149,7 +149,7 @@ class movimentacao(CrawJUD):  # noqa: N801
         Selects the value '1000' from the page size dropdown.
         """
         select = Select(
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size)))
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size))),
         )
         select.select_by_value("1000")
 
@@ -490,7 +490,7 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         return expand is not None
 
-    def getdocmove(self, move: WebElement, save_in_anotherfile: bool = False) -> str:  # noqa: C901
+    def getdocmove(self, move: WebElement, save_in_anotherfile: bool = None) -> str:  # noqa: C901, FBT001
         """Retrieve the document associated with a movement.
 
         Args:
@@ -572,7 +572,7 @@ class movimentacao(CrawJUD):  # noqa: N801
 
                     break
 
-                elif old_pdf.exists():
+                if old_pdf.exists():
                     old_pdf = str(old_pdf)
                     break
 

@@ -11,7 +11,6 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from os import environ, path
 from pathlib import Path
-from typing import List, Tuple
 
 import requests
 from selenium import webdriver
@@ -43,6 +42,8 @@ except ModuleNotFoundError:
 
 default_dir = Path(__file__).cwd().resolve()
 
+# from typing import list, tuple
+
 
 class DriverBot(CrawJUD):
     """Bot for handling WebDriver operations within CrawJUD framework."""
@@ -50,7 +51,6 @@ class DriverBot(CrawJUD):
     def __init__(self) -> None:
         """Initialize the DriverBot with default settings."""
         # init_
-        ...
 
     list_args_ = [
         "--ignore-ssl-errors=yes",
@@ -63,28 +63,28 @@ class DriverBot(CrawJUD):
     ]
 
     @property
-    def list_args(self) -> List[str]:
+    def list_args(self) -> list[str]:
         """Get the list of arguments for WebDriver."""
         return self.list_args_
 
     @list_args.setter
-    def list_args(self, new_Args: List[str]) -> None:  # noqa: N803
+    def list_args(self, new_Args: list[str]) -> None:  # noqa: N803
         """Set a new list of arguments for WebDriver.
 
         Args:
-            new_Args (List[str]): The new arguments to set.
+            new_Args (list[str]): The new arguments to set.
 
         """
         self.list_args_ = new_Args
 
-    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> Tuple[WebDriver, WebDriverWait]:  # noqa: C901, N802
+    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:  # noqa: C901, N802
         """Launch the WebDriver with specified parameters.
 
         Args:
             message (str, optional): Initialization message. Defaults to "Inicializando WebDriver".
 
         Returns:
-            Tuple[WebDriver, WebDriverWait]: The WebDriver instance and its WebDriverWait.
+            tuple[WebDriver, WebDriverWait]: The WebDriver instance and its WebDriverWait.
 
         """
         try:
@@ -106,7 +106,7 @@ class DriverBot(CrawJUD):
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
                 self.path_accepted = Path(
-                    path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome")
+                    path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome"),
                 )
                 path_exist = self.path_accepted.exists()
                 if path_exist:
@@ -136,7 +136,7 @@ class DriverBot(CrawJUD):
                 "plugins.always_open_pdf_externally": True,
                 "profile.default_content_settings.popups": 0,
                 "printing.print_preview_sticky_settings.appState": json.dumps(self.settings),
-                "download.default_directory": "{}".format(str(pid_path)),
+                "download.default_directory": f"{pid_path!s}",
             }
 
             path_chrome = None
@@ -208,7 +208,7 @@ class SetupDriver:
 
     progress_group = Group(painel)
 
-    def __init__(self, destination: Path = default_dir, **kwrgs) -> None:
+    def __init__(self, destination: Path = default_dir, **kwrgs: dict[str, any]) -> None:
         """Initialize the SetupDriver with destination path and additional arguments.
 
         Args:
@@ -275,7 +275,8 @@ class SetupDriver:
         elif root_path.exists():
             if self.file_path.exists():
                 self.current_app_progress.update(
-                    self.current_task_id, description="[bold green] Carregado webdriver salvo em cache!"
+                    self.current_task_id,
+                    description="[bold green] Carregado webdriver salvo em cache!",
                 )
                 shutil.copy(self.file_path, self.destination)
 

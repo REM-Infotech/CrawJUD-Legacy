@@ -84,7 +84,7 @@ class CrawJUD(PropertiesCrawJUD):
         """
         self.PrintBot.end_prt(status)
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the CrawJUD instance with provided arguments.
 
         Loads configurations, sets up paths, and initializes the driver.
@@ -176,8 +176,8 @@ class CrawJUD(PropertiesCrawJUD):
         self.row = 0
 
         try:
-            self.message = str("Inicializando robô")
-            self.type_log = str("log")
+            self.message = "Inicializando robô"
+            self.type_log = "log"
             self.prt()
 
             self.output_dir_path = Path(self.path_args).parent.resolve()

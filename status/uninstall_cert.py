@@ -1,6 +1,6 @@
 """Module for uninstalling certificates."""
 
-import subprocess  # noqa: S404  # nosec: B4
+import subprocess  # nosec: B4
 
 from tqdm import tqdm
 
@@ -19,7 +19,11 @@ def uninstall(nome_do_certificado: str) -> None:
     try:
         comando = ["certutil", "-store", "-user", "my"]
         resultados = subprocess.run(  # noqa: S603 # nosec: B603
-            comando, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            comando,
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         ).stdout.splitlines()
 
         # Encontrando o hash baseado no nome
@@ -48,7 +52,11 @@ def uninstall(nome_do_certificado: str) -> None:
         thumbprint = certs[nome_do_certificado]
         comando = ["certutil", "-delstore", "-user", "my", thumbprint]
         resultado = subprocess.run(  # noqa: S603  # nosec: B603
-            comando, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            comando,
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         tqdm.write(resultado.stdout, resultado.stderr)
 

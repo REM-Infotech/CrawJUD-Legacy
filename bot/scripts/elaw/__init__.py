@@ -6,8 +6,8 @@ This module initializes and manages the elaw bots within the CrawJUD-Bots applic
 import logging
 import traceback
 from importlib import import_module
-from typing import Any
 
+# from typing import any
 from ...common import StartError
 
 
@@ -19,7 +19,7 @@ class Elaw:
 
     """
 
-    def __init__(self, **kwrgs) -> None:
+    def __init__(self, **kwrgs: dict) -> None:
         """Initialize the Elaw instance.
 
         This method updates the instance's dictionary with the provided keyword arguments
@@ -43,11 +43,11 @@ class Elaw:
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> Any:  # noqa: N802
+    def Bot(self) -> any:  # noqa: N802
         """Retrieve the bot instance based on the typebot attribute.
 
         Returns:
-            Any: An instance of the specified bot class.
+            any: An instance of the specified bot class.
 
         Raises:
             AttributeError: If the specified bot is not found.

@@ -22,7 +22,6 @@ import platform
 from importlib import import_module
 from pathlib import Path
 from time import sleep
-from typing import Dict, Tuple, Union
 
 import pandas as pd
 import psutil
@@ -50,23 +49,23 @@ from rich.progress import (
 )
 
 __all__ = [
-    "pd",
     "Application",
+    "BarColumn",
+    "DownloadColumn",
     "Group",
     "Live",
+    "OpenAI",
     "Panel",
     "Progress",
     "TaskID",
-    "BarColumn",
-    "DownloadColumn",
     "TextColumn",
     "TimeElapsedColumn",
     "TimeRemainingColumn",
     "TransferSpeedColumn",
-    "OpenAI",
+    "pd",
 ]
 
-process_type = Union[psutil.Process, None]
+process_type = psutil.Process
 
 # import signal
 # from pathlib import Path
@@ -110,13 +109,13 @@ class WorkerBot:
 
     Attributes:
         system (str): The operating system.
-        kwrgs (Dict[str, str]): Keyword arguments for bot configuration.
+        kwrgs (dict[str, str]): Keyword arguments for bot configuration.
 
     """
 
     system: str
-    kwrgs: Dict[str, str]
-    __dict__: Dict[str, str]
+    kwrgs: dict[str, str]
+    __dict__: dict[str, str]
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -127,7 +126,7 @@ class WorkerBot:
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
-            typebot (str): Type of bot execution.
+            typebot (str): type of bot execution.
 
         Returns:
             str: Status message indicating bot completion.
@@ -151,8 +150,7 @@ class WorkerBot:
             while process.is_alive():
                 pass
 
-            else:
-                process.join()
+            process.join()
 
         except Exception as e:
             raise e
@@ -160,7 +158,13 @@ class WorkerBot:
         return "Finalizado!"
 
     def __init__(
-        self, path_args: str, display_name: str, system: str, typebot: str, *args: Tuple[str], **kwargs: Dict[str, str]
+        self,
+        path_args: str,
+        display_name: str,
+        system: str,
+        typebot: str,
+        *args: tuple[str],
+        **kwargs: dict[str, str],
     ) -> None:
         """Initialize a WorkerBot instance.
 
@@ -191,13 +195,13 @@ class WorkerBot:
 
                 bot_ = getattr(import_module(f".scripts.{system_}", __package__), system_.lower())
 
-                bot_(**{"display_name": display_name_, "path_args": path_args_, "typebot": typebot_, "system": system_})
+                bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
 
         except Exception as e:
             raise e
 
     @classmethod
-    def stop(cls, processID: int, pid: str, app: Flask = None) -> str:  # noqa: N802, N803
+    def stop(cls, processID: int, pid: str, app: Flask = None) -> str:  # noqa: N803
         """Stop a process with the given processID.
 
         Args:
@@ -214,7 +218,7 @@ class WorkerBot:
 
             logging.info(process.status)
 
-            if app and app.testing or (process and process.status == "PENDING"):
+            if (app and app.testing) or (process and process.status == "PENDING"):
                 path_flag = Path(__file__).cwd().joinpath("exec").joinpath(pid).joinpath(f"{pid}.flag").resolve()
                 if not path_flag.exists():
                     path_flag.parent.mkdir(parents=True, exist_ok=True)
@@ -233,7 +237,7 @@ class WorkerBot:
             return str(e)
 
     @classmethod
-    def check_status(cls, processID: str) -> str:  # noqa: N802, N803
+    def check_status(cls, processID: str) -> str:  # noqa: N803
         """Check the status of a process.
 
         Args:
@@ -250,7 +254,7 @@ class WorkerBot:
             if status == "SUCCESS":
                 return f"Process {processID} stopped!"
 
-            elif status == "FAILURE":
+            if status == "FAILURE":
                 return "Erro ao inicializar robô"
 
             return "Process running!"

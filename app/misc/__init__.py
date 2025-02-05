@@ -16,7 +16,7 @@ from google.oauth2.service_account import Credentials
 from git_py import _release_tag, check_latest, checkout_release, update_servers
 
 signed_url_lifetime = 300
-__all__ = ["GeoLoc", "_release_tag", "check_latest", "checkout_release", "update_servers", "init_log"]
+__all__ = ["GeoLoc", "_release_tag", "check_latest", "checkout_release", "init_log", "update_servers"]
 
 load_dotenv()
 
@@ -64,7 +64,7 @@ def CredentialsGCS() -> Credentials:  # noqa: N802
     """
     credentials_dict = json.loads(environ.get("credentials_dict"))
     return Credentials.from_service_account_info(credentials_dict).with_scopes(
-        ["https://www.googleapis.com/auth/cloud-platform"]
+        ["https://www.googleapis.com/auth/cloud-platform"],
     )
 
     # Configure a autenticação para a conta de serviço do GCS

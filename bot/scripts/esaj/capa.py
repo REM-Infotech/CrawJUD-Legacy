@@ -34,7 +34,7 @@ class capa(CrawJUD):  # noqa: N801
 
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the capa instance.
 
         Sets up the bot by initializing the parent class, configuring settings, and authenticating.
@@ -145,7 +145,7 @@ class capa(CrawJUD):  # noqa: N801
 
         if grau == 1:
             acao: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao)),
             ).text
             area_do_direito = "Diversos"
 
@@ -160,10 +160,10 @@ class capa(CrawJUD):  # noqa: N801
                 comarca = str(comarca).replace("Fórum de ", "")
 
             vara: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
             ).text.split(" ")[0]
             foro: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
             ).text.replace(f"{vara} ", "")
 
             table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
@@ -203,20 +203,20 @@ class capa(CrawJUD):  # noqa: N801
                     .text
                 )
 
-            def converte_valor_causa(valor_causa) -> str:
+            def converte_valor_causa(valor_causa: str) -> str:
                 if "R$" in valor_causa:
                     valor_causa = float(
                         valor_causa.replace("$", "")
                         .replace("R", "")
                         .replace(" ", "")
                         .replace(".", "")
-                        .replace(",", ".")
+                        .replace(",", "."),
                     )
-                    return "{:.2f}".format(valor_causa).replace(".", ",")
+                    return f"{valor_causa:.2f}".replace(".", ",")
 
                 if "R$" not in valor_causa:
                     valor_causa = float(valor_causa.replace("$", "").replace("R", "").replace(" ", "").replace(",", ""))
-                    return "{:.2f}".format(valor_causa).replace(".", ",")
+                    return f"{valor_causa:.2f}".replace(".", ",")
 
             valorDaCausa = valor  # noqa: N806
             if valor != "":
@@ -263,11 +263,11 @@ class capa(CrawJUD):  # noqa: N801
             data = {"NUMERO_PROCESSO": ""}
 
             sumary_1_esaj = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1))
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1)),
             )
 
             sumary_2_esaj = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2))
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2)),
             )
 
             list_sumary = [sumary_1_esaj, sumary_2_esaj]
@@ -326,8 +326,6 @@ class capa(CrawJUD):  # noqa: N801
                 elif "\n" not in info_parte_text:
                     key = {type_parte: info_parte.text}
                     data.update(key)
-
-                pass
 
             # polo_ativo = (
             #     table_partes.find_elements(By.TAG_NAME, "tr")[0]

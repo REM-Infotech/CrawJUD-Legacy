@@ -7,7 +7,7 @@ import importlib
 import sys
 
 
-def reload_module(module_name: str) -> None:  # pragma: no cover
+def reload_module(module_name: str) -> None:
     """Reload a module by its name.
 
     If the module is already loaded, it will be reloaded. Otherwise, it will be imported.

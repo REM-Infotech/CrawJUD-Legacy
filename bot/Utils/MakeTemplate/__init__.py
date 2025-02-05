@@ -5,13 +5,13 @@ This module provides functionality to create and customize Excel files.
 using openpyxl, based on the attributes of the CrawJUD framework.
 """
 
-from typing import List
-
 import openpyxl
 from openpyxl.styles import Font, PatternFill
 
 from ...core import CrawJUD
 from .appends import listas
+
+# from typing import list
 
 
 class MakeXlsx(CrawJUD):
@@ -20,7 +20,7 @@ class MakeXlsx(CrawJUD):
     def __init__(self) -> None:
         """Initialize the MakeXlsx class with default settings."""
 
-    def make_output(self, type_xlsx: str, path_template: str) -> List[str]:
+    def make_output(self, type_xlsx: str, path_template: str) -> list[str]:
         """Build and save a new Excel file at the given path with various headers.
 
         Args:
@@ -28,10 +28,10 @@ class MakeXlsx(CrawJUD):
             path_template (str): The path to save the generated Excel file.
 
         Returns:
-            List[str]: A list of the headers used in the created Excel file.
+            list[str]: A list of the headers used in the created Excel file.
 
         """
-        lista_colunas: List[str] = getattr(listas(), f"{self.typebot}_{type_xlsx}", getattr(listas(), type_xlsx, None))
+        lista_colunas: list[str] = getattr(listas(), f"{self.typebot}_{type_xlsx}", getattr(listas(), type_xlsx, None))
         # Criar um novo workbook e uma planilha
         workbook = openpyxl.Workbook()
         sheet = workbook.create_sheet("Resultados", 0)
@@ -61,8 +61,7 @@ class MakeXlsx(CrawJUD):
             column = col[0].column_letter  # Get the column name
             for cell in col:
                 try:  # Necessary to avoid error on empty cells
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
+                    max_length = max(len(str(cell.value)), max_length)
                 except Exception as e:
                     raise e
             adjusted_width = (max_length + 2) * 1.2

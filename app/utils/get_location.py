@@ -47,7 +47,7 @@ class InfoGeoloc:
         """Initialize InfoGeoloc by fetching geolocation data."""
         ip_external = ip.external()
         if not ip_external:
-            raise NetworkError()
+            raise NetworkError
 
         get_geoloc = self.IP2Location(ip_external)
         for key, value in get_geoloc.items():
@@ -83,7 +83,7 @@ class InfoGeoloc:
 
         """
         client = HTTPClient()
-        url = "https://api.ip2location.io/?key={key}&ip={ip}".format(key=TOKEN, ip=ip)
+        url = f"https://api.ip2location.io/?key={TOKEN}&ip={ip}"
         data = client.fetch(url)
         return json.loads(data.body.decode("utf-8"))
 
@@ -151,7 +151,7 @@ class InfoGeoloc:
 class GeoLoc(InfoGeoloc):
     """Subclass of InfoGeoloc for extended geolocation functionalities."""
 
-    def __init__(self, *args, **kwrgs):
+    def __init__(self, *args: tuple, **kwrgs: dict):
         """Initialize GeoLoc with optional arguments.
 
         Args:

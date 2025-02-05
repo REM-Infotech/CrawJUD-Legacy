@@ -22,7 +22,7 @@ class projudi:  # noqa: N801
 
     """
 
-    def __init__(self, **kwrgs) -> None:
+    def __init__(self, **kwrgs: dict) -> None:
         """Initialize the projudi instance with the given keyword arguments.
 
         Args:

@@ -9,12 +9,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import (
-    Any,
     Callable,
-    Dict,
-    List,
     LiteralString,
-    Tuple,  # , get_type_hints
     Union,
 )
 
@@ -26,11 +22,11 @@ from .. import OpenAI
 
 Numbers = Union[int, float, complex, datetime, timedelta]
 TypeValues = Union[str, Numbers, list, tuple]
-SubDict = Dict[str, Union[TypeValues, Numbers]]
+SubDict = dict[str, Union[TypeValues, Numbers]]
 
 load_dotenv()
 
-TypeHint = Union[List[str | Numbers | SubDict] | SubDict]
+TypeHint = Union[list[str | Numbers | SubDict] | SubDict]
 
 
 class PropertiesCrawJUD:
@@ -46,12 +42,12 @@ class PropertiesCrawJUD:
         state_ (str): Current state.
         client_ (str): Client information.
         message_ (str): Current message.
-        type_bot (str): Type of bot.
+        type_bot (str): type of bot.
         name_cert_ (str): Certificate name.
         systembot_ (str): System bot identifier.
         message_error_ (str): Error message.
         state_or_client_ (str): State or client identifier.
-        type_log_ (str): Type of log (default "info").
+        type_log_ (str): type of log (default "info").
         graphicMode_ (str): Mode of graphics (default "doughnut").
         # ...other attributes...
 
@@ -70,8 +66,8 @@ class PropertiesCrawJUD:
     systembot_: str = None
     message_error_: str = None
     state_or_client_: str = None
-    type_log_: str = str("info")
-    graphicMode_: str = str("doughnut")  # noqa: N815
+    type_log_: str = "info"
+    graphicMode_: str = "doughnut"  # noqa: N815
 
     _start_time_ = 0.0
 
@@ -85,12 +81,12 @@ class PropertiesCrawJUD:
     driver_: WebDriver = None
     webdriverwait_: WebDriverWait = None
 
-    appends_: List[str] = []
-    cr_list_args: List[str] = []
-    another_append_: List[str] = []
+    appends_: list[str] = []
+    cr_list_args: list[str] = []
+    another_append_: list[str] = []
 
-    kwrgs_: Dict[str, Union[TypeValues, SubDict]] = {}
-    bot_data_: Dict[str, TypeValues | SubDict] = {}
+    kwrgs_: dict[str, Union[TypeValues, SubDict]] = {}
+    bot_data_: dict[str, TypeValues | SubDict] = {}
 
     @property
     def start_time(self) -> float | int:
@@ -98,7 +94,7 @@ class PropertiesCrawJUD:
         return self._start_time_
 
     @start_time.setter
-    def start_time(self, start_time: int | float) -> None:
+    def start_time(self, start_time: float) -> None:
         """Set the start time.
 
         Args:
@@ -138,22 +134,22 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.path_args_ = new_var
 
     @property
-    def appends(self) -> List[str]:
+    def appends(self) -> list[str]:
         """Return the list of appends."""
         return PropertiesCrawJUD.appends_
 
     @appends.setter
-    def appends(self, new_var: List) -> None:
+    def appends(self, new_var: list) -> None:
         """Set a new list of appends.
 
         Args:
-            new_var (List): The new list of appends.
+            new_var (list): The new list of appends.
 
         """
         PropertiesCrawJUD.appends_ = new_var
 
     @property
-    def another_append(self) -> List[str]:
+    def another_append(self) -> list[str]:
         """Return another list of appends."""
         return PropertiesCrawJUD.another_append_
 
@@ -303,16 +299,16 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.out_dir = new_path
 
     @property
-    def kwrgs(self) -> Dict[str, TypeValues | SubDict]:
+    def kwrgs(self) -> dict[str, TypeValues | SubDict]:
         """Return the keyword arguments."""
         return PropertiesCrawJUD.kwrgs_
 
     @kwrgs.setter
-    def kwrgs(self, new_kwg: Dict[str, Any]) -> None:
+    def kwrgs(self, new_kwg: dict[str, any]) -> None:
         """Set the keyword arguments.
 
         Args:
-            new_kwg (Dict[str, Any]): The new keyword arguments.
+            new_kwg (dict[str, any]): The new keyword arguments.
 
         """
         PropertiesCrawJUD.kwrgs_ = new_kwg
@@ -363,16 +359,16 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.graphicMode_ = new_graph
 
     @property
-    def bot_data(self) -> Dict[str, TypeValues | SubDict]:
+    def bot_data(self) -> dict[str, TypeValues | SubDict]:
         """Return the bot data."""
         return PropertiesCrawJUD.bot_data_
 
     @bot_data.setter
-    def bot_data(self, new_botdata: Dict[str, TypeValues | SubDict]) -> None:
+    def bot_data(self, new_botdata: dict[str, TypeValues | SubDict]) -> None:
         """Set the bot data.
 
         Args:
-            new_botdata (Dict[str, TypeValues | SubDict]): The new bot data.
+            new_botdata (dict[str, TypeValues | SubDict]): The new bot data.
 
         """
         PropertiesCrawJUD.bot_data_ = new_botdata
@@ -546,7 +542,7 @@ class PropertiesCrawJUD:
         return _ElementsBot_().config().Elements
 
     @property
-    def DriverLaunch(self) -> Callable[..., Tuple[WebDriver, WebDriverWait]]:  # noqa: N802
+    def DriverLaunch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:  # noqa: N802
         """Return the DriverLaunch callable."""
         from ..Utils import DriverBot as _DriverBot_
 

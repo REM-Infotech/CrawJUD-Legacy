@@ -94,7 +94,7 @@ class Interact(CrawJUD):
                 filter(
                     lambda item: not item.text.isupper(),
                     itens.find_element(By.CSS_SELECTOR, "ul").find_elements(By.TAG_NAME, "li"),
-                )
+                ),
             )
 
         elif text.isupper():
@@ -136,7 +136,7 @@ class Interact(CrawJUD):
             aria_value = None
             with suppress(TimeoutException):
                 load: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, element))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, element)),
                 )
 
             if load:

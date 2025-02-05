@@ -25,7 +25,7 @@ class busca_pags(CrawJUD):  # noqa: N801
 
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the busca_pags instance.
 
         Args:
@@ -102,7 +102,7 @@ class busca_pags(CrawJUD):  # noqa: N801
     def get_page_custas_pagas(self) -> None:
         """Get the page of paid costs."""
         generatepdf: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas)),
         )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1

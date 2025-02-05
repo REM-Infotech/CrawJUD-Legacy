@@ -24,7 +24,7 @@ class proc_parte(CrawJUD):  # noqa: N801
     Handles the processing of participants in Projudi within the CrawJUD framework.
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize a new proc_parte instance.
 
         Sets up authentication and initializes necessary variables.
@@ -122,7 +122,8 @@ class proc_parte(CrawJUD):  # noqa: N801
             next_page = None
             with suppress(NoSuchElementException):
                 list_processos = table_processos.find_elements(
-                    By.XPATH, './/tr[contains(@class, "odd") or contains(@class, "even")]'
+                    By.XPATH,
+                    './/tr[contains(@class, "odd") or contains(@class, "even")]',
                 )
 
             if list_processos and not self.isStoped:
@@ -130,12 +131,15 @@ class proc_parte(CrawJUD):  # noqa: N801
 
                 with suppress(NoSuchElementException):
                     next_page = self.driver.find_element(By.CLASS_NAME, "navRight").find_element(
-                        By.XPATH, self.elements.exception_arrow
+                        By.XPATH,
+                        self.elements.exception_arrow,
                     )
 
                 self.type_log = "info"
                 self.append_success(
-                    self.data_append, "Processos salvos na planilha!", fileN=os.path.basename(self.path)
+                    self.data_append,
+                    "Processos salvos na planilha!",
+                    fileN=os.path.basename(self.path),
                 )
                 if next_page:
                     next_page.click()
@@ -185,7 +189,7 @@ class proc_parte(CrawJUD):  # noqa: N801
                     "POLO_ATIVO": polo_ativo,
                     "POLO_PASSIVO": polo_passivo,
                     "JUIZO": juizo,
-                }
+                },
             )
             self.row += 1
             self.message = f"Processo {numero_processo} salvo!"

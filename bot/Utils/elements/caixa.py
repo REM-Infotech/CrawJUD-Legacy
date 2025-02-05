@@ -5,4 +5,3 @@ class CAIXA_AM:  # noqa: N801
     """Class representing Caixa AM elements."""
 
     # Elementos Caixa
-    ...

@@ -27,7 +27,7 @@ class Movimentacao(CrawJUD):
 
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the Movimentacao instance.
 
         Args:
@@ -115,7 +115,7 @@ class Movimentacao(CrawJUD):
     def get_moves(self) -> None:
         """Retrieve movement information."""
         show_all: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')),
         )
 
         self.interact.scroll_to(show_all)

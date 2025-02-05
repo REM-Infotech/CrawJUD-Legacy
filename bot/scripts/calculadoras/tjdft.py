@@ -3,6 +3,8 @@
 This module handles calculations related to the TJD-Federal Tribunal within the CrawJUD-Bots application.
 """
 
+from __future__ import annotations
+
 import base64
 import os
 import time
@@ -29,12 +31,12 @@ class Tjdft(CrawJUD):
     """The Tjdft class extends CrawJUD to handle calculations for the TJD-Federal Tribunal.
 
     Attributes:
-        cookieaceito (list): List to track accepted cookies.
+        cookieaceito (list): list to track accepted cookies.
         # ...other attributes...
 
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Tjdft instance.
 
         Args:
@@ -145,7 +147,9 @@ class Tjdft(CrawJUD):
             check_cookies = None
             with suppress(TimeoutException):
                 check_cookies = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class="alert text-center cookiealert show"]'))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, 'div[class="alert text-center cookiealert show"]'),
+                    ),
                 )
 
             if check_cookies:
@@ -175,7 +179,7 @@ class Tjdft(CrawJUD):
             self.prt()
             css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
             get_input_process: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc)),
             )
             get_input_process.click()
             get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
@@ -203,7 +207,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             get_name_requerente: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente)),
             )
             get_name_requerente.click()
             get_name_requerente.send_keys(self.bot_data.get("REQUERENTE"))
@@ -231,7 +235,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             get_name_requerido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido)),
             )
             get_name_requerido.click()
             get_name_requerido.send_keys(self.bot_data.get("REQUERIDO"))
@@ -274,7 +278,7 @@ class Tjdft(CrawJUD):
                 self.interact.click(self.driver.find_element(By.CSS_SELECTOR, 'input[id="juros_percent2"]'))
                 self.interact.send_key(
                     self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]'))
+                        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]')),
                     ),
                     percent,
                 )
@@ -282,7 +286,8 @@ class Tjdft(CrawJUD):
             if not juros_partir == "VENCIMENTO":
                 css_data_incide = 'input[name="juros_data"][id="juros_data"]'
                 self.interact.send_key(
-                    self.driver.find_element(By.CSS_SELECTOR, css_data_incide), self.bot_data.get("DATA_INCIDENCIA")
+                    self.driver.find_element(By.CSS_SELECTOR, css_data_incide),
+                    self.bot_data.get("DATA_INCIDENCIA"),
                 )
 
         except Exception as e:
@@ -303,7 +308,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             data_valor_devido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido)),
             )
             data_valor_devido.click()
             data_valor_devido.send_keys(self.bot_data.get("DATA_CALCULO"))
@@ -314,7 +319,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             valor_devido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido)),
             )
             valor_devido.click()
 
@@ -349,7 +354,7 @@ class Tjdft(CrawJUD):
 
                 if self.bot_data.get("MULTA_PERCENTUAL", None):
                     multa_percentual: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual))
+                        EC.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual)),
                     )
                     multa_percentual.click()
 
@@ -385,7 +390,7 @@ class Tjdft(CrawJUD):
 
                 if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
                     honorario_sucumb: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb))
+                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb)),
                     )
                     honorario_sucumb.click()
                     percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
@@ -396,14 +401,16 @@ class Tjdft(CrawJUD):
                     sleep(0.5)
 
                     disabled_state = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]'
+                        By.CSS_SELECTOR,
+                        'input[id="honor_sucumb_data"]',
                     ).get_attribute("disabled")
 
                 elif self.bot_data.get("HONORARIO_SUCUMB_DATA", None) and disabled_state == "":
                     honor_sucumb_data = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_data"]')
                     honor_sucumb_valor = self.driver.find_element(By.CSS_SELECTOR, 'input[id="honor_sucumb_valor"]')
                     sucumb_juros_partir = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_sucumb_juros_partir"]'
+                        By.CSS_SELECTOR,
+                        'input[id="honor_sucumb_juros_partir"]',
                     )
 
                     valor = str(self.bot_data.get("HONORARIO_SUCUMB_VALOR"))
@@ -439,7 +446,7 @@ class Tjdft(CrawJUD):
 
                 if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
                     honorario_exec: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec))
+                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec)),
                     )
                     honorario_exec.click()
                     percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
@@ -450,7 +457,8 @@ class Tjdft(CrawJUD):
                     sleep(0.5)
 
                     disabled_state = self.driver.find_element(
-                        By.CSS_SELECTOR, 'input[id="honor_exec_data"]'
+                        By.CSS_SELECTOR,
+                        'input[id="honor_exec_data"]',
                     ).get_attribute("disabled")
 
                 elif self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None) and disabled_state == "":
@@ -525,11 +533,11 @@ class Tjdft(CrawJUD):
             calcular.click()
 
             table_valorcalc: WebElement = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]'))
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]')),
             )[-1]
             row_valorcalc = table_valorcalc.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[-1]
             valor_doc = float(
-                row_valorcalc.find_elements(By.TAG_NAME, "td")[-1].text.replace(".", "").replace(",", ".")
+                row_valorcalc.find_elements(By.TAG_NAME, "td")[-1].text.replace(".", "").replace(",", "."),
             )
 
             print_options = PrintOptions()

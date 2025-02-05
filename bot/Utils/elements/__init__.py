@@ -16,7 +16,7 @@ Attributes:
 from __future__ import annotations
 
 from importlib import import_module
-from typing import Self, Union
+from typing import Self
 
 from ...core import CrawJUD
 from .elaw import ELAW_AME
@@ -69,7 +69,7 @@ class ElementsBot(CrawJUD):
         return self
 
     @property
-    def Elements(self) -> Union[ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM]:  # noqa: N802
+    def Elements(self) -> ELAW_AME | ESAJ_AM | PJE_AM | PROJUDI_AM:  # noqa: N802
         """Retrieve the elements bot instance.
 
         Returns:

@@ -155,7 +155,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     # Login Elaw
     url_login = ""
     campo_username = ""
-    campo_passwd = ""  # noqa: S105 # nosec: B105
+    campo_passwd = ""  # nosec: B105
     btn_entrar = ""
     chk_login = ""
 
@@ -182,7 +182,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
         [
             'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_',
             '9_44_3_1_2_2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
-        ]
+        ],
     )
 
     # CADASTRO
@@ -212,20 +212,20 @@ class ELAW_AME(Configuracao):  # noqa: N801
         (
             'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4',
             '_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]',
-        )
+        ),
     )
     select_field = "".join(
         (
             'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44',
             '_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]',
-        )
+        ),
     )
     css_other_location = "".join(
         (
             'input[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:',
             "j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_c:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_f:0:j",
             '_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]',
-        )
+        ),
     )
     comboProcessoTipo = 'div[id="j_id_3k_1:comboProcessoTipo"]'  # noqa: N815
     filtro_processo = 'input[id="j_id_3k_1:comboProcessoTipo_filter"]'
@@ -238,7 +238,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
         (
             r"#j_id_3k_1\:autoCompleteLawyerOutraParte_panel > ul > li.ui-autocomplete-item.",
             "ui-autocomplete-list-item.ui-corner-all.ui-state-highlight",
-        )
+        ),
     )
     css_valor_causa = 'input[id="j_id_3k_1:amountCase_input"]'
     escritrorio_externo = 'div[id="j_id_3k_1:comboEscritorio"]'
@@ -251,7 +251,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
         (
             "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >",
             " div.ui-radiobutton-box.ui-widget.ui-corner-all.ui-state-default",
-        )
+        ),
     )
     botao_continuar = 'button[id="j_id_1e"]'
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
@@ -276,39 +276,39 @@ class ELAW_AME(Configuracao):  # noqa: N801
         (
             'textarea[id="j_id_3k_1:j_id_3k_4_2_2_6_9_44_2:j_id_3k_4_2_2_6_9_4',
             '4_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]',
-        )
+        ),
     )
     elementSelect = "".join(  # noqa: N815
         (
             'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3',
             '_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]',
-        )
-    )  # noqa: N815
+        ),
+    )
     css_data_citacao = 'input[id="j_id_3k_1:dataRecebimento_input"]'
     fase_input = 'select[id="j_id_3k_1:processoFaseCombo_input"]'
     provimento_input = "".join(
         (
             'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2',
             '_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]',
-        )
+        ),
     )
     fato_gerador_input = "".join(
         (
             'select[id="j_id_3k_1:j_id_3k_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_',
             '9_44_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]',
-        )
+        ),
     )
     input_descobjeto_css = "".join(
         (
             'textarea[id="j_id_3k_1:j_id_3k_4_2_2_l_9_44_2:j_id_3k_4_2_2_',
             'l_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_l_9_44_3_1_2_2_1_13"]',
-        )
+        ),
     )
     objeto_input = "".join(
         (
             'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44',
             '_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"]',
-        )
+        ),
     )
 
     # DOWNLOAD
@@ -322,9 +322,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
     listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'
     css_element = "".join(
-        (
-            'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:proces","soValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]'
-        )
+        'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:proces","soValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]',
     )
     type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo"]'
     list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
@@ -353,7 +351,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
             'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_8_1_9_26_1_2_1:',
             "j_id_2m_1_i_8_1_9_26_1_2_c_2:j_id_2m_1_i_8_1_9_26_1_2_c_5:0:",
             'j_id_2m_1_i_8_1_9_26_1_2_c_15:j_id_2m_1_i_8_1_9_26_1_2_c_1v"]',
-        )
+        ),
     )
     css_centro_custas = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_9_1_9_26_1_1_1:pvpEFBfieldText"]'
     css_div_conta_debito = (
@@ -379,7 +377,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
         (
             r"#processoValorPagamentoView\:j_id_p_1_2_1_2_7_8_4_23_1\:j_id_p_1_2_1_",
             r"2_7_8_4_23_2_1_2_1\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > tr:nth-child(3)",
-        )
+        ),
     )
     visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"  # noqa: N815
 
@@ -391,7 +389,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
         (
             'div[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70',
             ':viewValoresCustomeDt:0:j_id_i3_c_1_5_7e:0:j_id_i3_c_1_5_7m"]',
-        )
+        ),
     )
     div_tipo_obj_css = 'div[id="selectManyObjetoAdicionarList"]'
     itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
@@ -421,63 +419,63 @@ class ELAW_AME(Configuracao):  # noqa: N801
         "tipo_empresa": 'select[id="j_id_3k_1:j_id_3k_4_2_2_4_9_2_5_input"] > option:selected',
         "escritorio": 'select[id="j_id_3k_1:comboEscritorio_input"] > option:selected',
         "advogado_interno": "".join(
-            ['select[id="j_id_3k_1:comboAdvoga', 'doResponsavelProcesso_input"] > option:selected']
+            ['select[id="j_id_3k_1:comboAdvoga', 'doResponsavelProcesso_input"] > option:selected'],
         ),
         "divisao": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_',
                 'a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "classificacao": "".join(
-            ['select[id="j_id_3k_1:j_id_3k_4_2_2_p_9_16_1:', 'processoClassificacaoCombo_input"] > option:selected']
+            ['select[id="j_id_3k_1:j_id_3k_4_2_2_p_9_16_1:', 'processoClassificacaoCombo_input"] > option:selected'],
         ),
         "toi_criado": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_v_9_44_2:j_id_3k_4_2_2_v_',
                 '9_44_3_1_2_2_2_1:fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "nota_tecnica": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_w_9_44_2:j_id_3k_4_2_2_w_9_44_3_1_2',
                 '_2_1_1:fieldid_9244typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "liminar": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_y_9_44_2:j_id_3k_4_2_2_y_9',
                 '_44_3_1_2_2_1_1:fieldid_9830typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "provimento": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2_g_9_',
                 '44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "fato_gerador": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_9_44_3_1_2',
                 '_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "acao": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1',
                 '_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "tipo_entrada": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_e_9_44_2:j_id_3k_4_2_2_e_',
                 '9_44_3_1_2_2_1_1:fieldid_9242typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
         "objeto": "".join(
             [
                 'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1',
                 '_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
-            ]
+            ],
         ),
     }

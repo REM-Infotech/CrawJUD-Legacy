@@ -8,7 +8,6 @@ import re
 import time
 from contextlib import suppress
 from datetime import datetime
-from typing import Dict
 
 # from memory_profiler import profile
 from selenium.webdriver.common.by import By
@@ -28,7 +27,7 @@ class capa(CrawJUD):  # noqa: N801
     information extraction and management.
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the capa instance.
 
         Args:
@@ -129,7 +128,7 @@ class capa(CrawJUD):  # noqa: N801
         """
         try:
             grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
-            process_info: Dict[str, str | int | datetime] = {}
+            process_info: dict[str, str | int | datetime] = {}
             process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
 
             def format_vl_causa(valorDaCausa: str) -> float | str:  # noqa: N803
@@ -207,7 +206,7 @@ class capa(CrawJUD):  # noqa: N801
                     filter(
                         lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
                         incl.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr"),
-                    )
+                    ),
                 )
 
                 for item in itens:
@@ -215,7 +214,7 @@ class capa(CrawJUD):  # noqa: N801
                         filter(
                             lambda x: x.text.strip() != "",
                             item.find_elements(By.CSS_SELECTOR, "td.label, td.labelRadio > label"),
-                        )
+                        ),
                     )
                     # para teste
                     # for value in item.find_elements(By.CSS_SELECTOR, "td"):
@@ -225,7 +224,7 @@ class capa(CrawJUD):  # noqa: N801
                         filter(
                             lambda x: x.text.strip() != "" and not x.get_attribute("class"),
                             item.find_elements(By.TAG_NAME, "td"),
-                        )
+                        ),
                     )
 
                     for _, label in enumerate(labels):
@@ -275,7 +274,7 @@ class capa(CrawJUD):  # noqa: N801
 
             for pos, parte_info in enumerate(result_table):
                 h4_name = list(
-                    filter(lambda x: x.text != "" and x is not None, includecontent.find_elements(By.TAG_NAME, "h4"))
+                    filter(lambda x: x.text != "" and x is not None, includecontent.find_elements(By.TAG_NAME, "h4")),
                 )
                 tipo_parte = self.format_string(h4_name[pos].text).replace(" ", "_").upper()
 
@@ -285,7 +284,8 @@ class capa(CrawJUD):  # noqa: N801
                     nome_colunas.append(column.text.upper())
 
                 for parte in parte_info.find_element(By.TAG_NAME, "tbody").find_elements(
-                    By.XPATH, self.elements.table_moves
+                    By.XPATH,
+                    self.elements.table_moves,
                 ):
                     for pos_, nome_coluna in enumerate(nome_colunas):
                         key = "_".join((self.format_string(nome_coluna).replace(" ", "_").upper(), tipo_parte))

@@ -11,4 +11,3 @@ class TJDFT:
     """Class representing TJDFT elements."""
 
     # ELEMENTOS TJDFT
-    ...

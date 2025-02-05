@@ -28,7 +28,7 @@ class Andamentos(CrawJUD):
 
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Andamentos instance.
 
         Args:
@@ -213,7 +213,6 @@ class Andamentos(CrawJUD):
             NotImplementedError: If the method is not yet implemented.
 
         """
-        pass
 
     def save_andamento(self) -> None:
         """Save the andamento details.
@@ -238,7 +237,7 @@ class Andamentos(CrawJUD):
 
         try:
             check_save: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw")
+                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
             )
             if check_save:
                 sleep(3)

@@ -13,6 +13,7 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.wait import WebDriverWait
@@ -34,7 +35,7 @@ class Cadastro(CrawJUD):
 
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Cadastro instance.
 
         This method initializes the cadastro class by calling the base class's
@@ -412,7 +413,8 @@ class Cadastro(CrawJUD):
         self.prt()
 
         campo_processo: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, css_campo_processo)), message="Erro ao encontrar elemento"
+            EC.presence_of_element_located((By.CSS_SELECTOR, css_campo_processo)),
+            message="Erro ao encontrar elemento",
         )
         campo_processo.click()
 
@@ -657,7 +659,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         input_adv_responsavel: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)),
         )
         input_adv_responsavel.click()
         self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
@@ -668,7 +670,7 @@ class Cadastro(CrawJUD):
 
         with suppress(TimeoutException):
             wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
             )
 
         if wait_adv:
@@ -679,14 +681,14 @@ class Cadastro(CrawJUD):
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         div_select_Adv: WebElement = self.wait.until(  # noqa: N806
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv))
-        )  # noqa: N806
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)),
+        )
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         input_select_adv: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)),
         )
         input_select_adv.click()
 
@@ -879,7 +881,8 @@ class Cadastro(CrawJUD):
             sleep(0.5)
 
             iframe: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, self.elements.xpath)), message="Erro ao encontrar elemento"
+                EC.presence_of_element_located((By.XPATH, self.elements.xpath)),
+                message="Erro ao encontrar elemento",
             )
 
             self.driver.switch_to.frame(iframe)
@@ -1016,7 +1019,8 @@ class Cadastro(CrawJUD):
                 css_input_doc = self.elements.tipo_cnpj
 
             input_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_doc)), message="Erro ao encontrar elemento"
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_doc)),
+                message="Erro ao encontrar elemento",
             )
             input_doc.click()
             sleep(0.05)
@@ -1086,7 +1090,7 @@ class Cadastro(CrawJUD):
         self.driver.get_screenshot_as_file(savecomprovante)
         self.append_success([self.bot_data.get("NUMERO_PROCESSO"), name_comprovante, self.pid])
 
-    def check_part_found(self, driver) -> str | None:
+    def check_part_found(self, driver: WebDriver) -> str | None:
         """Check if the opposing party is found.
 
         This method verifies the presence of the opposing party in the process.
@@ -1130,7 +1134,8 @@ class Cadastro(CrawJUD):
 
         with suppress(TimeoutException):
             wait_confirm_save: WebElement = WebDriverWait(self.driver, 20).until(
-                EC.url_to_be(("https://amazonas.elaw.com.br/processoView.elaw")), message="Erro ao encontrar elemento"
+                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
+                message="Erro ao encontrar elemento",
             )
 
         if wait_confirm_save:
@@ -1139,7 +1144,7 @@ class Cadastro(CrawJUD):
             self.prt()
             return True
 
-        elif not wait_confirm_save:
+        if not wait_confirm_save:
             ErroElaw: WebElement | str = None  # noqa: N806
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (  # noqa: N806

@@ -33,7 +33,7 @@ class Provisao(CrawJUD):
 
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the Provisao instance.
 
         Args:
@@ -125,7 +125,7 @@ class Provisao(CrawJUD):
         except Exception as e:
             raise e
 
-    def chk_risk(self):
+    def chk_risk(self) -> None:
         """Check and select the appropriate risk type based on the provision label.
 
         Raises:
@@ -137,7 +137,7 @@ class Provisao(CrawJUD):
         if label_risk.text == "Risco Quebrado":
             self.Select2_ELAW(self.elements.type_risk_select, "Risco")
 
-    def setup_calls(self):
+    def setup_calls(self) -> list:
         """Configure sequence of method calls based on the provision data.
 
         Returns:
@@ -160,7 +160,7 @@ class Provisao(CrawJUD):
             raise ErroDeExecucao('Provisão "Possível" já inserida')
 
         edit_button: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit)),
         )
         edit_button.click()
 
@@ -192,12 +192,12 @@ class Provisao(CrawJUD):
 
         """
         get_valores: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores)),
         )
         get_valores.click()
 
         check_exists_provisao: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css)),
         )
         check_exists_provisao = check_exists_provisao.find_elements(By.TAG_NAME, "tr")
 
@@ -213,7 +213,7 @@ class Provisao(CrawJUD):
 
         return "Contém valores"
 
-    def add_new_valor(self):
+    def add_new_valor(self) -> None:
         """Add a new value entry.
 
         Raises:
@@ -222,7 +222,7 @@ class Provisao(CrawJUD):
         """
         try:
             div_tipo_obj: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css)),
             )
 
             div_tipo_obj.click()
@@ -244,14 +244,14 @@ class Provisao(CrawJUD):
         except Exception as e:
             raise ErroDeExecucao("Não foi possivel atualizar provisão", e=e) from e
 
-    def edit_valor(self):
+    def edit_valor(self) -> None:
         """Edit an existing value entry."""
         editar_pedido: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar)),
         )
         editar_pedido.click()
 
-    def set_valores(self):
+    def set_valores(self) -> None:
         """Set the provision values.
 
         Raises:
@@ -263,7 +263,7 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
             campo_valor_dml = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt)),
             )
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
@@ -275,7 +275,7 @@ class Provisao(CrawJUD):
                 valor_informar = str(valor_informar) + ",00"
 
             elif isinstance(valor_informar, float):
-                valor_informar = "{:.2f}".format(valor_informar).replace(".", ",")
+                valor_informar = f"{valor_informar:.2f}".replace(".", ",")
 
             campo_valor_dml.send_keys(valor_informar)
 
@@ -297,7 +297,7 @@ class Provisao(CrawJUD):
             self.prt()
 
             expand_filter_risk = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk)),
             )
             expand_filter_risk.click()
 
@@ -372,7 +372,7 @@ class Provisao(CrawJUD):
         except Exception as e:
             raise e
 
-    def informar_motivo(self):
+    def informar_motivo(self) -> None:
         """Inform the justification for the provision.
 
         Raises:
@@ -391,7 +391,7 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
             informar_motivo: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo))
+                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo)),
             )
             informar_motivo.send_keys(self.bot_data.get("OBSERVACAO", "Atualização de provisão"))
             id_informar_motivo = informar_motivo.get_attribute("id")
@@ -414,7 +414,7 @@ class Provisao(CrawJUD):
         check_provisao_atualizada = None
         with suppress(TimeoutException):
             check_provisao_atualizada: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#valoresGeralPanel_header > span"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#valoresGeralPanel_header > span")),
             )
 
         if not check_provisao_atualizada:

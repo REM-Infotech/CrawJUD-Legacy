@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import json
 import logging
-from typing import Dict
 
 from flask import Blueprint, Response, abort, current_app, jsonify, make_response, request
 
@@ -15,7 +14,7 @@ wh = Blueprint("webhook", __package__)
 
 # Endpoint para o webhook
 @wh.post("/webhook")
-def github_webhook() -> Response:  # pragma: no cover
+def github_webhook() -> Response:
     """Handle incoming GitHub webhook events.
 
     Verifies the signature, processes release events, and updates servers accordingly.
@@ -62,12 +61,14 @@ def github_webhook() -> Response:  # pragma: no cover
 
 
 def verify_signature(
-    payload_body: Dict[str, str] = None, secret_token: str = None, signature_header: str = None
-) -> None:  # pragma: no cover
+    payload_body: dict[str, str] = None,
+    secret_token: str = None,
+    signature_header: str = None,
+) -> None:
     """Verify that the payload was sent from GitHub by validating SHA256.
 
     Args:
-        payload_body (Dict[str, str], optional): Original request body to verify.
+        payload_body (dict[str, str], optional): Original request body to verify.
         secret_token (str, optional): GitHub app webhook token.
         signature_header (str, optional): Signature header received from GitHub.
 

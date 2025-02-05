@@ -3,6 +3,8 @@
 This module provides a SocketBot class for handling socket.io connections and emitting events.
 """
 
+from __future__ import annotations
+
 from time import sleep
 
 from socketio import Client

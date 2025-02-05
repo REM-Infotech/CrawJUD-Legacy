@@ -1,17 +1,14 @@
 """Blueprint for managing bot operations such as launching, stopping, and scheduling."""
 
 import json
-import os
 import pathlib
 import platform
 import traceback
-from typing import Type
+from typing import TYPE_CHECKING
 
-from celery import Task
 from celery.schedules import crontab
 from flask import Blueprint, Response, jsonify, make_response, request
 from flask import current_app as app
-from flask_sqlalchemy import SQLAlchemy
 
 from miscellaneous import reload_module
 
@@ -19,7 +16,11 @@ from ..misc import check_latest, stop_execution
 from ..models import ScheduleModel
 from ..utils import GeoLoc
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+if TYPE_CHECKING:
+    from celery import Task
+    from flask_sqlalchemy import SQLAlchemy
+
+path_template = str(pathlib.Path(__file__).parent.resolve().joinpath("templates"))
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
@@ -59,10 +60,7 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
                 raise Exception("Server running outdatest version!")
 
             if app.testing is False:
-                if system == "esaj" and platform.system() != "Windows":
-                    raise Exception("Este servidor não pode executar este robô!")
-
-                elif system == "caixa" and loc != "Amazonas":
+                if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
                     raise Exception("Este servidor não pode executar este robô!")
 
                 start_rb = SetStatus(data_bot, request.files, id, system, typebot)
@@ -82,15 +80,6 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
                     task = init_bot.delay(path_args, display_name, system, typebot)
 
                     process_id = str(task.id)
-                    # if not app.testing:  # pragma: no cover
-
-                    # elif app.testing:
-
-                    #     import random
-                    #     import string
-
-                    #     digits = random.sample(string.digits, 6)
-                    #     process_id = "".join(digits)
 
                     # Salva o ID no "banco de dados"
                     add_thread = ThreadBots(pid=pid, processID=process_id)
@@ -100,18 +89,18 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
             elif app.testing is True:
                 is_started = 200 if data_bot else 500
 
-        except Exception:  # pragma: no cover
+        except Exception:
             err = traceback.format_exc()
             app.logger.exception(err)
             message = {"error": err}
-            is_started: Type[int] = 500
+            is_started: type[int] = 500
 
     resp = make_response(jsonify(message), is_started)
     return resp
 
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
-def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
+def stop_bot(user: str, pid: str) -> Response:
     """Stop a running bot based on user and PID.
 
     Args:
@@ -131,7 +120,8 @@ def stop_bot(user: str, pid: str) -> Response:  # pragma: no cover
     if query:
         pid = query.pid
         with app.app_context():
-            args, code = stop_execution(app, pid, True)
+            robot_stop = True
+            args, code = stop_execution(app, pid, robot_stop)
 
             return make_response(jsonify(args), code)
 
@@ -160,7 +150,7 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
 
     data_bot = request_data if request_data else request_form
 
-    if isinstance(data_bot, str):  # pragma: no cover
+    if isinstance(data_bot, str):
         data_bot = json.loads(data_bot)
 
     cron = crontab(minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*")
@@ -172,9 +162,9 @@ def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
 
     schedule_str = "".join(
         (
-            f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month}",
-            f"{cron._orig_month_of_year} {cron._orig_day_of_week}",
-        )
+            f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month}",  # noqa: SLF001
+            f"{cron._orig_month_of_year} {cron._orig_day_of_week}",  # noqa: SLF001
+        ),
     )
 
     task_name = "app.tasks.bot_starter.init_bot"

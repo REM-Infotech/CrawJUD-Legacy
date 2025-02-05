@@ -8,7 +8,6 @@ import pathlib
 import time
 from contextlib import suppress
 from time import sleep
-from typing import Type
 
 import dotenv
 from PIL import Image
@@ -27,6 +26,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
+# from typing import type
 # from ...shared import PropertiesCrawJUD
 
 dotenv.load_dotenv()
@@ -41,7 +41,7 @@ class protocolo(CrawJUD):  # noqa: N801
     upon successful protocol processing.
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the protocolo instance.
 
         Args:
@@ -168,7 +168,7 @@ class protocolo(CrawJUD):  # noqa: N801
                 self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#successMessages")))
                 .text.split("Protocolo:")[1]
                 .replace(" ", "")
-            )  # noqa: N806
+            )
 
         return successMessage
 
@@ -275,7 +275,7 @@ class protocolo(CrawJUD):  # noqa: N801
 
             alert = None
             with suppress(TimeoutException):
-                alert: Type[Alert] = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
+                alert: type[Alert] = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
 
             if alert:
                 alert.accept()
@@ -285,7 +285,7 @@ class protocolo(CrawJUD):  # noqa: N801
             self.type_log = "log"
             self.prt()
             input_tipo_move: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]'))
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="descricaoTipoDocumento"]')),
             )
             input_tipo_move.click()
             sleep(1)
@@ -295,8 +295,8 @@ class protocolo(CrawJUD):  # noqa: N801
 
             input_move_option: WebElement = self.wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)")
-                )
+                    (By.CSS_SELECTOR, "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)"),
+                ),
             )
             input_move_option.click()
             """ Corrigir elements """
@@ -343,7 +343,7 @@ class protocolo(CrawJUD):  # noqa: N801
 
             css_inptfile = 'input[id="conteudo"]'
             input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_inptfile)),
             )
 
             file_to_upload = self.format_string(file)
@@ -385,7 +385,8 @@ class protocolo(CrawJUD):  # noqa: N801
             tablefiles: WebElement = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "resultTable")))
             checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[0]
             radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(
-                By.CSS_SELECTOR, self.elements.input_radio
+                By.CSS_SELECTOR,
+                self.elements.input_radio,
             )
             radiobutton.click()
 
@@ -415,10 +416,10 @@ class protocolo(CrawJUD):  # noqa: N801
                 self.type_log = "log"
                 self.prt()
                 input_file_element: WebElement = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, self.elements.conteudo))
+                    EC.presence_of_element_located((By.XPATH, self.elements.conteudo)),
                 )
                 input_file_element.send_keys(
-                    f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}"
+                    f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}",
                 )
                 self.wait_progressbar()
                 self.message = f"Arquivo '{file}' enviado com sucesso!"
@@ -473,7 +474,7 @@ class protocolo(CrawJUD):  # noqa: N801
             check_p_element = ""
             with suppress(TimeoutException):
                 check_p_element: WebElement = WebDriverWait(self.driver, 5, 0.01).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#errorMessages > div.box-content"))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "#errorMessages > div.box-content")),
                 )
 
             if check_p_element != "":
@@ -540,7 +541,8 @@ class protocolo(CrawJUD):  # noqa: N801
         try:
             table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
             table_moves = table_moves.find_elements(
-                By.XPATH, './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
+                By.XPATH,
+                './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]',
             )
 
             table_moves[0].screenshot(os.path.join(self.output_dir_path, "tr_0.png"))
@@ -601,7 +603,7 @@ class protocolo(CrawJUD):  # noqa: N801
         tablefiles = None
         with suppress(TimeoutException):
             tablefiles: WebElement = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "resultTable"))
+                EC.presence_of_element_located((By.CLASS_NAME, "resultTable")),
             )
 
         if tablefiles:
@@ -611,7 +613,8 @@ class protocolo(CrawJUD):  # noqa: N801
             for file in checkfiles:
                 with suppress(NoSuchElementException, StaleElementReferenceException):
                     radiobutton = file.find_elements(By.TAG_NAME, "td")[0].find_element(
-                        By.CSS_SELECTOR, self.elements.input_radio
+                        By.CSS_SELECTOR,
+                        self.elements.input_radio,
                     )
                     radiobutton.click()
 
@@ -620,7 +623,7 @@ class protocolo(CrawJUD):  # noqa: N801
 
                     alert = None
                     with suppress(TimeoutException):
-                        alert: Type[Alert] = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
+                        alert: type[Alert] = WebDriverWait(self.driver, 5).until(EC.alert_is_present())
 
                     if alert:
                         alert.accept()
@@ -637,7 +640,7 @@ class protocolo(CrawJUD):  # noqa: N801
         while True:
             try:
                 divprogressbar: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_containerprogressbar))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_containerprogressbar)),
                 )
                 divprogressbar = divprogressbar.find_element(By.CSS_SELECTOR, self.elements.css_divprogressbar)
                 sleep(1)

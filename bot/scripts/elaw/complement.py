@@ -13,7 +13,7 @@ import pathlib
 import time
 from contextlib import suppress
 from time import sleep
-from typing import Callable, Dict, List, Self
+from typing import Callable, Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
@@ -29,7 +29,7 @@ from ...core import CrawJUD
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
-campos_validar: List[str] = [
+campos_validar: list[str] = [
     "estado",
     "comarca",
     "foro",
@@ -56,7 +56,7 @@ class complement(CrawJUD):  # noqa: N801
     This class interacts with the ELAW system to complete the registration of a process.
     """
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the complement class.
 
         This method initializes the complement class by calling the base class's
@@ -178,7 +178,7 @@ class complement(CrawJUD):  # noqa: N801
                 self.type_log = "log"
                 self.prt()
                 edit_proc_button = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar_complementar))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar_complementar)),
                 )
                 edit_proc_button.click()
 
@@ -187,7 +187,7 @@ class complement(CrawJUD):  # noqa: N801
                 start_time = time.perf_counter()
 
                 check_esfera = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.label_esfera))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.label_esfera)),
                 )
 
                 esfera_xls = self.bot_data.get("ESFERA")
@@ -220,7 +220,8 @@ class complement(CrawJUD):  # noqa: N801
                     self.message = "Processo salvo com sucesso!"
 
                 self.append_success(
-                    [self.bot_data.get("NUMERO_PROCESSO"), self.message, name_comprovante], self.message
+                    [self.bot_data.get("NUMERO_PROCESSO"), self.message, name_comprovante],
+                    self.message,
                 )
                 self.message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
 
@@ -246,7 +247,7 @@ class complement(CrawJUD):  # noqa: N801
         """
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)),
         )
         self.type_log = "log"
         self.message = "Salvando processo novo"
@@ -269,8 +270,8 @@ class complement(CrawJUD):  # noqa: N801
         self.type_log = "log"
         self.prt()
 
-        validar: Dict[str, str] = {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")}
-        message_campo: List[str] = []
+        validar: dict[str, str] = {"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")}
+        message_campo: list[str] = []
 
         for campo in campos_validar:
             try:
@@ -398,13 +399,13 @@ class complement(CrawJUD):  # noqa: N801
 
         with suppress(TimeoutException):
             wait_confirm_save: WebElement = WebDriverWait(self.driver, 20).until(
-                EC.url_to_be(("https://amazonas.elaw.com.br/processoView.elaw"))
+                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
             )
 
         if wait_confirm_save:
             return True
 
-        elif not wait_confirm_save:
+        if not wait_confirm_save:
             ErroElaw: WebElement | str = None  # noqa: N806
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (  # noqa: N806
@@ -460,7 +461,7 @@ class complement(CrawJUD):  # noqa: N801
         self.prt()
 
         input_adv_responsavel: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)),
         )
         input_adv_responsavel.click()
         self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
@@ -471,7 +472,7 @@ class complement(CrawJUD):  # noqa: N801
 
         with suppress(TimeoutException):
             wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv))
+                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
             )
 
         if wait_adv:
@@ -482,14 +483,14 @@ class complement(CrawJUD):  # noqa: N801
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         div_select_Adv: WebElement = self.wait.until(  # noqa: N806
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv))
-        )  # noqa: N806
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)),
+        )
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         input_select_adv: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)),
         )
         input_select_adv.click()
 
@@ -697,7 +698,7 @@ class complement(CrawJUD):  # noqa: N801
         self.prt()
 
         input_uc: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc)),
         )
         input_uc.click()
 
@@ -842,7 +843,7 @@ class complement(CrawJUD):  # noqa: N801
         self.prt()
 
         data_citacao: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao)),
         )
         self.interact.clear(data_citacao)
         self.interact.sleep_load('div[id="j_id_3x"]')
@@ -1005,7 +1006,7 @@ class complement(CrawJUD):  # noqa: N801
 
         """
         input_descobjeto = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_descobjeto_css))
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_descobjeto_css)),
         )
         self.interact.click(input_descobjeto)
 

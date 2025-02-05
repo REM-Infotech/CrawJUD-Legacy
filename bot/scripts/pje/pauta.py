@@ -8,7 +8,6 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
-from typing import Type
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -18,11 +17,13 @@ from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
+# from typing import type
+
 
 class pauta(CrawJUD):  # noqa: N801
     """Represents the main class to retrieve hearing data (pautas)."""
 
-    def __init__(self, *args, **kwrgs) -> None:
+    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
         """Initialize the pauta class with any given arguments."""
         super().__init__(*args, **kwrgs)
 
@@ -113,7 +114,7 @@ class pauta(CrawJUD):  # noqa: N801
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 
-    def get_pautas(self, current_date: Type[datetime], vara: str) -> None:
+    def get_pautas(self, current_date: type[datetime], vara: str) -> None:
         """Get and parse pautas from the appropriate page.
 
         Args:
@@ -144,7 +145,8 @@ class pauta(CrawJUD):  # noqa: N801
 
                 for item in itens_pautas:
                     vara_name = self.driver.find_element(
-                        By.CSS_SELECTOR, 'span[class="ng-tns-c11-1 ng-star-inserted"]'
+                        By.CSS_SELECTOR,
+                        'span[class="ng-tns-c11-1 ng-star-inserted"]',
                     ).text
                     with suppress(StaleElementReferenceException):
                         item: WebElement = item
