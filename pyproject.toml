@@ -42,7 +42,6 @@ aiofiles = "^24.1.0"
 watchdog = "^6.0.0"
 gitpython = "^3.1.43"
 pygithub = "^2.5.0"
-eventlet = "^0.39.0"
 openai = "^1.60.1"
 redis = "^5.2.0"
 redis-flask = "0.0.2"
@@ -55,6 +54,8 @@ python-dotenv-vault = "^0.6.4"
 cryptography = "41.0.7"
 python-dotenv = "0.21.1"
 flake8-bugbear = "^24.12.12"
+gevent = "^24.11.1"
+gevent-websocket = "^0.10.1"
 
 
 [tool.poetry.group.dev.dependencies]

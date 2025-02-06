@@ -1,15 +1,5 @@
 """Module for managing WebDriver instances and related utilities."""
 
-import eventlet
-from tqdm import tqdm
-
-eventlet.monkey_patch(socket=True, subprocess=True)
-
-import socket  # noqa: E402
-
-q = getattr(socket, "__module__", "Python Socket Module")
-tqdm.write(q)  # noqa: T201
-
 import json  # noqa: E402
 import logging  # noqa: E402
 import pathlib  # noqa: E402
@@ -25,11 +15,9 @@ from time import sleep  # noqa: E402
 from typing import Mapping, Optional  # noqa: E402
 
 import requests  # noqa: E402
-from eventlet.green import socket  # noqa: E402
 from selenium.common.exceptions import WebDriverException  # noqa: E402
-
-# from selenium.webdriver.remote.client_config import ClientConfig
-# from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.client_config import ClientConfig  # noqa: E402, F401
+from selenium.webdriver.remote.remote_connection import RemoteConnection  # noqa: E402, F401
 from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402
 
 from ...core import (  # noqa: E402
@@ -57,10 +45,12 @@ try:
 except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
+import socket  # noqa: E402
+
 default_dir = Path(__file__).cwd().resolve()
 logger = logging.getLogger(__name__)
 # from typing import list, tuple
-_is_connectable_exceptions = (socket.error, ConnectionResetError)
+_is_connectable_exceptions = (socket.error, ConnectionResetError, ConnectionRefusedError, ConnectionAbortedError)
 
 
 class CustomService(Service):
@@ -121,7 +111,7 @@ class CustomService(Service):
         """
         socket_ = None
         try:
-            socket_ = socket.create_connection((host, self.port), 1)
+            socket_ = socket.create_connection((host, self.port), 300)
             result = True
         except _is_connectable_exceptions:
             err = traceback.format_exc()
@@ -246,12 +236,12 @@ class DriverBot(CrawJUD):
             path_chrome.chmod(0o777, follow_symlinks=True)
 
             serve = CustomService(path_chrome)
-
+            serve.start()
             driver = Chrome(service=serve, options=chrome_options)
-            # cliente = ClientConfig(f"http://{serve.service_url}:{serve.port}")
+            # cliente = ClientConfig(f"http://localhost:{serve.port}")
             # remote = RemoteConnection(client_config=cliente)
-            # driver = WebDriver(options=chrome_options, remote_connection=remote, client_config=cliente)
-            # driver.maximize_window()
+            # driver = WebDriver(options=chrome_options, command_executor=remote)
+            driver.maximize_window()
 
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()

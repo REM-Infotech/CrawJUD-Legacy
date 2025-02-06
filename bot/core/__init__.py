@@ -80,23 +80,6 @@ class CrawJUD(PropertiesCrawJUD):
         "version": 2,
     }
 
-    def prt(self) -> None:
-        """Print a message using the PrintBot's print_msg method.
-
-        This method invokes the print_msg method of the PrintBot instance
-        to display messages.
-        """
-        self.PrintBot.print_msg()
-
-    def end_prt(self, status: str) -> None:
-        """End the print session with the given status.
-
-        Args:
-            status (str): The status message to indicate the end of the print session.
-
-        """
-        self.PrintBot.end_prt(status)
-
     def __init__(self) -> None:
         """Initialize the CrawJUD instance with provided arguments.
 
@@ -226,6 +209,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.driver = driver
             self.wait = wait
 
+            self.elements = self.ElementsBot.config().Elements
             # self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:

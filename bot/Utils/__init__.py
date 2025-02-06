@@ -471,10 +471,18 @@ class OtherUtils(CrawJUD):
             new_data = pd.DataFrame(df)
             new_data.to_excel(output_success, index=False)
 
-        if isinstance(data, list) and all(isinstance(item, dict) for item in data):
-            pass
-        else:
-            data = [{key: item.get(key, "") for key in self.nomes_colunas} for item in data]
+        typed = type(data) is list and all(isinstance(item, dict) for item in data)
+
+        if not typed:
+            data2 = dict.fromkeys(self.name_colunas, "")
+            for item in data:
+                data2_itens = list(filter(lambda x: x[1] is None or x[1].strip() == "", list(data2.items())))
+                for key, _ in data2_itens:
+                    data2.update({key: item})
+                    break
+
+            data.clear()
+            data.append(data2)
 
         save_info(data)
 

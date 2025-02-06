@@ -18,7 +18,7 @@ from dotenv_vault import load_dotenv
 from tqdm import tqdm
 
 from ...core import CrawJUD
-from .socketio import SocketBot
+from .socketio_bots import SocketBot
 
 codificacao = "UTF-8"
 mensagens = []

@@ -1,4 +1,4 @@
-"""Module: socketio2.
+"""Module: socketio.
 
 This module provides a SocketBot class for handling socket.io connections and emitting events.
 """
@@ -12,12 +12,13 @@ from time import sleep
 from socketio import Client
 from socketio.exceptions import BadNamespaceError
 
-sio = Client(reconnection_attempts=5)
 logger = logging.getLogger(__name__)
 
 
 class SocketBot:
     """A bot that connects to a socket and emits messages."""
+
+    sio = Client(reconnection_attempts=5)
 
     def __init__(self) -> None:
         """Initialize the SocketBot."""
@@ -57,7 +58,7 @@ class SocketBot:
 
             except Exception as e:
                 if "Client is not in a disconnected state" in str(e):
-                    sio.disconnect()
+                    self.sio.disconnect()
                     self.connected = False
                     sleep(1)
                     self.connect_socket(url)
@@ -99,7 +100,7 @@ class SocketBot:
             data (dict): The data to send with the event.
 
         """
-        sio.emit(event, data, namespace="/log")
+        self.sio.emit(event, data, namespace="/log")
 
     def connect_socket(self, url: str) -> None:
         """Connect to the socket.
@@ -109,7 +110,7 @@ class SocketBot:
 
         """
         if self.connected is False:
-            sio.connect(url, namespaces=["/log"])
+            self.sio.connect(url, namespaces=["/log"])
             self.connected = True
 
     def send_message(self, data: dict[str, str | int], url: str) -> None:
@@ -139,26 +140,22 @@ class SocketBot:
             self.with_context("stop_bot", data, url)
             self.with_context("statusbot", {}, url)
 
+    @sio.on("connect", namespace="*")
+    def on_connect(self, namespace: str = None, client_: str = None) -> None:
+        """Handle the connect event."""
+        sleep(0.25)
 
-@sio.on("connect", namespace="*")
-def on_connect(namespace: str = None, client_: str = None) -> None:
-    """Handle the connect event."""
-    sleep(0.25)
+    @sio.on("disconnect", namespace="*")
+    def on_disconnect(self, namespace: str = None, client_: str = None) -> None:
+        """Handle the disconnect event."""
+        sleep(0.25)
 
+    @sio.on("log_message", namespace="*")
+    def on_message(self, data: dict, namespace: str = None, client_: str = None) -> None:
+        """Handle the log_message event."""
+        sleep(0.25)
 
-@sio.on("disconnect", namespace="*")
-def on_disconnect(namespace: str = None, client_: str = None) -> None:
-    """Handle the disconnect event."""
-    sleep(0.25)
-
-
-@sio.on("log_message", namespace="*")
-def on_message(data: dict, namespace: str = None, client_: str = None) -> None:
-    """Handle the log_message event."""
-    sleep(0.25)
-
-
-@sio.on("stop_bot", namespace="*")
-def on_stop_bot(data: dict, namespace: str = None, client_: str = None) -> None:
-    """Handle the stop_bot event."""
-    sleep(0.25)
+    @sio.on("stop_bot", namespace="*")
+    def on_stop_bot(self, data: dict, namespace: str = None, client_: str = None) -> None:
+        """Handle the stop_bot event."""
+        sleep(0.25)

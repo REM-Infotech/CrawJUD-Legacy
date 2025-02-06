@@ -4,9 +4,9 @@ This module creates the Flask app and configures extensions like Celery,
 SocketIO, Flask-Mail, SQLAlchemy, and Talisman.
 """
 
-import eventlet
+from gevent import monkey
 
-eventlet.monkey_patch(socket=True, subprocess=True)
+monkey.patch_all()
 
 import platform  # noqa: E402
 from datetime import timedelta  # noqa: E402
@@ -33,7 +33,7 @@ valides = [
 
 asc = any(valides)
 
-async_mode = "eventlet"
+async_mode = "gevent"
 
 load_dotenv()
 
@@ -84,7 +84,7 @@ class AppFactory:
                 self.init_talisman(app)
                 io = self.init_socket(app)
                 self.init_routes(app)
-
+                app.logger = init_log()
                 return app, io, celery
 
         app.logger = init_log()

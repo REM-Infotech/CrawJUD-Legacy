@@ -17,14 +17,14 @@ Modules:
 
 from __future__ import annotations
 
-import eventlet
+from gevent import monkey
 
-eventlet.monkey_patch(all=False, socket=True)
-
+monkey.patch_all()
 
 import logging  # noqa: E402
 import platform  # noqa: E402
-from importlib import import_module  # noqa: E402
+
+# from importlib import import_module  # noqa: E402
 from pathlib import Path  # noqa: E402
 from time import sleep  # noqa: E402
 
@@ -58,6 +58,8 @@ from selenium.webdriver.chrome.service import Service  # noqa: E402# noqa: E402
 from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402# noqa: E402
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: E402# noqa: E402
 
+from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi  # noqa: E402
+
 __all__ = [
     "Application",
     "BarColumn",
@@ -78,6 +80,12 @@ __all__ = [
     "Service",
     "WebDriver",
     "WebDriverWait",
+    "projudi",
+    "esaj",
+    "elaw",
+    "pje",
+    "calculadoras",
+    "caixa",
 ]
 
 process_type = psutil.Process
@@ -210,7 +218,7 @@ class WorkerBot:
 
                 kwargs.update({"display_name": display_name})
 
-                bot_ = getattr(import_module(".scripts", __package__), system_.lower())
+                bot_ = globals().get(system_.lower())
 
                 bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
 

@@ -3,15 +3,18 @@
 This module serves as the entry point for the CrawJUD-Bots application, handling signal management and initializing the Flask app.
 """  # noqa: E501
 
-import logging
-import signal
-import subprocess  # nosec: B404 # noqa: S404
-import sys
-import traceback
-from os import getenv
-from platform import system
+from gevent import monkey
 
-from app import create_app
+monkey.patch_all()
+import logging  # noqa: E402
+import signal  # noqa: E402
+import subprocess  # nosec: B404 # noqa: S404, E402
+import sys  # noqa: E402
+import traceback  # noqa: E402
+from os import getenv  # noqa: E402
+from platform import system  # noqa: E402
+
+from app import create_app  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

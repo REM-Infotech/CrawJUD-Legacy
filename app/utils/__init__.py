@@ -1,14 +1,14 @@
 """Utility functions and classes for the CrawJUD-Bots application."""
 
-import re
-from os import environ
+import re  # noqa: E402
+from os import environ  # noqa: E402
 
-from celery import Celery
-from dotenv_vault import load_dotenv
-from flask import Flask
+from celery import Celery  # noqa: E402
+from dotenv_vault import load_dotenv  # noqa: E402
+from flask import Flask  # noqa: E402
 
-from .bots_logs import init_log
-from .get_location import GeoLoc
+from .bots_logs import init_log  # noqa: E402
+from .get_location import GeoLoc  # noqa: E402
 
 load_dotenv()
 

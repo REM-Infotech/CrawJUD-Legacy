@@ -67,10 +67,7 @@ class SocketBot:
             url (str): The URL to connect to.
 
         """
-        try:
-            pass
-        finally:
-            self.with_context("log_message", data, url)
+        self.with_context("log_message", data, url)
 
     def end_message(self, data: dict, url: str) -> None:
         """Send a stop bot message and a status bot message to the socket.io server.

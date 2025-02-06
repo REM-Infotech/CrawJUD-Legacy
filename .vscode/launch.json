@@ -16,6 +16,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "celery",
+      "justMyCode": true,
       "console": "integratedTerminal",
       "envFile": "${workspaceFolder}/.env",
       "args": [
@@ -26,7 +27,7 @@
         "--loglevel",
         "INFO",
         "-P",
-        "threads",
+        "gevent",
         "--autoscale=50,3"
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",

@@ -129,7 +129,7 @@ class protocolo(CrawJUD):  # noqa: N801
             self.sign_files()
             self.finish_move()
 
-            debug = os.getenv("DEBUG", "False").lower() == "true"
+            debug = False
             data = [{"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"), "tested": "true"}]
 
             if debug is False:

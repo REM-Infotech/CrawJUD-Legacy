@@ -71,6 +71,15 @@ class PropertiesCrawJUD:
 
     _start_time_ = 0.0
 
+    _AuthBot_ = None
+    _DriverBot_ = None
+    _ElementsBot_ = None
+    _Interact_ = None
+    _MakeXlsx_ = None
+    _OtherUtils_ = None
+    _PrintBot_ = None
+    _SearchBot_ = None
+    _ElementsBotConfig_ = None
     path_: Path = None
     out_dir: Path = None
     path_erro_: Path = None
@@ -90,10 +99,6 @@ class PropertiesCrawJUD:
 
     def __init__(self) -> None:
         """Initialize the PropertiesCrawJUD instance."""
-        import eventlet
-
-        eventlet.monkey_patch(socket=True, subprocess=True)
-
         from ..Utils import AuthBot as _AuthBot_
         from ..Utils import DriverBot as _DriverBot_
         from ..Utils import ElementsBot as _ElementsBot_
@@ -103,19 +108,44 @@ class PropertiesCrawJUD:
         from ..Utils import PrintBot as _PrintBot_
         from ..Utils import SearchBot as _SearchBot_
 
-        self._ElementsBot_ = _ElementsBot_()
-        self._OtherUtils_ = _OtherUtils_()
-        self._SearchBot_ = _SearchBot_()
-        self._Interact_ = _Interact_()
-        self._MakeXlsx_ = _MakeXlsx_()
-        self._AuthBot_ = _AuthBot_()
-        self._PrintBot_ = _PrintBot_()
-        self._DriverBot_ = _DriverBot_()
+        PropertiesCrawJUD._OtherUtils_ = _OtherUtils_()
+        PropertiesCrawJUD._SearchBot_ = _SearchBot_()
+        PropertiesCrawJUD._Interact_ = _Interact_()
+        PropertiesCrawJUD._MakeXlsx_ = _MakeXlsx_()
+        PropertiesCrawJUD._AuthBot_ = _AuthBot_()
+        PropertiesCrawJUD._OtherUtils_ = _OtherUtils_()
+        PropertiesCrawJUD._ElementsBot_ = _ElementsBot_()
+        self.PrintBot = _PrintBot_()
+        PropertiesCrawJUD._DriverBot_ = _DriverBot_()
+
+    def prt(self) -> None:
+        """Print a message using the PrintBot's print_msg method.
+
+        This method invokes the print_msg method of the PrintBot instance
+        to display messages.
+        """
+        try:
+            self.PrintBot.print_msg()
+        except AttributeError:
+            from ..Utils import PrintBot as _PrintBot_
+
+            self.PrintBot = _PrintBot_()
+
+            self.PrintBot.print_msg()
+
+    def end_prt(self, status: str) -> None:
+        """End the print session with the given status.
+
+        Args:
+            status (str): The status message to indicate the end of the print session.
+
+        """
+        self.PrintBot.end_prt(status)
 
     @property
     def start_time(self) -> float | int:
         """Return the start time."""
-        return self._start_time_
+        return PropertiesCrawJUD._start_time_
 
     @start_time.setter
     def start_time(self, start_time: float) -> None:
@@ -125,7 +155,7 @@ class PropertiesCrawJUD:
             start_time (int | float): The start time value.
 
         """
-        self._start_time_ = start_time
+        PropertiesCrawJUD._start_time_ = start_time
 
     @property
     def path(self) -> Path:
@@ -519,42 +549,46 @@ class PropertiesCrawJUD:
     @property
     def AuthBot(self) -> Callable[[], bool]:  # noqa: N802
         """Return the AuthBot callable."""
-        return self._AuthBot_.auth
+        return PropertiesCrawJUD._AuthBot_.auth
 
     @property
     def MakeXlsx(self) -> _MakeXlsx_:  # noqa: N802
         """Return the MakeXlsx instance."""
-        return self._MakeXlsx_
+        return PropertiesCrawJUD._MakeXlsx_
 
     @property
     def Interact(self) -> _Interact_:  # noqa: N802
         """Return the Interact instance."""
-        return self._Interact_
-
-    @property
-    def PrintBot(self) -> _PrintBot_:  # noqa: N802
-        """Return the PrintBot instance."""
-        return self._PrintBot_
+        return PropertiesCrawJUD._Interact_
 
     @property
     def SearchBot(self) -> _SearchBot_:  # noqa: N802
         """Return the SearchBot instance."""
-        return self._SearchBot_
+        return PropertiesCrawJUD._SearchBot_
 
     @property
     def OtherUtils(self) -> _OtherUtils_:  # noqa: N802
         """Return the OtherUtils instance."""
-        return self._OtherUtils_
+        return PropertiesCrawJUD._OtherUtils_
+
+    @property
+    def ElementsBot(self) -> ElementsBot_:  # noqa: N802
+        """Return the ElementsBot instance."""
+        return PropertiesCrawJUD._ElementsBot_
 
     @property
     def elements(self) -> Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]:
         """Return the elements configuration."""
-        return self._ElementsBot_.config().Elements
+        return PropertiesCrawJUD._ElementsBotConfig_
+
+    @elements.setter
+    def elements(self, obj: Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]) -> None:
+        PropertiesCrawJUD._ElementsBotConfig_ = obj
 
     @property
     def DriverLaunch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:  # noqa: N802
         """Return the DriverLaunch callable."""
-        return self._DriverBot_.DriverLaunch
+        return PropertiesCrawJUD._DriverBot_.DriverLaunch
 
     @property
     def search_bot(self) -> Callable[[], bool]:
@@ -669,10 +703,10 @@ class PropertiesCrawJUD:
 
 if __name__ == "__main__":
     from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
+    from ..Utils import ElementsBot as ElementsBot_
     from ..Utils import Interact as _Interact_
     from ..Utils import MakeXlsx as _MakeXlsx_
     from ..Utils import OtherUtils as _OtherUtils_
-    from ..Utils import PrintBot as _PrintBot_
     from ..Utils import SearchBot as _SearchBot_
 
 # from pydantic import BaseModel, ValidationError

@@ -9,7 +9,7 @@ from pytz import timezone
 
 from app import app, io
 from app.misc import stop_execution
-from status.server_side import FormatMessage  # load_cache, FormatMessage
+from status.server_side import FormatMessage, load_cache
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +121,7 @@ def join(data: dict[str, str]) -> None:
     """
     room = data["pid"]
     join_room(room)
+    data = load_cache(room, app)
 
     try:
         from app import db
@@ -149,12 +150,15 @@ def join(data: dict[str, str]) -> None:
                         ),
                     },
                 )
+                emit("log_message", data, room=room)
+
             elif message == "Erro ao inicializar robô":
                 stop_execution(app, pid)
+
+                emit("log_message", data, room=room)
 
     except Exception:
         send("Failed to check bot has stopped")
         stop_execution(app, pid)
 
-    emit("log_message", data, room=room)
     send(f"Joinned room! Room: {room}")
