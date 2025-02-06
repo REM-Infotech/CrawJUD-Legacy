@@ -165,6 +165,7 @@ class WorkerBot:
         """
         try:
             process = BotThread(target=WorkerBot, args=(path_args, display_name, system, typebot))
+            process.daemon = True
             process.start()
             sleep(2)
             # pid = Path(path_args).stem
@@ -176,7 +177,7 @@ class WorkerBot:
                     raise e
 
             while process.is_alive():
-                process.chk_except()
+                ...
 
             process.join()
 
@@ -208,19 +209,16 @@ class WorkerBot:
 
         """
         try:
-            from app.run import flask_app as app
+            display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
+            path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
+            system_ = args[2] if args else kwargs.pop("system", system)
+            typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
 
-            with app.app_context():
-                display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
-                path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
-                system_ = args[2] if args else kwargs.pop("system", system)
-                typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
+            kwargs.update({"display_name": display_name})
 
-                kwargs.update({"display_name": display_name})
+            bot_ = globals().get(system_.lower())
 
-                bot_ = globals().get(system_.lower())
-
-                bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
+            bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
 
         except Exception as e:
             raise e

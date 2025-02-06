@@ -9,11 +9,19 @@ from __future__ import annotations
 import logging
 import traceback
 from importlib import import_module
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 from ...common.exceptions import StartError
 
 logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from .capa import capa
+    from .movimentacao import movimentacao
+    from .proc_parte import proc_parte
+    from .protocolo import protocolo
+
+    ClassBots = Union[proc_parte, capa, movimentacao, protocolo]
 
 
 class projudi:  # noqa: N801
@@ -64,12 +72,3 @@ class projudi:  # noqa: N801
             raise AttributeError("Robô não encontrado!!")
 
         return rb(**self.kwrgs)
-
-
-if __name__ == "__main__":
-    from .capa import capa
-    from .movimentacao import movimentacao
-    from .proc_parte import proc_parte
-    from .protocolo import protocolo
-
-    ClassBots = Union[proc_parte, capa, movimentacao, protocolo]

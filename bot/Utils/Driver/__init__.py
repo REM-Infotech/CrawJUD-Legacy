@@ -1,5 +1,11 @@
 """Module for managing WebDriver instances and related utilities."""
 
+from __future__ import annotations
+
+from gevent import monkey
+
+monkey.patch_all()
+
 import json  # noqa: E402
 import logging  # noqa: E402
 import pathlib  # noqa: E402

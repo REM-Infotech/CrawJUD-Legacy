@@ -10,9 +10,9 @@ from celery.schedules import crontab
 from flask import Blueprint, Response, jsonify, make_response, request
 from flask import current_app as app
 
-from miscellaneous import reload_module
+from miscellaneous import reload_module  # noqa: F401
 
-from ..misc import check_latest, stop_execution
+from ..misc import check_latest, stop_execution  # noqa: F401
 from ..models import ScheduleModel
 from ..utils import GeoLoc
 
@@ -65,38 +65,31 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
                 if not isinstance(data_bot, dict):
                     raise ValueError("Invalid data_bot format")
 
-            if check_latest() is False and app.debug is False:
-                raise Exception("Server running outdatest version!")
+            if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
+                raise Exception("Este servidor não pode executar este robô!")
 
-            if app.testing is False:
-                if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
-                    raise Exception("Este servidor não pode executar este robô!")
+            start_rb = SetStatus(data_bot, request.files, id, system, typebot)
+            path_args, display_name = start_rb.start_bot(app, db)
 
-                start_rb = SetStatus(data_bot, request.files, id, system, typebot)
-                path_args, display_name = start_rb.start_bot(app, db)
+            with app.app_context():
+                # reload_module("bot")
 
-                with app.app_context():
-                    reload_module("bot")
+                from app.models import ThreadBots
+                from bot import WorkerBot
 
-                    from app.models import ThreadBots
-                    from bot import WorkerBot
+                bot_starter = WorkerBot.start_bot
 
-                    bot_starter = WorkerBot.start_bot
+                pid = pathlib.Path(path_args).stem
 
-                    pid = pathlib.Path(path_args).stem
+                init_bot: Task = bot_starter
+                task = init_bot.apply_async(args=[path_args, display_name, system, typebot])
 
-                    init_bot: Task = bot_starter
-                    task = init_bot.delay(path_args, display_name, system, typebot)
+                process_id = str(task.id)
 
-                    process_id = str(task.id)
-
-                    # Salva o ID no "banco de dados"
-                    add_thread = ThreadBots(pid=pid, processID=process_id)
-                    db.session.add(add_thread)
-                    db.session.commit()
-
-            elif app.testing is True:
-                is_started = 200 if data_bot else 500
+                # Salva o ID no "banco de dados"
+                add_thread = ThreadBots(pid=pid, processID=process_id)
+                db.session.add(add_thread)
+                db.session.commit()
 
         except Exception:
             err = traceback.format_exc()

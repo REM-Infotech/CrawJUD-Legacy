@@ -21,14 +21,17 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "app.run.app",
+        "app.celery",
         "worker",
         "-E",
         "--loglevel",
         "INFO",
         "-P",
+        // "threads",
         "gevent",
-        "--autoscale=50,3"
+        "--autoscale=50,3",
+        "-c",
+        "1000"
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },

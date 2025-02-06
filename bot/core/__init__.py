@@ -6,14 +6,18 @@ for the CrawJUD bot, including setup and authentication processes.
 
 from __future__ import annotations
 
-import json
-import logging
-import platform
-import traceback
+from gevent import monkey
 
-from bot.common.exceptions import StartError
+monkey.patch_all()
 
-from .. import (
+import json  # noqa: E402
+import logging  # noqa: E402
+import platform  # noqa: E402
+import traceback  # noqa: E402
+
+from bot.common.exceptions import StartError  # noqa: E402
+
+from .. import (  # noqa: E402
     BarColumn,
     Chrome,
     DownloadColumn,
@@ -36,13 +40,13 @@ from .. import (
 if platform.system() == "Windows":
     from .. import Application
 
-from datetime import datetime
-from pathlib import Path
+from datetime import datetime  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-from pytz import timezone
+from pytz import timezone  # noqa: E402
 
-from ..common import ErroDeExecucao
-from ..shared import PropertiesCrawJUD, TypeHint
+from ..common import ErroDeExecucao  # noqa: E402
+from ..shared import PropertiesCrawJUD, TypeHint  # noqa: E402
 
 __all__ = [
     pd,

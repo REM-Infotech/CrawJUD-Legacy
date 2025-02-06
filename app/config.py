@@ -277,6 +277,7 @@ class TestingConfig(Config):
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
+            "task_create_missing_queue": True,
         }
 
     except Exception as e:

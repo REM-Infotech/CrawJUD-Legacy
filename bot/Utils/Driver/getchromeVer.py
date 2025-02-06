@@ -75,6 +75,3 @@ class ChromeVersion:
 
 
 chrome_ver = ChromeVersion().get_chrome_version
-
-if __name__ == "__main__":
-    logger.info(f"Google Chrome version: {chrome_ver()}")  # noqa: G004

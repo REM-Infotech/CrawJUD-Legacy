@@ -18,15 +18,14 @@ from dotenv_vault import load_dotenv
 from tqdm import tqdm
 
 from ...core import CrawJUD
-from .socketio_bots import SocketBot
 
 codificacao = "UTF-8"
 mensagens = []
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
 url_socket = environ.get("HOSTNAME")
-iobot = SocketBot()
 
 
 class PrintBot(CrawJUD):
@@ -92,10 +91,9 @@ class PrintBot(CrawJUD):
         """Send a final status message."""
         data = {"pid": self.pid, "status": status}
 
-        iobot.end_message(data, url_socket)
+        self.end_message(data, url_socket)
 
-    @classmethod
-    def socket_message(cls, self: Self, data: dict) -> None:
+    def socket_message(self: Self, data: dict) -> None:
         """Send a message to the socket and handle termination checks."""
         chk_type1 = "fim da execução" in self.prompt
         chk_type2 = "falha ao iniciar" in self.prompt
@@ -105,8 +103,79 @@ class PrintBot(CrawJUD):
             if any(message_stop):
                 data.update({"system": self.system, "typebot": self.typebot})
 
-            iobot.send_message(data, url_socket)
+            self.send_message(data, url_socket)
 
         except Exception:
             err = traceback.format_exc()
             logger.exception(err)
+
+    def with_context(self, event: str, data: dict, url: str) -> None:
+        """Handle the context for connecting and emitting messages.
+
+        Args:
+            event (str): The event to emit.
+            data (dict): The data to send with the event.
+            url (str): The URL to connect to.
+
+        """
+        exc = None
+
+        try:
+            url = f"https://{url}"
+
+            # Verifica se já está conectado antes de tentar se conectar
+            self.connect_socket(url)
+            sleep(0.5)
+            self.emit_message(event, data)
+            sleep(1)
+
+        except Exception:
+            exc = traceback.format_exc()
+
+        if exc:
+            logger.info(exc)
+
+    def emit_message(self, event: str, data: dict) -> None:
+        """Emit a message to the socket.
+
+        Args:
+            event (str): The event to emit.
+            data (dict): The data to send with the event.
+            sio (SimpleClient): The SimpleClient instance.
+
+        """
+        self.sio.emit(event, data, namespace="/log")
+
+    def connect_socket(self, url: str) -> None:
+        """Connect to the socket.
+
+        Args:
+            url (str): The URL to connect to.
+            sio (SimpleClient): The SimpleClient instance
+
+        """
+        self.sio.connect(url, namespaces=["/log"])
+
+    def send_message(self, data: dict[str, str | int], url: str) -> None:
+        """Send a log message.
+
+        Args:
+            data (dict[str, str | int]): The data to send.
+            url (str): The URL to connect to.
+
+        """
+        self.with_context("log_message", data, url)
+
+    def end_message(self, data: dict, url: str) -> None:
+        """Send a stop bot message and a status bot message.
+
+        Args:
+            data (dict): The data to send.
+            url (str): The URL to connect to.
+
+        """
+        try:
+            pass
+        finally:
+            self.with_context("stop_bot", data, url)
+            self.with_context("statusbot", {}, url)

@@ -6,19 +6,34 @@ application, including configuration for paths, WebDriver instances, and bot set
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import (
+from gevent import monkey
+
+monkey.patch_all()
+
+from datetime import datetime, timedelta  # noqa: E402
+from pathlib import Path  # noqa: E402
+from time import sleep  # noqa: E402
+from typing import (  # noqa: E402
+    TYPE_CHECKING,
     Callable,
     LiteralString,
     Union,
 )
 
-from dotenv_vault import load_dotenv
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
+from dotenv_vault import load_dotenv  # noqa: E402
+from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402
+from selenium.webdriver.support.wait import WebDriverWait  # noqa: E402
+from socketio import Client  # noqa: E402
 
-from .. import OpenAI
+from .. import OpenAI  # noqa: E402
+
+if TYPE_CHECKING:
+    from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
+    from ..Utils import ElementsBot as ElementsBot_
+    from ..Utils import Interact as _Interact_
+    from ..Utils import MakeXlsx as _MakeXlsx_
+    from ..Utils import OtherUtils as _OtherUtils_
+    from ..Utils import SearchBot as _SearchBot_
 
 Numbers = Union[int, float, complex, datetime, timedelta]
 TypeValues = Union[str, Numbers, list, tuple]
@@ -68,9 +83,9 @@ class PropertiesCrawJUD:
     state_or_client_: str = None
     type_log_: str = "info"
     graphicMode_: str = "doughnut"  # noqa: N815
-
+    name_colunas_: list[str] = None
     _start_time_ = 0.0
-
+    _connected = False
     _AuthBot_ = None
     _DriverBot_ = None
     _ElementsBot_ = None
@@ -96,6 +111,44 @@ class PropertiesCrawJUD:
 
     kwrgs_: dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: dict[str, TypeValues | SubDict] = {}
+
+    # sio = SimpleClient
+    sio = Client(reconnection_attempts=5)
+
+    @sio.on("connect", namespace="*")
+    def on_connect(self, namespace: str = None, client_: str = None) -> None:
+        """Handle the connect event."""
+        sleep(0.25)
+
+    @sio.on("disconnect", namespace="*")
+    def on_disconnect(self, namespace: str = None, client_: str = None) -> None:
+        """Handle the disconnect event."""
+        sleep(0.25)
+
+    @sio.on("log_message", namespace="*")
+    def on_message(self, data: dict, namespace: str = None, client_: str = None) -> None:
+        """Handle the log_message event."""
+        sleep(0.25)
+
+    @sio.on("stop_bot", namespace="*")
+    def on_stop_bot(self, data: dict, namespace: str = None, client_: str = None) -> None:
+        """Handle the stop_bot event."""
+        sleep(0.25)
+
+    @property
+    def connected(self) -> bool:
+        """Return the connection status."""
+        return PropertiesCrawJUD._connected
+
+    @connected.setter
+    def connected(self, status: bool) -> None:
+        """Set the connection status.
+
+        Args:
+            status (bool): The new connection status.
+
+        """
+        PropertiesCrawJUD._connected = status
 
     def __init__(self) -> None:
         """Initialize the PropertiesCrawJUD instance."""
@@ -700,14 +753,15 @@ class PropertiesCrawJUD:
         """Return the text_is_a_date callable."""
         return self.OtherUtils.text_is_a_date
 
+    @property
+    def name_colunas(self) -> list[str]:
+        """Return the name of the columns."""
+        return PropertiesCrawJUD.name_colunas_
 
-if __name__ == "__main__":
-    from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
-    from ..Utils import ElementsBot as ElementsBot_
-    from ..Utils import Interact as _Interact_
-    from ..Utils import MakeXlsx as _MakeXlsx_
-    from ..Utils import OtherUtils as _OtherUtils_
-    from ..Utils import SearchBot as _SearchBot_
+    @name_colunas.setter
+    def name_colunas(self, new_var: list[str]) -> None:
+        PropertiesCrawJUD.name_colunas_ = new_var
+
 
 # from pydantic import BaseModel, ValidationError
 # from typing import get_type_hints
