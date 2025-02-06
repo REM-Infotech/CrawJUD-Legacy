@@ -7,10 +7,10 @@ import os
 import time
 from contextlib import suppress
 
-from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
+from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException  # noqa: F401
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from urllib3.exceptions import MaxRetryError
+from urllib3.exceptions import MaxRetryError  # noqa: F401
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -24,18 +24,17 @@ class proc_parte(CrawJUD):  # noqa: N801
     Handles the processing of participants in Projudi within the CrawJUD framework.
     """
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new proc_parte instance.
 
         Sets up authentication and initializes necessary variables.
         """
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
         self.data_append = []
@@ -87,14 +86,15 @@ class proc_parte(CrawJUD):  # noqa: N801
 
         except Exception as e:
             old_message = None
-            check_window = any([isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)])
-            if check_window:
-                with suppress(Exception):
-                    self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
-                    old_message = self.message
+            # check_window = any([isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)])
+            # if check_window:
+            #     with suppress(Exception):
+            #         self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
-                    self.auth_bot()
+            #         old_message = self.message
+
+            #         self.auth_bot()
 
             if old_message is None:
                 old_message = self.message

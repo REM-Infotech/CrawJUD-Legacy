@@ -30,18 +30,17 @@ class protocolo(CrawJUD):  # noqa: N801
     Manages the protocoling process within the ESaj system using the CrawJUD framework.
     """
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new protocolo instance.
 
         Sets up authentication, initializes necessary variables, and prepares the processing environment.
         """
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
 

@@ -25,7 +25,6 @@ class Interact(CrawJUD):
 
     def __init__(self) -> None:
         """Initialize the Interact class."""
-        super().__init__()
 
     def send_key(self, element: WebElement, word: any) -> None:
         """Send a sequence of keys to a web element.

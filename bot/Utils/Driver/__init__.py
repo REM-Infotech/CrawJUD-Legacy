@@ -1,37 +1,54 @@
 """Module for managing WebDriver instances and related utilities."""
 
-import json
-import logging
-import pathlib
-import platform
-import shutil
-import traceback
-import zipfile
-from concurrent.futures import ThreadPoolExecutor
-from functools import partial
-from os import environ, path
-from pathlib import Path
+import eventlet
+from tqdm import tqdm
 
-import requests
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
+eventlet.monkey_patch(socket=True, subprocess=True)
 
-from ...core import (
+import socket  # noqa: E402
+
+q = getattr(socket, "__module__", "Python Socket Module")
+tqdm.write(q)  # noqa: T201
+
+import json  # noqa: E402
+import logging  # noqa: E402
+import pathlib  # noqa: E402
+import platform  # noqa: E402
+import shutil  # noqa: E402
+import traceback  # noqa: E402
+import zipfile  # noqa: E402
+from concurrent.futures import ThreadPoolExecutor  # noqa: E402
+from functools import partial  # noqa: E402
+from os import environ, path  # noqa: E402
+from pathlib import Path  # noqa: E402
+from time import sleep  # noqa: E402
+from typing import Mapping, Optional  # noqa: E402
+
+import requests  # noqa: E402
+from eventlet.green import socket  # noqa: E402
+from selenium.common.exceptions import WebDriverException  # noqa: E402
+
+# from selenium.webdriver.remote.client_config import ClientConfig
+# from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402
+
+from ...core import (  # noqa: E402
     BarColumn,
+    Chrome,
     CrawJUD,
     DownloadColumn,
     Group,
     Live,
+    Options,
     Panel,
     Progress,
+    Service,
     TaskID,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
+    WebDriverWait,
 )
 
 try:
@@ -43,6 +60,77 @@ except ModuleNotFoundError:
 default_dir = Path(__file__).cwd().resolve()
 logger = logging.getLogger(__name__)
 # from typing import list, tuple
+_is_connectable_exceptions = (socket.error, ConnectionResetError)
+
+
+class CustomService(Service):
+    """Custom service class that is responsible for the starting and stopping of `chromedriver`."""
+
+    def __init__(
+        self,
+        executable_path: str = None,
+        port: int = 0,
+        service_args: list = None,
+        log_output: int = None,
+        env: Optional[Mapping[str, str]] = None,
+        **kwargs: dict[str, any],
+    ) -> None:
+        """
+        Service class that is responsible for the starting and stopping of `chromedriver`.
+
+        Args:
+            executable_path (str, optional): install path of the chromedriver executable, defaults to `chromedriver`.
+            port (int, optional): Port for the service to run on, defaults to 0 where the operating system will decide.
+            service_args (list, optional): List of args to be passed to the subprocess when launching the executable.
+            log_output (int, optional): int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+            env (Optional[Mapping[str, str]], optional): Mapping of environment variables, defaults to `os.environ`.
+            **kwargs: Additional keyword arguments.
+
+        """
+        super().__init__(executable_path, port, service_args, log_output, env, **kwargs)
+
+    def start(self) -> None:
+        """Start the Service.
+
+        Raises:
+            WebDriverException: Raised either when it can't start the service
+           or when it can't connect to the service
+
+        """
+        if self._path is None:
+            raise WebDriverException("Service path cannot be None.")
+        self._start_process(self._path)
+
+        count = 0
+        while True:
+            self.assert_process_still_running()
+            if self.is_connectable():
+                break
+            # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
+            sleep(min(0.01 + 0.05 * count, 0.5))
+            count += 1
+            if count == 70:
+                raise WebDriverException(f"Can not connect to the Service {self._path}")
+
+    def is_connectable(self, host: Optional[str] = "127.0.0.1") -> bool:
+        """Try to connect to the server at port to see if it is running.
+
+        Args:
+            host (Optional[str], optional): The host to connect to. Defaults to "localhost".
+
+        """
+        socket_ = None
+        try:
+            socket_ = socket.create_connection((host, self.port), 1)
+            result = True
+        except _is_connectable_exceptions:
+            err = traceback.format_exc()
+            logger.exception(err)
+            result = False
+        finally:
+            if socket_:
+                socket_.close()
+        return result
 
 
 class DriverBot(CrawJUD):
@@ -50,7 +138,6 @@ class DriverBot(CrawJUD):
 
     def __init__(self) -> None:
         """Initialize the DriverBot with default settings."""
-        # init_
 
     list_args_ = [
         "--ignore-ssl-errors=yes",
@@ -158,8 +245,12 @@ class DriverBot(CrawJUD):
 
             path_chrome.chmod(0o777, follow_symlinks=True)
 
-            driver = webdriver.Chrome(service=Service(path_chrome), options=chrome_options)
+            serve = CustomService(path_chrome)
 
+            driver = Chrome(service=serve, options=chrome_options)
+            # cliente = ClientConfig(f"http://{serve.service_url}:{serve.port}")
+            # remote = RemoteConnection(client_config=cliente)
+            # driver = WebDriver(options=chrome_options, remote_connection=remote, client_config=cliente)
             # driver.maximize_window()
 
             wait = WebDriverWait(driver, 20, 0.01)

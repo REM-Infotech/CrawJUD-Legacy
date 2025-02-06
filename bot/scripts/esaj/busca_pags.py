@@ -25,17 +25,16 @@ class busca_pags(CrawJUD):  # noqa: N801
 
     """
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the busca_pags instance.
 
         Args:
             *args: Variable length argument list.
-            **kwrgs: Arbitrary keyword arguments.
+            **kwargs: Arbitrary keyword arguments.
 
         """
-        super().__init__(*args, **kwrgs)
-
-        super().setup()
+        super().__init__()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
         self.datetimeNOW = datetime.now(pytz.timezone("America/Manaus")).strftime("%d-%m-%Y")

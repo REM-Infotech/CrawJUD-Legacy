@@ -1,21 +1,60 @@
 """Main entry point for the CrawJUD-Bots application."""
 
-import logging
-import signal
-import subprocess  # noqa: S404 # nosec: B404
-import sys
-from os import environ, getenv
-from platform import system
+import eventlet
+from eventlet import listen, wsgi
+from eventlet.green import socket
+from flask import Flask
 
-from dotenv_vault import load_dotenv
+eventlet.monkey_patch(socket=True, subprocess=True)
 
-from git_py import version_file
+
+"""
+Entry point for running the application.
+
+Loads environment variables, checks for debug mode,
+and starts the application.
+"""
+import logging  # noqa: E402
+import signal  # noqa: E402
+import subprocess  # noqa: S404, E402 # nosec: B404
+import sys  # noqa: E402
+from os import environ, getenv  # noqa: E402
+from platform import system  # noqa: E402
+
+from dotenv_vault import load_dotenv  # noqa: E402
+
+from app import create_app  # noqa: E402
+from git_py import version_file  # noqa: E402
 
 load_dotenv()
 
 values = environ.get
 
 logger = logging.getLogger(__name__)
+
+
+def starter(hostname: str, port: int, log_output: bool, app: Flask, **kwargs: dict[str, any]) -> None:
+    """Start the application with the specified parameters.
+
+    Args:
+        hostname (str): The hostname to listen on.
+        port (int): The port to listen on.
+        log_output (bool): Whether to log output.
+        app (Flask): The Flask application instance.
+        **kwargs: Additional keyword arguments.
+
+    """
+    # Create a WebSocket
+
+    hostname = kwargs.pop("hostname", hostname)
+    port = kwargs.pop("port", port)
+    log_output = kwargs.pop("log_output", log_output)
+    app = kwargs.pop("app", app)
+
+    addresses = socket.getaddrinfo(hostname, port)
+    eventlet_websocket = listen(addresses[0][4], addresses[0][0])
+
+    wsgi.server(eventlet_websocket, app, **kwargs, log_output=log_output)
 
 
 def handle_exit() -> None:
@@ -56,27 +95,32 @@ def start_app() -> None:
     and starts the application using specified parameters.
 
     """
-    from app import create_app
-
-    app, io, _ = create_app()
+    app, __, _ = create_app()
 
     args_run: dict[str, str | int | bool] = {}
     app.app_context().push()
 
-    debug = values("DEBUG", "False").lower() in ("true")
+    debug = values("DEBUG", "False").lower() == "True"
 
     hostname = values("SERVER_HOSTNAME", "127.0.0.1") if getenv("INTO_DOCKER", None) else "127.0.0.1"
 
-    unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (getenv("DEBUG", "False").lower() == "true")
+    # unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (getenv("DEBUG", "False").lower() == "true")
     port = int(values("PORT", "8000"))
     version_file()
     if system().lower() == "linux":
         start_vnc()
 
-    args_run = {"host": hostname, "debug": debug, "port": port, "allow_unsafe_werkzeug": unsafe_werkzeug}
+    args_run = {
+        "hostname": hostname,
+        "debug": debug,
+        "port": port,
+        "log_output": True,
+        "app": app,
+    }
 
     try:
-        io.run(app, **args_run, log_output=True)
+        starter(**args_run)
+
     except (KeyboardInterrupt, TypeError):
         if system().lower() == "linux":
             try:
@@ -90,12 +134,4 @@ def start_app() -> None:
         sys.exit(0)
 
 
-if __name__ == "__main__":
-    """
-    Entry point for running the application.
-
-    Loads environment variables, checks for debug mode,
-    and starts the application.
-    """
-
-    start_app()
+start_app()

@@ -159,4 +159,3 @@ class GeoLoc(InfoGeoloc):
             **kwrgs: Arbitrary keyword arguments.
 
         """
-        super().__init__(*args, **kwrgs)

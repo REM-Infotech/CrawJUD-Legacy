@@ -15,16 +15,21 @@ from bot.common.exceptions import StartError
 
 from .. import (
     BarColumn,
+    Chrome,
     DownloadColumn,
     Group,
     Live,
+    Options,
     Panel,
     Progress,
+    Service,
     TaskID,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
+    WebDriver,
+    WebDriverWait,
     pd,
 )
 
@@ -53,6 +58,11 @@ __all__ = [
     TimeElapsedColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
+    WebDriver,
+    WebDriverWait,
+    Chrome,
+    Options,
+    Service,
 ]
 logger = logging.getLogger(__name__)
 
@@ -87,40 +97,14 @@ class CrawJUD(PropertiesCrawJUD):
         """
         self.PrintBot.end_prt(status)
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(self) -> None:
         """Initialize the CrawJUD instance with provided arguments.
-
-        Loads configurations, sets up paths, and initializes the driver.
-
-        Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
 
         Raises:
             StartError: If an error occurs during the setup process.
 
         """
-        try:
-            self.kwrgs = kwargs
-            list_kwargs = list(kwargs.items())
-            for key, value in list_kwargs:
-                if key == "path_args":
-                    value = Path(value).resolve()
-
-                setattr(self, key, value)
-
-            with open(self.path_args, "rb") as f:
-                json_f: dict[str, str | int] = json.load(f)
-
-                self.kwrgs = json_f
-
-                for key, value in json_f.items():
-                    setattr(self, key, value)
-
-            self.state_or_client = self.state if self.state is not None else self.client
-
-        except Exception as e:
-            raise StartError(e) from e
+        super().__init__()
 
     def __getattr__(self, nome: str) -> TypeHint:
         """Retrieve an attribute dynamically.
@@ -162,7 +146,7 @@ class CrawJUD(PropertiesCrawJUD):
     #         except FileNotFoundError:
     #             continue
 
-    def setup(self) -> None:
+    def setup(self, *args: tuple, **kwargs: dict) -> None:
         """Set up the bot by loading configuration and preparing the environment.
 
         Performs the following steps:
@@ -176,8 +160,34 @@ class CrawJUD(PropertiesCrawJUD):
         8. Sets the state or client attribute.
         9. Launches the driver.
 
+        Args:
+            *args (tuple): Positional arguments.
+            **kwargs (dict): Keyword arguments.
+
         """
         self.row = 0
+
+        try:
+            self.kwrgs = kwargs
+            list_kwargs = list(kwargs.items())
+            for key, value in list_kwargs:
+                if key == "path_args":
+                    value = Path(value).resolve()
+
+                setattr(self, key, value)
+
+            with open(self.path_args, "rb") as f:
+                json_f: dict[str, str | int] = json.load(f)
+
+                self.kwrgs = json_f
+
+                for key, value in json_f.items():
+                    setattr(self, key, value)
+
+            self.state_or_client = self.state if self.state is not None else self.client
+
+        except Exception as e:
+            raise StartError(e) from e
 
         try:
             self.message = "Inicializando robô"

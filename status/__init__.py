@@ -42,7 +42,7 @@ class SetStatus:
         usr: str = None,
         pid: str = None,
         status: str = "Finalizado",
-        **kwargs: dict,
+        **kwargs: dict[str, any],
     ) -> str:
         """Initialize the SetStatus instance.
 
@@ -56,12 +56,17 @@ class SetStatus:
         :param status: Status of the bot.
         """
         self.form = form
+        if self.form is None:
+            self.form = kwargs
+
         self.files = files
         self.id = id
         self.system = system
         self.typebot = typebot
-        self.user = form.get("user", usr)
-        self.pid = form.get("pid", pid)
+
+        self.user = self.form.get("user", usr)
+        self.pid = self.form.get("pid", pid)
+
         self.status = status
 
     def format_string(self, string: str) -> str:

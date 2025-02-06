@@ -56,7 +56,7 @@ class complement(CrawJUD):  # noqa: N801
     This class interacts with the ELAW system to complete the registration of a process.
     """
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the complement class.
 
         This method initializes the complement class by calling the base class's
@@ -66,19 +66,18 @@ class complement(CrawJUD):  # noqa: N801
         ----------
         *args : tuple
             A tuple of arguments to be passed to the base class's __init__ method.
-        **kwrgs : dict
+        **kwargs : dict
             A dictionary of keyword arguments to be passed to the base class's
             __init__ method.
 
 
         """
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
 

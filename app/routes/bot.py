@@ -53,8 +53,17 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
 
             data_bot = request_data or request_form
 
+            # Check if data_bot is enconded
+            if isinstance(data_bot, bytes):
+                data_bot = data_bot.decode("utf-8")
+
             if isinstance(data_bot, str):
+                if "\\" in data_bot:
+                    data_bot = data_bot.replace("\\", "")
+
                 data_bot = json.loads(data_bot)
+                if not isinstance(data_bot, dict):
+                    raise ValueError("Invalid data_bot format")
 
             if check_latest() is False and app.debug is False:
                 raise Exception("Server running outdatest version!")

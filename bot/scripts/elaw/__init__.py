@@ -13,7 +13,7 @@ from ...common import StartError
 logger = logging.getLogger(__name__)
 
 
-class Elaw:
+class elaw:  # noqa: N801
     """The Elaw class manages the initialization and execution of elaw bots.
 
     Attributes:

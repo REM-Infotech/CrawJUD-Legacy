@@ -39,9 +39,7 @@ def init_log(
     logger.setLevel(L_LVL)
 
     # Formatter
-    # formatter = logger.Formatter(
-    #    "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    # )
+    formatter = logger.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     # File handler
     file_handler = RotatingFileHandler(
@@ -54,7 +52,7 @@ def init_log(
 
     # Console handler
     console_handler = logger.StreamHandler()
-    # console_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
     return logger

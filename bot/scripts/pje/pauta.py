@@ -23,15 +23,14 @@ from ...core import CrawJUD
 class pauta(CrawJUD):  # noqa: N801
     """Represents the main class to retrieve hearing data (pautas)."""
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the pauta class with any given arguments."""
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
 

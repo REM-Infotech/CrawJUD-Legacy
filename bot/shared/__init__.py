@@ -88,6 +88,30 @@ class PropertiesCrawJUD:
     kwrgs_: dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: dict[str, TypeValues | SubDict] = {}
 
+    def __init__(self) -> None:
+        """Initialize the PropertiesCrawJUD instance."""
+        import eventlet
+
+        eventlet.monkey_patch(socket=True, subprocess=True)
+
+        from ..Utils import AuthBot as _AuthBot_
+        from ..Utils import DriverBot as _DriverBot_
+        from ..Utils import ElementsBot as _ElementsBot_
+        from ..Utils import Interact as _Interact_
+        from ..Utils import MakeXlsx as _MakeXlsx_
+        from ..Utils import OtherUtils as _OtherUtils_
+        from ..Utils import PrintBot as _PrintBot_
+        from ..Utils import SearchBot as _SearchBot_
+
+        self._ElementsBot_ = _ElementsBot_()
+        self._OtherUtils_ = _OtherUtils_()
+        self._SearchBot_ = _SearchBot_()
+        self._Interact_ = _Interact_()
+        self._MakeXlsx_ = _MakeXlsx_()
+        self._AuthBot_ = _AuthBot_()
+        self._PrintBot_ = _PrintBot_()
+        self._DriverBot_ = _DriverBot_()
+
     @property
     def start_time(self) -> float | int:
         """Return the start time."""
@@ -495,58 +519,42 @@ class PropertiesCrawJUD:
     @property
     def AuthBot(self) -> Callable[[], bool]:  # noqa: N802
         """Return the AuthBot callable."""
-        from ..Utils import AuthBot as _AuthBot_
-
-        return _AuthBot_().auth
+        return self._AuthBot_.auth
 
     @property
     def MakeXlsx(self) -> _MakeXlsx_:  # noqa: N802
         """Return the MakeXlsx instance."""
-        from ..Utils import MakeXlsx as _MakeXlsx_
-
-        return _MakeXlsx_()
+        return self._MakeXlsx_
 
     @property
     def Interact(self) -> _Interact_:  # noqa: N802
         """Return the Interact instance."""
-        from ..Utils import Interact as _Interact_
-
-        return _Interact_()
+        return self._Interact_
 
     @property
     def PrintBot(self) -> _PrintBot_:  # noqa: N802
         """Return the PrintBot instance."""
-        from ..Utils import PrintBot as _PrintBot_
-
-        return _PrintBot_()
+        return self._PrintBot_
 
     @property
     def SearchBot(self) -> _SearchBot_:  # noqa: N802
         """Return the SearchBot instance."""
-        from ..Utils import SearchBot as _SearchBot_
-
-        return _SearchBot_()
+        return self._SearchBot_
 
     @property
     def OtherUtils(self) -> _OtherUtils_:  # noqa: N802
         """Return the OtherUtils instance."""
-        from ..Utils import OtherUtils as _OtherUtils_
-
-        return _OtherUtils_()
+        return self._OtherUtils_
 
     @property
     def elements(self) -> Union[ESAJ_AM, ELAW_AME, PJE_AM, PROJUDI_AM]:
         """Return the elements configuration."""
-        from ..Utils import ElementsBot as _ElementsBot_
-
-        return _ElementsBot_().config().Elements
+        return self._ElementsBot_.config().Elements
 
     @property
     def DriverLaunch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:  # noqa: N802
         """Return the DriverLaunch callable."""
-        from ..Utils import DriverBot as _DriverBot_
-
-        return _DriverBot_().DriverLaunch
+        return self._DriverBot_.DriverLaunch
 
     @property
     def search_bot(self) -> Callable[[], bool]:

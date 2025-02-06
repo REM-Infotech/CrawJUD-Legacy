@@ -41,21 +41,20 @@ class protocolo(CrawJUD):  # noqa: N801
     upon successful protocol processing.
     """
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the protocolo instance.
 
         Args:
             *args: Variable length argument list.
-            **kwrgs: Arbitrary keyword arguments.
+            **kwargs: Arbitrary keyword arguments.
 
         """
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
 
@@ -83,15 +82,15 @@ class protocolo(CrawJUD):  # noqa: N801
 
             except Exception as e:
                 old_message = None
-                windows = self.driver.window_handles
+                # windows = self.driver.window_handles
 
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                # if len(windows) == 0:
+                #     with suppress(Exception):
+                #         self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
-                    old_message = self.message
+                #     old_message = self.message
 
-                    self.auth_bot()
+                #     self.auth_bot()
 
                 if old_message is None:
                     old_message = self.message

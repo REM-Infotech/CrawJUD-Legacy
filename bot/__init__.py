@@ -17,27 +17,32 @@ Modules:
 
 from __future__ import annotations
 
-import logging
-import platform
-from importlib import import_module
-from pathlib import Path
-from time import sleep
+import eventlet
 
-import pandas as pd
-import psutil
-from billiard.context import Process
-from celery import shared_task
-from celery.result import AsyncResult
-from flask import Flask
-from openai import OpenAI
+eventlet.monkey_patch(all=False, socket=True)
+
+
+import logging  # noqa: E402
+import platform  # noqa: E402
+from importlib import import_module  # noqa: E402
+from pathlib import Path  # noqa: E402
+from time import sleep  # noqa: E402
+
+import pandas as pd  # noqa: E402
+import psutil  # noqa: E402
+from billiard.context import Process  # noqa: E402
+from celery import shared_task  # noqa: E402
+from celery.result import AsyncResult  # noqa: E402
+from flask import Flask  # noqa: E402
+from openai import OpenAI  # noqa: E402
 
 if platform.system() == "Windows":
     from pywinauto import Application
 
-from rich.console import Group
-from rich.live import Live
-from rich.panel import Panel
-from rich.progress import (
+from rich.console import Group  # noqa: E402
+from rich.live import Live  # noqa: E402
+from rich.panel import Panel  # noqa: E402
+from rich.progress import (  # noqa: E402
     BarColumn,
     DownloadColumn,
     Progress,
@@ -47,6 +52,11 @@ from rich.progress import (
     TimeRemainingColumn,
     TransferSpeedColumn,
 )
+from selenium.webdriver import Chrome  # noqa: E402# noqa: E402
+from selenium.webdriver.chrome.options import Options  # noqa: E402# noqa: E402
+from selenium.webdriver.chrome.service import Service  # noqa: E402# noqa: E402
+from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402# noqa: E402
+from selenium.webdriver.support.wait import WebDriverWait  # noqa: E402# noqa: E402
 
 __all__ = [
     "Application",
@@ -63,6 +73,11 @@ __all__ = [
     "TimeRemainingColumn",
     "TransferSpeedColumn",
     "pd",
+    "Chrome",
+    "Options",
+    "Service",
+    "WebDriver",
+    "WebDriverWait",
 ]
 
 process_type = psutil.Process
@@ -102,6 +117,14 @@ class BotThread(Process):
             self._target(*self._args, **self._kwargs)
         except BaseException as e:
             self.exc_bot = e
+
+    def chk_except(self) -> None:
+        """Check for exceptions during bot execution.
+
+        If an exception occurred during execution, it is raised.
+        """
+        if self.exc_bot:
+            raise self.exc_bot
 
 
 class WorkerBot:
@@ -145,7 +168,7 @@ class WorkerBot:
                     raise e
 
             while process.is_alive():
-                pass
+                process.chk_except()
 
             process.join()
 
@@ -187,7 +210,7 @@ class WorkerBot:
 
                 kwargs.update({"display_name": display_name})
 
-                bot_ = getattr(import_module(f".scripts.{system_}", __package__), system_.lower())
+                bot_ = getattr(import_module(".scripts", __package__), system_.lower())
 
                 bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
 

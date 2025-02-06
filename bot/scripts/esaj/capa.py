@@ -34,23 +34,22 @@ class capa(CrawJUD):  # noqa: N801
 
     """
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the capa instance.
 
         Sets up the bot by initializing the parent class, configuring settings, and authenticating.
 
         Args:
             *args: Variable length argument list.
-            **kwrgs: Arbitrary keyword arguments.
+            **kwargs: Arbitrary keyword arguments.
 
         """
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
 

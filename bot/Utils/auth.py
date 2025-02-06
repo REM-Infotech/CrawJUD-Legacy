@@ -57,7 +57,6 @@ class AuthBot(CrawJUD):
 
         Initializes the AuthBot with necessary attributes and configurations.
         """
-        super().__init__()
         # Initialize any additional attributes here
 
     def auth(self) -> bool:

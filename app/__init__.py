@@ -4,22 +4,26 @@ This module creates the Flask app and configures extensions like Celery,
 SocketIO, Flask-Mail, SQLAlchemy, and Talisman.
 """
 
-import platform
-from datetime import timedelta
-from os import environ, getenv
-from pathlib import Path
+import eventlet
 
-from celery import Celery
-from clear import clear
-from dotenv_vault import load_dotenv
-from flask import Flask
-from flask_mail import Mail
-from flask_socketio import SocketIO
-from flask_sqlalchemy import SQLAlchemy
-from flask_talisman import Talisman
-from redis_flask import Redis
+eventlet.monkey_patch(socket=True, subprocess=True)
 
-from .utils import check_allowed_origin, init_log, make_celery
+import platform  # noqa: E402
+from datetime import timedelta  # noqa: E402
+from os import environ, getenv  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+from celery import Celery  # noqa: E402
+from clear import clear  # noqa: F401, E402
+from dotenv_vault import load_dotenv  # noqa: E402
+from flask import Flask  # noqa: E402
+from flask_mail import Mail  # noqa: E402
+from flask_socketio import SocketIO  # noqa: E402
+from flask_sqlalchemy import SQLAlchemy  # noqa: E402
+from flask_talisman import Talisman  # noqa: E402
+from redis_flask import Redis  # noqa: E402
+
+from .utils import check_allowed_origin, init_log, make_celery  # noqa: E402
 
 valides = [
     getenv("INTO_DOCKER", None) is None,
@@ -29,7 +33,7 @@ valides = [
 
 asc = any(valides)
 
-async_mode = "threading" if asc is True else "eventlet"
+async_mode = "eventlet"
 
 load_dotenv()
 
@@ -47,7 +51,7 @@ objects_config = {
     "testing": "app.config.TestingConfig",
 }
 
-clear()
+# clear()
 load_dotenv()
 
 

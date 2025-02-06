@@ -87,8 +87,6 @@ class OtherUtils(CrawJUD):
 
         Sets up necessary attributes and configurations for utility operations.
         """
-        super().__init__()
-        # Initialize any additional attributes here
 
     @property
     def nomes_colunas(self) -> list[str]:

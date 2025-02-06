@@ -10,18 +10,23 @@ import logging
 import platform
 import traceback
 
-from .. import (
+from ... import (
     BarColumn,
+    Chrome,
     DownloadColumn,
     Group,
     Live,
+    Options,
     Panel,
     Progress,
+    Service,
     TaskID,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
+    WebDriver,
+    WebDriverWait,
     pd,
 )
 
@@ -50,6 +55,11 @@ __all__ = [
     TimeElapsedColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
+    WebDriver,
+    WebDriverWait,
+    Chrome,
+    Options,
+    Service,
 ]
 
 logger = logging.getLogger(__name__)

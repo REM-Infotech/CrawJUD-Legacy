@@ -32,7 +32,7 @@ class emissor(CrawJUD):  # noqa: N801
 
     count_doc = OtherUtils.count_doc
 
-    def __init__(self, *args: tuple, **kwrgs: dict) -> None:
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new emissor instance.
 
         Sets up authentication, initializes variables, and prepares the
@@ -40,19 +40,18 @@ class emissor(CrawJUD):  # noqa: N801
 
         Args:
             *args: Variable length argument list.
-            **kwrgs: Keyword arguments for bot configuration.
+            **kwargs: Keyword arguments for bot configuration.
 
         Raises:
             StartError: If an exception occurs during bot execution.
 
         """
-        super().__init__(*args, **kwrgs)
-
+        super().__init__()
         # PropertiesCrawJUD.kwrgs = kwrgs
         # for key, value in list(kwrgs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
-        super().setup()
+        super().setup(*args, **kwargs)
         super().auth_bot()
         self.start_time = time.perf_counter()
 
