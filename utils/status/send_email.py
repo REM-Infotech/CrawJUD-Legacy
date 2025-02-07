@@ -5,18 +5,18 @@ import traceback  # noqa: F401
 from os import environ  # noqa: F401
 
 from dotenv_vault import load_dotenv
-from flask import Flask
 from flask_mail import Mail, Message  # noqa: F401
+from quart import Quart
 
 load_dotenv()
 
 
-def email_start(execution: None, app: Flask) -> None:
+def email_start(execution: None, app: Quart) -> None:
     """Send an email notification when an execution starts.
 
     Args:
         execution (Executions): The execution instance that has started.
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
 
     """
     # from app.models import Executions, Users
@@ -68,12 +68,12 @@ def email_start(execution: None, app: Flask) -> None:
     #     mail.send(msg)
 
 
-def email_stop(execution: None, app: Flask) -> None:
+def email_stop(execution: None, app: Quart) -> None:
     """Send an email notification when an execution stops.
 
     Args:
         execution (Executions): The execution instance that has stopped.
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
 
     """
     # from app.models import Executions, Users

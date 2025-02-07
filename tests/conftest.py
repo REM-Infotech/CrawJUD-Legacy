@@ -2,7 +2,7 @@
 
 import pandas as pd
 import pytest
-from flask import Flask
+from quart import Quart
 from flask.testing import FlaskClient
 from flask_socketio import SocketIO, SocketIOTestClient
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, dict, Generator
 from uuid import uuid4
 
-from status import SetStatus
+from utils import SetStatus
 from pytz import timezone
 from werkzeug.datastructures import FileStorage
 
@@ -32,10 +32,10 @@ create_routes = factory.init_routes
 @pytest.fixture(scope="session")
 def app():
     """
-    Create a Flask application instance for testing.
+    Create a Quart application instance for testing.
 
     Returns:
-        Flask: The configured Flask application.
+        Flask: The configured Quart application.
 
     """
     app = create_test_app()
@@ -49,22 +49,22 @@ def app():
 
 
 @pytest.fixture()
-def client(app: Flask) -> FlaskClient:
+def client(app: Quart) -> FlaskClient:
     """
-    Create a test client for the given Flask application.
+    Create a test client for the given Quart application.
 
     Args:
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
 
     Returns:
-        FlaskClient: A test client for the Flask application.
+        FlaskClient: A test client for the Quart application.
 
     """
     return app.test_client()
 
 
 # @pytest.fixture()
-# def runner(app: Flask):
+# def runner(app: Quart):
 #     return app.test_cli_runner()
 
 
@@ -185,24 +185,24 @@ def SetStatus(args_statusbot: dict[str, str]) -> Generator[SetStatus, Any, None]
         setstatus: An instance of SetStatus initialized with the provided arguments.
 
     """
-    from status import SetStatus
+    from utils import SetStatus
 
     setstatus = SetStatus(**args_statusbot)
     yield setstatus
 
 
 @pytest.fixture(scope="function")
-def io(app: Flask, client: FlaskClient) -> Generator[SocketIOTestClient, Any, None]:
+def io(app: Quart, client: FlaskClient) -> Generator[SocketIOTestClient, Any, None]:
     """
-    Fixture to provide a SocketIO test client for the Flask application.
+    Fixture to provide a SocketIO test client for the Quart application.
 
     This fixture initializes a SocketIO test client, connects it to the
     specified namespace, and yields the client for use in tests. After the
     test is completed, the client is disconnected.
 
     Args:
-        app (Flask): The Flask application instance.
-        client (FlaskClient): The Flask test client instance.
+        app (Quart): The Quart application instance.
+        client (FlaskClient): The Quart test client instance.
 
     Yields:
         SocketIOTestClient: The SocketIO test client connected to the "/log" namespace.
@@ -216,7 +216,7 @@ def io(app: Flask, client: FlaskClient) -> Generator[SocketIOTestClient, Any, No
 
 
 @pytest.fixture(scope="function")
-def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]) -> Generator[tuple[str | dict[str, str] | None, str | dict[str, str] | None], Any, None]:
+def create_dummy_pid(app: Quart, args_bot: dict[str, str | Any]) -> Generator[tuple[str | dict[str, str] | None, str | dict[str, str] | None], Any, None]:
     """
     Create a dummy process ID and populate the database with test data.
 
@@ -226,7 +226,7 @@ def create_dummy_pid(app: Flask, args_bot: dict[str, str | Any]) -> Generator[tu
     use in testing environments.
 
     Args:
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
         args_bot (dict[str, str | Any]): A dictionary containing bot arguments.
             Expected keys:
                 - "data" (dict[str, str]): A dictionary containing user data.

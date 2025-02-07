@@ -186,7 +186,7 @@ class WorkerBot:
         Args:
             processID (int): The process ID to stop.
             pid (str): The PID of the process.
-            app (Flask, optional): The Flask app instance.
+            app (Flask, optional): The Quart app instance.
 
         Returns:
             str: A message indicating the stop result.

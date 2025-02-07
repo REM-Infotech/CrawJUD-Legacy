@@ -1,10 +1,10 @@
 """
 Module: response_test.
 
-This module contains tests for Flask API routes.
+This module contains tests for Quart API routes.
 
 Functions:
-    test_client_flask(client: FlaskClient, app: Flask, args_bot: dict[str, str | any], create_dummy_pid):
+    test_client_flask(client: FlaskClient, app: Quart, args_bot: dict[str, str | any], create_dummy_pid):
         Tests various API routes and their responses.
     __doc__():
         Placeholder for module-level docstring.
@@ -12,17 +12,17 @@ Functions:
 
 # from typing import any
 
-from flask import Flask
+from quart import Quart
 from flask.testing import FlaskClient
 
 
-def test_client_flask(client: FlaskClient, app: Flask, args_bot: dict[str, str | any], create_dummy_pid):
+def test_client_flask(client: FlaskClient, app: Quart, args_bot: dict[str, str | any], create_dummy_pid):
     """
     Teste De Rotas API.
 
     Args:
         client (FlaskClient): Cliente de testes Flask
-        app (Flask): App Flask
+        app (Quart): App Flask
         args_bot (dict[str, str | any]): Argumentos para o bot
         create_dummy_pid (fixture): Cria um PID de teste
 

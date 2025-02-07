@@ -8,9 +8,11 @@ from dotenv_vault import load_dotenv
 import utils.bots_logs  # noqa: F401
 
 from .check_cors import check_allowed_origin
+from .gcs_mgmt import get_file
 from .get_location import GeoLoc
-from .git_py import _release_tag, check_latest, checkout_release, update_servers
+from .git_py import _release_tag, check_latest, checkout_release, update_servers, version_file
 from .make_celery import make_celery
+from .status import *  # noqa: F401, F403
 
 signed_url_lifetime = 300
 __all__ = [
@@ -23,16 +25,25 @@ __all__ = [
     "make_celery",
     utils.bots_logs.init_log,
     utils.bots_logs.asyncinit_log,
+    "version_file",
+    "SetStatus",  # noqa: F405
+    makezip,  # noqa: F405
+    email_start,  # noqa: F405
+    email_stop,  # noqa: F405
+    enviar_arquivo_para_gcs,  # noqa: F405
+    get_file,  # noqa: F405,
+    load_cache,  # noqa: F405
+    FormatMessage,  # noqa: F405
 ]
 
 load_dotenv()
 
 
-# def stop_execution(app: Flask, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
+# def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
 #     """Stop the execution of a bot based on its PID.
 
 #     Args:
-#         app (Flask): The Flask application instance.
+#         app (Quart): The Quart application instance.
 #         pid (str): The process identifier of the bot.
 #         robot_stop (bool, optional): Flag to indicate robot stop. Defaults to False.
 
@@ -42,7 +53,7 @@ load_dotenv()
 #     """
 #     from app import db
 #     from app.models import Executions, ThreadBots
-#     from status import SetStatus
+#     from utils import SetStatus
 
 #     try:
 #         processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()  # noqa: N806

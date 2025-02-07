@@ -41,7 +41,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
-    from status import SetStatus
+    from utils import SetStatus
 
     is_started = 200
 
@@ -148,7 +148,7 @@ async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa:
         Response: JSON response indicating the success of the scheduling operation.
 
     """
-    from status import SetStatus
+    from utils import SetStatus
 
     db: SQLAlchemy = app.extensions["sqlalchemy"]
 

@@ -18,14 +18,15 @@ from typing import Self
 import aiofiles
 import openpyxl
 import pytz
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from openpyxl.worksheet.worksheet import Worksheet
+from quart import Quart
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from .makefile import makezip
 from .send_email import email_start, email_stop
+from .server_side import FormatMessage, load_cache
 from .upload_zip import enviar_arquivo_para_gcs
 
 url_cache = []
@@ -93,7 +94,7 @@ class SetStatus:
 
     async def start_bot(  # noqa: C901
         self,
-        app: Flask,
+        app: Quart,
         db: SQLAlchemy,
         user: str = None,
         pid: str = None,
@@ -101,7 +102,7 @@ class SetStatus:
     ) -> tuple[str, str]:
         """Start the bot and handle file uploads and database interactions.
 
-        :param app: Flask application instance.
+        :param app: Quart application instance.
         :param db: SQLAlchemy database instance.
         :param user: User name.
         :param pid: Process ID.
@@ -200,7 +201,7 @@ class SetStatus:
     async def botstop(
         self,
         db: SQLAlchemy,
-        app: Flask,
+        app: Quart,
         pid: str = None,
         status: str = "Finalizado",
         system: str = None,
@@ -209,7 +210,7 @@ class SetStatus:
         """Stop the bot and handle file uploads and database interactions.
 
         :param db: SQLAlchemy database instance.
-        :param app: Flask application instance.
+        :param app: Quart application instance.
         :param pid: Process ID.
         :param status: Status of the bot.
         :param system: System name.
@@ -266,3 +267,6 @@ class SetStatus:
 
         except Exception as e:
             raise e
+
+
+__all__ = [SetStatus, makezip, email_start, email_stop, enviar_arquivo_para_gcs, load_cache, FormatMessage]

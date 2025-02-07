@@ -4,17 +4,17 @@ from importlib import import_module
 from os import environ
 
 from dotenv_vault import load_dotenv
-from flask import Flask, Response, make_response, redirect
+from quart import Quart, Response, make_response, redirect
 from werkzeug.exceptions import HTTPException
 
 load_dotenv()
 
 
-def register_routes(app: Flask) -> None:
-    """Register blueprints and error handlers with the Flask application.
+def register_routes(app: Quart) -> None:
+    """Register blueprints and error handlers with the Quart application.
 
     Args:
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
 
     """
     import_module(".logs", package=__package__)

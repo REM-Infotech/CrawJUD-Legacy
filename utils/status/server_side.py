@@ -1,18 +1,18 @@
 """Module for server-side operations in CrawJUD-Bots."""
 
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from quart import Quart
 from redis_flask import Redis
 
-from status import SetStatus
+from utils import SetStatus
 
 
-def load_cache(pid: str, app: Flask) -> dict[str, str]:
+def load_cache(pid: str, app: Quart) -> dict[str, str]:
     """Load cache data for a given PID from Redis.
 
     Args:
         pid (str): The process ID for which to load the cache.
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
 
     Returns:
         dict[str, str]: A dictionary containing cached log data.
@@ -44,7 +44,7 @@ def load_cache(pid: str, app: Flask) -> dict[str, str]:
     return log_pid
 
 
-def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Flask = None) -> dict[str, str | int]:  # noqa: C901, N802
+def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Quart = None) -> dict[str, str | int]:  # noqa: C901, N802
     """Format and update the status message for a given process.
 
     This function interacts with a SQLAlchemy database and a Redis client to
@@ -57,7 +57,7 @@ def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Flask
         data (dict[str, str | int], optional): A dictionary containing process
             information. Defaults to an empty dictionary.
         pid (str, optional): The process ID. Defaults to None.
-        app (Flask, optional): The Flask application instance, used to access
+        app (Flask, optional): The Quart application instance, used to access
             extensions like SQLAlchemy and Redis. Defaults to None.
 
     Returns:
