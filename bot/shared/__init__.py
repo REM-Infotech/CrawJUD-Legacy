@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from pathlib import Path
-from time import sleep
 from typing import (
     TYPE_CHECKING,
     Callable,
@@ -115,25 +114,21 @@ class PropertiesCrawJUD:
     @staticmethod
     def on_connect(event: any = None, namespace: str = None, client_: str = None) -> None:
         """Handle the connect event."""
-        sleep(0.25)
 
     @sio.on("disconnect", namespace="*")
     @staticmethod
     def on_disconnect(event: any = None, namespace: str = None, client_: str = None) -> None:
         """Handle the disconnect event."""
-        sleep(0.25)
 
     @sio.on("log_message", namespace="*")
     @staticmethod
     def on_message(event: any = None, data: dict = None, namespace: str = None, client_: str = None) -> None:
         """Handle the log_message event."""
-        sleep(0.25)
 
     @sio.on("stop_bot", namespace="*")
     @staticmethod
     def on_stop_bot(event: any = None, data: dict = None, namespace: str = None, client_: str = None) -> None:
         """Handle the stop_bot event."""
-        sleep(0.25)
 
     @property
     def connected(self) -> bool:

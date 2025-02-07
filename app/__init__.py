@@ -31,7 +31,6 @@ from tqdm import tqdm
 from app.routes import register_routes
 from git_py import version_file
 
-from .socketio_srv import SocketIO  # noqa: F401
 from .utils import check_allowed_origin, init_log, make_celery
 
 valides = [

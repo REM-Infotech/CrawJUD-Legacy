@@ -120,7 +120,8 @@ class WorkerBot:
 
         """
         try:
-            process = BotThread(target=WorkerBot, args=(path_args, display_name, system, typebot))
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+            process = BotThread(target=WorkerBot, args=(path_args, display_name, system, typebot, logger))
             process.daemon = True
             process.start()
             sleep(2)
@@ -144,6 +145,7 @@ class WorkerBot:
         display_name: str,
         system: str,
         typebot: str,
+        logger: logging.Logger = None,
         *args: tuple[str],
         **kwargs: dict[str, str],
     ) -> None:
@@ -156,11 +158,13 @@ class WorkerBot:
             display_name (str): The display name for the bot.
             system (str): The system for the bot (e.g., projudi).
             typebot (str): The type of bot (e.g., capa).
+            logger (logging.Logger, optional): The logger instance.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
         """
         try:
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
             display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
             path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
             system_ = args[2] if args else kwargs.pop("system", system)

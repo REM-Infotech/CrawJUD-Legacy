@@ -17,7 +17,6 @@ import pytz
 import socketio
 import socketio.exceptions
 from dotenv_vault import load_dotenv
-from tqdm import tqdm
 
 from ...core import CrawJUD
 
@@ -34,11 +33,10 @@ class PrintBot(CrawJUD):
 
     def __init__(self) -> None:
         """Initialize a new PrintBot instance."""
-        """"""
+        self.logger = logging.getLogger("bot")
 
     def print_msg(self) -> None:
         """Print the current message and emit it to the socket."""
-        logger = logging.getLogger(__name__)
         log = self.message
         if self.message_error:
             log = self.message_error
@@ -51,7 +49,7 @@ class PrintBot(CrawJUD):
             dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"),
             log=log,
         )
-        logger.info(self.prompt)
+        self.logger.info(self.prompt)
 
         data: dict[str, str | int] = {
             "message": self.prompt,
@@ -85,9 +83,7 @@ class PrintBot(CrawJUD):
             sleep(2)
 
             err = traceback.format_exc()
-
-            logger = logging.getLogger(__name__)
-            logger.exception(err)
+            self.logger.exception(err)
 
     def end_prt(self, status: str) -> None:
         """Send a final status message."""
@@ -109,8 +105,7 @@ class PrintBot(CrawJUD):
 
         except Exception:
             err = traceback.format_exc()
-            logger = logging.getLogger(__name__)
-            logger.exception(err)
+            self.logger.exception(err)
 
     def with_context(self, event: str, data: dict, url: str) -> None:  # noqa: C901
         """Handle the context for connecting and emitting messages.
@@ -180,7 +175,7 @@ class PrintBot(CrawJUD):
             exc = traceback.format_exc()
 
         if exc:
-            tqdm.write(exc)
+            self.logger.exception(exc)
 
     def emit_message(self, event: str, data: dict) -> None:
         """Emit a message to the socket.
