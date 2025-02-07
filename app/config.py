@@ -166,6 +166,7 @@ class ProductionConfig(Config):
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
+            "task_create_missing_queues": True,
         }
 
     except Exception as e:
@@ -221,6 +222,7 @@ class DevelopmentConfig(Config):
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
+            "task_create_missing_queues": True,
         }
 
     except Exception as e:
@@ -277,7 +279,7 @@ class TestingConfig(Config):
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
-            "task_create_missing_queue": True,
+            "task_create_missing_queues": True,
         }
 
     except Exception as e:

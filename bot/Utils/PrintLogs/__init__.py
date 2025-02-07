@@ -15,6 +15,7 @@ from typing import Self
 
 import pytz
 from dotenv_vault import load_dotenv
+from socketio.exceptions import BadNamespaceError
 from tqdm import tqdm
 
 from ...core import CrawJUD
@@ -129,11 +130,52 @@ class PrintBot(CrawJUD):
             self.emit_message(event, data)
             sleep(1)
 
+        except BadNamespaceError:
+            exc = traceback.format_exc()
+
+            try:
+                self.connected = False
+                sleep(1)
+                self.connect_socket(url)
+                sleep(0.5)
+                self.emit_message(event, data)
+                sleep(1)
+
+            except Exception as e:
+                if "Client is not in a disconnected state" in str(e):
+                    self.sio.disconnect()
+                    self.connected = False
+                    sleep(1)
+                    self.connect_socket(url)
+                    sleep(0.5)
+                    self.emit_message(event, data)
+                    sleep(1)
+
+                exc = traceback.format_exc()
+
+        except ConnectionError as e:
+            exc = traceback.format_exc()
+
+            try:
+                if "One or more namespaces failed to connect" in str(e):
+                    sleep(1)
+                    self.connected = False
+                    self.connect_socket(url)
+
+                    self.emit_message(event, data)
+
+                elif "Already connected" in str(e):
+                    self.emit_message(event, data)
+                    self.connected = True
+
+            except Exception:
+                exc = traceback.format_exc()
+
         except Exception:
             exc = traceback.format_exc()
 
         if exc:
-            logger.info(exc)
+            tqdm.write(exc)
 
     def emit_message(self, event: str, data: dict) -> None:
         """Emit a message to the socket.

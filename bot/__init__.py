@@ -30,7 +30,6 @@ from time import sleep  # noqa: E402
 
 import pandas as pd  # noqa: E402
 import psutil  # noqa: E402
-from billiard.context import Process  # noqa: E402
 from celery import shared_task  # noqa: E402
 from celery.result import AsyncResult  # noqa: E402
 from flask import Flask  # noqa: E402
@@ -58,6 +57,7 @@ from selenium.webdriver.chrome.service import Service  # noqa: E402# noqa: E402
 from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402# noqa: E402
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: E402# noqa: E402
 
+from .class_thead import BotThread  # noqa: E402
 from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi  # noqa: E402
 
 __all__ = [
@@ -93,46 +93,6 @@ logger = logging.getLogger(__name__)
 # import signal
 # from pathlib import Path
 # from threading import Thread as Process
-
-
-class BotThread(Process):
-    """A BotThread that extends Process to handle bot execution.
-
-    Attributes:
-        exc_bot (Exception): Stores any exception raised during execution.
-
-    """
-
-    exc_bot: Exception = None
-
-    def join(self) -> None:
-        """Wait for the BotThread to finish execution.
-
-        If an exception occurred during execution, it is raised.
-        """
-        Process.join(self)
-        if self.exc_bot:
-            raise self.exc_bot
-
-    def run(self) -> None:
-        """Run the target function in the BotThread.
-
-        Captures any exceptions raised during execution.
-        """
-        self.exc_bot = None
-
-        try:
-            self._target(*self._args, **self._kwargs)
-        except BaseException as e:
-            self.exc_bot = e
-
-    def chk_except(self) -> None:
-        """Check for exceptions during bot execution.
-
-        If an exception occurred during execution, it is raised.
-        """
-        if self.exc_bot:
-            raise self.exc_bot
 
 
 class WorkerBot:
@@ -175,10 +135,6 @@ class WorkerBot:
                     process.join()
                 except Exception as e:
                     raise e
-
-            while process.is_alive():
-                ...
-
             process.join()
 
         except Exception as e:

@@ -6,6 +6,8 @@ import platform
 import traceback
 from typing import TYPE_CHECKING
 
+from celery import Celery
+from celery.app.control import Control
 from celery.schedules import crontab
 from flask import Blueprint, Response, jsonify, make_response, request
 from flask import current_app as app
@@ -83,6 +85,10 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
 
                 init_bot: Task = bot_starter
                 task = init_bot.apply_async(args=[path_args, display_name, system, typebot], queue=pid)
+
+                celery: Celery = app.extensions["celery"]
+                control: Control = celery.control
+                control.add_consumer(pid)
 
                 process_id = str(task.id)
 
