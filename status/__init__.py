@@ -12,7 +12,7 @@ import unicodedata
 from datetime import datetime
 from os import path
 from pathlib import Path
-from typing import Self
+from typing import Coroutine, Self
 
 import aiofiles
 import openpyxl
@@ -123,6 +123,12 @@ class SetStatus:
             for f, value in self.files.items():
                 if "xlsx" not in f or app.testing is True:
                     f = self.format_string(f)
+
+                if isinstance(f, Coroutine):
+                    f = await f
+
+                if isinstance(value, Coroutine):
+                    value = await value
 
                 filesav = path.join(path_pid, f)
                 await value.save(filesav)
