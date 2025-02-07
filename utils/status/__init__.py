@@ -270,10 +270,11 @@ async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tupl
         from ..gcs_mgmt import get_file
 
         try:
-            processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()  # noqa: N806
+            processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
+            get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
-            if processID:
-                get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
+            if processID or get_info:
+                # Stop bot
 
                 system = get_info.bot.system
                 typebot = get_info.bot.type

@@ -81,11 +81,11 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
         try:
             pid = data["pid"]
             processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
-
             if processID:
                 processID = str(processID.processID)  # noqa: N806
-                result = await asyncio.create_task(WorkerBot.stop(processID, pid, app))
-                await io.send(result)
+
+            result = await asyncio.create_task(WorkerBot.stop(processID, pid, app))
+            await io.send(result)
 
         except Exception as e:
             app.logger.error("An error occurred: %s", str(e))
@@ -163,30 +163,26 @@ async def join(
                 processID = processID.processID  # noqa: N806
                 message = await WorkerBot.check_status(processID, pid, app)
 
-                if message == f"Process {processID} stopped!":
-                    try:
-                        await stop_execution(app, pid)
-                    except Exception:
-                        app.logger.error(traceback.format_exc())
+            if message == f"Process {processID} stopped!":
+                data.update(
+                    {
+                        "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
+                            pid=pid,
+                            type_log="success",
+                            row=0,
+                            dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
+                            log="fim da execução",
+                        ),
+                    },
+                )
 
-                    data.update(
-                        {
-                            "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-                                pid=pid,
-                                type_log="success",
-                                row=0,
-                                dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
-                                log="fim da execução",
-                            ),
-                        },
-                    )
-                    await io.emit("log_message", data, room=room, namespace="/log")
+            try:
+                await stop_execution(app, pid)
+            except Exception as e:
+                app.logger.error("An error occurred: %s", str(e))
+                app.logger.exception(traceback.format_exc())
 
-                elif message == "Erro ao inicializar robô":
-                    stop_execution(app, pid)
-
-                else:
-                    await io.emit("log_message", data, room=room, namespace="/log")
+            await io.emit("log_message", data, room=room, namespace="/log")
 
         except Exception:
             await io.send("Failed to check bot has stopped")

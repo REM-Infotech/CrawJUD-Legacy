@@ -193,12 +193,13 @@ class WorkerBot:
 
         """
         try:
-            process = AsyncResult(processID)
+            process = None
+            if processID:
+                process = AsyncResult(processID)
+                logger.info(process.status)
 
-            logger.info(process.status)
-
-            if (app and app.testing) or (process and process.status == "PENDING"):
-                path_flag = Path(app.config["TEMP_FOLDER"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
+            if process is None or (process and process.status == "PENDING"):
+                path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
                 path_flag.parent.mkdir(parents=True, exist_ok=True)
                 with path_flag.open("w") as f:
                     f.write("Encerrar processo")
@@ -230,7 +231,7 @@ class WorkerBot:
         """
         try:
             process = AsyncResult(processID)
-            path_flag = Path(app.config["TEMP_FOLDER"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
+            path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
             status = process.status
             if status == "SUCCESS":
                 return f"Process {processID} stopped!"
