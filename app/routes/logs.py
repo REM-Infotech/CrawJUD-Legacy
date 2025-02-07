@@ -114,14 +114,18 @@ async def log_message(sid: str, data: dict[str, str] = None) -> None:
 
 
 @io.on("statusbot", namespace="/log")
-async def statusbot(data: dict) -> None:
+async def statusbot(sid: str, data: dict = None) -> None:
     """Handle status updates from bots.
 
     Args:
+        sid (str): The session ID of the client.
         data (dict): Data containing status information.
 
     """
-    await io.send("Bot stopped!", namespace="/log")
+    if data:
+        room = data.get("pid", None)
+
+    await io.send("Bot stopped!", namespace="/log", room=room)
 
 
 @io.on("join", namespace="/log")
@@ -155,32 +159,33 @@ async def join(
 
             if processID:
                 processID = processID.processID  # noqa: N806
-                message = WorkerBot.check_status(processID)
 
-                if message == f"Process {processID} stopped!":
-                    try:
-                        stop_execution(app, pid)
-                    except Exception:
-                        app.logger.error(traceback.format_exc())
+            message = WorkerBot.check_status(processID)
 
-                    data.update(
-                        {
-                            "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-                                pid=pid,
-                                type_log="success",
-                                row=0,
-                                dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
-                                log="fim da execução",
-                            ),
-                        },
-                    )
-                    await io.emit("log_message", data, room=room, namespace="/log")
-
-                elif message == "Erro ao inicializar robô":
+            if message == f"Process {processID} stopped!" or message == "Process stopped!":
+                try:
                     stop_execution(app, pid)
+                except Exception:
+                    app.logger.error(traceback.format_exc())
 
-                else:
-                    await io.emit("log_message", data, room=room, namespace="/log")
+                data.update(
+                    {
+                        "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
+                            pid=pid,
+                            type_log="success",
+                            row=0,
+                            dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
+                            log="fim da execução",
+                        ),
+                    },
+                )
+                await io.emit("log_message", data, room=room, namespace="/log")
+
+            elif message == "Erro ao inicializar robô":
+                stop_execution(app, pid)
+
+            else:
+                await io.emit("log_message", data, room=room, namespace="/log")
 
         except Exception:
             await io.send("Failed to check bot has stopped")

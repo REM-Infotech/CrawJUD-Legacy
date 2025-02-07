@@ -226,16 +226,21 @@ class WorkerBot:
 
         """
         try:
-            process = AsyncResult(processID)
+            process = None
+            if processID:
+                process = AsyncResult(processID)
 
-            status = process.status
-            if status == "SUCCESS":
-                return f"Process {processID} stopped!"
+                status = process.status
+                if status == "SUCCESS":
+                    return f"Process {processID} stopped!"
 
-            if status == "FAILURE":
-                return "Erro ao inicializar robô"
+                if status == "FAILURE":
+                    return "Erro ao inicializar robô"
 
-            return "Process running!"
+                return "Process running!"
+
+            if processID is None:
+                return "Process stopped!"
 
         except Exception:
             return f"Process {processID} stopped!"
