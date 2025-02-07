@@ -230,25 +230,29 @@ class WorkerBot:
 
         """
         try:
+            path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
+            process = None
             try:
-                path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
-                process = AsyncResult(processID)
-                status = process.status
-                if status == "SUCCESS":
-                    return f"Process {processID} stopped!"
+                if processID:
+                    process = AsyncResult(processID)
+                    status = process.status
+                    if status == "SUCCESS":
+                        return f"Process {processID} stopped!"
 
-                if status == "FAILURE":
-                    return "Erro ao inicializar robô"
+                    if status == "FAILURE":
+                        return "Erro ao inicializar robô"
 
-                elif status == "PENDING" and path_flag.exists():
-                    process.revoke(terminate=True, wait=True, timeout=5.0)
-                    return f"Process {processID} stopped!"
+                    elif status == "PENDING" and path_flag.exists():
+                        process.revoke(wait=True, signal="SIGTERM")
+                        return f"Process {processID} stopped!"
 
             except Exception as e:
                 app.logger.error("An error occurred: %s", str(e))
                 process = None
 
             if process is None:
+                path_flag.parent.resolve().mkdir(parents=True, exist_ok=True)
+
                 with path_flag.open("w") as f:
                     f.write("Encerrar processo")
 

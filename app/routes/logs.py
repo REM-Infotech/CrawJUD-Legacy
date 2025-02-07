@@ -25,7 +25,7 @@ async def connect(sid: str = None, data: dict = None) -> None:
         data: Data sent by the client.
 
     """
-    room = data.get("pid", None)
+    room = data.get("HTTP_PID", None)
 
     if room:
         await io.enter_room(sid, room, namespace="/log")
@@ -68,7 +68,7 @@ async def stop_bot(sid: str, data: dict[str, str]) -> None:
     """
     pid = data["pid"]
     await asyncio.create_task(stop_execution(app, pid))
-    io.send("Bot stopped!")
+    await io.send("Bot stopped!")
 
 
 @io.on("terminate_bot", namespace="/log")
@@ -92,7 +92,8 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
                 processID = str(processID.processID)  # noqa: N806
 
             result = await asyncio.create_task(WorkerBot.stop(processID, pid, app))
-            await io.send(result, to=sid, namespace="/log", room=pid)
+            await io.enter_room(sid, pid, namespace="/log")
+            await io.emit("log_message", result, to=sid, namespace="/log", room=pid)
 
         except Exception as e:
             app.logger.error("An error occurred: %s", str(e))
