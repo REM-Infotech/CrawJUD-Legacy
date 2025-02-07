@@ -201,10 +201,11 @@ class AppFactory:
 
         async with app.app_context():
             db.init_app(app)
-            db.create_all()
 
             if environ["HOSTNAME"] == "betatest1.rhsolut.com.br":
                 db.drop_all()
+
+            db.create_all()
 
             NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
             HOST = environ.get("HOSTNAME")  # noqa: N806
