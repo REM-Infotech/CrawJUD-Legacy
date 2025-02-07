@@ -82,7 +82,7 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
                 pid = pathlib.Path(path_args).stem
 
                 init_bot: Task = bot_starter
-                task = init_bot.apply_async(args=[path_args, display_name, system, typebot])
+                task = init_bot.apply_async(args=[path_args, display_name, system, typebot], queue=pid)
 
                 process_id = str(task.id)
 

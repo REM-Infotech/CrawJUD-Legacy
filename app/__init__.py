@@ -149,7 +149,7 @@ class AppFactory:
             cors_allowed_origins=check_allowed_origin,
             ping_interval=25,
             ping_timeout=10,
-            message_queue=f"redis://:{pass_redis}@{host_redis}:{port_redis}/9",
+            message_queue=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8",
         )
 
         return io
