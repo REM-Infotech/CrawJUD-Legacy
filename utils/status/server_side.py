@@ -4,8 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from redis_flask import Redis
 
-from utils import SetStatus
-
 
 def load_cache(pid: str, app: Quart) -> dict[str, str]:
     """Load cache data for a given PID from Redis.
@@ -69,6 +67,8 @@ def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Quart
         dictionary is returned without modifications.
 
     """
+    from . import SetStatus
+
     if data is None:
         data = {}
     try:

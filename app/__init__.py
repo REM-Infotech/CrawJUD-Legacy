@@ -29,7 +29,8 @@ from socketio import ASGIApp, AsyncServer  # noqa: F401
 from tqdm import tqdm
 
 from app.routes import register_routes
-from utils import check_allowed_origin, init_log, make_celery, version_file
+from utils import asyncinit_log as init_log
+from utils import check_allowed_origin, make_celery, version_file
 
 valides = [
     getenv("INTO_DOCKER", None) is None,

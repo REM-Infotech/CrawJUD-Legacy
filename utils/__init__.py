@@ -1,88 +1,50 @@
 """Miscellaneous utilities and helpers for the CrawJUD-Bots application."""
 
-import importlib  # noqa: F401
-from datetime import datetime  # noqa: F401
-
 from dotenv_vault import load_dotenv
 
-import utils.bots_logs  # noqa: F401
-
+from .bots_logs import (
+    asyncinit_log,
+    init_log,
+)
 from .check_cors import check_allowed_origin
 from .gcs_mgmt import get_file
 from .get_location import GeoLoc
 from .git_py import _release_tag, check_latest, checkout_release, update_servers, version_file
 from .make_celery import make_celery
-from .status import *  # noqa: F401, F403
+from .mod_mgmt import reload_module
+from .status import (
+    FormatMessage,
+    SetStatus,
+    email_start,
+    email_stop,
+    enviar_arquivo_para_gcs,
+    load_cache,
+    makezip,
+    stop_execution,
+)
 
 signed_url_lifetime = 300
 __all__ = [
-    "_release_tag",
-    "check_latest",
-    "checkout_release",
-    "update_servers",
-    "GeoLoc",
-    "check_allowed_origin",
-    "make_celery",
-    utils.bots_logs.init_log,
-    utils.bots_logs.asyncinit_log,
-    "version_file",
-    "SetStatus",  # noqa: F405
-    makezip,  # noqa: F405
-    email_start,  # noqa: F405
-    email_stop,  # noqa: F405
-    enviar_arquivo_para_gcs,  # noqa: F405
-    get_file,  # noqa: F405,
-    load_cache,  # noqa: F405
-    FormatMessage,  # noqa: F405
+    _release_tag,
+    check_latest,
+    checkout_release,
+    update_servers,
+    GeoLoc,
+    check_allowed_origin,
+    make_celery,
+    init_log,
+    asyncinit_log,
+    version_file,
+    SetStatus,
+    makezip,
+    email_start,
+    email_stop,
+    enviar_arquivo_para_gcs,
+    get_file,
+    load_cache,
+    stop_execution,
+    FormatMessage,
+    reload_module,
 ]
 
 load_dotenv()
-
-
-# def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
-#     """Stop the execution of a bot based on its PID.
-
-#     Args:
-#         app (Quart): The Quart application instance.
-#         pid (str): The process identifier of the bot.
-#         robot_stop (bool, optional): Flag to indicate robot stop. Defaults to False.
-
-#     Returns:
-#         tuple[dict[str, str], int]: A message and HTTP status code.
-
-#     """
-#     from app import db
-#     from app.models import Executions, ThreadBots
-#     from utils import SetStatus
-
-#     try:
-#         processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()  # noqa: N806
-
-#         if processID:
-#             get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
-
-#             system = get_info.bot.system
-#             typebot = get_info.bot.type
-#             user = get_info.user.login
-#             get_info.status = "Finalizado"
-#             get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-#             filename = get_file(pid, app)
-
-#             if filename != "":
-#                 get_info.file_output = filename
-#                 db.session.commit()
-#                 db.session.close()
-
-#             elif filename == "":
-#                 get_info.file_output = SetStatus(usr=user, pid=pid, system=system, typebot=typebot).botstop(db, app)
-#                 db.session.commit()
-#                 db.session.close()
-
-#         elif not processID:
-#             raise Exception("Execution not found!")
-
-#         return {"message": "bot stopped!"}, 200
-
-#     except Exception as e:
-#         app.logger.error("An error occurred: %s", str(e))
-#         return {"message": "An internal error has occurred!"}, 500

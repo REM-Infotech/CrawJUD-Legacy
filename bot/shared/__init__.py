@@ -20,7 +20,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from socketio import Client
 
-from logs.bots_logs import init_log
+from utils import init_log
 
 from .. import OpenAI
 
