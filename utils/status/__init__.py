@@ -251,7 +251,7 @@ class SetStatus:
             raise e
 
 
-def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
+async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
     """Stop the execution of a bot based on its PID.
 
     Args:
@@ -263,42 +263,48 @@ def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict
         tuple[dict[str, str], int]: A message and HTTP status code.
 
     """
-    from app import db
-    from app.models import Executions, ThreadBots
+    async with app.app_context():
+        db: SQLAlchemy = app.extensions["sqlalchemy"]
+        from app.models import Executions, ThreadBots
 
-    from ..gcs_mgmt import get_file
+        from ..gcs_mgmt import get_file
 
-    try:
-        processID = ThreadBots.query.filter(ThreadBots.pid == pid).first()  # noqa: N806
-
-        if processID:
+        try:
+            processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
             get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
-            system = get_info.bot.system
-            typebot = get_info.bot.type
-            user = get_info.user.login
-            get_info.status = "Finalizado"
-            get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-            filename = get_file(pid, app)
+            if processID or get_info:
+                # Stop bot
 
-            if filename != "":
-                get_info.file_output = filename
-                db.session.commit()
-                db.session.close()
+                system = get_info.bot.system
+                typebot = get_info.bot.type
+                user = get_info.user.login
+                get_info.status = "Finalizado"
+                get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
+                filename = get_file(pid, app)
 
-            elif filename == "":
-                get_info.file_output = SetStatus(usr=user, pid=pid, system=system, typebot=typebot).botstop(db, app)
-                db.session.commit()
-                db.session.close()
+                if filename != "":
+                    get_info.file_output = filename
+                    db.session.commit()
+                    db.session.close()
 
-        elif not processID:
-            raise Exception("Execution not found!")
+                elif filename == "":
+                    bot_stop = SetStatus()
+                    setup_stop = await asyncio.create_task(
+                        bot_stop.config(usr=user, pid=pid, system=system, typebot=typebot)
+                    )
+                    get_info.file_output = await asyncio.create_task(setup_stop.botstop(db, app))
+                    db.session.commit()
+                    db.session.close()
 
-        return {"message": "bot stopped!"}, 200
+            elif not processID:
+                raise Exception("Execution not found!")
 
-    except Exception as e:
-        app.logger.error("An error occurred: %s", str(e))
-        return {"message": "An internal error has occurred!"}, 500
+            return {"message": "bot stopped!"}, 200
+
+        except Exception as e:
+            app.logger.error("An error occurred: %s", str(e))
+            return {"message": "An internal error has occurred!"}, 500
 
 
 __all__ = [

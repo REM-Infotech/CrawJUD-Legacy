@@ -180,7 +180,7 @@ class WorkerBot:
             raise e
 
     @classmethod
-    def stop(cls, processID: int, pid: str, app: Quart = None) -> str:  # noqa: N803
+    async def stop(cls, processID: int, pid: str, app: Quart = None) -> str:  # noqa: N803
         """Stop a process with the given processID.
 
         Args:
@@ -193,12 +193,13 @@ class WorkerBot:
 
         """
         try:
-            process = AsyncResult(processID)
+            process = None
+            if processID:
+                process = AsyncResult(processID)
+                logger.info(process.status)
 
-            logger.info(process.status)
-
-            if (app and app.testing) or (process and process.status == "PENDING"):
-                path_flag = Path(app.config["TEMP_FOLDER"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
+            if process is None or (process and process.status == "PENDING"):
+                path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
                 path_flag.parent.mkdir(parents=True, exist_ok=True)
                 with path_flag.open("w") as f:
                     f.write("Encerrar processo")
@@ -215,29 +216,34 @@ class WorkerBot:
             return str(e)
 
     @classmethod
-    def check_status(cls, processID: str) -> str:  # noqa: N803
+    async def check_status(cls, processID: str, pid: str, app: Quart) -> str:  # noqa: N803
         """Check the status of a process.
 
         Args:
             processID (str): The process ID to check.
+            pid (str): The PID of the process.
+            app (Flask): The Quart app
+
 
         Returns:
             str: A status message regarding the process.
 
         """
         try:
-            process = None
-            if processID:
-                process = AsyncResult(processID)
-
-                status = process.status
-                if status == "SUCCESS":
-                    return f"Process {processID} stopped!"
+            process = AsyncResult(processID)
+            path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
+            status = process.status
+            if status == "SUCCESS":
+                return f"Process {processID} stopped!"
 
                 if status == "FAILURE":
                     return "Erro ao inicializar robô"
 
-                return "Process running!"
+            elif status == "PENDING" and path_flag.exists():
+                process.revoke(terminate=True, wait=True, timeout=5.0)
+                return f"Process {processID} stopped!"
+
+            return "Process running!"
 
             if processID is None:
                 return "Process stopped!"

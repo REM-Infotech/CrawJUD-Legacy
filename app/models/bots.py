@@ -88,5 +88,5 @@ class ThreadBots(db.Model):
     __bind_key__ = "cachelogs"
     __tablename__ = "thread_bots"
     id = db.Column(db.Integer, primary_key=True)
-    pid = db.Column(db.String(length=12), nullable=False)
-    processID = db.Column(db.String(length=64), nullable=False)  # noqa: N815
+    pid: str = db.Column(db.String(length=12), nullable=False)
+    processID: str = db.Column(db.String(length=64), nullable=False)  # noqa: N815

@@ -161,8 +161,8 @@ class ProductionConfig(Config):
         WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
         CELERY: dict[str, str | bool] = {
-            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/9",
-            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/10",
+            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
+            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
@@ -217,8 +217,8 @@ class DevelopmentConfig(Config):
         WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
         CELERY: dict[str, str | bool] = {
-            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/9",
-            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/10",
+            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
+            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",
@@ -274,8 +274,8 @@ class TestingConfig(Config):
         WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
         CELERY: dict[str, str | bool] = {
-            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/9",
-            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/10",
+            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
+            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
             "task_ignore_result": True,
             "broker_connection_retry_on_startup": True,
             "timezone": "America/Sao_Paulo",

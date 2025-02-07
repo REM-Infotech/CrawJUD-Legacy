@@ -101,7 +101,7 @@ def init_log(
 
     # File handler
     file_handler = RotatingFileHandler(
-        str(),
+        str(log_path_file),
         maxBytes=mx_bt,
         backupCount=bkp_ct,
     )
