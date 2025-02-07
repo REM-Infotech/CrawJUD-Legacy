@@ -7,7 +7,8 @@ from celery import Celery
 from dotenv_vault import load_dotenv
 from flask import Flask
 
-from .bots_logs import init_log
+from logs.bots_logs import asyncinit_log as init_log
+
 from .get_location import GeoLoc
 
 load_dotenv()

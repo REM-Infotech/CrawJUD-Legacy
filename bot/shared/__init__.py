@@ -20,6 +20,8 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from socketio import Client
 
+from logs.bots_logs import init_log
+
 from .. import OpenAI
 
 if TYPE_CHECKING:
@@ -109,6 +111,7 @@ class PropertiesCrawJUD:
 
     # sio = SimpleClient
     sio = Client(reconnection_attempts=5)
+    logger = init_log()
 
     @sio.on("connect", namespace="*")
     @staticmethod

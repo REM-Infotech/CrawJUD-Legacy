@@ -139,6 +139,14 @@ class movimentacao(CrawJUD):  # noqa: N801
                 for data, msg, fileN in self.another_append:  # noqa: N806
                     self.append_success([data], msg, fileN)
 
+            elif len(self.appends) == 0 and len(self.another_append) == 0:
+                self.message = "Nenhuma movimentação encontrada"
+                self.type_log = "error"
+                self.prt()
+                data = self.bot_data
+                data.update({"MOTIVO_ERRO": self.message})
+                self.append_error(data)
+
         except Exception as e:
             raise ErroDeExecucao(e=e) from e
 

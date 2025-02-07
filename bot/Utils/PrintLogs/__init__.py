@@ -4,12 +4,12 @@ This module provides logging and message handling utilities for the CrawJUD proj
 
 """
 
-import logging
 import os
 import pathlib
 import traceback
 from datetime import datetime
 from os import environ
+from threading import Thread  # noqa: F401
 from time import sleep
 from typing import Self
 
@@ -33,7 +33,6 @@ class PrintBot(CrawJUD):
 
     def __init__(self) -> None:
         """Initialize a new PrintBot instance."""
-        self.logger = logging.getLogger("bot")
 
     def print_msg(self) -> None:
         """Print the current message and emit it to the socket."""
@@ -60,13 +59,15 @@ class PrintBot(CrawJUD):
             "total": self.kwrgs.get("total_rows", 0),
         }
 
-        PrintBot.socket_message(self, data)
+        # log_socket_ = Thread(target=self.socket_message, args=(data,))
+        # log_socket_.start()
+        self.socket_message(data)
         mensagens.append(self.prompt)
 
         self.list_messages = mensagens
         if "fim da execução" in self.message.lower():
             sleep(1)
-            PrintBot.file_log(self)
+            self.file_log(self)
 
     @classmethod
     def file_log(cls, self: Self) -> None:
