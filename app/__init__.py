@@ -65,11 +65,9 @@ load_dotenv()
 values = environ.get
 is_init = Path("is_init.txt").resolve()
 
-from app.models import (  # noqa: E402
+from app.models import (  # noqa: E402, F401  # noqa: E402, F401
     Servers,
-)
-from app.models import (  # noqa: E402
-    ThreadBots as ThreadBots,
+    ThreadBots,
 )
 
 

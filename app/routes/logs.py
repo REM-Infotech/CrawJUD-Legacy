@@ -14,15 +14,19 @@ logger = logging.getLogger(__name__)
 
 
 @io.on("connect", namespace="/log")
-async def connect(sid: str = None, event: any = None, namespace: str = None) -> None:
+async def connect(sid: str = None, data: dict = None) -> None:
     """Handle a new client connection to the /log namespace.
 
     Args:
         sid: The session ID of the client.
-        event: The event that triggered the connection.
-        namespace: The namespace the client is connecting
+        data: Data sent by the client.
 
     """
+    room = data.get("pid", None)
+
+    if room:
+        await io.enter_room(sid, room, namespace="/log")
+
     await io.send("connected!", to=sid, namespace="/log")
 
 
@@ -150,7 +154,7 @@ async def join(
 
     """
     room = data["pid"]
-    await io.enter_room(sid, room, namespace="/log")
+
     data = await load_cache(room, app)
     async with app.app_context():
         try:
@@ -168,7 +172,7 @@ async def join(
 
             message = await WorkerBot.check_status(processID, pid, app)
 
-            if message == f"Process {processID} stopped!":
+            if message != "Process running!":
                 data.update(
                     {
                         "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
@@ -181,11 +185,11 @@ async def join(
                     },
                 )
 
-            try:
-                await stop_execution(app, pid)
-            except Exception as e:
-                app.logger.error("An error occurred: %s", str(e))
-                app.logger.exception(traceback.format_exc())
+                try:
+                    await stop_execution(app, pid)
+                except Exception as e:
+                    app.logger.error("An error occurred: %s", str(e))
+                    app.logger.exception(traceback.format_exc())
 
             await io.emit("log_message", data, room=room, namespace="/log")
 

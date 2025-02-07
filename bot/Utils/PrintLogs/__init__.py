@@ -196,8 +196,7 @@ class PrintBot(CrawJUD):
             sio (SimpleClient): The SimpleClient instance
 
         """
-        self.sio.connect(url, namespaces=["/log"])
-        self.sio.emit("join", {"pid": self.pid}, namespace="/log")
+        self.sio.connect(url, namespaces=["/log"], headers={"pid": self.pid})
 
     def send_message(self, data: dict[str, str | int], url: str) -> None:
         """Send a log message.
