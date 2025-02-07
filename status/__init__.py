@@ -121,11 +121,11 @@ class SetStatus:
 
         if self.files is not None:
             for f, value in self.files.items():
-                if "xlsx" not in f or app.testing is True:
-                    f = self.format_string(f)
-
                 if isinstance(f, Coroutine):
                     f = await f
+
+                if "xlsx" not in f:
+                    f = self.format_string(f)
 
                 if isinstance(value, Coroutine):
                     value = await value
