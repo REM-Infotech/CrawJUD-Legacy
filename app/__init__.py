@@ -1,40 +1,38 @@
-"""Initialize the CrawJUD-Bots app with Flask, Celery, SocketIO, and extension.
+"""Initialize the CrawJUD-Bots app with Quart, Celery, AsyncServer, and extension.
 
-This module creates the Flask app and configures extensions like Celery,
-SocketIO, Flask-Mail, SQLAlchemy, and Talisman.
+This module creates the Quart app and configures extensions like Celery,
+AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 """
 
-from gevent import monkey
-
-monkey.patch_all()
-
-import platform  # noqa: E402
-import signal  # noqa: E402
+import asyncio
+import platform
+import signal
 import subprocess  # noqa: S404, E402 # nosec: B404
-import sys  # noqa: E402
-from datetime import timedelta  # noqa: E402
-from os import environ, getenv  # noqa: E402
-from pathlib import Path  # noqa: E402
-from platform import system  # noqa: E402
+import sys
+from datetime import timedelta
+from os import environ, getenv
+from pathlib import Path
+from platform import system
+from threading import Thread
 
-from billiard.context import Process  # noqa: E402
-from celery import Celery  # noqa: E402
+import quart_flask_patch  # noqa: F401
+import uvicorn
+from celery import Celery
 from clear import clear  # noqa: F401, E402
-from dotenv_vault import load_dotenv  # noqa: E402
-from flask import Flask  # noqa: E402
-from flask_mail import Mail  # noqa: E402
-from flask_socketio import SocketIO  # noqa: E402
-from flask_sqlalchemy import SQLAlchemy  # noqa: E402
-from flask_talisman import Talisman  # noqa: E402
-from gevent.pywsgi import WSGIServer  # noqa: E402
-from geventwebsocket.handler import WebSocketHandler  # noqa: E402
-from redis_flask import Redis  # noqa: E402
-from tqdm import tqdm  # noqa: E402
+from dotenv_vault import load_dotenv
+from flask_mail import Mail
+from flask_sqlalchemy import SQLAlchemy
+from flask_talisman import Talisman
+from quart import Quart as Quart
+from redis_flask import Redis
+from socketio import ASGIApp, AsyncServer  # noqa: F401
+from tqdm import tqdm
 
-from app.routes import register_routes  # noqa: E402
-from git_py import version_file  # noqa: E402
+from app.routes import register_routes
+from git_py import version_file
 
-from .utils import check_allowed_origin, init_log, make_celery  # noqa: E402
+from .socketio_srv import SocketIO  # noqa: F401
+from .utils import check_allowed_origin, init_log, make_celery
 
 valides = [
     getenv("INTO_DOCKER", None) is None,
@@ -44,16 +42,17 @@ valides = [
 
 asc = any(valides)
 
-async_mode = "gevent"
+async_mode = "asgi"
 
 load_dotenv()
+
 
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
-
-io = SocketIO(async_mode=async_mode)
-app = Flask(__name__)
+io = AsyncServer(async_mode=async_mode, cors_allowed_origins=check_allowed_origin)
+# io = SocketIO(async_mode=async_mode, cors_allowed_origins=check_allowed_origin)
+app = Quart(__name__)
 clean_prompt = False
 
 objects_config = {
@@ -66,16 +65,31 @@ objects_config = {
 load_dotenv()
 
 values = environ.get
+is_init = Path("is_init.txt").resolve()
+
+from app.models import (  # noqa: E402
+    Servers,
+)
+from app.models import (  # noqa: E402
+    ThreadBots as ThreadBots,
+)
 
 
 class AppFactory:
-    """Factory to create and configure the Flask app, SocketIO, and Celery."""
+    """Factory to create and configure the ASGIApp and Celery."""
 
-    def create_app(self) -> tuple[Flask, SocketIO, Celery]:
-        """Create and configure the Flask app, SocketIO, and Celery worker.
+    async def main(self) -> tuple[ASGIApp, Celery]:
+        """Run the main application loop."""
+        task = asyncio.create_task(self.create_app())
+        await task
+
+        return task.result()
+
+    async def create_app(self) -> tuple[ASGIApp, Celery]:
+        """Create and configure the ASGIApp and Celery worker.
 
         Returns:
-            tuple: A tuple containing Flask app, SocketIO, and Celery worker.
+            tuple: A tuple containing ASGIApp and Celery worker.
 
         """
         env_ambient = environ["AMBIENT_CONFIG"]
@@ -88,30 +102,26 @@ class AppFactory:
 
         celery.autodiscover_tasks(["bot"])
 
-        if not app.testing:
-            with app.app_context():
-                self.init_database(app)
-                self.init_mail(app)
-                self.init_redis(app)
+        async with app.app_context():
+            await asyncio.create_task(self.init_database(app))
+            await asyncio.create_task(self.init_mail(app))
+            await asyncio.create_task(self.init_redis(app))
+            await asyncio.create_task(self.init_talisman(app))
+            # await asyncio.create_task(self.init_socket(app))
+            await asyncio.create_task(self.init_routes(app))
+            app.logger = await asyncio.create_task(init_log())
 
-                self.init_talisman(app)
-                io = self.init_socket(app)
-                self.init_routes(app)
-                app.logger = init_log()
-                return app, io, celery
+        return ASGIApp(io, app), celery
 
-        app.logger = init_log()
-        return app, io, celery
-
-    def init_routes(self, app: Flask) -> None:
+    async def init_routes(self, app: Quart) -> None:
         """Initialize and register the application routes."""
         register_routes(app)
 
-    def init_talisman(self, app: Flask) -> Talisman:
+    async def init_talisman(self, app: Quart) -> Talisman:
         """Initialize Talisman for security headers.
 
         Args:
-            app (Flask): The Flask application.
+            app (Quart): The Quart application.
 
         Returns:
             Talisman: The Talisman instance.
@@ -128,14 +138,14 @@ class AppFactory:
         )
         return tslm
 
-    def init_socket(self, app: Flask) -> SocketIO:
-        """Initialize the SocketIO instance.
+    async def init_socket(self, app: Quart) -> AsyncServer:
+        """Initialize the AsyncServer instance.
 
         Args:
-            app (Flask): The Flask application.
+            app (Quart): The Quart application.
 
         Returns:
-            SocketIO: The initialized SocketIO instance.
+            AsyncServer: The initialized AsyncServer instance.
 
         """
         global io
@@ -154,15 +164,15 @@ class AppFactory:
 
         return io
 
-    def init_mail(self, app: Flask) -> None:
-        """Initialize the Flask-Mail extension."""
+    async def init_mail(self, app: Quart) -> None:
+        """Initialize the Quart-Mail extension."""
         mail.init_app(app)
 
-    def init_redis(self, app: Flask) -> Redis:
+    async def init_redis(self, app: Quart) -> Redis:
         """Initialize the Redis extension.
 
         Args:
-            app (Flask): The Flask application.
+            app (Quart): The Quart application.
 
         Returns:
             Redis: The Redis instance.
@@ -173,11 +183,11 @@ class AppFactory:
         redis = Redis(app)
         return redis
 
-    def init_database(self, app: Flask) -> SQLAlchemy:
+    async def init_database(self, app: Quart) -> SQLAlchemy:
         """Initialize the database and create tables if they do not exist.
 
         Args:
-            app (Flask): The Flask application.
+            app (Quart): The Quart application.
 
         Returns:
             SQLAlchemy: The database instance.
@@ -186,20 +196,10 @@ class AppFactory:
         import platform
 
         global db
-        with app.app_context():
+
+        async with app.app_context():
             db.init_app(app)
-
-            if not Path("is_init.txt").exists():
-                with open("is_init.txt", "w") as f:
-                    db.create_all()
-                    f.write("True")
-
-            from app.models import Servers, ThreadBots
-
-            if not db.engine.dialect.has_table(db.engine.connect(), ThreadBots.__tablename__):
-                with open("is_init.txt", "w") as f:
-                    db.create_all()
-                    f.write("True")
+            db.create_all()
 
             NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
             HOST = environ.get("HOSTNAME")  # noqa: N806
@@ -209,20 +209,23 @@ class AppFactory:
                 db.session.add(server)
                 db.session.commit()
 
-            return db
+        return db
 
     @classmethod
-    def start_app(cls) -> tuple[Flask, Celery]:
-        """Initialize and start the Flask application with SocketIO.
+    def start_app(cls) -> tuple[Quart, Celery]:
+        """Initialize and start the Quart application with AsyncServer.
 
         Sets up the application context, configures server settings,
         and starts the application using specified parameters.
 
         """
-        app, _, celery = cls().create_app()
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        loop = asyncio.get_event_loop()
+
+        app, celery = loop.run_until_complete(AppFactory().main())
 
         args_run: dict[str, str | int | bool] = {}
-        app.app_context().push()
+        # app.app_context().push()
 
         debug = values("DEBUG", "False").lower() == "True"
 
@@ -243,7 +246,7 @@ class AppFactory:
         }
 
         try:
-            starter = Process(target=cls.starter, kwargs=args_run)
+            starter = Thread(target=cls.starter, kwargs=args_run)
             starter.daemon = True
             starter.start()
 
@@ -262,14 +265,14 @@ class AppFactory:
         return app, celery
 
     @classmethod
-    def starter(cls, hostname: str, port: int, log_output: bool, app: Flask, **kwargs: dict[str, any]) -> None:
+    def starter(cls, hostname: str, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:
         """Start the application with the specified parameters.
 
         Args:
             hostname (str): The hostname to listen on.
             port (int): The port to listen on.
             log_output (bool): Whether to log output.
-            app (Flask): The Flask application instance.
+            app (Quart): The Quart application instance.
             **kwargs: Additional keyword arguments.
 
         """
@@ -280,9 +283,7 @@ class AppFactory:
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
 
-        wsgi = WSGIServer((hostname, port), app, handler_class=WebSocketHandler, log=app.logger, error_log=app.logger)
-
-        wsgi.serve_forever()
+        uvicorn.run(app, host=hostname, port=port)
 
     @staticmethod
     def handle_exit(a: any = None, b: any = None) -> None:

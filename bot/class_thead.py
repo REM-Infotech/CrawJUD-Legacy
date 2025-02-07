@@ -5,13 +5,7 @@ This module defines the BotThread class which extends Process to handle
 bot execution with exception capturing.
 """
 
-from gevent import monkey
-
-monkey.patch_all()
-
-from threading import Thread  # noqa: E402, F401
-
-from billiard.context import Process  # noqa: E402, F401
+from billiard.context import Process
 
 
 class BotThread(Process):

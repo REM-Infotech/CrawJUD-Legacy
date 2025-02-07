@@ -1,14 +1,14 @@
 """Utility functions and classes for the CrawJUD-Bots application."""
 
-import re  # noqa: E402
-from os import environ  # noqa: E402
+import re
+from os import environ
 
-from celery import Celery  # noqa: E402
-from dotenv_vault import load_dotenv  # noqa: E402
-from flask import Flask  # noqa: E402
+from celery import Celery
+from dotenv_vault import load_dotenv
+from flask import Flask
 
-from .bots_logs import init_log  # noqa: E402
-from .get_location import GeoLoc  # noqa: E402
+from .bots_logs import init_log
+from .get_location import GeoLoc
 
 load_dotenv()
 
@@ -28,8 +28,7 @@ def make_celery(app: Flask) -> Celery:
 
     class ContextTask(celery.Task):
         def __call__(self, *args: tuple, **kwargs: dict) -> any:  # -> any:
-            with app.app_context():
-                return self.run(*args, **kwargs)
+            return self.run(*args, **kwargs)
 
     celery.Task = ContextTask
     return celery

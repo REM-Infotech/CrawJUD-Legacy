@@ -1,22 +1,19 @@
 """Blueprint for managing bot operations such as launching, stopping, and scheduling."""
 
+import asyncio
 import json
 import pathlib
-import platform
 import traceback
 from typing import TYPE_CHECKING
 
-from celery import Celery
-from celery.app.control import Control
 from celery.schedules import crontab
-from flask import Blueprint, Response, jsonify, make_response, request
-from flask import current_app as app
+from quart import Blueprint, Response, jsonify, make_response, request
+from quart import current_app as app
 
 from miscellaneous import reload_module  # noqa: F401
 
 from ..misc import check_latest, stop_execution  # noqa: F401
 from ..models import ScheduleModel
-from ..utils import GeoLoc
 
 if TYPE_CHECKING:
     from celery import Task
@@ -27,7 +24,7 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
 @bot.post("/bot/<id>/<system>/<typebot>")
-def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
+async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """Launch a new bot with the specified parameters.
 
     Args:
@@ -45,13 +42,13 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
 
     is_started = 200
 
-    with app.app_context():
+    async with app.app_context():
         try:
-            obj = GeoLoc()
-            loc = obj.region_name
+            # obj = GeoLoc()
+            # loc = obj.region_name
 
-            request_data = request.data
-            request_form = request.form
+            request_data = await request.data
+            request_form = await request.form
 
             data_bot = request_data or request_form
 
@@ -67,13 +64,17 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
                 if not isinstance(data_bot, dict):
                     raise ValueError("Invalid data_bot format")
 
-            if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
-                raise Exception("Este servidor não pode executar este robô!")
+            # if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
+            #     raise Exception("Este servidor não pode executar este robô!")
 
-            start_rb = SetStatus(data_bot, request.files, id, system, typebot)
-            path_args, display_name = start_rb.start_bot(app, db)
+            start_rb = SetStatus()
 
-            with app.app_context():
+            files = await request.files
+
+            start_rb = await asyncio.create_task(start_rb.config(data_bot, files, id, system, typebot))
+            path_args, display_name = await asyncio.create_task(start_rb.start_bot(app, db))
+
+            async with app.app_context():
                 # reload_module("bot")
 
                 from app.models import ThreadBots
@@ -84,11 +85,7 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
                 pid = pathlib.Path(path_args).stem
 
                 init_bot: Task = bot_starter
-                task = init_bot.apply_async(args=[path_args, display_name, system, typebot], queue=pid)
-
-                celery: Celery = app.extensions["celery"]
-                control: Control = celery.control
-                control.add_consumer(pid)
+                task = init_bot.apply_async(args=[path_args, display_name, system, typebot])
 
                 process_id = str(task.id)
 
@@ -103,12 +100,11 @@ def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
             message = {"error": err}
             is_started: type[int] = 500
 
-    resp = make_response(jsonify(message), is_started)
-    return resp
+    return await make_response(jsonify(message), is_started)
 
 
 @bot.route("/stop/<user>/<pid>", methods=["POST"])
-def stop_bot(user: str, pid: str) -> Response:
+async def stop_bot(user: str, pid: str) -> Response:
     """Stop a running bot based on user and PID.
 
     Args:
@@ -137,7 +133,7 @@ def stop_bot(user: str, pid: str) -> Response:
 
 
 @bot.post("/periodic_bot/<id>/<system>/<typebot>")
-def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
+async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """Schedule a bot to run periodically based on provided cron arguments.
 
     Args:

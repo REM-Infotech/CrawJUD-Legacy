@@ -54,8 +54,11 @@ python-dotenv-vault = "^0.6.4"
 cryptography = "41.0.7"
 python-dotenv = "0.21.1"
 flake8-bugbear = "^24.12.12"
-gevent = "^24.11.1"
-gevent-websocket = "^0.10.1"
+quart = "^0.20.0"
+uvicorn = "^0.34.0"
+quart-flask-patch = "^0.3.0"
+aiopath = "^0.7.7"
+aiohttp = "^3.11.12"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -17,31 +17,27 @@ Modules:
 
 from __future__ import annotations
 
-from gevent import monkey
+import logging
+import platform
 
-monkey.patch_all()
+# from importlib import import_module
+from pathlib import Path
+from time import sleep
 
-import logging  # noqa: E402
-import platform  # noqa: E402
-
-# from importlib import import_module  # noqa: E402
-from pathlib import Path  # noqa: E402
-from time import sleep  # noqa: E402
-
-import pandas as pd  # noqa: E402
-import psutil  # noqa: E402
-from celery import shared_task  # noqa: E402
-from celery.result import AsyncResult  # noqa: E402
-from flask import Flask  # noqa: E402
-from openai import OpenAI  # noqa: E402
+import pandas as pd
+import psutil
+from celery import shared_task
+from celery.result import AsyncResult
+from openai import OpenAI
+from quart import Quart
 
 if platform.system() == "Windows":
     from pywinauto import Application
 
-from rich.console import Group  # noqa: E402
-from rich.live import Live  # noqa: E402
-from rich.panel import Panel  # noqa: E402
-from rich.progress import (  # noqa: E402
+from rich.console import Group
+from rich.live import Live
+from rich.panel import Panel
+from rich.progress import (
     BarColumn,
     DownloadColumn,
     Progress,
@@ -51,14 +47,14 @@ from rich.progress import (  # noqa: E402
     TimeRemainingColumn,
     TransferSpeedColumn,
 )
-from selenium.webdriver import Chrome  # noqa: E402# noqa: E402
-from selenium.webdriver.chrome.options import Options  # noqa: E402# noqa: E402
-from selenium.webdriver.chrome.service import Service  # noqa: E402# noqa: E402
-from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402# noqa: E402
-from selenium.webdriver.support.wait import WebDriverWait  # noqa: E402# noqa: E402
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
 
-from .class_thead import BotThread  # noqa: E402
-from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi  # noqa: E402
+from .class_thead import BotThread
+from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi
 
 __all__ = [
     "Application",
@@ -180,7 +176,7 @@ class WorkerBot:
             raise e
 
     @classmethod
-    def stop(cls, processID: int, pid: str, app: Flask = None) -> str:  # noqa: N803
+    def stop(cls, processID: int, pid: str, app: Quart = None) -> str:  # noqa: N803
         """Stop a process with the given processID.
 
         Args:

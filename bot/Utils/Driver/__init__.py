@@ -2,31 +2,25 @@
 
 from __future__ import annotations
 
-from gevent import monkey
+import json
+import logging
+import pathlib
+import platform
+import shutil
+import traceback
+import zipfile
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
+from os import environ, path
+from pathlib import Path
+from time import sleep
+from typing import Mapping, Optional
 
-monkey.patch_all()
+import requests
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.remote.webdriver import WebDriver
 
-import json  # noqa: E402
-import logging  # noqa: E402
-import pathlib  # noqa: E402
-import platform  # noqa: E402
-import shutil  # noqa: E402
-import traceback  # noqa: E402
-import zipfile  # noqa: E402
-from concurrent.futures import ThreadPoolExecutor  # noqa: E402
-from functools import partial  # noqa: E402
-from os import environ, path  # noqa: E402
-from pathlib import Path  # noqa: E402
-from time import sleep  # noqa: E402
-from typing import Mapping, Optional  # noqa: E402
-
-import requests  # noqa: E402
-from selenium.common.exceptions import WebDriverException  # noqa: E402
-from selenium.webdriver.remote.client_config import ClientConfig  # noqa: E402, F401
-from selenium.webdriver.remote.remote_connection import RemoteConnection  # noqa: E402, F401
-from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402
-
-from ...core import (  # noqa: E402
+from ...core import (
     BarColumn,
     Chrome,
     CrawJUD,
@@ -51,7 +45,7 @@ try:
 except ModuleNotFoundError:
     from .getchromeVer import chrome_ver
 
-import socket  # noqa: E402
+import socket
 
 default_dir = Path(__file__).cwd().resolve()
 logger = logging.getLogger(__name__)

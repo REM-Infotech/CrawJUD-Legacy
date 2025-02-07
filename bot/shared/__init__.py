@@ -6,26 +6,22 @@ application, including configuration for paths, WebDriver instances, and bot set
 
 from __future__ import annotations
 
-from gevent import monkey
-
-monkey.patch_all()
-
-from datetime import datetime, timedelta  # noqa: E402
-from pathlib import Path  # noqa: E402
-from time import sleep  # noqa: E402
-from typing import (  # noqa: E402
+from datetime import datetime, timedelta
+from pathlib import Path
+from time import sleep
+from typing import (
     TYPE_CHECKING,
     Callable,
     LiteralString,
     Union,
 )
 
-from dotenv_vault import load_dotenv  # noqa: E402
-from selenium.webdriver.remote.webdriver import WebDriver  # noqa: E402
-from selenium.webdriver.support.wait import WebDriverWait  # noqa: E402
-from socketio import Client  # noqa: E402
+from dotenv_vault import load_dotenv
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+from socketio import Client
 
-from .. import OpenAI  # noqa: E402
+from .. import OpenAI
 
 if TYPE_CHECKING:
     from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
@@ -116,22 +112,26 @@ class PropertiesCrawJUD:
     sio = Client(reconnection_attempts=5)
 
     @sio.on("connect", namespace="*")
-    def on_connect(self, namespace: str = None, client_: str = None) -> None:
+    @staticmethod
+    def on_connect(event: any = None, namespace: str = None, client_: str = None) -> None:
         """Handle the connect event."""
         sleep(0.25)
 
     @sio.on("disconnect", namespace="*")
-    def on_disconnect(self, namespace: str = None, client_: str = None) -> None:
+    @staticmethod
+    def on_disconnect(event: any = None, namespace: str = None, client_: str = None) -> None:
         """Handle the disconnect event."""
         sleep(0.25)
 
     @sio.on("log_message", namespace="*")
-    def on_message(self, data: dict, namespace: str = None, client_: str = None) -> None:
+    @staticmethod
+    def on_message(event: any = None, data: dict = None, namespace: str = None, client_: str = None) -> None:
         """Handle the log_message event."""
         sleep(0.25)
 
     @sio.on("stop_bot", namespace="*")
-    def on_stop_bot(self, data: dict, namespace: str = None, client_: str = None) -> None:
+    @staticmethod
+    def on_stop_bot(event: any = None, data: dict = None, namespace: str = None, client_: str = None) -> None:
         """Handle the stop_bot event."""
         sleep(0.25)
 

@@ -1,10 +1,10 @@
 """Module for retrieving and handling geolocation information based on IP."""
 
-from os import environ  # noqa: E402
+from os import environ
 
 import FindMyIP as ip  # noqa: N813, E402
-from dotenv_vault import load_dotenv  # noqa: E402
-from httpx import Client as HTTPClient  # noqa: E402
+from dotenv_vault import load_dotenv
+from httpx import Client as HTTPClient
 
 TOKEN = environ.get("TOKEN_IP2")
 load_dotenv()

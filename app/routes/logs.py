@@ -4,7 +4,6 @@ import logging
 import traceback
 from datetime import datetime
 
-from flask_socketio import emit, join_room, leave_room, send
 from pytz import timezone
 
 from app import app, io
@@ -15,32 +14,44 @@ logger = logging.getLogger(__name__)
 
 
 @io.on("connect", namespace="/log")
-def connect() -> None:
-    """Handle a new client connection to the /log namespace."""
-    send("connected!")
+async def connect(sid: str = None, event: any = None, namespace: str = None) -> None:
+    """Handle a new client connection to the /log namespace.
+
+    Args:
+        sid: The session ID of the client.
+        event: The event that triggered the connection.
+        namespace: The namespace the client is connecting
+
+    """
+    await io.send("connected!")
 
 
 @io.on("disconnect", namespace="/log")
-def disconnect() -> None:
+async def disconnect(
+    sid: str = None,
+    event: any = None,
+    namespace: str = None,
+) -> None:
     """Handle client disconnection from the /log namespace."""
-    send("disconnected!")
+    await io.send("disconnected!")
 
 
 @io.on("leave", namespace="/log")
-def leave(data: dict) -> None:  # noqa: ARG001, RUF100
+async def leave(sid: str, data: dict) -> None:  # noqa: ARG001, RUF100
     """Handle a client leaving a specific logging room.
 
     Args:
+        sid: The session ID of the client.
         data: Data containing the room identifier (pid).
 
     """
     room = data["pid"]
-    leave_room(room)
-    send(f"Leaving Room '{room}'")
+    await io.leave_room(sid, room)
+    await io.send(f"Leaving Room '{room}'")
 
 
 @io.on("stop_bot", namespace="/log")
-def stop_bot(data: dict[str, str]) -> None:
+async def stop_bot(data: dict[str, str]) -> None:
     """Stop a running bot identified by its PID.
 
     Args:
@@ -49,11 +60,11 @@ def stop_bot(data: dict[str, str]) -> None:
     """
     pid = data["pid"]
     stop_execution(app, pid)
-    send("Bot stopped!")
+    io.send("Bot stopped!")
 
 
 @io.on("terminate_bot", namespace="/log")
-def terminate_bot(data: dict[str, str]) -> None:
+async def terminate_bot(data: dict[str, str]) -> None:
     """Terminate a running bot identified by its PID.
 
     Args:
@@ -71,94 +82,109 @@ def terminate_bot(data: dict[str, str]) -> None:
         if processID:
             processID = str(processID.processID)  # noqa: N806
             WorkerBot.stop(processID, pid, app)
-            send("Bot stopped!")
+            io.send("Bot stopped!")
 
     except Exception:
-        send("Failed to stop bot!")
+        io.send("Failed to stop bot!")
 
 
 @io.on("log_message", namespace="/log")
-def log_message(data: dict[str, str]) -> None:
+async def log_message(sid: str, data: dict[str, str] = None) -> None:
     """Handle incoming log messages from bots.
 
     Args:
+        sid (str): The session ID of the client.
         data (dict[str, str]): Data containing the log message and PID.
 
     """
-    try:
-        pid = data["pid"]
+    async with app.app_context():
+        try:
+            pid = data["pid"]
 
-        if "message" in data:
-            data = FormatMessage(data, pid, app)
-            emit("log_message", data, room=pid)
+            if "message" in data:
+                data = FormatMessage(data, pid, app)
 
-        send("message received!")
+                await io.emit("log_message", data, room=pid, namespace="/log")
 
-    except Exception:
-        err = traceback.format_exc()
-        logger.exception(err)
-        send("failed to receive message")
+            await io.send("message received!", namespace="/log")
+
+        except Exception:
+            err = traceback.format_exc()
+            logger.exception(err)
+            io.send("failed to receive message", namespace="/log")
 
 
 @io.on("statusbot", namespace="/log")
-def statusbot(data: dict) -> None:
+async def statusbot(data: dict) -> None:
     """Handle status updates from bots.
 
     Args:
         data (dict): Data containing status information.
 
     """
-    send("Bot stopped!")
+    await io.send("Bot stopped!", namespace="/log")
 
 
 @io.on("join", namespace="/log")
-def join(data: dict[str, str]) -> None:
+async def join(
+    sid: str = None,
+    data: dict[str, str] = None,
+    namespace: str = None,
+) -> None:
     """Handle a client joining a specific logging room.
 
     Args:
         data (dict[str, str]): Data containing the room identifier (pid).
+        event (any): The event that triggered the join.
+        sid (str): The session ID of the client.
+        namespace (str): The namespace the client is joining.
 
     """
     room = data["pid"]
-    join_room(room)
+    await io.enter_room(sid, room, namespace="/log")
     data = load_cache(room, app)
+    async with app.app_context():
+        try:
+            from app import db
+            from app.models import ThreadBots
+            from bot import WorkerBot
 
-    try:
-        from app import db
-        from app.models import ThreadBots
-        from bot import WorkerBot
+            pid = room
+            processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
 
-        pid = room
-        processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
+            message = "Fim da Execução"
 
-        message = "Fim da Execução"
+            if processID:
+                processID = processID.processID  # noqa: N806
+                message = WorkerBot.check_status(processID)
 
-        if processID:
-            processID = processID.processID  # noqa: N806
-            message = WorkerBot.check_status(processID)
+                if message == f"Process {processID} stopped!":
+                    try:
+                        stop_execution(app, pid)
+                    except Exception:
+                        app.logger.error(traceback.format_exc())
 
-            if message == f"Process {processID} stopped!":
-                stop_execution(app, pid)
-                data.update(
-                    {
-                        "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-                            pid=pid,
-                            type_log="success",
-                            row=0,
-                            dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
-                            log="fim da execução",
-                        ),
-                    },
-                )
-                emit("log_message", data, room=room)
+                    data.update(
+                        {
+                            "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
+                                pid=pid,
+                                type_log="success",
+                                row=0,
+                                dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
+                                log="fim da execução",
+                            ),
+                        },
+                    )
+                    await io.emit("log_message", data, room=room, namespace="/log")
 
-            elif message == "Erro ao inicializar robô":
-                stop_execution(app, pid)
+                elif message == "Erro ao inicializar robô":
+                    stop_execution(app, pid)
 
-                emit("log_message", data, room=room)
+                else:
+                    await io.emit("log_message", data, room=room, namespace="/log")
 
-    except Exception:
-        send("Failed to check bot has stopped")
-        stop_execution(app, pid)
+        except Exception:
+            await io.send("Failed to check bot has stopped")
+            stop_execution(app, pid)
 
-    send(f"Joinned room! Room: {room}")
+    await io.send(f"Joinned room! Room: {room}", namespace="/log")

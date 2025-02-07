@@ -12,7 +12,9 @@ import unicodedata
 from datetime import datetime
 from os import path
 from pathlib import Path
+from typing import Self
 
+import aiofiles
 import openpyxl
 import pytz
 from flask import Flask
@@ -32,7 +34,10 @@ logger = logging.getLogger(__name__)
 class SetStatus:
     """A class to manage  the status of bots (Start and Stop)."""
 
-    def __init__(
+    def __init__(self) -> None:
+        """Initialize the class."""
+
+    async def config(
         self,
         form: dict[str, str] = None,
         files: dict[str, FileStorage] = None,
@@ -43,7 +48,7 @@ class SetStatus:
         pid: str = None,
         status: str = "Finalizado",
         **kwargs: dict[str, any],
-    ) -> str:
+    ) -> Self:
         """Initialize the SetStatus instance.
 
         :param form: Dictionary containing form data.
@@ -69,7 +74,9 @@ class SetStatus:
 
         self.status = status
 
-    def format_string(self, string: str) -> str:
+        return self
+
+    async def format_string(self, string: str) -> str:
         """Format a string to be a secure filename.
 
         Args:
@@ -83,7 +90,7 @@ class SetStatus:
             "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]),
         )
 
-    def start_bot(  # noqa: C901
+    async def start_bot(  # noqa: C901
         self,
         app: Flask,
         db: SQLAlchemy,
@@ -118,7 +125,7 @@ class SetStatus:
                     f = self.format_string(f)
 
                 filesav = path.join(path_pid, f)
-                value.save(filesav)
+                await value.save(filesav)
 
         data = {}
 
@@ -149,8 +156,8 @@ class SetStatus:
 
         data.update({"total_rows": rows})
 
-        with open(path_args, "w") as f:  # noqa: FURB103
-            f.write(json.dumps(data))
+        async with aiofiles.open(Path(path_args), "w") as f:  # noqa: FURB103
+            await f.write(json.dumps(data))
 
         name_column = Executions.__table__.columns["arquivo_xlsx"]
         max_length = name_column.type.length
@@ -189,7 +196,7 @@ class SetStatus:
 
         return (path_args, bt.display_name)
 
-    def botstop(
+    async def botstop(
         self,
         db: SQLAlchemy,
         app: Flask,

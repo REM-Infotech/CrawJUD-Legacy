@@ -8,7 +8,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
-def init_log(
+async def init_log(
     L_F: str = None,  # noqa: N803
     L_LVL: int = None,  # noqa: N803
     mx_bt: int = None,

@@ -14,8 +14,9 @@ from time import sleep
 from typing import Self
 
 import pytz
+import socketio
+import socketio.exceptions
 from dotenv_vault import load_dotenv
-from socketio.exceptions import BadNamespaceError
 from tqdm import tqdm
 
 from ...core import CrawJUD
@@ -24,7 +25,6 @@ codificacao = "UTF-8"
 mensagens = []
 load_dotenv()
 
-logger = logging.getLogger(__name__)
 
 url_socket = environ.get("HOSTNAME")
 
@@ -38,6 +38,7 @@ class PrintBot(CrawJUD):
 
     def print_msg(self) -> None:
         """Print the current message and emit it to the socket."""
+        logger = logging.getLogger(__name__)
         log = self.message
         if self.message_error:
             log = self.message_error
@@ -50,7 +51,7 @@ class PrintBot(CrawJUD):
             dateTime=datetime.now(pytz.timezone("America/Manaus")).strftime("%H:%M:%S"),
             log=log,
         )
-        tqdm.write(self.prompt)
+        logger.info(self.prompt)
 
         data: dict[str, str | int] = {
             "message": self.prompt,
@@ -85,7 +86,7 @@ class PrintBot(CrawJUD):
 
             err = traceback.format_exc()
 
-            # Registra o erro
+            logger = logging.getLogger(__name__)
             logger.exception(err)
 
     def end_prt(self, status: str) -> None:
@@ -108,9 +109,10 @@ class PrintBot(CrawJUD):
 
         except Exception:
             err = traceback.format_exc()
+            logger = logging.getLogger(__name__)
             logger.exception(err)
 
-    def with_context(self, event: str, data: dict, url: str) -> None:
+    def with_context(self, event: str, data: dict, url: str) -> None:  # noqa: C901
         """Handle the context for connecting and emitting messages.
 
         Args:
@@ -125,12 +127,15 @@ class PrintBot(CrawJUD):
             url = f"https://{url}"
 
             # Verifica se já está conectado antes de tentar se conectar
-            self.connect_socket(url)
+
+            if self.connected is False:
+                self.connect_socket(url)
+
             sleep(0.5)
             self.emit_message(event, data)
             sleep(1)
 
-        except BadNamespaceError:
+        except socketio.exceptions.BadNamespaceError:
             exc = traceback.format_exc()
 
             try:
@@ -153,7 +158,7 @@ class PrintBot(CrawJUD):
 
                 exc = traceback.format_exc()
 
-        except ConnectionError as e:
+        except socketio.exceptions.ConnectionError as e:
             exc = traceback.format_exc()
 
             try:
@@ -197,6 +202,7 @@ class PrintBot(CrawJUD):
 
         """
         self.sio.connect(url, namespaces=["/log"])
+        self.sio.emit("join", {"pid": self.pid}, namespace="/log")
 
     def send_message(self, data: dict[str, str | int], url: str) -> None:
         """Send a log message.
