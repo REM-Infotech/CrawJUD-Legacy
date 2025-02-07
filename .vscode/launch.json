@@ -29,9 +29,10 @@
         "-P",
         // "threads",
         "gevent",
-        "--autoscale=50,3",
         "-c",
-        "1000"
+        "1000",
+        "-Q",
+        "'*'",
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
