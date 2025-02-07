@@ -4,7 +4,6 @@ This module provides logging and message handling utilities for the CrawJUD proj
 
 """
 
-import os
 import traceback
 from datetime import datetime
 from os import environ
@@ -73,8 +72,8 @@ class PrintBot(CrawJUD):
     def file_log(cls, self: Self) -> None:
         """Write log messages to a file."""
         try:
-            savelog = os.path.join(Path(__file__).cwd(), "temp", self.pid, f"LogFile - PID {self.pid}.txt")
-            with open(savelog, "a") as f:
+            savelog = Path(self.output_dir_path).resolve().joinpath(f"LogFile - PID {self.pid}.txt")
+            with savelog.open("a") as f:
                 for mensagem in self.list_messages:
                     if self.pid in mensagem:
                         f.write(f"{mensagem}\n")

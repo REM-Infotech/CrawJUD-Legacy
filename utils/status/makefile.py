@@ -28,7 +28,7 @@ def makezip(pid: str) -> str:
 
     """
     file_paths = []
-    exec_path = Path(Path(__file__).cwd().resolve()).joinpath("temp", pid)
+    exec_path = Path(__file__).cwd().joinpath(f"bot/temp/{pid}").resolve()
 
     exec_path.mkdir(exist_ok=True)
     for root, _, __ in exec_path.walk():
@@ -49,10 +49,10 @@ def makezip(pid: str) -> str:
 
     # Package the files into a ZIP archive to facilitate sending
     zip_filename = f"PID {pid} {datetime.now(pytz.timezone('America/Manaus')).strftime('%d-%m-%Y-%H.%M')}.zip"
-    zip_file = path.join("Archives", zip_filename)
+    zip_file = Path(__file__).cwd().joinpath(f"bot/Archives/{zip_filename}").resolve()
     with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
         for file in file_paths:
-            arcname = os.path.relpath(file, os.path.join("temp", pid))
+            arcname = os.path.relpath(file, exec_path)
             zipf.write(file, arcname=arcname)
 
     return zip_file

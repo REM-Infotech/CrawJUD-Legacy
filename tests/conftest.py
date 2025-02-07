@@ -280,7 +280,8 @@ def create_dummy_pid(app: Quart, args_bot: dict[str, str | Any]) -> Generator[tu
             return usr, license_user
 
         def _bots(license_user: LicensesUsers):
-            df = pd.read_excel(Path(__file__).cwd().resolve().joinpath("configs").joinpath("export.xlsx"))
+            xlsx_bots = Path(__file__).cwd().joinpath("bot", "misc_file", "export.xlsx").resolve()
+            df = pd.read_excel(xlsx_bots)
             df.columns = df.columns.str.lower()
             bot_info = None
             data = []

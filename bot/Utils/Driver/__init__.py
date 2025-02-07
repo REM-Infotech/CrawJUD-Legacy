@@ -297,9 +297,9 @@ class SetupDriver:
 
         """  # noqa: E501
         new_stem = f"chromedriver{self.code_ver}.zip"
-        self.file_path = (
-            Path(__file__).parent.cwd().resolve().joinpath("webdriver").joinpath("chromedriver").with_stem(new_stem)
-        )
+        root_dir = Path(__file__).parent.cwd()
+        without_stem = root_dir.joinpath("bot", "webdriver", "chromedriver")
+        self.file_path = without_stem.with_stem(new_stem).resolve()
 
         if platform.system() == "Linux":
             self.file_path = self.file_path.with_suffix("")

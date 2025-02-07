@@ -118,7 +118,7 @@ class SetStatus:
         pid = self.pid if pid is None else pid
         id = self.id if id is None else id  # noqa: A001
 
-        path_pid = Path(path.join(Path(__file__).cwd(), "temp", pid))
+        path_pid = Path(__file__).cwd().joinpath(app.config["TEMP_PATH"]).joinpath(pid).resolve()
         path_pid.mkdir(parents=True, exist_ok=True)
 
         if self.files is not None:
@@ -126,7 +126,7 @@ class SetStatus:
                 if "xlsx" not in f:
                     f = await asyncio.create_task(self.format_string(f))
 
-                filesav = path.join(path_pid, f)
+                filesav = path_pid.joinpath(f)
                 await value.save(filesav)
 
         data = {}
@@ -228,24 +228,6 @@ class SetStatus:
 
             system = self.system if system is None else system
             typebot = self.typebot if typebot is None else typebot
-
-            # chk_srv = platform.system() == "Windows"
-            # chk_sys = system.lower() == "esaj"
-            # chk_typebot = typebot.lower() == "protocolo"
-
-            # if all([chk_srv, chk_sys, chk_typebot]):
-
-            #     json_args = path.join(
-            #         Path(__file__).cwd(), "temp", pid, f"{pid}.json"
-            #     )
-            #     with open(json_args, "rb") as f:
-            #         arg = json.load(f)["login"]
-
-            #     try:
-            #         self.uninstall(arg)
-            #     except Exception as e:
-            #         err = traceback.format_exc()
-            #         logger.exception(err)
 
             zip_file = makezip(pid)
             objeto_destino = path.basename(zip_file)
