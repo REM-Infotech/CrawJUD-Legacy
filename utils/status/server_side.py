@@ -1,11 +1,13 @@
 """Module for server-side operations in CrawJUD-Bots."""
 
+import asyncio
+
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from redis_flask import Redis
 
 
-def load_cache(pid: str, app: Quart) -> dict[str, str]:
+async def load_cache(pid: str, app: Quart) -> dict[str, str]:
     """Load cache data for a given PID from Redis.
 
     Args:
@@ -42,7 +44,7 @@ def load_cache(pid: str, app: Quart) -> dict[str, str]:
     return log_pid
 
 
-def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Quart = None) -> dict[str, str | int]:  # noqa: C901, N802
+async def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Quart = None) -> dict[str, str | int]:  # noqa: C901, N802
     """Format and update the status message for a given process.
 
     This function interacts with a SQLAlchemy database and a Redis client to
@@ -85,7 +87,11 @@ def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Quart
         # Verificar informações obrigatórias
         chk_infos = [data.get("system"), data.get("typebot")]
         if all(chk_infos):
-            SetStatus(status="Finalizado", pid=pid, system=data_system, typebot=data_system).botstop(db, app)
+            stop_rb = SetStatus()
+            botstop = await asyncio.create_task(
+                stop_rb.config(status="Finalizado", pid=pid, system=data_system, typebot=data_system)
+            )
+            await asyncio.create_task(botstop.botstop(db, app))
 
         # Chave única para o processo no Redis
         redis_key = f"process:{data_pid}:pos:{data_pos}"
