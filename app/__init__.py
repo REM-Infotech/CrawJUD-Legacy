@@ -16,8 +16,8 @@ from datetime import timedelta  # noqa: E402
 from os import environ, getenv  # noqa: E402
 from pathlib import Path  # noqa: E402
 from platform import system  # noqa: E402
-from threading import Thread  # noqa: E402
 
+from billiard.context import Process  # noqa: E402
 from celery import Celery  # noqa: E402
 from clear import clear  # noqa: F401, E402
 from dotenv_vault import load_dotenv  # noqa: E402
@@ -243,7 +243,7 @@ class AppFactory:
         }
 
         try:
-            starter = Thread(target=cls.starter, kwargs=args_run)
+            starter = Process(target=cls.starter, kwargs=args_run)
             starter.daemon = True
             starter.start()
 
