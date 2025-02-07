@@ -230,7 +230,7 @@ class AppFactory:
 
         debug = values("DEBUG", "False").lower() == "True"
 
-        hostname = values("SERVER_HOSTNAME", "127.0.0.1") if getenv("INTO_DOCKER", None) else "127.0.0.1"
+        hostname = values("SERVER_HOSTNAME", "127.0.0.1")
 
         # unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (getenv("DEBUG", "False").lower() == "true")
         port = int(values("PORT", "8000"))
