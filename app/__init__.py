@@ -91,6 +91,9 @@ class AppFactory:
             tuple: A tuple containing ASGIApp and Celery worker.
 
         """
+        for key, value in environ.items():
+            print(f"{key}={value}")  # noqa: T201
+
         env_ambient = environ["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
