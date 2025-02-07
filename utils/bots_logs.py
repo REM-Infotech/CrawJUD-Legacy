@@ -5,6 +5,8 @@ from logging import Logger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+from aiopath import AsyncPath
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,13 +38,17 @@ async def asyncinit_log(
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 1))
 
     logger.setLevel(logging.INFO)
-
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    log_path: Path = await AsyncPath(Path(__file__)).cwd()
+    log_path: Path = await log_path.joinpath(L_F).resolve()
+    log_path_file: Path = log_path.joinpath("app.log")
 
     # File handler
+    if await log_path.exists() is False:
+        await log_path.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
-        str(Path(__file__).cwd().joinpath(L_F).joinpath("app.log").resolve()),
+        str(log_path_file),
         maxBytes=mx_bt,
         backupCount=bkp_ct,
     )
@@ -88,10 +94,14 @@ def init_log(
 
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    log_path_file = Path(__file__).cwd().joinpath(L_F).joinpath("app.log").resolve()
+
+    if log_path_file.parent.exists() is False:
+        log_path_file.parent.mkdir(parents=True, exist_ok=True)
 
     # File handler
     file_handler = RotatingFileHandler(
-        str(Path(__file__).cwd().joinpath(L_F).joinpath("app.log").resolve()),
+        str(),
         maxBytes=mx_bt,
         backupCount=bkp_ct,
     )
