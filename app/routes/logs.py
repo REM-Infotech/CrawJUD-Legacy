@@ -23,7 +23,7 @@ async def connect(sid: str = None, event: any = None, namespace: str = None) -> 
         namespace: The namespace the client is connecting
 
     """
-    await io.send("connected!")
+    await io.send("connected!", to=sid, namespace="/log")
 
 
 @io.on("disconnect", namespace="/log")
@@ -33,7 +33,7 @@ async def disconnect(
     namespace: str = None,
 ) -> None:
     """Handle client disconnection from the /log namespace."""
-    await io.send("disconnected!")
+    await io.send("disconnected!", to=sid, namespace="/log")
 
 
 @io.on("leave", namespace="/log")
@@ -46,8 +46,8 @@ async def leave(sid: str, data: dict) -> None:  # noqa: ARG001, RUF100
 
     """
     room = data["pid"]
-    await io.leave_room(sid, room)
-    await io.send(f"Leaving Room '{room}'")
+    await io.send(f"Leaving Room '{room}'", to=sid, namespace="/log")
+    await io.leave_room(sid, room, "/log")
 
 
 @io.on("stop_bot", namespace="/log")
@@ -85,11 +85,11 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
                 processID = str(processID.processID)  # noqa: N806
 
             result = await asyncio.create_task(WorkerBot.stop(processID, pid, app))
-            await io.send(result)
+            await io.send(result, to=sid, namespace="/log", room=pid)
 
         except Exception as e:
             app.logger.error("An error occurred: %s", str(e))
-            await io.send("Failed to stop bot!")
+            await io.send("Failed to stop bot!", to=sid, namespace="/log", room=pid)
 
 
 @io.on("log_message", namespace="/log")
@@ -110,12 +110,12 @@ async def log_message(sid: str, data: dict[str, str] = None) -> None:
 
                 await io.emit("log_message", data, room=pid, namespace="/log")
 
-            await io.send("message received!", namespace="/log")
+            await io.send("message received!", to=sid, namespace="/log", room=pid)
 
         except Exception:
             err = traceback.format_exc()
             logger.exception(err)
-            await io.send("failed to receive message", namespace="/log")
+            await io.send("failed to receive message", to=sid, namespace="/log", room=pid)
 
 
 @io.on("statusbot", namespace="/log")
@@ -131,7 +131,7 @@ async def statusbot(sid: str, data: dict = None) -> None:
     if data:
         room = data.get("pid", None)
 
-    await io.send("Bot stopped!", namespace="/log", room=room)
+    await io.send("Bot stopped!", to=sid, namespace="/log", room=room)
 
 
 @io.on("join", namespace="/log")
@@ -165,7 +165,8 @@ async def join(
 
             if processID:
                 processID = processID.processID  # noqa: N806
-                message = await WorkerBot.check_status(processID, pid, app)
+
+            message = await WorkerBot.check_status(processID, pid, app)
 
             if message == f"Process {processID} stopped!":
                 data.update(
@@ -192,4 +193,4 @@ async def join(
             await io.send("Failed to check bot has stopped")
             stop_execution(app, pid)
 
-    await io.send(f"Joinned room! Room: {room}", namespace="/log")
+    await io.send(f"Joinned room! Room: {room}", to=sid, namespace="/log")
