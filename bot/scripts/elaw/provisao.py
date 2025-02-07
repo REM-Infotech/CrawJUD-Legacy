@@ -3,11 +3,10 @@
 This module handles provision-related functionalities within the Elaw system of the CrawJUD-Bots application.
 """
 
-import os
-import pathlib
 import time
 from contextlib import suppress
 from datetime import datetime
+from pathlib import Path
 from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -431,6 +430,6 @@ class Provisao(CrawJUD):
 
         """
         name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
-        savecomprovante = os.path.join(pathlib.Path(__file__).cwd(), "temp", self.pid, name_comprovante)
+        savecomprovante = Path(self.output_dir_path).resolve().joinpath(name_comprovante)
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante

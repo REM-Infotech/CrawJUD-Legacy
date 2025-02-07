@@ -236,7 +236,7 @@ class SetStatus:
             # if all([chk_srv, chk_sys, chk_typebot]):
 
             #     json_args = path.join(
-            #         pathlib.Path(__file__).cwd(), "temp", pid, f"{pid}.json"
+            #         Path(__file__).cwd(), "temp", pid, f"{pid}.json"
             #     )
             #     with open(json_args, "rb") as f:
             #         arg = json.load(f)["login"]

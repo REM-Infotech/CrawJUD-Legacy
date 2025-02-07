@@ -1,7 +1,6 @@
 """Module for creating ZIP archives of executions in CrawJUD-Bots."""
 
 import os
-import pathlib
 import zipfile
 from datetime import datetime
 from os import path
@@ -29,7 +28,7 @@ def makezip(pid: str) -> str:
 
     """
     file_paths = []
-    exec_path = Path(pathlib.Path(__file__).cwd().resolve()).joinpath("temp", pid)
+    exec_path = Path(Path(__file__).cwd().resolve()).joinpath("temp", pid)
 
     exec_path.mkdir(exist_ok=True)
     for root, _, __ in exec_path.walk():

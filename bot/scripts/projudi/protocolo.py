@@ -4,9 +4,9 @@ This module handles protocol-related functionalities within the Projudi system o
 """
 
 import os
-import pathlib
 import time
 from contextlib import suppress
+from pathlib import Path
 from time import sleep
 
 import dotenv
@@ -347,7 +347,7 @@ class protocolo(CrawJUD):  # noqa: N801
 
             file_to_upload = self.format_string(file)
 
-            path_file = os.path.join(pathlib.Path(self.path_args).parent.resolve(), file_to_upload)
+            path_file = os.path.join(Path(self.path_args).parent.resolve(), file_to_upload)
 
             input_file_element.send_keys(path_file)
 
@@ -418,7 +418,7 @@ class protocolo(CrawJUD):  # noqa: N801
                     EC.presence_of_element_located((By.XPATH, self.elements.conteudo)),
                 )
                 input_file_element.send_keys(
-                    f"{os.path.join(pathlib.Path(self.path_args).parent.resolve())}/{file_to_upload}",
+                    f"{os.path.join(Path(self.path_args).parent.resolve())}/{file_to_upload}",
                 )
                 self.wait_progressbar()
                 self.message = f"Arquivo '{file}' enviado com sucesso!"

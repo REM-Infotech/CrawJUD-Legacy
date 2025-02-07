@@ -1,7 +1,7 @@
 """Module for uploading ZIP files to Google Cloud Storage (GCS)."""
 
 import os
-import pathlib
+from pathlib import Path
 from typing import Optional
 
 from ..gcs_mgmt import bucketGcs, storageClient
@@ -24,7 +24,7 @@ def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
         arquivo_local = ""
         objeto_destino = ""
 
-        path_output = os.path.join(pathlib.Path(__file__).parent.resolve(), zip_file)
+        path_output = os.path.join(Path(__file__).parent.resolve(), zip_file)
 
         if os.path.exists(path_output):
             arquivo_local = path_output

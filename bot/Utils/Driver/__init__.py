@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import logging
-import pathlib
 import platform
 import shutil
 import traceback
@@ -299,12 +298,7 @@ class SetupDriver:
         """  # noqa: E501
         new_stem = f"chromedriver{self.code_ver}.zip"
         self.file_path = (
-            pathlib.Path(__file__)
-            .parent.cwd()
-            .resolve()
-            .joinpath("webdriver")
-            .joinpath("chromedriver")
-            .with_stem(new_stem)
+            Path(__file__).parent.cwd().resolve().joinpath("webdriver").joinpath("chromedriver").with_stem(new_stem)
         )
 
         if platform.system() == "Linux":

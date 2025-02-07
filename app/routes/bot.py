@@ -2,8 +2,8 @@
 
 import asyncio
 import json
-import pathlib
 import traceback
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from celery.schedules import crontab
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from celery import Task
     from flask_sqlalchemy import SQLAlchemy
 
-path_template = str(pathlib.Path(__file__).parent.resolve().joinpath("templates"))
+path_template = str(Path(__file__).parent.resolve().joinpath("templates"))
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
@@ -85,7 +85,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
 
                 bot_starter = WorkerBot.start_bot
 
-                pid = pathlib.Path(path_args).stem
+                pid = Path(path_args).stem
 
                 init_bot: Task = bot_starter
                 task = init_bot.apply_async(args=[path_args, display_name, system, typebot])

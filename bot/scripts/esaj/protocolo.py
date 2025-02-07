@@ -4,11 +4,11 @@ This module handles protocol-related operations within the ESaj system of the Cr
 """
 
 import os
-import pathlib
 import shutil
 import time
 import unicodedata
 from contextlib import suppress
+from pathlib import Path
 from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -233,7 +233,7 @@ class protocolo(CrawJUD):  # noqa: N801
             )
             sleep(2)
 
-            path_file = pathlib.Path(self.path_args).parent.resolve().__str__()
+            path_file = Path(self.path_args).parent.resolve().__str__()
             file = os.path.join(path_file, self.bot_data.get("PETICAO_PRINCIPAL"))
 
             file = file.replace(" ", "")
@@ -356,7 +356,7 @@ class protocolo(CrawJUD):  # noqa: N801
             getlinkrecibo.click()
 
             path = os.path.join(self.output_dir_path, name_recibo)
-            pathpdf = os.path.join(pathlib.Path(self.path_args).parent.resolve(), "recibo.pdf")
+            pathpdf = os.path.join(Path(self.path_args).parent.resolve(), "recibo.pdf")
 
             while True:
                 if os.path.exists(pathpdf):
