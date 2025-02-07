@@ -47,7 +47,7 @@ class TestRunner:
             create_dummy_pid: Fixture for creating dummy PID.
 
         """
-        from app.misc import get_file
+        from utils import get_file
 
         user, pid = create_dummy_pid
         db: SQLAlchemy = app.extensions["sqlalchemy"]

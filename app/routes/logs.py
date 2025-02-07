@@ -7,8 +7,8 @@ from datetime import datetime
 from pytz import timezone
 
 from app import app, io
-from app.misc import stop_execution
 from status.server_side import FormatMessage, load_cache
+from utils import stop_execution
 
 logger = logging.getLogger(__name__)
 

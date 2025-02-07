@@ -1,10 +1,7 @@
-"""Module: miscellaneous.
+"""Module management utilities."""
 
-This module provides miscellaneous utility functions.
-"""
-
-import importlib
-import sys
+import importlib  # noqa: F401
+import sys  # noqa: F401
 
 
 def reload_module(module_name: str) -> None:
@@ -16,7 +13,7 @@ def reload_module(module_name: str) -> None:
         module_name (str): The name of the module to reload.
 
     """
-    if module_name in sys.modules:
-        importlib.reload(sys.modules[module_name])
-    else:
-        importlib.import_module(module_name)
+    # if module_name in sys.modules:
+    #     importlib.reload(sys.modules[module_name])
+    # else:
+    #     importlib.import_module(module_name)

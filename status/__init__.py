@@ -13,7 +13,7 @@ import unicodedata
 from datetime import datetime
 from os import path
 from pathlib import Path
-from typing import Coroutine, Self
+from typing import Self
 
 import aiofiles
 import openpyxl
@@ -117,16 +117,13 @@ class SetStatus:
         pid = self.pid if pid is None else pid
         id = self.id if id is None else id  # noqa: A001
 
-        path_pid = Path(path.join(Path(__file__).cwd(), "exec", pid))
+        path_pid = Path(path.join(Path(__file__).cwd(), "temp", pid))
         path_pid.mkdir(parents=True, exist_ok=True)
 
         if self.files is not None:
             for f, value in self.files.items():
                 if "xlsx" not in f:
                     f = await asyncio.create_task(self.format_string(f))
-
-                if isinstance(value, Coroutine):
-                    value = await value
 
                 filesav = path.join(path_pid, f)
                 await value.save(filesav)
@@ -238,7 +235,7 @@ class SetStatus:
             # if all([chk_srv, chk_sys, chk_typebot]):
 
             #     json_args = path.join(
-            #         pathlib.Path(__file__).cwd(), "exec", pid, f"{pid}.json"
+            #         pathlib.Path(__file__).cwd(), "temp", pid, f"{pid}.json"
             #     )
             #     with open(json_args, "rb") as f:
             #         arg = json.load(f)["login"]

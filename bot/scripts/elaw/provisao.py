@@ -431,6 +431,6 @@ class Provisao(CrawJUD):
 
         """
         name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
-        savecomprovante = os.path.join(pathlib.Path(__file__).cwd(), "exec", self.pid, name_comprovante)
+        savecomprovante = os.path.join(pathlib.Path(__file__).cwd(), "temp", self.pid, name_comprovante)
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante

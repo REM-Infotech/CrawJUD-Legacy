@@ -198,7 +198,7 @@ class WorkerBot:
             logger.info(process.status)
 
             if (app and app.testing) or (process and process.status == "PENDING"):
-                path_flag = Path(__file__).cwd().joinpath("exec").joinpath(pid).joinpath(f"{pid}.flag").resolve()
+                path_flag = Path(__file__).cwd().joinpath("temp").joinpath(pid).joinpath(f"{pid}.flag").resolve()
                 if not path_flag.exists():
                     path_flag.parent.mkdir(parents=True, exist_ok=True)
                     with path_flag.open("w") as f:

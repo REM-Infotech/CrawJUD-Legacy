@@ -4,7 +4,7 @@ import os
 import pathlib
 from typing import Optional
 
-from app.misc import bucketGcs, storageClient
+from utils import bucketGcs, storageClient
 
 
 def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:

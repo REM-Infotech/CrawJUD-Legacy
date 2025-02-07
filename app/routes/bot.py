@@ -10,9 +10,12 @@ from celery.schedules import crontab
 from quart import Blueprint, Response, jsonify, make_response, request
 from quart import current_app as app
 
-from miscellaneous import reload_module  # noqa: F401
+from utils import (  # noqa: F401
+    check_latest,
+    reload_module,  # noqa: F401
+    stop_execution,
+)
 
-from ..misc import check_latest, stop_execution  # noqa: F401
 from ..models import ScheduleModel
 
 if TYPE_CHECKING:

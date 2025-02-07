@@ -29,7 +29,7 @@ def makezip(pid: str) -> str:
 
     """
     file_paths = []
-    exec_path = Path(pathlib.Path(__file__).cwd().resolve()).joinpath("exec", pid)
+    exec_path = Path(pathlib.Path(__file__).cwd().resolve()).joinpath("temp", pid)
 
     exec_path.mkdir(exist_ok=True)
     for root, _, __ in exec_path.walk():
@@ -53,7 +53,7 @@ def makezip(pid: str) -> str:
     zip_file = path.join("Archives", zip_filename)
     with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
         for file in file_paths:
-            arcname = os.path.relpath(file, os.path.join("exec", pid))
+            arcname = os.path.relpath(file, os.path.join("temp", pid))
             zipf.write(file, arcname=arcname)
 
     return zip_file

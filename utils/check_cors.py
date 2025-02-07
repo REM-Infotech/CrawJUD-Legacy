@@ -3,36 +3,9 @@
 import re
 from os import environ
 
-from celery import Celery
 from dotenv_vault import load_dotenv
-from flask import Flask
-
-from logs.bots_logs import asyncinit_log as init_log
-
-from .get_location import GeoLoc
 
 load_dotenv()
-
-
-def make_celery(app: Flask) -> Celery:
-    """Create and configure a Celery instance with Flask application context.
-
-    Args:
-        app (Flask): The Flask application instance.
-
-    Returns:
-        Celery: Configured Celery instance.
-
-    """
-    celery = Celery(app.import_name)
-    celery.conf.update(app.config["CELERY"])
-
-    class ContextTask(celery.Task):
-        def __call__(self, *args: tuple, **kwargs: dict) -> any:  # -> any:
-            return self.run(*args, **kwargs)
-
-    celery.Task = ContextTask
-    return celery
 
 
 def check_allowed_origin(origin: str = "https://google.com") -> bool:
@@ -61,6 +34,3 @@ def check_allowed_origin(origin: str = "https://google.com") -> bool:
             return True
 
     return False
-
-
-__all__ = ["GeoLoc", "check_allowed_origin", "init_log", "make_celery"]
