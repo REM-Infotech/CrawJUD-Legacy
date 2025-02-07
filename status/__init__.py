@@ -5,6 +5,7 @@ This module manages the status of bots (Start and Stop).
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import traceback
@@ -121,11 +122,8 @@ class SetStatus:
 
         if self.files is not None:
             for f, value in self.files.items():
-                if isinstance(f, Coroutine):
-                    f = await f
-
                 if "xlsx" not in f:
-                    f = self.format_string(f)
+                    f = await asyncio.create_task(self.format_string(f))
 
                 if isinstance(value, Coroutine):
                     value = await value
