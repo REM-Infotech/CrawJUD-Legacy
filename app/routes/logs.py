@@ -6,11 +6,14 @@ import traceback
 from datetime import datetime
 
 from pytz import timezone
+from socketio import AsyncServer
 
-from app import app, io
+from app import app
 from utils import FormatMessage, load_cache, stop_execution
 
 logger = logging.getLogger(__name__)
+
+io: AsyncServer = app.extensions["socketio"]
 
 
 @io.on("connect", namespace="/log")
@@ -155,9 +158,9 @@ async def join(
     """
     room = data["pid"]
 
-    data = await load_cache(room, app)
     async with app.app_context():
         try:
+            data = await load_cache(room, app)
             from app import db
             from app.models import ThreadBots
             from bot import WorkerBot

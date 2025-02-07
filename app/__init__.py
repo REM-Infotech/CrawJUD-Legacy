@@ -25,7 +25,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
 from redis_flask import Redis
-from socketio import ASGIApp, AsyncServer  # noqa: F401
+from socketio import ASGIApp, AsyncRedisManager, AsyncServer  # noqa: F401
 from tqdm import tqdm
 
 from app.routes import register_routes
@@ -48,8 +48,7 @@ load_dotenv()
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
-io = AsyncServer(async_mode=async_mode, cors_allowed_origins=check_allowed_origin)
-# io = SocketIO(async_mode=async_mode, cors_allowed_origins=check_allowed_origin)
+io = None
 app = Quart(__name__)
 clean_prompt = False
 
@@ -106,15 +105,14 @@ class AppFactory:
             await asyncio.create_task(self.init_mail(app))
             await asyncio.create_task(self.init_redis(app))
             await asyncio.create_task(self.init_talisman(app))
-            # await asyncio.create_task(self.init_socket(app))
-            await asyncio.create_task(self.init_routes(app))
+            io = await asyncio.create_task(self.init_socket(app))
             app.logger = await asyncio.create_task(init_log())
-
+            await asyncio.create_task(self.init_routes(app))
         return ASGIApp(io, app), celery
 
     async def init_routes(self, app: Quart) -> None:
         """Initialize and register the application routes."""
-        register_routes(app)
+        await register_routes(app)
 
     async def init_talisman(self, app: Quart) -> Talisman:
         """Initialize Talisman for security headers.
@@ -147,19 +145,19 @@ class AppFactory:
             AsyncServer: The initialized AsyncServer instance.
 
         """
-        global io
-
         host_redis = getenv("REDIS_HOST")
         pass_redis = getenv("REDIS_PASSWORD")
         port_redis = getenv("REDIS_PORT")
-
-        io.init_app(
-            app,
+        r_mg = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8")
+        io = AsyncServer(
+            async_mode=async_mode,
             cors_allowed_origins=check_allowed_origin,
+            client_manager=r_mg,
             ping_interval=25,
             ping_timeout=10,
-            message_queue=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8",
         )
+
+        app.extensions["socketio"] = io
 
         return io
 

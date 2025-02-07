@@ -10,14 +10,16 @@ from werkzeug.exceptions import HTTPException
 load_dotenv()
 
 
-def register_routes(app: Quart) -> None:
+async def register_routes(app: Quart) -> None:
     """Register blueprints and error handlers with the Quart application.
 
     Args:
         app (Quart): The Quart application instance.
 
     """
-    import_module(".logs", package=__package__)
+    async with app.app_context():
+        import_module(".logs", package=__package__)
+
     from ..routes.bot import bot
     from ..routes.webhook import wh
 
