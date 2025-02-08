@@ -18,5 +18,3 @@ RUN pip install --no-cache-dir poetry
 RUN git config --global --add safe.directory C:/crawjudbot_app
 RUN poetry config virtualenvs.create false
 RUN poetry install --without dev
-
-
