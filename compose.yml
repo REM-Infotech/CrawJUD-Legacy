@@ -10,7 +10,7 @@ services:
 
   #   volumes:
   #     - ".:C:\\crawjudbot_app"
-  #   ports: 
+  #   ports:
   #     - "8000:8000"
   #   hostname: "crawjudbot_app"
   #   command: "python -m app"
@@ -25,5 +25,7 @@ services:
       - ".:C:\\crawjudbot_app"
     ports:
       - "3336:3389"
+      - "8000:8000"
+
     hostname: "crawjudbot_app"
     command: " python -m  celery -A app.celery worker -E --loglevel INFO -P threads -c 50"

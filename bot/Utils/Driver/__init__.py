@@ -39,10 +39,10 @@ from ...core import (
 )
 
 try:
-    from getchromeVer import chrome_ver
+    from getchromeVer import another_chrome_ver, chrome_ver
 
 except ModuleNotFoundError:
-    from .getchromeVer import chrome_ver
+    from .getchromeVer import another_chrome_ver, chrome_ver
 
 import socket
 
@@ -265,8 +265,15 @@ class SetupDriver:
         Returns:
             str: The Chrome version.
 
+        Raises:
+            FileNotFoundError: If the Chrome version is not found.
+
         """
-        return ".".join(chrome_ver().split(".")[:-1])
+        try:
+            return ".".join(chrome_ver().split(".")[:-1])
+
+        except Exception:
+            return another_chrome_ver()
 
     progress = Progress(
         TimeElapsedColumn(),

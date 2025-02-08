@@ -7,12 +7,41 @@ from __future__ import annotations
 
 import logging
 import platform
+import subprocess  # noqa: S404 # nosec: B404
 
 if platform.system() == "Windows":
     import winreg
 from os import popen
 
 logger = logging.getLogger(__name__)
+
+
+class AnotherChromeVersion:
+    """Represent a utility for retrieving the installed Google Chrome version."""
+
+    def get_version(self) -> str:
+        """Return the version of Google Chrome installed on the system.
+
+        Returns:
+            str: The version of Google Chrome installed on the system.
+
+        Raises:
+            FileNotFoundError: If Google Chrome is not found.
+
+        """
+        # Comando do PowerShell
+        command = 'scoop info googlechrome | Select-String "Version" | ForEach-Object { ($_ -split ":")[0].Trim() }'
+
+        # Executar o comando no PowerShell
+        result = subprocess.run(["powershell.exe", "-Command", command], capture_output=True, text=True)  # noqa: S603, S607 # nosec: B603, B607
+
+        # Verificar o resultado
+        if result.returncode == 0:
+            result = result.stdout.strip()
+            v = list(filter(lambda x: x.lower() == "version", result.split(";")))
+            return v[0].split("=")[-1].strip()
+
+        raise FileNotFoundError("Google Chrome não encontrado.")
 
 
 class ChromeVersion:
@@ -75,3 +104,4 @@ class ChromeVersion:
 
 
 chrome_ver = ChromeVersion().get_chrome_version
+another_chrome_ver = AnotherChromeVersion().get_version
