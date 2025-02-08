@@ -232,7 +232,7 @@ class SearchBot(CrawJUD):
 
         return returns
 
-    def search_proc(self) -> bool:
+    def search_proc(self) -> bool:  # noqa: C901
         """Perform a search for a process using the PROJUDI system.
 
         This method constructs a search message based on the type of bot
@@ -251,6 +251,9 @@ class SearchBot(CrawJUD):
 
         if grau is None:
             grau = 1
+
+        if isinstance(grau, str):
+            grau = grau.strip()
 
         grau = int(grau)
 

@@ -560,7 +560,7 @@ class OtherUtils(CrawJUD):
             os.path.join(folder, f)
             for f in os.listdir(folder)
             if (os.path.isfile(os.path.join(folder, f)) and f.lower().endswith(".pdf"))
-            and not f.lower().endswith(".crdownload")
+            and not f.lower().endswith(".crdownload")  # noqa: W261, W503
         ]
         files.sort(key=lambda x: os.path.getctime(x), reverse=True)
         return files[0] if files else None

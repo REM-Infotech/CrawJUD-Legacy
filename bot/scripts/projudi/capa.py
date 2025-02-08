@@ -128,7 +128,15 @@ class capa(CrawJUD):  # noqa: N801
 
         """
         try:
-            grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
+            grau = self.bot_data.get("GRAU", 1)
+
+            if grau is None:
+                grau = 1
+
+            if isinstance(grau, str):
+                grau = grau.strip()
+
+            grau = int(grau)
             process_info: dict[str, str | int | datetime] = {}
             process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
 

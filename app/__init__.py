@@ -251,15 +251,13 @@ class AppFactory:
 
         try:
             if getenv("APPLICATION_APP") != "beat":
-                starter = Thread(target=cls.starter, kwargs=args_run)
-                starter.daemon = True
-
                 if getenv("INTO_DOCKER", "False") == "False" and getenv("APPLICATION_APP") == "worker":
+                    starter = Thread(target=cls.starter, kwargs=args_run)
+                    starter.daemon = True
                     starter.start()
 
                 if getenv("APPLICATION_APP") == "quart" and getenv("INTO_DOCKER", "False") == "True":
-                    starter.start()
-                    starter.join()
+                    cls.starter(**args_run)
 
         except (KeyboardInterrupt, TypeError):
             if system().lower() == "linux":
