@@ -38,7 +38,8 @@ class AnotherChromeVersion:
         # Verificar o resultado
         if result.returncode == 0:
             result = result.stdout.strip()
-            v = list(filter(lambda x: x.lower() == "version", result.split(";")))
+            v = list(filter(lambda x: "version" in x.lower(), result.split(";")))
+            # print(result)
             return v[0].split("=")[-1].strip()
 
         raise FileNotFoundError("Google Chrome não encontrado.")
