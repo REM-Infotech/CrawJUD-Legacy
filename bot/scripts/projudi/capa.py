@@ -68,6 +68,7 @@ class capa(CrawJUD):  # noqa: N801
                 self.queue()
 
             except Exception as e:
+                self.logger.error(str(e))
                 old_message = None
                 # windows = self.driver.window_handles
 

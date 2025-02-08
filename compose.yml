@@ -4,8 +4,8 @@ services:
     shm_size: "2gb"
     environment:
       APPLICATION_APP: "quart"
+      INTO_DOCKER: "True"
       DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
-      INTO_DOCKER: "${INTO_DOCKER:-default_value}"
     build:
       context: "."
     volumes:
@@ -21,7 +21,7 @@ services:
     environment:
       APPLICATION_APP: "worker"
       DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
-      INTO_DOCKER: "${INTO_DOCKER:-default_value}"
+      INTO_DOCKER: "True"
     build:
       context: "."
     volumes:
