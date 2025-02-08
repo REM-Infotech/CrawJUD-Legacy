@@ -1,5 +1,5 @@
 # Usar uma imagem base do Windows com suporte ao Python
-FROM python:3.13.1-windowsservercore-ltsc2022
+FROM python:3.13.2-server-ltsc2022
 
 # Configurações básicas de ambiente
 ENV PYTHONUNBUFFERED=1

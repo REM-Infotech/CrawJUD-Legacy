@@ -1,22 +1,25 @@
 name: "CrawJUD-Bots"
 services:
-  # app:
-  #   environment:
-  #     DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
-  #     INTO_DOCKER: "${INTO_DOCKER:-default_value}"
-  #   build:
-  #     context: "."
-  #     dockerfile: ""
-
-  #   volumes:
-  #     - ".:C:\\crawjudbot_app"
-  #   ports:
-  #     - "8000:8000"
-  #   hostname: "crawjudbot_app"
-  #   command: "python -m app"
-
-  celery:
+  quart_restapi:
+    shm_size: "2gb"
     environment:
+      APPLICATION_APP: "quart"
+      DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
+      INTO_DOCKER: "${INTO_DOCKER:-default_value}"
+    build:
+      context: "."
+    volumes:
+      - ".:C:\\crawjudbot_app"
+    ports:
+      - "8000:8000"
+
+    hostname: "crawjudbot_app"
+    command: " python app/__init__.py"
+
+  celery_worker:
+    shm_size: "2gb"
+    environment:
+      APPLICATION_APP: "worker"
       DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
       INTO_DOCKER: "${INTO_DOCKER:-default_value}"
     build:
@@ -25,7 +28,19 @@ services:
       - ".:C:\\crawjudbot_app"
     ports:
       - "3336:3389"
-      - "8000:8000"
 
     hostname: "crawjudbot_app"
     command: " python -m  celery -A app.celery worker -E --loglevel INFO -P threads -c 50"
+
+  celery_beat:
+    shm_size: "2gb"
+    environment:
+      APPLICATION_APP: "beat"
+      DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
+      INTO_DOCKER: "${INTO_DOCKER:-default_value}"
+    build:
+      context: "."
+    volumes:
+      - ".:C:\\crawjudbot_app"
+    hostname: "crawjudbot_app"
+    command: " python -m  celery -A app.celery beat"

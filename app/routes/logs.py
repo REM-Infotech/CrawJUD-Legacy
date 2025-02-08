@@ -138,8 +138,9 @@ async def statusbot(sid: str, data: dict = None) -> None:
     """
     if data:
         room = data.get("pid", None)
+        await io.send("Bot stopped!", to=sid, namespace="/log", room=room)
 
-    await io.send("Bot stopped!", to=sid, namespace="/log", room=room)
+    await io.send("Bot stopped!", to=sid, namespace="/log")
 
 
 @io.on("join", namespace="/log")

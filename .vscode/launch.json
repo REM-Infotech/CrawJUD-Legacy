@@ -5,14 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Run Flask app (Windows)",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "app",
-      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
-    },
-    {
-      "name": "Python: Celery Workers (Windows)",
+      "name": "Python: Celery Workers + Quart ASGI (Windows)",
       "type": "debugpy",
       "request": "launch",
       "module": "celery",
@@ -21,7 +14,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "app.celery",
+        "app.run.app",
         "worker",
         "-E",
         "--loglevel",
@@ -36,14 +29,7 @@
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
     {
-      "name": "Python: Run Flask app (Linux)",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "app",
-      "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
-    },
-    {
-      "name": "Python: Celery Workers (Linux)",
+      "name": "Python: Celery Workers + Quart ASGI (Linux)",
       "type": "debugpy",
       "request": "launch",
       "module": "celery",
@@ -57,8 +43,11 @@
         "--loglevel",
         "INFO",
         "-P",
+        // "threads",
         "threads",
-        "--autoscale=50,3"
+        // "solo",
+        "-c",
+        "5",
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/lib/python3.13/site-packages/debugpy/adapter",
     },

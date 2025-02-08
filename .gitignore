@@ -59,7 +59,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
+celerybeat-schedule-shm
+celerybeat-schedule-wal
 # Translations
 *.mo
 *.pot

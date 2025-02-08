@@ -116,7 +116,7 @@ class PrintBot(CrawJUD):
             url (str): The URL to connect to.
 
         """
-        exc = None
+        err = None
 
         try:
             url = f"https://{url}"
@@ -130,8 +130,8 @@ class PrintBot(CrawJUD):
             self.emit_message(event, data)
             sleep(1)
 
-        except socketio.exceptions.BadNamespaceError:
-            exc = traceback.format_exc()
+        except socketio.exceptions.BadNamespaceError as e:
+            err = str(e)
 
             try:
                 self.connected = False
@@ -151,10 +151,10 @@ class PrintBot(CrawJUD):
                     self.emit_message(event, data)
                     sleep(1)
 
-                exc = traceback.format_exc()
+                err = str(e)
 
         except socketio.exceptions.ConnectionError as e:
-            exc = traceback.format_exc()
+            err = str(e)
 
             try:
                 if "One or more namespaces failed to connect" in str(e):
@@ -168,14 +168,14 @@ class PrintBot(CrawJUD):
                     self.emit_message(event, data)
                     self.connected = True
 
-            except Exception:
-                exc = traceback.format_exc()
+            except Exception as e:
+                err = str(e)
 
-        except Exception:
-            exc = traceback.format_exc()
+        except Exception as e:
+            err = str(e)
 
-        if exc:
-            self.logger.exception(exc)
+        if err:
+            self.logger.exception(err)
 
     def emit_message(self, event: str, data: dict) -> None:
         """Emit a message to the socket.

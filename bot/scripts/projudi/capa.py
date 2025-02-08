@@ -113,6 +113,7 @@ class capa(CrawJUD):  # noqa: N801
             self.append_success(data, "Informações do processo extraidas com sucesso!")
 
         except Exception as e:
+            self.logger.error(str(e))
             raise ErroDeExecucao(e=e) from e
 
     def get_process_informations(self) -> list:  # noqa: C901

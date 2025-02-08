@@ -247,7 +247,12 @@ class SearchBot(CrawJUD):
         enterproc = None
         allowacess = None
 
-        grau = int(self.bot_data.get("GRAU", 1))
+        grau = self.bot_data.get("GRAU", 1)
+
+        if grau is None:
+            grau = 1
+
+        grau = int(grau)
 
         def detect_intimacao() -> None:
             if "intimacaoAdvogado.do" in self.driver.current_url:

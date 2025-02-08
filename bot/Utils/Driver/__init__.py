@@ -10,14 +10,16 @@ import traceback
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from os import environ, path
+from os import getenv, path
 from pathlib import Path
 from time import sleep
 from typing import Mapping, Optional
+from uuid import uuid4
 
 import requests
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver
+from tqdm import tqdm
 
 from ...core import (
     BarColumn,
@@ -42,7 +44,7 @@ try:
     from getchromeVer import another_chrome_ver, chrome_ver
 
 except ModuleNotFoundError:
-    from .getchromeVer import another_chrome_ver, chrome_ver
+    from .getchromeVer import another_chrome_ver, chrome_ver  # noqa: F401
 
 import socket
 
@@ -133,9 +135,20 @@ class DriverBot(CrawJUD):
         "--ignore-certificate-errors",
         "--display=:99",
         "--window-size=1600,900",
-        "--no-sandbox",
-        "--disable-blink-features=AutomationControlled",
+        # "--no-sandbox",
         "--kiosk-printing",
+        # disable Render and GPU
+        # "--disable-gpu",
+        # "--disable-dev-shm-usage",
+        # "--disable-software-rasterizer",
+        # "--disable-renderer-backgrounding",
+        # "--disable-backgrounding-occluded-windows",
+        "--disable-blink-features=AutomationControlled",
+        # "--disable-features=MediaFoundationVideoCapture",
+        # disable network prediction
+        # "--no-proxy-server",
+        # "--disable-software-rasterizer",
+        # "--disable-features=VizDisplayCompositor",
     ]
 
     @property
@@ -171,13 +184,21 @@ class DriverBot(CrawJUD):
             self.prt()
 
             list_args = self.list_args
+            for item in list_args:
+                tqdm.write(item)
 
             chrome_options = Options()
+            tqdm.write(chrome_options.binary_location)
+
+            chrome_options.binary_location = getenv("CHROME_EXECUTABLE")
+
+            self.logger.info("Chrome Executable: %s", chrome_options.binary_location)
+
             self.chr_dir = Path(pid_path).joinpath("chrome").resolve()
 
-            user = environ.get("USER", environ.get("LOGNAME", environ.get("USERNAME", "root")))
-            if user != "root" or platform.system() != "Linux":
-                list_args.remove("--no-sandbox")
+            # user = environ.get("USER", environ.get("LOGNAME", environ.get("USERNAME", "root")))
+            # if user != "root" or platform.system() != "Linux":
+            #     list_args.remove("--no-sandbox")
 
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
@@ -196,7 +217,10 @@ class DriverBot(CrawJUD):
                 elif not path_exist:
                     self.path_accepted.mkdir(parents=True, exist_ok=True)
 
-            # chrome_options.add_argument(f"user-data-dir={str(self.chr_dir)}")
+            usr_dt_dir = Path(__file__).cwd().joinpath("temp").joinpath(uuid4().hex).joinpath("chrome")
+            usr_dt_dir.mkdir(parents=True, exist_ok=True)
+
+            # chrome_options.add_argument(f"user-data-dir={str(usr_dt_dir)}")
             for argument in list_args:
                 chrome_options.add_argument(argument)
 
@@ -258,22 +282,57 @@ class DriverBot(CrawJUD):
 class SetupDriver:
     """Setup utility for downloading and configuring the appropriate WebDriver."""
 
+    another_ver = False
+    try:
+        chrome_v = ".".join(chrome_ver().split(".")[:-1])
+
+    except Exception:
+        another_ver = True
+        chrome_v = another_chrome_ver()
+
+    # another_ver = True
+    # chrome_v = another_chrome_ver()
+    # _url_driver: str = None
+
+    @property
+    def url_driver(self) -> str:
+        """Retrieve the URL for downloading the WebDriver.
+
+        Returns:
+            str: The URL for downloading the WebDriver.
+
+        """
+        return SetupDriver._url_driver
+
+    @url_driver.setter
+    def url_driver(self, url: str) -> None:
+        """Set the URL for downloading the WebDriver.
+
+        Args:
+            url (str): The URL for downloading the WebDriver.
+
+        """
+        SetupDriver._url_driver = url
+
     @property
     def code_ver(self) -> str:
         """Retrieve the major version of the installed Chrome browser.
 
         Returns:
-            str: The Chrome version.
-
-        Raises:
-            FileNotFoundError: If the Chrome version is not found.
+            str: The major version of the installed Chrome browser.
 
         """
-        try:
-            return ".".join(chrome_ver().split(".")[:-1])
+        return SetupDriver.chrome_v
 
-        except Exception:
-            return another_chrome_ver()
+    @code_ver.setter
+    def code_ver(self, version: str) -> None:
+        """Set the major version of the installed Chrome browser.
+
+        Args:
+            version (str): The major version of the installed Chrome browser.
+
+        """
+        SetupDriver.chrome_v = version
 
     progress = Progress(
         TimeElapsedColumn(),
@@ -303,6 +362,7 @@ class SetupDriver:
             **kwrgs: Additional keyword arguments.
 
         """  # noqa: E501
+        self.url_driver = self.getUrl()
         new_stem = f"chromedriver{self.code_ver}.zip"
         root_dir = Path(__file__).parent.cwd()
         without_stem = root_dir.joinpath("bot", "webdriver", "chromedriver")
@@ -370,9 +430,15 @@ class SetupDriver:
 
         """
         # Verifica no endpoint qual a versão disponivel do WebDriver
+        if self.another_ver is True:
+            l_old_v = self.code_ver.split(".")
+            l_old_v.pop(-1)
+
+            self.code_ver = ".".join(l_old_v)
+
         url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
         results = requests.get(url_chromegit, timeout=60)
-        chrome_version = results.text
+        self.code_ver = results.text
 
         system = platform.system().replace("dows", "").lower()
         arch = platform.architecture()
@@ -383,7 +449,7 @@ class SetupDriver:
         # Baixa o WebDriver conforme disponivel no repositório
         url_driver = "storage.googleapis.com/chrome-for-testing-public/"
 
-        set_URL = [chrome_version, os_sys, os_sys]  # noqa: N806
+        set_URL = [self.code_ver, os_sys, os_sys]  # noqa: N806
         for pos, item in enumerate(set_URL):
             if pos == len(set_URL) - 1:
                 url_driver += f"chromedriver-{item}.zip"

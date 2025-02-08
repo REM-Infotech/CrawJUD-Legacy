@@ -58,7 +58,7 @@ objects_config = {
     "testing": "app.config.TestingConfig",
 }
 
-# clear()
+clear()
 load_dotenv()
 
 values = environ.get
@@ -87,8 +87,8 @@ class AppFactory:
             tuple: A tuple containing ASGIApp and Celery worker.
 
         """
-        for key, value in environ.items():
-            print(f"{key}={value}")  # noqa: T201
+        # for key, value in environ.items():
+        #     print(f"{key}={value}")  # noqa: T201
 
         env_ambient = environ["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
@@ -219,6 +219,9 @@ class AppFactory:
         Sets up the application context, configures server settings,
         and starts the application using specified parameters.
 
+        Returns:
+            tuple: A tuple containing the Quart application and Celery worker.
+
         """
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         loop = asyncio.get_event_loop()
@@ -247,9 +250,13 @@ class AppFactory:
         }
 
         try:
-            starter = Thread(target=cls.starter, kwargs=args_run)
-            starter.daemon = True
-            starter.start()
+            if getenv("APPLICATION_APP") != "beat":
+                starter = Thread(target=cls.starter, kwargs=args_run)
+                starter.daemon = True
+                starter.start()
+
+                if getenv("APPLICATION_APP") == "quart":
+                    starter.join()
 
         except (KeyboardInterrupt, TypeError):
             if system().lower() == "linux":
@@ -264,6 +271,24 @@ class AppFactory:
             sys.exit(0)
 
         return app, celery
+
+    @classmethod
+    def beat_app(cls) -> Celery:
+        """Initialize and start the Celery Beat.
+
+        Sets up the application context, configures server settings,
+        and starts the application using specified parameters.
+
+        Returns:
+            (Celery): The Celery instance.
+
+        """
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        loop = asyncio.get_event_loop()
+
+        _, celery = loop.run_until_complete(AppFactory().main())
+
+        return celery
 
     @classmethod
     def starter(cls, hostname: str, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:
@@ -313,8 +338,6 @@ class AppFactory:
         except Exception:
             ...
 
-
-app, celery = AppFactory.start_app()
 
 signal.signal(signal.SIGTERM, AppFactory.handle_exit)
 signal.signal(signal.SIGINT, AppFactory.handle_exit)
