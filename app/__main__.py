@@ -3,4 +3,4 @@
 if __name__ == "__main__":
     from app import AppFactory
 
-    AppFactory.beat_app()
+    AppFactory.start_app()

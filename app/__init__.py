@@ -273,24 +273,6 @@ class AppFactory:
         return app, celery
 
     @classmethod
-    def beat_app(cls) -> Celery:
-        """Initialize and start the Celery Beat.
-
-        Sets up the application context, configures server settings,
-        and starts the application using specified parameters.
-
-        Returns:
-            (Celery): The Celery instance.
-
-        """
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        loop = asyncio.get_event_loop()
-
-        _, celery = loop.run_until_complete(AppFactory().main())
-
-        return celery
-
-    @classmethod
     def starter(cls, hostname: str, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:
         """Start the application with the specified parameters.
 
