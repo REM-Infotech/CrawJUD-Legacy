@@ -7,7 +7,6 @@ import os
 from collections import Counter
 from pathlib import Path
 
-from flask_login import login_required
 from quart import (
     Blueprint,
     current_app,
@@ -17,6 +16,7 @@ from quart import (
     session,
     url_for,
 )
+from quart_auth import login_required
 from werkzeug.utils import secure_filename
 
 from app import db
@@ -74,7 +74,7 @@ async def cadastro():
 
     action_url = url_for("creds.cadastro")
 
-    if form.validate_on_submit():
+    if await form.validate_on_submit():
         if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
             flash("Existem credenciais com este nome já cadastrada!", "error")
             return redirect(url_for("creds.cadastro"))
@@ -164,7 +164,7 @@ async def editar(id: int = None):
 
     action_url = url_for("creds.cadastro")
 
-    if form.validate_on_submit():
+    if await form.validate_on_submit():
         flash("Credencial salva com sucesso!", "success")
         return redirect(url_for("creds.credentials"))
 

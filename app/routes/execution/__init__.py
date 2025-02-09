@@ -5,7 +5,6 @@ This module provides endpoints for listing executions and downloading execution 
 
 from pathlib import Path
 
-from flask_login import login_required
 from quart import (
     Blueprint,
     Response,
@@ -16,6 +15,7 @@ from quart import (
     request,
     session,
 )
+from quart_auth import login_required
 from sqlalchemy.orm import aliased
 
 from app import db
@@ -40,7 +40,7 @@ async def executions() -> Response:
         form = SearchExec()
         pid = request.args.get("pid", "")
 
-        if form.validate_on_submit():
+        if await form.validate_on_submit():
             pid = form.campo_busca.data
 
         chksupersu = (

@@ -14,8 +14,8 @@ from typing import Any, Coroutine
 
 import pandas as pd
 from deep_translator import GoogleTranslator
-from flask_login import login_required
 from quart import Blueprint, Response, abort, jsonify, render_template, request, session
+from quart_auth import login_required
 
 from app import db
 from app.models import Executions, LicensesUsers, SuperUser, Users

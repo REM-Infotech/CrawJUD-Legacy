@@ -2,7 +2,6 @@
 
 import traceback
 
-from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Response,
@@ -17,6 +16,7 @@ from quart import (
     url_for,
 )
 from quart import current_app as app
+from quart_auth import login_required
 
 from app.models import BotsCrawJUD
 
@@ -106,7 +106,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
             system=system,
         )
 
-        if form.validate_on_submit():
+        if await form.validate_on_submit():
             data, files, pid = process_form_submission(form, system, typebot, bot_info)
             response = send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid)
             if response:

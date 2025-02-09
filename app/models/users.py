@@ -6,7 +6,7 @@ from uuid import uuid4
 import bcrypt
 import pytz
 from flask import request
-from flask_login import UserMixin
+from quart_auth import UserMixin
 
 from app import db, login_manager
 
