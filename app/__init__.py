@@ -28,7 +28,6 @@ from redis_flask import Redis
 from socketio import ASGIApp, AsyncRedisManager, AsyncServer  # noqa: F401
 from tqdm import tqdm
 
-from app.routes import register_routes
 from utils import asyncinit_log as init_log
 from utils import check_allowed_origin, make_celery, version_file
 
@@ -128,12 +127,8 @@ class AppFactory:
             await asyncio.create_task(self.init_talisman(app))
             io = await asyncio.create_task(self.init_socket(app))
             app.logger = await asyncio.create_task(init_log())
-            await asyncio.create_task(self.init_routes(app))
+            await asyncio.create_task(self.init_blueprints(app))
         return ASGIApp(io, app), celery
-
-    async def init_routes(self, app: Quart) -> None:
-        """Initialize and register the application routes."""
-        await register_routes(app)
 
     async def init_talisman(self, app: Quart) -> Talisman:
         """Initialize Talisman for security headers.
