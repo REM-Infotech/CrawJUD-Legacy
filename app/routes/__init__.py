@@ -168,4 +168,4 @@ async def handle_http_exception(error: HTTPException) -> Response:
 @app.errorhandler(Unauthorized)
 async def redirect_to_login(*_: Any) -> Response:  # noqa: ANN401
     """Redirect to the login page if the user is not authenticated."""
-    return redirect(url_for("login"))
+    return await make_response(redirect(url_for("auth.login")))
