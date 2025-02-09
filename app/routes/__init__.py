@@ -4,8 +4,7 @@ This module defines global routes, context processors, and custom error handling
 """
 
 import datetime
-
-# import json
+import json
 import re
 import traceback
 from pathlib import Path
@@ -24,47 +23,46 @@ from quart import (
     make_response,
     redirect,
     render_template,
-    # request,
+    request,
     send_from_directory,
-    # session,
+    session,
     url_for,
 )
 from quart import current_app as app
-from quart_auth import Unauthorized, login_required  # , current_user
+from quart_auth import Unauthorized, current_user, login_required
 from werkzeug.exceptions import HTTPException
-
-# from werkzeug.local import LocalProxy
+from werkzeug.local import LocalProxy
 
 load_dotenv()
 
 
-# @app.context_processor
-# async def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
-#     """Inject user-related cookies and authentication data into the template context.
+@app.context_processor
+async def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
+    """Inject user-related cookies and authentication data into the template context.
 
-#     Returns:
-#         dict: A dictionary containing cookies and current user information.
+    Returns:
+        dict: A dictionary containing cookies and current user information.
 
-#     """
-#     admin_cookie, supersu_cookie = None, None
+    """
+    admin_cookie, supersu_cookie = None, None
 
-#     if current_user and current_user.is_authenticated:
-#         if session.get("_id"):
-#             admin_cookie = request.cookies.get("roles_admin")
-#             if admin_cookie:
-#                 if json.loads(admin_cookie).get("login_id") != session["_id"]:
-#                     admin_cookie = None
+    if current_user and current_user.is_authenticated:
+        if session.get("_id"):
+            admin_cookie = request.cookies.get("roles_admin")
+            if admin_cookie:
+                if json.loads(admin_cookie).get("login_id") != session["_id"]:
+                    admin_cookie = None
 
-#                 supersu_cookie = request.cookies.get("roles_supersu")
-#                 if supersu_cookie:
-#                     if json.loads(supersu_cookie).get("login_id") != session["_id"]:
-#                         supersu_cookie = None
+                supersu_cookie = request.cookies.get("roles_supersu")
+                if supersu_cookie:
+                    if json.loads(supersu_cookie).get("login_id") != session["_id"]:
+                        supersu_cookie = None
 
-#     return {
-#         "admin_cookie": admin_cookie,
-#         "supersu_cookie": supersu_cookie,
-#         "current_user": current_user,
-#     }
+    return {
+        "admin_cookie": admin_cookie,
+        "supersu_cookie": supersu_cookie,
+        "current_user": current_user,
+    }
 
 
 @app.route("/", methods=["GET"])

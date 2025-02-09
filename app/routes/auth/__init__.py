@@ -1,5 +1,6 @@
 """Module for authentication routes."""
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -67,6 +68,9 @@ async def login() -> Response:
                 to_login[key] = value
 
         usr_auth = AuthUser(to_login)
+
+        session["_id"] = hashlib.sha512(str(usr_auth.auth_id).encode()).hexdigest()
+
         login_user(usr_auth, remember=form.remember_me.data)
         resp = await make_response(redirect(session["location"]))
 
