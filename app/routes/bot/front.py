@@ -88,7 +88,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
 
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
-        bot_info = get_bot_info(db, id)
+        bot_info = await get_bot_info(db, id)
         if not bot_info:
             await flash("Acesso negado!", "error")
             return await make_response(redirect(url_for("bot.dashboard")))
@@ -96,7 +96,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
         display_name = bot_info.display_name
         title = display_name
 
-        states, clients, credts, form_config = get_form_data(db, system, typebot, bot_info)
+        states, clients, credts, form_config = await get_form_data(db, system, typebot, bot_info)
 
         form = BotForm(
             dynamic_fields=form_config,
@@ -107,16 +107,16 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
         )
 
         if form.validate_on_submit():
-            data, files, pid = process_form_submission(form, system, typebot, bot_info)
-            response = send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid)
+            data, files, pid = await process_form_submission(form, system, typebot, bot_info)
+            response = await send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid)
             if response:
                 return response
 
-        handle_form_errors(form)
+        await handle_form_errors(form)
 
         url = request.base_url.replace("http://", "https://")
         return await make_response(
-            render_template(
+            await render_template(
                 "index.html",
                 page="botform.html",
                 url=url,
