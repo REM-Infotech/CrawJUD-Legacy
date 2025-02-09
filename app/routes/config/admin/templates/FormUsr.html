@@ -1,0 +1,50 @@
+<div class="container px-4">
+  <form id="Form" class="card border-0 shadow rounded-3 my-5" action=UrlAction()" method="post" name="CadastroProcesso"
+    enctype="multipart/form-data">
+    <h4 class="card-header p-4">{{ title }}</h4>
+    <div class="card-body bg-warning bg-opacity-75 p-4 p-sm-5">
+      <div class="row g-3 rounded justify-content-center p-3">
+        {{ form.hidden_tag() }}
+        <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+          {{ form.nome_usuario.label(class="form-label") }}
+          {{ form.nome_usuario(class="form-control", placeholder=form.nome_usuario.label.text) }}
+        </div>
+        <div class="col-md-5 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+          {{ form.login.label(class="form-label") }}
+          {{ form.login(class="form-control", placeholder=form.login.label.text) }}
+        </div>
+        <div class="col-md-5 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+          {{ form.email.label(class="form-label") }}
+          {{ form.email(class="form-control", placeholder=form.email.label.text) }}
+        </div>
+        <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password( class="form-control mb-3", placeholder=form.password.label.text) }}
+          <div class="form-check">
+            {{ form.show_password(type="checkbox", class="form-check-input", id=form.show_password.id,
+                        onchange="showPassWrd(this)") }}
+            {{ form.show_password.label(class="form-check-label", for=form.show_password.id) }}
+          </div>
+        </div>
+        <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+          {{ form.tipo_user.label(class="form-label") }}
+          {{ form.tipo_user(class="form-control", placeholder=form.tipo_user.label.text) }}
+        </div>
+        {% if current_user.is_authenticated and supersu_cookie %}
+        <div id="licenses_usr" class="col-md-10 border border-secondary p-2 border-2 rounded bg-white">
+          {{ form.licenses.label(class="form-label") }}
+          {{ form.licenses(class="form-control", id=form.licenses.id, **{"data-placeholder":form.licenses.label.text}) }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="card-footer d-grid gap-2 p-3">
+      {{ form.submit(class="btn btn-success btn-login fw-semibold", onclick="showLoad()") }}
+    </div>
+  </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/UsrForm.js') }}"></script>
+{% if current_user.is_authenticated and supersu_cookie %}
+<script src="{{ url_for('static', filename='js/Show_Licenses.js') }}"></script>
+{% endif %}

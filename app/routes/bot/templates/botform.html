@@ -1,0 +1,43 @@
+<div class="container-fluid px-4">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <form class="card border-0 shadow rounded-3 my-5" action="{{ url }}" method="POST" enctype="multipart/form-data">
+        <h4 class="card-header p-4">{{ display_name }}</h4>
+        {% if form %}
+        <div class="card-body bg-warning bg-opacity-75 p-4 p-sm-5">
+          {{ form.hidden_tag() }}
+          <div class="row g-3 rounded justify-content-center p-3">
+            {% for field in form %}
+            {% if field.name == "data_inicio" or field.name == "doc_parte" or
+            field.name == "data_fim" or field.name == "parte_name"%}
+            <div class="col-md-5 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              {{ field.label(class="form-label") }}
+              {{ field(class="form-control", id=field.id, **{"data-placeholder": field.label.text}) }}
+            </div>
+            {% elif field.type == "BooleanField" %}
+            <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              <div class="form-check">
+                {{ field(class="form-check-input") }}
+                {{ field.label(class="form-check-label", for=form.id) }}
+              </div>
+            </div>
+            {% else %}
+            <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              {{ field.label(class="form-label") }}
+              {{ field(class="form-control", id=field.id, **{"data-placeholder": field.label.text}) }}
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer d-grid gap-2">
+          {{ form.submit(class="btn btn btn-outline-success btn-login fw-semibold", onclick="showLoad()") }}
+          {% set url_model = url_for('bot.get_model', id=id, system=system, typebot=typebot,
+          filename=model_name) %}
+          <a class="btn btn-outline-primary fw-semibold" href="{{ url_model }}">Gerar Modelo</a>
+        </div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>

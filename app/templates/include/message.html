@@ -1,0 +1,23 @@
+<!-- Modal -->
+<div class="modal fade" id="ModalMessage" tabindex="-1" aria-labelledby="ModalMessageLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="ModalMessageLabel">Mensagem</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for msg in messages %}
+        <p>{{ msg }}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
