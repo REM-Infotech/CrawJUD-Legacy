@@ -48,7 +48,7 @@ async def get_model(id: int, system: str, typebot: str, filename: str) -> Respon
     """
     try:
         path_arquivo, nome_arquivo = MakeModels(filename, filename).make_output()
-        response = make_response(await send_file(f"{path_arquivo}", as_attachment=True))
+        response = await make_response(await send_file(f"{path_arquivo}", as_attachment=True))
         response.headers["Content-Disposition"] = f"attachment; filename={nome_arquivo}"
         return response
 

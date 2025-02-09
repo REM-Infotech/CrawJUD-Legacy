@@ -130,7 +130,7 @@ async def logout() -> Response:
     logout_user()
 
     await flash("Logout efetuado com sucesso!", "success")
-    resp = make_response(redirect(url_for("auth.login")))
+    resp = await make_response(redirect(url_for("auth.login")))
 
     cookies_ = list(request.cookies.keys())
     for cookie in cookies_:

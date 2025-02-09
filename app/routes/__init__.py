@@ -86,7 +86,7 @@ async def serve_img() -> Response:
     """
     try:
         paht_icon = Path(__file__).cwd().joinpath("static", "img")
-        url = make_response(await send_from_directory(paht_icon, "crawjud.png"))
+        url = await make_response(await send_from_directory(paht_icon, "crawjud.png"))
         return await url
 
     except Exception:

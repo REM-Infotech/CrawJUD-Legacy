@@ -106,7 +106,7 @@ async def logs_bot(pid: str) -> Response:
         return await make_response(redirect(f"{url_for('exe.executions')}?pid={pid}"))
 
     rows = execution.total_rows
-    resp = make_response(
+    resp = await make_response(
         await render_template("index.html", page="logs_bot.html", pid=pid, total_rows=rows, title=title)
     )
 
