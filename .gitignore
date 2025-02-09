@@ -30,7 +30,6 @@ share/python-wheels/
 MANIFEST
 bot/meta/*
 pybind11/
-.ruff_cache/*
 /*.json
 MODIFIED.MOD
 # PyInstaller
