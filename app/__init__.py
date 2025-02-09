@@ -20,11 +20,11 @@ import uvicorn
 from celery import Celery
 from clear import clear  # noqa: F401, E402
 from dotenv_vault import load_dotenv
+from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
-from quart_auth import QuartAuth
 from redis_flask import Redis
 from socketio import ASGIApp, AsyncRedisManager, AsyncServer  # noqa: F401
 from tqdm import tqdm
@@ -59,7 +59,7 @@ objects_config = {
     "production": "app.config.ProductionConfig",
     "testing": "app.config.TestingConfig",
 }
-login_manager = QuartAuth()
+login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.login_message = "Faça login para acessar essa página."
 login_manager.login_message_category = "info"

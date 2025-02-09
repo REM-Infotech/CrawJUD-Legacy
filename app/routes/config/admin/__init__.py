@@ -3,10 +3,10 @@
 from pathlib import Path
 from typing import Dict
 
+from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
 from quart import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
 from quart import current_app as app
-from quart_auth import login_required
 
 from app.forms import UserForm, UserFormEdit
 from app.models import LicensesUsers, SuperUser, Users
@@ -78,7 +78,7 @@ async def cadastro_user() -> Response:  # noqa: C901
 
             form = UserForm(licenses_add=licenses_result)
 
-        if await form.validate_on_submit():
+        if form.validate_on_submit():
             user = Users(
                 login=form.login.data,
                 nome_usuario=form.nome_usuario.data,
@@ -157,7 +157,7 @@ async def edit_usuario(id: int) -> Response:  # noqa: C901, A002
                 **user.dict_query,
             )
 
-        if await form.validate_on_submit():
+        if form.validate_on_submit():
             data: Dict[str, str | bool] = form.data
 
             [

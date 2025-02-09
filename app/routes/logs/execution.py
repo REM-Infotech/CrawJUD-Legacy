@@ -7,6 +7,7 @@ import asyncio
 import json
 
 import httpx as requests
+from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Response,
@@ -21,7 +22,6 @@ from quart import (
     url_for,
 )
 from quart import current_app as app
-from quart_auth import login_required
 
 from app.misc import generate_signed_url
 from app.models import Executions, LicensesUsers, Users

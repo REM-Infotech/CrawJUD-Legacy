@@ -10,6 +10,7 @@ from typing import Any, Union  # noqa: F401
 
 import aiofiles
 import httpx
+from flask_login import login_required  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (  # noqa: F401
     Blueprint,
@@ -25,7 +26,6 @@ from quart import (  # noqa: F401
     url_for,
 )
 from quart import current_app as app  # noqa: F401
-from quart_auth import login_required  # noqa: F401
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 

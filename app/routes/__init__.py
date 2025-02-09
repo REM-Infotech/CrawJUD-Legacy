@@ -14,6 +14,7 @@ import aiofiles
 import httpx
 from deep_translator import GoogleTranslator
 from dotenv_vault import load_dotenv
+from flask_login import current_user, login_required
 
 # Quart Imports
 from quart import (
@@ -28,7 +29,6 @@ from quart import (
     url_for,
 )
 from quart import current_app as app
-from quart_auth import current_user, login_required
 from werkzeug.exceptions import HTTPException
 from werkzeug.local import LocalProxy
 

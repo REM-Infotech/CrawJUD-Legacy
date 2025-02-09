@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
+from flask_login import login_required
 from quart import Blueprint, abort, render_template
-from quart_auth import login_required
 
 from ....decorators import check_su
 

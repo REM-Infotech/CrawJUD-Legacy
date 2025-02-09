@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+from flask_login import login_user, logout_user
 from quart import (
     Blueprint,
     Response,
@@ -14,7 +15,6 @@ from quart import (
     session,
     url_for,
 )
-from quart_auth import login_user, logout_user
 
 from app.forms.auth.login import LoginForm
 from app.models.users import Users
@@ -47,7 +47,7 @@ async def login() -> Response:
     """
     form = LoginForm()
 
-    if await form.validate_on_submit():
+    if form.validate_on_submit():
         usr = Users.query.filter(Users.login == form.login.data).first()
         if usr is None or not usr.check_password(form.password.data):
             flash("Senha incorreta!", "error")
