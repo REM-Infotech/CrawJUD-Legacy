@@ -7,7 +7,6 @@ import os
 from collections import Counter
 from pathlib import Path
 
-from flask_login import login_required
 from quart import (
     Blueprint,
     current_app,
@@ -17,6 +16,7 @@ from quart import (
     session,
     url_for,
 )
+from quart_auth import login_required
 from werkzeug.utils import secure_filename
 
 from app import db

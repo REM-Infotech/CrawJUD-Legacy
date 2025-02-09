@@ -13,3 +13,6 @@ def import_routes() -> None:
     """Import all routes in the logs module."""
     import_module(".websocket", package=__package__)
     import_module(".execution", package=__package__)
+
+
+import_routes()

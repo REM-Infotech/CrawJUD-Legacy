@@ -3,10 +3,10 @@
 from pathlib import Path
 from typing import Dict
 
-from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
 from quart import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
 from quart import current_app as app
+from quart_auth import login_required
 
 from app.forms import UserForm, UserFormEdit
 from app.models import LicensesUsers, SuperUser, Users

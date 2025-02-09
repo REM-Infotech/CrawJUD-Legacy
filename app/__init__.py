@@ -4,6 +4,8 @@ This module creates the Quart app and configures extensions like Celery,
 AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 """
 
+import quart_flask_patch  # noqa: F401, I001
+
 import asyncio
 import platform
 import signal
@@ -15,12 +17,12 @@ from pathlib import Path
 from platform import system
 from threading import Thread
 
-import quart_flask_patch  # noqa: F401
+
 import uvicorn
 from celery import Celery
 from clear import clear  # noqa: F401, E402
 from dotenv_vault import load_dotenv
-from flask_login import LoginManager
+from quart_auth import QuartAuth
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
@@ -59,7 +61,7 @@ objects_config = {
     "production": "app.config.ProductionConfig",
     "testing": "app.config.TestingConfig",
 }
-login_manager = LoginManager()
+login_manager = QuartAuth()
 login_manager.login_view = "auth.login"
 login_manager.login_message = "Faça login para acessar essa página."
 login_manager.login_message_category = "info"

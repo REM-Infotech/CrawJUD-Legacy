@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from flask_login import login_user, logout_user
+from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
     Response,
@@ -15,6 +15,10 @@ from quart import (
     session,
     url_for,
 )
+from quart import (
+    current_app as app,
+)
+from quart_auth import AuthUser, login_user, logout_user
 
 from app.forms.auth.login import LoginForm
 from app.models.users import Users
@@ -46,9 +50,9 @@ async def login() -> Response:
 
     """
     form = LoginForm()
-
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
     if form.validate_on_submit():
-        usr = Users.query.filter(Users.login == form.login.data).first()
+        usr = db.session.query(Users).filter(Users.login == form.login.data).first()
         if usr is None or not usr.check_password(form.password.data):
             flash("Senha incorreta!", "error")
             return await make_response(redirect(url_for("auth.login")))
@@ -56,11 +60,18 @@ async def login() -> Response:
         if not session.get("location"):
             session["location"] = url_for("dash.dashboard")
 
-        login_user(usr, remember=form.remember_me.data)
+        to_login = {}
+        usr_dict = usr.__dict__
+        for key, value in list(usr_dict.items()):
+            if "_" not in key:
+                to_login[key] = value
+
+        usr_auth = AuthUser(to_login)
+        login_user(usr_auth, remember=form.remember_me.data)
         resp = await make_response(redirect(session["location"]))
 
         if usr.admin:
-            is_admin = json.dumps({"login_id": session["_id"]})
+            is_admin = json.dumps({"login_id": session.get("_id")})
             resp.set_cookie(
                 "roles_admin",
                 is_admin,
@@ -71,7 +82,7 @@ async def login() -> Response:
             )
 
         if usr.supersu:
-            is_supersu = json.dumps({"login_id": session["_id"]})
+            is_supersu = json.dumps({"login_id": session.get("_id")})
             resp.set_cookie(
                 "roles_supersu",
                 is_supersu,

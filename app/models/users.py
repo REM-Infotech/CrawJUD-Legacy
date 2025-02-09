@@ -5,30 +5,30 @@ from uuid import uuid4
 
 import bcrypt
 import pytz
-from flask import request
-from flask_login import UserMixin
 
-from app import db, login_manager
+# from flask import request
+# from quart_auth import UserMixin
+from app import db  # , login_manager
 
 salt = bcrypt.gensalt()
 
 
-@login_manager.user_loader
-def load_user(user_id: int) -> int:
-    """Load a user given its unique id.
+# @login_manager.user_loader
+# def load_user(user_id: int) -> int:
+#     """Load a user given its unique id.
 
-    Args:
-        user_id (int): The user's id.
+#     Args:
+#         user_id (int): The user's id.
 
-    Returns:
-        int: The user instance.
+#     Returns:
+#         int: The user instance.
 
-    """
-    link = request.referrer
-    if link is None:
-        link = request.url
+#     """
+#     link = request.referrer
+#     if link is None:
+#         link = request.url
 
-    return Users.query.get(int(user_id))
+#     return Users.query.get(int(user_id))
 
 
 class SuperUser(db.Model):
@@ -40,7 +40,7 @@ class SuperUser(db.Model):
     users = db.relationship("Users", backref=db.backref("supersu", lazy=True))
 
 
-class Users(db.Model, UserMixin):
+class Users(db.Model):  # UserMixin):
     """Database model for application users."""
 
     __tablename__ = "users"
