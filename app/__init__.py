@@ -49,7 +49,9 @@ mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
 io = None
-app = Quart(__name__)
+
+src_path = Path(__file__).cwd().joinpath("static")
+app = Quart(__name__, static_folder=src_path)
 clean_prompt = False
 
 objects_config = {

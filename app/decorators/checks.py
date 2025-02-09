@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from ..models import Users
 
 
-async def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
+def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
     """Check if the current user is a 'supersu'.
 
     Args:

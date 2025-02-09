@@ -154,6 +154,6 @@ async def handle_http_exception(error: HTTPException) -> Response:
     desc = tradutor.translate(error.description)
 
     return await make_response(
-        render_template("handler/index.html", name=name, desc=desc, code=error.code),
+        await render_template("handler/index.html", name=name, desc=desc, code=error.code),
         error.code,
     )
