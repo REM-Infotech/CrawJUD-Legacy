@@ -4,10 +4,10 @@ import os
 import pathlib
 from typing import Dict
 
-from flask import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
-from flask import current_app as app
 from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
+from quart import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
+from quart import current_app as app
 
 from app.forms import UserForm, UserFormEdit
 from app.models import LicensesUsers, SuperUser, Users
@@ -18,7 +18,7 @@ admin = Blueprint("admin", __name__, template_folder=path_template)
 
 @admin.route("/users", methods=["GET"])
 @login_required
-def users() -> Response:
+async def users() -> Response:
     """Render the users list template.
 
     Returns:
@@ -48,7 +48,7 @@ def users() -> Response:
 
 @admin.route("/cadastro/usuario", methods=["GET", "POST"])
 @login_required
-def cadastro_user() -> Response:
+async def cadastro_user() -> Response:
     """Handle user registration.
 
     Returns:
@@ -125,7 +125,7 @@ def cadastro_user() -> Response:
 
 @admin.route("/editar/usuario/<id>", methods=["GET", "POST"])
 @login_required
-def edit_usuario(id: int) -> Response:
+async def edit_usuario(id: int) -> Response:
     """Handle editing a user with the given id.
 
     Args:
@@ -220,7 +220,7 @@ def edit_usuario(id: int) -> Response:
 
 @admin.route("/deletar/usuario/<id>", methods=["GET", "POST"])
 @login_required
-def delete_usuario(id: int) -> Response:
+async def delete_usuario(id: int) -> Response:
     """Handle deletion of a user with the given id.
 
     Args:

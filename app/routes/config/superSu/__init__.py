@@ -3,8 +3,8 @@
 import os
 import pathlib
 
-from flask import Blueprint, abort, render_template
 from flask_login import login_required
+from quart import Blueprint, abort, render_template
 
 from ....decorators import checkSu
 
@@ -15,7 +15,7 @@ supersu = Blueprint("supersu", __name__, template_folder=path_template)
 @supersu.route("/configurações_crawjud", methods=["GET"])
 @login_required
 @checkSu
-def config() -> str:
+async def config() -> str:
     """Render the configuration template for CrawJUD.
 
     Returns:
@@ -32,7 +32,7 @@ def config() -> str:
 @supersu.route("/cadastro/cliente", methods=["GET", "POST"])
 @login_required
 @checkSu
-def cadastro_cliente() -> str:
+async def cadastro_cliente() -> str:
     """Render the client registration template.
 
     Returns:
@@ -49,7 +49,7 @@ def cadastro_cliente() -> str:
 @supersu.route("/editar/cliente", methods=["GET", "POST"])
 @login_required
 @checkSu
-def edit_cliente() -> str:
+async def edit_cliente() -> str:
     """Render the client edit template.
 
     Returns:

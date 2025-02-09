@@ -4,7 +4,9 @@ import os
 import pathlib
 import traceback
 
-from flask import (
+from flask_login import login_required
+from flask_sqlalchemy import SQLAlchemy
+from quart import (
     Blueprint,
     Response,
     abort,
@@ -17,9 +19,7 @@ from flask import (
     session,
     url_for,
 )
-from flask import current_app as app
-from flask_login import login_required
-from flask_sqlalchemy import SQLAlchemy
+from quart import current_app as app
 
 from app.models import BotsCrawJUD
 
@@ -38,7 +38,7 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
 @bot.route("/get_model/<id>/<system>/<typebot>/<filename>", methods=["GET"])
-def get_model(id: int, system: str, typebot: str, filename: str) -> Response:  # noqa: A002
+async def get_model(id: int, system: str, typebot: str, filename: str) -> Response:  # noqa: A002
     """Retrieve a model file for the specified bot.
 
     Args:
@@ -64,7 +64,7 @@ def get_model(id: int, system: str, typebot: str, filename: str) -> Response:  #
 
 @bot.route("/bot/dashboard", methods=["GET"])
 @login_required
-def dashboard() -> Response:
+async def dashboard() -> Response:
     """Render the bot dashboard page.
 
     Returns:
@@ -85,7 +85,7 @@ def dashboard() -> Response:
 
 @bot.route("/bot/<id>/<system>/<typebot>", methods=["GET", "POST"])
 @login_required
-def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
+async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """Launch the specified bot process."""
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")

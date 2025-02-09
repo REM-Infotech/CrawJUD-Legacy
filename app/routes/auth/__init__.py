@@ -4,7 +4,8 @@ import json
 import os
 import pathlib
 
-from flask import (
+from flask_login import login_user, logout_user
+from quart import (
     Blueprint,
     flash,
     make_response,
@@ -14,7 +15,6 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import login_user, logout_user
 
 from app.forms.auth.login import LoginForm
 from app.models.users import Users
@@ -26,7 +26,7 @@ usr = None
 
 
 @auth.before_request
-def nexturl():
+async def nexturl():
     """Store the next URL in session if provided.
 
     Returns:
@@ -38,7 +38,7 @@ def nexturl():
 
 
 @auth.route("/login", methods=["GET", "POST"])
-def login():
+async def login():
     """Authenticate the user and start a session.
 
     Returns:
@@ -94,7 +94,7 @@ def login():
 
 
 @auth.route("/forgot-password", methods=["GET", "POST"])
-def forgot_password():
+async def forgot_password():
     """Handle the forgot password functionality.
 
     Returns:
@@ -105,7 +105,7 @@ def forgot_password():
 
 
 @auth.route("/logout", methods=["GET", "POST"])
-def logout():
+async def logout():
     """Log out the current user and clear session cookies.
 
     Returns:

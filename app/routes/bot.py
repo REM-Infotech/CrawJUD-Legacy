@@ -118,7 +118,7 @@ async def stop_bot(user: str, pid: str) -> Response:
         Response: JSON response indicating the result of the stop operation.
 
     """
-    from flask import current_app as app
+    from quart import current_app as app
 
     from app.models import Executions
 

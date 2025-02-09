@@ -9,7 +9,9 @@ from datetime import date, datetime  # noqa: F401
 from typing import Any, Union  # noqa: F401
 
 import httpx
-from flask import (  # noqa: F401
+from flask_login import login_required  # noqa: F401
+from flask_sqlalchemy import SQLAlchemy
+from quart import (  # noqa: F401
     Blueprint,
     Response,
     abort,
@@ -22,9 +24,7 @@ from flask import (  # noqa: F401
     session,
     url_for,
 )
-from flask import current_app as app  # noqa: F401
-from flask_login import login_required  # noqa: F401
-from flask_sqlalchemy import SQLAlchemy
+from quart import current_app as app  # noqa: F401
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -60,7 +60,7 @@ FORM_CONFIGURATOR = {
 }
 
 
-def get_bot_info(db: SQLAlchemy, id: int) -> BotsCrawJUD | None:  # noqa: A002
+async def get_bot_info(db: SQLAlchemy, id: int) -> BotsCrawJUD | None:  # noqa: A002
     """Retrieve bot information from the database."""
     return (
         db.session.query(BotsCrawJUD)
@@ -72,7 +72,7 @@ def get_bot_info(db: SQLAlchemy, id: int) -> BotsCrawJUD | None:  # noqa: A002
     )
 
 
-def get_form_data(
+async def get_form_data(
     db: SQLAlchemy, system: str, typebot: str, bot_info: BotsCrawJUD
 ) -> tuple[list[tuple], list[tuple], list[tuple[Any, Any]], list]:
     """Retrieve form data including states, clients, credentials, and form configuration."""
@@ -125,7 +125,9 @@ def get_form_data(
     return states, clients, credts, form_config
 
 
-def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD) -> tuple[dict, dict, str]:
+async def process_form_submission(
+    form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD
+) -> tuple[dict, dict, str]:
     """Process form submission and prepare data and files for sending."""
     data = {}
     pid = generate_pid()
@@ -148,7 +150,7 @@ def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: 
     return data, files, pid
 
 
-def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
+async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
     path_save = os.path.join(temporarypath, secure_filename(value.filename))
@@ -164,7 +166,7 @@ def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypa
     })
 
 
-def handle_file_list(
+async def handle_file_list(
     item: str,
     value: FileStorage | str,
     data: dict,
@@ -189,7 +191,7 @@ def handle_file_list(
             })
 
 
-def handle_other_data(
+async def handle_other_data(
     item: str,
     value: str,
     data: str,
@@ -217,7 +219,7 @@ def handle_other_data(
             data.update({"token": value})
 
 
-def handle_credentials(value: str, data: dict, system: str, files: dict) -> None:
+async def handle_credentials(value: str, data: dict, system: str, files: dict) -> None:
     """Handle credentials for form submission."""
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     temporarypath = app.config["TEMP_PATH"]
@@ -255,7 +257,7 @@ def handle_credentials(value: str, data: dict, system: str, files: dict) -> None
             break
 
 
-def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str) -> Response | None:
+async def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str) -> Response | None:
     """Send data to servers and handle the response."""
     servers = Servers.query.all()
     for server in servers:
@@ -281,7 +283,7 @@ def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str) -> Re
     return None
 
 
-def handle_form_errors(form: BotForm) -> None:
+async def handle_form_errors(form: BotForm) -> None:
     """Handle form validation errors."""
     if form.errors:
         for field_err in form.errors:

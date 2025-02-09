@@ -27,6 +27,6 @@ async def register_routes(app: Quart) -> None:
     app.register_blueprint(bot)
 
     @app.errorhandler(HTTPException)
-    def handle_http_exception(error: HTTPException) -> Response:
+    async def handle_http_exception(error: HTTPException) -> Response:
         url = environ.get("url_web")
         return make_response(redirect(url))

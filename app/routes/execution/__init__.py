@@ -6,7 +6,8 @@ This module provides endpoints for listing executions and downloading execution 
 import os
 import pathlib
 
-from flask import (
+from flask_login import login_required
+from quart import (
     Blueprint,
     Response,
     abort,
@@ -16,7 +17,6 @@ from flask import (
     request,
     session,
 )
-from flask_login import login_required
 from sqlalchemy.orm import aliased
 
 from app import db
@@ -30,7 +30,7 @@ exe = Blueprint("exe", __name__, template_folder=path_template)
 
 @exe.route("/executions", methods=["GET", "POST"])
 @login_required
-def executions():
+async def executions():
     """Display a list of executions filtered by search criteria.
 
     Returns:
@@ -85,7 +85,7 @@ def executions():
 
 @exe.route("/executions/download/<filename>")
 @login_required
-def download_file(filename: str) -> Response:
+async def download_file(filename: str) -> Response:
     """Generate a signed URL and redirect to the file download.
 
     Args:

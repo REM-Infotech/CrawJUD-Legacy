@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import logging
 
-from flask import Blueprint, Response, abort, current_app, jsonify, make_response, request
+from quart import Blueprint, Response, abort, current_app, jsonify, make_response, request
 
 from utils import update_servers
 
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 # Endpoint para o webhook
 @wh.post("/webhook")
-def github_webhook() -> Response:
+async def github_webhook() -> Response:
     """Handle incoming GitHub webhook events.
 
     Verifies the signature, processes release events, and updates servers accordingly.
@@ -60,7 +60,7 @@ def github_webhook() -> Response:
         return make_response(jsonify({"message": "Evento ignorado"}), 500)
 
 
-def verify_signature(
+async def verify_signature(
     payload_body: dict[str, str] = None,
     secret_token: str = None,
     signature_header: str = None,

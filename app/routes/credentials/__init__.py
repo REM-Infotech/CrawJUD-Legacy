@@ -7,7 +7,8 @@ import os
 import pathlib
 from collections import Counter
 
-from flask import (
+from flask_login import login_required
+from quart import (
     Blueprint,
     current_app,
     flash,
@@ -16,7 +17,6 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import login_required
 from werkzeug.utils import secure_filename
 
 from app import db
@@ -29,7 +29,7 @@ cred = Blueprint("creds", __name__, template_folder=path_template)
 
 @cred.route("/credentials/dashboard", methods=["GET"])
 @login_required
-def credentials():
+async def credentials():
     """Render the credentials dashboard page.
 
     Returns:
@@ -49,7 +49,7 @@ def credentials():
 
 @cred.route("/credentials/cadastro", methods=["GET", "POST"])
 @login_required
-def cadastro():
+async def cadastro():
     """Handle the creation of new credentials.
 
     Returns:
@@ -79,7 +79,7 @@ def cadastro():
             flash("Existem credenciais com este nome já cadastrada!", "error")
             return redirect(url_for("creds.cadastro"))
 
-        def pw(form) -> None:
+        async def pw(form) -> None:
             passwd = Credentials(
                 nome_credencial=form.nome_cred.data,
                 system=form.system.data,
@@ -93,7 +93,7 @@ def cadastro():
             db.session.add(passwd)
             db.session.commit()
 
-        def cert(form) -> None:
+        async def cert(form) -> None:
             temporarypath = current_app.config["TEMP_PATH"]
             filecert = form.cert.data
 
@@ -140,7 +140,7 @@ def cadastro():
 
 @cred.route("/credentials/editar/<id>", methods=["GET", "POST"])
 @login_required
-def editar(id: int = None):
+async def editar(id: int = None):
     """Handle editing an existing credential.
 
     Args:
@@ -180,7 +180,7 @@ def editar(id: int = None):
 
 @cred.route("/credentials/deletar/<id>", methods=["GET", "POST"])
 @login_required
-def deletar(id: int = None):
+async def deletar(id: int = None):
     """Delete a credential identified by its id.
 
     Args:

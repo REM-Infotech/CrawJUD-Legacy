@@ -13,8 +13,8 @@ from datetime import datetime
 
 import pandas as pd
 from deep_translator import GoogleTranslator
-from flask import Blueprint, abort, jsonify, render_template, request, session
 from flask_login import login_required
+from quart import Blueprint, abort, jsonify, render_template, request, session
 
 from app import db
 from app.models import Executions, LicensesUsers, SuperUser, Users
@@ -29,7 +29,7 @@ dash = Blueprint("dash", __name__, template_folder=path_template, static_folder=
 
 @dash.route("/dashboard", methods=["GET"])
 @login_required
-def dashboard():
+async def dashboard():
     """Render the dashboard page with execution data.
 
     Returns:
@@ -60,7 +60,7 @@ def dashboard():
 
 @dash.route("/PerMonth", methods=["GET"])
 @login_required
-def perMonth():
+async def perMonth():
     """Return JSON data representing execution counts per month.
 
     Returns:
@@ -136,7 +136,7 @@ def perMonth():
 
 @dash.route("/MostExecuted", methods=["GET"])
 @login_required
-def MostExecuted():
+async def MostExecuted():
     """Return JSON data of the most executed bots.
 
     Returns:
