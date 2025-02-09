@@ -54,7 +54,7 @@ __all__ = [
 ]
 
 
-def init_database(app: Quart, db: SQLAlchemy) -> str:
+async def init_database(app: Quart, db: SQLAlchemy) -> str:
     """Initialize the database with default configuration and seed data.
 
     This function creates all necessary tables, reads environment variables,

@@ -89,7 +89,8 @@ class Users(db.Model, UserMixin):
             senha_texto (str): Plain text password.
 
         """
-        self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
+        if senha_texto is not None:
+            self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
     def check_password(self, senha_texto_claro: str) -> bool:
         """Check if the provided password matches the stored encrypted password.

@@ -216,25 +216,11 @@ class AppFactory:
             SQLAlchemy: The database instance.
 
         """
-        import platform
-
-        global db
-
+        db.init_app(app)
         async with app.app_context():
-            db.init_app(app)
+            from app.models import init_database
 
-            if environ["HOSTNAME"] == "betatest1.rhsolut.com.br":
-                db.drop_all()
-
-            db.create_all()
-
-            NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
-            HOST = environ.get("HOSTNAME")  # noqa: N806
-
-            if not Servers.query.filter(Servers.name == NAMESERVER).first():
-                server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
-                db.session.add(server)
-                db.session.commit()
+            await asyncio.create_task(init_database(app, db))
 
         return db
 

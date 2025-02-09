@@ -57,7 +57,7 @@ async def login() -> Response:
             session["location"] = url_for("dash.dashboard")
 
         login_user(usr, remember=form.remember_me.data)
-        resp = make_response(redirect(session["location"]))
+        resp = await make_response(redirect(session["location"]))
 
         if usr.admin:
             is_admin = json.dumps({"login_id": session["_id"]})
@@ -88,7 +88,7 @@ async def login() -> Response:
         session["license_token"] = license_usr.license_token
 
         flash("Login efetuado com sucesso!", "success")
-        return await resp
+        return resp
 
     return await make_response(await render_template("login.html", form=form))
 
