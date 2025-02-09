@@ -22,7 +22,7 @@ async def config() -> str:
 
     """
     try:
-        return render_template("index.html")
+        return await render_template("index.html")
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")
@@ -39,7 +39,7 @@ async def cadastro_cliente() -> str:
 
     """
     try:
-        return render_template("index.html")
+        return await render_template("index.html")
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")
@@ -56,7 +56,7 @@ async def edit_cliente() -> str:
 
     """
     try:
-        return render_template("index.html")
+        return await render_template("index.html")
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")

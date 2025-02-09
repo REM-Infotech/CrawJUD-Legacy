@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from ..models import Users
 
 
-def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
+async def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
     """Check if the current user is a 'supersu'.
 
     Args:
@@ -22,11 +22,11 @@ def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
     """
 
     @wraps(func)
-    def wrapper(*args: tuple, **kwargs: dict) -> Response:
+    async def wrapper(*args: tuple, **kwargs: dict) -> Response:
         usuario: str = session["login"]
         if query_supersu(usuario) is False:
             flash("Acesso negado", "error")
-            return make_response(redirect(url_for("dash.dashboard")))
+            return await make_response(redirect(url_for("dash.dashboard")))
         return func(*args, **kwargs)
 
     return wrapper

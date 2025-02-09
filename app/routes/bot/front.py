@@ -48,7 +48,7 @@ async def get_model(id: int, system: str, typebot: str, filename: str) -> Respon
     """
     try:
         path_arquivo, nome_arquivo = MakeModels(filename, filename).make_output()
-        response = make_response(send_file(f"{path_arquivo}", as_attachment=True))
+        response = make_response(await send_file(f"{path_arquivo}", as_attachment=True))
         response.headers["Content-Disposition"] = f"attachment; filename={nome_arquivo}"
         return response
 
@@ -71,7 +71,7 @@ async def dashboard() -> Response:
         page = "botboard.html"
         bots = BotsCrawJUD.query.all()
 
-        return make_response(render_template("index.html", page=page, bots=bots, title=title))
+        return await make_response(render_template("index.html", page=page, bots=bots, title=title))
 
     except Exception as e:
         app.logger.exception(traceback.format_exc())
@@ -84,14 +84,14 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
     """Launch the specified bot process."""
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")
-        return make_response(redirect(url_for("auth.login")))
+        return await make_response(redirect(url_for("auth.login")))
 
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         bot_info = get_bot_info(db, id)
         if not bot_info:
             flash("Acesso negado!", "error")
-            return make_response(redirect(url_for("bot.dashboard")))
+            return await make_response(redirect(url_for("bot.dashboard")))
 
         display_name = bot_info.display_name
         title = display_name
@@ -115,7 +115,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
         handle_form_errors(form)
 
         url = request.base_url.replace("http://", "https://")
-        return make_response(
+        return await make_response(
             render_template(
                 "index.html",
                 page="botform.html",

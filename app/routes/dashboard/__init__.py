@@ -56,7 +56,7 @@ async def dashboard() -> Coroutine[Any, Any, str]:
 
     database = executions.all()
 
-    return render_template("index.html", page=page, title=title, database=database)
+    return await render_template("index.html", page=page, title=title, database=database)
 
 
 @dash.route("/per_month", methods=["GET"])

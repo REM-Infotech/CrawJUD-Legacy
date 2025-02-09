@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 
 @bot.post("/bot/<id>/<system>/<typebot>")
-async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
+async def botlaunch_back(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """Launch a new bot with the specified parameters.
 
     Args:
@@ -128,9 +128,9 @@ async def stop_bot(user: str, pid: str) -> Response:
             robot_stop = True
             args, code = stop_execution(app, pid, robot_stop)
 
-            return make_response(jsonify(args), code)
+            return await make_response(jsonify(args), code)
 
-    return make_response(jsonify({"error": "PID não encontrado"}), 404)
+    return await make_response(jsonify({"error": "PID não encontrado"}), 404)
 
 
 @bot.post("/periodic_bot/<id>/<system>/<typebot>")
@@ -180,4 +180,4 @@ async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa:
     db.session.add(new_schedule)
     db.session.commit()
 
-    return make_response(jsonify({"success": "success"}))
+    return await make_response(jsonify({"success": "success"}))

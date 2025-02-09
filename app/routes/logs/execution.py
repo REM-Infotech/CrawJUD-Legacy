@@ -5,13 +5,11 @@ This module defines endpoints for managing logs and controlling bot executions.
 
 import asyncio
 import json
-from pathlib import Path
 
 import httpx as requests
 from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
-    Blueprint,
     Response,
     abort,
     flash,
@@ -28,8 +26,7 @@ from quart import current_app as app
 from app.misc import generate_signed_url
 from app.models import Executions, LicensesUsers, Users
 
-path_template = Path(__file__).parent.resolve().joinpath("templates")
-logsbot = Blueprint("logsbot", __name__, template_folder=path_template)
+from . import logsbot
 
 
 async def stopbot(user: str, pid: str, socket: str) -> None:
@@ -74,7 +71,7 @@ async def logs_bot(pid: str) -> Response:
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")
-        return make_response(redirect(url_for("auth.login")))
+        return await make_response(redirect(url_for("auth.login")))
 
     title = f"Execução {pid}"
     user_id = Users.query.filter(Users.login == session["login"]).first().id
@@ -103,10 +100,10 @@ async def logs_bot(pid: str) -> Response:
             execution = Executions.query.filter(Executions.pid == pid).first()
 
     if execution is None:
-        return make_response(redirect(f"{url_for('exe.executions')}"))
+        return await make_response(redirect(f"{url_for('exe.executions')}"))
 
     if execution.status == "Finalizado":
-        return make_response(redirect(f"{url_for('exe.executions')}?pid={pid}"))
+        return await make_response(redirect(f"{url_for('exe.executions')}?pid={pid}"))
 
     rows = execution.total_rows
     resp = make_response(render_template("index.html", page="logs_bot.html", pid=pid, total_rows=rows, title=title))
@@ -151,7 +148,7 @@ async def stop_bot(pid: str) -> Response:
         asyncio.sleep(2)
 
     flash("Execução encerrada", "success")
-    return make_response(redirect(url_for("exe.executions")))
+    return await make_response(redirect(url_for("exe.executions")))
 
 
 @logsbot.route("/status/<pid>", methods=["GET"])
@@ -209,12 +206,12 @@ async def status(pid: str) -> Response:
         if execution.status and execution.status == "Finalizado":
             signed_url = generate_signed_url(execution.file_output)
             response_data = {"message": "OK", "document_url": signed_url}
-            return make_response(jsonify(response_data), 200)
+            return await make_response(jsonify(response_data), 200)
 
         asyncio.sleep(1.2)
         i += 1
 
-    return make_response(jsonify(response_data), 500)
+    return await make_response(jsonify(response_data), 500)
 
 
 @logsbot.route("/url_server/<pid>", methods=["GET"])
@@ -231,4 +228,4 @@ async def url_server(pid: str) -> Response:
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     execution = db.session.query(Executions).filter(Executions.pid == pid).first()
-    return make_response(jsonify({"url_server": execution.url_socket}))
+    return await make_response(jsonify({"url_server": execution.url_socket}))

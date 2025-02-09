@@ -6,6 +6,7 @@ from pathlib import Path
 from flask_login import login_user, logout_user
 from quart import (
     Blueprint,
+    Response,
     flash,
     make_response,
     redirect,
@@ -37,7 +38,7 @@ async def nexturl() -> None:
 
 
 @auth.route("/login", methods=["GET", "POST"])
-async def login():
+async def login() -> Response:
     """Authenticate the user and start a session.
 
     Returns:
@@ -50,7 +51,7 @@ async def login():
         usr = Users.query.filter(Users.login == form.login.data).first()
         if usr is None or not usr.check_password(form.password.data):
             flash("Senha incorreta!", "error")
-            return redirect(url_for("auth.login"))
+            return await make_response(redirect(url_for("auth.login")))
 
         if not session.get("location"):
             session["location"] = url_for("dash.dashboard")
@@ -87,24 +88,24 @@ async def login():
         session["license_token"] = license_usr.license_token
 
         flash("Login efetuado com sucesso!", "success")
-        return resp
+        return await resp
 
-    return render_template("login.html", form=form)
+    return await make_response(await render_template("login.html", form=form))
 
 
-@auth.route("/forgot-password", methods=["GET", "POST"])
-async def forgot_password():
-    """Handle the forgot password functionality.
+# @auth.route("/forgot-password", methods=["GET", "POST"])
+# async def forgot_password():
+#     """Handle the forgot password functionality.
 
-    Returns:
-        str: Currently an empty string.
+#     Returns:
+#         str: Currently an empty string.
 
-    """
-    return ""
+#     """
+#     return
 
 
 @auth.route("/logout", methods=["GET", "POST"])
-async def logout():
+async def logout() -> Response:
     """Log out the current user and clear session cookies.
 
     Returns:
@@ -114,7 +115,7 @@ async def logout():
     logout_user()
 
     flash("Logout efetuado com sucesso!", "success")
-    resp = redirect(url_for("auth.login"))
+    resp = make_response(redirect(url_for("auth.login")))
 
     cookies_ = list(request.cookies.keys())
     for cookie in cookies_:
@@ -126,4 +127,4 @@ async def logout():
         if "_" not in key:
             session.pop(key)
 
-    return resp
+    return await resp

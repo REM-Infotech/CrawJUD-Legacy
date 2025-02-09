@@ -10,6 +10,7 @@ import traceback
 from pathlib import Path
 from typing import Any
 
+import aiofiles
 import httpx
 from deep_translator import GoogleTranslator
 from dotenv_vault import load_dotenv
@@ -35,7 +36,7 @@ load_dotenv()
 
 
 @app.context_processor
-def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
+async def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
     """Inject user-related cookies and authentication data into the template context.
 
     Returns:
@@ -44,7 +45,7 @@ def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
     """
     admin_cookie, supersu_cookie = None, None
 
-    if current_user.is_authenticated:
+    if current_user and current_user.is_authenticated:
         if session.get("_id"):
             admin_cookie = request.cookies.get("roles_admin")
             if admin_cookie:
@@ -64,18 +65,18 @@ def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
 
 
 @app.route("/", methods=["GET"])
-def index() -> Response:
+async def index() -> Response:
     """Redirect to the authentication login page.
 
     Returns:
         Response: A Quart redirect response to the login page.
 
     """
-    return make_response(redirect(url_for("auth.login")), 302)
+    return await make_response(redirect(url_for("auth.login")), 302)
 
 
 @app.route("/favicon.png", methods=["GET"])
-def serve_img() -> Response:
+async def serve_img() -> Response:
     """Serve the favicon image.
 
     Returns:
@@ -84,8 +85,8 @@ def serve_img() -> Response:
     """
     try:
         paht_icon = Path(__file__).cwd().joinpath("static", "img")
-        url = make_response(send_from_directory(paht_icon, "crawjud.png"))
-        return url
+        url = make_response(await send_from_directory(paht_icon, "crawjud.png"))
+        return await url
 
     except Exception:
         err = traceback.format_exc()
@@ -95,7 +96,7 @@ def serve_img() -> Response:
 
 @app.route("/img/<user>.png", methods=["GET"])
 @login_required
-def serve_profile(user: str) -> Response:
+async def serve_profile(user: str) -> Response:
     """Serve the profile image for the specified user.
 
     Args:
@@ -115,20 +116,20 @@ def serve_profile(user: str) -> Response:
 
             if not image_data:
                 url_image = "https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
-                reponse_img = httpx.get(url_image)
-
+                async with httpx.AsyncClient() as client:
+                    response_img = await client.get(url_image)
                 filename = Path(url_image).name
-                image_data = reponse_img.content
+                image_data = response_img.content
 
             image_data = bytes(image_data)
             filename = "".join(re.sub(r'[<>:"/\\|?*]', "_", f"{datetime.datetime.now()}_{filename}"))
 
             original_path = Path(app.config["IMAGE_TEMP_PATH"]).joinpath(filename)
 
-            with open(original_path, "wb") as file:
+            with aiofiles.open(original_path, "wb") as file:
                 file.write(image_data)
 
-            response = make_response(send_from_directory(app.config["IMAGE_TEMP_PATH"], filename))
+            response = await make_response(await send_from_directory(app.config["IMAGE_TEMP_PATH"], filename))
             response.headers["Content-Type"] = "image/png"
 
             return response
@@ -138,7 +139,7 @@ def serve_profile(user: str) -> Response:
 
 
 @app.errorhandler(HTTPException)
-def handle_http_exception(error: HTTPException) -> Response:
+async def handle_http_exception(error: HTTPException) -> Response:
     """Handle HTTP exceptions and render a custom error page.
 
     Args:
@@ -152,7 +153,7 @@ def handle_http_exception(error: HTTPException) -> Response:
     name = tradutor.translate(error.name)
     desc = tradutor.translate(error.description)
 
-    return make_response(
+    return await make_response(
         render_template("handler/index.html", name=name, desc=desc, code=error.code),
         error.code,
     )

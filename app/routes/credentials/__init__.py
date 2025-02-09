@@ -44,7 +44,7 @@ async def credentials():
 
     title = "Credenciais"
     page = "credentials.html"
-    return render_template("index.html", page=page, title=title, database=database)
+    return await render_template("index.html", page=page, title=title, database=database)
 
 
 @cred.route("/credentials/cadastro", methods=["GET", "POST"])
@@ -128,7 +128,7 @@ async def cadastro():
         flash("Credencial salva com sucesso!", "success")
         return redirect(url_for("creds.credentials"))
 
-    return render_template(
+    return await render_template(
         "index.html",
         page=page,
         form=form,
@@ -168,7 +168,7 @@ async def editar(id: int = None):
         flash("Credencial salva com sucesso!", "success")
         return redirect(url_for("creds.credentials"))
 
-    return render_template(
+    return await render_template(
         "index.html",
         page=page,
         form=form,
@@ -198,4 +198,4 @@ async def deletar(id: int = None):
     message = "Credencial deletada!"
 
     template = "include/show.html"
-    return render_template(template, message=message)
+    return await render_template(template, message=message)

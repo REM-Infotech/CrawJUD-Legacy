@@ -20,6 +20,7 @@ import uvicorn
 from celery import Celery
 from clear import clear  # noqa: F401, E402
 from dotenv_vault import load_dotenv
+from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
@@ -56,6 +57,11 @@ objects_config = {
     "production": "app.config.ProductionConfig",
     "testing": "app.config.TestingConfig",
 }
+login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+login_manager.login_message = "Faça login para acessar essa página."
+login_manager.login_message_category = "info"
+
 
 clear()
 load_dotenv()
@@ -79,19 +85,20 @@ class AppFactory:
             app (Flask): The Flask application instance.
 
         """
-        from app.routes.auth import auth
-        from app.routes.bot import bot
-        from app.routes.config import admin, supersu, usr
-        from app.routes.credentials import cred
-        from app.routes.dashboard import dash
-        from app.routes.execution import exe
-        from app.routes.logs import logsbot
-        from app.routes.webhook import wh
+        async with app.app_context():
+            from app.routes.auth import auth
+            from app.routes.bot import bot
+            from app.routes.config import admin, supersu, usr
+            from app.routes.credentials import cred
+            from app.routes.dashboard import dash
+            from app.routes.execution import exe
+            from app.routes.logs import logsbot
+            from app.routes.webhook import wh
 
-        listBlueprints = [bot, auth, logsbot, exe, dash, cred, admin, supersu, usr, wh]  # noqa: N806
+            listBlueprints = [bot, auth, logsbot, exe, dash, cred, admin, supersu, usr, wh]  # noqa: N806
 
-        for bp in listBlueprints:
-            app.register_blueprint(bp)
+            for bp in listBlueprints:
+                app.register_blueprint(bp)
 
     async def main(self) -> tuple[ASGIApp, Celery]:
         """Run the main application loop."""
@@ -121,6 +128,7 @@ class AppFactory:
         celery.autodiscover_tasks(["bot"])
 
         async with app.app_context():
+            login_manager.init_app(app)
             await asyncio.create_task(self.init_database(app))
             await asyncio.create_task(self.init_mail(app))
             await asyncio.create_task(self.init_redis(app))

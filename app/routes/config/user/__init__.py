@@ -23,4 +23,4 @@ async def profile_config() -> Coroutine[Any, Any, str]:
 
     """
     pagina = "config_page.html"
-    return render_template("index.html", pagina=pagina)
+    return await render_template("index.html", pagina=pagina)

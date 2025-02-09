@@ -53,11 +53,11 @@ async def github_webhook() -> Response:
             # Alterna para a tag da nova release
             update_servers(f"refs/tags/{ref}")
 
-        return make_response(jsonify({"message": "Release processada e atualizada"}), 200)
+        return await make_response(jsonify({"message": "Release processada e atualizada"}), 200)
 
     except Exception as e:
         logger.exception(str(e))
-        return make_response(jsonify({"message": "Evento ignorado"}), 500)
+        return await make_response(jsonify({"message": "Evento ignorado"}), 500)
 
 
 async def verify_signature(

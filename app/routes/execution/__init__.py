@@ -3,7 +3,6 @@
 This module provides endpoints for listing executions and downloading execution files.
 """
 
-import os
 from pathlib import Path
 
 from flask_login import login_required
@@ -30,7 +29,7 @@ exe = Blueprint("exe", __name__, template_folder=path_template)
 
 @exe.route("/executions", methods=["GET", "POST"])
 @login_required
-async def executions():
+async def executions() -> Response:
     """Display a list of executions filtered by search criteria.
 
     Returns:
@@ -80,7 +79,7 @@ async def executions():
 
     title = "Execuções"
     page = "executions.html"
-    return make_response(render_template("index.html", page=page, title=title, database=database, form=form))
+    return await make_response(render_template("index.html", page=page, title=title, database=database, form=form))
 
 
 @exe.route("/executions/download/<filename>")
@@ -98,4 +97,4 @@ async def download_file(filename: str) -> Response:
     signed_url = generate_signed_url(filename)
 
     # Redireciona para a URL assinada
-    return make_response(redirect(signed_url))
+    return await make_response(redirect(signed_url))
