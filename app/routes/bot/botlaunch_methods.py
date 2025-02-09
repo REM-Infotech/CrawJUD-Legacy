@@ -278,7 +278,7 @@ async def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str)
             if response.status_code == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
                 flash(message, "success")
-                return make_response(redirect(url_for("logsbot.logs_bot", pid=pid)))
+                return await make_response(redirect(url_for("logsbot.logs_bot", pid=pid)))
             elif response.status_code == 500:
                 pass
     flash("Erro ao iniciar robô", "error")
