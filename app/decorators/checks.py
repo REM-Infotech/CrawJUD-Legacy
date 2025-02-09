@@ -1,7 +1,7 @@
 """Module providing decorators and helper functions for access control."""
 
 from functools import wraps
-from typing import Any
+from typing import Any, Callable
 
 from flask import Response, flash, make_response, redirect, session, url_for
 from flask import current_app as app
@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from ..models import Users
 
 
-def checkSu(func):
+def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
     """Check if the current user is a 'supersu'.
 
     Args:
@@ -22,7 +22,7 @@ def checkSu(func):
     """
 
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Response | Any:
+    def wrapper(*args: tuple, **kwargs: dict) -> Response:
         usuario: str = session["login"]
         if query_supersu(usuario) is False:
             flash("Acesso negado", "error")

@@ -5,7 +5,7 @@ from pathlib import Path
 from flask_login import login_required
 from quart import Blueprint, abort, render_template
 
-from ....decorators import checkSu
+from ....decorators import check_su
 
 path_template = Path(__file__).parent.resolve().joinpath("templates")
 supersu = Blueprint("supersu", __name__, template_folder=path_template)
@@ -13,7 +13,7 @@ supersu = Blueprint("supersu", __name__, template_folder=path_template)
 
 @supersu.route("/configurações_crawjud", methods=["GET"])
 @login_required
-@checkSu
+@check_su
 async def config() -> str:
     """Render the configuration template for CrawJUD.
 
@@ -30,7 +30,7 @@ async def config() -> str:
 
 @supersu.route("/cadastro/cliente", methods=["GET", "POST"])
 @login_required
-@checkSu
+@check_su
 async def cadastro_cliente() -> str:
     """Render the client registration template.
 
@@ -47,7 +47,7 @@ async def cadastro_cliente() -> str:
 
 @supersu.route("/editar/cliente", methods=["GET", "POST"])
 @login_required
-@checkSu
+@check_su
 async def edit_cliente() -> str:
     """Render the client edit template.
 

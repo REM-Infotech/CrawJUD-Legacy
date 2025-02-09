@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from celery.schedules import crontab
-from quart import Blueprint, Response, jsonify, make_response, request
+from quart import Response, jsonify, make_response, request
 from quart import current_app as app
 
 from utils import (  # noqa: F401
@@ -17,13 +17,11 @@ from utils import (  # noqa: F401
 )
 
 from ...models import ScheduleModel
+from . import bot
 
 if TYPE_CHECKING:
     from celery import Task
     from flask_sqlalchemy import SQLAlchemy
-
-path_template = str(Path(__file__).parent.resolve().joinpath("templates"))
-bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
 @bot.post("/bot/<id>/<system>/<typebot>")

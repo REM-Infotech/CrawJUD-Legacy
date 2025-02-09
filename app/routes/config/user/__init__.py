@@ -4,6 +4,7 @@ This module provides endpoints for user-specific profile configuration settings.
 """
 
 from pathlib import Path
+from typing import Any, Coroutine
 
 from flask_login import login_required
 from quart import Blueprint, render_template
@@ -14,7 +15,7 @@ usr = Blueprint("usr", __name__, template_folder=path_template)
 
 @usr.route("/profile_config", methods=["GET", "POST"])
 @login_required
-async def profile_config():
+async def profile_config() -> Coroutine[Any, Any, str]:
     """Render the user profile configuration page.
 
     Returns:

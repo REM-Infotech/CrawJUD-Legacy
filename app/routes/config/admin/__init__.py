@@ -47,7 +47,7 @@ async def users() -> Response:
 
 @admin.route("/cadastro/usuario", methods=["GET", "POST"])
 @login_required
-async def cadastro_user() -> Response:
+async def cadastro_user() -> Response:  # noqa: C901
     """Handle user registration.
 
     Returns:
@@ -124,7 +124,7 @@ async def cadastro_user() -> Response:
 
 @admin.route("/editar/usuario/<id>", methods=["GET", "POST"])
 @login_required
-async def edit_usuario(id: int) -> Response:
+async def edit_usuario(id: int) -> Response:  # noqa: C901, A002
     """Handle editing a user with the given id.
 
     Args:
@@ -219,7 +219,7 @@ async def edit_usuario(id: int) -> Response:
 
 @admin.route("/deletar/usuario/<id>", methods=["GET", "POST"])
 @login_required
-async def delete_usuario(id: int) -> Response:
+async def delete_usuario(id: int) -> Response:  # noqa: A002
     """Handle deletion of a user with the given id.
 
     Args:

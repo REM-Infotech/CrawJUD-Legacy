@@ -73,6 +73,27 @@ from app.models import (  # noqa: E402, F401  # noqa: E402, F401
 class AppFactory:
     """Factory to create and configure the ASGIApp and Celery."""
 
+    async def init_blueprints(self, app: Quart) -> None:
+        """Register blueprints with the Flask application.
+
+        Args:
+            app (Flask): The Flask application instance.
+
+        """
+        from app.routes.auth import auth
+        from app.routes.bot import bot
+        from app.routes.config import admin, supersu, usr
+        from app.routes.credentials import cred
+        from app.routes.dashboard import dash
+        from app.routes.execution import exe
+        from app.routes.logs import logsbot
+        from app.routes.webhook import wh
+
+        listBlueprints = [bot, auth, logsbot, exe, dash, cred, admin, supersu, usr, wh]  # noqa: N806
+
+        for bp in listBlueprints:
+            app.register_blueprint(bp)
+
     async def main(self) -> tuple[ASGIApp, Celery]:
         """Run the main application loop."""
         task = asyncio.create_task(self.create_app())

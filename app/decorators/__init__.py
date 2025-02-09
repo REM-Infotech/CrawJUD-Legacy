@@ -1,5 +1,5 @@
 """Module for importing and managing decorators in the application."""
 
-from .checks import checkSu
+from .checks import check_su
 
-__all__ = ["checkSu"]
+__all__ = ["check_su"]

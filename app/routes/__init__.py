@@ -7,8 +7,6 @@ import datetime
 import json
 import re
 import traceback
-from importlib import import_module
-from os import environ
 from pathlib import Path
 from typing import Any
 
@@ -19,7 +17,6 @@ from flask_login import current_user, login_required
 
 # Quart Imports
 from quart import (
-    Quart,
     Response,
     abort,
     make_response,
@@ -35,28 +32,6 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.local import LocalProxy
 
 load_dotenv()
-
-
-async def register_routes(app: Quart) -> None:
-    """Register blueprints and error handlers with the Quart application.
-
-    Args:
-        app (Quart): The Quart application instance.
-
-    """
-    async with app.app_context():
-        import_module(".logs", package=__package__)
-
-    from ..routes.webhook import wh
-    from .bot.front import bot
-
-    app.register_blueprint(wh)
-    app.register_blueprint(bot)
-
-    @app.errorhandler(HTTPException)
-    async def handle_http_exception(error: HTTPException) -> Response:
-        url = environ.get("url_web")
-        return make_response(redirect(url))
 
 
 @app.context_processor

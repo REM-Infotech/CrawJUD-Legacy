@@ -8,6 +8,7 @@ from datetime import date, datetime  # noqa: F401
 from pathlib import Path  # noqa: F401
 from typing import Any, Union  # noqa: F401
 
+import aiofiles
 import httpx
 from flask_login import login_required  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
@@ -155,7 +156,7 @@ async def handle_file_storage(value: FileStorage, data: dict, files: dict, tempo
     data.update({"xlsx": secure_filename(value.filename)})
     path_save = os.path.join(temporarypath, secure_filename(value.filename))
     value.save(path_save)
-    buff = open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
+    buff = aiofiles.open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
     buff.seek(0)
     files.update({
         secure_filename(value.filename): (
@@ -181,7 +182,7 @@ async def handle_file_list(
     for filev in value:
         if isinstance(filev, FileStorage):
             filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
-            buff = open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
+            buff = aiofiles.open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
             files.update({
                 secure_filename(filev.filename): (
                     secure_filename(filev.filename),
@@ -239,9 +240,9 @@ async def handle_credentials(value: str, data: dict, system: str, files: dict) -
                 })
             elif credential.login_method == "cert":
                 certpath = os.path.join(temporarypath, credential.certficate)
-                with open(certpath, "wb") as f:
+                with aiofiles.open(certpath, "wb") as f:
                     f.write(credential.certficate_blob)
-                buff = open(os.path.join(certpath), "rb")
+                buff = aiofiles.open(os.path.join(certpath), "rb")
                 files.update({
                     credential.certficate: (
                         credential.certficate,
@@ -270,8 +271,9 @@ async def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str)
             kwargs.pop("json")
             kwargs.update({"files": files, "data": data})
         response = None
-        with suppress(Exception):
-            response = httpx.post(timeout=60, **kwargs, headers=headers)
+        async with suppress(Exception):
+            async with httpx.AsyncClient() as client:
+                response = await client.post(**kwargs, headers=headers)
         if response:
             if response.status_code == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
