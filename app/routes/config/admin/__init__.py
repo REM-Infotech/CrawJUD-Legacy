@@ -57,7 +57,7 @@ async def cadastro_user() -> Response:  # noqa: C901
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         if not session.get("license_token"):
-            flash("Sessão expirada. Faça login novamente.", "error")
+            await flash("Sessão expirada. Faça login novamente.", "error")
             return redirect(url_for("auth.login"))
 
         title = "Cadastro Usuário"
@@ -108,13 +108,13 @@ async def cadastro_user() -> Response:  # noqa: C901
             db.session.add(user)
             db.session.commit()
 
-            flash("Usuário cadastrado!", "success")
+            await flash("Usuário cadastrado!", "success")
             return redirect(url_for("admin.users"))
 
         form_items = list(form)
         for field in form_items:
             for error in field.errors:
-                flash(f"Erro: {error}. Campo: {field.label.text}", "error")
+                await flash(f"Erro: {error}. Campo: {field.label.text}", "error")
 
         return await make_response(render_template("index.html", page=page, form=form, title=title))
 
@@ -137,7 +137,7 @@ async def edit_usuario(id: int) -> Response:  # noqa: C901, A002
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         if not session.get("license_token"):
-            flash("Sessão expirada. Faça login novamente.", "error")
+            await flash("Sessão expirada. Faça login novamente.", "error")
             return redirect(url_for("auth.login"))
 
         title = "Editar Usuário"
@@ -208,7 +208,7 @@ async def edit_usuario(id: int) -> Response:  # noqa: C901, A002
 
             db.session.commit()
 
-            flash("Usuário editado com sucesso!", "message")
+            await flash("Usuário editado com sucesso!", "message")
             return await make_response(redirect(url_for("admin.users")))
 
         return await make_response(render_template("index.html", page=page, form=form, title=title))
@@ -234,7 +234,7 @@ async def delete_usuario(id: int) -> Response:  # noqa: A002
         form = UserForm()
         page = "FormUsr.html"
 
-        flash("Hello World!", "success")
+        await flash("Hello World!", "success")
         return await make_response(render_template("index.html", page=page, form=form, title=title))
 
     except Exception as e:

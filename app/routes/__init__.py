@@ -46,7 +46,7 @@ async def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None
     """
     admin_cookie, supersu_cookie = None, None
 
-    if current_user and current_user.is_authenticated:
+    if current_user and await current_user.is_authenticated:
         if session.get("_id"):
             admin_cookie = request.cookies.get("roles_admin")
             if admin_cookie:

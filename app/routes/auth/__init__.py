@@ -55,7 +55,7 @@ async def login() -> Response:
     if form.validate_on_submit():
         usr = db.session.query(Users).filter(Users.login == form.login.data).first()
         if usr is None or not usr.check_password(form.password.data):
-            flash("Senha incorreta!", "error")
+            await flash("Senha incorreta!", "error")
             return await make_response(redirect(url_for("auth.login")))
 
         if not session.get("location"):
@@ -102,7 +102,7 @@ async def login() -> Response:
         session["nome_usuario"] = usr.nome_usuario
         session["license_token"] = license_usr.license_token
 
-        flash("Login efetuado com sucesso!", "success")
+        await flash("Login efetuado com sucesso!", "success")
         return resp
 
     return await make_response(await render_template("login.html", form=form))
@@ -129,7 +129,7 @@ async def logout() -> Response:
     """
     logout_user()
 
-    flash("Logout efetuado com sucesso!", "success")
+    await flash("Logout efetuado com sucesso!", "success")
     resp = make_response(redirect(url_for("auth.login")))
 
     cookies_ = list(request.cookies.keys())

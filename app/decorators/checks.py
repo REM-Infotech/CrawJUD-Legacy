@@ -25,7 +25,7 @@ def check_su(func: Callable[..., Any]) -> Callable[..., Any]:
     async def wrapper(*args: tuple, **kwargs: dict) -> Response:
         usuario: str = session["login"]
         if query_supersu(usuario) is False:
-            flash("Acesso negado", "error")
+            await flash("Acesso negado", "error")
             return await make_response(redirect(url_for("dash.dashboard")))
         return func(*args, **kwargs)
 

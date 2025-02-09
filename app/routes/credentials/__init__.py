@@ -37,7 +37,7 @@ async def credentials():
 
     """
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return redirect(url_for("auth.login"))
 
     database = db.session.query(Credentials).join(LicensesUsers).filter_by(license_token=session["license_token"]).all()
@@ -57,7 +57,7 @@ async def cadastro():
 
     """
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return redirect(url_for("auth.login"))
 
     page = "FormCred.html"
@@ -76,7 +76,7 @@ async def cadastro():
 
     if form.validate_on_submit():
         if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
-            flash("Existem credenciais com este nome já cadastrada!", "error")
+            await flash("Existem credenciais com este nome já cadastrada!", "error")
             return redirect(url_for("creds.cadastro"))
 
         async def pw(form) -> None:
@@ -125,7 +125,7 @@ async def cadastro():
                 func(form)
                 break
 
-        flash("Credencial salva com sucesso!", "success")
+        await flash("Credencial salva com sucesso!", "success")
         return redirect(url_for("creds.credentials"))
 
     return await render_template(
@@ -165,7 +165,7 @@ async def editar(id: int = None):
     action_url = url_for("creds.cadastro")
 
     if form.validate_on_submit():
-        flash("Credencial salva com sucesso!", "success")
+        await flash("Credencial salva com sucesso!", "success")
         return redirect(url_for("creds.credentials"))
 
     return await render_template(

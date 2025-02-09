@@ -83,14 +83,14 @@ async def dashboard() -> Response:
 async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
     """Launch the specified bot process."""
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return await make_response(redirect(url_for("auth.login")))
 
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         bot_info = get_bot_info(db, id)
         if not bot_info:
-            flash("Acesso negado!", "error")
+            await flash("Acesso negado!", "error")
             return await make_response(redirect(url_for("bot.dashboard")))
 
         display_name = bot_info.display_name

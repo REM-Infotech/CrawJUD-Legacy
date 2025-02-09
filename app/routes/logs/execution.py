@@ -70,7 +70,7 @@ async def logs_bot(pid: str) -> Response:
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return await make_response(redirect(url_for("auth.login")))
 
     title = f"Execução {pid}"
@@ -147,7 +147,7 @@ async def stop_bot(pid: str) -> Response:
 
         asyncio.sleep(2)
 
-    flash("Execução encerrada", "success")
+    await flash("Execução encerrada", "success")
     return await make_response(redirect(url_for("exe.executions")))
 
 

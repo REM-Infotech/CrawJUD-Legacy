@@ -277,11 +277,11 @@ async def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str)
         if response:
             if response.status_code == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
-                flash(message, "success")
+                await flash(message, "success")
                 return await make_response(redirect(url_for("logsbot.logs_bot", pid=pid)))
             elif response.status_code == 500:
                 pass
-    flash("Erro ao iniciar robô", "error")
+    await flash("Erro ao iniciar robô", "error")
     return None
 
 
@@ -290,4 +290,4 @@ async def handle_form_errors(form: BotForm) -> None:
     if form.errors:
         for field_err in form.errors:
             for error in form.errors[field_err]:
-                flash(f"Erro: {error}", "error")
+                await flash(f"Erro: {error}", "error")
