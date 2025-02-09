@@ -7,33 +7,34 @@ chart data for executions per month and most executed bots.
 import json
 import locale
 import os
-import pathlib
 from collections import Counter
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Coroutine
 
 import pandas as pd
 from deep_translator import GoogleTranslator
 from flask_login import login_required
-from quart import Blueprint, abort, jsonify, render_template, request, session
+from quart import Blueprint, Response, abort, jsonify, render_template, request, session
 
 from app import db
 from app.models import Executions, LicensesUsers, SuperUser, Users
 
 translator = GoogleTranslator(source="en", target="pt")
 
-path_static = os.path.join(pathlib.Path(__file__).parent.resolve(), "static")
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_static = os.path.join(Path(__file__).parent.resolve(), "static")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 
 dash = Blueprint("dash", __name__, template_folder=path_template, static_folder=path_static)
 
 
 @dash.route("/dashboard", methods=["GET"])
 @login_required
-async def dashboard():
+async def dashboard() -> Coroutine[Any, Any, str]:
     """Render the dashboard page with execution data.
 
     Returns:
-        Response: A Flask response rendering the dashboard.
+        Response: A Quart response rendering the dashboard.
 
     """
     title = "Dashboard"
@@ -58,13 +59,13 @@ async def dashboard():
     return render_template("index.html", page=page, title=title, database=database)
 
 
-@dash.route("/PerMonth", methods=["GET"])
+@dash.route("/per_month", methods=["GET"])
 @login_required
-async def perMonth():
+async def per_month() -> Response:
     """Return JSON data representing execution counts per month.
 
     Returns:
-        Response: A Flask JSON response containing labels and values.
+        Response: A Quart JSON response containing labels and values.
 
     """
     if not session.get("license_token"):
@@ -134,13 +135,13 @@ async def perMonth():
     return jsonify(chart_data)
 
 
-@dash.route("/MostExecuted", methods=["GET"])
+@dash.route("/most_executed", methods=["GET"])
 @login_required
-async def MostExecuted():
+async def most_executed() -> Response:
     """Return JSON data of the most executed bots.
 
     Returns:
-        Response: A Flask JSON response with bot names and execution counts.
+        Response: A Quart JSON response with bot names and execution counts.
 
     """
     if not session.get("license_token"):

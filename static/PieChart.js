@@ -3,8 +3,8 @@ Chart.defaults.global.defaultFontFamily =
   '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = "#292b2c";
 
-var ctx = document.getElementById("MostExecuted");
-var MostExecuted = new Chart(ctx, {
+var ctx = document.getElementById("most_executed");
+var most_executed = new Chart(ctx, {
   type: "doughnut",
   data: {
     datasets: [
@@ -111,12 +111,12 @@ var MostExecuted = new Chart(ctx, {
 
 $(document).ready(function () {
   $.ajax({
-    url: "/MostExecuted",
+    url: "/most_executed",
     type: "GET",
     success: function (data) {
-      MostExecuted.data.labels = data.labels;
-      MostExecuted.data.datasets[0].data = data.values;
-      MostExecuted.update();
+      most_executed.data.labels = data.labels;
+      most_executed.data.datasets[0].data = data.values;
+      most_executed.update();
     },
   });
 });

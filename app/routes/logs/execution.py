@@ -5,8 +5,7 @@ This module defines endpoints for managing logs and controlling bot executions.
 
 import asyncio
 import json
-import os
-import pathlib
+from pathlib import Path
 
 import httpx as requests
 from flask_login import login_required
@@ -29,7 +28,7 @@ from quart import current_app as app
 from app.misc import generate_signed_url
 from app.models import Executions, LicensesUsers, Users
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 logsbot = Blueprint("logsbot", __name__, template_folder=path_template)
 
 
@@ -69,7 +68,7 @@ async def logs_bot(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask response rendering the logs bot page.
+        Response: A Quart response rendering the logs bot page.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -134,7 +133,7 @@ async def stop_bot(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask redirect response to the executions page.
+        Response: A Quart redirect response to the executions page.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -164,7 +163,7 @@ async def status(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask JSON response with execution status or error message.
+        Response: A Quart JSON response with execution status or error message.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -227,7 +226,7 @@ async def url_server(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask JSON response containing the server URL.
+        Response: A Quart JSON response containing the server URL.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]

@@ -3,13 +3,12 @@
 This module provides endpoints for user-specific profile configuration settings.
 """
 
-import os
-import pathlib
+from pathlib import Path
 
 from flask_login import login_required
 from quart import Blueprint, render_template
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 usr = Blueprint("usr", __name__, template_folder=path_template)
 
 
@@ -19,7 +18,7 @@ async def profile_config():
     """Render the user profile configuration page.
 
     Returns:
-        Response: A Flask response rendering the profile configuration.
+        Response: A Quart response rendering the profile configuration.
 
     """
     pagina = "config_page.html"

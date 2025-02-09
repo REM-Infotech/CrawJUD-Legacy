@@ -4,8 +4,8 @@ This module defines endpoints for listing, creating, editing, and deleting crede
 """
 
 import os
-import pathlib
 from collections import Counter
+from pathlib import Path
 
 from flask_login import login_required
 from quart import (
@@ -23,7 +23,7 @@ from app import db
 from app.forms.credentials import CredentialsForm
 from app.models import BotsCrawJUD, Credentials, LicensesUsers
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 cred = Blueprint("creds", __name__, template_folder=path_template)
 
 
@@ -33,7 +33,7 @@ async def credentials():
     """Render the credentials dashboard page.
 
     Returns:
-        Response: A Flask response rendering the credentials page.
+        Response: A Quart response rendering the credentials page.
 
     """
     if not session.get("license_token"):
@@ -53,7 +53,7 @@ async def cadastro():
     """Handle the creation of new credentials.
 
     Returns:
-        Response: A Flask response after processing the credentials form.
+        Response: A Quart response after processing the credentials form.
 
     """
     if not session.get("license_token"):
@@ -147,7 +147,7 @@ async def editar(id: int = None):
         id (int, optional): The credential identifier.
 
     Returns:
-        Response: A Flask response rendering the edit form.
+        Response: A Quart response rendering the edit form.
 
     """
     page = "FormCred.html"
@@ -187,7 +187,7 @@ async def deletar(id: int = None):
         id (int, optional): The credential identifier.
 
     Returns:
-        Response: A Flask response confirming deletion.
+        Response: A Quart response confirming deletion.
 
     """
     to_delete = Credentials.query.filter(Credentials.id == id).first()

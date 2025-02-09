@@ -4,7 +4,7 @@ This module provides endpoints for listing executions and downloading execution 
 """
 
 import os
-import pathlib
+from pathlib import Path
 
 from flask_login import login_required
 from quart import (
@@ -24,7 +24,7 @@ from app.forms import SearchExec
 from app.misc import generate_signed_url
 from app.models import Executions, SuperUser, Users, admins
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 exe = Blueprint("exe", __name__, template_folder=path_template)
 
 
@@ -34,7 +34,7 @@ async def executions():
     """Display a list of executions filtered by search criteria.
 
     Returns:
-        Response: A Flask response rendering the executions page.
+        Response: A Quart response rendering the executions page.
 
     """
     try:
@@ -92,7 +92,7 @@ async def download_file(filename: str) -> Response:
         filename (str): The name of the file to download.
 
     Returns:
-        Response: A Flask redirect response to the signed URL.
+        Response: A Quart redirect response to the signed URL.
 
     """
     signed_url = generate_signed_url(filename)

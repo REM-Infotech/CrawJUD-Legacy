@@ -2,10 +2,10 @@
 
 import json
 import os
-import pathlib  # noqa: F401
 import traceback  # noqa: F401
 from contextlib import suppress
 from datetime import date, datetime  # noqa: F401
+from pathlib import Path  # noqa: F401
 from typing import Any, Union  # noqa: F401
 
 import httpx
@@ -150,7 +150,7 @@ async def process_form_submission(
     return data, files, pid
 
 
-async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
+async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | Path) -> None:
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
     path_save = os.path.join(temporarypath, secure_filename(value.filename))
@@ -171,7 +171,7 @@ async def handle_file_list(
     value: FileStorage | str,
     data: dict,
     files: dict,
-    temporarypath: str | pathlib.Path,
+    temporarypath: str | Path,
 ) -> None:
     """Handle list of files for form submission."""
     if not isinstance(value[0], FileStorage):

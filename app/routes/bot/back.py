@@ -16,7 +16,7 @@ from utils import (  # noqa: F401
     stop_execution,
 )
 
-from ..models import ScheduleModel
+from ...models import ScheduleModel
 
 if TYPE_CHECKING:
     from celery import Task

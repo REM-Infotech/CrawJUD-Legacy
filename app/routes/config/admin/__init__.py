@@ -1,7 +1,6 @@
 """Module for Admin configuration routes."""
 
-import os
-import pathlib
+from pathlib import Path
 from typing import Dict
 
 from flask_login import login_required
@@ -12,7 +11,7 @@ from quart import current_app as app
 from app.forms import UserForm, UserFormEdit
 from app.models import LicensesUsers, SuperUser, Users
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 admin = Blueprint("admin", __name__, template_folder=path_template)
 
 

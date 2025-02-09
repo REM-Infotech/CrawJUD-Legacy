@@ -1,8 +1,7 @@
 """Module for authentication routes."""
 
 import json
-import os
-import pathlib
+from pathlib import Path
 
 from flask_login import login_user, logout_user
 from quart import (
@@ -19,14 +18,14 @@ from quart import (
 from app.forms.auth.login import LoginForm
 from app.models.users import Users
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 auth = Blueprint("auth", __name__, template_folder=path_template)
 
 usr = None
 
 
 @auth.before_request
-async def nexturl():
+async def nexturl() -> None:
     """Store the next URL in session if provided.
 
     Returns:

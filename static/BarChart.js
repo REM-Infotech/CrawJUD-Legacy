@@ -3,8 +3,8 @@ Chart.defaults.global.defaultFontFamily =
   '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = "#292b2c";
 
-var ctx = document.getElementById("perMonth");
-var perMonth = new Chart(ctx, {
+var ctx = document.getElementById("per_month");
+var per_month = new Chart(ctx, {
   type: "bar",
   data: {
     labels: [
@@ -117,19 +117,19 @@ var perMonth = new Chart(ctx, {
 
 $(document).ready(function () {
   $.ajax({
-    url: "/PerMonth",
+    url: "/per_month",
     type: "GET",
     success: function (data) {
-      perMonth.data.labels.forEach((item, pos) => {
+      per_month.data.labels.forEach((item, pos) => {
         var pos = parseInt(pos);
         for (label of data.labels) {
-          if (perMonth.data.labels[pos].toLowerCase() === label.toLowerCase()) {
-            perMonth.data.datasets[0].data[pos] = data.values[pos];
+          if (per_month.data.labels[pos].toLowerCase() === label.toLowerCase()) {
+            per_month.data.datasets[0].data[pos] = data.values[pos];
             break;
           }
         }
       });
-      perMonth.update();
+      per_month.update();
     },
   });
 });

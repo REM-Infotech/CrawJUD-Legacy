@@ -1,14 +1,13 @@
 """Module for Super Su configuration routes."""
 
-import os
-import pathlib
+from pathlib import Path
 
 from flask_login import login_required
 from quart import Blueprint, abort, render_template
 
 from ....decorators import checkSu
 
-path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
+path_template = Path(__file__).parent.resolve().joinpath("templates")
 supersu = Blueprint("supersu", __name__, template_folder=path_template)
 
 
