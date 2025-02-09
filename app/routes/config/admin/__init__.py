@@ -39,7 +39,7 @@ async def users() -> Response:
         database = users.all()
 
         page = "users.html"
-        return await make_response(render_template("index.html", page=page, database=database))
+        return await make_response(await render_template("index.html", page=page, database=database))
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")
@@ -116,7 +116,7 @@ async def cadastro_user() -> Response:  # noqa: C901
             for error in field.errors:
                 await flash(f"Erro: {error}. Campo: {field.label.text}", "error")
 
-        return await make_response(render_template("index.html", page=page, form=form, title=title))
+        return await make_response(await render_template("index.html", page=page, form=form, title=title))
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")
@@ -211,7 +211,7 @@ async def edit_usuario(id: int) -> Response:  # noqa: C901, A002
             await flash("Usuário editado com sucesso!", "message")
             return await make_response(redirect(url_for("admin.users")))
 
-        return await make_response(render_template("index.html", page=page, form=form, title=title))
+        return await make_response(await render_template("index.html", page=page, form=form, title=title))
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")
@@ -235,7 +235,7 @@ async def delete_usuario(id: int) -> Response:  # noqa: A002
         page = "FormUsr.html"
 
         await flash("Hello World!", "success")
-        return await make_response(render_template("index.html", page=page, form=form, title=title))
+        return await make_response(await render_template("index.html", page=page, form=form, title=title))
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {str(e)}")

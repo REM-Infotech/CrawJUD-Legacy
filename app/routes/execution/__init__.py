@@ -79,7 +79,9 @@ async def executions() -> Response:
 
     title = "Execuções"
     page = "executions.html"
-    return await make_response(render_template("index.html", page=page, title=title, database=database, form=form))
+    return await make_response(
+        await render_template("index.html", page=page, title=title, database=database, form=form)
+    )
 
 
 @exe.route("/executions/download/<filename>")

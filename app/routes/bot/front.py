@@ -71,7 +71,7 @@ async def dashboard() -> Response:
         page = "botboard.html"
         bots = BotsCrawJUD.query.all()
 
-        return await make_response(render_template("index.html", page=page, bots=bots, title=title))
+        return await make_response(await render_template("index.html", page=page, bots=bots, title=title))
 
     except Exception as e:
         app.logger.exception(traceback.format_exc())
