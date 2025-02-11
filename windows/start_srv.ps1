@@ -1,70 +1,100 @@
 param (
-    [Parameter(Mandatory = $true)]
-    [string] $DOTENV_KEY,
-    [string] $APPLICATION_APP
+  [Parameter(Mandatory = $true)]
+  [string] $DOTENV_KEY,
+  $APPLICATION_APP,
+  [string] $SERVER_HOSTNAME
 )
 function StartApp {
 
-    param (
+  param (
+    [string] $SERVER_HOSTNAME,
+    [string] $DOTENV_KEY,
+    [string] $APPLICATION_APP
+  )
+
+
+
+  $env:INTO_DOCKER = 'true'
+  $env:DOTENV_KEY = $DOTENV_KEY
+  $env:APPLICATION_APP = $APPLICATION_APP
+  $env:SERVER_HOSTNAME = $SERVER_HOSTNAME
+
+  if ($APPLICATION_APP -eq 'worker') {
+
+    function StartWorker {
+      param (
         [string] $DOTENV_KEY,
         [string] $APPLICATION_APP
-    )
-    $env:INTO_DOCKER = 'true'
-    $env:DOTENV_KEY = $DOTENV_KEY
-    $env:APPLICATION_APP = $APPLICATION_APP
+      )
 
-    if ($APPLICATION_APP -eq 'worker') {
+      poetry run celery -A app.run.app
 
-        function StartWorker {
-            param (
-                [string] $DOTENV_KEY,
-                [string] $APPLICATION_APP
-            )
-
-            poetry run celery -A app.run.app
-
-        }
-        StartWorker -DOTENV_KEY $DOTENV_KEY -APPLICATION_APP $APPLICATION_APP
-
-    } elseif ($APPLICATION_APP -eq 'quart') {
-
-        function StartASGI {
-            param (
-                [string] $DOTENV_KEY,
-                [string] $APPLICATION_APP
-            )
-
-            poetry run celery -A app.run.app
-
-        }
-
-    } elseif ($APPLICATION_APP -eq 'beat') {
-        function StartBeat {
-            param (
-                [string] $DOTENV_KEY,
-                [string] $APPLICATION_APP
-            )
-
-            poetry run celery -A app.run.app
-
-        }
     }
 
-    switch ($APPLICATION_APP) {
-        'worker' { StartWorker -DOTENV_KEY $DOTENV_KEY }
-        'quart' { StartASGI -DOTENV_KEY $DOTENV_KEY }
-        'beat' { StartBeat -DOTENV_KEY $DOTENV_KEY }
-        default { Write-Host "Opção inválida: $APPLICATION_APP" }
+    poetry run celery -A app.run.app worker -E --loglevel=INFO -P threads -c 50
+
+  } elseif ($APPLICATION_APP -eq 'quart') {
+
+    function StartASGI {
+      param (
+        [string] $DOTENV_KEY,
+        [string] $APPLICATION_APP
+      )
+
+      poetry run python -m app
+
     }
+
+  } elseif ($APPLICATION_APP -eq 'beat') {
+    function StartBeat {
+      param (
+        [string] $DOTENV_KEY,
+        [string] $APPLICATION_APP
+      )
+
+      poetry run celery -A app.run.app beat --loglevel=INFO --scheduler job.FlaskSchedule.DatabaseScheduler
+
+    }
+  }
+
+  switch ($APPLICATION_APP) {
+    'worker' { StartWorker -DOTENV_KEY $DOTENV_KEY }
+    'quart' { StartASGI -DOTENV_KEY $DOTENV_KEY }
+    'beat' { StartBeat -DOTENV_KEY $DOTENV_KEY }
+    default { Throw "Opção inválida: $APPLICATION_APP" }
+  }
 
 }
-StartApp -DOTENV_KEY $DOTENV_KEY -APPLICATION_APP $APPLICATION_APP
 
+if ($APPLICATION_APP -is [string]) {
+  Write-Host "Initializing $APPLICATION_APP"
+  StartApp -DOTENV_KEY $DOTENV_KEY -APPLICATION_APP $APPLICATION_APP -SERVER_HOSTNAME $SERVER_HOSTNAME
+} elseif ($APPLICATION_APP -is [System.Object]) {
+
+
+  foreach ($app in $APPLICATION_APP) {
+
+    if ($app -eq 'worker' -or $app -eq 'beat') {
+
+      Write-Host "Initializing celery[$app]"
+
+    } elseif ($app -eq 'quart') {
+
+      Write-Host "Initializing asgi[$app]"
+    }
+
+
+    StartApp -DOTENV_KEY $DOTENV_KEY -APPLICATION_APP $app -SERVER_HOSTNAME $SERVER_HOSTNAME
+  }
+} else {
+  Throw "Opção inválida: $APPLICATION_APP"
+
+}
 # SIG # Begin signature block
 # MIII5QYJKoZIhvcNAQcCoIII1jCCCNICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUBBabCDeguQjNWjOzbIIptmC9
-# ZrCgggZIMIIGRDCCBSygAwIBAgITHgAAFw+vQ2JVyMWIGwAAAAAXDzANBgkqhkiG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUJc2iG0Xn1DiJ1lZa+l50i+58
+# uL+gggZIMIIGRDCCBSygAwIBAgITHgAAFw+vQ2JVyMWIGwAAAAAXDzANBgkqhkiG
 # 9w0BAQsFADBPMRgwFgYKCZImiZPyLGQBGRYIaW50cmFuZXQxEzARBgoJkiaJk/Is
 # ZAEZFgNmbXYxHjAcBgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQTAeFw0yNTAy
 # MTExNDI3NDhaFw0yNjAyMTExNDI3NDhaMHAxGDAWBgoJkiaJk/IsZAEZFghpbnRy
@@ -102,11 +132,11 @@ StartApp -DOTENV_KEY $DOTENV_KEY -APPLICATION_APP $APPLICATION_APP
 # BgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQQITHgAAFw+vQ2JVyMWIGwAAAAAX
 # DzAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG
 # 9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIB
-# FTAjBgkqhkiG9w0BCQQxFgQU/Wv6ivPOJT5QXB+x5AuB4efkcKgwDQYJKoZIhvcN
-# AQEBBQAEggEAwTej1Qz3q2tGQru2ni+2P04WcNoqyRa9To9+6dMZvzNXF8Kfpi55
-# rdPnVn/FWmiNVHj3KtxGbm9yvdMpi0eN1Zxp6WGExty/xZGHzwSC6b158cP3dZoP
-# wz4m+gywzS8r0B47IiENTF3RJ0bTyg3P6dUz3DMVelfmaxoppmOYgjMtpeUQU5rX
-# Q7OMr91W/UV8Ll74m8OoimEP4E8b81Yxr1PLTcimbju1RhWimUnKQWrGYJNIGUQq
-# KUvPTNwAQG2PyvfOXWW1qNaTAQD6L/YB3u7b2n5qfMVuyAojjhtj+Pm5PwA3SqBe
-# iE2xXZgGvmZGCLrqqtY4QsN51TR5FWwPIw==
+# FTAjBgkqhkiG9w0BCQQxFgQUVU37VVi0wQbYp8iIW2xvcwN5234wDQYJKoZIhvcN
+# AQEBBQAEggEAuK7HgGqid4BDaAcr5zj3yIMFZIhdQExHwMTR74L4sX/Afh+X+Hry
+# SAHfk+bJvXY3GbTdnwBfxVki1ekGNyN6BnXVWsw90qKLIgChKO2wT7LFGaxVaI/6
+# j5dBBaJq+NI6TiJ+LnwbH+pYZvoJk9qLz2y/n7ZOH2x+OQXexZKjeg49l5YxLb52
+# /QE27C6TVMhfXg+fvjrOul4gBPuZf/2uQNlQuRa+FEDTLlok6h2o6clzeEsNM3cX
+# WJfufGaNMaVqvB9dK5nU8ncQgSSulMK3/0JlpC4TmmKApFb+2v7+hE+PEf+YMay1
+# YreiNzkTWmztr56aX+0Wh/l4Vc15NOFZnw==
 # SIG # End signature block
