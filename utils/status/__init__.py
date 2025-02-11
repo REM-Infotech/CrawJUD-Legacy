@@ -11,14 +11,16 @@ import logging
 import traceback  # noqa: F401
 import unicodedata
 from datetime import datetime
-from os import path
+from os import environ, path
 from pathlib import Path
 
 import aiofiles
 import openpyxl
 import pytz
 from celery import shared_task
+from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
+from jinja2 import Environment, FileSystemLoader
 from openpyxl.worksheet.worksheet import Worksheet
 from quart import Quart
 from werkzeug.datastructures import FileStorage
@@ -33,6 +35,8 @@ from .upload_zip import enviar_arquivo_para_gcs
 
 url_cache = []
 logger = logging.getLogger(__name__)
+
+env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve().joinpath("mail/templates")), autoescape=True)
 
 
 class StarterTasks:
@@ -205,7 +209,44 @@ class StarterTasks:
             type_notify (str): The type of notification.
 
         """
-        email_start(execut, app)
+        render_template = env.get_template
+        mail = Mail(app)
+
+        with app.app_context():
+            mail.connect()
+
+        admins: list[str] = []
+        pid = execut.pid
+        usr: Users = execut.user
+
+        display_name = str(execut.bot.display_name)
+        xlsx = str(execut.arquivo_xlsx)
+
+        try:
+            for adm in usr.licenseusr.admins:
+                admins.append(adm.email)
+
+        except Exception:
+            err = traceback.format_exc()
+            logger.exception(err)
+
+        with app.app_context():
+            sendermail = environ["MAIL_DEFAULT_SENDER"]
+
+            robot = f"Robot Notifications <{sendermail}>"
+            assunto = f"Bot {display_name} - {type_notify}"
+            url_web = environ.get(" URL_WEB")
+            destinatario = usr.email
+            username = str(usr.nome_usuario)
+            mensagem = render_template(f"email_{type_notify}.html").render(
+                display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
+            )
+
+            msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
+            if usr.email not in admins:
+                msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins)
+
+            mail.send(msg)
         return "Email enviado com sucesso!"
 
     @classmethod
