@@ -3,13 +3,25 @@
 This module initializes and manages the elaw bots within the CrawJUD-Bots application.
 """
 
+from __future__ import annotations
+
 import logging
 import traceback
+from typing import Union
 
-# from typing import any
 from ...common import StartError
+from .andamentos import Andamentos
+from .cadastro import Cadastro
+from .complement import Complement
+from .download import Download
+from .prazos import Prazos
+from .provisao import Provisao
+from .sol_pags import SolPags as Sol_pags
 
 logger = logging.getLogger(__name__)
+ClassBots = Union[Andamentos, Cadastro, Complement, Download, Prazos, Provisao, Sol_pags]
+
+__all__ = [Andamentos, Cadastro, Complement, Download, Prazos, Provisao, Sol_pags]
 
 
 class Elaw:

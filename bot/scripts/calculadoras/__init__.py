@@ -5,13 +5,14 @@ This module initializes and manages the Calculadoras bot within the CrawJUD-Bots
 
 import logging
 import traceback
+from typing import Union
 
-# from typing import any
 from ...common import StartError
 from .tjdft import Tjdft
 
 __all__ = ["Tjdft"]
 logger = logging.getLogger(__name__)
+ClassBots = Union[Tjdft]
 
 
 class Calculadoras:

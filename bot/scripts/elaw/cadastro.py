@@ -25,7 +25,7 @@ from ...core import CrawJUD
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class cadastro(CrawJUD):  # noqa: N801
+class Cadastro(CrawJUD):
     """The Cadastro class extends CrawJUD to manage registration tasks within the application.
 
     Attributes:

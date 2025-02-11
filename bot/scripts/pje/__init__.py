@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import logging
 import traceback
+from typing import Union
 
 from ...common import StartError
+from .pauta import Pauta
 
 logger = logging.getLogger(__name__)
+
+ClassBots = Union[Pauta]
 
 
 class PJe:

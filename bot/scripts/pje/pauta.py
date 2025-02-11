@@ -20,7 +20,7 @@ from ...core import CrawJUD
 # from typing import type
 
 
-class pauta(CrawJUD):  # noqa: N801
+class Pauta(CrawJUD):  # noqa: N801
     """Represents the main class to retrieve hearing data (pautas)."""
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:

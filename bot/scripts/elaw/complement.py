@@ -49,7 +49,7 @@ campos_validar: list[str] = [
 ]
 
 
-class complement(CrawJUD):  # noqa: N801
+class Complement(CrawJUD):
     """A class that configures and retrieves an elements bot instance.
 
     This class interacts with the ELAW system to complete the registration of a process.
@@ -147,7 +147,7 @@ class complement(CrawJUD):  # noqa: N801
         Steps:
         1. Check the search status and format bot data.
         2. If the search is successful:
-           - Initialize the registration complement.
+           - Initialize the registration Complement.
            - Locate and click the edit button for complementing processes.
            - Iterate over the bot data to perform specific actions based on keys.
            - Validate fields and participants.
@@ -185,10 +185,10 @@ class complement(CrawJUD):  # noqa: N801
 
                 if esfera_xls:
                     if check_esfera.text.lower() != esfera_xls.lower():
-                        complement.esfera(self, esfera_xls)
+                        Complement.esfera(self, esfera_xls)
 
                 for item in lista1:
-                    func: Callable[[], None] = getattr(complement, item.lower(), None)
+                    func: Callable[[], None] = getattr(Complement, item.lower(), None)
 
                     if func and item.lower() != "esfera":
                         func(self)
