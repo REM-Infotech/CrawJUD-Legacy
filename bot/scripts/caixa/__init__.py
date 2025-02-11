@@ -55,9 +55,10 @@ class Caixa:
 
             kwargs.update({"display_name": display_name})
 
-            self.bot_call(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
+            caller = self.bot_call
+            caller = caller(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
 
-            self.bot_call.execution()
+            caller.execution()
 
         except Exception as e:
             err = traceback.format_exc()
