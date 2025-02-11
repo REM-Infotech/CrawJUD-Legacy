@@ -27,11 +27,11 @@ function StartApp {
         [string] $APPLICATION_APP
       )
 
-      poetry run celery -A app.run.app
+      poetry run python -m celery -A app.run.app
 
     }
 
-    poetry run celery -A app.run.app worker -E --loglevel=INFO -P threads -c 50
+    poetry run python -m celery -A app.worker.app worker -E --loglevel=INFO -P threads -c 50
 
   } elseif ($APPLICATION_APP -eq 'quart') {
 
@@ -41,7 +41,7 @@ function StartApp {
         [string] $APPLICATION_APP
       )
 
-      poetry run python -m app
+      poetry run python -m app.asgi
 
     }
 
@@ -52,7 +52,7 @@ function StartApp {
         [string] $APPLICATION_APP
       )
 
-      poetry run celery -A app.run.app beat --loglevel=INFO --scheduler job.FlaskSchedule.DatabaseScheduler
+      poetry run python -m celery -A app.beat.app beat --loglevel=INFO --scheduler job.FlaskSchedule.DatabaseScheduler
 
     }
   }
@@ -88,13 +88,17 @@ if ($APPLICATION_APP -is [string]) {
   }
 } else {
   Throw "Opção inválida: $APPLICATION_APP"
-
 }
+
+
+
+
+
 # SIG # Begin signature block
 # MIII5QYJKoZIhvcNAQcCoIII1jCCCNICAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUJc2iG0Xn1DiJ1lZa+l50i+58
-# uL+gggZIMIIGRDCCBSygAwIBAgITHgAAFw+vQ2JVyMWIGwAAAAAXDzANBgkqhkiG
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhrIwCdepDJJtXvWlDPfjsrxZ
+# VlqgggZIMIIGRDCCBSygAwIBAgITHgAAFw+vQ2JVyMWIGwAAAAAXDzANBgkqhkiG
 # 9w0BAQsFADBPMRgwFgYKCZImiZPyLGQBGRYIaW50cmFuZXQxEzARBgoJkiaJk/Is
 # ZAEZFgNmbXYxHjAcBgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQTAeFw0yNTAy
 # MTExNDI3NDhaFw0yNjAyMTExNDI3NDhaMHAxGDAWBgoJkiaJk/IsZAEZFghpbnRy
@@ -132,11 +136,11 @@ if ($APPLICATION_APP -is [string]) {
 # BgNVBAMTFWZtdi1TUlYtQVNHQVJELURDMi1DQQITHgAAFw+vQ2JVyMWIGwAAAAAX
 # DzAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG
 # 9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIB
-# FTAjBgkqhkiG9w0BCQQxFgQUVU37VVi0wQbYp8iIW2xvcwN5234wDQYJKoZIhvcN
-# AQEBBQAEggEAuK7HgGqid4BDaAcr5zj3yIMFZIhdQExHwMTR74L4sX/Afh+X+Hry
-# SAHfk+bJvXY3GbTdnwBfxVki1ekGNyN6BnXVWsw90qKLIgChKO2wT7LFGaxVaI/6
-# j5dBBaJq+NI6TiJ+LnwbH+pYZvoJk9qLz2y/n7ZOH2x+OQXexZKjeg49l5YxLb52
-# /QE27C6TVMhfXg+fvjrOul4gBPuZf/2uQNlQuRa+FEDTLlok6h2o6clzeEsNM3cX
-# WJfufGaNMaVqvB9dK5nU8ncQgSSulMK3/0JlpC4TmmKApFb+2v7+hE+PEf+YMay1
-# YreiNzkTWmztr56aX+0Wh/l4Vc15NOFZnw==
+# FTAjBgkqhkiG9w0BCQQxFgQUYl6Mi/T253SBhen3rC+sgYlaowwwDQYJKoZIhvcN
+# AQEBBQAEggEAwhf4jjimA5qkLh1d5yXVPfGdbB5HiOwu2UV1R1MjRz3WUig2Ysn9
+# STN6RgoQJXAJv2WbpZk8ZxTeEEypQ22UeOLDLVd3pzuq4GIAUvCjqNCBZDSIjQi4
+# mQ/xEgWDNwGnx8JYSFf/hO80RtcQ/8Cn9yiKIaMnZ6jlZj1GVievO2pxuvjrYysz
+# wPeYdocHSXCmVEg3VilZgSD5C1KRwuCBO1r69jXaqrOKEf4Z73VsZcGKL2mMCzZc
+# CybAKP8izWcUeiYfIUuU5XD90YY2cXVFgf6v5HMM9f7rhaZUkVvRM+IlQsLPtvgu
+# c/ujYR3lYLR7YJA5PxWBI1Vv2WDjbxM3ow==
 # SIG # End signature block
