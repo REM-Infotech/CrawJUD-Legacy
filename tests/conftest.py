@@ -311,7 +311,7 @@ def create_dummy_pid(app: Quart, args_bot: dict[str, str | Any]) -> Generator[tu
         def _execut(usr, license_, bot_info):
             rows = process_id
             bt = bot_info
-            process = ThreadBots(pid=pid, processID=process_id)
+            process = ThreadBots(pid=pid, process_id=process_id)
             execut = Executions(
                 pid=pid,
                 status="Em Execução",

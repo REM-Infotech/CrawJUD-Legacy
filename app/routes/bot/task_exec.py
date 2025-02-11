@@ -66,7 +66,7 @@ class TaskExec(InstanceBot):
                 process_id = str(task.id)
 
                 # Salva o ID no "banco de dados"
-                add_thread = ThreadBots(pid=pid, processID=process_id)
+                add_thread = ThreadBots(pid=pid, process_id=process_id)
                 db.session.add(add_thread)
                 db.session.commit()
 

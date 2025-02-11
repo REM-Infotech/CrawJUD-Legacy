@@ -89,11 +89,11 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
     async with app.app_context():
         try:
             pid = data["pid"]
-            processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
-            if processID:
-                processID = str(processID.processID)  # noqa: N806
+            process_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
+            if process_id:
+                process_id = str(process_id.processID)  # noqa: N806
 
-            result = await asyncio.create_task(WorkerBot.stop(processID, pid, app))
+            result = await asyncio.create_task(WorkerBot.stop(process_id, pid, app))
             await io.enter_room(sid, pid, namespace="/log")
             await io.emit("log_message", result, to=sid, namespace="/log", room=pid)
 
@@ -170,14 +170,14 @@ async def join(
             from bot import WorkerBot
 
             pid = room
-            processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
+            process_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
 
             message = "Fim da Execução"
 
-            if processID:
-                processID = processID.processID  # noqa: N806
+            if process_id:
+                process_id = process_id.processID
 
-            message = await WorkerBot.check_status(processID, pid, app)
+            message = await WorkerBot.check_status(process_id, pid, app)
 
             if message != "Process running!":
                 data.update(
