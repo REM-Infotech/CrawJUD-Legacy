@@ -75,9 +75,6 @@ yamllint = "^1.35.1"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.bandit]
-exclude_dirs = ["tests", ".venv"]
-# skips = ["B404", "B603", "B105", "B605", "B607"]
 
 [tool.ruff]
 preview = true
@@ -110,6 +107,7 @@ exclude = [
     "site-packages",
     "venv",
     "tests",
+    "Lib",
 ]
 
 # Same as Black.

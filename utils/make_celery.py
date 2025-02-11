@@ -4,7 +4,7 @@ from celery import Celery
 from quart import Quart
 
 
-def make_celery(app: Quart) -> Celery:
+async def make_celery(app: Quart) -> Celery:
     """Create and configure a Celery instance with Quart application context.
 
     Args:

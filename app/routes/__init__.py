@@ -20,8 +20,8 @@ async def register_routes(app: Quart) -> None:
     async with app.app_context():
         import_module(".logs", package=__package__)
 
-    from ..routes.bot import bot
-    from ..routes.webhook import wh
+    from app.routes.bot import bot
+    from app.routes.webhook import wh
 
     app.register_blueprint(wh)
     app.register_blueprint(bot)

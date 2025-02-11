@@ -33,7 +33,7 @@ from utils import asyncinit_log as init_log
 from utils import check_allowed_origin, make_celery, version_file
 
 valides = [
-    getenv("INTO_DOCKER", None) is None,
+    getenv("IN_PRODUCTION", None) is None,
     platform.system() == "Windows",
     getenv("DEBUG", "False").lower() == "true",
 ]
@@ -51,6 +51,7 @@ db = SQLAlchemy()
 io = None
 app = Quart(__name__)
 clean_prompt = False
+redis = Redis()
 
 objects_config = {
     "development": "app.config.DevelopmentConfig",
@@ -94,36 +95,34 @@ class AppFactory:
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
 
-        celery = make_celery(app)
+        celery = await make_celery(app)
         celery.set_default()
         app.extensions["celery"] = celery
 
         celery.autodiscover_tasks(["bot"])
 
         async with app.app_context():
-            await asyncio.create_task(self.init_database(app))
-            await asyncio.create_task(self.init_mail(app))
-            await asyncio.create_task(self.init_redis(app))
-            await asyncio.create_task(self.init_talisman(app))
-            io = await asyncio.create_task(self.init_socket(app))
-            app.logger = await asyncio.create_task(init_log())
-            await asyncio.create_task(self.init_routes(app))
+            io = await self.init_extensions(app)
+            app.logger = await init_log()
+            await self.init_routes(app)
         return ASGIApp(io, app), celery
 
     async def init_routes(self, app: Quart) -> None:
         """Initialize and register the application routes."""
         await register_routes(app)
 
-    async def init_talisman(self, app: Quart) -> Talisman:
-        """Initialize Talisman for security headers.
+    async def init_extensions(self, app: Quart) -> AsyncServer:
+        """Initialize and configure the application extensions."""
+        host_redis = getenv("REDIS_HOST")
+        pass_redis = getenv("REDIS_PASSWORD")
+        port_redis = getenv("REDIS_PORT")
 
-        Args:
-            app (Quart): The Quart application.
+        NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
+        HOST = environ.get("HOSTNAME")  # noqa: N806
 
-        Returns:
-            Talisman: The Talisman instance.
-
-        """
+        redis.init_app(app)
+        mail.init_app(app)
+        db.init_app(app)
         tslm.init_app(
             app,
             content_security_policy=app.config["CSP"],
@@ -133,84 +132,24 @@ class AppFactory:
             strict_transport_security_max_age=timedelta(days=31).max.seconds,
             x_content_type_options=True,
         )
-        return tslm
-
-    async def init_socket(self, app: Quart) -> AsyncServer:
-        """Initialize the AsyncServer instance.
-
-        Args:
-            app (Quart): The Quart application.
-
-        Returns:
-            AsyncServer: The initialized AsyncServer instance.
-
-        """
-        host_redis = getenv("REDIS_HOST")
-        pass_redis = getenv("REDIS_PASSWORD")
-        port_redis = getenv("REDIS_PORT")
-        r_mg = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8")
+        redis_manager = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8")
         io = AsyncServer(
             async_mode=async_mode,
             cors_allowed_origins=check_allowed_origin,
-            client_manager=r_mg,
+            client_manager=redis_manager,
             ping_interval=25,
             ping_timeout=10,
         )
+        db.create_all()
+
+        if not Servers.query.filter(Servers.name == NAMESERVER).first():
+            server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
+            db.session.add(server)
+            db.session.commit()
 
         app.extensions["socketio"] = io
 
         return io
-
-    async def init_mail(self, app: Quart) -> None:
-        """Initialize the Quart-Mail extension."""
-        mail.init_app(app)
-
-    async def init_redis(self, app: Quart) -> Redis:
-        """Initialize the Redis extension.
-
-        Args:
-            app (Quart): The Quart application.
-
-        Returns:
-            Redis: The Redis instance.
-
-        """
-        global redis
-
-        redis = Redis(app)
-        return redis
-
-    async def init_database(self, app: Quart) -> SQLAlchemy:
-        """Initialize the database and create tables if they do not exist.
-
-        Args:
-            app (Quart): The Quart application.
-
-        Returns:
-            SQLAlchemy: The database instance.
-
-        """
-        import platform
-
-        global db
-
-        async with app.app_context():
-            db.init_app(app)
-
-            if environ["HOSTNAME"] == "betatest1.rhsolut.com.br":
-                db.drop_all()
-
-            db.create_all()
-
-            NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
-            HOST = environ.get("HOSTNAME")  # noqa: N806
-
-            if not Servers.query.filter(Servers.name == NAMESERVER).first():
-                server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
-                db.session.add(server)
-                db.session.commit()
-
-        return db
 
     @classmethod
     def start_app(cls) -> tuple[Quart, Celery]:
@@ -235,7 +174,7 @@ class AppFactory:
 
         hostname = values("SERVER_HOSTNAME", "127.0.0.1")
 
-        # unsafe_werkzeug = getenv("INTO_DOCKER", None) is None or (getenv("DEBUG", "False").lower() == "true")
+        # unsafe_werkzeug = getenv("IN_PRODUCTION", None) is None or (getenv("DEBUG", "False").lower() == "true")
         port = int(values("PORT", "8000"))
         version_file()
         if system().lower() == "linux":
@@ -251,13 +190,13 @@ class AppFactory:
 
         try:
             if getenv("APPLICATION_APP") != "beat":
-                if getenv("INTO_DOCKER", "False") == "False" and getenv("APPLICATION_APP") == "worker":
+                if getenv("APPLICATION_APP") == "quart" and getenv("IN_PRODUCTION", "False") == "True":
+                    cls.starter(**args_run)
+
+                elif getenv("APPLICATION_APP") == "worker" and getenv("IN_PRODUCTION", "False") == "False":
                     starter = Thread(target=cls.starter, kwargs=args_run)
                     starter.daemon = True
                     starter.start()
-
-                if getenv("APPLICATION_APP") == "quart" and getenv("INTO_DOCKER", "False") == "True":
-                    cls.starter(**args_run)
 
         except (KeyboardInterrupt, TypeError):
             if system().lower() == "linux":
