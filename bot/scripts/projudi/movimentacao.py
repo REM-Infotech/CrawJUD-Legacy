@@ -11,8 +11,8 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+from typing import Self
 
-# from typing import any
 from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -35,6 +35,18 @@ class Movimentacao(CrawJUD):
         start_time (float): The start time of execution.
 
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the movimentacao instance.

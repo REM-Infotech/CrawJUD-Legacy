@@ -8,6 +8,7 @@ import re
 import time
 from contextlib import suppress
 from datetime import datetime
+from typing import Self
 
 # from memory_profiler import profile
 from selenium.webdriver.common.by import By
@@ -26,6 +27,18 @@ class Capa(CrawJUD):
 
     information extraction and management.
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the capa instance.

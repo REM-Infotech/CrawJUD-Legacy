@@ -8,6 +8,7 @@ import time
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
+from typing import Self
 
 import dotenv
 from PIL import Image
@@ -40,6 +41,18 @@ class Protocolo(CrawJUD):
     adding moves, uploading files, signing documents, and capturing screenshots
     upon successful protocol processing.
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the protocolo instance.

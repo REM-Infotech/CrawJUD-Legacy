@@ -6,6 +6,7 @@ This module manages process-participant interactions within the Projudi system o
 import os
 import time
 from contextlib import suppress
+from typing import Self
 
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException  # noqa: F401
 from selenium.webdriver.common.by import By
@@ -23,6 +24,18 @@ class ProcParte(CrawJUD):
 
     Handles the processing of participants in Projudi within the CrawJUD framework.
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new proc_parte instance.
