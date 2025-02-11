@@ -77,7 +77,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.bandit]
-exclude = ["tests/"]
+exclude_dirs = ["tests", ".venv"]
 
 [tool.ruff]
 preview = true
