@@ -19,7 +19,7 @@ from utils import (  # noqa: F401
 from ..models import ScheduleModel
 
 if TYPE_CHECKING:
-    from celery import Task
+    from celery import Celery, Task
     from flask_sqlalchemy import SQLAlchemy
 
 path_template = str(Path(__file__).parent.resolve().joinpath("templates"))
@@ -81,14 +81,14 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
                 # reload_module("bot")
 
                 from app.models import ThreadBots
-                from bot import WorkerBot
 
-                bot_starter = WorkerBot.start_bot
+                celery_app: Celery = app.extensions["celery"]
 
                 pid = Path(path_args).stem
 
-                init_bot: Task = bot_starter
-                task = init_bot.apply_async(args=[path_args, display_name, system, typebot])
+                task: Task = celery_app.send_task(
+                    f"bot.{system.lower()}_launcher", args=[path_args, display_name, system, typebot]
+                )
 
                 process_id = str(task.id)
 

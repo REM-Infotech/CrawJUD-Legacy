@@ -163,7 +163,6 @@ class AppFactory:
 
         debug = values("DEBUG", "False").lower() == "True"
 
-        # unsafe_werkzeug = getenv("IN_PRODUCTION", None) is None or (getenv("DEBUG", "False").lower() == "true")
         port = int(values("PORT", "8000"))
 
         args_run = {
