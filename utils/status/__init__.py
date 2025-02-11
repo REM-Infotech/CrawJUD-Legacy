@@ -13,7 +13,6 @@ import unicodedata
 from datetime import datetime
 from os import environ, path
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import aiofiles
 import openpyxl
@@ -26,13 +25,13 @@ from quart import Quart
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
+from app.models import BotsCrawJUD, Executions, LicensesUsers, ThreadBots, Users
+
 from .makefile import makezip
 from .send_email import email_start, email_stop
 from .server_side import FormatMessage, load_cache
 from .upload_zip import enviar_arquivo_para_gcs
 
-if TYPE_CHECKING:
-    from app.models import BotsCrawJUD, Executions, LicensesUsers, ThreadBots, Users
 url_cache = []
 logger = logging.getLogger(__name__)
 
@@ -115,7 +114,7 @@ class InstanceBot:
             for key, value in form.items():
                 data.update({key: value})
 
-        data.update({"id": id, "system": system, "typebot": typebot})
+        data.update({"id": id_, "system": system, "typebot": typebot})
 
         if data.get("xlsx"):
             input_file = path.join(path_pid, data["xlsx"])
@@ -208,7 +207,7 @@ class InstanceBot:
         render_template = env.get_template
         mail = Mail(app)
 
-        with app.app_context():
+        async with app.app_context():
             mail.connect()
 
         admins: list[str] = []
@@ -226,7 +225,7 @@ class InstanceBot:
             err = traceback.format_exc()
             logger.exception(err)
 
-        with app.app_context():
+        async with app.app_context():
             sendermail = environ["MAIL_DEFAULT_SENDER"]
 
             robot = f"Robot Notifications <{sendermail}>"
@@ -234,7 +233,7 @@ class InstanceBot:
             url_web = environ.get(" URL_WEB")
             destinatario = usr.email
             username = str(usr.nome_usuario)
-            mensagem = render_template(f"email_{type_notify}.html").render(
+            mensagem = render_template(f"email_{type_notify}.jinja").render(
                 display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
             )
 

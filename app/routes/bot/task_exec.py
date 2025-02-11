@@ -60,7 +60,7 @@ class TaskExec(InstanceBot):
                     app.logger.error("Error sending email: %s", str(e))
 
                 task: Task = celery_app.send_task(
-                    f"bot.{system.lower()}_launcher", args=[path_pid, display_name, system, typebot]
+                    f"bot.{system.lower()}_launcher", args=[str(path_pid), display_name, system, typebot]
                 )
 
                 process_id = str(task.id)
