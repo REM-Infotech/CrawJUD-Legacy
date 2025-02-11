@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from urllib3.exceptions import MaxRetryError  # noqa: F401
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -150,7 +150,7 @@ class ProcParte(CrawJUD):
                     self.auth_bot()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]) -> None:
         """Process a list of WebElement process entries.

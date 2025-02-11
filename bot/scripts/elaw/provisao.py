@@ -15,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -98,7 +98,7 @@ class Provisao(CrawJUD):
         """Handle the provision queue processing.
 
         Raises:
-            ErroDeExecucao: If an error occurs during execution.
+            ExecutionError: If an error occurs during execution.
 
         """
         # module = "search_processo"
@@ -118,7 +118,7 @@ class Provisao(CrawJUD):
                 self.save_changes()
 
             if search is False:
-                raise ErroDeExecucao("Processo não encontrado!")
+                raise ExecutionError("Processo não encontrado!")
 
         except Exception as e:
             raise e
@@ -155,7 +155,7 @@ class Provisao(CrawJUD):
         possible = provisao == "possível"
 
         if chk_getvals1 and possible:
-            raise ErroDeExecucao('Provisão "Possível" já inserida')
+            raise ExecutionError('Provisão "Possível" já inserida')
 
         edit_button: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit)),
@@ -215,7 +215,7 @@ class Provisao(CrawJUD):
         """Add a new value entry.
 
         Raises:
-            ErroDeExecucao: If unable to update the provision.
+            ExecutionError: If unable to update the provision.
 
         """
         try:
@@ -240,7 +240,7 @@ class Provisao(CrawJUD):
             self.interact.sleep_load('div[id="j_id_7t"]')
 
         except Exception as e:
-            raise ErroDeExecucao("Não foi possivel atualizar provisão", e=e) from e
+            raise ExecutionError("Não foi possivel atualizar provisão", e=e) from e
 
     def edit_valor(self) -> None:
         """Edit an existing value entry."""
@@ -402,7 +402,7 @@ class Provisao(CrawJUD):
         """Save all changes made during the provision process.
 
         Raises:
-            ErroDeExecucao: If unable to save the provision.
+            ExecutionError: If unable to save the provision.
 
         """
         self.interact.sleep_load('div[id="j_id_2z"]')
@@ -416,7 +416,7 @@ class Provisao(CrawJUD):
             )
 
         if not check_provisao_atualizada:
-            raise ErroDeExecucao("Não foi possivel atualizar provisão")
+            raise ExecutionError("Não foi possivel atualizar provisão")
 
         comprovante = self.print_comprovante()
         data = [str(self.bot_data.get("NUMERO_PROCESSO")), comprovante, "Provisão atualizada com sucesso!"]

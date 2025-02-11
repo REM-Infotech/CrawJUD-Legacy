@@ -23,7 +23,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from typing import type
@@ -114,12 +114,12 @@ class Protocolo(CrawJUD):
             search = self.search_bot()
 
             if search is not True:
-                raise ErroDeExecucao("Processo não encontrado!")
+                raise ExecutionError("Processo não encontrado!")
 
             self.add_new_move()
 
             if self.set_parte() is not True:
-                raise ErroDeExecucao("Não foi possível selecionar parte")
+                raise ExecutionError("Não foi possível selecionar parte")
 
             self.add_new_file()
             if self.bot_data.get("ANEXOS", None) is not None:
@@ -136,12 +136,12 @@ class Protocolo(CrawJUD):
                 confirm_protocol = self.confirm_protocol()
                 if not confirm_protocol:
                     if self.set_parte() is not True:
-                        raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
+                        raise ExecutionError("Nao foi possivel confirmar protocolo")
 
                     self.finish_move()
                     confirm_protocol = self.confirm_protocol()
                     if not confirm_protocol:
-                        raise ErroDeExecucao("Nao foi possivel confirmar protocolo")
+                        raise ExecutionError("Nao foi possivel confirmar protocolo")
 
                 data = self.screenshot_sucesso()
                 data.append(confirm_protocol)
@@ -149,7 +149,7 @@ class Protocolo(CrawJUD):
             self.append_success(data)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def confirm_protocol(self) -> str | None:
         """Confirm the protocol and retrieve the success message.
@@ -181,7 +181,7 @@ class Protocolo(CrawJUD):
             bool: True if the party was successfully selected, False otherwise.
 
         Raises:
-            ErroDeExecucao: If unable to select the specified party.
+            ExecutionError: If unable to select the specified party.
 
         """
         # self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, 'iframe[name="userMainFrame"]'))
@@ -226,7 +226,7 @@ class Protocolo(CrawJUD):
                             cmd2 = f"return document.getElementById('{self.id_part}').checked"
                             return_cmd = self.driver.execute_script(cmd2)
                             if return_cmd is False:
-                                raise ErroDeExecucao("Não é possivel selecionar parte")
+                                raise ExecutionError("Não é possivel selecionar parte")
 
                         selected_parte = True
                         break
@@ -245,7 +245,7 @@ class Protocolo(CrawJUD):
                     cmd2 = f"return document.getElementById('{self.id_part}').checked"
                     return_cmd = self.driver.execute_script(cmd2)
                     if return_cmd is False:
-                        raise ErroDeExecucao("Não é possivel selecionar parte")
+                        raise ExecutionError("Não é possivel selecionar parte")
 
                 selected_parte = True
                 break
@@ -262,7 +262,7 @@ class Protocolo(CrawJUD):
         elements, entering the type of protocol, and confirming the addition.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the addition of a new move.
+            ExecutionError: If an error occurs during the addition of a new move.
 
         """
         try:
@@ -301,7 +301,7 @@ class Protocolo(CrawJUD):
             """ Corrigir elements """
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def add_new_file(self) -> None:
         """Add a new file to the protocol.
@@ -311,7 +311,7 @@ class Protocolo(CrawJUD):
         successfully.
 
         Raises:
-            ErroDeExecucao: If an error occurs during file upload.
+            ExecutionError: If an error occurs during file upload.
 
         """
         try:
@@ -368,7 +368,7 @@ class Protocolo(CrawJUD):
                     break
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def set_file_principal(self) -> None:
         """Set the principal file for the protocol.
@@ -377,7 +377,7 @@ class Protocolo(CrawJUD):
         the primary document for the protocol.
 
         Raises:
-            ErroDeExecucao: If unable to set the principal file.
+            ExecutionError: If unable to set the principal file.
 
         """
         try:
@@ -390,7 +390,7 @@ class Protocolo(CrawJUD):
             radiobutton.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def more_files(self) -> None:
         """Add more files to the protocol.
@@ -399,7 +399,7 @@ class Protocolo(CrawJUD):
         the list of attachments and uploads each one, setting their types accordingly.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the uploading of additional files.
+            ExecutionError: If an error occurs during the uploading of additional files.
 
         """
         try:
@@ -446,7 +446,7 @@ class Protocolo(CrawJUD):
                         break
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def sign_files(self) -> None:
         """Sign the protocol files.
@@ -455,7 +455,7 @@ class Protocolo(CrawJUD):
         confirming the signing action. Handles any errors related to incorrect passwords.
 
         Raises:
-            ErroDeExecucao: If signing fails due to incorrect password or other issues.
+            ExecutionError: If signing fails due to incorrect password or other issues.
 
         """
         try:
@@ -477,7 +477,7 @@ class Protocolo(CrawJUD):
                 )
 
             if check_p_element != "":
-                raise ErroDeExecucao("Senha Incorreta!")
+                raise ExecutionError("Senha Incorreta!")
 
             """ PARA CORRIGIR """
             # confirm_button = self.driver.find_element(
@@ -497,7 +497,7 @@ class Protocolo(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def finish_move(self) -> None:
         """Finalize the protocol move.
@@ -534,7 +534,7 @@ class Protocolo(CrawJUD):
                   the path to the combined screenshot.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the screenshot process.
+            ExecutionError: If an error occurs during the screenshot process.
 
         """
         try:
@@ -587,7 +587,7 @@ class Protocolo(CrawJUD):
             return [self.bot_data.get("NUMERO_PROCESSO"), self.message, comprovante1]
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def remove_files(self) -> None:
         """Remove files from the protocol.
@@ -596,7 +596,7 @@ class Protocolo(CrawJUD):
         elements responsible for file management. Confirms deletions through alerts.
 
         Raises:
-            ErroDeExecucao: If an error occurs during file removal.
+            ExecutionError: If an error occurs during file removal.
 
         """
         tablefiles = None

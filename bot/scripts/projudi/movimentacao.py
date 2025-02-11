@@ -20,7 +20,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -105,7 +105,7 @@ class Movimentacao(CrawJUD):
         """Manage the queuing of movement operations.
 
         Raises:
-            ErroDeExecucao: If the process is not found or other execution errors occur.
+            ExecutionError: If the process is not found or other execution errors occur.
 
         """
         try:
@@ -123,7 +123,7 @@ class Movimentacao(CrawJUD):
             search = self.search_bot()
 
             if search is not True:
-                raise ErroDeExecucao(message="Processo não encontrado!")
+                raise ExecutionError(message="Processo não encontrado!")
 
             self.message = "Buscando movimentações"
             self.type_log = "log"
@@ -148,7 +148,7 @@ class Movimentacao(CrawJUD):
                 self.append_error(data)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def set_page_size(self) -> None:
         """Set the page size for the movement table.
@@ -166,7 +166,7 @@ class Movimentacao(CrawJUD):
         Sets the page size, table moves, and initiates the scraping based on keywords.
 
         Raises:
-            ErroDeExecucao: If no movements are found.
+            ExecutionError: If no movements are found.
 
         """
         encontrado = False
@@ -187,7 +187,7 @@ class Movimentacao(CrawJUD):
             encontrado = self.scrap_moves(keyword)
 
         if encontrado is False:
-            raise ErroDeExecucao("Nenhuma movimentação encontrada")
+            raise ExecutionError("Nenhuma movimentação encontrada")
 
     def filter_moves(self, move: WebElement) -> bool:  # noqa: C901
         """Filter movements based on date and keyword criteria.
@@ -331,7 +331,7 @@ class Movimentacao(CrawJUD):
             keyword (str): The keyword to search for in movements.
 
         Raises:
-            ErroDeExecucao: If an error occurs during scraping.
+            ExecutionError: If an error occurs during scraping.
 
         Returns:
             bool: True if any movements are found, False otherwise.

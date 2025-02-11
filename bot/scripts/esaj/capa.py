@@ -14,7 +14,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -60,7 +60,7 @@ class Capa(CrawJUD):
         handling session expirations, and logging any errors that occur during processing.
 
         Raises:
-            ErroDeExecucao: If an unexpected error occurs during execution.
+            ExecutionError: If an unexpected error occurs during execution.
 
         """
         frame = self.dataFrame()
@@ -113,7 +113,7 @@ class Capa(CrawJUD):
         searching for the bot and adding processes.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the queuing process.
+            ExecutionError: If an error occurs during the queuing process.
 
         """
         try:
@@ -121,7 +121,7 @@ class Capa(CrawJUD):
             self.append_success(self.get_process_informations())
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:  # noqa: C901
         """Retrieve process information.

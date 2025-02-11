@@ -1,5 +1,5 @@
 """Common module initialization for CrawJUD-Bots, handling custom exceptions."""
 
-from .exceptions import ErroDeExecucao, ItemNaoEcontrado, StartError
+from .exceptions import ExecutionError, NotFoundError, StartError
 
-__all__ = ["ErroDeExecucao", "ItemNaoEcontrado", "StartError"]
+__all__ = ["ExecutionError", "NotFoundError", "StartError"]

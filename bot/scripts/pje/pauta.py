@@ -14,7 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from typing import type
@@ -111,7 +111,7 @@ class pauta(CrawJUD):
                 self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def get_pautas(self, current_date: type[datetime], vara: str) -> None:
         """Get and parse pautas from the appropriate page.
@@ -180,7 +180,7 @@ class pauta(CrawJUD):
                         self.get_pautas(current_date, vara)
 
                 except Exception as e:
-                    raise ErroDeExecucao(e) from e
+                    raise ExecutionError(e) from e
 
             elif not itens_pautas:
                 times = 1
@@ -190,4 +190,4 @@ class pauta(CrawJUD):
             sleep(times)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e

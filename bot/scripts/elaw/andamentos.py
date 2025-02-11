@@ -13,7 +13,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -101,7 +101,7 @@ class Andamentos(CrawJUD):
         Attempts to perform the andamento operations and handles cases where the process is not found.
 
         Raises:
-            ErroDeExecucao: If an error occurs during queue processing.
+            ExecutionError: If an error occurs during queue processing.
 
         """
         try:
@@ -127,7 +127,7 @@ class Andamentos(CrawJUD):
                 self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def info_data(self) -> None:
         """Inform the date of the andamento.
@@ -135,7 +135,7 @@ class Andamentos(CrawJUD):
         This method fills in the date field in the andamento form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the date.
+            ExecutionError: If an error occurs while informing the date.
 
         """
         try:
@@ -154,7 +154,7 @@ class Andamentos(CrawJUD):
             self.interact.sleep_load('div[id="j_id_34"]')
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def info_ocorrencia(self) -> None:
         """Inform the occurrence details of the andamento.
@@ -162,7 +162,7 @@ class Andamentos(CrawJUD):
         This method fills in the occurrence details in the andamento form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the occurrence.
+            ExecutionError: If an error occurs while informing the occurrence.
 
         """
         try:
@@ -176,7 +176,7 @@ class Andamentos(CrawJUD):
             self.interact.send_key(ocorrencia, text_andamento)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def info_observacao(self) -> None:
         """Inform the observation details of the andamento.
@@ -184,7 +184,7 @@ class Andamentos(CrawJUD):
         This method fills in the observation details in the andamento form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the observation.
+            ExecutionError: If an error occurs while informing the observation.
 
         """
         try:
@@ -198,7 +198,7 @@ class Andamentos(CrawJUD):
             self.interact.send_key(observacao, text_andamento)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def add_anexo(self) -> None:
         """Add attachments to the andamento.
@@ -216,7 +216,7 @@ class Andamentos(CrawJUD):
         This method clicks the save button to persist the andamento data and verifies the save operation.
 
         Raises:
-            ErroDeExecucao: If the save operation fails or cannot be validated.
+            ExecutionError: If the save operation fails or cannot be validated.
 
         """
         try:
@@ -229,7 +229,7 @@ class Andamentos(CrawJUD):
             save_button.click()
 
         except Exception as e:
-            raise ErroDeExecucao("Não foi possivel salvar andamento", e=e) from e
+            raise ExecutionError("Não foi possivel salvar andamento", e=e) from e
 
         try:
             check_save: WebElement = WebDriverWait(self.driver, 10).until(
@@ -241,4 +241,4 @@ class Andamentos(CrawJUD):
                 self.append_success([self.numproc, "Andamento salvo com sucesso!", ""], "Andamento salvo com sucesso!")
 
         except Exception:
-            raise ErroDeExecucao("Aviso: não foi possivel validar salvamento de andamento") from None
+            raise ExecutionError("Aviso: não foi possivel validar salvamento de andamento") from None

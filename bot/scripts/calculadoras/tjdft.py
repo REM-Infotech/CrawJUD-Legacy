@@ -19,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -109,7 +109,7 @@ class Tjdft(CrawJUD):
         Performs the calculation steps and finalizes the execution.
 
         Raises:
-            ErroDeExecucao: If an error occurs during queue processing.
+            ExecutionError: If an error occurs during queue processing.
 
         """
         try:
@@ -123,7 +123,7 @@ class Tjdft(CrawJUD):
             self.finalizar_execucao()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def get_calcular(self) -> None:
         """Access the calculation page.
@@ -131,7 +131,7 @@ class Tjdft(CrawJUD):
         This method navigates to the calculation URL and handles cookie acceptance if prompted.
 
         Raises:
-            ErroDeExecucao: If an error occurs while accessing the calculation page.
+            ExecutionError: If an error occurs while accessing the calculation page.
 
         """
         try:
@@ -157,7 +157,7 @@ class Tjdft(CrawJUD):
                 self.driver.switch_to.default_content()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def info_numproc(self) -> None:
         """Inform the process number.
@@ -165,7 +165,7 @@ class Tjdft(CrawJUD):
         This method fills in the process number in the calculation form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the process number.
+            ExecutionError: If an error occurs while informing the process number.
 
         """
         try:
@@ -185,7 +185,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao("Erro ao informar número do processo", e) from e
+            raise ExecutionError("Erro ao informar número do processo", e) from e
 
     def info_requerente(self) -> None:
         """Inform the petitioner.
@@ -193,7 +193,7 @@ class Tjdft(CrawJUD):
         This method fills in the petitioner's name in the calculation form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the petitioner.
+            ExecutionError: If an error occurs while informing the petitioner.
 
         """
         try:
@@ -213,7 +213,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def info_requerido(self) -> None:
         """Inform the required party.
@@ -221,7 +221,7 @@ class Tjdft(CrawJUD):
         This method fills in the required party's name in the calculation form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the required party.
+            ExecutionError: If an error occurs while informing the required party.
 
         """
         try:
@@ -241,7 +241,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def info_jurosapartir(self) -> None:
         """Inform the interest starting point.
@@ -249,7 +249,7 @@ class Tjdft(CrawJUD):
         This method selects the interest starting point in the calculation form and informs the associated data.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the interest starting point.
+            ExecutionError: If an error occurs while informing the interest starting point.
 
         """
         try:
@@ -287,7 +287,7 @@ class Tjdft(CrawJUD):
                 )
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def valores_devidos(self) -> None:
         """Inform the owed values.
@@ -295,7 +295,7 @@ class Tjdft(CrawJUD):
         This method fills in the owed values and their dates in the calculation form.
 
         Raises:
-            ErroDeExecucao: If an error occurs while informing the owed values.
+            ExecutionError: If an error occurs while informing the owed values.
 
         """
         try:
@@ -328,7 +328,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def acessorios(self) -> None:  # noqa: C901
         """Inform accessory values like penalties and fees.
@@ -370,7 +370,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e) from e
+                raise ExecutionError(e=e) from e
 
         def honorario_sucumb() -> None | Exception:
             try:
@@ -418,7 +418,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e) from e
+                raise ExecutionError(e=e) from e
 
         def percent_multa_475J() -> None:  # noqa: N802
             try:
@@ -426,7 +426,7 @@ class Tjdft(CrawJUD):
                 self.interact.send_key(percent_multa_, self.bot_data.get("PERCENT_MULTA_475J"))
 
             except Exception as e:
-                raise ErroDeExecucao(e=e) from e
+                raise ExecutionError(e=e) from e
 
         def honorario_cumprimento() -> None | Exception:
             try:
@@ -471,7 +471,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e) from e
+                raise ExecutionError(e=e) from e
 
         def custas() -> None | Exception:
             try:
@@ -500,7 +500,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                raise ErroDeExecucao(e=e) from e
+                raise ExecutionError(e=e) from e
 
         local_functions = list(locals().items())
         for name, func in local_functions:
@@ -517,7 +517,7 @@ class Tjdft(CrawJUD):
         This method submits the calculation form, retrieves the calculated value, and saves the PDF receipt.
 
         Raises:
-            ErroDeExecucao: If an error occurs during finalization.
+            ExecutionError: If an error occurs during finalization.
 
         """
         try:
@@ -554,4 +554,4 @@ class Tjdft(CrawJUD):
             self.append_success(data)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e

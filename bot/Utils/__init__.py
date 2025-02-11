@@ -24,7 +24,7 @@ from cryptography.hazmat.backends import default_backend
 from pandas import Timestamp
 from werkzeug.utils import secure_filename
 
-from ..common import ErroDeExecucao
+from ..common import ExecutionError
 from ..core import CrawJUD, pd
 from ..shared import Numbers
 from .auth import AuthBot
@@ -426,14 +426,14 @@ class OtherUtils(CrawJUD):
         method to save the movement to the spreadsheet with a success message.
 
         Raises:
-            ErroDeExecucao: If no movements are found in the `self.appends` list.
+            ExecutionError: If no movements are found in the `self.appends` list.
 
         """
         if self.appends:
             for append in self.appends:
                 self.append_success(append, "Movimentação salva na planilha com sucesso!!")
         else:
-            raise ErroDeExecucao("Nenhuma Movimentação encontrada")
+            raise ExecutionError("Nenhuma Movimentação encontrada")
 
     def append_success(
         self,

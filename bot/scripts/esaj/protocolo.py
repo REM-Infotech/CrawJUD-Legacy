@@ -18,7 +18,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -98,7 +98,7 @@ class Protocolo(CrawJUD):
         Executes the protocoling steps and handles any exceptions that may occur during the process.
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -113,7 +113,7 @@ class Protocolo(CrawJUD):
             self.append_success(data, message=data[1])
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def init_protocolo(self) -> None:
         """Initialize the protocoling process.
@@ -121,7 +121,7 @@ class Protocolo(CrawJUD):
         Navigates to the petitioning section and prepares the environment for protocoling.
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -151,7 +151,7 @@ class Protocolo(CrawJUD):
                 self.driver.execute_script(f"return window.location.href = '{link}';")
 
         except Exception:
-            raise ErroDeExecucao("Erro ao inicializar peticionamento") from None
+            raise ExecutionError("Erro ao inicializar peticionamento") from None
 
     def set_tipo_protocolo(self) -> None:
         """Set the type of protocol.
@@ -159,7 +159,7 @@ class Protocolo(CrawJUD):
         Selects and inputs the protocol type based on the provided data.
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -184,7 +184,7 @@ class Protocolo(CrawJUD):
             self.interact.send_key(input_tipo_peticao, Keys.ENTER)
 
         except Exception:
-            raise ErroDeExecucao("Erro ao informar tipo de protocolo") from None
+            raise ExecutionError("Erro ao informar tipo de protocolo") from None
 
     def set_subtipo_protocolo(self) -> None:
         """Set the subtype of protocol.
@@ -192,7 +192,7 @@ class Protocolo(CrawJUD):
         Selects and inputs the protocol subtype based on the provided data.
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -215,7 +215,7 @@ class Protocolo(CrawJUD):
             sleep(1)
 
         except Exception:
-            raise ErroDeExecucao("Erro ao informar subtipo de protocolo") from None
+            raise ExecutionError("Erro ao informar subtipo de protocolo") from None
 
     def set_petition_file(self) -> None:
         """Attach the petition file.
@@ -223,7 +223,7 @@ class Protocolo(CrawJUD):
         Uploads the main petition document and verifies the upload.
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -252,12 +252,12 @@ class Protocolo(CrawJUD):
                 )
 
             if file_uploaded == "":
-                raise ErroDeExecucao("Erro ao enviar petição")
+                raise ExecutionError("Erro ao enviar petição")
 
             self.prt.print_log("log", "Petição do processo anexada com sucesso")
 
         except Exception:
-            raise ErroDeExecucao("Erro ao enviar petição") from None
+            raise ExecutionError("Erro ao enviar petição") from None
 
     def vincular_parte(self) -> None:
         """Link the party to the petition.
@@ -265,7 +265,7 @@ class Protocolo(CrawJUD):
         Associates the specified party with the petition, handling any exceptions during the process.
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -308,10 +308,10 @@ class Protocolo(CrawJUD):
                                 break
 
             elif not partes:
-                raise ErroDeExecucao("Não foi possivel vincular parte a petição")
+                raise ExecutionError("Não foi possivel vincular parte a petição")
 
         except Exception:
-            raise ErroDeExecucao("Não foi possivel vincular parte a petição") from None
+            raise ExecutionError("Não foi possivel vincular parte a petição") from None
 
     def finish_petition(self) -> None:
         """Finalize the petitioning process.
@@ -340,7 +340,7 @@ class Protocolo(CrawJUD):
 
 
         Raises:
-            ErroDeExecucao: If an error occurs while initializing the petitioning process.
+            ExecutionError: If an error occurs while initializing the petitioning process.
 
         """
         try:
@@ -371,4 +371,4 @@ class Protocolo(CrawJUD):
             ]
 
         except Exception as e:
-            raise ErroDeExecucao("Erro ao confirmar protocolo", e=e) from e
+            raise ExecutionError("Erro ao confirmar protocolo", e=e) from e

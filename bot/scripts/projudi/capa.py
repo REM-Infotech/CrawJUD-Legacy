@@ -13,7 +13,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # # from ...shared import PropertiesCrawJUD
@@ -100,14 +100,14 @@ class Capa(CrawJUD):
         """Handle the queue processing, refreshing the driver and extracting process information.
 
         Raises:
-            ErroDeExecucao: If the process is not found or extraction fails.
+            ExecutionError: If the process is not found or extraction fails.
 
         """
         try:
             search = self.search_bot()
 
             if search is not True:
-                raise ErroDeExecucao("Processo não encontrado!")
+                raise ExecutionError("Processo não encontrado!")
 
             self.driver.refresh()
             data = self.get_process_informations()
@@ -115,7 +115,7 @@ class Capa(CrawJUD):
 
         except Exception as e:
             self.logger.error(str(e))
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:  # noqa: C901
         """Extract information from the current process in the web driver.

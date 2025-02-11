@@ -17,7 +17,7 @@ Class Methods:
         was successful. It should be implemented in the subclasses.
 
 Raises:
-    ErroDeExecucao: If an error occurs during the execution of the search.
+    ExecutionError: If an error occurs during the execution of the search.
 
 """
 
@@ -34,7 +34,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ..common import ErroDeExecucao
+from ..common import ExecutionError
 from ..core import CrawJUD
 
 
@@ -49,7 +49,7 @@ class SearchBot(CrawJUD):
         bot_data (dict): The data of the process to be searched.
 
     Raises:
-        ErroDeExecucao: If an error occurs during the execution of the search.
+        ExecutionError: If an error occurs during the execution of the search.
 
     """
 
@@ -134,7 +134,7 @@ class SearchBot(CrawJUD):
             bool: True if the process is found, False otherwise.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the execution of the search.
+            ExecutionError: If an error occurs during the execution of the search.
 
         """
         grau = self.bot_data.get("GRAU", 1)
@@ -154,7 +154,7 @@ class SearchBot(CrawJUD):
             id_consultar = "pbConsultar"
 
         elif not grau or grau != 1 or grau != 2:
-            raise ErroDeExecucao("Informar instancia!")
+            raise ExecutionError("Informar instancia!")
 
         sleep(1)
         # Coloca o campo em formato "Outros" para inserir o número do processo
@@ -259,7 +259,7 @@ class SearchBot(CrawJUD):
 
         def detect_intimacao() -> None:
             if "intimacaoAdvogado.do" in self.driver.current_url:
-                raise ErroDeExecucao("Processo com Intimação pendente de leitura!")
+                raise ExecutionError("Processo com Intimação pendente de leitura!")
 
         def get_link_grau2() -> str | None:
             """Retrieve the link to access the resources related to the process for the second grade.

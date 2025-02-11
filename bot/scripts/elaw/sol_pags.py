@@ -17,7 +17,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -100,7 +100,7 @@ class SolPags(CrawJUD):
         """Handle the solution queue processing.
 
         Raises:
-            ErroDeExecucao: If an error occurs during execution.
+            ExecutionError: If an error occurs during execution.
 
         """
         try:
@@ -117,16 +117,16 @@ class SolPags(CrawJUD):
                 self.append_success(self.confirm_save())
 
             elif search is not True:
-                raise ErroDeExecucao("Processo não encontrado!")
+                raise ExecutionError("Processo não encontrado!")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def new_payment(self) -> None:
         """Create a new payment entry.
 
         Raises:
-            ErroDeExecucao: If an error occurs during payment creation.
+            ExecutionError: If an error occurs during payment creation.
 
         """
         try:
@@ -141,7 +141,7 @@ class SolPags(CrawJUD):
             novo_pgto.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def set_pgto(self, namedef: str) -> None:
         """Set the payment type.
@@ -150,7 +150,7 @@ class SolPags(CrawJUD):
             namedef (str): The name definition for the payment type.
 
         Raises:
-            ErroDeExecucao: If the payment type is not found.
+            ExecutionError: If the payment type is not found.
 
         """
         try:
@@ -186,16 +186,16 @@ class SolPags(CrawJUD):
                             item.click()
                             return
 
-            raise ErroDeExecucao("Tipo de Pagamento não encontrado")
+            raise ExecutionError("Tipo de Pagamento não encontrado")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def condenacao(self) -> None:  # noqa: C901
         """Handle condemnation details.
 
         Raises:
-            ErroDeExecucao: If an error occurs during condemnation handling.
+            ExecutionError: If an error occurs during condemnation handling.
 
         """
         try:
@@ -384,13 +384,13 @@ class SolPags(CrawJUD):
             conta_debito.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def custas(self) -> None:
         """Manage cost-related operations.
 
         Raises:
-            ErroDeExecucao: If an error occurs during cost management.
+            ExecutionError: If an error occurs during cost management.
 
         """
         try:
@@ -555,7 +555,7 @@ class SolPags(CrawJUD):
                 conta_debito.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def save_changes(self) -> None:
         """Save all changes made during the payment process."""
@@ -569,13 +569,13 @@ class SolPags(CrawJUD):
             save.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def confirm_save(self) -> None:
         """Confirm the saving of payment details.
 
         Raises:
-            ErroDeExecucao: If the save operation fails.
+            ExecutionError: If the save operation fails.
 
         """
         try:
@@ -595,7 +595,7 @@ class SolPags(CrawJUD):
 
             for pos, item in enumerate(check_solicitacoes):
                 if item.text == "Nenhum registro encontrado!":
-                    raise ErroDeExecucao("Pagamento não solicitado")
+                    raise ExecutionError("Pagamento não solicitado")
 
                 open_details = item.find_element(By.CSS_SELECTOR, self.elements.botao_ver)
                 open_details.click()
@@ -690,10 +690,10 @@ class SolPags(CrawJUD):
                 closeContext.click()
                 sleep(0.25)
 
-            raise ErroDeExecucao("Pagamento não solicitado")
+            raise ExecutionError("Pagamento não solicitado")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def getScreenShot(self, url_page: str, Name_Comprovante1: str) -> None:  # noqa: N802, N803
         """Capture a screenshot of the specified page.

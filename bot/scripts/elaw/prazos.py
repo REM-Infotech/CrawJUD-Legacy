@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -94,14 +94,14 @@ class Prazos(CrawJUD):
         """Handle the deadline queue processing.
 
         Raises:
-            ErroDeExecucao: If an error occurs during execution.
+            ExecutionError: If an error occurs during execution.
 
         """
         try:
             search = self.search_bot()
             if not search:
                 self.message = "Buscando Processo"
-                raise ErroDeExecucao("Não Encontrado!")
+                raise ExecutionError("Não Encontrado!")
 
             comprovante = ""
             self.data_Concat = f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
@@ -124,20 +124,20 @@ class Prazos(CrawJUD):
                 self.save_Prazo()
                 comprovante = self.CheckLancamento()
                 if not comprovante:
-                    raise ErroDeExecucao("Não foi possível comprovar lançamento, verificar manualmente")
+                    raise ExecutionError("Não foi possível comprovar lançamento, verificar manualmente")
 
                 self.message = "Pauta lançada!"
 
             self.append_success([comprovante], self.message)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def TablePautas(self) -> None:  # noqa: N802
         """Verify if there are existing schedules for the specified day.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the verification process.
+            ExecutionError: If an error occurs during the verification process.
 
         """
         try:
@@ -150,13 +150,13 @@ class Prazos(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def NovaPauta(self) -> None:  # noqa: N802
         """Launch a new audience schedule.
 
         Raises:
-            ErroDeExecucao: If unable to launch a new audience.
+            ExecutionError: If unable to launch a new audience.
 
         """
         try:
@@ -207,13 +207,13 @@ class Prazos(CrawJUD):
             DataAudiencia.send_keys(self.data_Concat)
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def save_Prazo(self) -> None:  # noqa: N802
         """Save the newly created deadline.
 
         Raises:
-            ErroDeExecucao: If unable to save the deadline.
+            ExecutionError: If unable to save the deadline.
 
         """
         try:
@@ -226,7 +226,7 @@ class Prazos(CrawJUD):
             btn_salvar.click()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def CheckLancamento(self) -> dict[str, str] | None:  # noqa: N802
         """Check if the deadline has been successfully recorded.
@@ -235,7 +235,7 @@ class Prazos(CrawJUD):
             dict[str, str] | None: Details of the recorded deadline or None if not found.
 
         Raises:
-            ErroDeExecucao: If unable to verify the deadline record.
+            ExecutionError: If unable to verify the deadline record.
 
         """
         try:
@@ -275,4 +275,4 @@ class Prazos(CrawJUD):
             return data
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e

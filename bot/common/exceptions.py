@@ -7,7 +7,7 @@ class StartError(Exception):
     """Exception raised for errors that occur during the start of the bot."""
 
 
-class CrawJUDExceptions(Exception):  # noqa: N818
+class BaseCrawJUDError(Exception):
     """Base exception class for CrawJUD-specific errors."""
 
     message_: str = None
@@ -23,7 +23,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         self.message_ = message
 
     def __init__(self, message: str = None, e: Exception = None, *args: tuple, **kwargs: dict) -> None:
-        """Initialize CrawJUDExceptions with an optional message and exception.
+        """Initialize BaseCrawJUDError with an optional message and exception.
 
         Args:
             message (str, optional): Error message. Defaults to None.
@@ -34,7 +34,7 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         """
         self.message = message
 
-        if isinstance(e, ErroDeExecucao):
+        if isinstance(e, ExecutionError):
             self.message = e.message
 
         elif message is None:
@@ -62,11 +62,11 @@ class CrawJUDExceptions(Exception):  # noqa: N818
         return check_except
 
 
-class ItemNaoEcontrado(CrawJUDExceptions):
+class NotFoundError(BaseCrawJUDError):
     """Exception raised when a required item is not found."""
 
     def __init__(self, message: str = "Item não encontrado") -> None:
-        """Initialize ItemNaoEcontrado with a default message."""
+        """Initialize NotFoundError with a default message."""
         super().__init__(message)
 
     def __instancecheck__(self, instance: Exception) -> bool:
@@ -88,10 +88,10 @@ class ItemNaoEcontrado(CrawJUDExceptions):
         return super().__str__()
 
 
-class ErroDeExecucao(CrawJUDExceptions):
+class ExecutionError(BaseCrawJUDError):
     """Exception raised for errors during CrawJUD execution.
 
-    This exception is a subclass of CrawJUDExceptions and is used to indicate
+    This exception is a subclass of BaseCrawJUDError and is used to indicate
     that an error occurred during the execution of a CrawJUD process.
 
     Methods:
@@ -103,7 +103,7 @@ class ErroDeExecucao(CrawJUDExceptions):
     """
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
-        """Initialize ErroDeExecucao with optional arguments."""
+        """Initialize ExecutionError with optional arguments."""
         super().__init__(*args, **kwargs)
 
     def __instancecheck__(self, instance: Exception) -> bool:

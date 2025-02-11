@@ -17,7 +17,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -133,7 +133,7 @@ class Emissao(CrawJUD):
         """Queue the emission tasks.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the queue process.
+            ExecutionError: If an error occurs during the queue process.
 
         """
         try:
@@ -151,7 +151,7 @@ class Emissao(CrawJUD):
             self.append_success(self.get_barcode())
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def custas_iniciais(self) -> None:
         """Handle the initial costs emission process."""
@@ -209,7 +209,7 @@ class Emissao(CrawJUD):
         """Handle the preparation of RI emission process.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the preparation process.
+            ExecutionError: If an error occurs during the preparation process.
 
         """
         portal = self.bot_data.get("PORTAL", "não informado")
@@ -262,7 +262,7 @@ class Emissao(CrawJUD):
             ).text
 
         elif portal == "não informado":
-            raise ErroDeExecucao("Informar portal do processo na planilha (PROJUDI ou ESAJ)")
+            raise ExecutionError("Informar portal do processo na planilha (PROJUDI ou ESAJ)")
 
     def renajud(self) -> None:
         """Handle the Renajud emission process."""
@@ -280,7 +280,7 @@ class Emissao(CrawJUD):
             str: The URL of the generated document.
 
         Raises:
-            ErroDeExecucao: If an error occurs during document generation.
+            ExecutionError: If an error occurs during document generation.
 
         """
         self.original_window = original_window = self.driver.current_window_handle
@@ -312,7 +312,7 @@ class Emissao(CrawJUD):
             self.driver.close()
             sleep(0.7)
             self.driver.switch_to.window(original_window)
-            raise ErroDeExecucao("Esaj não gerou a guia")
+            raise ExecutionError("Esaj não gerou a guia")
 
         if not check:
             return f"https://consultasaj.tjam.jus.br{url}"
@@ -353,7 +353,7 @@ class Emissao(CrawJUD):
             list: A list containing barcode information.
 
         Raises:
-            ErroDeExecucao: If an error occurs during barcode extraction.
+            ExecutionError: If an error occurs during barcode extraction.
 
         """
         try:
@@ -403,4 +403,4 @@ class Emissao(CrawJUD):
             ]
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e

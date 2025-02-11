@@ -21,7 +21,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -154,10 +154,10 @@ class complement(CrawJUD):
            - Save all changes and confirm the save operation.
            - Log the success message and execution time.
         3. If the search is not successful, raise an error.
-        4. Handle any exceptions by raising `ErroDeExecucao`.
+        4. Handle any exceptions by raising `ExecutionError`.
 
         Raises:
-            ErroDeExecucao: If the process is not found or an error occurs.
+            ExecutionError: If the process is not found or an error occurs.
 
         """
         try:
@@ -220,10 +220,10 @@ class complement(CrawJUD):
                 self.prt()
 
             elif search is not True:
-                raise ErroDeExecucao("Processo não encontrado!")
+                raise ExecutionError("Processo não encontrado!")
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def save_all(self) -> None:
         """Save all changes in the process.
@@ -250,7 +250,7 @@ class complement(CrawJUD):
         an error if any required field is missing.
 
         Raises:
-            ErroDeExecucao: If any required field is missing.
+            ExecutionError: If any required field is missing.
 
         """
         self.message = "Validando campos"
@@ -267,7 +267,7 @@ class complement(CrawJUD):
                 element = self.driver.execute_script(command)
 
                 if not element or element.lower() == "selecione":
-                    raise ErroDeExecucao(message=f'Campo "{campo}" não preenchido')
+                    raise ExecutionError(message=f'Campo "{campo}" não preenchido')
 
                 message_campo.append(f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>')
                 validar.update({campo.upper(): element})
@@ -304,7 +304,7 @@ class complement(CrawJUD):
 
 
         Raises:
-            ErroDeExecucao: If the responsible lawyer field is not filled.
+            ExecutionError: If the responsible lawyer field is not filled.
 
         """
         self.message = "Validando advogado responsável"
@@ -316,7 +316,7 @@ class complement(CrawJUD):
         element = self.driver.execute_script(command)
 
         if not element or element.lower() == "selecione":
-            raise ErroDeExecucao(message='Campo "Advogado Responsável" não preenchido')
+            raise ExecutionError(message='Campo "Advogado Responsável" não preenchido')
 
         self.message = f'Campo "Advogado Responsável" | Texto: {element}'
         self.type_log = "info"
@@ -334,14 +334,14 @@ class complement(CrawJUD):
         raises an error if the responsible lawyer is not found.
 
         Raises:
-            ErroDeExecucao: If the responsible lawyer is not found in the list of participating lawyers.
+            ExecutionError: If the responsible lawyer is not found in the list of participating lawyers.
 
         """
         data_bot = self.bot_data
         adv_name = data_bot.get("ADVOGADO_INTERNO", self.validar_advogado())
 
         if not adv_name.strip():
-            raise ErroDeExecucao(message="Necessário advogado interno para validação!")
+            raise ExecutionError(message="Necessário advogado interno para validação!")
 
         self.message = "Validando advogados participantes"
         self.type_log = "log"
@@ -355,7 +355,7 @@ class complement(CrawJUD):
             not_adv = tb_Advs.find_element(By.CSS_SELECTOR, tr_not_adv)
 
         if not_adv is not None:
-            raise ErroDeExecucao(message="Sem advogados participantes!")
+            raise ExecutionError(message="Sem advogados participantes!")
 
         advs = tb_Advs.find_elements(By.TAG_NAME, "tr")
 
@@ -365,7 +365,7 @@ class complement(CrawJUD):
                 break
 
         else:
-            raise ErroDeExecucao(message="Advogado responsável não encontrado na lista de advogados participantes!")
+            raise ExecutionError(message="Advogado responsável não encontrado na lista de advogados participantes!")
 
         self.message = "Advogados participantes validados"
         self.type_log = "info"
@@ -383,7 +383,7 @@ class complement(CrawJUD):
 
 
         Raises:
-            ErroDeExecucao: If the process was not saved successfully
+            ExecutionError: If the process was not saved successfully
 
         """
         wait_confirm_save = None
@@ -411,7 +411,7 @@ class complement(CrawJUD):
             if not ErroElaw:
                 ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"  # noqa: N806
 
-            raise ErroDeExecucao(ErroElaw)
+            raise ExecutionError(ErroElaw)
 
     def print_comprovante(self) -> str:
         """Print the comprovante (receipt) of the registration.
@@ -444,7 +444,7 @@ class complement(CrawJUD):
 
         Raises
         ------
-            ErroDeExecucao: If the internal lawyer is not found.
+            ExecutionError: If the internal lawyer is not found.
 
         """
         self.message = "informando advogado interno"
@@ -469,7 +469,7 @@ class complement(CrawJUD):
         if wait_adv:
             wait_adv.click()
         elif not wait_adv:
-            raise ErroDeExecucao(message="Advogado interno não encontrado")
+            raise ExecutionError(message="Advogado interno não encontrado")
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 

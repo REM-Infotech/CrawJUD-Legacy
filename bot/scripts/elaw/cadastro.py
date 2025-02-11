@@ -17,7 +17,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from ...shared import PropertiesCrawJUD
@@ -113,7 +113,7 @@ class cadastro(CrawJUD):
         and handles potential exceptions.
 
         Raises:
-            ErroDeExecucao: If the process is not found or extraction fails.
+            ExecutionError: If the process is not found or extraction fails.
 
         """
         try:
@@ -171,7 +171,7 @@ class cadastro(CrawJUD):
                     self.print_comprovante()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def area_direito(self) -> None:
         """Select the area of law in the web form.
@@ -457,7 +457,7 @@ class cadastro(CrawJUD):
         entered and processed.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the process.
+            ExecutionError: If an error occurs during the process.
 
         """
         self.message = "Preechendo informações da parte contrária"
@@ -513,7 +513,7 @@ class cadastro(CrawJUD):
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
             except Exception as e:
-                raise ErroDeExecucao("Não foi possível cadastrar parte", e) from e
+                raise ExecutionError("Não foi possível cadastrar parte", e) from e
 
         self.messsage = "Parte adicionada!"
         self.type_log = "info"
@@ -619,7 +619,7 @@ class cadastro(CrawJUD):
         into the designated field, and logs the action performed.
 
         Raises:
-            ErroDeExecucao: If the lawyer is not found.
+            ExecutionError: If the lawyer is not found.
 
         """
         self.message = "informando advogado interno"
@@ -644,7 +644,7 @@ class cadastro(CrawJUD):
         if wait_adv:
             wait_adv.click()
         elif not wait_adv:
-            raise ErroDeExecucao(message="Advogado interno não encontrado")
+            raise ExecutionError(message="Advogado interno não encontrado")
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -828,7 +828,7 @@ class cadastro(CrawJUD):
         the relevant web elements and logging the actions performed.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the process.
+            ExecutionError: If an error occurs during the process.
 
         """
         try:
@@ -903,7 +903,7 @@ class cadastro(CrawJUD):
             self.interact.sleep_load('div[id="j_id_3x"]')
 
         except Exception as e:
-            raise ErroDeExecucao("Não foi possível cadastrar advogado", e) from e
+            raise ExecutionError("Não foi possível cadastrar advogado", e) from e
 
     def cad_parte(self) -> None:
         """Register the party information.
@@ -912,7 +912,7 @@ class cadastro(CrawJUD):
         the relevant web elements and logging the actions performed.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the process
+            ExecutionError: If an error occurs during the process
 
         """
         try:
@@ -1014,7 +1014,7 @@ class cadastro(CrawJUD):
             self.prt()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def salvar_tudo(self) -> None:
         """Save all entered information.
@@ -1089,7 +1089,7 @@ class cadastro(CrawJUD):
             bool: True if the save is confirmed, False otherwise.
 
         Raises:
-            ErroDeExecucao: If the save confirmation fails.
+            ExecutionError: If the save confirmation fails.
 
         """
         wait_confirm_save = None
@@ -1121,4 +1121,4 @@ class cadastro(CrawJUD):
             if not ErroElaw:
                 ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"  # noqa: N806
 
-            raise ErroDeExecucao(ErroElaw)
+            raise ExecutionError(ErroElaw)

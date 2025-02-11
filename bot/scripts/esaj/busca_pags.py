@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
-from ...common import ErroDeExecucao
+from ...common import ExecutionError
 from ...core import CrawJUD
 
 
@@ -88,7 +88,7 @@ class BuscaPags(CrawJUD):
         """Perform the queue operation.
 
         Raises:
-            ErroDeExecucao: If an error occurs during the queue operation.
+            ExecutionError: If an error occurs during the queue operation.
 
         """
         try:
@@ -96,7 +96,7 @@ class BuscaPags(CrawJUD):
             self.page_custas()
 
         except Exception as e:
-            raise ErroDeExecucao(e=e) from e
+            raise ExecutionError(e=e) from e
 
     def get_page_custas_pagas(self) -> None:
         """Get the page of paid costs."""

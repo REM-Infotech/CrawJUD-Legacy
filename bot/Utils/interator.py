@@ -15,7 +15,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from bot.common.exceptions import ItemNaoEcontrado
+from bot.common.exceptions import NotFoundError
 
 from ..core import CrawJUD
 
@@ -80,7 +80,7 @@ class Interact(CrawJUD):
             bool: True if the item was successfully selected.
 
         Raises:
-            ItemNaoEcontrado: If the item with the specified text is not found.
+            NotFoundError: If the item with the specified text is not found.
 
         """
         itens: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
@@ -102,7 +102,7 @@ class Interact(CrawJUD):
         item = next(filter(lambda item: text == item.text, itens), None)
 
         if not item:
-            raise ItemNaoEcontrado(message=f'Item "{text}" não encontrado!')
+            raise NotFoundError(message=f'Item "{text}" não encontrado!')
 
         action = ActionChains(self.driver)
         action.double_click(item).perform()

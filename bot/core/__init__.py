@@ -36,7 +36,7 @@ from .. import (
     WebDriverWait,
     pd,
 )
-from ..common import ErroDeExecucao
+from ..common import ExecutionError
 from ..shared import PropertiesCrawJUD, TypeHint
 
 __all__ = [
@@ -229,7 +229,7 @@ class CrawJUD(PropertiesCrawJUD):
         Quits the driver, logs an error message, and raises an exception if login fails.
 
         Raises:
-            ErroDeExecucao: If the login fails.
+            ExecutionError: If the login fails.
 
         """
         try:
@@ -245,7 +245,7 @@ class CrawJUD(PropertiesCrawJUD):
                     self.message = "Erro ao realizar login"
                     self.type_log = "error"
                     self.prt()
-                    raise ErroDeExecucao(message=self.message)
+                    raise ExecutionError(message=self.message)
 
         except Exception as e:
             err = traceback.format_exc()
