@@ -28,5 +28,5 @@ async def register_routes(app: Quart) -> None:
 
     @app.errorhandler(HTTPException)
     def handle_http_exception(error: HTTPException) -> Response:
-        url = environ.get("url_web")
+        url = environ.get("URL_WEB")
         return make_response(redirect(url))

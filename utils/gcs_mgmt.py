@@ -30,8 +30,8 @@ def CredentialsGCS() -> Credentials:  # noqa: N802
         Credentials: GCS service account credentials.
 
     """
-    credentials_dict = json.loads(environ.get("credentials_dict"))
-    return Credentials.from_service_account_info(credentials_dict).with_scopes(
+    CREDENTIALS_DICT = json.loads(environ.get("CREDENTIALS_DICT"))
+    return Credentials.from_service_account_info(CREDENTIALS_DICT).with_scopes(
         ["https://www.googleapis.com/auth/cloud-platform"],
     )
 
@@ -48,9 +48,9 @@ def bucketGcs(storageClient: Client) -> Bucket:  # noqa: N802, N803
         Bucket: The GCS bucket.
 
     """
-    bucket_name = environ.get("bucket_name")
+    BUCKET_NAME = environ.get("BUCKET_NAME")
 
-    bucket_obj = storageClient.bucket(bucket_name)
+    bucket_obj = storageClient.bucket(BUCKET_NAME)
     return bucket_obj
 
 

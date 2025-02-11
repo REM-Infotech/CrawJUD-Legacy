@@ -31,7 +31,7 @@ def email_start(execution: None, app: Quart) -> None:
     # admins: list[str] = []
     # pid = execution.pid
     # usr: Users = execution.user
-    # url_web = environ.get("url_web")
+    # URL_WEB = environ.get("URL_WEB")
 
     # display_name = execution.bot.display_name
     # xlsx = execution.arquivo_xlsx
@@ -45,7 +45,7 @@ def email_start(execution: None, app: Quart) -> None:
     #     logger.exception(err)
 
     # with app.app_context():
-    #     url_web = environ.get("url_web")
+    #     URL_WEB = environ.get("URL_WEB")
     #     sendermail = environ["MAIL_DEFAULT_SENDER"]
 
     #     robot = f"Robot Notifications <{sendermail}>"
@@ -57,7 +57,7 @@ def email_start(execution: None, app: Quart) -> None:
     #                       <li>Robot: {display_name}</li>
     #                       <li>Spreadsheet: {xlsx}</li>
     #                   </ul>
-    #                   <p>Monitor the robot's execution in <b><a href="{url_web}/logs_bot/{pid}">Our System</a></b></p>
+    #                   <p>Monitor the robot's execution in <b><a href="{URL_WEB}/logs_bot/{pid}">Our System</a></b></p>
     #                   <p>Please, <b>DO NOT REPLY TO THIS EMAIL</b></p>
     #     """
 
@@ -90,7 +90,7 @@ def email_stop(execution: None, app: Quart) -> None:
     # admins: list[str] = []
     # pid = execution.pid
     # usr: Users = execution.user
-    # url_web = environ.get("url_web")
+    # URL_WEB = environ.get("URL_WEB")
 
     # display_name = execution.bot.display_name
     # xlsx = execution.arquivo_xlsx
@@ -104,7 +104,7 @@ def email_stop(execution: None, app: Quart) -> None:
     #     logger.exception(err)
 
     # with app.app_context():
-    #     url_web = environ.get("url_web")
+    #     URL_WEB = environ.get("URL_WEB")
     #     sendermail = environ["MAIL_DEFAULT_SENDER"]
 
     #     robot = f"Robot Notifications <{sendermail}>"
@@ -116,7 +116,7 @@ def email_stop(execution: None, app: Quart) -> None:
     #                       <li>Robot: {display_name}</li>
     #                       <li>Spreadsheet: {xlsx}</li>
     #                   </ul>
-    #                   <p>Check the execution status in <b><a href="{url_web}/logs_bot/{pid}">Our System</a></b></p>
+    #                   <p>Check the execution status in <b><a href="{URL_WEB}/logs_bot/{pid}">Our System</a></b></p>
     #                   <p>Please, <b>DO NOT REPLY TO THIS EMAIL</b></p>
     #     """
 

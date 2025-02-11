@@ -172,8 +172,6 @@ class AppFactory:
 
         debug = values("DEBUG", "False").lower() == "True"
 
-        hostname = values("SERVER_HOSTNAME", "127.0.0.1")
-
         # unsafe_werkzeug = getenv("IN_PRODUCTION", None) is None or (getenv("DEBUG", "False").lower() == "true")
         port = int(values("PORT", "8000"))
         version_file()
@@ -181,7 +179,6 @@ class AppFactory:
             AppFactory.start_vnc()
 
         args_run = {
-            "hostname": hostname,
             "debug": debug,
             "port": port,
             "log_output": True,
@@ -213,11 +210,10 @@ class AppFactory:
         return app, celery
 
     @classmethod
-    def starter(cls, hostname: str, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:
+    def starter(cls, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:
         """Start the application with the specified parameters.
 
         Args:
-            hostname (str): The hostname to listen on.
             port (int): The port to listen on.
             log_output (bool): Whether to log output.
             app (Quart): The Quart application instance.
@@ -226,12 +222,11 @@ class AppFactory:
         """
         # Create a WebSocket
 
-        hostname = kwargs.pop("hostname", hostname)
         port = kwargs.pop("port", port)
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
 
-        uvicorn.run(app, host=hostname, port=port)
+        uvicorn.run(app, host="127.0.0.1", port=port)
 
     @staticmethod
     def handle_exit(a: any = None, b: any = None) -> None:
