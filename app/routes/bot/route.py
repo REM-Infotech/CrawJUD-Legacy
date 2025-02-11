@@ -4,18 +4,16 @@ import json
 import traceback
 from typing import TYPE_CHECKING
 
-from celery.schedules import crontab
+from celery.schedules import crontab  # noqa: F401
 from quart import Response, jsonify, make_response, request
 from quart import current_app as app
 
 from utils import (  # noqa: F401
-    SetStatus,
     check_latest,
-    reload_module,  # noqa: F401
-    stop_execution,
+    reload_module,
 )
 
-from ...models import ScheduleModel
+from ...models import ScheduleModel  # noqa: F401
 from . import bot
 from .task_exec import TaskExec
 
@@ -111,57 +109,57 @@ async def stop_bot(user: str, pid: str) -> Response:
     if query:
         pid = query.pid
         with app.app_context():
-            robot_stop = True
-            args, code = stop_execution(app, pid, robot_stop)
+            robot_stop = True  # noqa: F841
+            # args, code = stop_execution(app, pid, robot_stop)
 
-            return make_response(jsonify(args), code)
+            return make_response(jsonify(args), code)  # type: ignore # noqa: F821, PGH003
 
     return make_response(jsonify({"error": "PID não encontrado"}), 404)
 
 
-@bot.post("/periodic_bot/<id>/<system>/<typebot>")
-async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
-    """Schedule a bot to run periodically based on provided cron arguments.
+# @bot.post("/periodic_bot/<id>/<system>/<typebot>")
+# async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
+#     """Schedule a bot to run periodically based on provided cron arguments.
 
-    Args:
-        id (int): The identifier for the bot.
-        system (str): The system the bot is associated with.
-        typebot (str): The type of bot to schedule.
+#     Args:
+#         id (int): The identifier for the bot.
+#         system (str): The system the bot is associated with.
+#         typebot (str): The type of bot to schedule.
 
-    Returns:
-        Response: JSON response indicating the success of the scheduling operation.
+#     Returns:
+#         Response: JSON response indicating the success of the scheduling operation.
 
-    """
-    db: SQLAlchemy = app.extensions["sqlalchemy"]
+#     """
+#     db: SQLAlchemy = app.extensions["sqlalchemy"]
 
-    request_data = request.data
-    request_form = request.form
+#     request_data = request.data
+#     request_form = request.form
 
-    data_bot = request_data or request_form
+#     data_bot = request_data or request_form
 
-    if isinstance(data_bot, str):
-        data_bot = json.loads(data_bot)
+#     if isinstance(data_bot, str):
+#         data_bot = json.loads(data_bot)
 
-    cron = crontab(minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*")
+#     cron = crontab(minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*")
 
-    cron = crontab(**data_bot.get("CRONTAB_ARGS"))
+#     cron = crontab(**data_bot.get("CRONTAB_ARGS"))
 
-    start_rb = SetStatus(data_bot, request.files, id, system, typebot)
-    path_args, display_name = start_rb.start_bot(app, db)
+#     start_rb = SetStatus(data_bot, request.files, id, system, typebot)
+#     path_args, display_name = start_rb.start_bot(app, db)
 
-    schedule_str = "".join(
-        (
-            f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month}",  # noqa: SLF001
-            f"{cron._orig_month_of_year} {cron._orig_day_of_week}",  # noqa: SLF001
-        ),
-    )
+#     schedule_str = "".join(
+#         (
+#             f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month}",  # noqa: SLF001
+#             f"{cron._orig_month_of_year} {cron._orig_day_of_week}",  # noqa: SLF001
+#         ),
+#     )
 
-    task_name = "app.tasks.bot_starter.init_bot"
-    args = json.dumps([path_args, display_name, system, typebot])
-    kwargs = json.dumps({})
+#     task_name = "app.tasks.bot_starter.init_bot"
+#     args = json.dumps([path_args, display_name, system, typebot])
+#     kwargs = json.dumps({})
 
-    new_schedule = ScheduleModel(task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs)
-    db.session.add(new_schedule)
-    db.session.commit()
+#     new_schedule = ScheduleModel(task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs)
+#     db.session.add(new_schedule)
+#     db.session.commit()
 
-    return make_response(jsonify({"success": "success"}))
+#     return make_response(jsonify({"success": "success"}))

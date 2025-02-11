@@ -9,7 +9,7 @@ from pytz import timezone
 from socketio import AsyncServer
 
 from app import app
-from utils import FormatMessage, load_cache, stop_execution
+from utils import FormatMessage, load_cache
 
 from .bot.task_exec import TaskExec
 
@@ -192,16 +192,16 @@ async def join(
                     },
                 )
 
-                try:
-                    await stop_execution(app, pid)
-                except Exception as e:
-                    app.logger.error("An error occurred: %s", str(e))
-                    app.logger.exception(traceback.format_exc())
+                # try:
+                #     await stop_execution(app, pid)
+                # except Exception as e:
+                #     app.logger.error("An error occurred: %s", str(e))
+                #     app.logger.exception(traceback.format_exc())
 
             await io.emit("log_message", data, room=room, namespace="/log")
 
         except Exception:
             await io.send("Failed to check bot has stopped")
-            stop_execution(app, pid)
+            # stop_execution(app, pid)
 
     await io.send(f"Joinned room! Room: {room}", to=sid, namespace="/log")

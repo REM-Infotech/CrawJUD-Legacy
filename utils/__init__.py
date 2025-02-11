@@ -14,13 +14,11 @@ from .make_celery import make_celery
 from .mod_mgmt import reload_module
 from .status import (
     FormatMessage,
-    SetStatus,
     email_start,
     email_stop,
     enviar_arquivo_para_gcs,
     load_cache,
     makezip,
-    stop_execution,
 )
 
 signed_url_lifetime = 300
@@ -35,14 +33,12 @@ __all__ = [
     init_log,
     asyncinit_log,
     version_file,
-    SetStatus,
     makezip,
     email_start,
     email_stop,
     enviar_arquivo_para_gcs,
     get_file,
     load_cache,
-    stop_execution,
     FormatMessage,
     reload_module,
 ]
