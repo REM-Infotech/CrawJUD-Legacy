@@ -7,6 +7,7 @@ Handles tasks related to document processing, authentication, and error handling
 import time
 from contextlib import suppress
 from time import sleep
+from typing import Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -16,8 +17,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ExecutionError
 from ...core import CrawJUD
-
-# from ...shared import PropertiesCrawJUD
 
 
 class Capa(CrawJUD):
@@ -33,6 +32,18 @@ class Capa(CrawJUD):
         isStoped (bool): Flag indicating if the execution should stop.
 
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the capa instance.

@@ -16,8 +16,6 @@ from urllib3.exceptions import MaxRetryError  # noqa: F401
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 
 class ProcParte(CrawJUD):
     """proc_parte class.

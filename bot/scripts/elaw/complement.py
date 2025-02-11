@@ -24,8 +24,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 type_doc = {11: "cpf", 14: "cnpj"}
 
 campos_validar: list[str] = [
@@ -54,6 +52,18 @@ class Complement(CrawJUD):
 
     This class interacts with the ELAW system to complete the registration of a process.
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the complement class.

@@ -17,7 +17,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# # from ...shared import PropertiesCrawJUD
+#
 
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 

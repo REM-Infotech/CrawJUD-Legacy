@@ -8,6 +8,7 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
+from typing import Self
 
 from pytz import timezone
 from selenium.common.exceptions import TimeoutException
@@ -20,8 +21,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
@@ -33,6 +32,18 @@ class SolPags(CrawJUD):
         # ...other attributes...
 
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the SolPags instance.

@@ -8,6 +8,7 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
+from typing import Self
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -22,6 +23,18 @@ from ...core import CrawJUD
 
 class Pauta(CrawJUD):  # noqa: N801
     """Represents the main class to retrieve hearing data (pautas)."""
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the pauta class with any given arguments."""

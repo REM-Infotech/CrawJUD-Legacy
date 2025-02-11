@@ -18,8 +18,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ExecutionError
 from ...core import CrawJUD
-
-# from ...shared import PropertiesCrawJUD
 from ...Utils import OtherUtils
 
 

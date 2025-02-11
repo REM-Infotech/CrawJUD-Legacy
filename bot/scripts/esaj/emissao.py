@@ -8,6 +8,7 @@ import re
 import time
 from contextlib import suppress
 from time import sleep
+from typing import Self
 
 import requests
 from pypdf import PdfReader
@@ -19,8 +20,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ExecutionError
 from ...core import CrawJUD
-
-# from ...shared import PropertiesCrawJUD
 from ...Utils import OtherUtils
 
 type_docscss = {
@@ -61,6 +60,18 @@ class Emissao(CrawJUD):
     """
 
     count_doc = OtherUtils.count_doc
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Emissao instance.

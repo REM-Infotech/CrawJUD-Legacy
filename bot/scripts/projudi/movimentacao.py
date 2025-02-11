@@ -23,8 +23,6 @@ from selenium.webdriver.support.ui import Select
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 
 class Movimentacao(CrawJUD):
     """Handles movement-related operations within the Projudi system.

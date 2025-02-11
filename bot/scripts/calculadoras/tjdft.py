@@ -10,6 +10,7 @@ import os
 import time
 from contextlib import suppress
 from time import sleep
+from typing import Self
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -22,8 +23,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 cookieaceito = []
 
 
@@ -35,6 +34,18 @@ class Tjdft(CrawJUD):
         # ...other attributes...
 
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Tjdft instance.

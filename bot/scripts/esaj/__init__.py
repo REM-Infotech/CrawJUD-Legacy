@@ -5,7 +5,7 @@ This module initializes and manages the ESaj bot within the CrawJUD-Bots applica
 
 import logging
 import traceback
-from typing import Union
+from typing import Callable, Union
 
 from ...common import StartError
 from .busca_pags import BuscaPags as Busca_pags
@@ -61,9 +61,9 @@ class Esaj:
 
             kwargs.update({"display_name": display_name})
 
-            self.bot_call(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
-
-            self.bot_call.execution()
+            self.bot_call.initialize(
+                display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_
+            ).execution()
 
         except Exception as e:
             err = traceback.format_exc()
@@ -83,7 +83,7 @@ class Esaj:
             AttributeError: If the specified bot type is not found.
 
         """
-        bot_call = globals().get(self.typebot_.capitalize())
+        bot_call: Callable[[], None] = globals().get(self.typebot_.capitalize())
 
         # rb = self.bots.get(self.typebot)
         if not bot_call:

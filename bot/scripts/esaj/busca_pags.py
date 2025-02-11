@@ -6,6 +6,7 @@ This module handles page search functionalities within the CrawJUD-Bots applicat
 import time
 from contextlib import suppress
 from datetime import datetime
+from typing import Self
 
 import pytz
 from selenium.webdriver.common.by import By
@@ -24,6 +25,18 @@ class BuscaPags(CrawJUD):
         # ...other attributes...
 
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the busca_pags instance.

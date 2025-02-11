@@ -28,7 +28,7 @@ from ...common import ExecutionError
 from ...core import CrawJUD
 
 # from typing import type
-# from ...shared import PropertiesCrawJUD
+
 
 dotenv.load_dotenv()
 

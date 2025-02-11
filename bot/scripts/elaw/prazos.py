@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 import time
 from contextlib import suppress
+from typing import Self
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -15,8 +16,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ExecutionError
 from ...core import CrawJUD
-
-# from ...shared import PropertiesCrawJUD
 
 
 class Prazos(CrawJUD):
@@ -27,6 +26,18 @@ class Prazos(CrawJUD):
         # ...other attributes...
 
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the Prazos instance.

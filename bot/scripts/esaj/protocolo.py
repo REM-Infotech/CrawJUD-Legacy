@@ -10,6 +10,7 @@ import unicodedata
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
+from typing import Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
@@ -21,14 +22,24 @@ from selenium.webdriver.support.wait import WebDriverWait
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from ...shared import PropertiesCrawJUD
-
 
 class Protocolo(CrawJUD):
     """protocolo class.
 
     Manages the protocoling process within the ESaj system using the CrawJUD framework.
     """
+
+    @classmethod
+    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize a new protocolo instance.
