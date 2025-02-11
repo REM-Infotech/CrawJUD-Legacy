@@ -30,7 +30,7 @@ from tqdm import tqdm
 
 from app.routes import register_routes
 from utils import asyncinit_log as init_log
-from utils import check_allowed_origin, make_celery, version_file
+from utils import check_allowed_origin, make_celery
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,
@@ -174,7 +174,6 @@ class AppFactory:
 
         # unsafe_werkzeug = getenv("IN_PRODUCTION", None) is None or (getenv("DEBUG", "False").lower() == "true")
         port = int(values("PORT", "8000"))
-        version_file()
         if system().lower() == "linux":
             AppFactory.start_vnc()
 
