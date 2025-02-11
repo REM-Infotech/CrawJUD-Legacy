@@ -3,8 +3,7 @@ services:
   quart_restapi:
     shm_size: "2gb"
     environment:
-      APPLICATION_APP: "quart"
-      INTO_DOCKER: "True"
+      IN_PRODUCTION: "True"
       DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
     build:
       context: "."
@@ -19,9 +18,8 @@ services:
   celery_worker:
     shm_size: "2gb"
     environment:
-      APPLICATION_APP: "worker"
       DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
-      INTO_DOCKER: "True"
+      IN_PRODUCTION: "True"
     build:
       context: "."
     volumes:
@@ -35,9 +33,8 @@ services:
   celery_beat:
     shm_size: "2gb"
     environment:
-      APPLICATION_APP: "beat"
       DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
-      INTO_DOCKER: "${INTO_DOCKER:-default_value}"
+      IN_PRODUCTION: "${IN_PRODUCTION:-default_value}"
     build:
       context: "."
     volumes:

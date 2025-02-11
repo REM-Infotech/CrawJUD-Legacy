@@ -14,7 +14,7 @@ function StartApp {
 
 
 
-  $env:INTO_DOCKER = 'true'
+  $env:IN_PRODUCTION = 'true'
   $env:DOTENV_KEY = $DOTENV_KEY
   $env:APPLICATION_APP = $APPLICATION_APP
   $env:SERVER_HOSTNAME = $SERVER_HOSTNAME

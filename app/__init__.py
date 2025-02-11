@@ -204,7 +204,11 @@ class AppFactory:
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
 
-        uvicorn.run(app, host="127.0.0.1", port=port)
+        uvicorn.run(
+            app,
+            host="0.0.0.0",  # noqa: S104 # nosec
+            port=port,
+        )
 
     @staticmethod
     def handle_exit(a: any = None, b: any = None) -> None:
