@@ -8,7 +8,7 @@ from datetime import date, datetime  # noqa: F401
 from pathlib import Path  # noqa: F401
 from typing import Any, Union  # noqa: F401
 
-import aiofiles
+import aiofile
 import httpx
 from flask_sqlalchemy import SQLAlchemy
 from quart import (  # noqa: F401
@@ -140,23 +140,23 @@ async def process_form_submission(
 
     for item, value in data_form:
         if isinstance(value, FileStorage):
-            handle_file_storage(value, data, files, temporarypath)
+            await handle_file_storage(value, data, files, temporarypath)
             continue
         elif isinstance(value, list):
-            handle_file_list(item, value, data, files, temporarypath)
+            await handle_file_list(item, value, data, files, temporarypath)
             continue
 
-        handle_other_data(item, value, data, system, typebot, bot_info, files)
+        await handle_other_data(item, value, data, system, typebot, bot_info, files)
 
     return data, files, pid
 
 
-async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | Path) -> None:
+async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: Path) -> None:
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
-    path_save = os.path.join(temporarypath, secure_filename(value.filename))
+    path_save = os.path.join(str(temporarypath), str(secure_filename(value.filename)))
     value.save(path_save)
-    buff = aiofiles.open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
+    buff = FileStorage(await aiofile.async_open(os.path.join(temporarypath, secure_filename(value.filename)), "rb"))
     buff.seek(0)
     files.update({
         secure_filename(value.filename): (
@@ -182,7 +182,9 @@ async def handle_file_list(
     for filev in value:
         if isinstance(filev, FileStorage):
             filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
-            buff = aiofiles.open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
+            buff = FileStorage(
+                await aiofile.async_open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb").read()
+            )
             files.update({
                 secure_filename(filev.filename): (
                     secure_filename(filev.filename),
@@ -203,7 +205,7 @@ async def handle_other_data(
 ) -> None:
     """Handle other types of data for form submission."""
     if item == "creds":
-        handle_credentials(value, data, system, files)
+        await handle_credentials(value, data, system, files)
     else:
         if not data.get(item):
             data.update({item: value})
@@ -240,9 +242,11 @@ async def handle_credentials(value: str, data: dict, system: str, files: dict) -
                 })
             elif credential.login_method == "cert":
                 certpath = os.path.join(temporarypath, credential.certficate)
-                with aiofiles.open(certpath, "wb") as f:
+                with aiofile.async_open(certpath, "wb") as f:
                     f.write(credential.certficate_blob)
-                buff = aiofiles.open(os.path.join(certpath), "rb")
+                buff = FileStorage(
+                    await aiofile.async_open(os.path.join(temporarypath, secure_filename(value.filename)), "rb").read()
+                ).stream
                 files.update({
                     credential.certficate: (
                         credential.certficate,
@@ -271,7 +275,7 @@ async def send_data_to_servers(data: dict, files: dict, headers: dict, pid: str)
             kwargs.pop("json")
             kwargs.update({"files": files, "data": data})
         response = None
-        async with suppress(Exception):
+        with suppress(Exception):
             async with httpx.AsyncClient() as client:
                 response = await client.post(**kwargs, headers=headers)
         if response:

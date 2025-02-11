@@ -108,7 +108,7 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
 
         if form.validate_on_submit():
             data, files, pid = await process_form_submission(form, system, typebot, bot_info)
-            response = await send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid)
+            response = await send_data_to_servers(data, files, {"CONTENT_TYPE": request.content_type}, pid)
             if response:
                 return response
 
