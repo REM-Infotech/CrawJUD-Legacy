@@ -17,7 +17,6 @@ from pathlib import Path
 import aiofiles
 import openpyxl
 import pytz
-from celery import shared_task
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
@@ -39,7 +38,7 @@ logger = logging.getLogger(__name__)
 env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve().joinpath("mail/templates")), autoescape=True)
 
 
-class StarterTasks:
+class InstanceBot:
     def __init__(self) -> None:
         """Initialize the class."""
 
@@ -61,7 +60,6 @@ class StarterTasks:
 
     # Tasks
     @classmethod
-    @shared_task(ignore_result=False)
     async def configure_path(cls, app: Quart, pid: str, files: dict[str, FileStorage] = None) -> Path:
         """Configure the path for the bot.
 
@@ -85,7 +83,6 @@ class StarterTasks:
         return path_pid
 
     @classmethod
-    @shared_task(ignore_result=False)
     async def args_tojson(
         cls,
         path_pid: Path,
@@ -142,16 +139,16 @@ class StarterTasks:
         async with aiofiles.open(Path(path_args), "w") as f:  # noqa: FURB103
             await f.write(json.dumps(data))
 
+        return data
+
     @classmethod
-    @shared_task(ignore_result=False)
     async def insert_into_database(
         cls,
         db: SQLAlchemy,
         data: dict[str, str | int | datetime],
         pid: str,
-        rows: int,
-        user: str,
         id_: int,
+        user: str,
         *args: tuple,
         **kwargs: dict,
     ) -> tuple[Executions, str]:
@@ -161,9 +158,8 @@ class StarterTasks:
             db (SQLAlchemy): The SQLAlchemy database instance.
             data (dict[str, str | int | datetime]): A dictionary containing the bot execution data.
             pid (str): The process identifier of the bot.
-            rows (int): The total number of rows.
-            user (str): The user name.
             id_ (int): The bot ID.
+            user (str): The user login.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -174,7 +170,7 @@ class StarterTasks:
 
         if len(data.get("xlsx", "Sem Arquivo")) > int(max_length):
             xlsx_ = xlsx_[: int(max_length)]
-
+        rows = data.get("total_rows")
         execut = Executions(
             pid=pid,
             status="Em Execução",
@@ -199,7 +195,6 @@ class StarterTasks:
         return execut, bt.display_name
 
     @classmethod
-    @shared_task(ignore_result=False)
     async def send_email(cls, execut: Executions, app: Quart, type_notify: str) -> None:
         """Send an email to the user.
 
@@ -250,7 +245,6 @@ class StarterTasks:
         return "Email enviado com sucesso!"
 
     @classmethod
-    @shared_task(ignore_result=False)
     async def make_zip(cls, pid: str) -> str:
         """Create a ZIP file.
 
@@ -261,7 +255,6 @@ class StarterTasks:
         return makezip(pid)
 
     @classmethod
-    @shared_task(ignore_result=False)
     async def send_file_gcs(cls, zip_file: str) -> None:
         """Send a file to Google Cloud Storage.
 
@@ -272,7 +265,6 @@ class StarterTasks:
         return enviar_arquivo_para_gcs(zip_file)
 
     @classmethod
-    @shared_task(ignore_result=False)
     async def send_stop_exec(
         cls,
         db: SQLAlchemy,

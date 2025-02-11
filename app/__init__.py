@@ -88,7 +88,7 @@ class AppFactory:
         celery.set_default()
         app.extensions["celery"] = celery
 
-        celery.autodiscover_tasks(["bot"])
+        celery.autodiscover_tasks(["bot", "utils"])
 
         async with app.app_context():
             io = await self.init_extensions(app)

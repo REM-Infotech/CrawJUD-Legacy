@@ -1,37 +1,35 @@
 """Blueprint for managing bot operations such as launching, stopping, and scheduling."""
 
-import asyncio
 import json
 import traceback
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from celery.schedules import crontab
-from quart import Blueprint, Response, jsonify, make_response, request
+from quart import Response, jsonify, make_response, request
 from quart import current_app as app
 
 from utils import (  # noqa: F401
+    SetStatus,
     check_latest,
     reload_module,  # noqa: F401
     stop_execution,
 )
 
-from ..models import ScheduleModel
+from ...models import ScheduleModel
+from . import bot
+from .task_exec import TaskExec
 
 if TYPE_CHECKING:
-    from celery import Celery, Task
+    from celery import Celery
     from flask_sqlalchemy import SQLAlchemy
 
-path_template = str(Path(__file__).parent.resolve().joinpath("templates"))
-bot = Blueprint("bot", __name__, template_folder=path_template)
 
-
-@bot.post("/bot/<id>/<system>/<typebot>")
-async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A002
+@bot.post("/bot/<id_>/<system>/<typebot>")
+async def botlaunch(id_: int, system: str, typebot: str) -> Response:
     """Launch a new bot with the specified parameters.
 
     Args:
-        id (int): The identifier for the bot.
+        id_ (int): The identifier for the bot.
         system (str): The system the bot is associated with.
         typebot (str): The type of bot to launch.
 
@@ -41,7 +39,6 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
-    from utils import SetStatus
 
     is_started = 200
 
@@ -70,32 +67,9 @@ async def botlaunch(id: int, system: str, typebot: str) -> Response:  # noqa: A0
             # if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
             #     raise Exception("Este servidor não pode executar este robô!")
 
-            start_rb = SetStatus()
-
             files = await request.files
-
-            start_rb = await asyncio.create_task(start_rb.config(data_bot, files, id, system, typebot))
-            path_args, display_name = await asyncio.create_task(start_rb.start_bot(app, db))
-
-            async with app.app_context():
-                # reload_module("bot")
-
-                from app.models import ThreadBots
-
-                celery_app: Celery = app.extensions["celery"]
-
-                pid = Path(path_args).stem
-
-                task: Task = celery_app.send_task(
-                    f"bot.{system.lower()}_launcher", args=[path_args, display_name, system, typebot]
-                )
-
-                process_id = str(task.id)
-
-                # Salva o ID no "banco de dados"
-                add_thread = ThreadBots(pid=pid, processID=process_id)
-                db.session.add(add_thread)
-                db.session.commit()
+            celery_app: Celery = app.extensions["celery"]
+            await TaskExec.task_exec(app, celery_app, db, files, data_bot, id_, system, typebot)
 
         except Exception:
             err = traceback.format_exc()
@@ -148,8 +122,6 @@ async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa:
         Response: JSON response indicating the success of the scheduling operation.
 
     """
-    from utils import SetStatus
-
     db: SQLAlchemy = app.extensions["sqlalchemy"]
 
     request_data = request.data
