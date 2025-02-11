@@ -8,21 +8,23 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import traceback
+import traceback  # noqa: F401
 import unicodedata
 from datetime import datetime
 from os import path
 from pathlib import Path
-from typing import Self
 
 import aiofiles
 import openpyxl
 import pytz
+from celery import shared_task
 from flask_sqlalchemy import SQLAlchemy
 from openpyxl.worksheet.worksheet import Worksheet
 from quart import Quart
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
+
+from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
 
 from .makefile import makezip
 from .send_email import email_start, email_stop
@@ -33,52 +35,13 @@ url_cache = []
 logger = logging.getLogger(__name__)
 
 
-class SetStatus:
-    """A class to manage  the status of bots (Start and Stop)."""
-
+class StarterTasks:
     def __init__(self) -> None:
         """Initialize the class."""
 
-    async def config(
-        self,
-        form: dict[str, str] = None,
-        files: dict[str, FileStorage] = None,
-        id: int = 0,  # noqa: A002
-        system: str = None,
-        typebot: str = None,
-        usr: str = None,
-        pid: str = None,
-        status: str = "Finalizado",
-        **kwargs: dict[str, any],
-    ) -> Self:
-        """Initialize the SetStatus instance.
-
-        :param form: Dictionary containing form data.
-        :param files: Dictionary containing file data.
-        :param id: Bot ID.
-        :param system: System name.
-        :param typebot: type of bot.
-        :param usr: User name.
-        :param pid: Process ID.
-        :param status: Status of the bot.
-        """
-        self.form = form
-        if self.form is None:
-            self.form = kwargs
-
-        self.files = files
-        self.id = id
-        self.system = system
-        self.typebot = typebot
-
-        self.user = self.form.get("user", usr)
-        self.pid = self.form.get("pid", pid)
-
-        self.status = status
-
-        return self
-
-    async def format_string(self, string: str) -> str:
+    # Utilities methods
+    @classmethod
+    async def format_string(cls, string: str) -> str:
         """Format a string to be a secure filename.
 
         Args:
@@ -92,51 +55,65 @@ class SetStatus:
             "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]),
         )
 
-    async def start_bot(  # noqa: C901
-        self,
-        app: Quart,
-        db: SQLAlchemy,
-        user: str = None,
-        pid: str = None,
-        id: int = None,  # noqa: A002
-    ) -> tuple[str, str]:
-        """Start the bot and handle file uploads and database interactions.
+    # Tasks
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def configure_path(cls, app: Quart, pid: str, files: dict[str, FileStorage] = None) -> Path:
+        """Configure the path for the bot.
 
-        :param app: Quart application instance.
-        :param db: SQLAlchemy database instance.
-        :param user: User name.
-        :param pid: Process ID.
-        :param id: Bot ID.
-
-        Returns:
-            tuple containing the path to the arguments file and the bot display name.
+        Args:
+            app (Quart): The Quart application instance.
+            pid (str): The process identifier of the bot.
+            files (dict[str, FileStorage], optional): A dictionary containing file data. Defaults to None.
 
         """
-        from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
-
-        user = self.user if user is None else user
-        pid = self.pid if pid is None else pid
-        id = self.id if id is None else id  # noqa: A001
-
         path_pid = Path(__file__).cwd().joinpath(app.config["TEMP_PATH"]).joinpath(pid).resolve()
         path_pid.mkdir(parents=True, exist_ok=True)
 
-        if self.files is not None:
-            for f, value in self.files.items():
+        if files is not None:
+            for f, value in files.items():
                 if "xlsx" not in f:
-                    f = await asyncio.create_task(self.format_string(f))
+                    f = await cls.format_string(f)
 
                 filesav = path_pid.joinpath(f)
                 await value.save(filesav)
 
-        data = {}
+        return path_pid
 
-        path_args = path.join(path_pid, f"{pid}.json")
-        if self.form is not None:
-            for key, value in self.form.items():
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def args_tojson(
+        cls,
+        path_pid: Path,
+        pid: str,
+        id_: int,
+        system: str,
+        typebot: str,
+        form: dict[str, str] = None,
+        *args: tuple[str],
+        **kwargs: dict[str, any],
+    ) -> dict[str, str]:
+        """Convert the bot arguments to a JSON file.
+
+        Args:
+            path_pid (Path): The path to the bot's arguments file.
+            pid (str): The process identifier of the bot.
+            id_ (int): The bot ID.
+            system (str): The system name.
+            typebot (str): The type of bot.
+            form (dict[str, str], optional): A dictionary containing form data. Defaults to None.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        """
+        data: dict[str, str | int | datetime] = {}
+
+        path_args = path_pid.joinpath(f"{pid}.json")
+        if form is not None:
+            for key, value in form.items():
                 data.update({key: value})
 
-        data.update({"id": id, "system": self.system, "typebot": self.typebot})
+        data.update({"id": id, "system": system, "typebot": typebot})
 
         if data.get("xlsx"):
             input_file = path.join(path_pid, data["xlsx"])
@@ -161,6 +138,32 @@ class SetStatus:
         async with aiofiles.open(Path(path_args), "w") as f:  # noqa: FURB103
             await f.write(json.dumps(data))
 
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def insert_into_database(
+        cls,
+        db: SQLAlchemy,
+        data: dict[str, str | int | datetime],
+        pid: str,
+        rows: int,
+        user: str,
+        id_: int,
+        *args: tuple,
+        **kwargs: dict,
+    ) -> tuple[Executions, str]:
+        """Insert the bot execution data into the database.
+
+        Args:
+            db (SQLAlchemy): The SQLAlchemy database instance.
+            data (dict[str, str | int | datetime]): A dictionary containing the bot execution data.
+            pid (str): The process identifier of the bot.
+            rows (int): The total number of rows.
+            user (str): The user name.
+            id_ (int): The bot ID.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        """
         name_column = Executions.__table__.columns["arquivo_xlsx"]
         max_length = name_column.type.length
         xlsx_ = str(data.get("xlsx", "Sem Arquivo"))
@@ -179,7 +182,7 @@ class SetStatus:
         )
 
         usr = Users.query.filter(Users.login == user).first()
-        bt = BotsCrawJUD.query.filter(BotsCrawJUD.id == id).first()
+        bt = db.session.query(BotsCrawJUD).filter(BotsCrawJUD.id == id_).first()
         license_ = LicensesUsers.query.filter(LicensesUsers.license_token == usr.licenseusr.license_token).first()
 
         execut.user = usr
@@ -189,66 +192,72 @@ class SetStatus:
         db.session.add(execut)
         db.session.commit()
 
-        try:
-            email_start(execut, app)
+        return execut, bt.display_name
 
-        except Exception:
-            err = traceback.format_exc()
-            logger.exception(err)
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def send_email(cls, execut: Executions, app: Quart, type_notify: str) -> None:
+        """Send an email to the user.
 
-        return (path_args, bt.display_name)
-
-    async def botstop(
-        self,
-        db: SQLAlchemy,
-        app: Quart,
-        pid: str = None,
-        status: str = "Finalizado",
-        system: str = None,
-        typebot: str = None,
-    ) -> str:
-        """Stop the bot and handle file uploads and database interactions.
-
-        :param db: SQLAlchemy database instance.
-        :param app: Quart application instance.
-        :param pid: Process ID.
-        :param status: Status of the bot.
-        :param system: System name.
-        :param typebot: type of bot.
-
-        Returns:
-            The name of the object destination.
+        Args:
+            execut (Executions): The bot execution data.
+            app (Quart): The Quart application instance.
+            type_notify (str): The type of notification.
 
         """
-        from app.models import Executions
+        email_start(execut, app)
+        return "Email enviado com sucesso!"
 
-        try:
-            status = self.status if self.status != "Finalizado" else status
-            pid = self.pid if pid is None else pid
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def make_zip(cls, pid: str) -> str:
+        """Create a ZIP file.
 
-            system = self.system if system is None else system
-            typebot = self.typebot if typebot is None else typebot
+        Args:
+            pid (str): The process identifier of the bot.
 
-            zip_file = makezip(pid)
-            objeto_destino = path.basename(zip_file)
-            enviar_arquivo_para_gcs(zip_file)
+        """
+        return makezip(pid)
 
-            execution = Executions.query.filter(Executions.pid == pid).first()
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def send_file_gcs(cls, zip_file: str) -> None:
+        """Send a file to Google Cloud Storage.
 
-            try:
-                email_stop(execution, app)
-            except Exception as e:
-                raise e
+        Args:
+            zip_file (str): The ZIP file to send.
 
-            execution.status = status
-            execution.file_output = objeto_destino
-            execution.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-            db.session.commit()
-            db.session.close()
-            return objeto_destino
+        """
+        return enviar_arquivo_para_gcs(zip_file)
 
-        except Exception as e:
-            raise e
+    @classmethod
+    @shared_task(ignore_result=False)
+    async def send_stop_exec(
+        cls,
+        db: SQLAlchemy,
+        pid: str,
+        status: str,
+        file_out: str,
+    ) -> None:
+        """Stop the bot and handle file uploads and database interactions.
+
+        Args:
+            db (SQLAlchemy): SQLAlchemy database instance.
+            pid (str): Process ID.
+            status (str): Status of the bot.
+            file_out (str): The output file.
+
+        """
+        execution = Executions.query.filter(Executions.pid == pid).first()
+        execution.status = status
+        execution.file_output = file_out
+        execution.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
+        db.session.commit()
+        db.session.close()
+
+
+class SetStatus:
+    """A class to manage  the status of bots (Start and Stop)."""
 
 
 async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
