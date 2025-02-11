@@ -168,6 +168,8 @@ class CrawJUD(PropertiesCrawJUD):
                     setattr(self, key, value)
 
             self.state_or_client = self.state if self.state is not None else self.client
+            if " - " in self.state_or_client:
+                self.state_or_client = self.state_or_client.split(" - ")[0]
 
         except Exception as e:
             raise StartError(e) from e

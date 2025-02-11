@@ -12,12 +12,12 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from os import getenv, path
 from pathlib import Path
-from time import sleep
-from typing import Mapping, Optional
+from time import sleep  # noqa: F401
+from typing import Mapping, Optional  # noqa: F401
 from uuid import uuid4
 
 import requests
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException  # noqa: F401
 from selenium.webdriver.remote.webdriver import WebDriver
 from tqdm import tqdm
 
@@ -54,74 +54,74 @@ logger = logging.getLogger(__name__)
 _is_connectable_exceptions = (socket.error, ConnectionResetError, ConnectionRefusedError, ConnectionAbortedError)
 
 
-class CustomService(Service):
-    """Custom service class that is responsible for the starting and stopping of `chromedriver`."""
+# class CustomService(Service):
+#     """Custom service class that is responsible for the starting and stopping of `chromedriver`."""
 
-    def __init__(
-        self,
-        executable_path: str = None,
-        port: int = 0,
-        service_args: list = None,
-        log_output: int = None,
-        env: Optional[Mapping[str, str]] = None,
-        **kwargs: dict[str, any],
-    ) -> None:
-        """
-        Service class that is responsible for the starting and stopping of `chromedriver`.
+#     def __init__(
+#         self,
+#         executable_path: str = None,
+#         port: int = 0,
+#         service_args: list = None,
+#         log_output: int = None,
+#         env: Optional[Mapping[str, str]] = None,
+#         **kwargs: dict[str, any],
+#     ) -> None:
+#         """
+#         Service class that is responsible for the starting and stopping of `chromedriver`.
 
-        Args:
-            executable_path (str, optional): install path of the chromedriver executable, defaults to `chromedriver`.
-            port (int, optional): Port for the service to run on, defaults to 0 where the operating system will decide.
-            service_args (list, optional): List of args to be passed to the subprocess when launching the executable.
-            log_output (int, optional): int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-            env (Optional[Mapping[str, str]], optional): Mapping of environment variables, defaults to `os.environ`.
-            **kwargs: Additional keyword arguments.
+#         Args:
+#             executable_path (str, optional): install path of the chromedriver executable, defaults to `chromedriver`.
+#             port (int, optional): Port for the service to run on, defaults to 0 where the operating system will decide
+#             service_args (list, optional): List of args to be passed to the subprocess when launching the executable.
+#             log_output (int, optional): int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+#             env (Optional[Mapping[str, str]], optional): Mapping of environment variables, defaults to `os.environ`.
+#             **kwargs: Additional keyword arguments.
 
-        """
-        super().__init__(executable_path, port, service_args, log_output, env, **kwargs)
+#         """
+#         super().__init__(executable_path, port, service_args, log_output, env, **kwargs)
 
-    def start(self) -> None:
-        """Start the Service.
+#     def start(self) -> None:
+#         """Start the Service.
 
-        Raises:
-            WebDriverException: Raised either when it can't start the service
-           or when it can't connect to the service
+#         Raises:
+#             WebDriverException: Raised either when it can't start the service
+#            or when it can't connect to the service
 
-        """
-        if self._path is None:
-            raise WebDriverException("Service path cannot be None.")
-        self._start_process(self._path)
+#         """
+#         if self._path is None:
+#             raise WebDriverException("Service path cannot be None.")
+#         self._start_process(self._path)
 
-        count = 0
-        while True:
-            self.assert_process_still_running()
-            if self.is_connectable():
-                break
-            # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
-            sleep(min(0.01 + 0.05 * count, 0.5))
-            count += 1
-            if count == 70:
-                raise WebDriverException(f"Can not connect to the Service {self._path}")
+#         count = 0
+#         while True:
+#             self.assert_process_still_running()
+#             if self.is_connectable():
+#                 break
+#             # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
+#             sleep(min(0.01 + 0.05 * count, 0.5))
+#             count += 1
+#             if count == 70:
+#                 raise WebDriverException(f"Can not connect to the Service {self._path}")
 
-    def is_connectable(self, host: Optional[str] = "127.0.0.1") -> bool:
-        """Try to connect to the server at port to see if it is running.
+#     def is_connectable(self, host: Optional[str] = "127.0.0.1") -> bool:
+#         """Try to connect to the server at port to see if it is running.
 
-        Args:
-            host (Optional[str], optional): The host to connect to. Defaults to "localhost".
+#         Args:
+#             host (Optional[str], optional): The host to connect to. Defaults to "localhost".
 
-        """
-        socket_ = None
-        try:
-            socket_ = socket.create_connection((host, self.port), 300)
-            result = True
-        except _is_connectable_exceptions:
-            err = traceback.format_exc()
-            logger.exception(err)
-            result = False
-        finally:
-            if socket_:
-                socket_.close()
-        return result
+#         """
+#         socket_ = None
+#         try:
+#             socket_ = socket.create_connection((host, self.port), 300)
+#             result = True
+#         except _is_connectable_exceptions:
+#             err = traceback.format_exc()
+#             logger.exception(err)
+#             result = False
+#         finally:
+#             if socket_:
+#                 socket_.close()
+#         return result
 
 
 class DriverBot(CrawJUD):
@@ -258,7 +258,7 @@ class DriverBot(CrawJUD):
 
             path_chrome.chmod(0o777, follow_symlinks=True)
 
-            serve = CustomService(path_chrome)
+            serve = Service(path_chrome)
             serve.start()
             driver = Chrome(service=serve, options=chrome_options)
             # cliente = ClientConfig(f"http://localhost:{serve.port}")
