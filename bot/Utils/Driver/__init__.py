@@ -282,17 +282,17 @@ class DriverBot(CrawJUD):
 class SetupDriver:
     """Setup utility for downloading and configuring the appropriate WebDriver."""
 
-    another_ver = False
-    try:
-        chrome_v = ".".join(chrome_ver().split(".")[:-1])
+    # another_ver = False
+    # try:
+    #     chrome_v = ".".join(chrome_ver().split(".")[:-1])
 
-    except Exception:
-        another_ver = True
-        chrome_v = another_chrome_ver()
+    # except Exception:
+    #     another_ver = True
+    #     chrome_v = another_chrome_ver()
 
-    # another_ver = True
-    # chrome_v = another_chrome_ver()
-    # _url_driver: str = None
+    another_ver = True
+    chrome_v = another_chrome_ver()
+    _url_driver: str = None
 
     @property
     def url_driver(self) -> str:
