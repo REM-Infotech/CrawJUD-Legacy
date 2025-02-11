@@ -26,8 +26,6 @@ from redis_flask import Redis
 from socketio import ASGIApp, AsyncRedisManager, AsyncServer
 
 from app.routes import register_routes
-from utils import asyncinit_log as init_log
-from utils import check_allowed_origin, make_celery
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,
@@ -84,13 +82,16 @@ class AppFactory:
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
 
-        celery = await make_celery(app)
-        celery.set_default()
-        app.extensions["celery"] = celery
-
-        celery.autodiscover_tasks(["bot", "utils"])
-
         async with app.app_context():
+            from utils import asyncinit_log as init_log
+            from utils import make_celery
+
+            celery = await make_celery(app)
+            celery.set_default()
+            app.extensions["celery"] = celery
+
+            celery.autodiscover_tasks(["bot", "utils"])
+
             io = await self.init_extensions(app)
             app.logger = await init_log()
             await self.init_routes(app)
@@ -106,6 +107,7 @@ class AppFactory:
             Servers,
             ThreadBots,
         )
+        from utils import check_allowed_origin
 
         host_redis = getenv("REDIS_HOST")
         pass_redis = getenv("REDIS_PASSWORD")
