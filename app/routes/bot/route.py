@@ -69,7 +69,17 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
 
             files = await request.files
             celery_app: Celery = app.extensions["celery"]
-            await TaskExec.task_exec(app, celery_app, db, files, data_bot, id_, system, typebot)
+            is_started = await TaskExec.task_exec(
+                id_,
+                system,
+                typebot,
+                "start",
+                app,
+                db,
+                files,
+                celery_app,
+                data_bot,
+            )
 
         except Exception:
             err = traceback.format_exc()

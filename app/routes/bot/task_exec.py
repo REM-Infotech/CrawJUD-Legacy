@@ -2,8 +2,8 @@
 
 import asyncio
 
-import sqlalchemy
 from celery import Celery, Task
+from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from werkzeug.datastructures.structures import MultiDict
 
@@ -18,24 +18,24 @@ class TaskExec(InstanceBot):
     @classmethod
     async def task_exec(
         cls,
-        app: Quart,
-        celery_app: Celery,
-        db: sqlalchemy,
         id_: int,
         system: str,
         typebot: str,
         exec_type: str,
+        app: Quart,
+        db: SQLAlchemy = None,
         files: MultiDict = None,
+        celery_app: Celery = None,
         data_bot: MultiDict = None,
         *args: tuple,
         **kwargs: dict,
-    ) -> None:
+    ) -> int:
         """Execute the task with the specified parameters.
 
         Args:
             app (Quart): The Quart application instance.
             celery_app (Celery): The Celery application instance.
-            db (sqlalchemy): The SQLAlchemy instance.
+            db (SQLAlchemy): The SQLAlchemy instance.
             id_ (int): The ID of the bot.
             system (str): The system of the bot.
             typebot (str): The type of bot.
@@ -95,3 +95,8 @@ class TaskExec(InstanceBot):
                 add_thread = ThreadBots(pid=pid, processID=process_id)
                 db.session.add(add_thread)
                 db.session.commit()
+
+                return 200
+
+            elif exec_type == "stop":
+                pass
