@@ -13,6 +13,7 @@ import unicodedata
 from datetime import datetime
 from os import environ, path
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import aiofiles
 import openpyxl
@@ -25,13 +26,13 @@ from quart import Quart
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from app.models import BotsCrawJUD, Executions, LicensesUsers, ThreadBots, Users
-
 from .makefile import makezip
 from .send_email import email_start, email_stop
 from .server_side import FormatMessage, load_cache
 from .upload_zip import enviar_arquivo_para_gcs
 
+if TYPE_CHECKING:
+    from app.models import BotsCrawJUD, Executions, LicensesUsers, ThreadBots, Users
 url_cache = []
 logger = logging.getLogger(__name__)
 
