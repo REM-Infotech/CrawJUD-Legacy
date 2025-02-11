@@ -49,7 +49,7 @@ campos_validar: list[str] = [
 ]
 
 
-class complement(CrawJUD):  # noqa: N801
+class complement(CrawJUD):
     """A class that configures and retrieves an elements bot instance.
 
     This class interacts with the ELAW system to complete the registration of a process.
@@ -72,8 +72,8 @@ class complement(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

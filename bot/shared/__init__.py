@@ -107,7 +107,7 @@ class PropertiesCrawJUD:
     cr_list_args: list[str] = []
     another_append_: list[str] = []
 
-    kwrgs_: dict[str, Union[TypeValues, SubDict]] = {}
+    kwargs_: dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: dict[str, TypeValues | SubDict] = {}
 
     # sio = SimpleClient
@@ -420,19 +420,19 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.out_dir = new_path
 
     @property
-    def kwrgs(self) -> dict[str, TypeValues | SubDict]:
+    def kwargs(self) -> dict[str, TypeValues | SubDict]:
         """Return the keyword arguments."""
-        return PropertiesCrawJUD.kwrgs_
+        return PropertiesCrawJUD.kwargs_
 
-    @kwrgs.setter
-    def kwrgs(self, new_kwg: dict[str, any]) -> None:
+    @kwargs.setter
+    def kwargs(self, new_kwg: dict[str, any]) -> None:
         """Set the keyword arguments.
 
         Args:
             new_kwg (dict[str, any]): The new keyword arguments.
 
         """
-        PropertiesCrawJUD.kwrgs_ = new_kwg
+        PropertiesCrawJUD.kwargs_ = new_kwg
 
     @property
     def row(self) -> int:

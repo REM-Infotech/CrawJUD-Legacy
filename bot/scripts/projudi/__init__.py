@@ -24,33 +24,62 @@ if TYPE_CHECKING:
     ClassBots = Union[proc_parte, capa, movimentacao, protocolo]
 
 
-class projudi:  # noqa: N801
+class Projudi:
     """The projudi class initializes and executes the specified bot based on provided configurations.
 
     Attributes:
-        kwrgs (dict): Keyword arguments containing configuration parameters for the bot.
+        kwargs (dict): Keyword arguments containing configuration parameters for the bot.
 
     """
 
-    def __init__(self, **kwrgs: dict) -> None:
-        """Initialize the projudi instance with the given keyword arguments.
+    def __init__(
+        self,
+        path_args: str,
+        display_name: str,
+        system: str,
+        typebot: str,
+        logger: logging.Logger = None,
+        *args: tuple[str],
+        **kwargs: dict[str, str],
+    ) -> None:
+        """Initialize a WorkerBot instance.
+
+        Sets up the bot and executes the bot module based on the system type.
 
         Args:
-            **kwrgs: Arbitrary keyword arguments for bot configuration.
-
-        Raises:
-            StartError: If an exception occurs during bot execution.
+            path_args (str): Path to the bot's arguments file.
+            display_name (str): The display name for the bot.
+            system (str): The system for the bot (e.g., projudi).
+            typebot (str): The type of bot (e.g., capa).
+            logger (logging.Logger, optional): The logger instance.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
 
         """
-        self.kwrgs = kwrgs
-        self.__dict__.update(kwrgs)
+        # try:
+        #     logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+        #     display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
+        #     path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
+        #     system_ = args[2] if args else kwargs.pop("system", system)
+        #     typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
+
+        #     kwargs.update({"display_name": display_name})
+
+        #     bot_ = globals().get(system_.lower())
+
+        #     bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
+
+        # except Exception as e:
+        #     raise e
+
+        self.kwargs = kwargs
+        self.__dict__.update(kwargs)
         try:
             self.Bot.execution()
 
         except Exception as e:
             err = traceback.format_exc()
             logger.exception(err)
-
             raise StartError(traceback.format_exc()) from e
 
     @property
@@ -71,4 +100,4 @@ class projudi:  # noqa: N801
         if not rb:
             raise AttributeError("Robô não encontrado!!")
 
-        return rb(**self.kwrgs)
+        return rb(**self.kwargs)

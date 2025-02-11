@@ -26,7 +26,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class movimentacao(CrawJUD):  # noqa: N801
+class movimentacao(CrawJUD):
     """Handles movement-related operations within the Projudi system.
 
     Inherits from CrawJUD.
@@ -45,8 +45,8 @@ class movimentacao(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

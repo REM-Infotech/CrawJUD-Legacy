@@ -354,12 +354,12 @@ class SetupDriver:
 
     progress_group = Group(painel)
 
-    def __init__(self, destination: Path = default_dir, **kwrgs: dict[str, any]) -> None:
+    def __init__(self, destination: Path = default_dir, **kwargs: dict[str, any]) -> None:
         """Initialize the SetupDriver with destination path and additional arguments.
 
         Args:
             destination (Path, optional): The destination directory for WebDriver. Defaults to current working directory.
-            **kwrgs: Additional keyword arguments.
+            **kwargs: Additional keyword arguments.
 
         """  # noqa: E501
         self.url_driver = self.getUrl()
@@ -376,7 +376,7 @@ class SetupDriver:
             self.file_path = self.file_path.with_suffix(".exe")
             self.fileN = self.file_path.name
 
-        for key, value in list(kwrgs.items()):
+        for key, value in list(kwargs.items()):
             setattr(self, key, value)
 
         self.destination = destination

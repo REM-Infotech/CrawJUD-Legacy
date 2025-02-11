@@ -55,7 +55,7 @@ class PrintBot(CrawJUD):
             "type": self.type_log,
             "pos": self.row,
             "graphicMode": self.graphicMode,
-            "total": self.kwrgs.get("total_rows", 0),
+            "total": self.kwargs.get("total_rows", 0),
         }
 
         # log_socket_ = Thread(target=self.socket_message, args=(data,))

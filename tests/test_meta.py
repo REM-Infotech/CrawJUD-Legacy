@@ -18,7 +18,7 @@ Tests:
     test_isStoped: Tests the 'isStoped' property by mocking the os.path.exists function.
     test_chr_dir: Tests the 'chr_dir' property.
     test_output_dir_path: Tests the 'output_dir_path' property.
-    test_kwrgs: Tests the 'kwrgs' property.
+    test_kwargs: Tests the 'kwargs' property.
     test_row: Tests the 'row' property.
     test_message_error: Tests the 'message_error' property.
     test_graphicMode: Tests the 'graphicMode' property.
@@ -103,10 +103,10 @@ def test_output_dir_path(setup_PropertiesCrawJUD) -> None:
     assert setup_PropertiesCrawJUD.output_dir_path == "output_dir"  # nosec: B101
 
 
-def test_kwrgs(setup_PropertiesCrawJUD) -> None:
-    """Test the 'kwrgs' property."""
-    setup_PropertiesCrawJUD.kwrgs = {"key": "value"}
-    assert setup_PropertiesCrawJUD.kwrgs == {"key": "value"}  # nosec: B101
+def test_kwargs(setup_PropertiesCrawJUD) -> None:
+    """Test the 'kwargs' property."""
+    setup_PropertiesCrawJUD.kwargs = {"key": "value"}
+    assert setup_PropertiesCrawJUD.kwargs == {"key": "value"}  # nosec: B101
 
 
 def test_row(setup_PropertiesCrawJUD) -> None:

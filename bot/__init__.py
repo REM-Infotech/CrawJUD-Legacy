@@ -54,7 +54,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
 from .class_thead import BotThread
-from .scripts import caixa, calculadoras, elaw, esaj, pje, projudi
+from .scripts import Caixa, Calculadoras, Elaw, PJe, Projudi, eSAJ
 
 __all__ = [
     "Application",
@@ -76,12 +76,12 @@ __all__ = [
     "Service",
     "WebDriver",
     "WebDriverWait",
-    "projudi",
-    "esaj",
-    "elaw",
-    "pje",
-    "calculadoras",
-    "caixa",
+    "Projudi",
+    "eSAJ",
+    "Elaw",
+    "PJe",
+    "Calculadoras",
+    "Caixa",
 ]
 
 process_type = psutil.Process
@@ -96,17 +96,17 @@ class WorkerBot:
 
     Attributes:
         system (str): The operating system.
-        kwrgs (dict[str, str]): Keyword arguments for bot configuration.
+        kwargs (dict[str, str]): Keyword arguments for bot configuration.
 
     """
 
     system: str
-    kwrgs: dict[str, str]
+    kwargs: dict[str, str]
     __dict__: dict[str, str]
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def start_bot(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def projudi_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
@@ -121,11 +121,11 @@ class WorkerBot:
         """
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
-            process = BotThread(target=WorkerBot, args=(path_args, display_name, system, typebot, logger))
+
+            process = BotThread(target=Projudi, args=(path_args, display_name, system, typebot, logger))
             process.daemon = True
             process.start()
             sleep(2)
-            # pid = Path(path_args).stem
 
             if not process.is_alive():
                 try:
@@ -139,45 +139,180 @@ class WorkerBot:
 
         return "Finalizado!"
 
-    def __init__(
-        self,
-        path_args: str,
-        display_name: str,
-        system: str,
-        typebot: str,
-        logger: logging.Logger = None,
-        *args: tuple[str],
-        **kwargs: dict[str, str],
-    ) -> None:
-        """Initialize a WorkerBot instance.
-
-        Sets up the bot and executes the bot module based on the system type.
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def esaj_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+        """Start a new bot process with the provided arguments.
 
         Args:
-            path_args (str): Path to the bot's arguments file.
-            display_name (str): The display name for the bot.
-            system (str): The system for the bot (e.g., projudi).
-            typebot (str): The type of bot (e.g., capa).
-            logger (logging.Logger, optional): The logger instance.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            path_args (str): Path to the JSON file with bot arguments.
+            display_name (str): Display name for the bot.
+            system (str): The system for which the bot is initialized.
+            typebot (str): type of bot execution.
+
+        Returns:
+            str: Status message indicating bot completion.
 
         """
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
-            display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
-            path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
-            system_ = args[2] if args else kwargs.pop("system", system)
-            typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
 
-            kwargs.update({"display_name": display_name})
+            process = BotThread(target=eSAJ, args=(path_args, display_name, system, typebot, logger))
+            process.daemon = True
+            process.start()
+            sleep(2)
 
-            bot_ = globals().get(system_.lower())
-
-            bot_(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
+            if not process.is_alive():
+                try:
+                    process.join()
+                except Exception as e:
+                    raise e
+            process.join()
 
         except Exception as e:
             raise e
+
+        return "Finalizado!"
+
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def pje_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+        """Start a new bot process with the provided arguments.
+
+        Args:
+            path_args (str): Path to the JSON file with bot arguments.
+            display_name (str): Display name for the bot.
+            system (str): The system for which the bot is initialized.
+            typebot (str): type of bot execution.
+
+        Returns:
+            str: Status message indicating bot completion.
+
+        """
+        try:
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+
+            process = BotThread(target=PJe, args=(path_args, display_name, system, typebot, logger))
+            process.daemon = True
+            process.start()
+            sleep(2)
+
+            if not process.is_alive():
+                try:
+                    process.join()
+                except Exception as e:
+                    raise e
+            process.join()
+
+        except Exception as e:
+            raise e
+
+        return "Finalizado!"
+
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def elaw_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+        """Start a new bot process with the provided arguments.
+
+        Args:
+            path_args (str): Path to the JSON file with bot arguments.
+            display_name (str): Display name for the bot.
+            system (str): The system for which the bot is initialized.
+            typebot (str): type of bot execution.
+
+        Returns:
+            str: Status message indicating bot completion.
+
+        """
+        try:
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+
+            process = BotThread(target=Elaw, args=(path_args, display_name, system, typebot, logger))
+            process.daemon = True
+            process.start()
+            sleep(2)
+
+            if not process.is_alive():
+                try:
+                    process.join()
+                except Exception as e:
+                    raise e
+            process.join()
+
+        except Exception as e:
+            raise e
+
+        return "Finalizado!"
+
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def caixa_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+        """Start a new bot process with the provided arguments.
+
+        Args:
+            path_args (str): Path to the JSON file with bot arguments.
+            display_name (str): Display name for the bot.
+            system (str): The system for which the bot is initialized.
+            typebot (str): type of bot execution.
+
+        Returns:
+            str: Status message indicating bot completion.
+
+        """
+        try:
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+
+            process = BotThread(target=Caixa, args=(path_args, display_name, system, typebot, logger))
+            process.daemon = True
+            process.start()
+            sleep(2)
+
+            if not process.is_alive():
+                try:
+                    process.join()
+                except Exception as e:
+                    raise e
+            process.join()
+
+        except Exception as e:
+            raise e
+
+        return "Finalizado!"
+
+    @staticmethod
+    @shared_task(ignore_result=False)
+    def calculadoras_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+        """Start a new bot process with the provided arguments.
+
+        Args:
+            path_args (str): Path to the JSON file with bot arguments.
+            display_name (str): Display name for the bot.
+            system (str): The system for which the bot is initialized.
+            typebot (str): type of bot execution.
+
+        Returns:
+            str: Status message indicating bot completion.
+
+        """
+        try:
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+
+            process = BotThread(target=Calculadoras, args=(path_args, display_name, system, typebot, logger))
+            process.daemon = True
+            process.start()
+            sleep(2)
+
+            if not process.is_alive():
+                try:
+                    process.join()
+                except Exception as e:
+                    raise e
+            process.join()
+
+        except Exception as e:
+            raise e
+
+        return "Finalizado!"
 
     @classmethod
     async def stop(cls, processID: int, pid: str, app: Quart = None) -> str:  # noqa: N803

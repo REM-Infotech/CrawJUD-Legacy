@@ -5,43 +5,67 @@ This module initializes and manages the Calculadoras bot within the CrawJUD-Bots
 
 import logging
 import traceback
-from importlib import import_module
 
 # from typing import any
 from ...common import StartError
+from .tjdft import Tjdft
 
+__all__ = ["Tjdft"]
 logger = logging.getLogger(__name__)
 
 
-class calculadoras:  # noqa: N801
+class Calculadoras:
     """calculadoras class.
 
     Initializes and executes the Calculadoras bot based on provided configurations.
     """
 
-    def __init__(self, **kwrgs: dict) -> None:
-        """Initialize a new calculadoras instance.
+    def __init__(
+        self,
+        path_args: str,
+        display_name: str,
+        system: str,
+        typebot: str,
+        logger: logging.Logger = None,
+        *args: tuple[str],
+        **kwargs: dict[str, str],
+    ) -> None:
+        """Initialize a WorkerBot instance.
+
+        Sets up the bot and executes the bot module based on the system type.
 
         Args:
-            **kwrgs: Variable keyword arguments for bot configuration.
-
-        Raises:
-            StartError: If an exception occurs during bot execution.
+            path_args (str): Path to the bot's arguments file.
+            display_name (str): The display name for the bot.
+            system (str): The system for the bot (e.g., projudi).
+            typebot (str): The type of bot (e.g., capa).
+            logger (logging.Logger, optional): The logger instance.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
 
         """
-        self.kwrgs = kwrgs
-        self.__dict__.update(kwrgs)
         try:
-            self.Bot.execution()
+            logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
+            display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
+            path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
+            system_ = args[2] if args else kwargs.pop("system", system)
+            typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
+
+            self.typebot_ = typebot_
+
+            kwargs.update({"display_name": display_name})
+
+            self.bot_call(display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_)
+
+            self.bot_call.execution()
 
         except Exception as e:
             err = traceback.format_exc()
             logger.exception(err)
-
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def Bot(self) -> any:  # noqa: N802
+    def bot_call(self) -> any:
         """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
@@ -53,10 +77,10 @@ class calculadoras:  # noqa: N801
             AttributeError: If the specified bot type is not found.
 
         """
-        rb = getattr(import_module(f".{self.typebot.lower()}", __package__), self.typebot.lower())
+        bot_call = globals().get(self.typebot_.capitalize())
 
         # rb = self.bots.get(self.typebot)
-        if not rb:
+        if not bot_call:
             raise AttributeError("Robô não encontrado!!")
 
-        return rb(**self.kwrgs)
+        return bot_call

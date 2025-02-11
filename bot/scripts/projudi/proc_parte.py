@@ -18,7 +18,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class proc_parte(CrawJUD):  # noqa: N801
+class proc_parte(CrawJUD):
     """proc_parte class.
 
     Handles the processing of participants in Projudi within the CrawJUD framework.
@@ -30,8 +30,8 @@ class proc_parte(CrawJUD):  # noqa: N801
         Sets up authentication and initializes necessary variables.
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

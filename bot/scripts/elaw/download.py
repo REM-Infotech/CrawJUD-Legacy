@@ -37,8 +37,8 @@ class Download(CrawJUD):
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

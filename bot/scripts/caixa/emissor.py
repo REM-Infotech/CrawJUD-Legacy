@@ -23,7 +23,7 @@ from ...core import CrawJUD
 from ...Utils import OtherUtils
 
 
-class emissor(CrawJUD):  # noqa: N801
+class emissor(CrawJUD):
     """Class emissor.
 
     Manages the emission and processing of judicial deposit documents within
@@ -47,8 +47,8 @@ class emissor(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

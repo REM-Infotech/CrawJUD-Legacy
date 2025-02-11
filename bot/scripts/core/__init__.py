@@ -103,7 +103,7 @@ class CrawJUD(PropertiesCrawJUD):
             **kwargs: Variable keyword arguments for configuration.
 
         """
-        self.kwrgs = kwargs
+        self.kwargs = kwargs
         list_kwargs = list(kwargs.items())
         for key, value in list_kwargs:
             if key == "path_args":
@@ -114,7 +114,7 @@ class CrawJUD(PropertiesCrawJUD):
         with open(self.path_args, "rb") as f:
             json_f: dict[str, str | int] = json.load(f)
 
-            self.kwrgs = json_f
+            self.kwargs = json_f
 
             for key, value in json_f.items():
                 setattr(self, key, value)
@@ -131,13 +131,13 @@ class CrawJUD(PropertiesCrawJUD):
             TypeHint: The value of the requested attribute.
 
         """
-        item = self.kwrgs.get(nome, None)
+        item = self.kwargs.get(nome, None)
 
         if not item:
             item = CrawJUD.__dict__.get(nome, None)
 
             if not item:
-                item = PropertiesCrawJUD.kwrgs_.get(nome, None)
+                item = PropertiesCrawJUD.kwargs_.get(nome, None)
 
         return item
 

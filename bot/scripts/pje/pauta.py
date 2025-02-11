@@ -20,14 +20,14 @@ from ...core import CrawJUD
 # from typing import type
 
 
-class pauta(CrawJUD):  # noqa: N801
+class pauta(CrawJUD):
     """Represents the main class to retrieve hearing data (pautas)."""
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         """Initialize the pauta class with any given arguments."""
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

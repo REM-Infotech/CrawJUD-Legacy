@@ -59,6 +59,7 @@ uvicorn = "^0.34.0"
 quart-flask-patch = "^0.3.0"
 aiopath = "^0.7.7"
 aiohttp = "^3.11.12"
+pre-commit-html = "^0.1.1"
 
 
 [tool.poetry.group.dev.dependencies]

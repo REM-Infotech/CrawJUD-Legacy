@@ -16,7 +16,7 @@ from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
 
-class busca_pags(CrawJUD):  # noqa: N801
+class busca_pags(CrawJUD):
     """The busca_pags class manages page search operations.
 
     Attributes:

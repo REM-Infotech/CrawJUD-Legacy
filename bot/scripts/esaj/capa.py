@@ -20,7 +20,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class capa(CrawJUD):  # noqa: N801
+class capa(CrawJUD):
     """Manages 'capa' related tasks within the application.
 
     Inherits from CrawJUD to utilize core functionalities for processing 'capa' operations.
@@ -45,8 +45,8 @@ class capa(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

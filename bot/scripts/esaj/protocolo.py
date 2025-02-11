@@ -24,7 +24,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class protocolo(CrawJUD):  # noqa: N801
+class protocolo(CrawJUD):
     """protocolo class.
 
     Manages the protocoling process within the ESaj system using the CrawJUD framework.
@@ -36,8 +36,8 @@ class protocolo(CrawJUD):  # noqa: N801
         Sets up authentication, initializes necessary variables, and prepares the processing environment.
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

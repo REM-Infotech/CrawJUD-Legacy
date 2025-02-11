@@ -21,7 +21,7 @@ from ...core import CrawJUD
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
-class capa(CrawJUD):  # noqa: N801
+class capa(CrawJUD):
     """The capa class extends CrawJUD to handle specific execution tasks related to process.
 
     information extraction and management.
@@ -36,8 +36,8 @@ class capa(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

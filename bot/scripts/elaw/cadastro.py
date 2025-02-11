@@ -25,7 +25,7 @@ from ...core import CrawJUD
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class cadastro(CrawJUD):  # noqa: N801
+class cadastro(CrawJUD):
     """The Cadastro class extends CrawJUD to manage registration tasks within the application.
 
     Attributes:
@@ -47,8 +47,8 @@ class cadastro(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)

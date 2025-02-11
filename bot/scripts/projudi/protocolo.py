@@ -32,7 +32,7 @@ from ...core import CrawJUD
 dotenv.load_dotenv()
 
 
-class protocolo(CrawJUD):  # noqa: N801
+class protocolo(CrawJUD):
     """Handles protocol operations within the Projudi system.
 
     This class extends CrawJUD to manage the creation, handling, and finalization
@@ -50,8 +50,8 @@ class protocolo(CrawJUD):  # noqa: N801
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwrgs = kwrgs
-        # for key, value in list(kwrgs.items()):
+        # PropertiesCrawJUD.kwargs = kwargs
+        # for key, value in list(kwargs.items()):
         #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)
