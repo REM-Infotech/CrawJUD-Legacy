@@ -32,6 +32,7 @@ bot/meta/*
 pybind11/
 /*.json
 MODIFIED.MOD
+result_pre_commit.html
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
