@@ -77,7 +77,7 @@ class Elaw:
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def bot_call(self) -> any:
+    def bot_call(self) -> ClassBots:
         """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.

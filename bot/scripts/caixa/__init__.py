@@ -5,11 +5,13 @@ This module initializes and manages the Caixa bot within the CrawJUD-Bots applic
 
 import logging
 import traceback
+from typing import Union
 
-# from typing import any
 from ...common import StartError
+from .emissor import Emissor
 
 logger = logging.getLogger(__name__)
+ClassBots = Union[Emissor]
 
 
 class Caixa:
@@ -63,7 +65,7 @@ class Caixa:
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def bot_call(self) -> any:
+    def bot_call(self) -> ClassBots:
         """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.

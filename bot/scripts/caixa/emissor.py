@@ -23,7 +23,7 @@ from ...core import CrawJUD
 from ...Utils import OtherUtils
 
 
-class emissor(CrawJUD):  # noqa: N801
+class Emissor(CrawJUD):  # noqa: N801
     """Class emissor.
 
     Manages the emission and processing of judicial deposit documents within

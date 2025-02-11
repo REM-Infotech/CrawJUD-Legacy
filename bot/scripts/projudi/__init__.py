@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import traceback
-from typing import Union
+from typing import Callable, Union
 
 from ...common.exceptions import StartError
 from .capa import Capa
@@ -73,7 +73,7 @@ class Projudi:
             raise StartError(traceback.format_exc()) from e
 
     @property
-    def bot_call(self) -> any:
+    def bot_call(self) -> ClassBots:
         """Bot property.
 
         Dynamically imports and returns an instance of the specified bot type.
@@ -85,7 +85,7 @@ class Projudi:
             AttributeError: If the specified bot type is not found.
 
         """
-        bot_call = globals().get(self.typebot_.capitalize())
+        bot_call: Callable[[], None] = globals().get(self.typebot_.capitalize())
 
         # rb = self.bots.get(self.typebot)
         if not bot_call:
