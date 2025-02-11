@@ -18,11 +18,11 @@ class TaskExec(InstanceBot):
     @classmethod
     async def task_exec(
         cls,
-        id_: int,
-        system: str,
-        typebot: str,
-        exec_type: str,
-        app: Quart,
+        id_: int = None,
+        system: str = None,
+        typebot: str = None,
+        exec_type: str = None,
+        app: Quart = None,
         db: SQLAlchemy = None,
         files: MultiDict = None,
         celery_app: Celery = None,
@@ -51,40 +51,11 @@ class TaskExec(InstanceBot):
                 user = data_bot.get("user")
                 pid: str = data_bot.get("pid")
 
-                path_pid = await asyncio.create_task(
-                    cls.configure_path(
-                        app,
-                        pid,
-                        files,
-                    )
-                )
-                data = await asyncio.create_task(
-                    cls.args_tojson(
-                        path_pid,
-                        pid,
-                        id_,
-                        system,
-                        typebot,
-                        data_bot,
-                    )
-                )
-                execut, display_name = await asyncio.create_task(
-                    cls.insert_into_database(
-                        db,
-                        data,
-                        pid,
-                        id_,
-                        user,
-                    )
-                )
+                path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
+                data = await asyncio.create_task(cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot))
+                execut, display_name = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
                 try:
-                    await asyncio.create_task(
-                        cls.send_email(
-                            execut,
-                            app,
-                            "start",
-                        )
-                    )
+                    await asyncio.create_task(cls.send_email(execut, app, "start"))
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
@@ -102,4 +73,17 @@ class TaskExec(InstanceBot):
                 return 200
 
             elif exec_type == "stop":
-                pass
+                pid = data_bot.get("pid")
+                db: SQLAlchemy = app.extensions["sqlalchemy"]
+                status = data_bot.get("status")
+                filename = await asyncio.create_task(cls.make_zip(pid))
+                execut = await asyncio.create_task(cls.send_stop_exec(app, db, pid, status, filename))
+
+                try:
+                    await asyncio.create_task(cls.send_email(execut, app, "stop"))
+                except Exception as e:
+                    app.logger.error("Error sending email: %s", str(e))
+
+                return 200
+
+        return 500

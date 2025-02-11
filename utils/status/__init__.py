@@ -25,7 +25,7 @@ from quart import Quart
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from app.models import BotsCrawJUD, Executions, LicensesUsers, Users
+from app.models import BotsCrawJUD, Executions, LicensesUsers, ThreadBots, Users
 
 from .makefile import makezip
 from .send_email import email_start, email_stop
@@ -252,10 +252,16 @@ class InstanceBot:
             pid (str): The process identifier of the bot.
 
         """
-        return makezip(pid)
+        from ..gcs_mgmt import get_file
+
+        filename = get_file(pid)
+
+        if filename == "":
+            filename = await asyncio.create_task(cls.send_file_gcs(makezip(pid)))
+        return filename
 
     @classmethod
-    async def send_file_gcs(cls, zip_file: str) -> None:
+    async def send_file_gcs(cls, zip_file: str) -> str:
         """Send a file to Google Cloud Storage.
 
         Args:
@@ -267,73 +273,35 @@ class InstanceBot:
     @classmethod
     async def send_stop_exec(
         cls,
+        app: Quart,
         db: SQLAlchemy,
         pid: str,
         status: str,
         file_out: str,
-    ) -> None:
+    ) -> Executions | None:
         """Stop the bot and handle file uploads and database interactions.
 
         Args:
+            app (Quart): Quart application instance.
             db (SQLAlchemy): SQLAlchemy database instance.
             pid (str): Process ID.
             status (str): Status of the bot.
             file_out (str): The output file.
 
         """
-        execution = Executions.query.filter(Executions.pid == pid).first()
-        execution.status = status
-        execution.file_output = file_out
-        execution.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-        db.session.commit()
-        db.session.close()
-
-
-async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
-    """Stop the execution of a bot based on its PID.
-
-    Args:
-        app (Quart): The Quart application instance.
-        pid (str): The process identifier of the bot.
-        robot_stop (bool, optional): Flag to indicate robot stop. Defaults to False.
-
-    Returns:
-        tuple[dict[str, str], int]: A message and HTTP status code.
-
-    """
-    async with app.app_context():
-        db: SQLAlchemy = app.extensions["sqlalchemy"]
-        from app.models import Executions, ThreadBots
-
-        from ..gcs_mgmt import get_file
-
         try:
             task_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
-            get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
+            exec_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
-            if task_id or get_info:
-                # Stop bot
+            if task_id or exec_info:
+                exec_info.status = status
+                exec_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
+                exec_info.file_output = file_out
 
-                system = get_info.bot.system
-                typebot = get_info.bot.type
-                user = get_info.user.login
-                get_info.status = "Finalizado"
-                get_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-                filename = get_file(pid, app)
+                db.session.commit()
+                db.session.close()
 
-                if filename != "":
-                    get_info.file_output = filename
-                    db.session.commit()
-                    db.session.close()
-
-                elif filename == "":
-                    bot_stop = SetStatus()  # noqa: F821
-                    setup_stop = await asyncio.create_task(
-                        bot_stop.config(usr=user, pid=pid, system=system, typebot=typebot)
-                    )
-                    get_info.file_output = await asyncio.create_task(setup_stop.botstop(db, app))
-                    db.session.commit()
-                    db.session.close()
+                return exec_info
 
             elif not task_id:
                 raise Exception("Execution not found!")
@@ -352,5 +320,4 @@ __all__ = [
     enviar_arquivo_para_gcs,
     load_cache,
     FormatMessage,
-    stop_execution,
 ]

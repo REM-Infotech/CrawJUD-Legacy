@@ -11,6 +11,8 @@ from socketio import AsyncServer
 from app import app
 from utils import FormatMessage, load_cache, stop_execution
 
+from .bot.task_exec import TaskExec
+
 logger = logging.getLogger(__name__)
 
 io: AsyncServer = app.extensions["socketio"]
@@ -67,8 +69,8 @@ async def stop_bot(sid: str, data: dict[str, str]) -> None:
 
     """
     pid = data["pid"]
-    await asyncio.create_task(stop_execution(app, pid))
-    await io.send("Bot stopped!")
+    await TaskExec.task_exec(data_bot=data, exec_type="stop", app=app)
+    await io.send({"message": "Bot stopped!"}, to=sid, namespace="/log", room=pid)
 
 
 @io.on("terminate_bot", namespace="/log")

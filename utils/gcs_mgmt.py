@@ -6,7 +6,6 @@ from os import environ
 from google.cloud.storage import Bucket, Client
 from google.cloud.storage.blob import Blob
 from google.oauth2.service_account import Credentials
-from quart import Quart
 
 
 def storage_client() -> Client:
@@ -51,12 +50,11 @@ def bucket_gcs(storage_client: Client) -> Bucket:
     return bucket_obj
 
 
-def get_file(pid: str, app: Quart) -> str:
+def get_file(pid: str) -> str:
     """Retrieve the output file associated with a bot's PID.
 
     Args:
         pid (str): The process identifier of the bot.
-        app (Quart): The Quart application instance.
 
     Returns:
         str: The filename if found, else an empty string.
@@ -72,9 +70,6 @@ def get_file(pid: str, app: Quart) -> str:
         arquivo = blobnames if pid in blobnames else ""
         if pid in blobnames:
             arquivo = blobnames
-
-            if app.testing:
-                blob.delete()
             break
 
     return arquivo
