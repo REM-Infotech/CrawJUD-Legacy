@@ -54,7 +54,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
 from .class_thead import BotThread
-from .scripts import Caixa, Calculadoras, Elaw, PJe, Projudi, eSAJ
+from .scripts import Caixa, Calculadoras, Elaw, Esaj, PJe, Projudi
 
 __all__ = [
     "Application",
@@ -77,7 +77,7 @@ __all__ = [
     "WebDriver",
     "WebDriverWait",
     "Projudi",
-    "eSAJ",
+    "Esaj",
     "Elaw",
     "PJe",
     "Calculadoras",
@@ -157,7 +157,7 @@ class WorkerBot:
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=eSAJ, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=Esaj, args=(path_args, display_name, system, typebot, logger))
             process.daemon = True
             process.start()
             sleep(2)
