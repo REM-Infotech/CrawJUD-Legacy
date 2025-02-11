@@ -13,7 +13,7 @@ services:
       - "8000:8000"
 
     hostname: "crawjudbot_app"
-    command: "python -m app.quart"
+    command: "python -m app.asgi"
 
   celery_worker:
     shm_size: "2gb"
