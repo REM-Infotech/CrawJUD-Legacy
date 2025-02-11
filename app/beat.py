@@ -4,6 +4,6 @@ import os
 
 from app import AppFactory
 
-os.environ.update({"APPLICATION_APP": "beat", "IN_PRODUCTION": "True"})
+os.environ.update({"APPLICATION_APP": "beat"})
 
 _, app = AppFactory.start_app()
