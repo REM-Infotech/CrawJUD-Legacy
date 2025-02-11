@@ -1,6 +1,6 @@
 """Module for uninstalling certificates."""
 
-import subprocess  # nosec: B404 # noqa: S404
+import subprocess  # noqa: S404 # nosec: B404 # noqa: S404
 
 from tqdm import tqdm
 

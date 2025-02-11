@@ -82,7 +82,7 @@ class Tjdft(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                        self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 

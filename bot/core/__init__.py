@@ -201,7 +201,7 @@ class CrawJUD(PropertiesCrawJUD):
                 self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 
-            driver, wait = self.DriverLaunch()
+            driver, wait = self.driver_launch()
 
             self.driver = driver
             self.wait = wait

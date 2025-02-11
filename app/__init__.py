@@ -7,26 +7,23 @@ AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 import asyncio
 import platform
 import signal
-import subprocess  # noqa: S404, E402 # nosec: B404
 import sys
 from datetime import timedelta
 from os import environ, getenv
 from pathlib import Path
-from platform import system
 from threading import Thread
 
 import quart_flask_patch  # noqa: F401
 import uvicorn
 from celery import Celery
-from clear import clear  # noqa: F401, E402
+from clear import clear
 from dotenv_vault import load_dotenv
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
 from redis_flask import Redis
-from socketio import ASGIApp, AsyncRedisManager, AsyncServer  # noqa: F401
-from tqdm import tqdm
+from socketio import ASGIApp, AsyncRedisManager, AsyncServer
 
 from app.routes import register_routes
 from utils import asyncinit_log as init_log
@@ -65,11 +62,6 @@ load_dotenv()
 values = environ.get
 is_init = Path("is_init.txt").resolve()
 
-from app.models import (  # noqa: E402, F401  # noqa: E402, F401
-    Servers,
-    ThreadBots,
-)
-
 
 class AppFactory:
     """Factory to create and configure the ASGIApp and Celery."""
@@ -88,9 +80,6 @@ class AppFactory:
             tuple: A tuple containing ASGIApp and Celery worker.
 
         """
-        # for key, value in environ.items():
-        #     print(f"{key}={value}")  # noqa: T201
-
         env_ambient = environ["AMBIENT_CONFIG"]
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
@@ -113,12 +102,14 @@ class AppFactory:
 
     async def init_extensions(self, app: Quart) -> AsyncServer:
         """Initialize and configure the application extensions."""
+        from app.models import (  # noqa: F401
+            Servers,
+            ThreadBots,
+        )
+
         host_redis = getenv("REDIS_HOST")
         pass_redis = getenv("REDIS_PASSWORD")
         port_redis = getenv("REDIS_PORT")
-
-        NAMESERVER = environ.get("NAMESERVER")  # noqa: N806
-        HOST = environ.get("HOSTNAME")  # noqa: N806
 
         redis.init_app(app)
         mail.init_app(app)
@@ -142,8 +133,8 @@ class AppFactory:
         )
         db.create_all()
 
-        if not Servers.query.filter(Servers.name == NAMESERVER).first():
-            server = Servers(name=NAMESERVER, address=HOST, system=platform.system())
+        if not Servers.query.filter(Servers.name == environ.get("NAMESERVER")).first():
+            server = Servers(name=environ.get("NAMESERVER"), address=environ.get("HOSTNAME"), system=platform.system())
             db.session.add(server)
             db.session.commit()
 
@@ -174,8 +165,6 @@ class AppFactory:
 
         # unsafe_werkzeug = getenv("IN_PRODUCTION", None) is None or (getenv("DEBUG", "False").lower() == "true")
         port = int(values("PORT", "8000"))
-        if system().lower() == "linux":
-            AppFactory.start_vnc()
 
         args_run = {
             "debug": debug,
@@ -195,15 +184,6 @@ class AppFactory:
                     starter.start()
 
         except (KeyboardInterrupt, TypeError):
-            if system().lower() == "linux":
-                try:
-                    subprocess.run(["tightvncserver", "-kill", ":99"], check=False)  # noqa: S603, S607 # nosec: B603, B607
-
-                except Exception:
-                    # err = traceback.format_exc()
-                    # app.logger.exception(err)
-                    ...
-
             sys.exit(0)
 
         return app, celery
@@ -231,28 +211,6 @@ class AppFactory:
     def handle_exit(a: any = None, b: any = None) -> None:
         """Handle termination signals and exit the program gracefully."""
         sys.exit(0)
-
-    @staticmethod
-    def start_vnc() -> None:
-        """Start the TightVNC server with specified parameters."""
-        try:
-            # Executa o comando com verificação de erro
-            subprocess.run(  # noqa: S603 # nosec: B607, B603
-                [  # noqa: S607
-                    "tightvncserver",
-                    ":99",
-                    "-geometry",
-                    "1600x900",
-                    "-depth",
-                    "24",
-                    "-rfbport",
-                    "5999",
-                ],
-                check=True,  # Lança exceção se o comando falhar
-            )
-            tqdm.write.info("VNC Server started successfully.")
-        except Exception:
-            ...
 
 
 signal.signal(signal.SIGTERM, AppFactory.handle_exit)

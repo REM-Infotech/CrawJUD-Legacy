@@ -320,11 +320,11 @@ class WorkerBot:
         return "Finalizado!"
 
     @classmethod
-    async def stop(cls, processID: int, pid: str, app: Quart = None) -> str:  # noqa: N803
-        """Stop a process with the given processID.
+    async def stop(cls, task_id: int, pid: str, app: Quart = None) -> str:
+        """Stop a process with the given task_id.
 
         Args:
-            processID (int): The process ID to stop.
+            task_id (int): The process ID to stop.
             pid (str): The PID of the process.
             app (Flask, optional): The Quart app instance.
 
@@ -334,8 +334,8 @@ class WorkerBot:
         """
         try:
             process = None
-            if processID:
-                process = AsyncResult(processID)
+            if task_id:
+                process = AsyncResult(task_id)
                 logger.info(process.status)
 
             if process is None or (process and process.status == "PENDING"):
@@ -344,23 +344,23 @@ class WorkerBot:
                 with path_flag.open("w") as f:
                     f.write("Encerrar processo")
 
-            return f"Process {processID} stopped!"
+            return f"Process {task_id} stopped!"
 
         except psutil.TimeoutExpired:
             return "O processo não foi encerrado dentro do tempo limite"
 
         except psutil.NoSuchProcess:
-            return f"Process {processID} stopped!"
+            return f"Process {task_id} stopped!"
 
         except Exception as e:
             return str(e)
 
     @classmethod
-    async def check_status(cls, processID: str, pid: str, app: Quart) -> str:  # noqa: N803
+    async def check_status(cls, task_id: str, pid: str, app: Quart) -> str:
         """Check the status of a process.
 
         Args:
-            processID (str): The process ID to check.
+            task_id (str): The process ID to check.
             pid (str): The PID of the process.
             app (Flask): The Quart app
 
@@ -373,18 +373,18 @@ class WorkerBot:
             path_flag = Path(app.config["TEMP_PATH"]).joinpath(pid).joinpath(f"{pid}.flag").resolve()
             process = None
             try:
-                if processID:
-                    process = AsyncResult(processID)
+                if task_id:
+                    process = AsyncResult(task_id)
                     status = process.status
                     if status == "SUCCESS":
-                        return f"Process {processID} stopped!"
+                        return f"Process {task_id} stopped!"
 
                     if status == "FAILURE":
                         return "Erro ao inicializar robô"
 
                     elif status == "PENDING" and path_flag.exists():
                         process.revoke(wait=True, signal="SIGTERM")
-                        return f"Process {processID} stopped!"
+                        return f"Process {task_id} stopped!"
 
             except Exception as e:
                 app.logger.error("An error occurred: %s", str(e))
@@ -401,4 +401,4 @@ class WorkerBot:
             return "Process running!"
 
         except Exception:
-            return f"Process {processID} stopped!"
+            return f"Process {task_id} stopped!"

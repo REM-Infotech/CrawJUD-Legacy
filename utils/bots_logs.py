@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 async def asyncinit_log(
-    L_F: str = None,  # noqa: N803
-    L_LVL: int = None,  # noqa: N803
+    log_file: str = None,
+    log_level: int = None,
     mx_bt: int = None,
     bkp_ct: int = None,
     *args: tuple,
@@ -21,8 +21,8 @@ async def asyncinit_log(
     """Initialize and configure logging for the application.
 
     Args:
-        L_F (str, optional): The name of the log file. Defaults to "app.log".
-        L_LVL (int, optional): The logging level. Defaults to logger.DEBUG.
+        log_file (str, optional): The name of the log file. Defaults to "app.log".
+        log_level (int, optional): The logging level. Defaults to logger.DEBUG.
         mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
         bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
         *args: Variable length argument list.
@@ -32,8 +32,8 @@ async def asyncinit_log(
         Logger: Configured logger instance.
 
     """
-    L_F: str = L_F or str(kwargs.pop("L_F", "app/logs"))  # noqa: N806
-    L_LVL: int = L_LVL or int(kwargs.pop("L_LVL", logging.DEBUG))  # noqa: N806
+    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))  # noqa: N806
+    log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))  # noqa: N806
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024 * 1024))
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 1))
 
@@ -41,7 +41,7 @@ async def asyncinit_log(
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     log_path: Path = await AsyncPath(Path(__file__)).cwd()
-    log_path: Path = await log_path.joinpath(L_F).resolve()
+    log_path: Path = await log_path.joinpath(log_file).resolve()
     log_path_file: Path = log_path.joinpath("app.log")
 
     # File handler
@@ -64,8 +64,8 @@ async def asyncinit_log(
 
 
 def init_log(
-    L_F: str = None,  # noqa: N803
-    L_LVL: int = None,  # noqa: N803
+    log_file: str = None,
+    log_level: int = None,
     mx_bt: int = None,
     bkp_ct: int = None,
     *args: tuple,
@@ -74,8 +74,8 @@ def init_log(
     """Initialize and configure logging for the application.
 
     Args:
-        L_F (str, optional): The name of the log file. Defaults to "app.log".
-        L_LVL (int, optional): The logging level. Defaults to logger.DEBUG.
+        log_file (str, optional): The name of the log file. Defaults to "app.log".
+        log_level (int, optional): The logging level. Defaults to logger.DEBUG.
         mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
         bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
         *args: Variable length argument list.
@@ -85,8 +85,8 @@ def init_log(
         Logger: Configured logger instance.
 
     """
-    L_F: str = L_F or str(kwargs.pop("L_F", "app/logs"))  # noqa: N806
-    L_LVL: int = L_LVL or int(kwargs.pop("L_LVL", logging.DEBUG))  # noqa: N806
+    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))
+    log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024 * 1024))
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 1))
 
@@ -94,7 +94,7 @@ def init_log(
 
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    log_path_file = Path(__file__).cwd().joinpath(L_F).joinpath("app.log").resolve()
+    log_path_file = Path(__file__).cwd().joinpath(log_file).joinpath("app.log").resolve()
 
     if log_path_file.parent.exists() is False:
         log_path_file.parent.mkdir(parents=True, exist_ok=True)

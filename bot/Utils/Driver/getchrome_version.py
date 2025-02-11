@@ -1,7 +1,7 @@
-"""Module: getchromeVer.
+"""Module: getchrome_version.
 
 This module provides functionality to retrieve the installed version of Google Chrome.
-"""  # noqa: N999
+"""
 
 from __future__ import annotations
 

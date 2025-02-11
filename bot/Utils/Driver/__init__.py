@@ -41,10 +41,10 @@ from ...core import (
 )
 
 try:
-    from getchromeVer import another_chrome_ver, chrome_ver
+    from getchrome_version import another_chrome_ver, chrome_ver
 
 except ModuleNotFoundError:
-    from .getchromeVer import another_chrome_ver, chrome_ver  # noqa: F401
+    from .getchrome_version import another_chrome_ver, chrome_ver  # noqa: F401
 
 import socket
 
@@ -157,16 +157,16 @@ class DriverBot(CrawJUD):
         return self.list_args_
 
     @list_args.setter
-    def list_args(self, new_Args: list[str]) -> None:  # noqa: N803
+    def list_args(self, new_args: list[str]) -> None:
         """Set a new list of arguments for WebDriver.
 
         Args:
-            new_Args (list[str]): The new arguments to set.
+            new_args (list[str]): The new arguments to set.
 
         """
-        self.list_args_ = new_Args
+        self.list_args_ = new_args
 
-    def DriverLaunch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:  # noqa: C901, N802
+    def driver_launch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:  # noqa: C901
         """Launch the WebDriver with specified parameters.
 
         Args:
@@ -358,11 +358,11 @@ class SetupDriver:
         """Initialize the SetupDriver with destination path and additional arguments.
 
         Args:
-            destination (Path, optional): The destination directory for WebDriver. Defaults to current working directory.
+            destination (Path, optional): The destination directory for WebDriver.
             **kwargs: Additional keyword arguments.
 
         """  # noqa: E501
-        self.url_driver = self.getUrl()
+        self.url_driver = self.get_url()
         new_stem = f"chromedriver{self.code_ver}.zip"
         root_dir = Path(__file__).parent.cwd()
         without_stem = root_dir.joinpath("bot", "webdriver", "chromedriver")
@@ -390,12 +390,12 @@ class SetupDriver:
         """
         with Live(self.progress_group):
             with ThreadPoolExecutor() as pool:
-                self.ConfigBar(pool)
+                self.configure_bar(pool)
 
         shutil.copy(self.file_path, self.destination)
         return self.destination.name
 
-    def ConfigBar(self, pool: ThreadPoolExecutor) -> None:  # noqa: N802
+    def configure_bar(self, pool: ThreadPoolExecutor) -> None:  # noqa: N802
         """Configure the progress bar for downloading WebDriver.
 
         Args:
@@ -411,7 +411,7 @@ class SetupDriver:
             if not root_path.exists():
                 root_path.mkdir(exist_ok=True, parents=True)
 
-            url = self.getUrl()
+            url = self.get_url()
             pool.submit(self.copy_url, task_id, url, self.file_path)
 
         elif root_path.exists():
@@ -422,7 +422,7 @@ class SetupDriver:
                 )
                 shutil.copy(self.file_path, self.destination)
 
-    def getUrl(self) -> str:  # noqa: N802
+    def get_url(self) -> str:  # noqa: N802
         """Construct the download URL for the WebDriver based on Chrome version.
 
         Returns:
@@ -449,15 +449,15 @@ class SetupDriver:
         # Baixa o WebDriver conforme disponivel no repositório
         url_driver = "storage.googleapis.com/chrome-for-testing-public/"
 
-        set_URL = [self.code_ver, os_sys, os_sys]  # noqa: N806
-        for pos, item in enumerate(set_URL):
-            if pos == len(set_URL) - 1:
+        set_url = [self.code_ver, os_sys, os_sys]  # noqa: N806
+        for pos, item in enumerate(set_url):
+            if pos == len(set_url) - 1:
                 url_driver += f"chromedriver-{item}.zip"
                 continue
 
             url_driver += f"{item}/"
 
-        with open("is_init.txt", "w") as f:  # noqa: FURB103
+        with open("is_init.txt", "w") as f:  # FURB103
             f.write(url_driver)
 
         return url_driver
@@ -493,10 +493,10 @@ class SetupDriver:
                 self.progress.print(member)
                 self.progress.update(task_id)
 
-                not_Cr1 = member.split("/")[-1].lower() == "chromedriver.exe"  # noqa: N806
-                not_Cr2 = member.split("/")[-1].lower() == "chromedriver"  # noqa: N806
+                not_chrome1 = member.split("/")[-1].lower() == "chromedriver.exe"  # noqa: N806
+                not_chrome2 = member.split("/")[-1].lower() == "chromedriver"  # noqa: N806
 
-                if not_Cr1 or not_Cr2:
+                if not_chrome1 or not_chrome2:
                     # Get the original file name without any directory structure
                     dir_name = path.name
                     extracted_path = Path(zip_ref.extract(member, dir_name))

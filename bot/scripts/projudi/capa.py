@@ -74,7 +74,7 @@ class Capa(CrawJUD):
 
                 # if len(windows) == 0:
                 #     with suppress(Exception):
-                #         self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                #         self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                 #     old_message = self.message
 
@@ -140,21 +140,21 @@ class Capa(CrawJUD):
             process_info: dict[str, str | int | datetime] = {}
             process_info.update({"NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO")})
 
-            def format_vl_causa(valorDaCausa: str) -> float | str:  # noqa: N803
+            def format_vl_causa(valor_causa: str) -> float | str:
                 """Format the value of the cause by removing currency symbols and converting to float.
 
                 Args:
-                    valorDaCausa (str): The raw value string.
+                    valor_causa (str): The raw value string.
 
                 Returns:
                     float | str: The formatted value as float or original string if no match.
 
                 """
-                if "¤" in valorDaCausa:
-                    valorDaCausa = valorDaCausa.replace("¤", "")  # noqa: N806
+                if "¤" in valor_causa:
+                    valor_causa = valor_causa.replace("¤", "")
 
                 pattern = r"(?<!\S)(?:US\$[\s]?|R\$[\s]?|[\$]?)\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?(?!\S)"
-                matches = re.findall(pattern, valorDaCausa)
+                matches = re.findall(pattern, valor_causa)
                 if len(matches) > 0:
 
                     def convert_to_float(value: str) -> float:
@@ -189,7 +189,7 @@ class Capa(CrawJUD):
 
                     return convert_to_float(matches[0])
 
-                return valorDaCausa
+                return valor_causa
 
             self.message = f"Obtendo informações do processo {self.bot_data.get('NUMERO_PROCESSO')}..."
             self.type_log = "log"

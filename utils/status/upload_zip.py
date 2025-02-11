@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from ..gcs_mgmt import bucketGcs, storageClient
+from ..gcs_mgmt import bucket_gcs, storage_client
 
 
 def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
@@ -32,7 +32,7 @@ def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
         else:
             return None
 
-        bucket = bucketGcs(storageClient())
+        bucket = bucket_gcs(storage_client())
 
         # Create a Blob object in the bucket
         blob = bucket.blob(objeto_destino)

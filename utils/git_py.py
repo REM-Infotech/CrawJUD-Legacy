@@ -132,21 +132,21 @@ def version_file() -> None:
     If the version file does not exist or differs from the latest release tag,
     it updates the file and checks out the corresponding release.
     """
-    version_Path = Path(__file__).cwd().joinpath(".version")  # noqa: N806
+    version_path = Path(__file__).cwd().joinpath(".version")  # noqa: N806
     version_ = None
 
-    if version_Path.exists():
-        with version_Path.open("r") as file_v:
+    if version_path.exists():
+        with version_path.open("r") as file_v:
             version_ = str(file_v.read())
 
-    checkout_Version = _release_tag()  # noqa: N806
+    checkout_version = _release_tag()  # noqa: N806
 
-    if (version_ and (version_ != checkout_Version)) or (not version_Path.exists()):
+    if (version_ and (version_ != checkout_version)) or (not version_path.exists()):
         with open(".version", "w") as f:
-            f.write(checkout_Version)
+            f.write(checkout_version)
 
-            if version_ != checkout_Version:
-                checkout_release(f"refs/tags/{checkout_Version}")
+            if version_ != checkout_version:
+                checkout_release(f"refs/tags/{checkout_version}")
 
 
 __all__ = [checkout_release, update_servers, check_latest, _release_tag]

@@ -149,15 +149,15 @@ async def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app:
                         "message": data_message,
                     }
 
-            type_S1 = data_type == "success"  # noqa: N806
-            type_S2 = data_type == "info"  # noqa: N806
-            type_S3 = data_graphic != "doughnut"  # noqa: N806
+            type_s1 = data_type == "success"  # noqa: N806
+            type_s2 = data_type == "info"  # noqa: N806
+            type_s3 = data_graphic != "doughnut"  # noqa: N806
 
-            typeSuccess = type_S1 or (type_S2 and type_S3)  # noqa: N806
+            type_success = type_s1 or (type_s2 and type_s3)  # noqa: N806
 
             log_pid["pos"] = data_pos
 
-            if typeSuccess:
+            if type_success:
                 if log_pid.get("remaining") and log_pid.get("success"):
                     log_pid["remaining"] = int(log_pid["remaining"]) - 1
                     if "fim da execução" not in data_message.lower():

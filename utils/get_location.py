@@ -1,20 +1,20 @@
-"""Module for retrieving and handling geolocation information based on IP."""
+"""Module for retrieving and handling geolocation information based on Ip."""
 
 from os import environ
 
-import FindMyIP as ip  # noqa: N813, E402
+import FindMyIP as Ip
 from dotenv_vault import load_dotenv
 from httpx import Client as HTTPClient
 
-TOKEN = environ.get("TOKEN_IP2")
+TOKEN = environ.get("TOKEN_Ip2")
 load_dotenv()
 
 
-class GlobalExcept(Exception):  # noqa: N818
+class GlobalExceptError(Exception):
     """Base custom exception class for global errors."""
 
     def __init__(self, message: str) -> None:
-        """Initialize GlobalExcept with an error message.
+        """Initialize GlobalExceptError with an error message.
 
         Args:
             message (str): The error message.
@@ -24,7 +24,7 @@ class GlobalExcept(Exception):  # noqa: N818
         self.message = message
 
 
-class NetworkError(GlobalExcept):
+class NetworkError(GlobalExceptError):
     """Exception raised when a network-related error occurs."""
 
     def __init__(self, message: str = "You are not connected to the internet!!") -> None:
@@ -38,17 +38,17 @@ class NetworkError(GlobalExcept):
 
 
 class InfoGeoloc:
-    """Class to retrieve and store geolocation information based on external IP."""
+    """Class to retrieve and store geolocation information based on external Ip."""
 
     data: dict[str, str, int | bool] = {}
 
     def __init__(self) -> None:
         """Initialize InfoGeoloc by fetching geolocation data."""
-        ip_external = ip.external()
+        ip_external = Ip.external()
         if not ip_external:
             raise NetworkError
 
-        get_geoloc = self.IP2Location(ip_external)
+        get_geoloc = self.ip2location(ip_external)
         for key, value in get_geoloc.items():
             self.data.update({f"_{key}": value})
 
@@ -71,11 +71,11 @@ class InfoGeoloc:
 
         return item
 
-    def IP2Location(self, ip: str) -> dict[str, str] | None:  # noqa: N802
-        """Fetch geolocation data for a given IP address using IP2Location API.
+    def ip2location(self, ip: str) -> dict[str, str] | None:  # noqa: N802
+        """Fetch geolocation data for a given Ip address using ip2location API.
 
         Args:
-            ip (str): The IP address to lookup.
+            ip (str): The Ip address to lookup.
 
         Returns:
             dict[str, str] | None: Geolocation data if successful, else None.
@@ -88,52 +88,52 @@ class InfoGeoloc:
 
     @property
     def ip(self) -> str:
-        """str: The external IP address."""
-        return self._ip
+        """str: The external Ip address."""
+        return self._Ip
 
     @property
     def country_code(self) -> str:
-        """str: The country code of the IP address."""
+        """str: The country code of the Ip address."""
         return self._country_code
 
     @property
     def country_name(self) -> str:
-        """str: The country name of the IP address."""
+        """str: The country name of the Ip address."""
         return self._country_name
 
     @property
     def region_name(self) -> str:
-        """str: The region name of the IP address."""
+        """str: The region name of the Ip address."""
         return self._region_name
 
     @property
     def city_name(self) -> str:
-        """str: The city name of the IP address."""
+        """str: The city name of the Ip address."""
         return self._city_name
 
     @property
     def latitude(self) -> str:
-        """str: The latitude of the IP address location."""
+        """str: The latitude of the Ip address location."""
         return self._latitude
 
     @property
     def longitude(self) -> str:
-        """str: The longitude of the IP address location."""
+        """str: The longitude of the Ip address location."""
         return self._longitude
 
     @property
     def zip_code(self) -> str:
-        """str: The ZIP code of the IP address location."""
-        return self._zip_code
+        """str: The ZIp code of the Ip address location."""
+        return self._zIp_code
 
     @property
     def time_zone(self) -> str:
-        """str: The time zone of the IP address location."""
+        """str: The time zone of the Ip address location."""
         return self._time_zone
 
     @property
     def asn(self) -> str:
-        """str: The Autonomous System Number of the IP address."""
+        """str: The Autonomous System Number of the Ip address."""
         return self._asn
 
     @property
@@ -143,7 +143,7 @@ class InfoGeoloc:
 
     @property
     def is_proxy(self) -> bool:
-        """bool: Indicates if the IP address is a proxy."""
+        """bool: Indicates if the Ip address is a proxy."""
         return self._is_proxy
 
 

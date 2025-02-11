@@ -270,10 +270,10 @@ async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tupl
         from ..gcs_mgmt import get_file
 
         try:
-            processID = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
+            task_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
             get_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
-            if processID or get_info:
+            if task_id or get_info:
                 # Stop bot
 
                 system = get_info.bot.system
@@ -297,7 +297,7 @@ async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tupl
                     db.session.commit()
                     db.session.close()
 
-            elif not processID:
+            elif not task_id:
                 raise Exception("Execution not found!")
 
             return {"message": "bot stopped!"}, 200

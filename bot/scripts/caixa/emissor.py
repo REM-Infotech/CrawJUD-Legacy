@@ -23,7 +23,7 @@ from ...core import CrawJUD
 from ...Utils import OtherUtils
 
 
-class emissor(CrawJUD):
+class emissor(CrawJUD):  # noqa: N801
     """Class emissor.
 
     Manages the emission and processing of judicial deposit documents within
@@ -83,7 +83,7 @@ class emissor(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                        self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 

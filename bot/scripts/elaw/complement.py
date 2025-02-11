@@ -49,7 +49,7 @@ campos_validar: list[str] = [
 ]
 
 
-class complement(CrawJUD):
+class complement(CrawJUD):  # noqa: N801
     """A class that configures and retrieves an elements bot instance.
 
     This class interacts with the ELAW system to complete the registration of a process.
@@ -113,7 +113,7 @@ class complement(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                        self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 

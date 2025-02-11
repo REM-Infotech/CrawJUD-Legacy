@@ -140,8 +140,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
         css_risk (str): CSS selector for the risco div.
         processo_objt (str): CSS selector for o processo objeto.
         botao_salvar_id (str): CSS selector para salvar ID botão.
-        DataCorrecaoCss (str): CSS selector para data correção.
-        DataJurosCss (str): CSS selector para data juros.
+        daata_correcaoCss (str): CSS selector para data correção.
+        data_jurosCss (str): CSS selector para data juros.
         texto_motivo (str): CSS selector para texto motivo.
         type_risk_label (str): CSS selector para o label de risco.
         type_risk_select (str): CSS selector para o select de risco.
@@ -400,8 +400,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_risk = 'div[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1"]'
     processo_objt = 'ul[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_items"]'
     botao_salvar_id = 'button[id="salvarBtn"]'
-    DataCorrecaoCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataCorrecao_input"]'
-    DataJurosCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataJuros_input"]'
+    daata_correcaoCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountdaata_correcao_input"]'  # noqa: N815
+    data_jurosCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountdata_juros_input"]'  # noqa: N815
     texto_motivo = 'textarea[id="j_id_2m:j_id_2p_2e:j_id_2p_2i_8:j_id_2p_2i_j"]'
 
     type_risk_label = 'label[id="j_id_2m:provisaoTipoPedidoCombo_label"]'

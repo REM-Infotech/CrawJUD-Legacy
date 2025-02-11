@@ -25,7 +25,7 @@ from ...core import CrawJUD
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class cadastro(CrawJUD):
+class cadastro(CrawJUD):  # noqa: N801
     """The Cadastro class extends CrawJUD to manage registration tasks within the application.
 
     Attributes:
@@ -84,7 +84,7 @@ class cadastro(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                        self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 
@@ -270,7 +270,7 @@ class cadastro(CrawJUD):
 
         """
         key = "ESTADO"
-        elementSelect = self.elements.estado_input  # noqa: N806
+        elementSelect = self.elements.estado_input  # noqa:  N806
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"

@@ -9,7 +9,7 @@ from google.oauth2.service_account import Credentials
 from quart import Quart
 
 
-def storageClient() -> Client:  # noqa: N802
+def storage_client() -> Client:
     """Create a Google Cloud Storage client.
 
     Returns:
@@ -18,39 +18,36 @@ def storageClient() -> Client:  # noqa: N802
     """
     project_id = environ.get("project_id")
     # Configure a autenticação para a conta de serviço do GCS
-    credentials = CredentialsGCS()
+    credentials = credentials_gcs()
 
     return Client(credentials=credentials, project=project_id)
 
 
-def CredentialsGCS() -> Credentials:  # noqa: N802
+def credentials_gcs() -> Credentials:
     """Create Google Cloud Storage credentials from environment variables.
 
     Returns:
         Credentials: GCS service account credentials.
 
     """
-    CREDENTIALS_DICT = json.loads(environ.get("CREDENTIALS_DICT"))
-    return Credentials.from_service_account_info(CREDENTIALS_DICT).with_scopes(
+    return Credentials.from_service_account_info(json.loads(environ.get("CREDENTIALS_DICT"))).with_scopes(
         ["https://www.googleapis.com/auth/cloud-platform"],
     )
 
     # Configure a autenticação para a conta de serviço do GCS
 
 
-def bucketGcs(storageClient: Client) -> Bucket:  # noqa: N802, N803
+def bucket_gcs(storage_client: Client) -> Bucket:
     """Retrieve the GCS bucket object.
 
     Args:
-        storageClient (Client): The GCS client.
+        storage_client (Client): The GCS client.
 
     Returns:
         Bucket: The GCS bucket.
 
     """
-    BUCKET_NAME = environ.get("BUCKET_NAME")
-
-    bucket_obj = storageClient.bucket(BUCKET_NAME)
+    bucket_obj = storage_client.bucket(environ.get("BUCKET_NAME"))
     return bucket_obj
 
 
@@ -65,10 +62,8 @@ def get_file(pid: str, app: Quart) -> str:
         str: The filename if found, else an empty string.
 
     """
-    storage_client = storageClient()
-
     # Obtém o bucket
-    bucket = bucketGcs(storage_client)
+    bucket = bucket_gcs(storage_client())
 
     arquivo = ""
     list_blobs: list[Blob] = list(bucket.list_blobs())

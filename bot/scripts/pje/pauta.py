@@ -20,7 +20,7 @@ from ...core import CrawJUD
 # from typing import type
 
 
-class pauta(CrawJUD):
+class pauta(CrawJUD):  # noqa: N801
     """Represents the main class to retrieve hearing data (pautas)."""
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
@@ -56,7 +56,7 @@ class pauta(CrawJUD):
 
                 if len(windows) == 0:
                     with suppress(Exception):
-                        self.DriverLaunch(message="Webdriver encerrado inesperadamente, reinicializando...")
+                        self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
 
                     old_message = self.message
 

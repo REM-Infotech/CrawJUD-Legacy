@@ -61,7 +61,7 @@ class DatabaseScheduler(Scheduler):
         """
         fields = ["minute", "hour", "day_of_month", "month_of_year", "day_of_week"]
         cron_parts = cron_string.split()
-        return {field: value for field, value in zip(fields, cron_parts)}  # noqa: C416
+        return dict(zip(fields, cron_parts))
 
     @property
     def schedule(self) -> dict:

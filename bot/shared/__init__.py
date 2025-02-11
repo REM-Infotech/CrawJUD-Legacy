@@ -653,9 +653,9 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.ElementsBotConfig_ = obj
 
     @property
-    def DriverLaunch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:  # noqa: N802
-        """Return the DriverLaunch callable."""
-        return PropertiesCrawJUD.DriverBot_.DriverLaunch
+    def driver_launch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:  # noqa: N802
+        """Return the driver_launch callable."""
+        return PropertiesCrawJUD.DriverBot_.driver_launch
 
     @property
     def search_bot(self) -> Callable[[], bool]:
