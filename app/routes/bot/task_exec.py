@@ -77,13 +77,16 @@ class TaskExec(InstanceBot):
                         user,
                     )
                 )
-                await asyncio.create_task(
-                    cls.send_email(
-                        execut,
-                        app,
-                        "start",
+                try:
+                    await asyncio.create_task(
+                        cls.send_email(
+                            execut,
+                            app,
+                            "start",
+                        )
                     )
-                )
+                except Exception as e:
+                    app.logger.error("Error sending email: %s", str(e))
 
                 task: Task = celery_app.send_task(
                     f"bot.{system.lower()}_launcher", args=[path_pid, display_name, system, typebot]

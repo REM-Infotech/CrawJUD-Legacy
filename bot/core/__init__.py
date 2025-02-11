@@ -108,22 +108,6 @@ class CrawJUD(PropertiesCrawJUD):
 
         return item
 
-    # def set_permissions_recursive(self, path: Path, permissions: int) -> None:
-    #     # Converte o caminho para um objeto Path, caso ainda não seja
-    #     path = Path(path)
-
-    #     # Define a permissão para o próprio diretório
-    #     path.chmod(permissions)
-
-    #     # Itera sobre todos os arquivos e diretórios dentro da pasta
-    #     for item in path.rglob("*"):  # rglob percorre recursivamente
-
-    #         try:
-    #             item.chmod(permissions)
-
-    #         except FileNotFoundError:
-    #             continue
-
     def setup(self, *args: tuple, **kwargs: dict) -> None:
         """Set up the bot by loading configuration and preparing the environment.
 

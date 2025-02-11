@@ -289,10 +289,6 @@ class InstanceBot:
         db.session.close()
 
 
-class SetStatus:
-    """A class to manage  the status of bots (Start and Stop)."""
-
-
 async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tuple[dict[str, str], int]:
     """Stop the execution of a bot based on its PID.
 
@@ -331,7 +327,7 @@ async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tupl
                     db.session.close()
 
                 elif filename == "":
-                    bot_stop = SetStatus()
+                    bot_stop = SetStatus()  # noqa: F821
                     setup_stop = await asyncio.create_task(
                         bot_stop.config(usr=user, pid=pid, system=system, typebot=typebot)
                     )
@@ -350,7 +346,6 @@ async def stop_execution(app: Quart, pid: str, robot_stop: bool = False) -> tupl
 
 
 __all__ = [
-    SetStatus,
     makezip,
     email_start,
     email_stop,
