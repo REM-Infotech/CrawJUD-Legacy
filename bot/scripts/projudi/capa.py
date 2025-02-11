@@ -21,7 +21,7 @@ from ...core import CrawJUD
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
-class capa(CrawJUD):
+class Capa(CrawJUD):
     """The capa class extends CrawJUD to handle specific execution tasks related to process.
 
     information extraction and management.

@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -143,7 +143,7 @@ class Tjdft(CrawJUD):
             check_cookies = None
             with suppress(TimeoutException):
                 check_cookies = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located(
+                    ec.presence_of_element_located(
                         (By.CSS_SELECTOR, 'div[class="alert text-center cookiealert show"]'),
                     ),
                 )
@@ -175,7 +175,7 @@ class Tjdft(CrawJUD):
             self.prt()
             css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
             get_input_process: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc)),
             )
             get_input_process.click()
             get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
@@ -203,7 +203,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             get_name_requerente: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_name_requerente)),
             )
             get_name_requerente.click()
             get_name_requerente.send_keys(self.bot_data.get("REQUERENTE"))
@@ -231,7 +231,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             get_name_requerido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido)),
             )
             get_name_requerido.click()
             get_name_requerido.send_keys(self.bot_data.get("REQUERIDO"))
@@ -260,7 +260,7 @@ class Tjdft(CrawJUD):
             juros_partir = str(self.bot_data.get("JUROS_PARTIR")).upper()
 
             css_select_juros = 'select[id="juros_partir"][class="select-consultas"]'
-            select = Select(self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_select_juros))))
+            select = Select(self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_select_juros))))
             select.select_by_value(juros_partir)
 
             juros_percent = str(self.bot_data.get("JUROS_PERCENT", "1"))
@@ -274,7 +274,7 @@ class Tjdft(CrawJUD):
                 self.interact.click(self.driver.find_element(By.CSS_SELECTOR, 'input[id="juros_percent2"]'))
                 self.interact.send_key(
                     self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]')),
+                        ec.presence_of_element_located((By.CSS_SELECTOR, 'input[id="juros_percent_variavel"]')),
                     ),
                     percent,
                 )
@@ -304,7 +304,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             data_valor_devido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_data_valor_devido)),
             )
             data_valor_devido.click()
             data_valor_devido.send_keys(self.bot_data.get("DATA_CALCULO"))
@@ -315,7 +315,7 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             valor_devido: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido)),
             )
             valor_devido.click()
 
@@ -347,7 +347,7 @@ class Tjdft(CrawJUD):
 
                 if self.bot_data.get("MULTA_PERCENTUAL", None):
                     multa_percentual: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual)),
+                        ec.presence_of_element_located((By.CSS_SELECTOR, css_multa_percentual)),
                     )
                     multa_percentual.click()
 
@@ -383,7 +383,7 @@ class Tjdft(CrawJUD):
 
                 if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
                     honorario_sucumb: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb)),
+                        ec.presence_of_element_located((By.CSS_SELECTOR, css_honorario_sucumb)),
                     )
                     honorario_sucumb.click()
                     percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
@@ -439,7 +439,7 @@ class Tjdft(CrawJUD):
 
                 if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
                     honorario_exec: WebElement = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec)),
+                        ec.presence_of_element_located((By.CSS_SELECTOR, css_honorario_exec)),
                     )
                     honorario_exec.click()
                     percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
@@ -526,7 +526,7 @@ class Tjdft(CrawJUD):
             calcular.click()
 
             table_valorcalc: WebElement = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]')),
+                ec.presence_of_all_elements_located((By.CSS_SELECTOR, 'table[class="grid listing"]')),
             )[-1]
             row_valorcalc = table_valorcalc.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")[-1]
             valor_doc = float(

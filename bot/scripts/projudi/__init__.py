@@ -8,19 +8,16 @@ from __future__ import annotations
 
 import logging
 import traceback
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 from ...common.exceptions import StartError
+from .capa import Capa
+from .movimentacao import Movimentacao
+from .proc_parte import ProcParte as Proc_parte
+from .protocolo import Protocolo
 
+ClassBots = Union[Proc_parte, Capa, Movimentacao, Protocolo]
 logger = logging.getLogger(__name__)
-
-if TYPE_CHECKING:
-    from .capa import capa
-    from .movimentacao import movimentacao
-    from .proc_parte import proc_parte
-    from .protocolo import protocolo
-
-    ClassBots = Union[proc_parte, capa, movimentacao, protocolo]
 
 
 class Projudi:

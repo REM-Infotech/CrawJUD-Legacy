@@ -19,7 +19,7 @@ from typing import Callable
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from ..core import CrawJUD
@@ -99,7 +99,7 @@ class AuthBot(CrawJUD):
                 self.driver.get(self.elements.url_login_cert)
                 sleep(3)
                 loginopt: WebElement = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]')),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, 'select[id="certificados"]')),
                 )
                 loginopt = loginopt.find_elements(By.TAG_NAME, "option")
 
@@ -132,7 +132,7 @@ class AuthBot(CrawJUD):
                 checkloged = None
                 with suppress(TimeoutException):
                     checkloged = WebDriverWait(self.driver, 15).until(
-                        EC.presence_of_element_located(
+                        ec.presence_of_element_located(
                             (
                                 By.CSS_SELECTOR,
                                 "#esajConteudoHome > table:nth-child(4) > tbody > tr > td.esajCelulaDescricaoServicos",
@@ -162,7 +162,7 @@ class AuthBot(CrawJUD):
             checkloged = None
             with suppress(TimeoutException):
                 checkloged = WebDriverWait(self.driver, 15).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
                 )
 
             return checkloged is not None
@@ -185,7 +185,7 @@ class AuthBot(CrawJUD):
             self.driver.get(self.elements.url_login)
 
             username: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username)),
             )
             username.send_keys(self.username)
 
@@ -199,7 +199,7 @@ class AuthBot(CrawJUD):
 
             with suppress(TimeoutException):
                 check_login = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
                 )
 
             return check_login is not None
@@ -223,13 +223,13 @@ class AuthBot(CrawJUD):
             self.driver.get("https://amazonas.elaw.com.br/login")
 
             # wait until page load
-            username: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "username")))
+            username: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "username")))
             username.send_keys(self.username)
 
-            password: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#password")))
+            password: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#password")))
             password.send_keys(self.password)
 
-            entrar: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "j_id_a_1_5_f")))
+            entrar: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "j_id_a_1_5_f")))
             entrar.click()
 
             sleep(7)
@@ -256,9 +256,9 @@ class AuthBot(CrawJUD):
         try:
             self.driver.get(self.elements.url_login)
 
-            login = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.login_input)))
-            password = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.password_input)))
-            entrar = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_entrar)))
+            login = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.login_input)))
+            password = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.password_input)))
+            entrar = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_entrar)))
 
             login.send_keys(self.username)
             sleep(0.5)
@@ -268,7 +268,7 @@ class AuthBot(CrawJUD):
 
             logado = None
             with suppress(TimeoutException):
-                logado = WebDriverWait(self.driver, 10).until(EC.url_to_be(self.elements.chk_login))
+                logado = WebDriverWait(self.driver, 10).until(ec.url_to_be(self.elements.chk_login))
 
             return logado is not None
 

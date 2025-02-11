@@ -18,7 +18,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -169,7 +169,7 @@ class complement(CrawJUD):
                 self.type_log = "log"
                 self.prt()
                 edit_proc_button = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar_complementar)),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar_complementar)),
                 )
                 edit_proc_button.click()
 
@@ -178,7 +178,7 @@ class complement(CrawJUD):
                 start_time = time.perf_counter()
 
                 check_esfera = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.label_esfera)),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.label_esfera)),
                 )
 
                 esfera_xls = self.bot_data.get("ESFERA")
@@ -235,7 +235,7 @@ class complement(CrawJUD):
         """
         self.interact.sleep_load('div[id="j_id_3x"]')
         salvartudo: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)),
         )
         self.type_log = "log"
         self.message = "Salvando processo novo"
@@ -390,7 +390,7 @@ class complement(CrawJUD):
 
         with suppress(TimeoutException):
             wait_confirm_save: WebElement = WebDriverWait(self.driver, 20).until(
-                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
+                ec.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
             )
 
         if wait_confirm_save:
@@ -401,7 +401,7 @@ class complement(CrawJUD):
             with suppress(TimeoutException, NoSuchElementException):
                 ErroElaw = (  # noqa: N806
                     self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
+                        ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
                         message="Erro ao encontrar elemento",
                     )
                     .find_element(By.TAG_NAME, "ul")
@@ -452,7 +452,7 @@ class complement(CrawJUD):
         self.prt()
 
         input_adv_responsavel: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)),
         )
         input_adv_responsavel.click()
         self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
@@ -463,7 +463,7 @@ class complement(CrawJUD):
 
         with suppress(TimeoutException):
             wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
             )
 
         if wait_adv:
@@ -474,14 +474,14 @@ class complement(CrawJUD):
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         div_select_Adv: WebElement = self.wait.until(  # noqa: N806
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)),
         )
         div_select_Adv.click()
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         input_select_adv: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)),
         )
         input_select_adv.click()
 
@@ -668,7 +668,7 @@ class complement(CrawJUD):
         self.prt()
 
         input_uc: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc)),
         )
         input_uc.click()
 
@@ -801,7 +801,7 @@ class complement(CrawJUD):
         self.prt()
 
         data_citacao: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao)),
         )
         self.interact.clear(data_citacao)
         self.interact.sleep_load('div[id="j_id_3x"]')
@@ -889,7 +889,7 @@ class complement(CrawJUD):
         self.prt()
 
         valor_causa: WebElement = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
+            ec.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
             message="Erro ao encontrar elemento",
         )
 
@@ -949,7 +949,7 @@ class complement(CrawJUD):
 
         """
         input_descobjeto = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_descobjeto_css)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_descobjeto_css)),
         )
         self.interact.click(input_descobjeto)
 

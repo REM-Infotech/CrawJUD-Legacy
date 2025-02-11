@@ -10,7 +10,7 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -114,7 +114,7 @@ class Movimentacao(CrawJUD):
     def get_moves(self) -> None:
         """Retrieve movement information."""
         show_all: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')),
+            ec.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')),
         )
 
         self.interact.scroll_to(show_all)

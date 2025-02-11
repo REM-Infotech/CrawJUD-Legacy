@@ -5,11 +5,19 @@ This module initializes and manages the ESaj bot within the CrawJUD-Bots applica
 
 import logging
 import traceback
+from typing import Union
 
 from ...common import StartError
+from .busca_pags import BuscaPags as Busca_pags
+from .capa import Capa
+from .emissao import Emissao
+from .movimentacao import Movimentacao
+from .protocolo import Protocolo
 
 # from typing import any
 logger = logging.getLogger(__name__)
+
+ClassBots = Union[Emissao, Busca_pags, Capa, Movimentacao, Protocolo]
 
 
 class Esaj:

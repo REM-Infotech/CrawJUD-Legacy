@@ -11,7 +11,7 @@ from contextlib import suppress
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -165,7 +165,7 @@ class Prazos(CrawJUD):
             self.prt()
 
             btn_novaaudiencia = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_novaaudiencia)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_novaaudiencia)),
             )
 
             btn_novaaudiencia.click()
@@ -176,7 +176,7 @@ class Prazos(CrawJUD):
             self.prt()
 
             selectortipoaudiencia: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectortipoaudiencia)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.selectortipoaudiencia)),
             )
 
             items = selectortipoaudiencia.find_elements(By.TAG_NAME, "option")
@@ -201,7 +201,7 @@ class Prazos(CrawJUD):
             self.prt()
 
             DataAudiencia: WebElement = self.wait.until(  # noqa: N806
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.DataAudiencia)),
             )
 
             DataAudiencia.send_keys(self.data_Concat)
@@ -240,7 +240,7 @@ class Prazos(CrawJUD):
         """
         try:
             tableprazos: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.tableprazos)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.tableprazos)),
             )
 
             tableprazos: list[WebElement] = tableprazos.find_elements(By.TAG_NAME, "tr")

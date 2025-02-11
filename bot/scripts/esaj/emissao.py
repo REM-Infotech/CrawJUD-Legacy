@@ -14,7 +14,7 @@ from pypdf import PdfReader
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -169,7 +169,7 @@ class Emissao(CrawJUD):
         self.prt()
 
         set_foro: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ome_foro)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.ome_foro)),
         )
         set_foro.send_keys(self.bot_data.get("FORO"))
 
@@ -202,7 +202,7 @@ class Emissao(CrawJUD):
         with suppress(TimeoutException):
             css_val_doc = self.elements.css_val_doc_custas_ini
             self.valor_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
             ).text
 
     def preparo_ri(self) -> None:
@@ -220,7 +220,7 @@ class Emissao(CrawJUD):
             self.driver.get(self.elements.url_preparo_projudi)
 
             set_foro: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.nome_foro)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.nome_foro)),
             )
             set_foro.send_keys(self.bot_data.get("FORO"))
 
@@ -248,7 +248,7 @@ class Emissao(CrawJUD):
             avançar.click()
 
             sleep(1)
-            set_RI: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.check)))  # noqa: N806
+            set_RI: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.check)))  # noqa: N806
             set_RI.click()
 
             sleep(1)
@@ -258,7 +258,7 @@ class Emissao(CrawJUD):
             sleep(1)
             css_val_doc = "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10) > tbody > tr:nth-child(3) > td:nth-child(3) > strong"  # noqa: E501
             self.valor_doc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
             ).text
 
         elif portal == "não informado":
@@ -285,7 +285,7 @@ class Emissao(CrawJUD):
         """
         self.original_window = original_window = self.driver.current_window_handle
         generatepdf: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto)),
         )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1
@@ -304,7 +304,7 @@ class Emissao(CrawJUD):
         with suppress(TimeoutException):
             check: WebElement = (
                 WebDriverWait(self.driver, 3)
-                .until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.mensagem_retorno)))
+                .until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.mensagem_retorno)))
                 .text
             )
 

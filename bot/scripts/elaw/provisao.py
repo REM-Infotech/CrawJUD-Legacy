@@ -13,7 +13,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -130,7 +130,7 @@ class Provisao(CrawJUD):
             None
 
         """
-        label_risk = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.type_risk_label)))
+        label_risk = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.type_risk_label)))
 
         if label_risk.text == "Risco Quebrado":
             self.Select2_ELAW(self.elements.type_risk_select, "Risco")
@@ -158,7 +158,7 @@ class Provisao(CrawJUD):
             raise ErroDeExecucao('Provisão "Possível" já inserida')
 
         edit_button: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit)),
         )
         edit_button.click()
 
@@ -190,12 +190,12 @@ class Provisao(CrawJUD):
 
         """
         get_valores: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.ver_valores)),
         )
         get_valores.click()
 
         check_exists_provisao: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.table_valores_css)),
         )
         check_exists_provisao = check_exists_provisao.find_elements(By.TAG_NAME, "tr")
 
@@ -220,13 +220,13 @@ class Provisao(CrawJUD):
         """
         try:
             div_tipo_obj: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_tipo_obj_css)),
             )
 
             div_tipo_obj.click()
 
             item_obj_div: WebElement = (
-                self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.itens_obj_div_css)))
+                self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.itens_obj_div_css)))
                 .find_element(By.TAG_NAME, "ul")
                 .find_elements(By.TAG_NAME, "li")[0]
                 .find_element(By.CSS_SELECTOR, self.elements.checkbox)
@@ -245,7 +245,7 @@ class Provisao(CrawJUD):
     def edit_valor(self) -> None:
         """Edit an existing value entry."""
         editar_pedido: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar)),
         )
         editar_pedido.click()
 
@@ -261,7 +261,7 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
             campo_valor_dml = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt)),
             )
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
@@ -295,7 +295,7 @@ class Provisao(CrawJUD):
             self.prt()
 
             expand_filter_risk = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk)),
             )
             expand_filter_risk.click()
 
@@ -389,7 +389,7 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
             informar_motivo: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.texto_motivo)),
             )
             informar_motivo.send_keys(self.bot_data.get("OBSERVACAO", "Atualização de provisão"))
             id_informar_motivo = informar_motivo.get_attribute("id")
@@ -412,7 +412,7 @@ class Provisao(CrawJUD):
         check_provisao_atualizada = None
         with suppress(TimeoutException):
             check_provisao_atualizada: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#valoresGeralPanel_header > span")),
+                ec.presence_of_element_located((By.CSS_SELECTOR, "#valoresGeralPanel_header > span")),
             )
 
         if not check_provisao_atualizada:

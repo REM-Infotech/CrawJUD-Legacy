@@ -10,7 +10,7 @@ from time import sleep
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -108,7 +108,7 @@ class Andamentos(CrawJUD):
             search = self.search_bot()
             if search is True:
                 btn_newmove = self.elements.botao_andamento
-                new_move: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, btn_newmove)))
+                new_move: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, btn_newmove)))
                 new_move.click()
 
                 self.info_data()
@@ -143,7 +143,7 @@ class Andamentos(CrawJUD):
             self.type_log = "log"
             self.prt()
             css_Data = self.elements.input_data  # noqa: N806
-            campo_data: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_Data)))
+            campo_data: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_Data)))
             campo_data.click()
             campo_data.send_keys(Keys.CONTROL, "a")
             sleep(0.5)
@@ -233,7 +233,7 @@ class Andamentos(CrawJUD):
 
         try:
             check_save: WebElement = WebDriverWait(self.driver, 10).until(
-                EC.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
+                ec.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
             )
             if check_save:
                 sleep(3)

@@ -12,7 +12,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bot.common.exceptions import ItemNaoEcontrado
@@ -83,7 +83,7 @@ class Interact(CrawJUD):
             ItemNaoEcontrado: If the item with the specified text is not found.
 
         """
-        itens: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, elemento)))
+        itens: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
 
         self.display_none(itens)
         sleep(0.5)
@@ -135,7 +135,7 @@ class Interact(CrawJUD):
             aria_value = None
             with suppress(TimeoutException):
                 load: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, element)),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, element)),
                 )
 
             if load:
@@ -219,7 +219,7 @@ class Interact(CrawJUD):
             to_Search (str): The text to search and select.
 
         """
-        selector: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, elementSelect)))
+        selector: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elementSelect)))
 
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}

@@ -31,7 +31,7 @@ import pytz
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ..common import ErroDeExecucao
@@ -98,13 +98,13 @@ class SearchBot(CrawJUD):
         if self.driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
             self.driver.get("https://amazonas.elaw.com.br/processoList.elaw")
 
-        campo_numproc: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
+        campo_numproc: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
         campo_numproc.clear()
         sleep(0.15)
         self.interact.send_key(campo_numproc, self.bot_data.get("NUMERO_PROCESSO"))
 
         self.driver.find_element(By.ID, "btnPesquisar").click()
-        search_result: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "dtProcessoResults_data")))
+        search_result: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "dtProcessoResults_data")))
 
         open_proc = None
         with suppress(NoSuchElementException):
@@ -158,31 +158,31 @@ class SearchBot(CrawJUD):
 
         sleep(1)
         # Coloca o campo em formato "Outros" para inserir o número do processo
-        ratioNumberOld: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "radioNumeroAntigo")))  # noqa: N806
+        ratioNumberOld: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "radioNumeroAntigo")))  # noqa: N806
         self.interact.click(ratioNumberOld)
 
         # Insere o processo no Campo
-        lineprocess: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, "nuProcessoAntigoFormatado")))
+        lineprocess: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "nuProcessoAntigoFormatado")))
         self.interact.click(lineprocess)
         self.interact.send_key(lineprocess, self.bot_data.get("NUMERO_PROCESSO"))
 
         # Abre o Processo
         openprocess = None
         with suppress(TimeoutException):
-            openprocess: WebElement = self.wait.until(EC.presence_of_element_located((By.ID, id_consultar)))
+            openprocess: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, id_consultar)))
             self.interact.click(openprocess)
 
         check_process = None
         with suppress(NoSuchElementException, TimeoutException):
             check_process = WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno")),
+                ec.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno")),
             )
 
         # Retry 1
         if not check_process:
             with suppress(NoSuchElementException, TimeoutException):
                 check_process: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]')),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, 'div[id="listagemDeProcessos"]')),
                 )
 
                 if check_process:
@@ -199,7 +199,7 @@ class SearchBot(CrawJUD):
         if not check_process:
             with suppress(NoSuchElementException, TimeoutException):
                 check_process: WebElement = WebDriverWait(self.driver, 5).until(
-                    EC.presence_of_element_located(
+                    ec.presence_of_element_located(
                         (By.CSS_SELECTOR, 'div.modal__process-choice > input[type="radio"]'),
                     ),
                 )
@@ -275,7 +275,7 @@ class SearchBot(CrawJUD):
             """
             with suppress(Exception, TimeoutException, NoSuchElementException):
                 info_proc = self.wait.until(
-                    EC.presence_of_all_elements_located(
+                    ec.presence_of_all_elements_located(
                         (By.CSS_SELECTOR, "table#informacoesProcessuais > tbody > tr > td > a"),
                     ),
                 )
@@ -290,7 +290,7 @@ class SearchBot(CrawJUD):
 
         with suppress(TimeoutException):
             inputproc: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
+                ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
             )
 
         if inputproc:
@@ -299,7 +299,7 @@ class SearchBot(CrawJUD):
             consultar.click()
 
             with suppress(TimeoutException):
-                enterproc: WebElement = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "link")))
+                enterproc: WebElement = self.wait.until(ec.presence_of_element_located((By.CLASS_NAME, "link")))
 
             if enterproc:
                 enterproc.click()
@@ -343,7 +343,7 @@ class SearchBot(CrawJUD):
 
         """
         allprocess = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')),
+            ec.presence_of_element_located((By.CSS_SELECTOR, 'input[value="qualquerAdvogado"]')),
         )
         allprocess.click()
         data_inicio_xls = self.data_inicio
@@ -361,7 +361,7 @@ class SearchBot(CrawJUD):
 
         if self.vara == "TODAS AS COMARCAS":
             alljudge = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[name="pesquisarTodos"]')),
+                ec.presence_of_element_located((By.CSS_SELECTOR, 'input[name="pesquisarTodos"]')),
             )
             alljudge.click()
 
@@ -399,7 +399,7 @@ class SearchBot(CrawJUD):
         sleep(3)
 
         with suppress(TimeoutException):
-            enterproc: WebElement = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "link")))
+            enterproc: WebElement = self.wait.until(ec.presence_of_element_located((By.CLASS_NAME, "link")))
 
         if enterproc:
             return True

@@ -14,7 +14,7 @@ from time import sleep
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -139,7 +139,7 @@ class emissor(CrawJUD):
 
         self.driver.get("https://depositojudicial.caixa.gov.br/sigsj_internet/depositos-judiciais/justica-estadual/")
         list_opt: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:j_id6:tpDeposito"]')),
+            ec.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:j_id6:tpDeposito"]')),
         )
         list_options = list_opt.find_elements(By.TAG_NAME, "option")
 
@@ -149,12 +149,12 @@ class emissor(CrawJUD):
                 break
 
         captchainput: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'input[id="autoCaptcha"')),
+            ec.presence_of_element_located((By.CSS_SELECTOR, 'input[id="autoCaptcha"')),
         )
         val_captcha = captchainput.get_attribute("value")
 
         inputcaptcha: WebElement = self.wait.until(
-            EC.presence_of_element_located(
+            ec.presence_of_element_located(
                 (By.CSS_SELECTOR, 'input[id="j_id5:filtroView:j_id6:j_id17:captchaView:cpatchaTextBox"]'),
             ),
         )
@@ -165,7 +165,7 @@ class emissor(CrawJUD):
 
         sleep(2)
         next_btn: WebElement = self.wait.until(
-            EC.presence_of_element_located(
+            ec.presence_of_element_located(
                 (By.CSS_SELECTOR, 'a[id="j_id5:filtroView:mensagemView:j_id77:btnProsseguir'),
             ),
         )
@@ -183,7 +183,7 @@ class emissor(CrawJUD):
         self.prt()
 
         lista_tribunal: WebElement = self.wait.until(
-            EC.presence_of_element_located(
+            ec.presence_of_element_located(
                 (By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coTribunal"]'),
             ),
         ).find_elements(By.TAG_NAME, "option")
@@ -200,7 +200,10 @@ class emissor(CrawJUD):
         self.prt()
 
         lista_comarca: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coComarca"]')),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'select[id="j_id5:filtroView:formFormulario:coComarca"]',
+            )),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_comarca:
             item: WebElement = item
@@ -213,7 +216,10 @@ class emissor(CrawJUD):
         self.type_log = "log"
         self.prt()
         lista_vara: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coVara"]')),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'select[id="j_id5:filtroView:formFormulario:coVara"]',
+            )),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_vara:
             item: WebElement = item
@@ -226,7 +232,10 @@ class emissor(CrawJUD):
         self.type_log = "log"
         self.prt()
         lista_agencia: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:formFormulario:coAgencia"]')),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'select[id="j_id5:filtroView:formFormulario:coAgencia"]',
+            )),
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_agencia:
             item: WebElement = item
@@ -247,7 +256,7 @@ class emissor(CrawJUD):
         self.type_log = "log"
         self.prt()
         num_process: WebElement = self.wait.until(
-            EC.presence_of_element_located(
+            ec.presence_of_element_located(
                 (By.CSS_SELECTOR, 'input[id="j_id5:filtroView:formFormulario:nuProcessoCNJ"]'),
             ),
         )

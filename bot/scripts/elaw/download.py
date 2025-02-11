@@ -11,7 +11,7 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -136,7 +136,7 @@ class Download(CrawJUD):
         self.type_log = "log"
         self.prt()
         anexosbutton: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.anexosbutton_css)),
         )
         anexosbutton.click()
         sleep(1.5)
@@ -152,7 +152,7 @@ class Download(CrawJUD):
 
         """
         table_doc: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_doc)),
         )
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
 

@@ -11,7 +11,7 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from ...common import ErroDeExecucao
@@ -20,7 +20,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class capa(CrawJUD):
+class Capa(CrawJUD):
     """Manages 'capa' related tasks within the application.
 
     Inherits from CrawJUD to utilize core functionalities for processing 'capa' operations.
@@ -144,7 +144,7 @@ class capa(CrawJUD):
 
         if grau == 1:
             acao: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao)),
             ).text
             area_do_direito = "Diversos"
 
@@ -159,10 +159,10 @@ class capa(CrawJUD):
                 comarca = str(comarca).replace("Fórum de ", "")
 
             vara: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
             ).text.split(" ")[0]
             foro: WebElement = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
             ).text.replace(f"{vara} ", "")
 
             table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
@@ -198,7 +198,7 @@ class capa(CrawJUD):
             with suppress(TimeoutException):
                 valor: WebElement = (
                     WebDriverWait(self.driver, 1, 0.01)
-                    .until(EC.presence_of_element_located((By.ID, self.elements.id_valor)))
+                    .until(ec.presence_of_element_located((By.ID, self.elements.id_valor)))
                     .text
                 )
 
@@ -223,7 +223,7 @@ class capa(CrawJUD):
 
             sleep(0.5)
             distnotformated: WebElement = (
-                self.wait.until(EC.presence_of_element_located((By.ID, self.elements.data_processual)))
+                self.wait.until(ec.presence_of_element_located((By.ID, self.elements.data_processual)))
                 .text.replace(" às ", "|")
                 .replace(" - ", "|")
             )
@@ -262,11 +262,11 @@ class capa(CrawJUD):
             data = {"NUMERO_PROCESSO": ""}
 
             sumary_1_esaj = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1)),
+                ec.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1)),
             )
 
             sumary_2_esaj = self.wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2)),
+                ec.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2)),
             )
 
             list_sumary = [sumary_1_esaj, sumary_2_esaj]

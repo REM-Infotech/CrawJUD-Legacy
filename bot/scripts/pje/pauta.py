@@ -12,7 +12,7 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
@@ -127,8 +127,8 @@ class pauta(CrawJUD):
             times = 4
             itens_pautas = None
             table_pautas: WebElement = self.wait.until(
-                EC.all_of(EC.presence_of_element_located((By.CSS_SELECTOR, 'pje-data-table[id="tabelaResultado"]'))),
-                (EC.visibility_of_element_located((By.CSS_SELECTOR, 'table[name="Tabela de itens de pauta"]'))),
+                ec.all_of(ec.presence_of_element_located((By.CSS_SELECTOR, 'pje-data-table[id="tabelaResultado"]'))),
+                (ec.visibility_of_element_located((By.CSS_SELECTOR, 'table[name="Tabela de itens de pauta"]'))),
             )[-1]
 
             with suppress(NoSuchElementException, TimeoutException):

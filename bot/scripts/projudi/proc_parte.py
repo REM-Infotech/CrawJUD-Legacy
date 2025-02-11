@@ -18,7 +18,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class proc_parte(CrawJUD):
+class ProcParte(CrawJUD):
     """proc_parte class.
 
     Handles the processing of participants in Projudi within the CrawJUD framework.

@@ -17,7 +17,7 @@ from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from ...common import ErroDeExecucao
@@ -26,7 +26,7 @@ from ...core import CrawJUD
 # from ...shared import PropertiesCrawJUD
 
 
-class movimentacao(CrawJUD):
+class Movimentacao(CrawJUD):
     """Handles movement-related operations within the Projudi system.
 
     Inherits from CrawJUD.
@@ -156,7 +156,7 @@ class movimentacao(CrawJUD):
         Selects the value '1000' from the page size dropdown.
         """
         select = Select(
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size))),
+            self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size))),
         )
         select.select_by_value("1000")
 
@@ -532,7 +532,7 @@ class movimentacao(CrawJUD):
         id_tr = expandattrib.replace("linkArquivos", "row")
         css_tr = f'tr[id="{id_tr}"]'
 
-        table_docs: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
+        table_docs: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
         style_expand = table_docs.get_attribute("style")
 
         if style_expand == "display: none;":
@@ -540,7 +540,7 @@ class movimentacao(CrawJUD):
             while table_docs.get_attribute("style") == "display: none;":
                 sleep(0.25)
 
-            table_docs: WebElement = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
+            table_docs: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
 
         text_doc_1 = ""
 

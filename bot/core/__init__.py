@@ -8,12 +8,16 @@ from __future__ import annotations
 
 import json
 import logging
-import platform
 import traceback
+from datetime import datetime
+from pathlib import Path
+
+from pytz import timezone
 
 from bot.common.exceptions import StartError
 
 from .. import (
+    Application,
     BarColumn,
     Chrome,
     DownloadColumn,
@@ -32,15 +36,6 @@ from .. import (
     WebDriverWait,
     pd,
 )
-
-if platform.system() == "Windows":
-    from .. import Application
-
-from datetime import datetime
-from pathlib import Path
-
-from pytz import timezone
-
 from ..common import ErroDeExecucao
 from ..shared import PropertiesCrawJUD, TypeHint
 

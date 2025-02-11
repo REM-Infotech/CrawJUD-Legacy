@@ -7,7 +7,6 @@
     "editor.defaultFormatter": "charliermarsh.ruff",
     "diffEditor.ignoreTrimWhitespace": true
   },
-  "flake8.importStrategy": "fromEnvironment",
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "material-icon-theme.folders.customClones": [
@@ -75,4 +74,6 @@
     },
   ],
   "liveServer.settings.port": 5501,
+  "ruff.configuration": "${workspaceFolder}/pyproject.toml",
+  "ruff.lint.enable": true,
 }

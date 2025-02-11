@@ -10,13 +10,13 @@ from datetime import datetime
 import pytz
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
+from selenium.webdriver.support import expected_conditions as ec
 
 from ...common import ErroDeExecucao
 from ...core import CrawJUD
 
 
-class busca_pags(CrawJUD):
+class BuscaPags(CrawJUD):
     """The busca_pags class manages page search operations.
 
     Attributes:
@@ -101,7 +101,7 @@ class busca_pags(CrawJUD):
     def get_page_custas_pagas(self) -> None:
         """Get the page of paid costs."""
         generatepdf: WebElement = self.wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas)),
         )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1
@@ -111,7 +111,7 @@ class busca_pags(CrawJUD):
 
     def page_custas(self) -> None:
         """Process the page of costs."""
-        divcustaspagas: list[WebElement] = self.wait.until(EC.presence_of_all_elements_located((By.TAG_NAME, "div")))
+        divcustaspagas: list[WebElement] = self.wait.until(ec.presence_of_all_elements_located((By.TAG_NAME, "div")))
         total = 0
         for divcorreta in divcustaspagas:
             nomediv = None
