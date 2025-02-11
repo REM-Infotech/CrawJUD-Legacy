@@ -54,7 +54,6 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
 from .class_thead import BotThread
-from .scripts import Caixa, Calculadoras, Elaw, Esaj, PJe, Projudi
 
 __all__ = [
     "Application",
@@ -76,12 +75,6 @@ __all__ = [
     "Service",
     "WebDriver",
     "WebDriverWait",
-    "Projudi",
-    "Esaj",
-    "Elaw",
-    "PJe",
-    "Calculadoras",
-    "Caixa",
 ]
 
 process_type = psutil.Process
@@ -119,6 +112,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Projudi
+
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
@@ -154,6 +149,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Esaj
+
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
@@ -189,6 +186,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import PJe
+
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
@@ -224,6 +223,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Elaw
+
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
@@ -259,6 +260,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Caixa
+
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
@@ -294,6 +297,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Calculadoras
+
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
