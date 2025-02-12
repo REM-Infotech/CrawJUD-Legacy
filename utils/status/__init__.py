@@ -13,6 +13,7 @@ import unicodedata
 from datetime import datetime
 from os import environ, path
 from pathlib import Path
+from typing import Literal
 
 import aiofiles
 import openpyxl
@@ -151,7 +152,7 @@ class InstanceBot:
         user: str,
         *args: tuple,
         **kwargs: dict,
-    ) -> tuple[Executions, str]:
+    ) -> dict[str, str | list[str]]:
         """Insert the bot execution data into the database.
 
         Args:
@@ -189,27 +190,6 @@ class InstanceBot:
         execut.bot = bt
         execut.license_usr = license_
 
-        db.session.add(execut)
-        db.session.commit()
-
-        return execut, bt.display_name
-
-    @classmethod
-    async def send_email(cls, execut: Executions, app: Quart, type_notify: str) -> None:
-        """Send an email to the user.
-
-        Args:
-            execut (Executions): The bot execution data.
-            app (Quart): The Quart application instance.
-            type_notify (str): The type of notification.
-
-        """
-        render_template = env.get_template
-        mail = Mail(app)
-
-        async with app.app_context():
-            mail.connect()
-
         admins: list[str] = []
         pid = execut.pid
         usr: Users = execut.user
@@ -225,20 +205,58 @@ class InstanceBot:
             err = traceback.format_exc()
             logger.exception(err)
 
+        exec_data: dict[str, str | list[str]] = {
+            "pid": pid,
+            "display_name": display_name,
+            "xlsx": xlsx,
+            "username": str(usr.nome_usuario),
+            "email": str(usr.email),
+            "admins": admins,
+        }
+
+        db.session.add(execut)
+        db.session.commit()
+        db.session.close()
+
+        return exec_data
+
+    @classmethod
+    async def send_email(cls, execut: dict[str, str | list[str]], app: Quart, type_notify: str) -> None:
+        """Send an email to the user.
+
+        Args:
+            execut (dict[str, str | list[str]]): The bot execution data.
+            app (Quart): The Quart application instance.
+            type_notify (str): The type of notification.
+
+        """
+        render_template = env.get_template
+        mail = Mail(app)
+
+        async with app.app_context():
+            mail.connect()
+
+        admins: list[str] = execut.get("admins")
+        pid = execut.get("pid")
+
+        display_name = execut.get("display_name")
+        xlsx = execut.get("xlsx")
+        destinatario = execut.get("email")
+        username = execut.get("username")
+
         async with app.app_context():
             sendermail = environ["MAIL_DEFAULT_SENDER"]
 
             robot = f"Robot Notifications <{sendermail}>"
             assunto = f"Bot {display_name} - {type_notify}"
             url_web = environ.get(" URL_WEB")
-            destinatario = usr.email
-            username = str(usr.nome_usuario)
+            destinatario = destinatario
             mensagem = render_template(f"email_{type_notify}.jinja").render(
                 display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
             )
 
             msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
-            if usr.email not in admins:
+            if destinatario not in admins:
                 msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins)
 
             mail.send(msg)
@@ -278,7 +296,7 @@ class InstanceBot:
         pid: str,
         status: str,
         file_out: str,
-    ) -> Executions | None:
+    ) -> dict[str, str | list[str]] | tuple[dict[str, str], Literal[500]]:
         """Stop the bot and handle file uploads and database interactions.
 
         Args:
@@ -290,6 +308,8 @@ class InstanceBot:
 
         """
         try:
+            admins: list[str] = []
+
             task_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
             exec_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
@@ -298,15 +318,34 @@ class InstanceBot:
                 exec_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
                 exec_info.file_output = file_out
 
+                pid = exec_info.pid
+                usr: Users = exec_info.user
+
+                display_name = str(exec_info.bot.display_name)
+                xlsx = str(exec_info.arquivo_xlsx)
+                usr = exec_info.user
+
+                for adm in usr.licenseusr.admins:
+                    admins.append(adm.email)
+
+                exec_data: dict[str, str | list[str]] = {
+                    "pid": pid,
+                    "display_name": display_name,
+                    "xlsx": xlsx,
+                    "username": str(usr.nome_usuario),
+                    "email": str(usr.email),
+                    "admins": admins,
+                }
+
                 db.session.commit()
                 db.session.close()
 
-                return exec_info
+                return exec_data
 
             elif not task_id:
                 raise Exception("Execution not found!")
 
-            return {"message": "bot stopped!"}, 200
+            return exec_info
 
         except Exception as e:
             app.logger.error("An error occurred: %s", str(e))

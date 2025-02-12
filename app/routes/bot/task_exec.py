@@ -77,7 +77,7 @@ class TaskExec(InstanceBot):
             elif exec_type == "stop":
                 pid = data_bot.get("pid")
                 db: SQLAlchemy = app.extensions["sqlalchemy"]
-                status = data_bot.get("status")
+                status = data_bot.get("status").get("status")
                 filename = await asyncio.create_task(cls.make_zip(pid))
                 execut = await asyncio.create_task(cls.send_stop_exec(app, db, pid, status, filename))
 
