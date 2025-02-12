@@ -52,7 +52,9 @@ class TaskExec(InstanceBot):
                 pid: str = data_bot.get("pid")
 
                 path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
-                data = await asyncio.create_task(cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot))
+                data, path_args = await asyncio.create_task(
+                    cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
+                )
                 execut, display_name = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
                 try:
                     await asyncio.create_task(cls.send_email(execut, app, "start"))
@@ -60,7 +62,7 @@ class TaskExec(InstanceBot):
                     app.logger.error("Error sending email: %s", str(e))
 
                 task: Task = celery_app.send_task(
-                    f"bot.{system.lower()}_launcher", args=[str(path_pid), display_name, system, typebot]
+                    f"bot.{system.lower()}_launcher", args=[str(path_args), display_name, system, typebot]
                 )
 
                 process_id = str(task.id)

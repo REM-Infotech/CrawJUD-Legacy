@@ -70,7 +70,7 @@ class InstanceBot:
 
         """
         path_pid = Path(__file__).cwd().joinpath(app.config["TEMP_PATH"]).joinpath(pid).resolve()
-        path_pid.mkdir(parents=True, exist_ok=True)
+        path_pid.mkdir(parents=True, exist_ok=True, mode=777)
 
         if files is not None:
             for f, value in files.items():
@@ -93,7 +93,7 @@ class InstanceBot:
         form: dict[str, str] = None,
         *args: tuple[str],
         **kwargs: dict[str, any],
-    ) -> dict[str, str]:
+    ) -> tuple[dict[str, str | int | datetime], str]:
         """Convert the bot arguments to a JSON file.
 
         Args:
@@ -109,7 +109,6 @@ class InstanceBot:
         """
         data: dict[str, str | int | datetime] = {}
 
-        path_args = path_pid.joinpath(f"{pid}.json")
         if form is not None:
             for key, value in form.items():
                 data.update({key: value})
@@ -136,10 +135,11 @@ class InstanceBot:
 
         data.update({"total_rows": rows})
 
-        async with aiofiles.open(Path(path_args), "w") as f:  # noqa: FURB103
+        path_args = path.join(path_pid, f"{pid}.json")
+        async with aiofiles.open(path_args, "w") as f:  # noqa: FURB103
             await f.write(json.dumps(data))
 
-        return data
+        return data, path_args
 
     @classmethod
     async def insert_into_database(

@@ -138,7 +138,7 @@ class CrawJUD(PropertiesCrawJUD):
 
                 setattr(self, key, value)
 
-            with open(self.path_args, "rb") as f:
+            with open(self.path_args, "r") as f:
                 json_f: dict[str, str | int] = json.load(f)
 
                 self.kwargs = json_f
