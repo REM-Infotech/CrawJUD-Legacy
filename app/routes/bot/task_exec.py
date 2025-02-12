@@ -55,7 +55,8 @@ class TaskExec(InstanceBot):
                 data, path_args = await asyncio.create_task(
                     cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
                 )
-                execut, display_name = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+                execut = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+                display_name = execut.get("display_name")
                 try:
                     await asyncio.create_task(cls.send_email(execut, app, "start"))
                 except Exception as e:
