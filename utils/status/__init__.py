@@ -182,9 +182,9 @@ class InstanceBot:
             file_output="Arguardando Arquivo",
         )
 
-        usr = Users.query.filter(Users.login == user).first()
+        usr = db.session.query(Users).filter(Users.login == user).first()
         bt = db.session.query(BotsCrawJUD).filter(BotsCrawJUD.id == id_).first()
-        license_ = LicensesUsers.query.filter(LicensesUsers.license_token == usr.licenseusr.license_token).first()
+        license_ = db.session.query(LicensesUsers).filter_by(license_token=usr.licenseusr.license_token).first()
 
         execut.user = usr
         execut.bot = bt
@@ -192,7 +192,6 @@ class InstanceBot:
 
         admins: list[str] = []
         pid = execut.pid
-        usr: Users = execut.user
 
         display_name = str(execut.bot.display_name)
         xlsx = str(execut.arquivo_xlsx)
