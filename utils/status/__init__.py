@@ -191,13 +191,12 @@ class InstanceBot:
         execut.license_usr = license_
 
         admins: list[str] = []
-        pid = execut.pid
 
-        display_name = str(execut.bot.display_name)
-        xlsx = str(execut.arquivo_xlsx)
+        display_name = str(bt.display_name)
+        xlsx = str(xlsx_)
 
         try:
-            for adm in usr.licenseusr.admins:
+            for adm in license_.admins:
                 admins.append(adm.email)
 
         except Exception:
