@@ -69,6 +69,8 @@ async def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app:
         dictionary is returned without modifications.
 
     """
+    from app.routes.bot.task_exec import TaskExec
+
     if data is None:
         data = {}
     try:
@@ -84,12 +86,9 @@ async def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app:
 
         # Verificar informações obrigatórias
         chk_infos = [data.get("system"), data.get("typebot")]  # noqa: F841
-        # if all(chk_infos):
-        #     stop_rb = SetStatus()
-        #     botstop = await asyncio.create_task(
-        #         stop_rb.config(status="Finalizado", pid=pid, system=data_system, typebot=data_system)
-        #     )
-        #     await asyncio.create_task(botstop.botstop(db, app))
+        if all(chk_infos):
+            async with app.app_context():
+                await TaskExec.task_exec(data_bot=data, exec_type="stop", app=app)
 
         # Chave única para o processo no Redis
         redis_key = f"process:{data_pid}:pos:{data_pos}"

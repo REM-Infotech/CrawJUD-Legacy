@@ -175,7 +175,7 @@ class PrintBot(CrawJUD):
             err = str(e)
 
         if err:
-            self.logger.erro(err)
+            self.logger.error(err)
 
     def emit_message(self, event: str, data: dict) -> None:
         """Emit a message to the socket.

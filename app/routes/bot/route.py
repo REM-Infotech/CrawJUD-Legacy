@@ -88,33 +88,33 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
     return await make_response(jsonify(message), is_started)
 
 
-@bot.route("/stop/<user>/<pid>", methods=["POST"])
-async def stop_bot(user: str, pid: str) -> Response:
-    """Stop a running bot based on user and PID.
+# @bot.route("/stop/<user>/<pid>", methods=["POST"])
+# async def stop_bot(user: str, pid: str) -> Response:
+#     """Stop a running bot based on user and PID.
 
-    Args:
-        user (str): The user requesting the stop.
-        pid (str): The PID of the bot to stop.
+#     Args:
+#         user (str): The user requesting the stop.
+#         pid (str): The PID of the bot to stop.
 
-    Returns:
-        Response: JSON response indicating the result of the stop operation.
+#     Returns:
+#         Response: JSON response indicating the result of the stop operation.
 
-    """
-    from flask import current_app as app
+#     """
+#     from flask import current_app as app
 
-    from app.models import Executions
+#     from app.models import Executions
 
-    db: SQLAlchemy = app.extensions["sqlalchemy"]
-    query = db.session.query(Executions).filter(Executions.pid == pid).first()
-    if query:
-        pid = query.pid
-        with app.app_context():
-            robot_stop = True  # noqa: F841
-            # args, code = stop_execution(app, pid, robot_stop)
+#     db: SQLAlchemy = app.extensions["sqlalchemy"]
+#     query = db.session.query(Executions).filter(Executions.pid == pid).first()
+#     if query:
+#         pid = query.pid
+#         with app.app_context():
+#             robot_stop = True  # noqa: F841
+#             # args, code = stop_execution(app, pid, robot_stop)
 
-            return make_response(jsonify(args), code)  # type: ignore # noqa: F821, PGH003
+#             return make_response(jsonify(args), code)  # type: ignore # noqa: F821, PGH003
 
-    return make_response(jsonify({"error": "PID não encontrado"}), 404)
+#     return make_response(jsonify({"error": "PID não encontrado"}), 404)
 
 
 # @bot.post("/periodic_bot/<id>/<system>/<typebot>")
