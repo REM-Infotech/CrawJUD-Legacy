@@ -94,10 +94,12 @@ def init_log(
 
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    log_path_file = Path(__file__).cwd().joinpath(log_file).joinpath("app.log").resolve()
+    log_path_file = str(log_file)
+    if log_file == "app/logs":
+        log_path_file = Path(__file__).cwd().joinpath(log_file).joinpath("app.log").resolve()
 
-    if log_path_file.parent.exists() is False:
-        log_path_file.parent.mkdir(parents=True, exist_ok=True)
+        if log_path_file.parent.exists() is False:
+            log_path_file.parent.mkdir(parents=True, exist_ok=True)
 
     # File handler
     file_handler = RotatingFileHandler(

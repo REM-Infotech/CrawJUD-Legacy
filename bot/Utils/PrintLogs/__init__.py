@@ -63,10 +63,8 @@ class PrintBot(CrawJUD):
             sleep(1)
             self.file_log(self)
 
-        log_socket_ = Thread(target=self.socket_message, args=(data,))
-        log_socket_.start()
-        # self.socket_message(data)
-        # mensagens.append(self.prompt)
+        self.socket_message(data)
+        mensagens.append(self.prompt)
 
     @classmethod
     def file_log(cls, self: Self) -> None:

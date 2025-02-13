@@ -7,7 +7,7 @@ AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 import asyncio
 import platform
 import signal
-import subprocess  # noqa: S404  # nosec: B404
+import subprocess
 import sys
 from datetime import timedelta
 from os import environ, getenv
@@ -209,8 +209,8 @@ class AppFactory:
 
         hostname = getenv(
             "SERVER_HOSTNAME",
-            subprocess.run(  # noqa: S603
-                [  # noqa: S607
+            subprocess.run(
+                [
                     "powershell",
                     "hostname",
                 ],

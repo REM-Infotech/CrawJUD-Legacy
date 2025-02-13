@@ -115,8 +115,9 @@ class PropertiesCrawJUD:
 
     def init_log_bot(self) -> None:
         """Initialize the logger for the bot."""
-        logfile = Path(self.path_args.parent.resolve()).joinpath(f"{self.pid}.log")
-        PropertiesCrawJUD.logger = init_log(self.pid, logfile, max_bytes=8196 * 1024, bkp_ct=5)
+        logfile = Path(self.path_args.parent).resolve().joinpath(f"{self.pid}.log")
+        logfile.touch(exist_ok=True)
+        PropertiesCrawJUD.logger = init_log(log_file=logfile, max_bytes=8196 * 1024, bkp_ct=5)
 
     @sio.on("connect", namespace="*")
     @staticmethod
@@ -196,7 +197,7 @@ class PropertiesCrawJUD:
             status (str): The status message to indicate the end of the print session.
 
         """
-        self.PrintBot.bot_message_stop(status)
+        self.PrintBot.end_prt(status)
 
     @property
     def PrintBot(self) -> _PrintBot_:  # noqa: N802
