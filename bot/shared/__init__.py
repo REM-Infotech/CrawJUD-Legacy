@@ -196,7 +196,7 @@ class PropertiesCrawJUD:
             status (str): The status message to indicate the end of the print session.
 
         """
-        self.PrintBot.end_prt(status)
+        self.PrintBot.bot_message_stop(status)
 
     @property
     def PrintBot(self) -> _PrintBot_:  # noqa: N802

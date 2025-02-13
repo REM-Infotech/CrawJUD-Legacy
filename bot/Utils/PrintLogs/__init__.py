@@ -58,15 +58,15 @@ class PrintBot(CrawJUD):
             "total": self.kwargs.get("total_rows", 0),
         }
 
-        # log_socket_ = Thread(target=self.socket_message, args=(data,))
-        # log_socket_.start()
-        self.socket_message(data)
-        mensagens.append(self.prompt)
-
         self.list_messages = mensagens
         if "fim da execução" in self.message.lower():
             sleep(1)
             self.file_log(self)
+
+        log_socket_ = Thread(target=self.socket_message, args=(data,))
+        log_socket_.start()
+        # self.socket_message(data)
+        # mensagens.append(self.prompt)
 
     @classmethod
     def file_log(cls, self: Self) -> None:
@@ -175,7 +175,7 @@ class PrintBot(CrawJUD):
             err = str(e)
 
         if err:
-            self.logger.exception(err)
+            self.logger.erro(err)
 
     def emit_message(self, event: str, data: dict) -> None:
         """Emit a message to the socket.
