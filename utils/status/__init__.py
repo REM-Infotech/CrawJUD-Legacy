@@ -115,7 +115,7 @@ class InstanceBot:
                 data.update({key: value})
 
         data.update({"id": id_, "system": system, "typebot": typebot})
-
+        rows = 0
         if data.get("xlsx"):
             input_file = path.join(path_pid, data["xlsx"])
             if path.exists(input_file):

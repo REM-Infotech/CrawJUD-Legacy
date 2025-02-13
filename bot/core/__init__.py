@@ -182,7 +182,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.name_colunas = self.MakeXlsx.make_output("sucesso", self.path)
             self.MakeXlsx.make_output("erro", self.path_erro)
 
-            if not self.xlsx:
+            if not self.xlsx and self.data_inicio is not None:
                 self.data_inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d")
                 self.data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d")
 

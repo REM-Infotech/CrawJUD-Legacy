@@ -47,8 +47,9 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
 
             request_data = await request.data
             request_form = await request.form
+            request_json = await request.json
 
-            data_bot = request_data or request_form
+            data_bot = (request_json if isinstance(request_data, bytes) else request_data) or request_form
 
             # Check if data_bot is enconded
             if isinstance(data_bot, bytes):
@@ -57,6 +58,9 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             if isinstance(data_bot, str):
                 if "\\" in data_bot:
                     data_bot = data_bot.replace("\\", "")
+
+                if "'" in data_bot:
+                    data_bot = data_bot.replace("'", "")
 
                 data_bot = json.loads(data_bot)
                 if not isinstance(data_bot, dict):

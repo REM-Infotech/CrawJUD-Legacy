@@ -12,11 +12,12 @@ from typing import Callable, Union
 
 from ...common.exceptions import StartError
 from .capa import Capa
+from .intimacoes import Intimacoes
 from .movimentacao import Movimentacao
 from .proc_parte import ProcParte as Proc_parte
 from .protocolo import Protocolo
 
-ClassBots = Union[Proc_parte, Capa, Movimentacao, Protocolo]
+ClassBots = Union[Capa, Intimacoes, Movimentacao, Proc_parte, Protocolo]
 logger = logging.getLogger(__name__)
 
 

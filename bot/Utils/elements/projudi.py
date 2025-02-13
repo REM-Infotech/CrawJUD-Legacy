@@ -18,7 +18,20 @@ class PROJUDI_AM(Configuracao):  # noqa: N801
     url_busca = "".join(
         ("https://projudi.tjam.jus.br/projudi/processo/", "buscaProcessosQualquerInstancia.do?actionType=pesquisar"),
     )
+
+    url_mesa_adv = "".join((
+        "https://projudi.tjam.jus.br/projudi/usuario/",
+        "mesaAdvogado.do?actionType=listaInicio&pageNumber=1",
+    ))
+
     btn_busca = ""
+    btn_aba_intimacoes = 'li[id="tabItemprefix1"]'
+    select_page_size_intimacoes = 'select[name="pagerConfigPageSize"]'
+
+    tab_intimacoes_script = "".join((
+        "setTab('/projudi/usuario/mesaAdvogado.do?actionType=",
+        "listaInicio&pageNumber=1', 'tabIntimacoes', 'prefix', 1, true)",
+    ))
 
     btn_partes = "#tabItemprefix2"
     btn_infogeral = "#tabItemprefix0"

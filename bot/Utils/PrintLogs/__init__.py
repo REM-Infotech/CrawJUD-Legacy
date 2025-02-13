@@ -55,7 +55,7 @@ class PrintBot(CrawJUD):
             "type": self.type_log,
             "pos": self.row,
             "graphicMode": self.graphicMode,
-            "total": self.kwargs.get("total_rows", 0),
+            "total": self.total_rows,
         }
 
         self.list_messages = mensagens

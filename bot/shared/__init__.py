@@ -99,7 +99,7 @@ class PropertiesCrawJUD:
     path_args_: Path = None
     user_data_dir: Path = None
     path_accepted_: Path = None
-
+    total_rows_: int = None
     driver_: WebDriver = None
     webdriverwait_: WebDriverWait = None
 
@@ -780,6 +780,15 @@ class PropertiesCrawJUD:
     @name_colunas.setter
     def name_colunas(self, new_var: list[str]) -> None:
         PropertiesCrawJUD.name_colunas_ = new_var
+
+    @property
+    def total_rows(self) -> int:
+        """Return the total number of rows."""
+        return PropertiesCrawJUD.total_rows_
+
+    @total_rows.setter
+    def total_rows(self, total: int) -> None:
+        PropertiesCrawJUD.total_rows_ = total
 
 
 # from pydantic import BaseModel, ValidationError
