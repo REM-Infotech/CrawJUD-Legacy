@@ -116,7 +116,7 @@ class PropertiesCrawJUD:
     def init_log_bot(self) -> None:
         """Initialize the logger for the bot."""
         logfile = Path(self.output_dir_path).joinpath(f"{self.pid}.log")
-        PropertiesCrawJUD.logger = init_log(self.pid, logfile, max_bytes=4096 * 1024)
+        PropertiesCrawJUD.logger = init_log(self.pid, logfile, max_bytes=4096 * 1024, bkp_ct=5)
 
     @sio.on("connect", namespace="*")
     @staticmethod
