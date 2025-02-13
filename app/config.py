@@ -124,10 +124,59 @@ class Config:
 class ProductionConfig(Config):
     """Configuration settings for production environment."""
 
-    try:
-        env = environ
+    env = environ
 
-        # Flask-mail config
+    # Flask-mail config
+    MAIL_SERVER = env["MAIL_SERVER"]
+    MAIL_PORT = int(env["MAIL_PORT"])
+    MAIL_USE_TLS = env["MAIL_USE_TLS"] in ["True", "true", "TRUE"]
+    MAIL_USE_SSL = env["MAIL_USE_SSL"] in ["True", "true", "TRUE"]
+    MAIL_USERNAME = env["MAIL_USERNAME"]
+    MAIL_PASSWORD = env["MAIL_PASSWORD"]
+    MAIL_DEFAULT_SENDER = env["MAIL_DEFAULT_SENDER"]
+
+    # SQLALCHEMY CONFIG
+    SQLALCHEMY_DATABASE_URI = "".join(
+        [
+            str(env["DATABASE_CONNECTOR"]),
+            "://",
+            str(env["DATABASE_USER"]),
+            ":",
+            str(env["DATABASE_PASSWORD"]),
+            "@",
+            str(env["DATABASE_HOST"]),
+            ":",
+            str(env["DATABASE_PORT"]),
+            "/",
+            str(env["DATABASE_SCHEMA"]),
+        ],
+    )
+
+    REDIS_HOST = env["REDIS_HOST"]
+    REDIS_PORT = env["REDIS_PORT"]
+    REDIS_DB = int(env["REDIS_DB"])
+    REDIS_PASSWORD = env["REDIS_PASSWORD"]
+
+    WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
+
+    CELERY: dict[str, str | bool] = {
+        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
+        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
+        "task_ignore_result": True,
+        "broker_connection_retry_on_startup": True,
+        "timezone": "America/Sao_Paulo",
+        "task_create_missing_queues": True,
+    }
+
+
+class DevelopmentConfig(Config):
+    """Configuration settings for development environment."""
+
+    env = environ
+
+    # Flask-mail config
+
+    if env.get("MAIL_SERVER"):
         MAIL_SERVER = env["MAIL_SERVER"]
         MAIL_PORT = int(env["MAIL_PORT"])
         MAIL_USE_TLS = env["MAIL_USE_TLS"] in ["True", "true", "TRUE"]
@@ -136,7 +185,9 @@ class ProductionConfig(Config):
         MAIL_PASSWORD = env["MAIL_PASSWORD"]
         MAIL_DEFAULT_SENDER = env["MAIL_DEFAULT_SENDER"]
 
-        # SQLALCHEMY CONFIG
+    # SQLALCHEMY CONFIG
+
+    if env.get("DATABASE_HOST"):
         SQLALCHEMY_DATABASE_URI = "".join(
             [
                 str(env["DATABASE_CONNECTOR"]),
@@ -153,134 +204,71 @@ class ProductionConfig(Config):
             ],
         )
 
-        REDIS_HOST = env["REDIS_HOST"]
-        REDIS_PORT = env["REDIS_PORT"]
-        REDIS_DB = int(env["REDIS_DB"])
-        REDIS_PASSWORD = env["REDIS_PASSWORD"]
+    REDIS_HOST = env["REDIS_HOST"]
+    REDIS_PORT = env["REDIS_PORT"]
+    REDIS_DB = int(env["REDIS_DB"])
+    REDIS_PASSWORD = env["REDIS_PASSWORD"]
 
-        WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
+    WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
-        CELERY: dict[str, str | bool] = {
-            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
-            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
-            "task_ignore_result": True,
-            "broker_connection_retry_on_startup": True,
-            "timezone": "America/Sao_Paulo",
-            "task_create_missing_queues": True,
-        }
-
-    except Exception as e:
-        raise e
-
-
-class DevelopmentConfig(Config):
-    """Configuration settings for development environment."""
-
-    try:
-        env = environ
-
-        # Flask-mail config
-
-        if env.get("MAIL_SERVER"):
-            MAIL_SERVER = env["MAIL_SERVER"]
-            MAIL_PORT = int(env["MAIL_PORT"])
-            MAIL_USE_TLS = env["MAIL_USE_TLS"] in ["True", "true", "TRUE"]
-            MAIL_USE_SSL = env["MAIL_USE_SSL"] in ["True", "true", "TRUE"]
-            MAIL_USERNAME = env["MAIL_USERNAME"]
-            MAIL_PASSWORD = env["MAIL_PASSWORD"]
-            MAIL_DEFAULT_SENDER = env["MAIL_DEFAULT_SENDER"]
-
-        # SQLALCHEMY CONFIG
-
-        if env.get("DATABASE_HOST"):
-            SQLALCHEMY_DATABASE_URI = "".join(
-                [
-                    str(env["DATABASE_CONNECTOR"]),
-                    "://",
-                    str(env["DATABASE_USER"]),
-                    ":",
-                    str(env["DATABASE_PASSWORD"]),
-                    "@",
-                    str(env["DATABASE_HOST"]),
-                    ":",
-                    str(env["DATABASE_PORT"]),
-                    "/",
-                    str(env["DATABASE_SCHEMA"]),
-                ],
-            )
-
-        REDIS_HOST = env["REDIS_HOST"]
-        REDIS_PORT = env["REDIS_PORT"]
-        REDIS_DB = int(env["REDIS_DB"])
-        REDIS_PASSWORD = env["REDIS_PASSWORD"]
-
-        WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
-
-        CELERY: dict[str, str | bool] = {
-            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
-            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
-            "task_ignore_result": True,
-            "broker_connection_retry_on_startup": True,
-            "timezone": "America/Sao_Paulo",
-            "task_create_missing_queues": True,
-        }
-
-    except Exception as e:
-        raise e
+    CELERY: dict[str, str | bool] = {
+        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
+        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
+        "task_ignore_result": True,
+        "broker_connection_retry_on_startup": True,
+        "timezone": "America/Sao_Paulo",
+        "task_create_missing_queues": True,
+    }
 
 
 class TestingConfig(Config):
     """Configuration settings for testing environment."""
 
-    try:
-        TESTTING = True
-        env = environ
+    TESTTING = True
+    env = environ
 
-        # Flask-mail config
+    # Flask-mail config
 
-        if env.get("MAIL_SERVER"):
-            MAIL_SERVER = env["MAIL_SERVER"]
-            MAIL_PORT = int(env["MAIL_PORT"])
-            MAIL_USE_TLS = env["MAIL_USE_TLS"] in ["True", "true", "TRUE"]
-            MAIL_USE_SSL = env["MAIL_USE_SSL"] in ["True", "true", "TRUE"]
-            MAIL_USERNAME = env["MAIL_USERNAME"]
-            MAIL_PASSWORD = env["MAIL_PASSWORD"]
-            MAIL_DEFAULT_SENDER = env["MAIL_DEFAULT_SENDER"]
+    if env.get("MAIL_SERVER"):
+        MAIL_SERVER = env["MAIL_SERVER"]
+        MAIL_PORT = int(env["MAIL_PORT"])
+        MAIL_USE_TLS = env["MAIL_USE_TLS"] in ["True", "true", "TRUE"]
+        MAIL_USE_SSL = env["MAIL_USE_SSL"] in ["True", "true", "TRUE"]
+        MAIL_USERNAME = env["MAIL_USERNAME"]
+        MAIL_PASSWORD = env["MAIL_PASSWORD"]
+        MAIL_DEFAULT_SENDER = env["MAIL_DEFAULT_SENDER"]
 
-        # SQLALCHEMY CONFIG
+    # SQLALCHEMY CONFIG
 
-        if env.get("DATABASE_HOST"):
-            SQLALCHEMY_DATABASE_URI = "".join(
-                [
-                    str(env["DATABASE_CONNECTOR"]),
-                    "://",
-                    str(env["DATABASE_USER"]),
-                    ":",
-                    str(env["DATABASE_PASSWORD"]),
-                    "@",
-                    str(env["DATABASE_HOST"]),
-                    ":",
-                    str(env["DATABASE_PORT"]),
-                    "/",
-                    str(env["DATABASE_SCHEMA"]),
-                ],
-            )
+    if env.get("DATABASE_HOST"):
+        SQLALCHEMY_DATABASE_URI = "".join(
+            [
+                str(env["DATABASE_CONNECTOR"]),
+                "://",
+                str(env["DATABASE_USER"]),
+                ":",
+                str(env["DATABASE_PASSWORD"]),
+                "@",
+                str(env["DATABASE_HOST"]),
+                ":",
+                str(env["DATABASE_PORT"]),
+                "/",
+                str(env["DATABASE_SCHEMA"]),
+            ],
+        )
 
-        REDIS_HOST = env["REDIS_HOST"]
-        REDIS_PORT = env["REDIS_PORT"]
-        REDIS_DB = int(env["REDIS_DB"])
-        REDIS_PASSWORD = env["REDIS_PASSWORD"]
+    REDIS_HOST = env["REDIS_HOST"]
+    REDIS_PORT = env["REDIS_PORT"]
+    REDIS_DB = int(env["REDIS_DB"])
+    REDIS_PASSWORD = env["REDIS_PASSWORD"]
 
-        WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
+    WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
-        CELERY: dict[str, str | bool] = {
-            "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
-            "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
-            "task_ignore_result": True,
-            "broker_connection_retry_on_startup": True,
-            "timezone": "America/Sao_Paulo",
-            "task_create_missing_queues": True,
-        }
-
-    except Exception as e:
-        raise e
+    CELERY: dict[str, str | bool] = {
+        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
+        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
+        "task_ignore_result": True,
+        "broker_connection_retry_on_startup": True,
+        "timezone": "America/Sao_Paulo",
+        "task_create_missing_queues": True,
+    }

@@ -15,6 +15,7 @@ Modules:
     core, shared, Utils, common, scripts: Other modules.
 """
 
+# pragma: no cover
 from __future__ import annotations
 
 import logging

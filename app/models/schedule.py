@@ -16,7 +16,7 @@ class ScheduleModel(db.Model):
     kwargs: str = db.Column(db.Text, nullable=True, default="{}")  # JSON para kwargs
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Return a string representation of the scheduled job.
 
         Returns:

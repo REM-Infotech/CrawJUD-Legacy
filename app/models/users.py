@@ -39,12 +39,12 @@ class Users(db.Model):
     licenseusr = db.relationship("LicensesUsers", backref="user")
 
     @property
-    def senhacrip(self) -> None:
+    def senhacrip(self) -> None:  # pragma: no cover
         """Get the hashed password."""
         return self.senhacrip
 
     @senhacrip.setter
-    def senhacrip(self, senha_texto: str) -> None:
+    def senhacrip(self, senha_texto: str) -> None:  # pragma: no cover
         """Set the hashed password from plaintext.
 
         Args:
@@ -53,7 +53,7 @@ class Users(db.Model):
         """
         self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
-    def check_password(self, senha_texto_claro: str) -> bool:
+    def check_password(self, senha_texto_claro: str) -> bool:  # pragma: no cover
         """Verify the plaintext password against the hashed password.
 
         Args:
