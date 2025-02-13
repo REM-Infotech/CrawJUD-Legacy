@@ -196,8 +196,9 @@ class InstanceBot:
         xlsx = str(xlsx_)
 
         try:
-            for adm in license_.admins:
-                admins.append(adm.email)
+            with db.session.no_autoflush:
+                for adm in license_.admins:
+                    admins.append(adm.email)
 
         except Exception:
             err = traceback.format_exc()

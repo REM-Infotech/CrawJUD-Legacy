@@ -64,6 +64,7 @@ celerybeat-schedule-shm
 celerybeat-schedule-wal
 # Translations
 *.mo
+url_driver.txt
 *.pot
 *.log.*
 # Django stuff:
