@@ -207,14 +207,17 @@ class AppFactory:
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
 
-        hostname = subprocess.run(  # nosec: B603, B607 # noqa: S603
-            [  # noqa: S607
-                "powershell",
-                "hostname",
-            ],
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
+        hostname = getenv(
+            "SERVER_HOSTNAME",
+            subprocess.run(  # noqa: S603
+                [  # noqa: S607
+                    "powershell",
+                    "hostname",
+                ],
+                capture_output=True,
+                text=True,
+            ).stdout.strip(),
+        )
 
         uvicorn.run(
             app,
