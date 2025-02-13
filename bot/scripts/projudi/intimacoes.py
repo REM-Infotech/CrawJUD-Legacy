@@ -67,6 +67,10 @@ class Intimacoes(CrawJUD):
         pages_count = self.calculate_pages(self.aba_initmacoes())
         self.total_rows = pages_count
         for i in range(pages_count):
+            self.bot_data = {}
+
+            self.bot_data.update({"PID": self.pid, "ROW": i})
+
             self.row = i + 1
             if self.isStoped:
                 break
@@ -140,9 +144,13 @@ class Intimacoes(CrawJUD):
         """
         info_count = aba_intimacoes.find_element(By.CSS_SELECTOR, 'div[class="navLeft"]').text.split(" ")[0]
         info_count = int(info_count)
+        calculate = info_count // 100
 
-        if info_count % 100 == 0:
-            return info_count // 100
+        if calculate > 1.0:
+            if info_count % 100 > 0:
+                calculate += 1
+
+            return int(calculate)
 
         return 1
 
@@ -154,9 +162,15 @@ class Intimacoes(CrawJUD):
 
         """
         try:
+            self.message = "Buscando intimações..."
+            self.type_log = "log"
+            self.prt()
             name_colunas, intimacoes = self.get_intimacoes(self.aba_initmacoes())
             data = self.get_intimacao_information(name_colunas, intimacoes)
-            self.append_success(data, "Informações do processo extraidas com sucesso!")
+            self.append_success(data, "Intimações extraídas com sucesso!")
+
+            if self.total_rows > 1:
+                self.driver.find_element(By.CSS_SELECTOR, 'a[class="arrowNextOn"]').click()
 
         except Exception as e:
             self.logger.error(str(e))
@@ -164,7 +178,34 @@ class Intimacoes(CrawJUD):
 
     def get_intimacao_information(self, name_colunas: list[WebElement], intimacoes: list[WebElement]) -> dict:
         """"""  # noqa: D419
-        pass  # noqa: PIE790
+
+        list_data = []
+        for item in intimacoes:
+            data: dict[str, str] = {}
+            itens: tuple[str] = tuple(item.find_elements(By.TAG_NAME, "td")[0].text.split("\n"))
+            itens2: tuple[str] = tuple(item.find_elements(By.TAG_NAME, "td")[1].text.split("\n"))
+            itens3: tuple[str] = tuple(item.find_elements(By.TAG_NAME, "td")[2].text.split("\n"))
+
+            self.message = "Intimação do processo %s encontrada!" % itens[0]
+            self.type_log = "log"
+            self.prt()
+
+            with suppress(IndexError):
+                data["NUMERO_PROCESSO"] = itens[0]
+                data["PARTE_INTIMADA"] = itens[1]
+                data["VARA"] = itens[2]
+
+            with suppress(IndexError):
+                data["EVENTO"] = itens2[0]
+                data["PRAZO"] = itens2[1]
+
+            with suppress(IndexError):
+                data["DATA_ENVIO"] = itens3[0].strip()
+                data["ULTIMO_DIA"] = itens3[1].strip()
+
+            list_data.append(data)
+
+        return list_data
 
     def get_intimacoes(self, aba_intimacoes: WebElement) -> tuple[list[WebElement], list[WebElement]]:
         """Get the intimações table and its elements.
