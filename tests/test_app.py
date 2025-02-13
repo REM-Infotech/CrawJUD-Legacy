@@ -1,3 +1,6 @@
+
+"""Tests for the CrawJUD-Bots app initialization module."""
+
 import asyncio
 import pytest
 from unittest import mock
@@ -5,9 +8,6 @@ from quart import Quart
 from celery import Celery
 from socketio import ASGIApp, AsyncServer
 from app import AppFactory
-
-"""Tests for the CrawJUD-Bots app initialization module."""
-
 
 @pytest.mark.asyncio
 async def test_main() -> None:
