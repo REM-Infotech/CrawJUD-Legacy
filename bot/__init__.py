@@ -25,7 +25,6 @@ from pathlib import Path
 from time import sleep
 
 import pandas as pd
-import psutil
 from celery import shared_task
 from celery.result import AsyncResult
 from openai import OpenAI
@@ -77,7 +76,6 @@ __all__ = [
     "WebDriverWait",
 ]
 
-process_type = psutil.Process
 logger = logging.getLogger(__name__)
 # import signal
 # from pathlib import Path
@@ -344,12 +342,6 @@ class WorkerBot:
                 with path_flag.open("w") as f:
                     f.write("Encerrar processo")
 
-            return f"Process {task_id} stopped!"
-
-        except psutil.TimeoutExpired:
-            return "O processo não foi encerrado dentro do tempo limite"
-
-        except psutil.NoSuchProcess:
             return f"Process {task_id} stopped!"
 
         except Exception as e:
