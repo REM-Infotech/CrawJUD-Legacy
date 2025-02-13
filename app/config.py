@@ -67,6 +67,9 @@ class Config:
     REDIS_DB: type[str] = ""
     REDIS_PASSWORD: type[str] = ""
 
+    BROKER_DATABASE: type[int] = 1
+    RESULT_BACKEND_DATABASE: type[int] = 2
+
     CSP: dict[str, str | list[str] | list[list[str]]] = {
         "default-src": ["'self'"],
         "script-src": [
@@ -156,12 +159,13 @@ class ProductionConfig(Config):
     REDIS_PORT = env["REDIS_PORT"]
     REDIS_DB = int(env["REDIS_DB"])
     REDIS_PASSWORD = env["REDIS_PASSWORD"]
-
+    BROKER_DATABASE = int(env["BROKER_DATABASE"])
+    RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
     WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
     CELERY: dict[str, str | bool] = {
-        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
-        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
+        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{BROKER_DATABASE}",
+        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{RESULT_BACKEND_DATABASE}",
         "task_ignore_result": True,
         "broker_connection_retry_on_startup": True,
         "timezone": "America/Sao_Paulo",
@@ -208,12 +212,13 @@ class DevelopmentConfig(Config):
     REDIS_PORT = env["REDIS_PORT"]
     REDIS_DB = int(env["REDIS_DB"])
     REDIS_PASSWORD = env["REDIS_PASSWORD"]
-
+    BROKER_DATABASE = int(env["BROKER_DATABASE"])
+    RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
     WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
     CELERY: dict[str, str | bool] = {
-        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
-        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
+        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{BROKER_DATABASE}",
+        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{RESULT_BACKEND_DATABASE}",
         "task_ignore_result": True,
         "broker_connection_retry_on_startup": True,
         "timezone": "America/Sao_Paulo",
@@ -261,12 +266,13 @@ class TestingConfig(Config):
     REDIS_PORT = env["REDIS_PORT"]
     REDIS_DB = int(env["REDIS_DB"])
     REDIS_PASSWORD = env["REDIS_PASSWORD"]
-
+    BROKER_DATABASE = int(env["BROKER_DATABASE"])
+    RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
     WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
     CELERY: dict[str, str | bool] = {
-        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/7",
-        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/6",
+        "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{BROKER_DATABASE}",
+        "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{RESULT_BACKEND_DATABASE}",
         "task_ignore_result": True,
         "broker_connection_retry_on_startup": True,
         "timezone": "America/Sao_Paulo",
