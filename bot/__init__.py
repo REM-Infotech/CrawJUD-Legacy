@@ -132,7 +132,7 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return "Finalizado!"
+        return "Finalizado"
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -169,7 +169,7 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return "Finalizado!"
+        return "Finalizado"
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -206,7 +206,7 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return "Finalizado!"
+        return "Finalizado"
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -243,7 +243,7 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return "Finalizado!"
+        return "Finalizado"
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -280,7 +280,7 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return "Finalizado!"
+        return "Finalizado"
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -317,7 +317,7 @@ class WorkerBot:
         except Exception as e:
             raise e
 
-        return "Finalizado!"
+        return "Finalizado"
 
     @classmethod
     async def stop(cls, task_id: int, pid: str, app: Quart = None) -> str:

@@ -109,10 +109,14 @@ class PropertiesCrawJUD:
 
     kwargs_: dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: dict[str, TypeValues | SubDict] = {}
-
+    logger = None
     # sio = SimpleClient
     sio = Client(reconnection_attempts=5)
-    logger = init_log()
+
+    def init_log_bot(self) -> None:
+        """Initialize the logger for the bot."""
+        logfile = Path(self.output_dir_path).joinpath(f"{self.pid}.log")
+        PropertiesCrawJUD.logger = init_log(self.pid, logfile, max_bytes=4096 * 1024)
 
     @sio.on("connect", namespace="*")
     @staticmethod

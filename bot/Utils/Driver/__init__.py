@@ -457,7 +457,7 @@ class SetupDriver:
 
             url_driver += f"{item}/"
 
-        with open("is_init.txt", "w") as f:  # FURB103
+        with open("url_driver.txt", "w") as f:  # FURB103
             f.write(url_driver)
 
         return url_driver

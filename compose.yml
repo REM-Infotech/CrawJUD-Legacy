@@ -13,7 +13,7 @@ services:
       - "8000:8000"
 
     hostname: "crawjudbot_app"
-    command: "poetry run python -m app.asgi"
+    command: "poetry run python -m asgi"
 
   celery_worker:
     shm_size: "2gb"
@@ -28,7 +28,7 @@ services:
       - "3336:3389"
 
     hostname: "crawjudbot_app"
-    command: "poetry run python -m celery -A app.run.app worker -E --loglevel INFO -P threads -c 50"
+    command: "poetry run python -m celery -A run.app worker -E --loglevel INFO -P threads -c 50"
 
   celery_beat:
     shm_size: "2gb"
@@ -40,4 +40,4 @@ services:
     volumes:
       - ".:C:\\crawjudbot_app"
     hostname: "crawjudbot_app"
-    command: "python -m  celery -A app.run.app beat"
+    command: "python -m  celery -A run.app beat"

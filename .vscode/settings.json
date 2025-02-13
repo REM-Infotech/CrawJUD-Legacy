@@ -74,6 +74,12 @@
     },
   ],
   "liveServer.settings.port": 5501,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/.copilot-commit-message-instructions.md"
+    }
+  ],
   "ruff.configuration": "${workspaceFolder}/pyproject.toml",
   "ruff.lint.enable": true,
 }

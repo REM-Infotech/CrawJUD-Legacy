@@ -14,7 +14,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "app.run.app",
+        "run.app",
         "worker",
         "-E",
         "--loglevel",
@@ -35,7 +35,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "app.run.app",
+        "run.app",
         "worker",
         "-E",
         "--loglevel",
@@ -56,7 +56,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "app.run.app",
+        "run.app",
         "beat",
         "--loglevel",
         "INFO",
