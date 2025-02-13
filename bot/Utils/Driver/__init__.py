@@ -196,10 +196,6 @@ class DriverBot(CrawJUD):
 
             self.chr_dir = Path(pid_path).joinpath("chrome").resolve()
 
-            # user = environ.get("USER", environ.get("LOGNAME", environ.get("USERNAME", "root")))
-            # if user != "root" or platform.system() != "Linux":
-            #     list_args.remove("--no-sandbox")
-
             if platform.system() == "Windows" and self.login_method == "cert":
                 state = str(self.state)
                 self.path_accepted = Path(
@@ -264,7 +260,6 @@ class DriverBot(CrawJUD):
             # cliente = ClientConfig(f"http://localhost:{serve.port}")
             # remote = RemoteConnection(client_config=cliente)
             # driver = WebDriver(options=chrome_options, command_executor=remote)
-            driver.maximize_window()
 
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()
