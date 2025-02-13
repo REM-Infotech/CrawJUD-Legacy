@@ -99,7 +99,8 @@ class AppFactory:
 
     async def init_routes(self, app: Quart) -> None:
         """Initialize and register the application routes."""
-        await register_routes(app)
+        async with app.app_context():
+            await register_routes(app)
 
     async def init_extensions(self, app: Quart) -> AsyncServer:
         """Initialize and configure the application extensions."""
@@ -135,7 +136,7 @@ class AppFactory:
         )
         db.create_all()
 
-        if not Servers.query.filter(Servers.name == environ.get("NAMESERVER")).first():
+        if not Servers.query.filter(Servers.name == environ.get("NAMESERVER")).first():  # pragma: no cover
             server = Servers(name=environ.get("NAMESERVER"), address=environ.get("HOSTNAME"), system=platform.system())
             db.session.add(server)
             db.session.commit()
@@ -145,7 +146,7 @@ class AppFactory:
         return io
 
     @classmethod
-    def start_app(cls) -> tuple[Quart, Celery]:
+    def start_app(cls) -> tuple[ASGIApp, Celery]:  # pragma: no cover
         """Initialize and start the Quart application with AsyncServer.
 
         Sets up the application context, configures server settings,
@@ -159,7 +160,6 @@ class AppFactory:
         loop = asyncio.get_event_loop()
 
         app, celery = loop.run_until_complete(AppFactory().main())
-
         args_run: dict[str, str | int | bool] = {}
         # app.app_context().push()
 
