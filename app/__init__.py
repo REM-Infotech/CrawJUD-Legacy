@@ -7,6 +7,7 @@ AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 import asyncio
 import platform
 import signal
+import subprocess  # noqa: S404  # nosec: B404
 import sys
 from datetime import timedelta
 from os import environ, getenv
@@ -206,9 +207,18 @@ class AppFactory:
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
 
+        hostname = subprocess.run(  # nosec: B603, B607 # noqa: S603
+            [  # noqa: S607
+                "powershell",
+                "hostname",
+            ],
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
         uvicorn.run(
             app,
-            host="0.0.0.0",  # noqa: S104 # nosec
+            host=hostname,
             port=port,
         )
 
