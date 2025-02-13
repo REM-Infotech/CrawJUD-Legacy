@@ -4,7 +4,7 @@ services:
     shm_size: "2gb"
     environment:
       IN_PRODUCTION: "True"
-      DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
+      DOTENV_KEY: "${DOTENV_KEY_BACK:-default_value}"
     build:
       context: "."
     volumes:
@@ -18,7 +18,7 @@ services:
   celery_worker:
     shm_size: "2gb"
     environment:
-      DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
+      DOTENV_KEY: "${DOTENV_KEY_BACK:-default_value}"
       IN_PRODUCTION: "True"
     build:
       context: "."
@@ -33,7 +33,7 @@ services:
   celery_beat:
     shm_size: "2gb"
     environment:
-      DOTENV_KEY: "${DOTENV_KEY_PROD:-default_value}"
+      DOTENV_KEY: "${DOTENV_KEY_BACK:-default_value}"
       IN_PRODUCTION: "${IN_PRODUCTION:-default_value}"
     build:
       context: "."
