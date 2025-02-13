@@ -154,6 +154,7 @@ class CrawJUD(PropertiesCrawJUD):
             raise StartError(e) from e
 
         try:
+            self.init_log_bot()
             self.message = "Inicializando robô"
             self.type_log = "log"
             self.prt()
