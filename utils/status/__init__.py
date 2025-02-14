@@ -156,7 +156,11 @@ class InstanceBot:
 
         """
         user = data.get("user")
+
         system = kwargs.pop("system")
+        path_args = kwargs.pop("path_args")
+        display_name = kwargs.pop("display_name")
+        typebot = kwargs.pop("typebot")
 
         license_ = (
             db.session.query(LicensesUsers)
@@ -173,10 +177,11 @@ class InstanceBot:
 
         task_name = data.get("task_name")
         task_schedule = "%s_launcher" % system.lower()
-        args = json.dumps(data.get("args"))
-        kwargs = json.dumps(data.get("kwargs"))
 
-        new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args, kwargs=kwargs)
+        args_ = json.dumps([path_args, display_name, system, typebot])
+        kwargs_ = json.dumps({"schedule", "True"})
+
+        new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args_, kwargs=kwargs_)
         new_schedule.schedule = cron
         new_schedule.license_usr = license_
         db.session.add(new_schedule)
@@ -192,7 +197,7 @@ class InstanceBot:
         user: str,
         *args: tuple,
         **kwargs: dict,
-    ) -> dict[str, str | list[str]]:
+    ) -> tuple[dict[str, str | list[str]], str]:
         """Insert the bot execution data into the database.
 
         Args:
@@ -259,7 +264,7 @@ class InstanceBot:
         db.session.commit()
         db.session.close()
 
-        return exec_data
+        return exec_data, display_name
 
     @classmethod
     async def send_email(

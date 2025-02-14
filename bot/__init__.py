@@ -98,7 +98,14 @@ class WorkerBot:
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def projudi_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def projudi_launcher(
+        path_args: str,
+        display_name: str,
+        system: str,
+        typebot: str,
+        *args: tuple,
+        **kwargs: dict,
+    ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
@@ -106,6 +113,8 @@ class WorkerBot:
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
 
         Returns:
             str: Status message indicating bot completion.
@@ -116,7 +125,7 @@ class WorkerBot:
         try:
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Projudi, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=Projudi, args=(path_args, display_name, system, typebot, logger), kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)

@@ -115,8 +115,7 @@ async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
 
             request_data = await request.data
             request_form = await request.form
-            request_json = await request.json
-
+            request_json = bytes(await request.json, "utf-8").decode("unicode_escape")
             data_bot = (request_json if isinstance(request_data, bytes) else request_data) or request_form
 
             data_bot: dict[str, str, int, list[str]]

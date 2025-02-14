@@ -55,7 +55,7 @@ class TaskExec(InstanceBot):
                 data, path_args = await asyncio.create_task(
                     cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
                 )
-                execut = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+                execut, _ = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
                 display_name = execut.get("display_name")
                 try:
                     await asyncio.create_task(cls.send_email(execut, app, "start"))
@@ -131,9 +131,20 @@ class TaskExec(InstanceBot):
                 pid: str = data_bot.get("pid")
                 data_bot.update({"schedule": "True"})
                 path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
-                data, _ = await asyncio.create_task(cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot))
-                execut = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
-                await asyncio.create_task(cls.schedule_into_database(db, data_bot, system=system, typebot=typebot))
+                data, path_args = await asyncio.create_task(
+                    cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
+                )
+                execut, display_name = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+                await asyncio.create_task(
+                    cls.schedule_into_database(
+                        db,
+                        data_bot,
+                        system=system,
+                        typebot=typebot,
+                        path_args=path_args,
+                        display_name=display_name,
+                    )
+                )
 
                 try:
                     await asyncio.create_task(cls.send_email(execut, app, "start"))

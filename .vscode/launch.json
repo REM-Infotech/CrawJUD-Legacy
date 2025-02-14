@@ -14,7 +14,7 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "-A",
-        "run.app",
+        "app.run.app",
         "worker",
         "-E",
         "--loglevel",
@@ -65,5 +65,11 @@
       ],
       "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
+    {
+      "name": "Python Debugger: Module",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app.beat"
+    }
   ]
 }

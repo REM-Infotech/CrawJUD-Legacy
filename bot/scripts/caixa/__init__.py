@@ -56,7 +56,11 @@ class Caixa:
             kwargs.update({"display_name": display_name})
 
             self.bot_call.initialize(
-                display_name=display_name_, path_args=path_args_, typebot=typebot_, system=system_
+                display_name=display_name_,
+                path_args=path_args_,
+                typebot=typebot_,
+                system=system_,
+                **kwargs,
             ).execution()
 
         except Exception as e:

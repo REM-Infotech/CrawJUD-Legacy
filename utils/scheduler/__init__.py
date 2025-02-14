@@ -1,6 +1,7 @@
 """Module for server-side operations in CrawJUD-Bots."""
 
 import json
+import re
 from typing import Any, Union
 
 from celery.beat import ScheduleEntry, Scheduler
@@ -9,6 +10,11 @@ from celery.schedules import crontab
 
 class DatabaseScheduler(Scheduler):
     """Scheduler that loads task schedules from the database."""
+
+    @classmethod
+    def fix_unicode(cls, text: str) -> str:
+        """Fix unicode characters in the text."""
+        return re.sub(r"u00([0-9a-fA-F]{2})", r"\\u00\1", text).encode().decode("unicode_escape")
 
     def __init__(self, *args: tuple, **kwargs: dict[str, any]) -> None:
         """Initialize the DatabaseScheduler.
@@ -37,16 +43,17 @@ class DatabaseScheduler(Scheduler):
 
         db_entries: list[ScheduleModel] = ScheduleModel.query.all()
         for entry in db_entries:
-            cron_args: CrontabModel = entry.schedule
-            cron_args = cron_args.__dict__
-            for key, value in cron_args.items():
-                if key.startswith("_"):
-                    cron_args[key[5:]] = value
-                    del cron_args[key]
+            cron_args = {}
+            old_cron_args: CrontabModel = entry.schedule
+            cron_args_items = list(old_cron_args.__dict__.items())
+            for key, value in cron_args_items:
+                if (not key.startswith("_")) and key != "schedule" and key != "id":
+                    cron_args.update({key: value})
 
-            schedules[entry.task_name] = ScheduleEntry(
-                name=entry.name,
-                task=entry.task_name,
+            name_custom = DatabaseScheduler.fix_unicode(entry.name)
+            schedules[entry.task] = ScheduleEntry(
+                name=name_custom,
+                task=entry.task,
                 schedule=crontab(**cron_args),
                 args=json.loads(entry.args or "[]"),
                 kwargs=json.loads(entry.kwargs or "{}"),
