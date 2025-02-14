@@ -90,3 +90,52 @@ class TaskExec(InstanceBot):
                 return 200
 
         return 500
+
+    @classmethod
+    async def task_exec_schedule(
+        cls,
+        id_: int = None,
+        system: str = None,
+        typebot: str = None,
+        exec_type: str = None,
+        app: Quart = None,
+        db: SQLAlchemy = None,
+        files: MultiDict = None,
+        celery_app: Celery = None,
+        data_bot: MultiDict = None,
+        *args: tuple,
+        **kwargs: dict,
+    ) -> int:
+        """Execute the task with the specified parameters.
+
+        Args:
+            app (Quart): The Quart application instance.
+            celery_app (Celery): The Celery application instance.
+            db (SQLAlchemy): The SQLAlchemy instance.
+            id_ (int): The ID of the bot.
+            system (str): The system of the bot.
+            typebot (str): The type of bot.
+            exec_type (str): The type of execution.
+            files (MultiDict): The files to process.
+            data_bot (MultiDict): The bot data.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        """
+        async with app.app_context():
+            if exec_type == "start":
+                user: str = data_bot.get("user")
+                pid: str = data_bot.get("pid")
+
+                path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
+                data, _ = await asyncio.create_task(cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot))
+                execut = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+
+                try:
+                    await asyncio.create_task(cls.send_email(execut, app, "start"))
+                except Exception as e:
+                    app.logger.error("Error sending email: %s", str(e))
+
+                return 200
+
+        return 500

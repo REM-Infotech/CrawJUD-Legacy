@@ -2,9 +2,9 @@
 
 import json
 import traceback
+from datetime import datetime
 from typing import TYPE_CHECKING
 
-from celery.schedules import crontab  # noqa: F401
 from quart import Response, jsonify, make_response, request
 from quart import current_app as app
 
@@ -121,6 +121,8 @@ async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
 
             data_bot = (request_json if isinstance(request_data, bytes) else request_data) or request_form
 
+            data_bot: dict[str, str, int, list[str]]
+
             # Check if data_bot is enconded
             if isinstance(data_bot, bytes):
                 data_bot = data_bot.decode("utf-8")
@@ -137,10 +139,14 @@ async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
                     raise ValueError("Invalid data_bot format")
 
             files = await request.files
+            hour_minute = datetime.strptime(data_bot.get("hour_minute", "08:00"), "%H:%M")
+
             celery_app: Celery = app.extensions["celery"]
 
-            cron = CrontabModel(**data_bot.get("CRONTAB_ARGS"))
-            cron = crontab(**data_bot.get("CRONTAB_ARGS"))
+            days_list = data_bot.get("days", ["mon"])
+            days: str = ",".join(days_list if len(days_list) > 0 else ["mon"])
+
+            cron = CrontabModel(day_of_week=days, hour=str(hour_minute.hour), minute=str(hour_minute.minute))
 
             task_name = data_bot.get("task_name")
             task_schedule = data_bot.get("task_schedule")

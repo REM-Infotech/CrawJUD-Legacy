@@ -41,8 +41,32 @@ class CrontabModel(db.Model):
     """Represents a crontab schedule with its execution details."""
 
     id = db.Column(db.Integer, primary_key=True)
-    minute = db.Column(db.String(64), default="*")
     hour = db.Column(db.String(64), default="*")
+    minute = db.Column(db.String(64), default="*")
     day_of_week = db.Column(db.String(64), default="*")
     day_of_month = db.Column(db.String(64), default="*")
     month_of_year = db.Column(db.String(64), default="*")
+
+    def __init__(
+        self,
+        minute: str = "*",
+        hour: str = "*",
+        day_of_week: str = "*",
+        day_of_month: str = "*",
+        month_of_year: str = "*",
+    ) -> None:
+        """Initialize a new crontab schedule.
+
+        Args:
+            minute (str): The minute to run the task.
+            hour (str): The hour to run the task.
+            day_of_week (str): The day of the week to run the task.
+            day_of_month (str): The day of the month to run the task.
+            month_of_year (str): The month of the year to run the task.
+
+        """
+        self.minute = minute
+        self.hour = hour
+        self.day_of_week = day_of_week
+        self.day_of_month = day_of_month
+        self.month_of_year = month_of_year
