@@ -40,4 +40,4 @@ services:
     volumes:
       - ".:C:\\crawjudbot_app"
     hostname: "crawjudbot_app"
-    command: "python -m  celery -A run.app beat --scheduler utils.scheduler:DatabaseScheduler"
+    command: "python -m celery -A run.app beat --scheduler utils.scheduler:DatabaseScheduler"
