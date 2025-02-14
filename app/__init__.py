@@ -6,7 +6,6 @@ AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 
 import asyncio
 import platform
-import signal
 import subprocess
 import sys
 from datetime import timedelta
@@ -228,7 +227,3 @@ class AppFactory:
     def handle_exit(a: any = None, b: any = None) -> None:
         """Handle termination signals and exit the program gracefully."""
         sys.exit(0)
-
-
-signal.signal(signal.SIGTERM, AppFactory.handle_exit)
-signal.signal(signal.SIGINT, AppFactory.handle_exit)

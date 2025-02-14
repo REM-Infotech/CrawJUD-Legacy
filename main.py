@@ -13,7 +13,7 @@ import win32serviceutil
 class AppServerSvc(win32serviceutil.ServiceFramework):
     """NT Service."""
 
-    _svc_name_ = "CrawJUD-Bots"
+    _svc_name_ = "CrawJUD"
     _svc_display_name_ = "CrawJUD-Bots Service"
 
     def __init__(self, args: any) -> None:
@@ -41,8 +41,6 @@ class AppServerSvc(win32serviceutil.ServiceFramework):
         from app.beat import run_beat
         from app.worker import run_worker
 
-        importlib.import_module("app.asgi", __package__)
-
         def run_worker_thread() -> None:
             """Run the worker."""
             asyncio.run(run_worker())
@@ -56,6 +54,8 @@ class AppServerSvc(win32serviceutil.ServiceFramework):
 
         worker_thread.start()
         beat_thread.start()
+
+        importlib.import_module("app.asgi", __package__)
 
 
 if __name__ == "__main__":
