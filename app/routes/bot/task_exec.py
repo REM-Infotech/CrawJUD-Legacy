@@ -78,12 +78,15 @@ class TaskExec(InstanceBot):
             elif exec_type == "stop":
                 pid = data_bot.get("pid")
                 db: SQLAlchemy = app.extensions["sqlalchemy"]
-                status = data_bot.get("status").get("status")
+                dict_status: dict[str, str] = data_bot.get("status")
+                status = dict_status.get("status")
+                schedule = dict_status.get("schedule")
+
                 filename = await asyncio.create_task(cls.make_zip(pid))
                 execut = await asyncio.create_task(cls.send_stop_exec(app, db, pid, status, filename))
 
                 try:
-                    await asyncio.create_task(cls.send_email(execut, app, "stop"))
+                    await asyncio.create_task(cls.send_email(execut, app, "stop", schedule=schedule))
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
