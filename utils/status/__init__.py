@@ -212,23 +212,26 @@ class InstanceBot:
         if len(data.get("xlsx", "Sem Arquivo")) > int(max_length):
             xlsx_ = xlsx_[: int(max_length)]
         rows = data.get("total_rows")
-        execut = Executions(
-            pid=pid,
-            status="Em Execução",
-            arquivo_xlsx=xlsx_,
-            url_socket=data.get("url_socket"),
-            total_rows=rows,
-            data_execucao=datetime.now(pytz.timezone("America/Manaus")),
-            file_output="Arguardando Arquivo",
-        )
 
+        execut = db.session.query(Executions).filter(Executions.pid == pid).first()
         usr = db.session.query(Users).filter(Users.login == user).first()
         bt = db.session.query(BotsCrawJUD).filter(BotsCrawJUD.id == id_).first()
         license_ = db.session.query(LicensesUsers).filter_by(license_token=usr.licenseusr.license_token).first()
+        if not execut:
+            execut = Executions(
+                pid=pid,
+                status="Em Execução",
+                arquivo_xlsx=xlsx_,
+                url_socket=data.get("url_socket"),
+                total_rows=rows,
+                data_execucao=datetime.now(pytz.timezone("America/Sao_Paulo")),
+                file_output="Arguardando Arquivo",
+            )
 
-        execut.user = usr
-        execut.bot = bt
-        execut.license_usr = license_
+            execut.user = usr
+            execut.bot = bt
+            execut.license_usr = license_
+            db.session.add(execut)
 
         admins: list[str] = []
 
@@ -253,7 +256,6 @@ class InstanceBot:
             "admins": admins,
         }
 
-        db.session.add(execut)
         db.session.commit()
         db.session.close()
 
