@@ -24,7 +24,7 @@ _Last count: `14/02/2025 01:00`_
 ## Table of Contents
 
 - [Project Structure](#project-structure)
-- [Dependencies](../doc/dependencies.md)
+- [Dependencies](./doc/dependencies.md)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Debugging](#debugging)
