@@ -14,6 +14,7 @@ class ScheduleModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String(128), nullable=False)
     task: str = db.Column(db.String(128), nullable=False)
+    schedule_id = db.Column(db.Integer, db.ForeignKey("crontab_model.id"), nullable=False)
     schedule = db.relationship("CrontabModel", backref="schedule", lazy=True)
     args: str = db.Column(db.Text, nullable=True, default="[]")  # JSON para argumentos
     kwargs: str = db.Column(db.Text, nullable=True, default="{}")  # JSON para kwargs
