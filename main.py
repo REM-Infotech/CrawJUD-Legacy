@@ -4,10 +4,10 @@ import asyncio
 import importlib
 import socket
 
-import servicemanager
-import win32event
-import win32service
-import win32serviceutil
+import servicemanager  # type: ignore #noqa: PGH003
+import win32event  # type: ignore #noqa: PGH003
+import win32service  # type: ignore #noqa: PGH003
+import win32serviceutil  # type: ignore #noqa: PGH003
 
 
 class AppServerSvc(win32serviceutil.ServiceFramework):
