@@ -99,22 +99,19 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def projudi_launcher(
-        path_args: str,
-        display_name: str,
-        system: str,
-        typebot: str,
         *args: tuple,
         **kwargs: dict,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+
 
         Returns:
             str: Status message indicating bot completion.
@@ -123,9 +120,12 @@ class WorkerBot:
         from .scripts import Projudi
 
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Projudi, args=(path_args, display_name, system, typebot, logger), kwargs=kwargs)
+            process = BotThread(target=Projudi, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -144,14 +144,20 @@ class WorkerBot:
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def esaj_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def esaj_launcher(
+        *args: tuple,
+        **kwargs: dict,
+    ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
+
 
         Returns:
             str: Status message indicating bot completion.
@@ -160,9 +166,12 @@ class WorkerBot:
         from .scripts import Esaj
 
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Esaj, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=Esaj, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -181,14 +190,20 @@ class WorkerBot:
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def pje_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def pje_launcher(
+        *args: tuple,
+        **kwargs: dict,
+    ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
+
 
         Returns:
             str: Status message indicating bot completion.
@@ -197,9 +212,12 @@ class WorkerBot:
         from .scripts import PJe
 
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=PJe, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=PJe, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -218,14 +236,20 @@ class WorkerBot:
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def elaw_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def elaw_launcher(
+        *args: tuple,
+        **kwargs: dict,
+    ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
+
 
         Returns:
             str: Status message indicating bot completion.
@@ -234,9 +258,12 @@ class WorkerBot:
         from .scripts import Elaw
 
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Elaw, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=Elaw, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -255,14 +282,20 @@ class WorkerBot:
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def caixa_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def caixa_launcher(
+        *args: tuple,
+        **kwargs: dict,
+    ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
+
 
         Returns:
             str: Status message indicating bot completion.
@@ -271,9 +304,12 @@ class WorkerBot:
         from .scripts import Caixa
 
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Caixa, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=Caixa, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -292,14 +328,20 @@ class WorkerBot:
 
     @staticmethod
     @shared_task(ignore_result=False)
-    def calculadoras_launcher(path_args: str, display_name: str, system: str, typebot: str) -> str:
+    def calculadoras_launcher(
+        *args: tuple,
+        **kwargs: dict,
+    ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
             typebot (str): type of bot execution.
+
 
         Returns:
             str: Status message indicating bot completion.
@@ -308,9 +350,12 @@ class WorkerBot:
         from .scripts import Calculadoras
 
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Calculadoras, args=(path_args, display_name, system, typebot, logger))
+            process = BotThread(target=Calculadoras, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)

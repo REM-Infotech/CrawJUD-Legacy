@@ -14,8 +14,7 @@ from .emissao import Emissao
 from .movimentacao import Movimentacao
 from .protocolo import Protocolo
 
-# from typing import any
-logger = logging.getLogger(__name__)
+logger_ = logging.getLogger(__name__)
 
 ClassBots = Union[Emissao, Busca_pags, Capa, Movimentacao, Protocolo]
 
@@ -28,11 +27,6 @@ class Esaj:
 
     def __init__(
         self,
-        path_args: str,
-        display_name: str,
-        system: str,
-        typebot: str,
-        logger: logging.Logger = None,
         *args: tuple[str],
         **kwargs: dict[str, str],
     ) -> None:
@@ -51,23 +45,17 @@ class Esaj:
 
         """
         try:
+            display_name = kwargs.pop("display_name", args[0])
+            system = kwargs.pop("system", args[2])
+            typebot = kwargs.pop("typebot", args[3])
+            logger = kwargs.pop("logger", logger_)
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
-            display_name_ = args[0] if args else kwargs.pop("display_name", display_name)
-            path_args_ = args[1] if args else kwargs.pop("path_args", path_args)
-            system_ = args[2] if args else kwargs.pop("system", system)
-            typebot_ = args[3] if args else kwargs.pop("typebot", typebot)
 
-            self.typebot_ = typebot_
+            self.typebot_ = typebot
 
             kwargs.update({"display_name": display_name})
 
-            self.bot_call.initialize(
-                display_name=display_name_,
-                path_args=path_args_,
-                typebot=typebot_,
-                system=system_,
-                **kwargs,
-            ).execution()
+            self.bot_call.initialize(*args, **kwargs).execution()
 
         except Exception as e:
             err = traceback.format_exc()
