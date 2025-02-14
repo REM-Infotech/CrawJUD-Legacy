@@ -1,0 +1,49 @@
+"""Main file for Windows service."""
+
+import asyncio
+import importlib
+import socket
+
+import servicemanager
+import win32event
+import win32service
+import win32serviceutil
+
+
+class AppServerSvc(win32serviceutil.ServiceFramework):
+    """NT Service."""
+
+    _svc_name_ = "TestService"
+    _svc_display_name_ = "Test Service"
+
+    def __init__(self, args: any) -> None:
+        """Init for service."""
+        win32serviceutil.ServiceFramework.__init__(self, args)
+        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+        socket.setdefaulttimeout(60)
+
+    def SvcStop(self) -> None:  # noqa: N802
+        """Stop the service."""
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        win32event.SetEvent(self.hWaitStop)
+
+    def SvcDoRun(self) -> None:  # noqa: N802
+        """Run the service."""
+        servicemanager.LogMsg(
+            servicemanager.EVENTLOG_INFORMATION_TYPE, servicemanager.PYS_SERVICE_STARTED, (self._svc_name_, "")
+        )
+        self.main()
+
+    def main(self) -> None:
+        """Start application."""
+        from app.beat import run_beat
+        from app.worker import run_worker
+
+        importlib.import_module("app.asgi", __package__)
+
+        asyncio.run(run_worker())
+        asyncio.run(run_beat())
+
+
+if __name__ == "__main__":
+    win32serviceutil.HandleCommandLine(AppServerSvc)
