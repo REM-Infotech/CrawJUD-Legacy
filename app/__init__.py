@@ -17,7 +17,7 @@ from threading import Thread
 import quart_flask_patch  # noqa: F401
 import uvicorn
 from celery import Celery
-from clear import clear
+from clear import clear  # noqa: F401
 from dotenv_vault import load_dotenv
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
@@ -55,7 +55,6 @@ objects_config = {
     "testing": "app.config.TestingConfig",
 }
 
-clear()
 load_dotenv()
 
 values = environ.get
