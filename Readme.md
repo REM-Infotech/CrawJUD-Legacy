@@ -18,8 +18,8 @@
 
 CrawJUD is a suite of automation robots designed to streamline and enhance judicial processes. Built with Flask and various Python libraries, CrawJUD aims to automate routine tasks, manage data efficiently, and provide seamless integration with existing systems.
 
-_Total de linhas no código: `9523`_
-_Última contagem: `10/12/2024 10:16`_
+_Total lines: 13511_
+_Last count: `14/02/2025 01:00`_
 
 ## Table of Contents
 
