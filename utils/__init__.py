@@ -12,6 +12,7 @@ from .get_location import GeoLoc
 from .git_py import _release_tag, check_latest, checkout_release, update_servers, version_file
 from .make_celery import make_celery
 from .mod_mgmt import reload_module
+from .scheduler import DatabaseScheduler
 from .status import (
     FormatMessage,
     email_start,
@@ -23,6 +24,7 @@ from .status import (
 
 signed_url_lifetime = 300
 __all__ = [
+    DatabaseScheduler,
     _release_tag,
     check_latest,
     checkout_release,

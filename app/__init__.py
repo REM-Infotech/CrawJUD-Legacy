@@ -64,14 +64,14 @@ is_init = Path("is_init.txt").resolve()
 class AppFactory:
     """Factory to create and configure the ASGIApp and Celery."""
 
-    async def main(self) -> tuple[ASGIApp, Celery]:
+    async def main(self) -> tuple[Quart, ASGIApp, Celery]:
         """Run the main application loop."""
         task = asyncio.create_task(self.create_app())
         await task
 
         return task.result()
 
-    async def create_app(self) -> tuple[ASGIApp, Celery]:
+    async def create_app(self) -> tuple[Quart, ASGIApp, Celery]:
         """Create and configure the ASGIApp and Celery worker.
 
         Returns:
@@ -95,7 +95,7 @@ class AppFactory:
             io = await self.init_extensions(app)
             app.logger = await init_log()
             await self.init_routes(app)
-        return ASGIApp(io, app), celery
+        return app, ASGIApp(io, app), celery
 
     async def init_routes(self, app: Quart) -> None:
         """Initialize and register the application routes."""
@@ -146,7 +146,7 @@ class AppFactory:
         return io
 
     @classmethod
-    def start_app(cls) -> tuple[ASGIApp, Celery]:  # pragma: no cover
+    def start_app(cls) -> tuple[Quart, Celery]:  # pragma: no cover
         """Initialize and start the Quart application with AsyncServer.
 
         Sets up the application context, configures server settings,
@@ -159,7 +159,7 @@ class AppFactory:
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         loop = asyncio.get_event_loop()
 
-        app, celery = loop.run_until_complete(AppFactory().main())
+        quart, app, celery = loop.run_until_complete(AppFactory().main())
         args_run: dict[str, str | int | bool] = {}
         # app.app_context().push()
 
@@ -187,7 +187,7 @@ class AppFactory:
         except (KeyboardInterrupt, TypeError):
             sys.exit(0)
 
-        return app, celery
+        return quart, celery
 
     @classmethod
     def starter(cls, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:

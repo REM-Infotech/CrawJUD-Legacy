@@ -1,6 +1,7 @@
 """Module for server-side operations in CrawJUD-Bots."""
 
 import json
+from typing import Any, Union
 
 from celery.beat import ScheduleEntry, Scheduler
 from celery.schedules import crontab
@@ -90,7 +91,7 @@ class DatabaseScheduler(Scheduler):
         """
         self._schedule = self.get_schedule()
 
-    def tick(self) -> int | any:
+    def tick(self) -> Union[int, Any]:  # noqa: ANN401
         """Process the schedules.
 
         This method is called continuously to ensure that the scheduler stays
