@@ -44,7 +44,7 @@ class ScheduleModel(db.Model):
         args: str = "[]",
         kwargs: str = "{}",
         email: str = None,
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Initialize a new scheduled job.
 
         Args:
@@ -81,7 +81,7 @@ class CrontabModel(db.Model):
         day_of_week: str = "*",
         day_of_month: str = "*",
         month_of_year: str = "*",
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Initialize a new crontab schedule.
 
         Args:

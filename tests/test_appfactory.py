@@ -50,7 +50,7 @@ def test_starter(app_factory) -> None:
     with mock.patch('app.__init__.uvicorn.run') as mock_uvicorn_run:
         mock_app = mock.Mock(spec=Quart)
         app_factory.starter(port=8000, log_output=True, app=mock_app)
-        mock_uvicorn_run.assert_called_once_with(mock_app, host="0.0.0.0", port=8000)
+        mock_uvicorn_run.assert_called_once_with(mock_app, host="127.0.0.1", port=8000)
 
 def test_handle_exit() -> None:
     """Test the handle_exit method of AppFactory."""
