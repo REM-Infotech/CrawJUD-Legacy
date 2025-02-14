@@ -13,7 +13,7 @@ from utils import (  # noqa: F401
     reload_module,
 )
 
-from ...models import ScheduleModel  # noqa: F401
+from ...models import CrontabModel, ScheduleModel
 from . import bot
 from .task_exec import TaskExec
 
@@ -92,78 +92,81 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
     return await make_response(jsonify(message), is_started)
 
 
-# @bot.route("/stop/<user>/<pid>", methods=["POST"])
-# async def stop_bot(user: str, pid: str) -> Response:
-#     """Stop a running bot based on user and PID.
+@bot.post("/periodic_bot/<id_>/<system>/<typebot>")
+async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
+    """Schedule a bot to run periodically based on provided cron arguments.
 
-#     Args:
-#         user (str): The user requesting the stop.
-#         pid (str): The PID of the bot to stop.
+    Args:
+        id_ (int): The identifier for the bot.
+        system (str): The system the bot is associated with.
+        typebot (str): The type of bot to schedule.
 
-#     Returns:
-#         Response: JSON response indicating the result of the stop operation.
+    Returns:
+        Response: JSON response indicating the success of the scheduling operation.
 
-#     """
-#     from flask import current_app as app
+    """
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
+    message = {"success": "success"}
 
-#     from app.models import Executions
+    is_started = 200
 
-#     db: SQLAlchemy = app.extensions["sqlalchemy"]
-#     query = db.session.query(Executions).filter(Executions.pid == pid).first()
-#     if query:
-#         pid = query.pid
-#         with app.app_context():
-#             robot_stop = True  # noqa: F841
-#             # args, code = stop_execution(app, pid, robot_stop)
+    async with app.app_context():
+        try:
+            # obj = GeoLoc()
+            # loc = obj.region_name
 
-#             return make_response(jsonify(args), code)  # type: ignore # noqa: F821, PGH003
+            request_data = await request.data
+            request_form = await request.form
+            request_json = await request.json
 
-#     return make_response(jsonify({"error": "PID não encontrado"}), 404)
+            data_bot = (request_json if isinstance(request_data, bytes) else request_data) or request_form
 
+            # Check if data_bot is enconded
+            if isinstance(data_bot, bytes):
+                data_bot = data_bot.decode("utf-8")
 
-# @bot.post("/periodic_bot/<id>/<system>/<typebot>")
-# async def periodic_bot(id: int, system: str, typebot: str) -> Response:  # noqa: A002
-#     """Schedule a bot to run periodically based on provided cron arguments.
+            if isinstance(data_bot, str):
+                if "\\" in data_bot:
+                    data_bot = data_bot.replace("\\", "")
 
-#     Args:
-#         id (int): The identifier for the bot.
-#         system (str): The system the bot is associated with.
-#         typebot (str): The type of bot to schedule.
+                if "'" in data_bot:
+                    data_bot = data_bot.replace("'", "")
 
-#     Returns:
-#         Response: JSON response indicating the success of the scheduling operation.
+                data_bot = json.loads(data_bot)
+                if not isinstance(data_bot, dict):
+                    raise ValueError("Invalid data_bot format")
 
-#     """
-#     db: SQLAlchemy = app.extensions["sqlalchemy"]
+            files = await request.files
+            celery_app: Celery = app.extensions["celery"]
 
-#     request_data = request.data
-#     request_form = request.form
+            cron = CrontabModel(**data_bot.get("CRONTAB_ARGS"))
+            cron = crontab(**data_bot.get("CRONTAB_ARGS"))
 
-#     data_bot = request_data or request_form
+            task_name = data_bot.get("task_name")
+            task_schedule = data_bot.get("task_schedule")
+            args = json.dumps(data_bot.get("args"))
+            kwargs = json.dumps(data_bot.get("kwargs"))
 
-#     if isinstance(data_bot, str):
-#         data_bot = json.loads(data_bot)
+            new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args, kwargs=kwargs)
+            new_schedule.schedule = cron
+            db.session.add(new_schedule)
+            db.session.commit()
+            is_started = await TaskExec.task_exec(
+                id_,
+                system,
+                typebot,
+                "start",
+                app,
+                db,
+                files,
+                celery_app,
+                data_bot,
+            )
 
-#     cron = crontab(minute="*/1", hour="*", day_of_month="*", month_of_year="*", day_of_week="*")
+        except Exception:
+            err = traceback.format_exc()
+            app.logger.exception(err)
+            message = {"error": err}
+            is_started: type[int] = 500
 
-#     cron = crontab(**data_bot.get("CRONTAB_ARGS"))
-
-#     start_rb = SetStatus(data_bot, request.files, id, system, typebot)
-#     path_args, display_name = start_rb.start_bot(app, db)
-
-#     schedule_str = "".join(
-#         (
-#             f"{cron._orig_minute} {cron._orig_hour} {cron._orig_day_of_month}",  # noqa: SLF001
-#             f"{cron._orig_month_of_year} {cron._orig_day_of_week}",  # noqa: SLF001
-#         ),
-#     )
-
-#     task_name = "app.tasks.bot_starter.init_bot"
-#     args = json.dumps([path_args, display_name, system, typebot])
-#     kwargs = json.dumps({})
-
-#     new_schedule = ScheduleModel(task_name=task_name, schedule=schedule_str, args=args, kwargs=kwargs)
-#     db.session.add(new_schedule)
-#     db.session.commit()
-
-#     return make_response(jsonify({"success": "success"}))
+    return await make_response(jsonify(message), is_started)

@@ -32,13 +32,19 @@ class DatabaseScheduler(Scheduler):
         """
         schedules = {}
 
-        from app.models import ScheduleModel
+        from app.models import CrontabModel, ScheduleModel
 
-        db_entries = ScheduleModel.query.all()
+        db_entries: list[ScheduleModel] = ScheduleModel.query.all()
         for entry in db_entries:
-            cron_args = self.parse_cron(entry.schedule)
+            cron_args: CrontabModel = entry.schedule
+            cron_args = cron_args.__dict__
+            for key, value in cron_args.items():
+                if key.startswith("_"):
+                    cron_args[key[5:]] = value
+                    del cron_args[key]
+
             schedules[entry.task_name] = ScheduleEntry(
-                name=entry.task_name,
+                name=entry.name,
                 task=entry.task_name,
                 schedule=crontab(**cron_args),
                 args=json.loads(entry.args or "[]"),

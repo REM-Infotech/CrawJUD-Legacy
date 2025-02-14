@@ -4,14 +4,17 @@ from datetime import datetime
 
 from app import db
 
+# from sqlalchemy.orm.relationships import RelationshipProperty
+
 
 class ScheduleModel(db.Model):
     """Represents a scheduled job with its execution details."""
 
     __tablename__ = "scheduled_jobs"
     id = db.Column(db.Integer, primary_key=True)
-    task_name: str = db.Column(db.String(128), nullable=False)
-    schedule: str = db.Column(db.String(128), nullable=False)  # Exemplo: "*/5 * * * *"
+    name: str = db.Column(db.String(128), nullable=False)
+    task: str = db.Column(db.String(128), nullable=False)
+    schedule = db.relationship("CrontabModel", backref="schedule", lazy=True)
     args: str = db.Column(db.Text, nullable=True, default="[]")  # JSON para argumentos
     kwargs: str = db.Column(db.Text, nullable=True, default="{}")  # JSON para kwargs
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
@@ -23,4 +26,15 @@ class ScheduleModel(db.Model):
             str: The task name of the scheduled job.
 
         """
-        return f"<Schedule {self.task_name}>"
+        return f"<Schedule {self.name}>"
+
+
+class CrontabModel(db.Model):
+    """Represents a crontab schedule with its execution details."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    minute = db.Column(db.String(64), default="*")
+    hour = db.Column(db.String(64), default="*")
+    day_of_week = db.Column(db.String(64), default="*")
+    day_of_month = db.Column(db.String(64), default="*")
+    month_of_year = db.Column(db.String(64), default="*")

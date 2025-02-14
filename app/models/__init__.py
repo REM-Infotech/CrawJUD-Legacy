@@ -1,7 +1,7 @@
 """Initialization of database models for the CrawJUD-Bots application."""
 
 from .bots import BotsCrawJUD, CacheLogs, Credentials, Executions, ThreadBots
-from .schedule import ScheduleModel
+from .schedule import CrontabModel, ScheduleModel
 from .secondaries import admins, execution_bots
 from .srv import Servers
 from .users import LicensesUsers, Users
@@ -18,4 +18,5 @@ __all__ = [
     ThreadBots,
     Servers,
     ScheduleModel,
+    CrontabModel,
 ]
