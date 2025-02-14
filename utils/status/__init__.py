@@ -26,7 +26,7 @@ from quart import Quart
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from app.models import BotsCrawJUD, Executions, LicensesUsers, ThreadBots, Users
+from app.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
 
 from .makefile import makezip
 from .send_email import email_start, email_stop
@@ -141,6 +141,46 @@ class InstanceBot:
             await f.write(json.dumps(data))
 
         return data, path_args
+
+    @classmethod
+    async def schedule_into_database(
+        cls, db: SQLAlchemy, data: dict[str, str | int | datetime], *args: tuple, **kwargs: dict
+    ) -> dict[str, str | int | datetime]:
+        """Insert the bot execution data into the database.
+
+        Args:
+            db (SQLAlchemy): The SQLAlchemy database instance.
+            data (dict[str, str | int | datetime]): A dictionary containing the bot execution data.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        """
+        user = data.get("user")
+        system = kwargs.pop("system")
+
+        license_ = (
+            db.session.query(LicensesUsers)
+            .select_from(Users)
+            .join(Users, LicensesUsers.user)
+            .filter(Users.login == user)
+            .first()
+        )
+
+        days_list = data.get("days", ["mon"])
+        days: str = ",".join(days_list if len(days_list) > 0 else ["mon"])
+        hour_minute = datetime.strptime(data.get("hour_minute", "08:00"), "%H:%M")
+        cron = CrontabModel(day_of_week=days, hour=str(hour_minute.hour), minute=str(hour_minute.minute))
+
+        task_name = data.get("task_name")
+        task_schedule = "%s_launcher" % system.lower()
+        args = json.dumps(data.get("args"))
+        kwargs = json.dumps(data.get("kwargs"))
+
+        new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args, kwargs=kwargs)
+        new_schedule.schedule = cron
+        new_schedule.license_usr = license_
+        db.session.add(new_schedule)
+        db.session.commit()
 
     @classmethod
     async def insert_into_database(

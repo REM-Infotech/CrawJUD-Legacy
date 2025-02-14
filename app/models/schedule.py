@@ -36,6 +36,33 @@ class ScheduleModel(db.Model):
         """
         return f"<Schedule {self.name}>"
 
+    def __init__(
+        self,
+        name: str,
+        task: str,
+        schedule_id: int,
+        args: str = "[]",
+        kwargs: str = "{}",
+        email: str = None,
+    ) -> None:
+        """Initialize a new scheduled job.
+
+        Args:
+            name (str): The name of the scheduled job.
+            task (str): The task to execute.
+            schedule_id (int): The ID of the schedule.
+            args (str): The arguments to pass to the task
+            kwargs (str): The keyword arguments to pass to the task.
+            email (str): The email address to send notifications to.
+
+        """
+        self.name = name
+        self.task = task
+        self.schedule_id = schedule_id
+        self.args = args
+        self.kwargs = kwargs
+        self.email = email
+
 
 class CrontabModel(db.Model):
     """Represents a crontab schedule with its execution details."""

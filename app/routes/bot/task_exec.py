@@ -101,7 +101,6 @@ class TaskExec(InstanceBot):
         app: Quart = None,
         db: SQLAlchemy = None,
         files: MultiDict = None,
-        celery_app: Celery = None,
         data_bot: MultiDict = None,
         *args: tuple,
         **kwargs: dict,
@@ -122,14 +121,16 @@ class TaskExec(InstanceBot):
             **kwargs: Arbitrary keyword arguments.
 
         """
+        celery_app: Celery = app.extensions["celery"]  # noqa: F841
         async with app.app_context():
             if exec_type == "start":
                 user: str = data_bot.get("user")
                 pid: str = data_bot.get("pid")
-
+                data_bot.update({"schedule": "True"})
                 path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
                 data, _ = await asyncio.create_task(cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot))
                 execut = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+                await asyncio.create_task(cls.schedule_into_database(db, data_bot, system=system, typebot=typebot))
 
                 try:
                     await asyncio.create_task(cls.send_email(execut, app, "start"))

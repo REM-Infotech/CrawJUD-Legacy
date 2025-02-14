@@ -2,7 +2,6 @@
 
 import json
 import traceback
-from datetime import datetime
 from typing import TYPE_CHECKING
 
 from quart import Response, jsonify, make_response, request
@@ -13,7 +12,6 @@ from utils import (  # noqa: F401
     reload_module,
 )
 
-from ...models import CrontabModel, ScheduleModel
 from . import bot
 from .task_exec import TaskExec
 
@@ -139,25 +137,8 @@ async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
                     raise ValueError("Invalid data_bot format")
 
             files = await request.files
-            hour_minute = datetime.strptime(data_bot.get("hour_minute", "08:00"), "%H:%M")
 
-            celery_app: Celery = app.extensions["celery"]
-
-            days_list = data_bot.get("days", ["mon"])
-            days: str = ",".join(days_list if len(days_list) > 0 else ["mon"])
-
-            cron = CrontabModel(day_of_week=days, hour=str(hour_minute.hour), minute=str(hour_minute.minute))
-
-            task_name = data_bot.get("task_name")
-            task_schedule = data_bot.get("task_schedule")
-            args = json.dumps(data_bot.get("args"))
-            kwargs = json.dumps(data_bot.get("kwargs"))
-
-            new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args, kwargs=kwargs)
-            new_schedule.schedule = cron
-            db.session.add(new_schedule)
-            db.session.commit()
-            is_started = await TaskExec.task_exec(
+            is_started = await TaskExec.task_exec_schedule(
                 id_,
                 system,
                 typebot,
@@ -165,7 +146,6 @@ async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
                 app,
                 db,
                 files,
-                celery_app,
                 data_bot,
             )
 
