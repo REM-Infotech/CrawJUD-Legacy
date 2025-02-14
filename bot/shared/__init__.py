@@ -102,7 +102,7 @@ class PropertiesCrawJUD:
     total_rows_: int = None
     driver_: WebDriver = None
     webdriverwait_: WebDriverWait = None
-
+    schedule_: str = str("False")
     appends_: list[str] = []
     cr_list_args: list[str] = []
     another_append_: list[str] = []
@@ -473,6 +473,21 @@ class PropertiesCrawJUD:
     def graphicMode(self) -> str:  # noqa: N802
         """Return the graphic mode."""
         return PropertiesCrawJUD.graphicMode_
+
+    @property
+    def schedule(self) -> str:
+        """Return the schedule."""
+        return PropertiesCrawJUD.schedule_
+
+    @schedule.setter
+    def schedule(self, new_schedule: str) -> None:
+        """Set the schedule.
+
+        Args:
+            new_schedule (str): The new schedule.
+
+        """
+        PropertiesCrawJUD.schedule_ = new_schedule
 
     @graphicMode.setter
     def graphicMode(self, new_graph: str) -> None:  # noqa: N802

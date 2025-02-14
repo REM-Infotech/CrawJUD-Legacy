@@ -621,7 +621,11 @@ class OtherUtils(CrawJUD):
         execution_time = end_time - self.start_time
         minutes, seconds = divmod(int(execution_time), 60)
 
-        self.end_prt({"status": "Finalizado", "pid": self.pid})
+        self.end_prt({
+            "status": "Finalizado",
+            "pid": self.pid,
+            "schedule": self.schedule,
+        })
 
         self.type_log = "success"
         self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"

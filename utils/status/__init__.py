@@ -18,7 +18,7 @@ from typing import Literal
 import aiofiles
 import openpyxl
 import pytz
-from flask_mail import Mail, Message
+from flask_mail import Attachment, Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
 from openpyxl.worksheet.worksheet import Worksheet
@@ -260,13 +260,17 @@ class InstanceBot:
         return exec_data
 
     @classmethod
-    async def send_email(cls, execut: dict[str, str | list[str]], app: Quart, type_notify: str) -> None:
+    async def send_email(
+        cls, execut: dict[str, str | list[str]], app: Quart, type_notify: str, *args: tuple, **kwargs: dict
+    ) -> None:
         """Send an email to the user.
 
         Args:
             execut (dict[str, str | list[str]]): The bot execution data.
             app (Quart): The Quart application instance.
             type_notify (str): The type of notification.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
 
         """
         render_template = env.get_template
@@ -282,7 +286,8 @@ class InstanceBot:
         xlsx = execut.get("xlsx")
         destinatario = execut.get("email")
         username = execut.get("username")
-
+        scheduled = kwargs.pop("schedule", "False")
+        attach = None
         async with app.app_context():
             sendermail = environ["MAIL_DEFAULT_SENDER"]
 
@@ -290,13 +295,23 @@ class InstanceBot:
             assunto = f"Bot {display_name} - {type_notify}"
             url_web = environ.get(" URL_WEB")
             destinatario = destinatario
-            mensagem = render_template(f"email_{type_notify}.jinja").render(
-                display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
-            )
+
+            if scheduled == "False":
+                mensagem = render_template(f"email_{type_notify}.jinja").render(
+                    display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
+                )
+            elif scheduled == "True" and type_notify == "stop":
+                mensagem = render_template("email_schedule.jinja").render(
+                    display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
+                )
+                file_zip = kwargs.pop("file_zip")
+                attach = [Attachment(file_zip)]
 
             msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
             if destinatario not in admins:
-                msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins)
+                msg = Message(
+                    assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins, attachments=attach
+                )
 
             mail.send(msg)
         return "Email enviado com sucesso!"

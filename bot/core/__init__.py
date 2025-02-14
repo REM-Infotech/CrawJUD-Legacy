@@ -192,7 +192,6 @@ class CrawJUD(PropertiesCrawJUD):
             self.wait = wait
 
             self.elements = self.ElementsBot.config().Elements
-            # self.set_permissions_recursive(Path(self.output_dir_path).parent.resolve())
 
         except Exception as e:
             self.row = 0
