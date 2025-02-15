@@ -8,6 +8,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import mimetypes
 import traceback  # noqa: F401
 import unicodedata
 from datetime import datetime
@@ -327,7 +328,13 @@ class InstanceBot:
                 )
                 file_zip = Path(kwargs.get("file_zip"))
                 async with aiofiles.open(file_zip, "rb") as f:
-                    file_ = FileStorage(await f.read(), file_zip.name, file_zip.name)
+                    content_type = mimetypes.guess_type(str(file_zip))[0]
+                    file_ = FileStorage(
+                        await f.read(),
+                        file_zip.name,
+                        file_zip.name,
+                        content_type=content_type,
+                    )
                     msg.attach(file_zip.name, file_.content_type, await f.read())
 
             if destinatario not in admins:
