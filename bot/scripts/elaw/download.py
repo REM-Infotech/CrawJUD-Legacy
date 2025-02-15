@@ -28,7 +28,11 @@ class Download(CrawJUD):
     """
 
     @classmethod
-    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+    def initialize(
+        cls,
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> Self:
         """
         Initialize bot instance.
 

@@ -62,7 +62,11 @@ class Emissao(CrawJUD):
     count_doc = OtherUtils.count_doc
 
     @classmethod
-    def initialize(cls, *args: tuple, **kwargs: dict) -> Self:
+    def initialize(
+        cls,
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> Self:
         """
         Initialize bot instance.
 

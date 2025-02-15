@@ -276,7 +276,12 @@ class InstanceBot:
 
     @classmethod
     async def send_email(
-        cls, execut: dict[str, str | list[str]], app: Quart, type_notify: str, *args: tuple, **kwargs: dict
+        cls,
+        execut: dict[str, str | list[str]],
+        app: Quart,
+        type_notify: str,
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:
         """Send an email to the user.
 
@@ -284,8 +289,8 @@ class InstanceBot:
             execut (dict[str, str | list[str]]): The bot execution data.
             app (Quart): The Quart application instance.
             type_notify (str): The type of notification.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         render_template = env.get_template
