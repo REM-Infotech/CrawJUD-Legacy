@@ -53,9 +53,6 @@ class Capa(CrawJUD):
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwargs = kwargs
-        # for key, value in list(kwargs.items()):
-        #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)
         super().auth_bot()
@@ -87,15 +84,6 @@ class Capa(CrawJUD):
             except Exception as e:
                 self.logger.error(str(e))
                 old_message = None
-                # windows = self.driver.window_handles
-
-                # if len(windows) == 0:
-                #     with suppress(Exception):
-                #         self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
-
-                #     old_message = self.message
-
-                #     self.auth_bot()
 
                 if old_message is None:
                     old_message = self.message

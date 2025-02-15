@@ -56,9 +56,6 @@ class Provisao(CrawJUD):
 
         """
         super().__init__()
-        # PropertiesCrawJUD.kwargs = kwargs
-        # for key, value in list(kwargs.items()):
-        #     setattr(PropertiesCrawJUD, key, value)
 
         super().setup(*args, **kwargs)
         super().auth_bot()

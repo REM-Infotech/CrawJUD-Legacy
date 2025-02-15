@@ -184,6 +184,10 @@ class AuthBot(CrawJUD):
         try:
             self.driver.get(self.elements.url_login)
 
+            sleep(1.5)
+
+            self.driver.refresh()
+
             username: WebElement = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.campo_username)),
             )
