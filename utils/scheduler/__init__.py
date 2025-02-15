@@ -43,12 +43,16 @@ class DatabaseScheduler(Scheduler):
         """Fix unicode characters in the text."""
         return re.sub(r"u00([0-9a-fA-F]{2})", r"\\u00\1", text).encode().decode("unicode_escape")
 
-    def __init__(self, *args: tuple, **kwargs: dict[str, any]) -> None:
+    def __init__(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Initialize the DatabaseScheduler.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         """
         super().__init__(*args, **kwargs)

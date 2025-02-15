@@ -150,12 +150,16 @@ class InfoGeoloc:
 class GeoLoc(InfoGeoloc):
     """Subclass of InfoGeoloc for extended geolocation functionalities."""
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Initialize GeoLoc with optional arguments.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         """
         super().__init__(*args, **kwargs)

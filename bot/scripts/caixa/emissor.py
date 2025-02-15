@@ -30,15 +30,19 @@ class Emissor(CrawJUD):  # noqa: N801
 
     count_doc = OtherUtils.count_doc
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Initialize a new emissor instance.
 
         Sets up authentication, initializes variables, and prepares the
         processing environment.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Keyword arguments for bot configuration.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         Raises:
             StartError: If an exception occurs during bot execution.

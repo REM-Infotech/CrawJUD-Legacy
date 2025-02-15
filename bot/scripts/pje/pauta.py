@@ -30,13 +30,17 @@ class Pauta(CrawJUD):  # noqa: N801
         Initialize bot instance.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         """
         return cls(*args, **kwargs)
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Initialize the pauta class with any given arguments."""
         super().__init__()
         # PropertiesCrawJUD.kwargs = kwargs

@@ -18,7 +18,11 @@ async def make_celery(app: Quart) -> Celery:
     celery.conf.update(app.config["CELERY"])
 
     class ContextTask(celery.Task):
-        def __call__(self, *args: tuple, **kwargs: dict) -> any:  # -> any:
+        def __call__(
+            self,
+            *args: tuple,
+            **kwargs: dict,
+        ) -> any:  # -> any:
             return self.run(*args, **kwargs)
 
     celery.Task = ContextTask

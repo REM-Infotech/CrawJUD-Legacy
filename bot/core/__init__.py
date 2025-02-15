@@ -108,7 +108,11 @@ class CrawJUD(PropertiesCrawJUD):
 
         return item
 
-    def setup(self, *args: tuple, **kwargs: dict) -> None:
+    def setup(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Set up the bot by loading configuration and preparing the environment.
 
         Performs the following steps:

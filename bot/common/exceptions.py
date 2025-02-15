@@ -28,8 +28,8 @@ class BaseCrawJUDError(Exception):
         Args:
             message (str, optional): Error message. Defaults to None.
             e (Exception, optional): Original exception. Defaults to None.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         """
         self.message = message
@@ -102,7 +102,11 @@ class ExecutionError(BaseCrawJUDError):
 
     """
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Initialize ExecutionError with optional arguments."""
         super().__init__(*args, **kwargs)
 

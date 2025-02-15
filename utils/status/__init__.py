@@ -204,8 +204,8 @@ class InstanceBot:
         pid: str,
         id_: int,
         user: str,
-        *args: tuple,
-        **kwargs: dict,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
     ) -> tuple[dict[str, str | list[str]], str]:
         """Insert the bot execution data into the database.
 

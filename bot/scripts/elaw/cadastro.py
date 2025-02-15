@@ -39,13 +39,17 @@ class Cadastro(CrawJUD):
         Initialize bot instance.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         """
         return cls(*args, **kwargs)
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
+    ) -> None:
         """Initialize the Cadastro instance.
 
         This method initializes the cadastro class by calling the base class's
@@ -53,8 +57,8 @@ class Cadastro(CrawJUD):
         the start time.
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            *args (tuple[str | any]): Variable length argument list.
+            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
 
         """
         super().__init__()
