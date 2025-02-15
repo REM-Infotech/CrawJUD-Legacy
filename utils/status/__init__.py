@@ -13,7 +13,7 @@ import unicodedata
 from datetime import datetime
 from os import environ, path
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal  # noqa: F401
 
 import aiofiles
 import openpyxl
@@ -144,15 +144,19 @@ class InstanceBot:
 
     @classmethod
     async def schedule_into_database(
-        cls, db: SQLAlchemy, data: dict[str, str | int | datetime], *args: tuple, **kwargs: dict
+        cls,
+        db: SQLAlchemy,
+        data: dict[str, str | int | datetime],
+        *args,  # noqa: ANN002
+        **kwargs,  # noqa: ANN003
     ) -> dict[str, str | int | datetime]:
         """Insert the bot execution data into the database.
 
         Args:
             db (SQLAlchemy): The SQLAlchemy database instance.
             data (dict[str, str | int | datetime]): A dictionary containing the bot execution data.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
+            *args(tuple[Any | str]): Additional positional arguments.
+            **kwargs(dict[str, Any]): Additional keyword arguments.
 
         """
         user = data.get("user")
@@ -176,10 +180,15 @@ class InstanceBot:
         cron = CrontabModel(day_of_week=days, hour=str(hour_minute.hour), minute=str(hour_minute.minute))
 
         task_name = data.get("task_name")
-        task_schedule = "%s_launcher" % system.lower()
-
-        args_ = json.dumps([path_args, display_name, system, typebot])
-        kwargs_ = json.dumps({"schedule", "True"})
+        task_schedule = "bot.%s_launcher" % system.lower()
+        args_ = json.dumps([])
+        kwargs_ = json.dumps({
+            "schedule": "True",
+            "path_args": path_args,
+            "display_name": display_name,
+            "system": system,
+            "typebot": typebot,
+        })
 
         new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args_, kwargs=kwargs_)
         new_schedule.schedule = cron

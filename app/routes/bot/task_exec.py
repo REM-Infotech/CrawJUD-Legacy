@@ -62,9 +62,13 @@ class TaskExec(InstanceBot):
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
-                task: Task = celery_app.send_task(
-                    f"bot.{system.lower()}_launcher", args=[path_args, display_name, system, typebot]
-                )
+                kwargs_: dict[str, str | list[str]] = {
+                    "path_args": path_args,
+                    "display_name": display_name,
+                    "system": system,
+                    "typebot": typebot,
+                }
+                task: Task = celery_app.send_task(f"bot.{system.lower()}_launcher", kwargs=kwargs_)
 
                 process_id = str(task.id)
 

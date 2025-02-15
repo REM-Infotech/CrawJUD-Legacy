@@ -45,9 +45,9 @@ class Esaj:
 
         """
         try:
-            display_name = kwargs.pop("display_name", args[0])
-            system = kwargs.pop("system", args[2])
-            typebot = kwargs.pop("typebot", args[3])
+            display_name = kwargs.pop("display_name")
+            system = kwargs.pop("system")
+            typebot = kwargs.pop("typebot")
             logger = kwargs.pop("logger", logger_)
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 

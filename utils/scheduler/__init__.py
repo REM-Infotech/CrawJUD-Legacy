@@ -4,8 +4,35 @@ import json
 import re
 from typing import Any, Union
 
+from celery import Celery  # noqa: F401
+from celery.app.utils import Settings  # noqa: F401
 from celery.beat import ScheduleEntry, Scheduler
+from celery.loaders.base import BaseLoader  # noqa: F401
 from celery.schedules import crontab
+from quart import current_app as app  # noqa: F401
+
+# class CustomLoader(BaseLoader):
+#     """Custom Celery Loader for Beat."""
+
+#     def read_configuration(self) -> Settings:
+#         """Read the configuration from the custom settings."""
+#         celery: Celery = app.extensions["celery"]
+
+#         settings = celery.conf
+
+#         return settings
+
+#     def on_worker_init(self) -> None:
+#         """Execute actions when the worker starts."""
+#         app.logger.info("🟢 Custom Loader: Worker iniciado!")
+
+#     def on_worker_shutdown(self) -> None:
+#         """Execute actions when the worker is shut down."""
+#         app.logger.info("🔴 Custom Loader: Worker desligado!")
+
+#     def on_task_init(self, task_id: str, task: celery.Task) -> None:
+#         """Execute actions when a task is started."""
+#         app.logger.info("🟡 Custom Loader: Tarefa %s iniciada! | Id_Task: %s", task.name, task_id)
 
 
 class DatabaseScheduler(Scheduler):
@@ -50,6 +77,7 @@ class DatabaseScheduler(Scheduler):
                 if (not key.startswith("_")) and key != "schedule" and key != "id":
                     cron_args.update({key: value})
 
+            # if entry.name not unicode, fix it
             name_custom = DatabaseScheduler.fix_unicode(entry.name)
             schedules[entry.task] = ScheduleEntry(
                 name=name_custom,

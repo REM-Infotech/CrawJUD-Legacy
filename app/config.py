@@ -221,7 +221,7 @@ class DevelopmentConfig(Config):
         "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{RESULT_BACKEND_DATABASE}",
         "task_ignore_result": True,
         "broker_connection_retry_on_startup": True,
-        "timezone": "America/Sao_Paulo",
+        "timezone": "America/Manaus",
         "task_create_missing_queues": True,
     }
 
