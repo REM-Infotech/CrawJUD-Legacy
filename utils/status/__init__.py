@@ -18,7 +18,7 @@ from typing import Any, Literal  # noqa: F401
 import aiofiles
 import openpyxl
 import pytz
-from flask_mail import Attachment, Mail, Message
+from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
 from openpyxl.worksheet.worksheet import Worksheet
@@ -29,7 +29,6 @@ from werkzeug.utils import secure_filename
 from app.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
 
 from .makefile import makezip
-from .send_email import email_start, email_stop
 from .server_side import format_message_log, load_cache
 from .upload_zip import enviar_arquivo_para_gcs
 
@@ -320,14 +319,17 @@ class InstanceBot:
                 mensagem = render_template("email_schedule.jinja").render(
                     display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
                 )
-                file_zip = kwargs.pop("file_zip")
-                attach = [Attachment(file_zip)]
 
             msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
             if destinatario not in admins:
                 msg = Message(
                     assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins, attachments=attach
                 )
+                if scheduled == "True" and type_notify == "stop":
+                    file_zip = Path(kwargs.get("file_zip"))
+                    async with aiofiles.open(file_zip, "rb") as f:
+                        file_ = FileStorage(await f.read(), file_zip.name, file_zip.name)
+                        msg.attach(file_zip.name, file_.content_type, await f.read())
 
             mail.send(msg)
         return "Email enviado com sucesso!"
@@ -428,8 +430,6 @@ class InstanceBot:
 
 __all__ = [
     makezip,
-    email_start,
-    email_stop,
     enviar_arquivo_para_gcs,
     load_cache,
     format_message_log,

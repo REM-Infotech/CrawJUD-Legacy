@@ -14,8 +14,6 @@ from .make_celery import make_celery
 from .mod_mgmt import reload_module
 from .scheduler import DatabaseScheduler
 from .status import (
-    email_start,
-    email_stop,
     enviar_arquivo_para_gcs,
     format_message_log,
     load_cache,
@@ -36,8 +34,6 @@ __all__ = [
     asyncinit_log,
     version_file,
     makezip,
-    email_start,
-    email_stop,
     enviar_arquivo_para_gcs,
     get_file,
     load_cache,
