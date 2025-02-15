@@ -332,6 +332,8 @@ class InstanceBot:
                         msg.attach(file_zip.name, file_.content_type, await f.read())
 
             mail.send(msg)
+
+        app.logger.info("Email enviado com sucesso!")
         return "Email enviado com sucesso!"
 
     @classmethod
