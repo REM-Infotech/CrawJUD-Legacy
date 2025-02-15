@@ -316,27 +316,27 @@ class InstanceBot:
             url_web = environ.get(" URL_WEB")
             destinatario = destinatario
             msg = Message(
-                assunto,
-                sender=robot,
-                recipients=[destinatario],
+                assunto,  # subject
+                sender=robot,  # sender
+                recipients=[destinatario],  # recipients
             )
 
             if scheduled == "False":
                 msg.html = render_template(f"email_{type_notify}.jinja").render(
-                    display_name=display_name,
-                    pid=pid,
-                    xlsx=xlsx,
-                    url_web=url_web,
-                    username=username,
+                    display_name=display_name,  # display name bot
+                    pid=pid,  # pid bot
+                    xlsx=xlsx,  # xlsx file
+                    url_web=url_web,  # url web
+                    username=username,  # username user
                 )
 
             elif scheduled == "True" and type_notify == "stop":
                 msg.html = render_template("email_schedule.jinja").render(
-                    display_name=display_name,
-                    pid=pid,
-                    xlsx=xlsx,
-                    url_web=url_web,
-                    username=username,
+                    display_name=display_name,  # display name bot
+                    pid=pid,  # pid bot
+                    xlsx=xlsx,  # xlsx file
+                    url_web=url_web,  # url web
+                    username=username,  # username user
                 )
                 file_zip = Path(kwargs.get("file_zip"))
                 async with aiofiles.open(file_zip, "rb") as f:
@@ -344,10 +344,10 @@ class InstanceBot:
                     content_size = file_zip.stat().st_size
                     file_ = FileStorage(
                         await f.read(),
+                        file_zip.name,  # file zip name
                         file_zip.name,
-                        file_zip.name,
-                        content_type=content_type,
-                        content_length=content_size,
+                        content_type=content_type,  # content type
+                        content_length=content_size,  # content length
                     )
                     msg.attach(
                         file_zip.name,
