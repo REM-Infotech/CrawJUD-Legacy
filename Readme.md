@@ -1,6 +1,6 @@
 # CrawJUD - RPA for Judicial Processes
 
-[![license mit](https://img.shields.io/badge/licence-MIT-blue.svg)](./LICENSE)
+[![license MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](./LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Python 3.13](https://shields.io/badge/python-3.13%20-green?logo=python)](https://python.org/downloads/release/python-3132/)
 [![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
