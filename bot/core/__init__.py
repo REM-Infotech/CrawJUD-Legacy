@@ -110,8 +110,8 @@ class CrawJUD(PropertiesCrawJUD):
 
     def setup(
         self,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:
         """Set up the bot by loading configuration and preparing the environment.
 
@@ -127,8 +127,8 @@ class CrawJUD(PropertiesCrawJUD):
         9. Launches the driver.
 
         Args:
-            *args (tuple): Positional arguments.
-            **kwargs (dict): Keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         self.row = 0

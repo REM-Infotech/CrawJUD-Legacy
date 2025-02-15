@@ -23,8 +23,8 @@ class Calculadoras:
 
     def __init__(
         self,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:
         """Initialize Bot instance.
 

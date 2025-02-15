@@ -99,14 +99,14 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def projudi_launcher(
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
@@ -146,14 +146,14 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def esaj_launcher(
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
@@ -193,14 +193,14 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def pje_launcher(
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
@@ -240,14 +240,14 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def elaw_launcher(
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
@@ -287,14 +287,14 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def caixa_launcher(
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.
@@ -334,14 +334,14 @@ class WorkerBot:
     @staticmethod
     @shared_task(ignore_result=False)
     def calculadoras_launcher(
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> str:
         """Start a new bot process with the provided arguments.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
             path_args (str): Path to the JSON file with bot arguments.
             display_name (str): Display name for the bot.
             system (str): The system for which the bot is initialized.

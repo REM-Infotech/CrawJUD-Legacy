@@ -22,14 +22,20 @@ class BaseCrawJUDError(Exception):
         """Set the error message."""
         self.message_ = message
 
-    def __init__(self, message: str = None, e: Exception = None, *args: tuple, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        message: str = None,
+        e: Exception = None,
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> None:
         """Initialize BaseCrawJUDError with an optional message and exception.
 
         Args:
             message (str, optional): Error message. Defaults to None.
             e (Exception, optional): Original exception. Defaults to None.
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         self.message = message
@@ -65,8 +71,20 @@ class BaseCrawJUDError(Exception):
 class NotFoundError(BaseCrawJUDError):
     """Exception raised when a required item is not found."""
 
-    def __init__(self, message: str = "Item não encontrado") -> None:
-        """Initialize NotFoundError with a default message."""
+    def __init__(
+        self,
+        message: str = "Item não encontrado",
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> None:
+        """Initialize NotFoundError with a default message.
+
+        Args:
+            message (str, optional): Error message. Defaults to "Item não encontrado".
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+
+        """
         super().__init__(message)
 
     def __instancecheck__(self, instance: Exception) -> bool:
@@ -104,10 +122,16 @@ class ExecutionError(BaseCrawJUDError):
 
     def __init__(
         self,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:
-        """Initialize ExecutionError with optional arguments."""
+        """Initialize ExecutionError with optional arguments.
+
+        Args:
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+
+        """
         super().__init__(*args, **kwargs)
 
     def __instancecheck__(self, instance: Exception) -> bool:

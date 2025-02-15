@@ -9,7 +9,7 @@ from pytz import timezone
 from socketio import AsyncServer
 
 from app import app
-from utils import FormatMessage, load_cache
+from utils import format_message_log, load_cache
 
 from .bot.task_exec import TaskExec
 
@@ -116,7 +116,7 @@ async def log_message(sid: str, data: dict[str, str] = None) -> None:
             pid = data["pid"]
 
             if "message" in data:
-                data = await FormatMessage(data, pid, app)
+                data = await format_message_log(data, pid, app)
 
                 await io.emit("log_message", data, room=pid, namespace="/log")
 

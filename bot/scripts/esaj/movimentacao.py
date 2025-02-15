@@ -32,22 +32,22 @@ class Movimentacao(CrawJUD):
         Initialize bot instance.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         return cls(*args, **kwargs)
 
     def __init__(
         self,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:
         """Initialize the Movimentacao instance.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         super().__init__()

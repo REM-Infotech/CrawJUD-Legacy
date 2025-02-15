@@ -189,14 +189,22 @@ class AppFactory:
         return quart, celery
 
     @classmethod
-    def starter(cls, port: int, log_output: bool, app: Quart, **kwargs: dict[str, any]) -> None:
+    def starter(
+        cls,
+        port: int,
+        log_output: bool,
+        app: Quart,
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> None:
         """Start the application with the specified parameters.
 
         Args:
             port (int): The port to listen on.
             log_output (bool): Whether to log output.
             app (Quart): The Quart application instance.
-            **kwargs: Additional keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         # Create a WebSocket

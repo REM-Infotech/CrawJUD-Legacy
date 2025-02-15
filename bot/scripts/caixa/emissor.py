@@ -32,8 +32,8 @@ class Emissor(CrawJUD):  # noqa: N801
 
     def __init__(
         self,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:
         """Initialize a new emissor instance.
 
@@ -41,8 +41,8 @@ class Emissor(CrawJUD):  # noqa: N801
         processing environment.
 
         Args:
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         Raises:
             StartError: If an exception occurs during bot execution.

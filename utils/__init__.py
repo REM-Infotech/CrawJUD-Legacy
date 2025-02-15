@@ -14,10 +14,10 @@ from .make_celery import make_celery
 from .mod_mgmt import reload_module
 from .scheduler import DatabaseScheduler
 from .status import (
-    FormatMessage,
     email_start,
     email_stop,
     enviar_arquivo_para_gcs,
+    format_message_log,
     load_cache,
     makezip,
 )
@@ -41,7 +41,7 @@ __all__ = [
     enviar_arquivo_para_gcs,
     get_file,
     load_cache,
-    FormatMessage,
+    format_message_log,
     reload_module,
 ]
 

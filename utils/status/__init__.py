@@ -30,7 +30,7 @@ from app.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, Sch
 
 from .makefile import makezip
 from .send_email import email_start, email_stop
-from .server_side import FormatMessage, load_cache
+from .server_side import format_message_log, load_cache
 from .upload_zip import enviar_arquivo_para_gcs
 
 url_cache = []
@@ -147,8 +147,8 @@ class InstanceBot:
         cls,
         db: SQLAlchemy,
         data: dict[str, str | int | datetime],
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> dict[str, str | int | datetime]:
         """Insert the bot execution data into the database.
 
@@ -204,8 +204,8 @@ class InstanceBot:
         pid: str,
         id_: int,
         user: str,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> tuple[dict[str, str | list[str]], str]:
         """Insert the bot execution data into the database.
 
@@ -366,6 +366,8 @@ class InstanceBot:
         pid: str,
         status: str,
         file_out: str,
+        *args: str | int,
+        **kwargs: str | int,
     ) -> dict[str, str | list[str]] | tuple[dict[str, str], Literal[500]]:
         """Stop the bot and handle file uploads and database interactions.
 
@@ -375,6 +377,8 @@ class InstanceBot:
             pid (str): Process ID.
             status (str): Status of the bot.
             file_out (str): The output file.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         try:
@@ -428,5 +432,5 @@ __all__ = [
     email_stop,
     enviar_arquivo_para_gcs,
     load_cache,
-    FormatMessage,
+    format_message_log,
 ]

@@ -44,7 +44,11 @@ async def load_cache(pid: str, app: Quart) -> dict[str, str]:
     return log_pid
 
 
-async def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app: Quart = None) -> dict[str, str | int]:  # noqa: C901, N802
+async def format_message_log(  # noqa: C901
+    data: dict[str, str | int] = None,
+    pid: str = None,
+    app: Quart = None,
+) -> dict[str, str | int]:  # noqa: C901, N802
     """Format and update the status message for a given process.
 
     This function interacts with a SQLAlchemy database and a Redis client to
@@ -59,6 +63,7 @@ async def FormatMessage(data: dict[str, str | int] = None, pid: str = None, app:
         pid (str, optional): The process ID. Defaults to None.
         app (Flask, optional): The Quart application instance, used to access
             extensions like SQLAlchemy and Redis. Defaults to None.
+
 
     Returns:
         dict[str, str | int]: The updated data dictionary with the latest

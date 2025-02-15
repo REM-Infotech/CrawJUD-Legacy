@@ -54,6 +54,8 @@ class CrontabModel(db.Model):
         day_of_week: str = "*",
         day_of_month: str = "*",
         month_of_year: str = "*",
+        *args: str | int,
+        **kwargs: str | int,
     ) -> None:  # pragma: no cover
         """Initialize a new crontab schedule.
 
@@ -63,6 +65,8 @@ class CrontabModel(db.Model):
             day_of_week (str): The day of the week to run the task.
             day_of_month (str): The day of the month to run the task.
             month_of_year (str): The month of the year to run the task.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         self.minute = minute

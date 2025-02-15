@@ -27,8 +27,8 @@ class TaskExec(InstanceBot):
         files: MultiDict = None,
         celery_app: Celery = None,
         data_bot: MultiDict = None,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> int:
         """Execute the task with the specified parameters.
 
@@ -42,8 +42,8 @@ class TaskExec(InstanceBot):
             exec_type (str): The type of execution.
             files (MultiDict): The files to process.
             data_bot (MultiDict): The bot data.
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         async with app.app_context():
@@ -109,8 +109,8 @@ class TaskExec(InstanceBot):
         db: SQLAlchemy = None,
         files: MultiDict = None,
         data_bot: MultiDict = None,
-        *args,  # noqa: ANN002
-        **kwargs,  # noqa: ANN003
+        *args: str | int,
+        **kwargs: str | int,
     ) -> int:
         """Execute the task with the specified parameters.
 
@@ -124,8 +124,8 @@ class TaskExec(InstanceBot):
             exec_type (str): The type of execution.
             files (MultiDict): The files to process.
             data_bot (MultiDict): The bot data.
-            *args (tuple[str | any]): Variable length argument list.
-            **kwargs (dict[str, str | any]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
         celery_app: Celery = app.extensions["celery"]  # noqa: F841

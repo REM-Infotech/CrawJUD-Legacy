@@ -593,7 +593,11 @@ class OtherUtils(CrawJUD):
         """
         return re.sub(r"[\s_\-]", "", word).lower()
 
-    def similaridade(self, word1: str, word2: str) -> float:
+    def similaridade(
+        self,
+        word1: str,
+        word2: str,
+    ) -> float:
         """Compare similarity between two words.
 
         Args:
@@ -669,7 +673,10 @@ class OtherUtils(CrawJUD):
             except subprocess.CalledProcessError as e:
                 raise e
 
-    def group_date_all(self, data: dict[str, dict[str, str]]) -> list[dict[str, str]]:
+    def group_date_all(
+        self,
+        data: dict[str, dict[str, str]],
+    ) -> list[dict[str, str]]:
         """Group date and vara information from the input data into a list of records.
 
         Args:
@@ -689,7 +696,10 @@ class OtherUtils(CrawJUD):
                     records.append(record)
         return records
 
-    def group_keys(self, data: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    def group_keys(
+        self,
+        data: list[dict[str, str]],
+    ) -> dict[str, dict[str, str]]:
         """Group keys from a list of dictionaries.
 
         Args:
