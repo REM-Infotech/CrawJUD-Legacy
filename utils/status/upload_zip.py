@@ -1,17 +1,16 @@
 """Module for uploading ZIP files to Google Cloud Storage (GCS)."""
 
-import os
 from pathlib import Path
-from typing import Optional
 
 from ..gcs_mgmt import bucket_gcs, storage_client
 
 
-def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
+def enviar_arquivo_para_gcs(zip_file: str, file_path: Path) -> tuple[str, Path]:
     """Upload a ZIP file to Google Cloud Storage.
 
     Args:
         zip_file (str): The name of the ZIP file to upload.
+        file_path (Path): The path to the ZIP file.
 
     Returns:
         Optional[str]: The basename of the uploaded file if successful, else None.
@@ -24,11 +23,11 @@ def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
         arquivo_local = ""
         objeto_destino = ""
 
-        path_output = os.path.join(Path(__file__).parent.resolve(), zip_file)
+        path_output = Path(file_path)
 
-        if os.path.exists(path_output):
-            arquivo_local = path_output
-            objeto_destino = os.path.basename(path_output)
+        if path_output.exists():
+            arquivo_local = str(file_path)
+            objeto_destino = zip_file
         else:
             return None
 
@@ -40,7 +39,7 @@ def enviar_arquivo_para_gcs(zip_file: str) -> Optional[str]:
         # Upload the local file to the Blob object
         blob.upload_from_filename(arquivo_local)
 
-        return os.path.basename(zip_file)
+        return zip_file, file_path
 
     except Exception as e:
         raise e

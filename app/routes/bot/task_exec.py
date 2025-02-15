@@ -86,11 +86,31 @@ class TaskExec(InstanceBot):
                 status = dict_status.get("status")
                 schedule = dict_status.get("schedule")
 
-                filename = await asyncio.create_task(cls.make_zip(pid))
-                execut = await asyncio.create_task(cls.send_stop_exec(app, db, pid, status, filename))
+                filename, file_path = await asyncio.create_task(
+                    cls.make_zip(
+                        pid,
+                    ),
+                )
+                execut = await asyncio.create_task(
+                    cls.send_stop_exec(
+                        app,
+                        db,
+                        pid,
+                        status,
+                        filename,
+                    )
+                )
 
                 try:
-                    await asyncio.create_task(cls.send_email(execut, app, "stop", schedule=schedule))
+                    await asyncio.create_task(
+                        cls.send_email(
+                            execut,
+                            app,
+                            "stop",
+                            schedule=schedule,
+                            file_zip=file_path,
+                        )
+                    )
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 

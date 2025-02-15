@@ -10,7 +10,7 @@ from shutil import rmtree
 import pytz
 
 
-def makezip(pid: str) -> str:
+def makezip(pid: str) -> tuple[str, Path]:
     """Create a ZIP archive for a given process ID.
 
     This function collects all relevant files associated with the provided PID,
@@ -55,4 +55,4 @@ def makezip(pid: str) -> str:
             arcname = os.path.relpath(file, exec_path)
             zipf.write(file, arcname=arcname)
 
-    return zip_file
+    return zip_filename, zip_file

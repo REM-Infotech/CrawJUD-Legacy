@@ -301,35 +301,32 @@ class InstanceBot:
         xlsx = execut.get("xlsx")
         destinatario = execut.get("email")
         username = execut.get("username")
-        scheduled = kwargs.pop("schedule", "False")
-        attach = None
+        scheduled = kwargs.get("schedule", "False")
         async with app.app_context():
             sendermail = environ["MAIL_DEFAULT_SENDER"]
 
             robot = f"Robot Notifications <{sendermail}>"
-            assunto = f"Bot {display_name} - {type_notify}"
+            assunto = f"Bot {display_name} - {type_notify.capitalize()} Notification"
             url_web = environ.get(" URL_WEB")
             destinatario = destinatario
+            msg = Message(assunto, sender=robot, recipients=[destinatario])
 
             if scheduled == "False":
-                mensagem = render_template(f"email_{type_notify}.jinja").render(
-                    display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
-                )
-            elif scheduled == "True" and type_notify == "stop":
-                mensagem = render_template("email_schedule.jinja").render(
+                msg.html = render_template(f"email_{type_notify}.jinja").render(
                     display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
                 )
 
-            msg = Message(assunto, sender=robot, recipients=[destinatario], html=mensagem)
-            if destinatario not in admins:
-                msg = Message(
-                    assunto, sender=robot, recipients=[destinatario], html=mensagem, cc=admins, attachments=attach
+            elif scheduled == "True" and type_notify == "stop":
+                msg.html = render_template("email_schedule.jinja").render(
+                    display_name=display_name, pid=pid, xlsx=xlsx, url_web=url_web, username=username
                 )
-                if scheduled == "True" and type_notify == "stop":
-                    file_zip = Path(kwargs.get("file_zip"))
-                    async with aiofiles.open(file_zip, "rb") as f:
-                        file_ = FileStorage(await f.read(), file_zip.name, file_zip.name)
-                        msg.attach(file_zip.name, file_.content_type, await f.read())
+                file_zip = Path(kwargs.get("file_zip"))
+                async with aiofiles.open(file_zip, "rb") as f:
+                    file_ = FileStorage(await f.read(), file_zip.name, file_zip.name)
+                    msg.attach(file_zip.name, file_.content_type, await f.read())
+
+            if destinatario not in admins:
+                msg.cc = admins
 
             mail.send(msg)
 
@@ -337,7 +334,7 @@ class InstanceBot:
         return "Email enviado com sucesso!"
 
     @classmethod
-    async def make_zip(cls, pid: str) -> str:
+    async def make_zip(cls, pid: str) -> tuple[str, Path | None]:
         """Create a ZIP file.
 
         Args:
@@ -347,20 +344,24 @@ class InstanceBot:
         from ..gcs_mgmt import get_file
 
         filename = get_file(pid)
+        file_path: Path = None
 
         if filename == "":
-            filename = await asyncio.create_task(cls.send_file_gcs(makezip(pid)))
-        return filename
+            file_zip, f_path = makezip(pid)
+            filename, file_path = await asyncio.create_task(cls.send_file_gcs(file_zip, f_path))
+        return filename, file_path
 
     @classmethod
-    async def send_file_gcs(cls, zip_file: str) -> str:
+    async def send_file_gcs(cls, zip_file: str, file_path: Path) -> tuple[str, Path]:
         """Send a file to Google Cloud Storage.
 
         Args:
             zip_file (str): The ZIP file to send.
+            file_path (Path): The path to the file.
 
         """
-        return enviar_arquivo_para_gcs(zip_file)
+        file_zip1, file_path2 = enviar_arquivo_para_gcs(zip_file, file_path)
+        return file_zip1, file_path2
 
     @classmethod
     async def send_stop_exec(
