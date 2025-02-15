@@ -11,7 +11,7 @@ from ...common import StartError
 from .tjdft import Tjdft
 
 __all__ = ["Tjdft"]
-logger = logging.getLogger(__name__)
+logger_ = logging.getLogger(__name__)
 ClassBots = Union[Tjdft]
 
 
@@ -23,11 +23,6 @@ class Calculadoras:
 
     def __init__(
         self,
-        path_args: str,
-        display_name: str,
-        system: str,
-        typebot: str,
-        logger: logging.Logger = None,
         *args: tuple[str],
         **kwargs: dict[str, str],
     ) -> None:
@@ -46,10 +41,10 @@ class Calculadoras:
 
         """
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
-            logger = kwargs.pop("logger", logger)
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
+            logger = kwargs.get("logger", logger_)
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
             self.typebot_ = typebot

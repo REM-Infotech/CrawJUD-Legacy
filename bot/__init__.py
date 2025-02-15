@@ -119,13 +119,14 @@ class WorkerBot:
         """
         from .scripts import Projudi
 
+        bot_class = Projudi
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Projudi, args=args, kwargs=kwargs)
+            process = BotThread(target=bot_class, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -165,13 +166,14 @@ class WorkerBot:
         """
         from .scripts import Esaj
 
+        bot_class = Esaj
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Esaj, args=args, kwargs=kwargs)
+            process = BotThread(target=bot_class, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -211,13 +213,14 @@ class WorkerBot:
         """
         from .scripts import PJe
 
+        bot_class = PJe
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=PJe, args=args, kwargs=kwargs)
+            process = BotThread(target=bot_class, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -257,13 +260,14 @@ class WorkerBot:
         """
         from .scripts import Elaw
 
+        bot_class = Elaw
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Elaw, args=args, kwargs=kwargs)
+            process = BotThread(target=bot_class, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -303,13 +307,14 @@ class WorkerBot:
         """
         from .scripts import Caixa
 
+        bot_class = Caixa
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Caixa, args=args, kwargs=kwargs)
+            process = BotThread(target=bot_class, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)
@@ -349,13 +354,14 @@ class WorkerBot:
         """
         from .scripts import Calculadoras
 
+        bot_class = Calculadoras
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
-            process = BotThread(target=Calculadoras, args=args, kwargs=kwargs)
+            process = BotThread(target=bot_class, args=args, kwargs=kwargs)
             process.daemon = True
             process.start()
             sleep(2)

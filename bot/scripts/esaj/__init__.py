@@ -45,10 +45,10 @@ class Esaj:
 
         """
         try:
-            display_name = kwargs.pop("display_name")
-            system = kwargs.pop("system")
-            typebot = kwargs.pop("typebot")
-            logger = kwargs.pop("logger", logger_)
+            display_name = kwargs.get("display_name")
+            system = kwargs.get("system")
+            typebot = kwargs.get("typebot")
+            logger = kwargs.get("logger", logger_)
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
 
             self.typebot_ = typebot
