@@ -8,7 +8,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import mimetypes
+import mimetypes  # noqa: F401
 import traceback  # noqa: F401
 import unicodedata
 from datetime import datetime
@@ -32,13 +32,17 @@ from werkzeug.utils import secure_filename
 from app.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
 
 from .makefile import makezip
+from .permalink import generate_signed_url
 from .server_side import format_message_log, load_cache
 from .upload_zip import enviar_arquivo_para_gcs
 
 url_cache = []
 logger = logging.getLogger(__name__)
 
-env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve().joinpath("mail/templates")), autoescape=True)
+env = Environment(
+    loader=FileSystemLoader(Path(__file__).parent.resolve().joinpath("mail/templates")),
+    autoescape=True,
+)
 
 
 class TaskExec:
@@ -191,7 +195,6 @@ class TaskExec:
 
         return 500
 
-    # Utilities methods
     @classmethod
     async def format_string(cls, string: str) -> str:
         """Format a string to be a secure filename.
@@ -207,7 +210,6 @@ class TaskExec:
             "".join([c for c in unicodedata.normalize("NFKD", string) if not unicodedata.combining(c)]),
         )
 
-    # Tasks
     @classmethod
     async def configure_path(cls, app: Quart, pid: str, files: dict[str, FileStorage] = None) -> Path:
         """Configure the path for the bot.
@@ -461,7 +463,7 @@ class TaskExec:
 
             robot = f"Robot Notifications <{sendermail}>"
             assunto = f"Bot {display_name} - {type_notify.capitalize()} Notification"
-            url_web = environ.get(" URL_WEB")
+            url_web = environ.get("URL_WEB")
             destinatario = destinatario
             msg = Message(
                 assunto,  # subject
@@ -485,23 +487,24 @@ class TaskExec:
                     xlsx=xlsx,  # xlsx file
                     url_web=url_web,  # url web
                     username=username,  # username user
+                    file_url=await cls.make_permalink(),  # permalink file
                 )
-                file_zip = Path(kwargs.get("file_zip"))
-                async with aiofiles.open(file_zip, "rb") as f:
-                    content_type = mimetypes.guess_type(str(file_zip))[0]
-                    content_size = file_zip.stat().st_size
-                    file_ = FileStorage(
-                        await f.read(),
-                        file_zip.name,  # file zip name
-                        file_zip.name,
-                        content_type=content_type,  # content type
-                        content_length=content_size,  # content length
-                    )
-                    msg.attach(
-                        file_zip.name,
-                        file_.content_type,
-                        await f.read(),
-                    )
+                # file_zip = Path(kwargs.get("file_zip"))
+                # async with aiofiles.open(file_zip, "rb") as f:
+                #     content_type = mimetypes.guess_type(str(file_zip))[0]
+                #     content_size = file_zip.stat().st_size
+                #     file_ = FileStorage(
+                #         await f.read(),
+                #         file_zip.name,  # file zip name
+                #         file_zip.name,
+                #         content_type=content_type,  # content type
+                #         content_length=content_size,  # content length
+                #     )
+                #     msg.attach(
+                #         file_zip.name,
+                #         file_.content_type,
+                #         await f.read(),
+                #     )
 
             if destinatario not in admins:
                 msg.cc = admins
@@ -510,6 +513,10 @@ class TaskExec:
 
         app.logger.info("Email enviado com sucesso!")
         return "Email enviado com sucesso!"
+
+    @classmethod
+    async def make_permalink(cls) -> str:
+        pass
 
     @classmethod
     async def make_zip(cls, pid: str) -> tuple[str, Path | None]:
@@ -614,4 +621,5 @@ __all__ = [
     enviar_arquivo_para_gcs,
     load_cache,
     format_message_log,
+    "generate_signed_url",
 ]
