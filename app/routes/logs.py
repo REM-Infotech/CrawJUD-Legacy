@@ -10,8 +10,7 @@ from socketio import AsyncServer
 
 from app import app
 from utils import format_message_log, load_cache
-
-from .bot.task_exec import TaskExec
+from utils.status import TaskExec
 
 logger = logging.getLogger(__name__)
 

@@ -10,7 +10,10 @@ from quart import Quart
 
 from app import AppFactory
 
-os.environ.update({"APPLICATION_APP": "worker", "IN_PRODUCTION": "True"})
+os.environ.update({
+    "APPLICATION_APP": "worker",
+    "IN_PRODUCTION": "True",
+})
 
 quart_app, app = AppFactory.start_app()
 

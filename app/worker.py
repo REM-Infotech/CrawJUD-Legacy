@@ -18,7 +18,13 @@ if __name__ == "__main__":
     async def run_worker(app: Celery, quart_app: Quart) -> None:
         """Run the worker."""
         async with quart_app.app_context():
-            worker = Worker(app=app, task_events=True, loglevel="INFO", concurrency=50.0, pool="threads")
+            worker = Worker(
+                app=app,
+                task_events=True,
+                loglevel="INFO",
+                concurrency=50.0,
+                pool="threads",
+            )
             worker.start()
 
     asyncio.run(run_worker(app, quart_app))
