@@ -11,7 +11,7 @@ class ScheduleModel(db.Model):
     """Represents a scheduled job with its execution details."""
 
     __tablename__ = "scheduled_jobs"
-    id = db.Column(db.Integer, primary_key=True)
+    id: int = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String(128), nullable=False)
     task: str = db.Column(db.String(128), nullable=False)
     email: str = db.Column(db.String(128), nullable=True)
@@ -24,10 +24,10 @@ class ScheduleModel(db.Model):
     kwargs: str = db.Column(db.Text, nullable=True, default="{}")  # JSON para kwargs
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
 
-    license_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     license_usr = db.relationship("LicensesUsers", backref=db.backref("scheduled_execution", lazy=True))
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("Users", backref=db.backref("scheduled_execution", lazy=True))
 
     def __repr__(self) -> str:  # pragma: no cover
