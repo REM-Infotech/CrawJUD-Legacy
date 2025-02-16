@@ -63,9 +63,6 @@ class Executions(db.Model):
     license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     license_usr = db.relationship("LicensesUsers", backref=db.backref("executions", lazy=True))
 
-    schedule_id: int = db.Column(db.Integer, db.ForeignKey("scheduled_jobs.id"))
-    schedule = db.relationship("ScheduledJobs", backref=db.backref("executions", lazy=True))
-
 
 class CacheLogs(db.Model):
     """Model representing cache logs for bot executions."""
