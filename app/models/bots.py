@@ -44,24 +44,27 @@ class Executions(db.Model):
     """Model representing bot executions."""
 
     __tablename__ = "executions"
-    pid = db.Column(db.String(length=12), nullable=False)
-    id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(length=45), nullable=False)
-    file_output = db.Column(db.String(length=512))
-    total_rows = db.Column(db.String(length=45))
-    url_socket = db.Column(db.String(length=64))
-    data_execucao = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
-    data_finalizacao = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
-    arquivo_xlsx = db.Column(db.String(length=64))
+    pid: str = db.Column(db.String(length=12), nullable=False)
+    id: int = db.Column(db.Integer, primary_key=True)
+    status: str = db.Column(db.String(length=45), nullable=False)
+    file_output: str = db.Column(db.String(length=512))
+    total_rows: str = db.Column(db.String(length=45))
+    url_socket: str = db.Column(db.String(length=64))
+    data_execucao: datetime = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
+    data_finalizacao: datetime = db.Column(db.DateTime, default=datetime.now(pytz.timezone("America/Manaus")))
+    arquivo_xlsx: str = db.Column(db.String(length=64))
 
-    bot_id = db.Column(db.Integer, db.ForeignKey("bots.id"))
+    bot_id: int = db.Column(db.Integer, db.ForeignKey("bots.id"))
     bot = db.relationship("BotsCrawJUD", backref=db.backref("executions", lazy=True))
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("Users", backref=db.backref("executions", lazy=True))
 
-    license_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     license_usr = db.relationship("LicensesUsers", backref=db.backref("executions", lazy=True))
+
+    schedule_id: int = db.Column(db.Integer, db.ForeignKey("scheduled_jobs.id"))
+    schedule = db.relationship("ScheduledJobs", backref=db.backref("executions", lazy=True))
 
 
 class CacheLogs(db.Model):
