@@ -174,11 +174,14 @@ class AppFactory:
         }
 
         try:
-            if getenv("APPLICATION_APP") != "beat":
-                if getenv("APPLICATION_APP") == "quart" and getenv("IN_PRODUCTION", "False") == "True":
+            application = getenv("APPLICATION_APP")
+            in_production = getenv("IN_PRODUCTION", "False")
+
+            if application != "beat":
+                if application == "quart" and in_production == "True":
                     cls.starter(**args_run)
 
-                elif getenv("APPLICATION_APP") == "worker" and getenv("IN_PRODUCTION", "False") == "False":
+                elif application == "worker" and in_production == "False":
                     starter = Thread(target=cls.starter, kwargs=args_run)
                     starter.daemon = True
                     starter.start()
