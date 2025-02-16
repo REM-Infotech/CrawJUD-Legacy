@@ -340,9 +340,12 @@ class TaskExec:
             "typebot": typebot,
         })
 
+        user = db.session.query(Users).filter(Users.login == user).first()
+
         new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args_, kwargs=kwargs_)
         new_schedule.schedule = cron
         new_schedule.license_usr = license_
+        new_schedule.user = user
         db.session.add(new_schedule)
         db.session.commit()
 

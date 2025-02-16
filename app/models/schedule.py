@@ -27,6 +27,9 @@ class ScheduleModel(db.Model):
     license_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     license_usr = db.relationship("LicensesUsers", backref=db.backref("scheduled_execution", lazy=True))
 
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user = db.relationship("Users", backref=db.backref("scheduled_execution", lazy=True))
+
     def __repr__(self) -> str:  # pragma: no cover
         """Return a string representation of the scheduled job.
 
