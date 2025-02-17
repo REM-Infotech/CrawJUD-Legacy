@@ -14,6 +14,7 @@ from .make_celery import make_celery
 from .mod_mgmt import reload_module
 from .scheduler import DatabaseScheduler
 from .status import (
+    TaskExec,
     enviar_arquivo_para_gcs,
     format_message_log,
     load_cache,
@@ -39,6 +40,7 @@ __all__ = [
     load_cache,
     format_message_log,
     reload_module,
+    TaskExec,
 ]
 
 load_dotenv()

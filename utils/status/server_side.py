@@ -74,7 +74,7 @@ async def format_message_log(  # noqa: C901
         dictionary is returned without modifications.
 
     """
-    from app.routes.bot.task_exec import TaskExec
+    from utils import TaskExec
 
     if data is None:
         data = {}
