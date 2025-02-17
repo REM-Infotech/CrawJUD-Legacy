@@ -117,12 +117,18 @@ class TaskExec:
 
             elif exec_type == "stop":
                 pid = data_bot.get("pid")
+                if not pid:
+                    return 500
                 db: SQLAlchemy = app.extensions["sqlalchemy"]
                 dict_status: dict[str, str] = data_bot.get("status")
+
+                if isinstance(dict_status, str) or dict_status is None:
+                    dict_status: dict[str, str] = {"status": "Finalizado", "schedule": "False"}
+
                 status = dict_status.get("status")
                 schedule = dict_status.get("schedule")
 
-                filename = await asyncio.create_task(cls.make_zip(pid))
+                filename, _ = await asyncio.create_task(cls.make_zip(pid))
                 execut = await asyncio.create_task(cls.send_stop_exec(app, db, pid, status, filename))
 
                 try:

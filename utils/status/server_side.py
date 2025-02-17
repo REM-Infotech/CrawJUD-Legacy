@@ -1,7 +1,5 @@
 """Module for server-side operations in CrawJUD-Bots."""
 
-import asyncio  # noqa: F401
-
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from redis_flask import Redis
@@ -91,7 +89,7 @@ async def format_message_log(  # noqa: C901
 
         # Verificar informações obrigatórias
         chk_infos = [data.get("system"), data.get("typebot")]  # noqa: F841
-        if all(chk_infos):
+        if all(chk_infos) or data_message.split("> ")[-1].islower():
             async with app.app_context():
                 await TaskExec.task_exec(data_bot=data, exec_type="stop", app=app)
 
@@ -116,7 +114,7 @@ async def format_message_log(  # noqa: C901
             redis_client.hset(redis_key, mapping=log_pid)
 
         # Atualizar informações existentes
-        elif data_pos > 0 or data["message"] != log_pid["message"] or "pid" not in data:
+        elif int(data_pos) > 0 or data["message"] != log_pid["message"] or "pid" not in data:
             if not log_pid or "pid" not in data:
                 if data_pos > 1:
                     # Chave única para o processo no Redis
@@ -190,7 +188,8 @@ async def format_message_log(  # noqa: C901
             },
         )
 
-    except Exception:
+    except Exception as e:
+        app.logger.error("An error occurred: %s", str(e))
         data = data
 
     return data

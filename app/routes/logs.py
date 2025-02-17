@@ -196,7 +196,7 @@ async def join(
                 # except Exception as e:
                 #     app.logger.error("An error occurred: %s", str(e))
                 #     app.logger.exception(traceback.format_exc())
-
+            data = await format_message_log(data, pid, app)
             await io.emit("log_message", data, room=room, namespace="/log")
 
         except Exception:
