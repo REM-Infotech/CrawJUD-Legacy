@@ -644,7 +644,7 @@ class PropertiesCrawJUD:
         return PropertiesCrawJUD.MakeXlsx_
 
     @property
-    def Interact(self) -> _Interact_:  # noqa: N802
+    def interact(self) -> _Interact_:
         """Return the Interact instance."""
         return PropertiesCrawJUD.Interact_
 
