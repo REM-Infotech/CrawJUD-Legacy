@@ -583,7 +583,7 @@ class TaskExec:
             if task_id or exec_info:
                 exec_info.status = status
                 exec_info.data_finalizacao = datetime.now(pytz.timezone("America/Manaus"))
-                exec_info.file_output = file_out
+                exec_info.file_output = str(file_out)
 
                 pid = exec_info.pid
                 usr: Users = exec_info.user
@@ -592,8 +592,9 @@ class TaskExec:
                 xlsx = str(exec_info.arquivo_xlsx)
                 usr = exec_info.user
 
-                for adm in usr.licenseusr.admins:
-                    admins.append(adm.email)
+                with db.session.no_autoflush:
+                    for adm in exec_info.license_usr.admins:
+                        admins.append(adm.email)
 
                 exec_data: dict[str, str | list[str]] = {
                     "pid": pid,

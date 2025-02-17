@@ -19,13 +19,7 @@ from ...core import CrawJUD
 
 
 class Andamentos(CrawJUD):
-    """The Andamentos class extends CrawJUD to handle andamento tracking tasks within the application.
-
-    Attributes:
-        attribute_name (type): Description of the attribute.
-        # ...other attributes...
-
-    """
+    """The Andamentos class manages the andamento tracking bot."""
 
     @classmethod
     def initialize(
