@@ -10,6 +10,7 @@ import shutil
 import time
 from contextlib import suppress
 from time import sleep
+from typing import Self
 
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By
@@ -29,6 +30,22 @@ class Emissor(CrawJUD):  # noqa: N801
     """
 
     count_doc = OtherUtils.count_doc
+
+    @classmethod
+    def initialize(
+        cls,
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> Self:
+        """
+        Initialize bot instance.
+
+        Args:
+            *args (tuple[str | int]): Variable length argument list.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+
+        """
+        return cls(*args, **kwargs)
 
     def __init__(
         self,
