@@ -114,7 +114,7 @@ async def format_message_log(  # noqa: C901
             redis_client.hset(redis_key, mapping=log_pid)
 
         # Atualizar informações existentes
-        elif int(data_pos) > 0 or data["message"] != log_pid["message"] or "pid" not in data:
+        elif int(data_pos) > 0 or data_message != log_pid["message"] or "pid" not in data:
             if not log_pid or "pid" not in data:
                 if data_pos > 1:
                     # Chave única para o processo no Redis
