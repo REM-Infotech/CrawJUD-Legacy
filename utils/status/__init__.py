@@ -524,8 +524,17 @@ class TaskExec:
         return "Email enviado com sucesso!"
 
     @classmethod
-    async def make_permalink(cls) -> str:
-        pass
+    async def make_permalink(cls, pid: str) -> str:
+        """Create a permalink for the bot output file."""
+        from ..gcs_mgmt import get_file
+
+        filename = get_file(pid)
+
+        if filename == "":
+            file_zip, f_path = makezip(pid)
+            filename, _ = await asyncio.create_task(cls.send_file_gcs(file_zip, f_path))
+
+        return generate_signed_url(filename)
 
     @classmethod
     async def make_zip(cls, pid: str) -> tuple[str, Path | None]:
