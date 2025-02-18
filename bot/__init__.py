@@ -1,18 +1,17 @@
-"""Package: CrawJUD-Bots.
+"""Provide automation tools for interacting with Brazilian Justice System websites.
 
-CrawJUD-Bots is a web scraper and bot for automated interaction with the
-Brazilian Justice System.
+This module contains the core components for automating interactions with various
+Brazilian Justice System websites including Projudi, PJe, eSaj and more.
 
-Subpackages:
-    core: Core functions for CrawJUD-Bots.
-    shared: Shared functions and classes.
-    Utils: Utility functions and classes.
-    common: Common functions and classes.
-    scripts: Scripts for CrawJUD-Bots.
+The package uses Selenium for web automation and provides a task-based architecture
+using Celery for managing concurrent bot operations.
 
-Modules:
-    __init__: Initialization of the CrawJUD-Bots package.
-    core, shared, Utils, common, scripts: Other modules.
+Attributes:
+    logger: Module level logger instance.
+
+Classes:
+    WorkerBot: Main class for managing bot lifecycle and operations.
+
 """
 
 # pragma: no cover
@@ -78,17 +77,21 @@ __all__ = [
 ]
 
 logger = logging.getLogger(__name__)
-# import signal
-# from pathlib import Path
-# from threading import Thread as Process
 
 
 class WorkerBot:
-    """Manage the lifecycle of bot processes.
+    """Manage the lifecycle and execution of automated judicial system bots.
+
+    This class provides methods to launch, monitor and control bot processes that interact
+    with different judicial systems. It handles process lifecycle management and provides
+    status monitoring capabilities.
 
     Attributes:
-        system (str): The operating system.
-        kwargs (dict[str, str]): Keyword arguments for bot configuration.
+        system (str): Operating system identifier.
+        kwargs (dict[str, str]): Configuration parameters for bot initialization.
+
+    Note:
+        All launcher methods are decorated with @shared_task for Celery integration.
 
     """
 
@@ -102,19 +105,24 @@ class WorkerBot:
         *args: str | int,
         **kwargs: str | int,
     ) -> str:
-        """Start a new bot process with the provided arguments.
+        """Launch a new Projudi bot process with specified configuration.
+
+        Creates and manages a new bot process for interacting with the Projudi system.
+        Handles process lifecycle and ensures proper cleanup.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
-            path_args (str): Path to the JSON file with bot arguments.
-            display_name (str): Display name for the bot.
-            system (str): The system for which the bot is initialized.
-            typebot (str): type of bot execution.
-
+            *args: Variable length argument list containing bot parameters.
+            **kwargs: Keyword arguments including:
+                path_args (str): Path to JSON configuration file.
+                display_name (str): Human readable bot identifier.
+                system (str): Target system identifier.
+                typebot (str): Bot execution type/mode.
 
         Returns:
-            str: Status message indicating bot completion.
+            str: Status message indicating completion ("Finalizado").
+
+        Raises:
+            Exception: If bot initialization or execution fails.
 
         """
         from .scripts import Projudi
@@ -380,15 +388,21 @@ class WorkerBot:
 
     @classmethod
     async def stop(cls, task_id: int, pid: str, app: Quart = None) -> str:
-        """Stop a process with the given task_id.
+        """Stop a running bot process gracefully.
+
+        Attempts to stop a bot process using either task_id or process ID. Creates a flag
+        file to signal the process to terminate if direct task termination is not possible.
 
         Args:
-            task_id (int): The process ID to stop.
-            pid (str): The PID of the process.
-            app (Flask, optional): The Quart app instance.
+            task_id (int): Celery task identifier.
+            pid (str): Process identifier string.
+            app (Quart, optional): Quart application instance for config access.
 
         Returns:
-            str: A message indicating the stop result.
+            str: Message indicating stop result.
+
+        Raises:
+            Exception: If process termination fails.
 
         """
         try:
@@ -410,16 +424,22 @@ class WorkerBot:
 
     @classmethod
     async def check_status(cls, task_id: str, pid: str, app: Quart) -> str:
-        """Check the status of a process.
+        """Check the current status of a bot process.
+
+        Verifies the state of a bot process through multiple methods including Celery
+        task status and flag file presence. Can trigger process termination if needed.
 
         Args:
-            task_id (str): The process ID to check.
-            pid (str): The PID of the process.
-            app (Flask): The Quart app
-
+            task_id (str): Celery task identifier.
+            pid (str): Process identifier string.
+            app (Quart): Quart application instance for config and logging.
 
         Returns:
-            str: A status message regarding the process.
+            str: Current status message of the process.
+
+        Note:
+            Status messages include: "Process running!", "Process stopped!",
+            or error messages.
 
         """
         try:
