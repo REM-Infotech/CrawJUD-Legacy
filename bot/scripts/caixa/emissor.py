@@ -1,10 +1,7 @@
-"""Module: emissor.
+"""Manage deposit documents and operations in the Caixa system for CrawJUD-Bots effectively.
 
-This module handles the emission of judicial deposit documents within the
-Caixa system of the CrawJUD-Bots application. It provides functionalities
-to manage accessing the site, filling forms, generating, and downloading
-judicial deposit PDFs.
-
+Provide a set of methods to handle site navigation, form filling, document creation,
+and PDF processing in compliance with Google/PEP 257 docstring standards.
 """
 
 import os
@@ -25,16 +22,11 @@ from ...core import CrawJUD
 from ...Utils import OtherUtils
 
 
-class Emissor(CrawJUD):  # noqa: N801
-    """Class Emissor.
+class Emissor(CrawJUD):
+    """Manage creation and processing of judicial deposit documents using the Emissor bot fully.
 
-    Manages the emission, naming, barcode retrieval, and processing
-    of judicial deposit documents within the Caixa system.
-
-    Attributes:
-        count_doc (callable): Utility method to decide the
-            document type (CPF/CNPJ).
-
+    Offer a range of functionalities to access deposit pages, handle login flows,
+    generate PDFs, and extract relevant data for deposit operations.
     """
 
     count_doc = OtherUtils.count_doc
@@ -45,16 +37,14 @@ class Emissor(CrawJUD):  # noqa: N801
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """Initialize an Emissor bot instance.
+        """Create a new Emissor instance for handling deposit operations systematically.
 
         Args:
-            *args: Variable length argument list representing
-                parameters necessary for the bot.
-            **kwargs: Arbitrary keyword arguments containing
-                configuration for the bot.
+            *args (str|int): Positional parameters for setup and environment details.
+            **kwargs (str|int): Configuration and keyword parameters for initialization.
 
         Returns:
-            Emissor: A new instance of the Emissor bot.
+            Emissor: Newly instantiated Emissor bot ready for execution.
 
         """
         return cls(*args, **kwargs)
@@ -64,29 +54,24 @@ class Emissor(CrawJUD):  # noqa: N801
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Create a new Emissor instance.
-
-        Sets up initial variables, including authentication and timing.
-        Calls setup() to configure the environment and auth_bot() to
-        perform the required login flow.
+        """Initialize Emissor with environment variables, login, and performance tracking.
 
         Args:
-            *args: The arguments needed for the bot.
-            **kwargs: Additional keyword arguments.
+            *args (str|int): Positional parameters for environment setup.
+            **kwargs (str|int): Keyword arguments used for custom configuration.
 
         """
         super().__init__()
 
         super().setup(*args, **kwargs)
         super().auth_bot()
-        self.start_time = time.perf_counter()
+        self.start_time = time.perf_counter()  # Tracks the bot's start time
 
     def execution(self) -> None:
-        """Run the main processing loop.
+        """Run the main operation loop and handle each DataFrame row comprehensively.
 
-        Iterates over the DataFrame rows, handling session checks and
-        errors. Logs any encountered exception, then restarts or stops
-        as needed.
+        Iterate through the DataFrame while checking session validity, capturing
+        errors, and resuming operations as required.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -132,12 +117,10 @@ class Emissor(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage the processing queue steps.
+        """Orchestrate the entire deposit emission procedure and record success or error.
 
-        Orchestrates the following emission steps:
-        site navigation, locale selection, deposit data input,
-        document creation, and PDF renaming. Handles exceptions
-        gracefully by raising ExecutionError.
+        Execute steps like site navigation, deposit data input, PDF creation,
+        and data extraction in a single call.
         """
         try:
             nameboleto = None
@@ -155,11 +138,10 @@ class Emissor(CrawJUD):  # noqa: N801
             raise ExecutionError(e=e) from e
 
     def get_site(self) -> None:
-        """Access the emission site.
+        """Access deposit site, solve CAPTCHA, and load required deposit interface.
 
-        Navigates to the Caixa deposit page and handles CAPTCHA and
-        navigation by interacting with the webpage elements. Ensures
-        that subsequent deposit steps can proceed.
+        Navigate to the deposit page, handle CAPTCHA resolution, and select
+        deposit type for further processing.
         """
         self.message = "Acessando página de emissão"
         self.type_log = "log"
@@ -200,11 +182,9 @@ class Emissor(CrawJUD):  # noqa: N801
         next_btn.click()
 
     def locale_proc(self) -> None:
-        """Configure the tribunal locale.
+        """Define tribunal, comarca, vara, and agency based on user-provided data inputs.
 
-        Selects tribunal, comarca, vara, and agency from the provided
-        options. Uses the bot_data attributes to match each selection
-        against the user-provided data.
+        Allow the script to select appropriate locale and proceed with deposit steps.
         """
         self.interact.wait_caixa()
 
@@ -265,11 +245,10 @@ class Emissor(CrawJUD):  # noqa: N801
                 break
 
     def proc_nattribut(self) -> None:
-        """Process the nature of the tributary.
+        """Set the process number and action type for the judicial deposit context.
 
-        Inserts the process number, action type, and a default nature
-        of action for the deposit. This step ensures the system
-        recognizes the deposit context.
+        Insert the required process details, ensuring the correct action type
+        and default deposit nature.
         """
         numprocess = self.bot_data.get("NUMERO_PROCESSO").split(".")
         numproc_formated = f"{numprocess[0]}.{numprocess[1]}.{numprocess[3]}.{numprocess[4]}"
@@ -310,11 +289,10 @@ class Emissor(CrawJUD):  # noqa: N801
         natureza_tributaria.click()
 
     def dados_partes(self) -> None:
-        """Input party (author/defendant) data.
+        """Fill in party information, including name and document details.
 
-        Fills in author and defendant details, including name and
-        document (CPF/CNPJ). Chooses the document type automatically
-        by the count_doc utility.
+        Determine the document type (CPF or CNPJ) automatically and populate
+        corresponding fields for both plaintiff (autor) and defendant (réu).
         """
         self.interact.wait_caixa()
         self.message = "Informando nome do autor"
@@ -400,11 +378,10 @@ class Emissor(CrawJUD):  # noqa: N801
         campo_doc_reu.send_keys(doc_reu)
 
     def info_deposito(self) -> None:
-        """Provide deposit information.
+        """Insert depositor's indicator and deposit amount into the form.
 
-        Fills in the depositor indicator (e.g., 'Réu') and the deposit
-        value. Formats the deposit value to match the system’s input
-        convention.
+        Identify the depositor (usually 'Réu') and format the deposit value
+        to comply with input requirements.
         """
         self.interact.wait_caixa()
         self.message = "Informando indicador depositante"
@@ -436,10 +413,10 @@ class Emissor(CrawJUD):  # noqa: N801
         campo_val_deposito.send_keys(val_deposito)
 
     def make_doc(self) -> None:
-        """Generate and download the deposit document.
+        """Generate the deposit document and initiate the PDF download sequence.
 
-        Initiates the document generation process and triggers
-        the PDF download, to be renamed and processed later.
+        Trigger the system to create a deposit PDF that is saved for further
+        renaming and data extraction.
         """
         self.interact.wait_caixa()
         self.message = "Gerando documento"
@@ -456,13 +433,13 @@ class Emissor(CrawJUD):  # noqa: N801
         download_pdf.click()
 
     def rename_pdf(self) -> str:
-        """Rename the downloaded PDF document.
+        """Rename and relocate the downloaded PDF with a standardized file name.
 
-        Uses stored bot_data attributes to format the PDF filename.
-        Moves the file from a temporary path to its final location.
+        Use bot_data for constructing the new name and move the file to its
+        final output directory, then return the new filename.
 
         Returns:
-            str: The newly generated name of the PDF.
+            str: New PDF filename after relocation.
 
         """
         pgto_name = self.bot_data.get("NOME_CUSTOM", "Guia De Depósito")
@@ -480,18 +457,16 @@ class Emissor(CrawJUD):  # noqa: N801
         return pdf_name
 
     def get_val_doc_and_codebar(self, pdf_name: str) -> None:
-        """Extract values and barcode from the PDF document.
+        """Extract deposit values and barcode from the specified PDF.
 
-        Parses the generated PDF to retrieve deposit information such
-        as barcodes and deposit values. Process number and other data
-        are assembled into a list returned at the end.
+        Open the PDF, locate barcodes and monetary values, then package the
+        results into a structured list for further processing.
 
         Args:
-            pdf_name (str): The name of the PDF to parse.
+            pdf_name (str): PDF file name to parse.
 
         Returns:
-            list: Process details, including barcodes, deposit values,
-            and other metadata needed for further processing.
+            list: Contains process information, including barcodes and deposit data.
 
         """
         sleep(0.5)
