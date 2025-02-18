@@ -1,4 +1,7 @@
-"""Initialization of database models for the CrawJUD-Bots application."""
+"""Initializes database models for the CrawJUD-Bots application.
+
+Exposes modules for bots, scheduling, servers, license management, and user data handling.
+"""
 
 from .bots import BotsCrawJUD, CacheLogs, Credentials, Executions, ThreadBots
 from .schedule import CrontabModel, ScheduleModel

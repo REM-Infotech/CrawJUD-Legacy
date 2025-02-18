@@ -1,4 +1,7 @@
-"""Database model for scheduled jobs in CrawJUD-Bots."""
+"""Defines schedule-related models for the CrawJUD-Bots application.
+
+Includes scheduled jobs and their corresponding crontab configurations.
+"""
 
 from datetime import datetime
 
@@ -8,7 +11,21 @@ from app import db
 
 
 class ScheduleModel(db.Model):
-    """Represents a scheduled job with its execution details."""
+    """Represents a scheduled job with execution details.
+
+    Attributes:
+        id (int): Primary key for the scheduled job.
+        name (str): Name of the job or task.
+        task (str): Task identifier to be executed.
+        email (str): Email address for notifications (optional).
+        schedule_id (int): References the crontab configuration.
+        args (str): JSON string of positional arguments.
+        kwargs (str): JSON string of keyword arguments.
+        last_run_at (datetime): Timestamp of the last execution.
+        license_id (int): Foreign key referencing the license.
+        user_id (int): Foreign key referencing the user who created the job.
+
+    """
 
     __tablename__ = "scheduled_jobs"
     id: int = db.Column(db.Integer, primary_key=True)
@@ -31,17 +48,22 @@ class ScheduleModel(db.Model):
     user = db.relationship("Users", backref=db.backref("scheduled_execution", lazy=True))
 
     def __repr__(self) -> str:  # pragma: no cover
-        """Return a string representation of the scheduled job.
-
-        Returns:
-            str: The task name of the scheduled job.
-
-        """
+        """Return the string representation of the scheduled job."""
         return f"<Schedule {self.name}>"
 
 
 class CrontabModel(db.Model):
-    """Represents a crontab schedule with its execution details."""
+    """Represents a crontab configuration for scheduling.
+
+    Attributes:
+        id (int): Primary key for the crontab entry.
+        hour (str): Hour at which to run the job.
+        minute (str): Minute at which to run the job.
+        day_of_week (str): Day of the week for the job.
+        day_of_month (str): Day of the month for the job.
+        month_of_year (str): Month of the year for the job.
+
+    """
 
     id = db.Column(db.Integer, primary_key=True)
     hour = db.Column(db.String(64), default="*")
@@ -60,7 +82,7 @@ class CrontabModel(db.Model):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:  # pragma: no cover
-        """Initialize a new crontab schedule.
+        """Initialize the crontab configuration with default or provided values.
 
         Args:
             minute (str): The minute to run the task.

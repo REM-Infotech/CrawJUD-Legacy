@@ -1,4 +1,8 @@
-"""Database models for users and related entities in CrawJUD-Bots."""
+"""Defines the database models for user management in CrawJUD-Bots.
+
+It includes models for superuser links, user credentials, and license associations.
+
+"""
 
 from datetime import datetime
 from uuid import uuid4
@@ -12,7 +16,14 @@ salt = bcrypt.gensalt()
 
 
 class SuperUser(db.Model):
-    """Represents a superuser linked to a regular user."""
+    """Represents a superuser, linked to a regular user.
+
+    Attributes:
+        id (int): Primary key for the superuser.
+        users_id (int): Foreign key referencing a user record.
+        users (Users): Relationship to the associated user model.
+
+    """
 
     __tablename__ = "superuser"
     id: int = db.Column(db.Integer, primary_key=True)
@@ -21,7 +32,23 @@ class SuperUser(db.Model):
 
 
 class Users(db.Model):
-    """Represents a user in the CrawJUD-Bots application."""
+    """Defines a user entity in the CrawJUD-Bots system.
+
+    Attributes:
+        id (int): Primary key for the user.
+        login (str): Username or login identifier.
+        nome_usuario (str): Display name for the user.
+        email (str): Email address of the user.
+        password (str): Hashed user password.
+        login_time (datetime): Last login time with default to Manaus timezone.
+        verification_code (str): Code used for user verification.
+        login_id (str): Unique login session identifier.
+        filename (str): Name of an associated file resource.
+        blob_doc (bytes): Binary large object storing user file data.
+        licenseus_id (int): Foreign key referencing LicensesUsers.
+        licenseusr (LicensesUsers): Relationship for user license data.
+
+    """
 
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -39,13 +66,13 @@ class Users(db.Model):
     licenseusr = db.relationship("LicensesUsers", backref="user")
 
     @property
-    def senhacrip(self) -> None:  # pragma: no cover
-        """Get the hashed password."""
+    def senhacrip(self) -> None:
+        """Retrieve the stored hashed password."""
         return self.senhacrip
 
     @senhacrip.setter
-    def senhacrip(self, senha_texto: str) -> None:  # pragma: no cover
-        """Set the hashed password from plaintext.
+    def senhacrip(self, senha_texto: str) -> None:
+        """Hash and store a plaintext password.
 
         Args:
             senha_texto (str): The plaintext password.
@@ -53,21 +80,29 @@ class Users(db.Model):
         """
         self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
 
-    def check_password(self, senha_texto_claro: str) -> bool:  # pragma: no cover
-        """Verify the plaintext password against the hashed password.
+    def check_password(self, senha_texto_claro: str) -> bool:
+        """Check if a given plaintext password matches the stored hash.
 
         Args:
-            senha_texto_claro (str): The plaintext password.
+            senha_texto_claro (str): The plaintext password for comparison.
 
         Returns:
-            bool: True if passwords match, False otherwise.
+            bool: True if the plaintext password matches, otherwise False.
 
         """
         return bcrypt.checkpw(senha_texto_claro.encode("utf-8"), self.password.encode("utf-8"))
 
 
 class LicensesUsers(db.Model):
-    """Represents a license user in the CrawJUD-Bots application."""
+    """Stores license-related data for users.
+
+    Attributes:
+        id (int): Primary key for the license user entry.
+        name_client (str): Name of the client holding the license.
+        cpf_cnpj (str): Unique CPF/CNPJ identifier for the client.
+        license_token (str): Token identifying and validating the license.
+
+    """
 
     __tablename__ = "licenses_users"
     id: int = db.Column(db.Integer, primary_key=True)

@@ -1,4 +1,7 @@
-"""Module defining database models for CrawJUD bots and related entities."""
+"""Defines database models for CrawJUD bots and their execution details.
+
+Provides structures for bot configurations, credentials, and execution logging.
+"""
 
 from datetime import datetime
 
@@ -8,7 +11,20 @@ from app import db
 
 
 class BotsCrawJUD(db.Model):
-    """Model representing CrawJUD bots."""
+    """Represents a CrawJUD bot entity.
+
+    Attributes:
+        id (int): Primary key for the bot.
+        display_name (str): Display name of the bot.
+        system (str): System type or identifier.
+        state (str): Operational status of the bot.
+        client (str): Client identifier.
+        type (str): Type classification of the bot.
+        form_cfg (str): Configuration form reference.
+        classification (str): Classification of the bot's purpose.
+        text (str): Descriptive text or notes.
+
+    """
 
     __tablename__ = "bots"
     id = db.Column(db.Integer, primary_key=True)
@@ -23,7 +39,21 @@ class BotsCrawJUD(db.Model):
 
 
 class Credentials(db.Model):
-    """Model representing user credentials."""
+    """Represents stored credentials for a user or system.
+
+    Attributes:
+        id (int): Primary key for the credential.
+        nome_credencial (str): Descriptive name for the credential.
+        system (str): System type or identifier.
+        login_method (str): Authentication method used.
+        login (str): Username or login identifier.
+        password (str): Password stored for the credential.
+        key (str): Optional key used in authentication.
+        certficate (str): Optional certificate name.
+        certficate_blob (bytes): Binary certificate data.
+        license_id (int): Foreign key referencing the license.
+
+    """
 
     __tablename__ = "credentials"
     id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +71,23 @@ class Credentials(db.Model):
 
 
 class Executions(db.Model):
-    """Model representing bot executions."""
+    """Represents bot execution records.
+
+    Attributes:
+        pid (str): Process identifier for the execution.
+        id (int): Primary key for the execution record.
+        status (str): Current status of the execution.
+        file_output (str): Path or reference to output file.
+        total_rows (str): Row count for processed data.
+        url_socket (str): Socket address for communication.
+        data_execucao (datetime): Execution start timestamp.
+        data_finalizacao (datetime): Execution end timestamp.
+        arquivo_xlsx (str): Reference to the exported .xlsx file.
+        bot_id (int): Foreign key referencing the bot.
+        user_id (int): Foreign key referencing the user.
+        license_id (int): Foreign key referencing the license.
+
+    """
 
     __tablename__ = "executions"
     pid: str = db.Column(db.String(length=12), nullable=False)
@@ -65,7 +111,20 @@ class Executions(db.Model):
 
 
 class CacheLogs(db.Model):
-    """Model representing cache logs for bot executions."""
+    """Stores cache logs for bot executions.
+
+    Attributes:
+        id (int): Primary key for the cache log.
+        pid (str): Process identifier for the related execution.
+        pos (int): Current position or step in execution.
+        total (int): Total items to process.
+        success (int): Successful items processed.
+        errors (int): Errors encountered.
+        remaining (int): Remaining items to be processed.
+        status (str): Execution status or stage.
+        last_log (str): Last log entry for the process.
+
+    """
 
     __bind_key__ = "cachelogs"
     __tablename__ = "cachelogs"
@@ -83,7 +142,14 @@ class CacheLogs(db.Model):
 
 
 class ThreadBots(db.Model):
-    """Model representing threads associated with bot executions."""
+    """Manages thread references linked to bot processes.
+
+    Attributes:
+        id (int): Primary key for the thread reference.
+        pid (str): Process identifier for the thread.
+        processID (str): Unique ID referencing the system process.
+
+    """
 
     __bind_key__ = "cachelogs"
     __tablename__ = "thread_bots"

@@ -1,4 +1,7 @@
-"""Secondary association tables for many-to-many relationships in CrawJUD-Bots."""
+"""Defines secondary association tables for the CrawJUD-Bots application.
+
+These tables establish many-to-many relationships between users, licenses, and bot configurations.
+"""
 
 from app import db
 
