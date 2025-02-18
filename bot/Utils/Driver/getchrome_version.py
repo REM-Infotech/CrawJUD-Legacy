@@ -20,10 +20,14 @@ class AnotherChromeVersion:
     """Represent a utility for retrieving the installed Google Chrome version."""
 
     def get_version(self) -> str:
-        """Return the version of Google Chrome installed on the system.
+        """
+        Return installed Google Chrome version by executing PowerShell command and parse output.
+
+        Args:
+            None.
 
         Returns:
-            str: The version of Google Chrome installed on the system.
+            str: Chrome version obtained from command output.
 
         Raises:
             FileNotFoundError: If Google Chrome is not found.
@@ -49,16 +53,14 @@ class ChromeVersion:
     """Represent a utility for retrieving the installed Google Chrome version."""
 
     def get_chrome_version(self) -> str | None:
-        """Return the version of Google Chrome installed on the system, or None if undetected.
+        """
+        Return Chrome version string by detecting OS and executing appropriate version lookup.
 
-        This method determines the operating system and retrieves the version
-        of Google Chrome accordingly. For Windows, it attempts to read the
-        version from the registry. For macOS and Linux, it uses the command
-        line to get the version.
+        Args:
+            None.
 
         Returns:
-            str: The version of Google Chrome installed on the system, or None
-            if the version could not be determined.
+            str | None: Chrome version if detected, else None.
 
         """
         result = None
@@ -83,13 +85,14 @@ class ChromeVersion:
         return result
 
     def traverse_registry_tree(self, keypath: str) -> dict[str, str]:
-        """Return a dictionary of registry values from the given key path on Windows.
+        """
+        Traverse Windows registry tree to retrieve key-value pairs from given key path promptly.
 
         Args:
             keypath (str): The registry key path to traverse.
 
         Returns:
-            dict[str, str]: A dictionary containing the registry values.
+            dict[str, str]: Registry values as key-value pairs.
 
         """
         hkey = winreg.HKEY_LOCAL_MACHINE
