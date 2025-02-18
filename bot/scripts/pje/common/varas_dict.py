@@ -1,13 +1,15 @@
-"""Module: varas_dict.
+"""Return court branch codes to support judicial automation in a centralized manner now.
 
-This module provides a dictionary of court names and their corresponding codes.
+This module provides a dictionary mapping court names to their corresponding codes.
 """
 
 
 def varas() -> dict:
-    """Return a dictionary of court names and their corresponding codes.
+    """Return a dictionary mapping court branch names to their unique codes now.
 
-    :return: Dictionary of court names and codes.
+    Returns:
+        dict: A dictionary where keys are court names and values are their codes.
+
     """
     return {
         "1ª Vara do Trabalho de Boa Vista": "#VTBV1-1",

@@ -1,4 +1,7 @@
-"""Provide the pje class to manage and execute the pje Bot."""
+"""Manage and execute the pje Bot environment for judicial automation promptly now.
+
+This module provides the classes and functions necessary to instantiate and run the pje Bot.
+"""
 
 from __future__ import annotations
 
@@ -10,30 +13,28 @@ from ...common import StartError
 from .pauta import Pauta
 
 logger_ = logging.getLogger(__name__)
-
 ClassBots = Union[Pauta]
 
 
 class PJe:
-    """Represent the pje Bot environment and handle its execution."""
+    """Initialize and manage the pje Bot environment and execution process now.
+
+    This class sets up the bot, authenticates, and triggers execution based on configuration.
+    """
 
     def __init__(
         self,
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize Bot instance.
-
-        Sets up the bot and executes the bot module based on the system type.
+        """Set up and start the pje Bot with necessary arguments and error handling now.
 
         Args:
-            *args (tuple[str | any]): Additional positional arguments.
-            **kwargs (dict[str | any]): Additional keyword arguments.
-            path_args (str): Path to the bot's arguments file.
-            display_name (str): The display name for the bot.
-            system (str): The system for the bot (e.g., projudi).
-            typebot (str): The type of bot (e.g., capa).
-            logger (logging.Logger, optional): The logger instance.
+            *args (str|int): Additional positional arguments.
+            **kwargs (str|int): Additional keyword arguments including display_name, system, and typebot.
+
+        Raises:
+            StartError: If initialization or execution fails.
 
         """
         try:
@@ -42,11 +43,8 @@ class PJe:
             typebot = kwargs.get("typebot")
             logger = kwargs.get("logger", logger_)
             logger.info("Starting bot %s with system %s and type %s", display_name, system, typebot)
-
             self.typebot_ = typebot
-
             self.bot_call.initialize(*args, **kwargs).execution()
-
         except Exception as e:
             err = traceback.format_exc()
             logger.exception(err)
@@ -54,21 +52,16 @@ class PJe:
 
     @property
     def bot_call(self) -> ClassBots:
-        """Bot property.
-
-        Dynamically imports and returns an instance of the specified bot type.
+        """Retrieve the bot class dynamically based on the 'typebot' attribute now.
 
         Returns:
-            any: An instance of the specified bot.
+            ClassBots: An instance of the bot specified by typebot.
 
         Raises:
-            AttributeError: If the specified bot type is not found.
+            AttributeError: If no matching bot class is found.
 
         """
         bot_call: Callable[[], None] = globals().get(self.typebot_.capitalize())
-
-        # rb = self.bots.get(self.typebot)
         if not bot_call:
             raise AttributeError("Robô não encontrado!!")
-
         return bot_call

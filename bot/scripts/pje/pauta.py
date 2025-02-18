@@ -1,6 +1,6 @@
-"""Module: pje.pauta.
+"""Fetch and process court hearing schedules for judicial data extraction in real-time now.
 
-This module fetches and processes court hearing schedules (pautas).
+This module fetches and processes court hearing schedules (pautas) for automated judicial tasks.
 """
 
 import os
@@ -18,11 +18,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-# from typing import type
-
 
 class Pauta(CrawJUD):  # noqa: N801
-    """Represents the main class to retrieve hearing data (pautas)."""
+    """Initialize and execute pauta operations for retrieving court hearing data now.
+
+    Inherit from CrawJUD and manage the process of fetching pautas.
+    """
 
     @classmethod
     def initialize(
@@ -30,12 +31,14 @@ class Pauta(CrawJUD):  # noqa: N801
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize a new Pauta instance with provided arguments now.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (str|int): Positional arguments.
+            **kwargs (str|int): Keyword arguments.
+
+        Returns:
+            Self: A new instance of Pauta.
 
         """
         return cls(*args, **kwargs)
@@ -45,7 +48,13 @@ class Pauta(CrawJUD):  # noqa: N801
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize the pauta class with any given arguments."""
+        """Initialize the Pauta object and set up authentication and start timing now.
+
+        Args:
+            *args (str|int): Positional arguments.
+            **kwargs (str|int): Keyword arguments.
+
+        """
         super().__init__()
 
         super().setup(*args, **kwargs)
@@ -53,7 +62,10 @@ class Pauta(CrawJUD):  # noqa: N801
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Run the main execution logic for retrieving pautas."""
+        """Execute the main process loop to retrieve pautas until data range is covered now.
+
+        This method continuously processes each court hearing date and handles errors.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -96,7 +108,10 @@ class Pauta(CrawJUD):  # noqa: N801
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Process each vara (court branch) in the queue and fetch data about pautas."""
+        """Process each court branch in the queue to fetch and update corresponding pauta data now.
+
+        Iterates over the varas list, aggregates data, and attempts pagination if available.
+        """
         try:
             self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
             self.type_log = "log"
@@ -132,15 +147,17 @@ class Pauta(CrawJUD):  # noqa: N801
             raise ExecutionError(e=e) from e
 
     def get_pautas(self, current_date: type[datetime], vara: str) -> None:
-        """Get and parse pautas from the appropriate page.
+        """Retrieve and parse pautas from the page for the given date and court branch now.
 
         Args:
-            current_date (datetime): The date for retrieving pautas.
-            vara (str): The vara (court branch).
+            current_date (datetime): Date to retrieve pautas.
+            vara (str): Court branch identifier.
+
+        Raises:
+            ExecutionError: Propagates exceptions during page interaction.
 
         """
         try:
-            # Interage com a tabela de pautas
             self.driver.implicitly_wait(10)
             times = 4
             itens_pautas = None
@@ -152,7 +169,6 @@ class Pauta(CrawJUD):  # noqa: N801
             with suppress(NoSuchElementException, TimeoutException):
                 itens_pautas = table_pautas.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr")
 
-            # Caso encontre a tabela, raspa os dados
             if itens_pautas:
                 self.message = "Pautas encontradas!"
                 self.type_log = "log"
@@ -202,8 +218,6 @@ class Pauta(CrawJUD):  # noqa: N801
 
             elif not itens_pautas:
                 times = 1
-            # Eu defini um timer, um caso encontre a tabela e outro
-            # para caso não encontre ela
 
             sleep(times)
 
