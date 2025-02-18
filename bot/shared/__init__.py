@@ -846,7 +846,7 @@ class PropertiesCrawJUD:
     @property
     def select2_elaw(self) -> Callable[..., str]:
         """Return the select2_elaw callable."""
-        return self.OtherUtils.select2_elaw
+        return self.Interact_.select2_elaw
 
 
 # from pydantic import BaseModel, ValidationError
