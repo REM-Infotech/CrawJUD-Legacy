@@ -5,7 +5,6 @@ This module manages the status of bots (Start and Stop).
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 import mimetypes  # noqa: F401
@@ -46,10 +45,14 @@ env = Environment(
 
 
 class TaskExec:
-    """Class to manage the bot execution tasks."""
+    """Manage bot execution tasks.
+
+    This class orchestrates bot start and stop tasks, including file operations,
+    database interactions and email notifications.
+    """
 
     def __init__(self) -> None:
-        """Initialize the class."""
+        """Initialize the TaskExec instance."""
 
     @classmethod
     async def task_exec(
@@ -66,20 +69,23 @@ class TaskExec:
         *args: str | int,
         **kwargs: str | int,
     ) -> int:
-        """Execute the task with the specified parameters.
+        """Execute a bot task based on the execution type.
 
         Args:
-            app (Quart): The Quart application instance.
-            celery_app (Celery): The Celery application instance.
-            db (SQLAlchemy): The SQLAlchemy instance.
-            id_ (int): The ID of the bot.
-            system (str): The system of the bot.
-            typebot (str): The type of bot.
-            exec_type (str): The type of execution.
-            files (MultiDict): The files to process.
-            data_bot (MultiDict): The bot data.
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            id_ (int): Bot identifier.
+            system (str): System name.
+            typebot (str): Type of bot.
+            exec_type (str): 'start' or 'stop'.
+            app (Quart): Quart application instance.
+            db (SQLAlchemy): Database instance.
+            files (MultiDict): Files provided in the request.
+            celery_app (Celery): Celery application instance.
+            data_bot (MultiDict): Bot data.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            int: HTTP status code indicating the outcome.
 
         """
         async with app.app_context():
@@ -87,14 +93,13 @@ class TaskExec:
                 user = data_bot.get("user")
                 pid: str = data_bot.get("pid")
 
-                path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
-                data, path_args = await asyncio.create_task(
-                    cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
-                )
-                execut, _ = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
+                # Configure file path and convert arguments to JSON
+                path_pid = await cls.configure_path(app, pid, files)
+                data, path_args = await cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
+                execut, _ = await cls.insert_into_database(db, data, pid, id_, user)
                 display_name = execut.get("display_name")
                 try:
-                    await asyncio.create_task(cls.send_email(execut, app, "start"))
+                    await cls.send_email(execut, app, "start")
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
@@ -128,11 +133,11 @@ class TaskExec:
                 status = dict_status.get("status")
                 schedule = dict_status.get("schedule")
 
-                filename, _ = await asyncio.create_task(cls.make_zip(pid))
-                execut = await asyncio.create_task(cls.send_stop_exec(app, db, pid, status, filename))
+                filename, _ = await cls.make_zip(pid)
+                execut = await cls.send_stop_exec(app, db, pid, status, filename)
 
                 try:
-                    await asyncio.create_task(cls.send_email(execut, app, "stop", schedule=schedule))
+                    await cls.send_email(execut, app, "stop", schedule=schedule)
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
@@ -154,46 +159,43 @@ class TaskExec:
         *args: str | int,
         **kwargs: str | int,
     ) -> int:
-        """Execute the task with the specified parameters.
+        """Execute a scheduled bot task.
 
         Args:
-            app (Quart): The Quart application instance.
-            celery_app (Celery): The Celery application instance.
-            db (SQLAlchemy): The SQLAlchemy instance.
-            id_ (int): The ID of the bot.
-            system (str): The system of the bot.
-            typebot (str): The type of bot.
-            exec_type (str): The type of execution.
-            files (MultiDict): The files to process.
-            data_bot (MultiDict): The bot data.
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            id_ (int): Bot identifier.
+            system (str): System name.
+            typebot (str): Type of bot.
+            exec_type (str): Should be "start" to schedule.
+            app (Quart): Quart application instance.
+            db (SQLAlchemy): Database instance.
+            files (MultiDict): Files received.
+            data_bot (MultiDict): Bot data.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            int: HTTP status code.
 
         """
-        celery_app: Celery = app.extensions["celery"]  # noqa: F841
         async with app.app_context():
             if exec_type == "start":
                 user: str = data_bot.get("user")
                 pid: str = data_bot.get("pid")
                 data_bot.update({"schedule": "True"})
-                path_pid = await asyncio.create_task(cls.configure_path(app, pid, files))
-                data, path_args = await asyncio.create_task(
-                    cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
-                )
-                execut, display_name = await asyncio.create_task(cls.insert_into_database(db, data, pid, id_, user))
-                await asyncio.create_task(
-                    cls.schedule_into_database(
-                        db,
-                        data_bot,
-                        system=system,
-                        typebot=typebot,
-                        path_args=path_args,
-                        display_name=display_name,
-                    )
+                path_pid = await cls.configure_path(app, pid, files)
+                data, path_args = await cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
+                execut, display_name = await cls.insert_into_database(db, data, pid, id_, user)
+                await cls.schedule_into_database(
+                    db,
+                    data_bot,
+                    system=system,
+                    typebot=typebot,
+                    path_args=path_args,
+                    display_name=display_name,
                 )
 
                 try:
-                    await asyncio.create_task(cls.send_email(execut, app, "start"))
+                    await cls.send_email(execut, app, "start")
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
@@ -532,7 +534,7 @@ class TaskExec:
 
         if filename == "":
             file_zip, f_path = makezip(pid)
-            filename, _ = await asyncio.create_task(cls.send_file_gcs(file_zip, f_path))
+            filename, _ = await cls.send_file_gcs(file_zip, f_path)
 
         return generate_signed_url(filename)
 
@@ -551,7 +553,7 @@ class TaskExec:
 
         if filename == "":
             file_zip, f_path = makezip(pid)
-            filename, file_path = await asyncio.create_task(cls.send_file_gcs(file_zip, f_path))
+            filename, file_path = await cls.send_file_gcs(file_zip, f_path)
         return filename, file_path
 
     @classmethod

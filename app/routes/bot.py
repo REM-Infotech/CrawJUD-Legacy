@@ -24,50 +24,42 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 @bot.post("/bot/<id_>/<system>/<typebot>")
 async def botlaunch(id_: int, system: str, typebot: str) -> Response:
-    """Launch a new bot with the specified parameters.
+    """Launch a new bot task.
+
+    Processes incoming request data, validates and normalizes the input,
+    and then triggers the bot launch via TaskExec.
 
     Args:
-        id_ (int): The identifier for the bot.
-        system (str): The system the bot is associated with.
-        typebot (str): The type of bot to launch.
+        id_ (int): Bot identifier.
+        system (str): Name of the system.
+        typebot (str): Type of bot.
 
     Returns:
-        Response: JSON response indicating the success or error of the launch operation.
+        Response: JSON response with a success or error message and appropriate HTTP status.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
-
     is_started = 200
 
     async with app.app_context():
         try:
-            # obj = GeoLoc()
-            # loc = obj.region_name
-
+            # Parse and normalize input data from the request
             request_data = await request.data
             request_form = await request.form
             request_json = await request.json
 
             data_bot = (request_json if isinstance(request_data, bytes) else request_data) or request_form
 
-            # Check if data_bot is enconded
             if isinstance(data_bot, bytes):
                 data_bot = data_bot.decode("utf-8")
 
             if isinstance(data_bot, str):
-                if "\\" in data_bot:
-                    data_bot = data_bot.replace("\\", "")
-
-                if "'" in data_bot:
-                    data_bot = data_bot.replace("'", "")
-
+                # Remove escape characters before loading JSON
+                data_bot = data_bot.replace("\\", "").replace("'", "")
                 data_bot = json.loads(data_bot)
                 if not isinstance(data_bot, dict):
                     raise ValueError("Invalid data_bot format")
-
-            # if (system == "esaj" and platform.system() != "Windows") or (system == "caixa" and loc != "Amazonas"):
-            #     raise Exception("Este servidor não pode executar este robô!")
 
             files = await request.files
             celery_app: Celery = app.extensions["celery"]
@@ -87,52 +79,42 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             err = traceback.format_exc()
             app.logger.exception(err)
             message = {"error": err}
-            is_started: type[int] = 500
+            is_started = 500
 
     return await make_response(jsonify(message), is_started)
 
 
 @bot.post("/periodic_bot/<id_>/<system>/<typebot>")
 async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
-    """Schedule a bot to run periodically based on provided cron arguments.
+    """Schedule a bot for periodic execution.
+
+    Extracts and normalizes request data, then triggers the scheduling process.
 
     Args:
-        id_ (int): The identifier for the bot.
-        system (str): The system the bot is associated with.
-        typebot (str): The type of bot to schedule.
+        id_ (int): Bot identifier.
+        system (str): Name of the system.
+        typebot (str): Type of bot to schedule.
 
     Returns:
-        Response: JSON response indicating the success of the scheduling operation.
+        Response: JSON response indicating success or error.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     message = {"success": "success"}
-
     is_started = 200
 
     async with app.app_context():
         try:
-            # obj = GeoLoc()
-            # loc = obj.region_name
-
             request_data = await request.data
             request_form = await request.form
             request_json = bytes(await request.json, "utf-8").decode("unicode_escape")
             data_bot = (request_json if isinstance(request_data, bytes) else request_data) or request_form
 
-            data_bot: dict[str, str, int, list[str]]
-
-            # Check if data_bot is enconded
+            # Ensure data_bot is a dictionary
             if isinstance(data_bot, bytes):
                 data_bot = data_bot.decode("utf-8")
-
             if isinstance(data_bot, str):
-                if "\\" in data_bot:
-                    data_bot = data_bot.replace("\\", "")
-
-                if "'" in data_bot:
-                    data_bot = data_bot.replace("'", "")
-
+                data_bot = data_bot.replace("\\", "").replace("'", "")
                 data_bot = json.loads(data_bot)
                 if not isinstance(data_bot, dict):
                     raise ValueError("Invalid data_bot format")
@@ -154,6 +136,6 @@ async def periodic_bot(id_: int, system: str, typebot: str) -> Response:
             err = traceback.format_exc()
             app.logger.exception(err)
             message = {"error": err}
-            is_started: type[int] = 500
+            is_started = 500
 
     return await make_response(jsonify(message), is_started)
