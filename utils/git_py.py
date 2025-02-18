@@ -1,6 +1,7 @@
-"""Initialization module for git_py package.
+"""Manages Git repository operations and version control tasks for the application.
 
-Provides functions to manage Git repository tags and handle versioning.
+This module provides functionality for interacting with Git repositories, including version
+checking, tag management, and repository updates. It uses environment variables for configuration.
 """
 
 from os import environ
@@ -9,20 +10,20 @@ from pathlib import Path
 from dotenv_vault import load_dotenv
 from git import Repo
 
-# from github import Github
-# from github.Auth import Token
-
-# GITHUB_API_TOKEN = config_vals.get("GITHUB_API_TOKEN", "")
-# REPO_NAME = config_vals.get("REPO_NAME", "")
-# USER_GITHUB = config_vals.get("USER_GITHUB", "")
 cwd_dir = Path(__file__).cwd().resolve()
 
 
 def _release_tag() -> str:
-    """Retrieve the latest release tag from the remote Git repository.
+    """Fetch the most recent release tag from the configured remote Git repository.
+
+    Connects to the Git repository using configured credentials and retrieves the latest tag,
+    intended for version tracking and updates.
 
     Returns:
-        str: The latest release tag.
+        The most recent release tag string.
+
+    Raises:
+        EnvironmentError: If required Git configuration variables are missing.
 
     """
     load_dotenv()
@@ -47,28 +48,17 @@ def _release_tag() -> str:
     git.fetch("--all", "--tags")
     releases_tag = git.ls_remote("--tags", "--sort=committerdate").split("\n")[-1].split("tags/")[-1]
 
-    # token_github = Token(GITHUB_API_TOKEN)
-    # github = Github(token_github)
-    # repo = github.get_repo(REPO_NAME)
-    # releases = repo.get_releases()
-
-    # debug = config_vals.get("DEBUG", "False").lower() in ("true")
-
-    # if debug is False:
-    #     releases = list(filter(lambda release: "stable" in release.tag_name, releases))
-
-    # latest_release = sorted(
-    #     releases, key=lambda release: release.created_at, reverse=True
-    # )[0]
-
     return releases_tag
 
 
 def check_latest() -> bool:
-    """Check if the current version matches the latest release tag.
+    """Compare current version against the latest release tag to determine if updates exist.
+
+    Reads the local version file and compares it with the latest release tag from the remote
+    repository to check if the local installation is up-to-date.
 
     Returns:
-        bool: True if the current version is up-to-date, False otherwise.
+        True if current version matches latest release, False otherwise.
 
     """
     with open(".version") as f:

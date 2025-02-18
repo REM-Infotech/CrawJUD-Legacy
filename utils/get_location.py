@@ -1,4 +1,8 @@
-"""Module for retrieving and handling geolocation information based on Ip."""
+"""Provides IP-based geolocation services and information retrieval capabilities.
+
+This module interfaces with external IP geolocation services to fetch geographical data
+for given IP addresses. It includes error handling and data validation.
+"""
 
 from os import environ
 
@@ -38,7 +42,18 @@ class NetworkError(GlobalExceptError):
 
 
 class InfoGeoloc:
-    """Class to retrieve and store geolocation information based on external Ip."""
+    """Manages IP-based geolocation data retrieval and storage.
+
+    Fetches and stores comprehensive geolocation information for an IP address, providing
+    easy access to details like country, city, coordinates, and network information.
+
+    Attributes:
+        data (dict): Storage for retrieved geolocation data with normalized keys.
+
+    Raises:
+        NetworkError: When unable to fetch external IP or connect to geolocation service.
+
+    """
 
     data: dict[str, str, int | bool] = {}
 
@@ -71,14 +86,17 @@ class InfoGeoloc:
 
         return item
 
-    def ip2location(self, ip: str) -> dict[str, str] | None:  # noqa: N802
-        """Fetch geolocation data for a given Ip address using ip2location API.
+    def ip2location(self, ip: str) -> dict[str, str] | None:
+        """Query the ip2location API for geolocation data of a specific IP address.
 
         Args:
-            ip (str): The Ip address to lookup.
+            ip: The IP address to lookup.
 
         Returns:
-            dict[str, str] | None: Geolocation data if successful, else None.
+            Dictionary containing geolocation data if successful, None otherwise.
+
+        Raises:
+            httpx.HTTPError: On API communication failures.
 
         """
         client = HTTPClient()
