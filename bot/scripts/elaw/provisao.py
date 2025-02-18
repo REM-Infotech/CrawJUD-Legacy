@@ -196,9 +196,9 @@ class Provisao(CrawJUD):
         elif get_valores == "Contém valores" or get_valores == "-":
             calls.append(self.edit_valor)
             calls.append(self.chk_risk)
+            calls.append(self.set_valores)
 
             if provisao == "provável" or provisao == "possível":
-                calls.append(self.set_valores)
                 calls.append(self.informar_datas)
 
         calls.append(self.set_risk)
@@ -288,10 +288,12 @@ class Provisao(CrawJUD):
                 ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt)),
             )
 
+            valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
+            if valor_informar == 0:
+                raise ExecutionError("Valor de atualização inválido")
+
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
-
-            valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
 
             if isinstance(valor_informar, int):
                 valor_informar = str(valor_informar) + ",00"
