@@ -1,9 +1,7 @@
-"""Utility module for CrawJUD-Bots, providing various classes and functions.
+"""Utility module: Provide various helpers for legal process tasks; handle data, certs, and logs instantly.
 
-for authentication, driving browsers, interacting with elements, and more.
-
-Classes:
-    OtherUtils: Provides utility methods for data processing and interaction.
+This module aggregates several utility classes and functions used across the application.
+It includes authentication, browser control, file handling, and data processing routines.
 """
 
 import logging
@@ -55,45 +53,24 @@ logger = logging.getLogger(__name__)
 
 
 class OtherUtils(CrawJUD):
-    """Provides utility methods for data processing and interaction within CrawJUD-Bots.
+    """Perform various data processing and interaction functions for CrawJUD-Bots.
 
-    Methods:
-        nomes_colunas() -> list[str]
-        elaw_data() -> dict[str, str]
-        cities_Amazonas() -> dict[str, str]
-        dataFrame() -> list[dict[str, str]]
-        elawFormats(data: dict[str, str]) -> dict[str, str]
-        calc_time() -> list[int]
-        append_moves() -> None
-        append_success(data: TypeData, message: str = None, fileN: str = None) -> None
-        append_error(data: dict[str, str] = None) -> None
-        append_validarcampos(data: list[dict[str, str]]) -> None
-        count_doc(doc: str) -> Union[str, None]
-        get_recent(folder: str) -> Union[str, None]
-        format_string(string: str) -> str
-        normalizar_nome(word: str) -> str
-        similaridade(word1: str, word2: str) -> float
-        finalize_execution() -> None
-        install_cert() -> None
-        group_date_all(data: dict[str, dict[str, str]]) -> list[dict[str, str]]
-        group_keys(data: list[dict[str, str]]) -> dict[str, dict[str, str]]
-        gpt_chat(text_mov: str) -> str
-        text_is_a_date(text: str) -> bool
-
+    This class offers methods for data formatting, logging, certificate installation,
+    and other common tasks used across the legal process systems.
     """
 
     def __init__(self) -> None:
-        """Initialize the OtherUtils instance.
+        """Initialize OtherUtils instance.
 
-        Sets up necessary attributes and configurations for utility operations.
+        Set up any attributes and configurations for subsequent utility operations.
         """
 
     @property
     def nomes_colunas(self) -> list[str]:
-        """Retrieve a list of column names.
+        """Return a list of column names used in legal process spreadsheets.
 
         Returns:
-            list[str]: A list of column names used in the application.
+            list[str]: A list containing all the required column labels.
 
         """
         all_fields = [
@@ -212,10 +189,10 @@ class OtherUtils(CrawJUD):
 
     @property
     def elaw_data(self) -> dict[str, str]:
-        """Generate a dictionary with keys related to legal case information and empty string values.
+        """Return a dict with keys for legal case details and empty string values.
 
         Returns:
-            dict[str, str]: A dictionary containing keys for legal case details with empty string values.
+            dict[str, str]: Keys mapped to empty strings for default legal data.
 
         """
         return {
@@ -250,10 +227,10 @@ class OtherUtils(CrawJUD):
 
     @property
     def cities_Amazonas(self) -> dict[str, str]:  # noqa: N802
-        """Return a dictionary of cities in the state of Amazonas, Brazil, categorized as either "Capital" or "Interior".
+        """Return a dictionary categorizing Amazonas cities as 'Capital' or 'Interior'.
 
         Returns:
-            dict[str, str]: A dictionary where the keys are city names and the values are their categories.
+            dict[str, str]: City names with associated regional classification.
 
         """  # noqa: E501
         return {
@@ -328,11 +305,11 @@ class OtherUtils(CrawJUD):
         and returns the data as a list of dictionaries.
 
         Returns:
-            list[dict[str, str]]: A list of dictionaries representing each row in the Excel file.
+            list[dict[str, str]]: A record list from the processed Excel file.
 
         Raises:
-            FileNotFoundError: If the specified Excel file does not exist.
-            ValueError: If there is an issue reading the Excel file.
+            FileNotFoundError: If the target file does not exist.
+            ValueError: For problems reading the file.
 
         """
         input_file = Path(self.output_dir_path).joinpath(self.xlsx).resolve()
@@ -358,13 +335,13 @@ class OtherUtils(CrawJUD):
         return vars_df
 
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:  # noqa: N802, C901
-        """Format the given data dictionary according to specific rules.
+        """Format a legal case dictionary according to pre-defined rules.
 
         Args:
-            data (dict[str, str]): A dictionary containing key-value pairs to be formatted.
+            data (dict[str, str]): The raw data dictionary.
 
         Returns:
-            dict[str, str]: The formatted dictionary.
+            dict[str, str]: The data formatted with proper types and values.
 
         Rules:
             - If the key is "TIPO_EMPRESA" and its value is "RÉU", update "TIPO_PARTE_CONTRARIA" to "Autor".
@@ -404,12 +381,10 @@ class OtherUtils(CrawJUD):
         return data
 
     def calc_time(self) -> list[int]:
-        """Calculate the elapsed time since the start time and return it as a list of minutes and seconds.
+        """Calculate and return elapsed time as minutes and seconds.
 
         Returns:
-            list[int]: A list containing two integers:
-                - minutes (int): The number of minutes of the elapsed time.
-                - seconds (int): The number of seconds of the elapsed time.
+            list[int]: A two-item list: [minutes, seconds] elapsed.
 
         """
         end_time = time.perf_counter()
@@ -419,14 +394,10 @@ class OtherUtils(CrawJUD):
         return [minutes, seconds]
 
     def append_moves(self) -> None:
-        """Append movements to the spreadsheet if there are any movements to append.
-
-        Checks if there are any movements stored in the `self.appends` list.
-        If there are, iterates over each movement and calls the `self.append_success`
-        method to save the movement to the spreadsheet with a success message.
+        """Append legal movement records to the spreadsheet if any exist.
 
         Raises:
-            ExecutionError: If no movements are found in the `self.appends` list.
+            ExecutionError: If no movements are available to append.
 
         """
         if self.appends:
@@ -441,15 +412,12 @@ class OtherUtils(CrawJUD):
         message: str = None,
         fileN: str = None,  # noqa: N803
     ) -> None:
-        """Append successful execution data to the spreadsheet.
+        """Append successful execution data to the success spreadsheet.
 
         Args:
-            data (TypeData): The data to append.
-            message (str, optional): Success message. Defaults to None.
-            fileN (str, optional): Filename to save data. Defaults to None.
-
-        Raises:
-            ValueError: If data is not in the expected format.
+            data (TypeData): The data to be appended.
+            message (str, optional): A success message to log.
+            fileN (str, optional): Filename override for saving data.
 
         """
         if not message:
@@ -494,10 +462,10 @@ class OtherUtils(CrawJUD):
             self.prt()
 
     def append_error(self, data: dict[str, str] = None) -> None:
-        """Append error data to the error spreadsheet.
+        """Append error information to the error spreadsheet file.
 
         Args:
-            data (dict[str, str], optional): The error data to append. Defaults to None.
+            data (dict[str, str], optional): The error record to log.
 
         """
         if not os.path.exists(self.path_erro):
@@ -511,10 +479,10 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(self.path_erro, index=False)
 
     def append_validarcampos(self, data: list[dict[str, str]]) -> None:
-        """Append validated fields to the spreadsheet.
+        """Append validated field records to the validation spreadsheet.
 
         Args:
-            data (list[dict[str, str]]): The validated data to append.
+            data (list[dict[str, str]]): The list of validated data dictionaries.
 
         """
         nomeplanilha = f"CAMPOS VALIDADOS PID {self.pid}.xlsx"
@@ -530,13 +498,13 @@ class OtherUtils(CrawJUD):
         new_data.to_excel(planilha_validar, index=False)
 
     def count_doc(self, doc: str) -> Union[str, None]:
-        """Determine the type of Brazilian document based on its length.
+        """Determine whether a document number is CPF or CNPJ based on character length.
 
         Args:
-            doc (str): The document number as a string.
+            doc (str): The document number as string.
 
         Returns:
-            Union[str, None]: The type of document ("cpf" or "cnpj") or None if invalid.
+            Union[str, None]: 'cpf', 'cnpj', or None if invalid.
 
         """
         numero = "".join(filter(str.isdigit, doc))
@@ -547,13 +515,13 @@ class OtherUtils(CrawJUD):
         return None
 
     def get_recent(self, folder: str) -> Union[str, None]:
-        """Get the most recent PDF file from a specified folder.
+        """Return the most recent PDF file path from a folder.
 
         Args:
-            folder (str): The path to the folder to search for PDF files.
+            folder (str): The directory to search.
 
         Returns:
-            Union[str, None]: The path to the most recent PDF file, or None if none found.
+            Union[str, None]: Full path to the most recent PDF file, or None.
 
         """
         files = [
@@ -566,13 +534,13 @@ class OtherUtils(CrawJUD):
         return files[0] if files else None
 
     def format_string(self, string: str) -> str:
-        """Format a given string to a secure filename.
+        """Return a secure, normalized filename based on the input string.
 
         Args:
-            string (str): The input string to be formatted.
+            string (str): The original filename.
 
         Returns:
-            str: The formatted string as a secure filename.
+            str: A secure version of the filename.
 
         """
         return secure_filename(
@@ -580,15 +548,13 @@ class OtherUtils(CrawJUD):
         )
 
     def normalizar_nome(self, word: str) -> str:
-        """Return a normalized version of the given word.
-
-        Removes spaces, replaces "_" and "-" with nothing, and converts to lowercase.
+        """Normalize a word by removing spaces and special separators.
 
         Args:
-            word (str): The word to be normalized.
+            word (str): The input word.
 
         Returns:
-            str: The normalized name.
+            str: The normalized, lowercase word.
 
         """
         return re.sub(r"[\s_\-]", "", word).lower()
@@ -598,22 +564,22 @@ class OtherUtils(CrawJUD):
         word1: str,
         word2: str,
     ) -> float:
-        """Compare similarity between two words.
+        """Compare two words and return their similarity ratio.
 
         Args:
-            word1 (str): First word.
-            word2 (str): Second word.
+            word1 (str): The first word.
+            word2 (str): The second word.
 
         Returns:
-            float: Percentage of similarity.
+            float: A ratio where 1.0 denotes an identical match.
 
         """
         return SequenceMatcher(None, word1, word2).ratio()
 
     def finalize_execution(self) -> None:
-        """Finalize the execution of the bot.
+        """Finalize bot execution by closing browsers and logging total time.
 
-        Performs steps to clean up and log the completion of the bot's execution.
+        Performs cookie cleanup, quits the driver, and prints summary logs.
         """
         window_handles = self.driver.window_handles
         self.row += 1
@@ -638,7 +604,7 @@ class OtherUtils(CrawJUD):
     def install_cert(self) -> None:
         """Install a certificate if it is not already installed.
 
-        Checks for the presence of a certificate and installs it using certutil if absent.
+        Uses certutil to import the certificate and logs the operation.
         """
 
         def CertIsInstall(crt_sbj_nm: str, store: str = "MY") -> bool:  # noqa: N802
@@ -677,14 +643,13 @@ class OtherUtils(CrawJUD):
         self,
         data: dict[str, dict[str, str]],
     ) -> list[dict[str, str]]:
-        """Group date and vara information from the input data into a list of records.
+        """Group legal case records by date and vara and return a list of records.
 
         Args:
-            data (dict[str, dict[str, str]]): A dictionary where the keys are 'vara'
-                and the values are dictionaries with dates as keys and entries as values.
+            data (dict[str, dict[str, str]]): Data grouped by vara and date.
 
         Returns:
-            list[dict[str, str]]: A list of dictionaries containing grouped data.
+            list[dict[str, str]]: Flattened record list including dates and vara.
 
         """
         records = []
@@ -700,13 +665,13 @@ class OtherUtils(CrawJUD):
         self,
         data: list[dict[str, str]],
     ) -> dict[str, dict[str, str]]:
-        """Group keys from a list of dictionaries.
+        """Group keys from a list of dictionaries into a consolidated mapping.
 
         Args:
-            data (list[dict[str, str]]): A list of dictionaries with string keys and values.
+            data (list[dict[str, str]]): List of dictionaries with process data.
 
         Returns:
-            dict[str, dict[str, str]]: A dictionary grouping keys with their corresponding values.
+            dict[str, dict[str, str]]: A dictionary mapping keys to value dictionaries.
 
         """
         record = {}
@@ -718,19 +683,13 @@ class OtherUtils(CrawJUD):
         return record
 
     def gpt_chat(self, text_mov: str) -> str:
-        """Analyzes a legal document text and adjusts the response based on the document type.
-
-        Uses the OpenAI GPT model to analyze the provided text and generate a response
-        identifying the document type and extracting relevant information.
+        """Obtain an adjusted description via GPT chat based on the legal document text.
 
         Args:
-            text_mov (str): The text of the legal document to be analyzed.
+            text_mov (str): The legal document text for analysis.
 
         Returns:
-            str: The adjusted response based on the document type.
-
-        Raises:
-            Exception: If an error occurs during the API call or processing.
+            str: An adjusted response derived from GPT chat.
 
         """
         try:
@@ -762,13 +721,13 @@ class OtherUtils(CrawJUD):
             raise e
 
     def text_is_a_date(self, text: str) -> bool:
-        """Check if the given text is in a date-like format.
+        """Determine if the provided text matches a date-like pattern.
 
         Args:
-            text (str): The text to be checked.
+            text (str): The text to evaluate.
 
         Returns:
-            bool: True if the text matches a date-like pattern, False otherwise.
+            bool: True if the text resembles a date; False otherwise.
 
         """
         date_like_pattern = r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"

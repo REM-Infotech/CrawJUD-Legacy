@@ -523,7 +523,7 @@ class Complement(CrawJUD):
         1. Selects the judicial sphere element.
         2. Sets the text to "Judicial".
         3. Logs the message "Informando esfera do processo".
-        4. Calls the Select2_ELAW method to select the element.
+        4. Calls the select2_elaw method to select the element.
         5. Waits for the loading of the specified div element.
         6. Logs the message "Esfera Informada!".
 
@@ -535,12 +535,12 @@ class Complement(CrawJUD):
             The text to set for the judicial sphere, by default "Judicial".
 
         """
-        elementSelect = self.elements.css_esfera_judge  # noqa: N806
+        element_select = self.elements.css_esfera_judge  # noqa: N806
         self.message = "Informando esfera do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Esfera Informada!"
@@ -552,7 +552,7 @@ class Complement(CrawJUD):
         """Update the state of the process in the system.
 
         This method retrieves the state information from `self.bot_data` using the key "ESTADO",
-        logs the action, and updates the state input field in the system using the `Select2_ELAW` method.
+        logs the action, and updates the state input field in the system using the `select2_elaw` method.
         It then waits for the system to load the changes.
 
         Parameters
@@ -563,14 +563,14 @@ class Complement(CrawJUD):
 
         """
         key = "ESTADO"
-        elementSelect = self.elements.estado_input  # noqa: N806
+        element_select = self.elements.estado_input  # noqa: N806
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Estado do processo informado!"
@@ -593,13 +593,13 @@ class Complement(CrawJUD):
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        elementSelect = self.elements.comarca_input  # noqa: N806
+        element_select = self.elements.comarca_input  # noqa: N806
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Comarca do processo informado!"
@@ -621,14 +621,14 @@ class Complement(CrawJUD):
             The instance of the class.
 
         """
-        elementSelect = self.elements.foro_input  # noqa: N806
+        element_select = self.elements.foro_input  # noqa: N806
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Foro do processo informado!"
@@ -650,13 +650,13 @@ class Complement(CrawJUD):
 
         """
         text = self.bot_data.get("VARA")
-        elementSelect = self.elements.vara_input  # noqa: N806
+        element_select = self.elements.vara_input  # noqa: N806
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Vara do processo informado!"
@@ -794,7 +794,7 @@ class Complement(CrawJUD):
         sleep(0.5)
         text = str(self.bot_data.get("DIVISAO"))
 
-        self.Select2_ELAW(self.elements.elementSelect, text)
+        self.select2_elaw(self.elements.element_select, text)
 
         self.interact.sleep_load('div[id="j_id_3x"]')
 
@@ -847,14 +847,14 @@ class Complement(CrawJUD):
 
 
         """
-        elementSelect = self.elements.fase_input  # noqa: N806
+        element_select = self.elements.fase_input  # noqa: N806
         text = self.bot_data.get("FASE")
 
         self.message = "Informando fase do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Fase informada!"
@@ -876,13 +876,13 @@ class Complement(CrawJUD):
 
         """
         text = self.bot_data.get("PROVIMENTO")
-        elementSelect = self.elements.provimento_input  # noqa: N806
+        element_select = self.elements.provimento_input  # noqa: N806
 
         self.message = "Informando provimento antecipatório"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Provimento antecipatório informado!"
@@ -943,10 +943,10 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.fato_gerador_input  # noqa: N806
+        element_select = self.elements.fato_gerador_input  # noqa: N806
         text = self.bot_data.get("FATO_GERADOR")
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Fato gerador informado!"
@@ -997,10 +997,10 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.objeto_input  # noqa: N806
+        element_select = self.elements.objeto_input  # noqa: N806
         text = self.bot_data.get("OBJETO")
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Objeto do processo informado!"
@@ -1026,22 +1026,22 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.contingencia  # noqa: N806
+        element_select = self.elements.contingencia  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
             text = ["Ativa", "Ativo"]
 
-        self.Select2_ELAW(elementSelect, text[0])
+        self.select2_elaw(element_select, text[0])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        elementSelect = self.elements.tipo_polo  # noqa: N806
+        element_select = self.elements.tipo_polo  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
             text = ["Ativa", "Ativo"]
 
-        self.Select2_ELAW(elementSelect, text[1])
+        self.select2_elaw(element_select, text[1])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Contingenciamento informado!"

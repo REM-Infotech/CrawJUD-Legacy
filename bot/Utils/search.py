@@ -1,24 +1,7 @@
-"""Module: search.
+"""Search module: Search legal process using system-specific methods; log status and results immediately.
 
-This module provides the SearchBot class for handling the search of processes.
-
-Attributes:
-    parte_name (str): The name of the party to be searched.
-    bot_data (dict): The data of the process to be searched.
-
-Methods:
-    __init__: This method is the constructor of the class. It receives the
-        parte_name and bot_data as parameters.
-    search: This method is responsible for performing the search of the process.
-        It should be implemented in the subclasses.
-
-Class Methods:
-    is_search_successful: This method is responsible for verifying if the search
-        was successful. It should be implemented in the subclasses.
-
-Raises:
-    ExecutionError: If an error occurs during the execution of the search.
-
+This module provides the SearchBot class to perform legal process searches. Each method
+uses system-specific logic and logs progress. Replace or update the docstrings as needed.
 """
 
 from __future__ import annotations
@@ -39,32 +22,25 @@ from ..core import CrawJUD
 
 
 class SearchBot(CrawJUD):
-    """A class to handle the search of processes on the Web.
+    """Initialize and perform process searches for various systems.
 
-    Subclasses are responsible for implementing the logic of the search in the
-    respective system.
-
-    Attributes:
-        parte_name (str): The name of the party to be searched.
-        bot_data (dict): The data of the process to be searched.
-
-    Raises:
-        ExecutionError: If an error occurs during the execution of the search.
-
+    This class implements search methods to locate legal processes across different systems.
+    Each method logs progress and handles errors as needed.
     """
 
     def __init__(self) -> None:
-        """Initialize the SearchBot class."""
+        """Initialize SearchBot instance.
+
+        Sets up necessary attributes for search operations.
+        """
 
     def search_(self) -> bool:
-        """Perform a search for a process based on the type of bot.
-
-        This method constructs a search message based on the type of bot
-        and initiates the search process by calling a system-specific search
-        method. It logs the search initiation and success messages.
+        """Perform a search for a legal process using the appropriate system method.
 
         Returns:
-            bool: True if the process is found, False otherwise.
+            bool: True if the process is found; False otherwise.
+
+        Logs messages before and after the search.
 
         """
         self.message = (
@@ -85,14 +61,12 @@ class SearchBot(CrawJUD):
         return src
 
     def elaw_search(self) -> bool:
-        """Perform a search for a process using the ELAW system.
-
-        This method navigates to the ELAW search page, inputs the process number,
-        and initiates the search. It handles the search results and determines
-        if the process is found.
+        """Perform an ELAW system search for a legal process.
 
         Returns:
-            bool: True if the process is found, False otherwise.
+            bool: True if the process is found; False otherwise.
+
+        Navigates to the appropriate ELAW page, interacts with elements, and clicks to open the process.
 
         """
         if self.driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
@@ -124,17 +98,12 @@ class SearchBot(CrawJUD):
         return False
 
     def esaj_search(self) -> bool:
-        """Perform a search for a process using the ESAJ system.
-
-        This method constructs a search message based on the type of bot
-        and initiates the search process by calling a system-specific search
-        method. It logs the search initiation and success messages.
+        """Perform an ESAJ system search for a legal process.
 
         Returns:
-            bool: True if the process is found, False otherwise.
+            bool: True if the process is found; False otherwise.
 
-        Raises:
-            ExecutionError: If an error occurs during the execution of the search.
+        Navigates to ESAJ pages and processes inputs based on process grade with error handling.
 
         """
         grau = self.bot_data.get("GRAU", 1)
@@ -212,14 +181,12 @@ class SearchBot(CrawJUD):
         return check_process is not None
 
     def projudi_search(self) -> bool:
-        """Perform a search for a process using the PROJUDI system.
-
-        This method navigates to the PROJUDI search page and initiates the search
-        based on the type of bot. It handles the search results and determines
-        if the process is found.
+        """Perform a PROJUDI system search for a legal process.
 
         Returns:
-            bool: True if the process is found, False otherwise.
+            bool: Search result based on the type of search method invoked.
+
+        Redirects to appropriate search routines for each process type.
 
         """
         self.driver.get(self.elements.url_busca)
@@ -233,14 +200,12 @@ class SearchBot(CrawJUD):
         return returns
 
     def search_proc(self) -> bool:  # noqa: C901
-        """Perform a search for a process using the PROJUDI system.
-
-        This method constructs a search message based on the type of bot
-        and initiates the search process by calling a system-specific search
-        method. It logs the search initiation and success messages.
+        """Perform a PROJUDI search for a legal process by process number.
 
         Returns:
-            bool: True if the process is found, False otherwise.
+            bool: True if the process is successfully entered; False otherwise.
+
+        Handles input, clicking, and conditional retries.
 
         """
         inputproc = None
@@ -332,14 +297,12 @@ class SearchBot(CrawJUD):
         return False
 
     def search_proc_parte(self) -> bool:
-        """Perform a search for a process by party name using the PROJUDI system.
-
-        This method inputs the party name and other relevant details to search
-        for the process. It handles the search results and determines if the
-        process is found.
+        """Perform a PROJUDI search for a legal process by party name.
 
         Returns:
-            bool: True if the process is found, False otherwise.
+            bool: True if the process is found; False otherwise.
+
+        Inputs party, document, date data and handles the search process.
 
         """
         allprocess = self.wait.until(

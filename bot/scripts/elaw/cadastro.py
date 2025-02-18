@@ -269,14 +269,14 @@ class Cadastro(CrawJUD):
         It interacts with the web elements to set the sphere and waits for the loading to complete.
 
         """
-        elementSelect = self.elements.css_esfera_judge  # noqa: N806
+        element_select = self.elements.css_esfera_judge  # noqa: N806
         text = "Judicial"
 
         self.message = "Informando esfera do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Esfera Informada!"
@@ -287,20 +287,20 @@ class Cadastro(CrawJUD):
         """Informs the state of the process by selecting the appropriate option from a dropdown menu.
 
         This method retrieves the state information from the bot's data, logs the action,
-        selects the state in the dropdown menu using the Select2_ELAW method, waits for the
+        selects the state in the dropdown menu using the select2_elaw method, waits for the
         page to load, and then logs the completion of the action.
 
 
         """
         key = "ESTADO"
-        elementSelect = self.elements.estado_input  # noqa:  N806
+        element_select = self.elements.estado_input  # noqa:  N806
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Estado do processo informado!"
@@ -316,20 +316,20 @@ class Cadastro(CrawJUD):
         1. Retrieve the comarca information from bot data.
         2. Select the comarca input element.
         3. Log the action of informing the comarca.
-        4. Use the Select2_ELAW method to input the comarca text.
+        4. Use the select2_elaw method to input the comarca text.
         5. Wait for the loading indicator to disappear.
         6. Log the completion of the comarca information input.
 
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        elementSelect = self.elements.comarca_input  # noqa: N806
+        element_select = self.elements.comarca_input  # noqa: N806
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Comarca do processo informado!"
@@ -344,20 +344,20 @@ class Cadastro(CrawJUD):
         Steps:
         1. Retrieves the court jurisdiction from `self.bot_data`.
         2. Logs the action of informing the court jurisdiction.
-        3. Uses the `Select2_ELAW` method to select the court jurisdiction in the web element.
+        3. Uses the `select2_elaw` method to select the court jurisdiction in the web element.
         4. Waits for the loading element to disappear.
         5. Logs the completion of the action.
 
 
         """
-        elementSelect = self.elements.foro_input  # noqa: N806
+        element_select = self.elements.foro_input  # noqa: N806
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Foro do processo informado!"
@@ -373,7 +373,7 @@ class Cadastro(CrawJUD):
         Steps:
         1. Retrieve the court information from `self.bot_data`.
         2. Log the action of informing the court information.
-        3. Use the `Select2_ELAW` method to input the court information.
+        3. Use the `select2_elaw` method to input the court information.
         4. Wait for the system to process the input.
         5. Log the completion of the action.
 
@@ -381,13 +381,13 @@ class Cadastro(CrawJUD):
 
         """
         text = self.bot_data.get("VARA")
-        elementSelect = self.elements.vara_input  # noqa: N806
+        element_select = self.elements.vara_input  # noqa: N806
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Vara do processo informado!"
@@ -433,13 +433,13 @@ class Cadastro(CrawJUD):
 
         """
         text = self.bot_data.get("EMPRESA")
-        elementSelect = self.elements.empresa_input  # noqa: N806
+        element_select = self.elements.empresa_input  # noqa: N806
 
         self.message = "Informando Empresa"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Empresa informada!"
@@ -458,14 +458,14 @@ class Cadastro(CrawJUD):
 
         """
         key = "TIPO_EMPRESA"
-        elementSelect = self.elements.tipo_empresa_input  # noqa: N806
+        element_select = self.elements.tipo_empresa_input  # noqa: N806
         text = self.bot_data.get(key).__str__().capitalize()
 
         self.message = "Informando classificação da Empresa"
         self.type_log = "log"
         self.prt()
 
-        self.Select2_ELAW(elementSelect, text)
+        self.select2_elaw(element_select, text)
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Classificação da Empresa informada"
@@ -488,8 +488,8 @@ class Cadastro(CrawJUD):
         self.prt()
 
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
-        elementSelect = self.elements.tipo_parte_contraria_input  # noqa: N806
-        self.Select2_ELAW(elementSelect, text)
+        element_select = self.elements.tipo_parte_contraria_input  # noqa: N806
+        self.select2_elaw(element_select, text)
 
         table_tipo_doc: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_tipo_doc)),
@@ -822,22 +822,22 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        elementSelect = self.elements.contingencia  # noqa: N806
+        element_select = self.elements.contingencia  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
             text = ["Ativa", "Ativo"]
 
-        self.Select2_ELAW(elementSelect, text[0])
+        self.select2_elaw(element_select, text[0])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        elementSelect = self.elements.tipo_polo  # noqa: N806
+        element_select = self.elements.tipo_polo  # noqa: N806
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
             text = ["Ativa", "Ativo"]
 
-        self.Select2_ELAW(elementSelect, text[1])
+        self.select2_elaw(element_select, text[1])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         self.message = "Contingenciamento informado!"

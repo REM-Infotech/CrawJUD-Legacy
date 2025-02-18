@@ -1,7 +1,7 @@
 """Module: PrintLogs.
 
-This module provides logging and message handling utilities for the CrawJUD project.
-
+Provides logging and message handling utilities for the CrawJUD project.
+Additional utilities are available to emit, print, and store log messages.
 """
 
 import traceback
@@ -28,13 +28,23 @@ url_socket = environ.get("HOSTNAME")
 
 
 class PrintBot(CrawJUD):
-    """Handles printing logs and sending log messages via SocketBot."""
+    """Handle printing logs and sending log messages via SocketBot.
+
+    Inherit from CrawJUD and provide methods to print, emit, and store logs.
+    """
 
     def __init__(self) -> None:
-        """Initialize a new PrintBot instance."""
+        """Initialize the PrintBot instance with default settings.
+
+        No parameters.
+        """
 
     def print_msg(self) -> None:
-        """Print the current message and emit it to the socket."""
+        """Print current log message and emit it via the socket.
+
+        Uses internal message attributes, logs the formatted string,
+        and appends the output to the messages list.
+        """
         log = self.message
         if self.message_error:
             log = self.message_error
@@ -68,7 +78,15 @@ class PrintBot(CrawJUD):
 
     @classmethod
     def file_log(cls, self: Self) -> None:
-        """Write log messages to a file."""
+        """Write log messages to a file based on the list_messages attribute.
+
+        Opens (or creates) a log file specific to the process id and writes
+        each relevant message.
+
+        Args:
+            self (Self): The current PrintBot instance.
+
+        """
         try:
             savelog = Path(self.output_dir_path).resolve().joinpath(f"LogFile - PID {self.pid}.txt")
             with savelog.open("a") as f:
@@ -79,18 +97,31 @@ class PrintBot(CrawJUD):
         except Exception:
             # Aguarda 2 segundos
             sleep(2)
-
             err = traceback.format_exc()
             self.logger.exception(err)
 
     def end_prt(self, status: str) -> None:
-        """Send a final status message."""
-        data = {"pid": self.pid, "status": status}
+        """Send final status message for termination.
 
+        Prepares the final data package and emits a status signal.
+
+        Args:
+            status (str): The final status message indicator.
+
+        """
+        data = {"pid": self.pid, "status": status}
         self.end_message(data, url_socket)
 
     def socket_message(self: Self, data: dict) -> None:
-        """Send a message to the socket and handle termination checks."""
+        """Emit log message to the socket with termination checks.
+
+        Updates data with system info if termination patterns are detected and
+        sends the message through the socket.
+
+        Args:
+            data (dict): Dictionary containing log details.
+
+        """
         chk_type1 = "fim da execução" in self.prompt
         chk_type2 = "falha ao iniciar" in self.prompt
         message_stop = [chk_type1, chk_type2]
@@ -98,7 +129,6 @@ class PrintBot(CrawJUD):
         try:
             if any(message_stop):
                 data.update({"system": self.system, "typebot": self.typebot})
-
             self.send_message(data, url_socket)
 
         except Exception:
@@ -106,31 +136,29 @@ class PrintBot(CrawJUD):
             self.logger.exception(err)
 
     def with_context(self, event: str, data: dict, url: str) -> None:  # noqa: C901
-        """Handle the context for connecting and emitting messages.
+        """Emit event with data via socket ensuring proper connection context.
+
+        Attempts connection if not already connected and manages retries on errors.
 
         Args:
             event (str): The event to emit.
-            data (dict): The data to send with the event.
-            url (str): The URL to connect to.
+            data (dict): The data to send.
+            url (str): The socket server URL.
 
         """
         err = None
 
         try:
             url = f"https://{url}"
-
             # Verifica se já está conectado antes de tentar se conectar
-
             if self.connected is False:
                 self.connect_socket(url)
-
             sleep(0.5)
             self.emit_message(event, data)
             sleep(1)
 
         except socketio.exceptions.BadNamespaceError as e:
             err = str(e)
-
             try:
                 self.connected = False
                 sleep(1)
@@ -138,7 +166,6 @@ class PrintBot(CrawJUD):
                 sleep(0.5)
                 self.emit_message(event, data)
                 sleep(1)
-
             except Exception as e:
                 if "Client is not in a disconnected state" in str(e):
                     self.sio.disconnect()
@@ -148,24 +175,19 @@ class PrintBot(CrawJUD):
                     sleep(0.5)
                     self.emit_message(event, data)
                     sleep(1)
-
                 err = str(e)
 
         except socketio.exceptions.ConnectionError as e:
             err = str(e)
-
             try:
                 if "One or more namespaces failed to connect" in str(e):
                     sleep(1)
                     self.connected = False
                     self.connect_socket(url)
-
                     self.emit_message(event, data)
-
                 elif "Already connected" in str(e):
                     self.emit_message(event, data)
                     self.connected = True
-
             except Exception as e:
                 err = str(e)
 
@@ -176,42 +198,44 @@ class PrintBot(CrawJUD):
             self.logger.error(err)
 
     def emit_message(self, event: str, data: dict) -> None:
-        """Emit a message to the socket.
+        """Emit an event with its associated data on the log namespace.
 
         Args:
-            event (str): The event to emit.
-            data (dict): The data to send with the event.
-            sio (SimpleClient): The SimpleClient instance.
+            event (str): The event identifier.
+            data (dict): The data payload to be sent.
 
         """
         self.sio.emit(event, data, namespace="/log")
 
     def connect_socket(self, url: str) -> None:
-        """Connect to the socket.
+        """Connect to the socket server using the specified URL and headers.
+
+        Includes the process id as a header for identification.
 
         Args:
-            url (str): The URL to connect to.
-            sio (SimpleClient): The SimpleClient instance
+            url (str): The server URL.
 
         """
         self.sio.connect(url, namespaces=["/log"], headers={"pid": self.pid})
 
     def send_message(self, data: dict[str, str | int], url: str) -> None:
-        """Send a log message.
+        """Send a log message by embedding context details via with_context.
 
         Args:
-            data (dict[str, str | int]): The data to send.
-            url (str): The URL to connect to.
+            data (dict[str, str | int]): The message details.
+            url (str): The socket server URL.
 
         """
         self.with_context("log_message", data, url)
 
     def end_message(self, data: dict, url: str) -> None:
-        """Send a stop bot message and a status bot message.
+        """Finalize the process by emitting stop and status messages.
+
+        Uses a try-finally construct to ensure both events are sent.
 
         Args:
-            data (dict): The data to send.
-            url (str): The URL to connect to.
+            data (dict): Final message data.
+            url (str): The socket server URL.
 
         """
         try:

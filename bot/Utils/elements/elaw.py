@@ -89,7 +89,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
         div_messageerro_css (str): Selector for the error message div.
         botao_editar_complementar (str): Selector for the editar complementar button.
         css_input_uc (str): Selector for the input UC textarea.
-        elementSelect (str): Selector for the element select.
+        element_select (str): Selector for the element select.
         css_data_citacao (str): Selector for the data citação input.
         fase_input (str): Selector for the fase input.
         provimento_input (str): Selector for the provimento input.
@@ -283,7 +283,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
             '4_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]',
         ),
     )
-    elementSelect = "".join(  # noqa: N815
+    element_select = "".join(  # noqa: N815
         (
             'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3',
             '_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]',

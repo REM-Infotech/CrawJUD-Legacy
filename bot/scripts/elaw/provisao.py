@@ -157,7 +157,7 @@ class Provisao(CrawJUD):
         label_risk = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.type_risk_label)))
 
         if label_risk.text == "Risco Quebrado":
-            self.Select2_ELAW(self.elements.type_risk_select, "Risco")
+            self.select2_elaw(self.elements.type_risk_select, "Risco")
 
     def setup_calls(self) -> list:
         """Configure sequence of method calls based on the provision data.

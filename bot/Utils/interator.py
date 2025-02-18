@@ -1,7 +1,7 @@
-"""Utility module for interacting with web elements using Selenium WebDriver.
+"""Interaction module: Interact with web elements using Selenium; perform clicks and keys actions promptly.
 
-Provides the Interact class with methods to perform various interactions
-such as clicking, sending keys, and selecting items.
+This module provides the Interact class containing helper functions for interacting with
+web elements, including clicking, sending keys, and waiting for visual changes.
 """
 
 from contextlib import suppress
@@ -21,17 +21,25 @@ from ..core import CrawJUD
 
 
 class Interact(CrawJUD):
-    """Provides methods to interact with web elements using Selenium WebDriver."""
+    """Provide helper methods to interact with web elements via Selenium WebDriver.
+
+    Each method ensures actions are performed with appropriate delays and error handling.
+    """
 
     def __init__(self) -> None:
-        """Initialize the Interact class."""
+        """Initialize Interact instance.
+
+        Set up required attributes for element interactions.
+        """
 
     def send_key(self, element: WebElement, word: any) -> None:
-        """Send a sequence of keys to a web element.
+        """Send keys to a web element character by character if needed.
 
         Args:
-            element (WebElement): The web element to send keys to.
-            word (any): The keys or text to send to the element.
+            element (WebElement): The target web element.
+            word (any): The text or key code to send.
+
+        Sends the whole key if it matches a Selenium key.
 
         """
         send = None
@@ -49,10 +57,12 @@ class Interact(CrawJUD):
                 element.send_keys(c)
 
     def click(self, element: WebElement) -> None:
-        """Click on a web element with a short delay before and after.
+        """Perform a click action on a web element with brief pauses.
 
         Args:
-            element (WebElement): The web element to click.
+            element (WebElement): The target web element.
+
+        Implements a click with pre- and post-click delays.
 
         """
         sleep(0.05)
@@ -60,27 +70,26 @@ class Interact(CrawJUD):
         sleep(0.05)
 
     def double_click(self, element: WebElement) -> None:
-        """Perform a double-click action on a web element.
+        """Double-click on the given web element.
 
         Args:
-            element (WebElement): The web element to double-click.
+            element (WebElement): The element to double-click.
+
+        Uses ActionChains to perform the double click.
 
         """
         action = ActionChains(self.driver)
         action.double_click(element).perform()
 
     def select_item(self, elemento: str, text: str) -> bool:
-        """Select an item from a dropdown or list based on the provided text.
+        """Select an item from a dropdown list based on exact text matching.
 
         Args:
-            elemento (str): The CSS selector of the element containing the items.
-            text (str): The text of the item to select.
+            elemento (str): CSS selector for the dropdown.
+            text (str): The exact text of the item to select.
 
         Returns:
-            bool: True if the item was successfully selected.
-
-        Raises:
-            NotFoundError: If the item with the specified text is not found.
+            bool: True if the selection is successful; otherwise, raises NotFoundError.
 
         """
         itens: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
@@ -110,10 +119,10 @@ class Interact(CrawJUD):
         return True
 
     def clear(self, element: WebElement) -> None:
-        """Clear the content of a web element.
+        """Clear the text content of the specified web element.
 
         Args:
-            element (WebElement): The web element to clear.
+            element (WebElement): The element to clear.
 
         """
         element.click()
@@ -122,11 +131,10 @@ class Interact(CrawJUD):
         sleep(1)
 
     def sleep_load(self, element: str = 'div[id="j_id_3x"]') -> None:
-        """Wait until a specific element is no longer loading.
+        """Wait until the loading indicator for a specific element is hidden.
 
         Args:
-            element (str, optional): The CSS selector of the loading element.
-                                      Defaults to 'div[id="j_id_3x"]'.
+            element (str, optional): A CSS selector for the loading element. Defaults to 'div[id="j_id_3x"]'.
 
         """
         while True:
@@ -156,10 +164,10 @@ class Interact(CrawJUD):
                 break
 
     def display_none(self, elemento: WebElement) -> None:
-        """Wait until the display style of an element is set to 'none'.
+        """Wait for an element's display style to change to 'none'.
 
         Args:
-            elemento (WebElement): The web element to check.
+            elemento (WebElement): The element to monitor.
 
         """
         while True:
@@ -170,7 +178,7 @@ class Interact(CrawJUD):
                 break
 
     def wait_caixa(self) -> None:
-        """Wait until a specific modal dialog is present on the page."""
+        """Wait until a modal dialog (caixa) is displayed on the page."""
         while True:
             check_wait = None
             with suppress(NoSuchElementException):
@@ -183,7 +191,10 @@ class Interact(CrawJUD):
                 break
 
     def wait_fileupload(self) -> None:
-        """Wait until the file upload process is complete."""
+        """Wait until the file upload progress completes.
+
+        Checks repeatedly until no progress bar is present.
+        """
         while True:
             sleep(0.05)
             div1 = 'div[class="ui-fileupload-files"]'
@@ -201,32 +212,32 @@ class Interact(CrawJUD):
                 break
 
     def scroll_to(self, element: WebElement) -> None:
-        """Scroll to a specific web element.
+        """Scroll the view to the specified web element.
 
         Args:
-            element (WebElement): The web element to scroll to.
+            element (WebElement): The element to scroll into view.
 
         """
         action = ActionChains(self.driver)
         action.scroll_to_element(element)
         sleep(0.5)
 
-    def Select2_ELAW(self, elementSelect: str, to_Search: str) -> None:  # noqa: N802, N803
-        """Select an option from a Select2 dropdown based on the search text.
+    def select2_elaw(self, element_select: str, to_search_elaw: str) -> None:
+        """Select an option from a Select2 dropdown based on a search text.
 
         Args:
-            elementSelect (str): The CSS selector of the Select2 element.
-            to_Search (str): The text to search and select.
+            element_select (str): CSS selector for the Select2 element.
+            to_search_elaw (str): The option text to search and select.
 
         """
-        selector: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elementSelect)))
+        selector: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_select)))
 
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}
 
-        elementsSelecting = elementSelect.replace("'", "'")  # noqa: N806
+        elementsSelecting = element_select.replace("'", "'")  # noqa: N806
         if '"' in elementsSelecting:
-            elementsSelecting = elementSelect.replace('"', "'")  # noqa: N806
+            elementsSelecting = element_select.replace('"', "'")  # noqa: N806
 
         for item in items:
             value_item = item.get_attribute("value")
@@ -235,15 +246,15 @@ class Interact(CrawJUD):
 
             opt_itens.update({text_item.upper(): value_item})
 
-        value_opt = opt_itens.get(to_Search.upper())
+        value_opt = opt_itens.get(to_search_elaw.upper())
 
         if value_opt:
-            command = f"$('{elementSelect}').val(['{value_opt}']);"
-            command2 = f"$('{elementSelect}').trigger('change');"
+            command = f"$('{element_select}').val(['{value_opt}']);"
+            command2 = f"$('{element_select}').trigger('change');"
 
-            if "'" in elementSelect:
-                command = f"$(\"{elementSelect}\").val(['{value_opt}']);"
-                command2 = f"$(\"{elementSelect}\").trigger('change');"
+            if "'" in element_select:
+                command = f"$(\"{element_select}\").val(['{value_opt}']);"
+                command2 = f"$(\"{element_select}\").trigger('change');"
 
             self.driver.execute_script(command)
             self.driver.execute_script(command2)

@@ -1,9 +1,7 @@
-"""Module: auth.
+"""Authentication module: Authenticate users across systems; perform login and certificate tasks promptly.
 
-This module provides the AuthBot class for handling authentication across different systems.
-
-Classes:
-    AuthBot: A class for handling authentication across different systems.
+This module provides the AuthBot class with methods for authentication on ESAJ, PROJUDI, eLAW,
+and PJE systems. Each method follows error handling and logging conventions.
 """
 
 import logging
@@ -31,48 +29,26 @@ logger = logging.getLogger(__name__)
 
 
 class AuthBot(CrawJUD):
-    """AuthBot class for handling authentication across different systems.
+    """Handle user authentication across multiple legal system platforms.
 
-    Methods
-    -------
-    __init__() -> None
-        Initializes the AuthBot instance.
-    auth() -> bool:
-        Determines the appropriate authentication method based on the system and calls it.
-    esaj_auth() -> bool:
-        Handles authentication for the ESAJ system.
-    projudi_auth() -> bool:
-        Handles authentication for the Projudi system.
-    elaw_auth() -> bool:
-        Handles authentication for the eLaw system.
-    pje_auth() -> bool:
-        Handles authentication for the PJE system.
-    accept_cert(accepted_dir: str) -> None:
-        Accepts the certificate for the user.
-
+    This class implements methods for different systems to perform login and certificate acceptance.
     """
 
     def __init__(self) -> None:
-        """Initialize the AuthBot instance.
+        """Initialize AuthBot instance.
 
-        Initializes the AuthBot with necessary attributes and configurations.
+        Setup any preliminary attributes required for subsequent authentication.
         """
         # Initialize any additional attributes here
 
     def auth(self) -> bool:
-        """Authenticate the user based on the system attribute.
-
-        This method dynamically calls the appropriate authentication method
-        for the system specified in the `self.system` attribute. The method
-        name is constructed by converting the system name to lowercase and
-        appending '_auth'. If the method exists, it is called and its result
-        is returned. If the method does not exist, a RuntimeError is raised.
+        """Dynamically execute the proper authentication method based on the system.
 
         Returns:
-            bool: The result of the authentication method.
+            bool: The result from the invoked authentication method.
 
         Raises:
-            RuntimeError: If the authentication method for the specified system is not found.
+            RuntimeError: When a system-specific auth method cannot be found.
 
         """
         to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth", None)
@@ -82,14 +58,12 @@ class AuthBot(CrawJUD):
         raise RuntimeError("Sistema Não encontrado!")
 
     def esaj_auth(self) -> bool:
-        """Authenticate the user on the ESAJ system.
-
-        This method handles both certificate-based and username/password-based
-        authentication methods. It navigates to the appropriate login page,
-        fills in the required fields, and submits the login form.
+        """Authenticate on ESAJ system using certificate or credentials.
 
         Returns:
-            bool: True if authentication is successful, False otherwise.
+            bool: True if authentication is successful; False otherwise.
+
+        Waits for page elements, selects certificate if needed, and verifies login.
 
         """
         try:
@@ -171,14 +145,10 @@ class AuthBot(CrawJUD):
             raise e
 
     def projudi_auth(self) -> bool:
-        """Authenticate the user on the Projudi platform.
-
-        This method navigates to the login page, enters the username and password,
-        and attempts to log in. It then checks if the login was successful.
+        """Authenticate on PROJUDI platform using username and password.
 
         Returns:
-            bool: True if login was successful, False otherwise.
-
+            bool: True if the login process completes successfully; False otherwise.
 
         """
         try:
@@ -212,15 +182,12 @@ class AuthBot(CrawJUD):
             raise e
 
     def elaw_auth(self) -> bool:
-        """Authenticate the user on the eLaw platform.
-
-        This method navigates to the eLaw login page, enters the username and password,
-        and attempts to log in. It waits for the necessary elements to be present on the page
-        before interacting with them. After attempting to log in, it checks the current URL
-        to determine if the login was successful.
+        """Authenticate on the eLAW platform using provided credentials.
 
         Returns:
-            bool: True if the login was successful, False otherwise.
+            bool: True if authentication is successful; False otherwise.
+
+        Navigates to the login page, enters credentials, and verifies the URL after login.
 
         """
         try:
@@ -245,16 +212,12 @@ class AuthBot(CrawJUD):
             raise e
 
     def pje_auth(self) -> bool:
-        """Authenticate the user on the PJE system.
-
-        This method navigates to the login page, inputs the username and password,
-        and attempts to log in. It waits for the login elements to be present on the page,
-        sends the credentials, and clicks the login button. Finally, it checks if the login
-        was successful by verifying the URL.
+        """Authenticate on the PJE system by providing username and password.
 
         Returns:
-            bool: True if login was successful, False otherwise.
+            bool: True if login was successful; False otherwise.
 
+        Fills all required fields and checks the status by verifying the page URL.
 
         """
         try:
@@ -280,15 +243,12 @@ class AuthBot(CrawJUD):
             raise e
 
     def accept_cert(self, accepted_dir: str) -> None:
-        """Accept the certificate for the user.
-
-        This method automates the acceptance of certificates by interacting with
-        the certificate management application. It copies necessary files and ensures
-        that the certificate is properly accepted.
+        """Automatically accept a certificate using the certificate management tool.
 
         Args:
-            accepted_dir (str): The directory where accepted certificates are stored.
+            accepted_dir (str): Directory path where accepted certificates are recorded.
 
+        Executes certificate acceptance and copies necessary files.
 
         """
         try:
