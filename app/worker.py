@@ -1,4 +1,9 @@
-"""module used to import the app module to the routes package."""
+"""Module for initializing and running the Celery worker.
+
+This module configures the environment, initializes the Quart and Celery
+applications using AppFactory, and starts a Celery worker with specified
+settings such as task events, log level, concurrency, and thread pool.
+"""
 
 import asyncio
 import os
@@ -9,15 +14,28 @@ from quart import Quart
 
 from app import AppFactory
 
+# Set environment variables to designate worker mode and production status.
 os.environ.update({"APPLICATION_APP": "worker", "IN_PRODUCTION": "True"})
 
+# Create the Quart application and Celery instance via AppFactory.
 quart_app, app = AppFactory.start_app()
 
 if __name__ == "__main__":
 
     async def run_worker(app: Celery, quart_app: Quart) -> None:
-        """Run the worker."""
+        """Run the Celery worker within the Quart application context.
+
+        This function starts the Celery worker with detailed configurations,
+        enabling task events, setting the log level, defining concurrency, and
+        specifying the thread pool for execution.
+
+        Args:
+            app (Celery): The Celery application instance.
+            quart_app (Quart): The Quart application instance.
+
+        """
         async with quart_app.app_context():
+            # Instantiate the worker with the app and specific settings.
             worker = Worker(
                 app=app,
                 task_events=True,
