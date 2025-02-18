@@ -1,6 +1,7 @@
 """Module: movimentacao.
 
-This module manages movement-related functionalities within the Esaj system of the CrawJUD-Bots application.
+Manage movement operations in the Esaj system via CrawJUD framework.
+
 """
 
 import time
@@ -18,11 +19,15 @@ from ...core import CrawJUD
 
 
 class Movimentacao(CrawJUD):
-    """The Movimentacao class extends CrawJUD to handle movement-related tasks within the Esaj system.
+    """Class Movimentacao.
 
-    Attributes:
-        attribute_name (type): Description of the attribute.
-        # ...other attributes...
+    Handle movement tasks in the Esaj system.
+
+    Methods:
+        initialize(args, kwargs): Return a new Movimentacao instance.
+        execution(): Process movement operations for each row.
+        queue(): Queue tasks for retrieving and appending movements.
+        get_moves(): Extract movement information from the page.
 
     """
 
@@ -32,12 +37,14 @@ class Movimentacao(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize a Movimentacao instance.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Variable positional arguments.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Self: A new Movimentacao instance.
 
         """
         return cls(*args, **kwargs)
@@ -61,7 +68,10 @@ class Movimentacao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute the main process for movement operations."""
+        """Execute movement processing.
+
+        Iterates over each process row and handles session and error management.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -106,11 +116,9 @@ class Movimentacao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Queue the tasks for processing.
+        """Queue movement tasks.
 
-        Raises:
-            ExecutionError: If an error occurs during execution.
-
+        Retrieves and appends movement data or raises an error.
         """
         try:
             self.appends = []
@@ -128,7 +136,10 @@ class Movimentacao(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def get_moves(self) -> None:
-        """Retrieve movement information."""
+        """Retrieve movement information.
+
+        Extract movement details from the page elements for each process.
+        """
         show_all: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')),
         )

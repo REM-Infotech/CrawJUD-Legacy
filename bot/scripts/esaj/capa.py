@@ -1,7 +1,6 @@
 """Module: capa.
 
-This module manages the 'capa' functionalities within the CrawJUD-Bots application.
-Handles tasks related to document processing, authentication, and error handling within the 'capa' context.
+Manage capa operations including document processing and process information extraction.
 """
 
 import time
@@ -20,31 +19,28 @@ from ...core import CrawJUD
 
 
 class Capa(CrawJUD):
-    """Manages 'capa' related tasks within the application.
+    """Class Capa.
 
-    Inherits from CrawJUD to utilize core functionalities for processing 'capa' operations.
+    Manage capa-related tasks in the CrawJUD-Bots application.
 
-    Attributes:
-        start_time (float): Timestamp marking the start of execution.
-        max_rows (int): Total number of rows to process.
-        row (int): Current row being processed.
-        bot_data (dict): Data associated with the current bot operation.
-        isStoped (bool): Flag indicating if the execution should stop.
+    Methods:
+        initialize: Return a new Capa instance.
+        execution: Process each capa row and log errors.
+        queue: Queue capa tasks to search and append process info.
+        get_process_informations: Retrieve detailed process information.
 
     """
 
     @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """
-        Initialize bot instance.
+    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
+        """Initialize a Capa instance.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Variable positional arguments.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Self: A new instance of Capa.
 
         """
         return cls(*args, **kwargs)
@@ -70,14 +66,9 @@ class Capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute the main process for 'capa' operations.
+        """Execute capa processing.
 
-        Iterates through each row of data, managing the execution flow,
-        handling session expirations, and logging any errors that occur during processing.
-
-        Raises:
-            ExecutionError: If an unexpected error occurs during execution.
-
+        Iterate through data, manage session renewals, and log exceptions.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -123,14 +114,9 @@ class Capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Queue the tasks for processing.
+        """Queue capa tasks.
 
-        Executes the sequence of actions required to process a 'capa', including
-        searching for the bot and adding processes.
-
-        Raises:
-            ExecutionError: If an error occurs during the queuing process.
-
+        Search for process data and append extracted information.
         """
         try:
             self.search_bot()
@@ -139,11 +125,13 @@ class Capa(CrawJUD):
         except Exception as e:
             raise ExecutionError(e=e) from e
 
-    def get_process_informations(self) -> list:  # noqa: C901
+    def get_process_informations(self) -> list:
         """Retrieve process information.
 
+        Extract and return detailed process data in a structured list.
+
         Returns:
-            list: A list containing process information.
+            list: Information extracted from the process page.
 
         """
         # chk_advs = ["Advogada", "Advogado"]

@@ -1,6 +1,6 @@
 """Module: busca_pags.
 
-This module handles page search functionalities within the CrawJUD-Bots application.
+Manage page search operations for paid costs in the CrawJUD-Bots application.
 """
 
 import time
@@ -18,11 +18,16 @@ from ...core import CrawJUD
 
 
 class BuscaPags(CrawJUD):
-    """The busca_pags class manages page search operations.
+    """Class BuscaPags.
 
-    Attributes:
-        attribute_name (type): Description of the attribute.
-        # ...other attributes...
+    Handle page search and extraction of cost-related information.
+
+    Methods:
+        initialize: Create a new BuscaPags instance.
+        execution: Execute the search and processing loop.
+        queue: Perform page retrieval tasks.
+        get_page_custas_pagas: Navigate to the paid costs page.
+        page_custas: Process and extract cost data.
 
     """
 
@@ -32,12 +37,14 @@ class BuscaPags(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize a BuscaPags instance.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Variable positional arguments.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            Self: A new instance of BuscaPags.
 
         """
         return cls(*args, **kwargs)
@@ -61,7 +68,10 @@ class BuscaPags(CrawJUD):
         self.datetimeNOW = datetime.now(pytz.timezone("America/Manaus")).strftime("%d-%m-%Y")
 
     def execution(self) -> None:
-        """Perform the execution operation."""
+        """Execute page search.
+
+        Iterate through rows, manage session timeouts, and log errors.
+        """
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -106,11 +116,9 @@ class BuscaPags(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Perform the queue operation.
+        """Queue page search tasks.
 
-        Raises:
-            ExecutionError: If an error occurs during the queue operation.
-
+        Execute steps to retrieve and process paid costs page.
         """
         try:
             self.get_page_custas_pagas()
@@ -120,7 +128,10 @@ class BuscaPags(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def get_page_custas_pagas(self) -> None:
-        """Get the page of paid costs."""
+        """Retrieve the paid costs page.
+
+        Extract the URL from the element and navigate to it.
+        """
         generatepdf: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas)),
         )
@@ -131,7 +142,10 @@ class BuscaPags(CrawJUD):
         self.driver.get(url)
 
     def page_custas(self) -> None:
-        """Process the page of costs."""
+        """Process the paid costs page.
+
+        Extract cost details from tables and append success records.
+        """
         divcustaspagas: list[WebElement] = self.wait.until(ec.presence_of_all_elements_located((By.TAG_NAME, "div")))
         total = 0
         for divcorreta in divcustaspagas:

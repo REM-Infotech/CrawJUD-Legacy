@@ -1,6 +1,6 @@
 """Module: esaj.
 
-This module initializes and manages the ESaj bot within the CrawJUD-Bots application.
+Initialize and manage the ESaj bot within the CrawJUD-Bots application.
 """
 
 import logging
@@ -20,28 +20,28 @@ ClassBots = Union[Emissao, Busca_pags, Capa, Movimentacao, Protocolo]
 
 
 class Esaj:
-    """esaj class.
+    """Class Esaj.
 
-    Initializes and executes the ESaj bot based on provided configurations.
+    Initialize and execute the ESaj bot based on configuration parameters.
+
+    Attributes:
+        typebot_ (str): The type of bot to execute.
+
+    Methods:
+        __init__(args, kwargs): Initialize and run the ESaj bot.
+        bot_call: Retrieve and return the bot instance based on typebot.
+
     """
 
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize Bot instance.
+    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
+        """Initialize the Esaj bot instance.
 
-        Sets up the bot and executes the bot module based on the system type.
+        Sets up the bot configuration and starts execution.
 
         Args:
-            *args (tuple[str | any]): Additional positional arguments.
-            **kwargs (dict[str | any]): Additional keyword arguments.
-            path_args (str): Path to the bot's arguments file.
-            display_name (str): The display name for the bot.
-            system (str): The system for the bot (e.g., projudi).
-            typebot (str): The type of bot (e.g., capa).
-            logger (logging.Logger, optional): The logger instance.
+            *args: Variable positional arguments.
+            **kwargs: Arbitrary keyword arguments including path_args, display_name,
+                      system, and typebot.
 
         """
         try:
@@ -62,15 +62,12 @@ class Esaj:
 
     @property
     def bot_call(self) -> ClassBots:
-        """Bot property.
+        """Retrieve the bot instance.
 
         Dynamically imports and returns an instance of the specified bot type.
 
         Returns:
-            any: An instance of the specified bot.
-
-        Raises:
-            AttributeError: If the specified bot type is not found.
+            ClassBots: An instance of the specified bot class.
 
         """
         bot_call: Callable[[], None] = globals().get(self.typebot_.capitalize())
