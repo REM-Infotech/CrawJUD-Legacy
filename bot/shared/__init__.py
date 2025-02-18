@@ -185,7 +185,7 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.OtherUtils_ = _OtherUtils_()
         PropertiesCrawJUD.ElementsBot_ = _ElementsBot_()
         PropertiesCrawJUD.PrintBot_ = _PrintBot_()
-        PropertiesCrawJUD.DriverBot_ = _DriverBot_
+        PropertiesCrawJUD.DriverBot_ = _DriverBot_()
 
     def prt(self) -> None:
         """Print a message via PrintBot.
