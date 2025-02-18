@@ -1,7 +1,13 @@
-"""Package: scripts.
+"""Initialize scripts package for CrawJUD-Bots: Projudi, Esaj, Elaw, PJe, Calc., Caixa v1.
 
-This package contains various scripts for different systems within the CrawJUD-Bots application, including Projudi, Esaj, Elaw, PJe, calculadoras, and caixa.
-"""  # noqa: E501
+This package provides script classes for distinct systems in the CrawJUD-Bots app.
+It integrates functionality for Projudi, Esaj, Elaw, PJe, Calculadoras (Calc.), and Caixa.
+
+Attributes:
+    __all__ (list): Classes exported by this package.
+    ClassesSystems (Union): Union type of all supported system classes.
+
+"""
 
 from typing import Union
 
