@@ -1,6 +1,7 @@
-"""Module: esaj.
+"""Initialize and run the ESaj bot for CrawJUD-Bots.
 
-Initialize and manage the ESaj bot within the CrawJUD-Bots application.
+This module configures and initializes the ESaj bot components including BuscaPags,
+Capa, Emissao, Movimentacao, and Protocolo. It sets logging and error handling.
 """
 
 import logging
@@ -20,28 +21,22 @@ ClassBots = Union[Emissao, Busca_pags, Capa, Movimentacao, Protocolo]
 
 
 class Esaj:
-    """Class Esaj.
+    """Initialize and execute the ESaj bot with proper configurations.
 
-    Initialize and execute the ESaj bot based on configuration parameters.
-
-    Attributes:
-        typebot_ (str): The type of bot to execute.
-
-    Methods:
-        __init__(args, kwargs): Initialize and run the ESaj bot.
-        bot_call: Retrieve and return the bot instance based on typebot.
-
+    This class dynamically retrieves the requested bot type and begins execution.
+    It logs startup messages and handles initialization errors.
     """
 
     def __init__(self, *args: str | int, **kwargs: str | int) -> None:
-        """Initialize the Esaj bot instance.
-
-        Sets up the bot configuration and starts execution.
+        """Initialize the Esaj bot and start execution with given parameters.
 
         Args:
-            *args: Variable positional arguments.
-            **kwargs: Arbitrary keyword arguments including path_args, display_name,
-                      system, and typebot.
+            *args (str|int): Positional parameters.
+            **kwargs (str|int): Keyword arguments including path_args, display_name,
+                                system, and typebot.
+
+        Raises:
+            StartError: If bot initialization fails.
 
         """
         try:
@@ -62,17 +57,17 @@ class Esaj:
 
     @property
     def bot_call(self) -> ClassBots:
-        """Retrieve the bot instance.
-
-        Dynamically imports and returns an instance of the specified bot type.
+        """Retrieve and return the bot instance based on the type specified.
 
         Returns:
-            ClassBots: An instance of the specified bot class.
+            ClassBots: The initialized bot instance matching the requested type.
+
+        Raises:
+            AttributeError: If the specified bot type is not found.
 
         """
         bot_call: Callable[[], None] = globals().get(self.typebot_.capitalize())
 
-        # rb = self.bots.get(self.typebot)
         if not bot_call:
             raise AttributeError("Robô não encontrado!!")
 

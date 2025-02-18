@@ -1,6 +1,7 @@
-"""Module: emissao.
+"""Manage emission processes for CrawJUD-Bots.
 
-Manage emission processes in the CrawJUD-Bots application.
+This module executes the emission workflow by generating PDF documents,
+navigating forms, and extracting barcodes following the ESaj requirements.
 """
 
 import platform
@@ -51,13 +52,13 @@ type_docscss = {
 
 
 class Emissao(CrawJUD):
-    """Execute emission workflow tasks: generate URL docs and extract barcodes from PDFs safely.
+    """Perform emission tasks by generating docs and extracting PDF barcodes.
 
-    This class handles various emission tasks, including document generation,
-    navigation, and PDF barcode extraction.
+    This class executes the complete workflow for document emission. It
+    initializes drivers, navigates pages, and processes PDF files.
 
     Attributes:
-        count_doc: Utility to count document type.
+        count_doc (callable): Utility function to count document type.
 
     """
 
@@ -69,14 +70,14 @@ class Emissao(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """Initialize an Emissao instance with provided parameters and prepare initial settings now.
+        """Initialize an Emissao instance with given parameters and settings.
 
         Args:
-            *args: Variable positional arguments.
-            **kwargs: Arbitrary keyword arguments.
+            *args (str|int): Variable length positional arguments.
+            **kwargs (str|int): Arbitrary keyword arguments.
 
         Returns:
-            Self: A new Emissao instance.
+            Self: A new instance of Emissao.
 
         """
         return cls(*args, **kwargs)
@@ -86,11 +87,14 @@ class Emissao(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize Emissao instance: configure settings, authenticate, and start timing now.
+        """Initialize Emissao instance and configure authentication.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (str|int): Positional arguments.
+            **kwargs (str|int): Keyword arguments.
+
+        Side Effects:
+            Authenticates bot and records start time for processing.
 
         """
         super().__init__()
@@ -100,9 +104,10 @@ class Emissao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Perform emission processing by iterating rows and handling errors and sessions robustly.
+        """Perform emission processing iterating over data rows and handling errors.
 
-        Process each row, handle session errors, and manage PDF generation.
+        Iterates the data frame to run the emission workflow. Handles page timeouts,
+        session renewals, and logs errors accordingly.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -148,9 +153,10 @@ class Emissao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Queue emission tasks by orchestrating document generation and PDF barcode extraction safely now.
+        """Queue emission tasks by generating docs and processing PDF barcodes.
 
-        Execute the emission workflow and append success or raise errors.
+        Executes the emission process by calling the appropriate method based on
+        the guide type and then downloading the PDF.
         """
         try:
             custa = str(self.bot_data.get("TIPO_GUIA"))
@@ -170,9 +176,9 @@ class Emissao(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def custas_iniciais(self) -> None:
-        """Process initial costs emission: navigate to URL and fill form fields for fee calculation now.
+        """Process initial costs: navigate to the correct URL and fill form fields.
 
-        Navigate to the initial costs URL and input necessary data.
+        Fills necessary fields for calculating initial costs using data from the bot.
         """
         url_custas_ini = "".join(
             (
@@ -225,9 +231,9 @@ class Emissao(CrawJUD):
             ).text
 
     def preparo_ri(self) -> None:
-        """Process RI preparation emission: handle portal navigation and form submission effectively now.
+        """Process RI preparation: navigate portals and submit form data appropriately.
 
-        Handle RI emission by directing to the appropriate portal and inputting data.
+        Depending on the portal (ESaj or Projudi), fills the corresponding form fields.
         """
         portal = self.bot_data.get("PORTAL", "não informado")
         if str(portal).lower() == "esaj":
@@ -282,36 +288,37 @@ class Emissao(CrawJUD):
             raise ExecutionError("Informar portal do processo na planilha (PROJUDI ou ESAJ)")
 
     def renajud(self) -> None:
-        """Handle Renajud emission process placeholder: implement necessary navigation and actions now.
+        """Implement Renajud emission process navigation and actions when needed.
 
         Note:
-            Implementation pending future requirements.
+            Functionality is pending implementation.
 
         """
 
     def sisbajud(self) -> None:
-        """Handle Sisbajud emission process placeholder: implement necessary features when needed now.
+        """Implement Sisbajud emission process functionality when required.
 
         Note:
-            Functionality to be added later.
+            Future implementation is needed.
 
         """
 
     def custas_postais(self) -> None:
-        """Handle postal costs emission process placeholder: implement additional processing if required now.
+        """Implement postal costs process handling if further processing is required.
 
         Note:
-            Implementation pending future specifications.
+            Implementation is pending.
 
         """
 
     def generate_doc(self) -> str:
-        """Generate PDF document URL: open a new tab, retrieve and validate URL for emitted document now.
-
-        Opens a new tab, retrieves the PDF URL, and validates document existence.
+        """Generate a PDF document URL by opening a new browser tab and switching context.
 
         Returns:
-            str: The URL of the generated document.
+            str: The validated URL for the generated PDF document.
+
+        Raises:
+            ExecutionError: If the generated PDF contains an error message.
 
         """
         self.original_window = original_window = self.driver.current_window_handle
@@ -322,9 +329,6 @@ class Emissao(CrawJUD):
         url_start = onclick_value.find("'") + 1
         url_end = onclick_value.find("'", url_start)
         url = onclick_value[url_start:url_end]
-        sleep(0.5)
-        # Store the ID of the original window
-
         sleep(0.5)
         self.driver.switch_to.new_window("tab")
         self.driver.get(f"https://consultasaj.tjam.jus.br{url}")
@@ -349,12 +353,13 @@ class Emissao(CrawJUD):
             return f"https://consultasaj.tjam.jus.br{url}"
 
     def downloadpdf(self, link_pdf: str) -> None:
-        """Download and save PDF file: retrieve, write file locally, and handle window switching now.
-
-        Retrieves the PDF from the URL and saves it locally, then returns to original window.
+        """Download and store the PDF file from the provided URL to a local directory.
 
         Args:
-            link_pdf (str): URL of the PDF document.
+            link_pdf (str): URL of the PDF to download.
+
+        Side Effects:
+            Saves the PDF to disk and switches browser windows.
 
         """
         response = requests.get(link_pdf, timeout=60)
@@ -380,12 +385,13 @@ class Emissao(CrawJUD):
         self.prt()
 
     def get_barcode(self) -> None:
-        """Extract barcode from downloaded PDF: parse text and return emission details in list now.
-
-        Parse the downloaded PDF and extract the barcode using a regex pattern.
+        """Extract and return the barcode from the downloaded PDF by matching a regex.
 
         Returns:
-            list: Barcode and related emission details.
+            list: Emission details including process number, doc type, value, and barcode.
+
+        Raises:
+            ExecutionError: If barcode extraction fails.
 
         """
         try:
