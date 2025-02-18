@@ -1,6 +1,7 @@
 """Module: caixa.
 
-This module initializes and manages the Caixa bot within the CrawJUD-Bots application.
+Initializes and manages the Caixa bot within the CrawJUD-Bots application.
+It provides a class interface to run the Emissor bot and handle errors.
 """
 
 import logging
@@ -15,9 +16,10 @@ ClassBots = Union[Emissor]
 
 
 class Caixa:
-    """caixa class.
+    """Class Caixa.
 
-    Initializes and executes the Caixa bot based on provided configurations.
+    Initializes and executes the specified bot (Emissor) based on
+    provided configurations.
     """
 
     def __init__(
@@ -25,18 +27,22 @@ class Caixa:
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize Bot instance.
+        """Initialize the Caixa bot.
 
-        Sets up the bot and executes the bot module based on the system type.
+        Sets up the bot and then executes the bot's main module
+        based on the specified system type.
 
         Args:
-            *args (tuple[str | any]): Additional positional arguments.
-            **kwargs (dict[str | any]): Additional keyword arguments.
-            path_args (str): Path to the bot's arguments file.
-            display_name (str): The display name for the bot.
-            system (str): The system for the bot (e.g., projudi).
-            typebot (str): The type of bot (e.g., capa).
-            logger (logging.Logger, optional): The logger instance.
+            *args: Additional positional arguments for the bot.
+            **kwargs: Additional keyword arguments. Might include:
+                path_args (str): Path to the bot's arguments file.
+                display_name (str): Bot's visible name.
+                system (str): The system for the bot (e.g., 'projudi').
+                typebot (str): Type of bot to instantiate (e.g., 'capa').
+                logger (logging.Logger): The logger instance (optional).
+
+        Raises:
+            StartError: If there is any exception during initialization.
 
         """
         try:
@@ -57,12 +63,14 @@ class Caixa:
 
     @property
     def bot_call(self) -> ClassBots:
-        """Bot property.
+        """Return a dynamic reference to the bot class.
 
-        Dynamically imports and returns an instance of the specified bot type.
+        Uses the typebot_ attribute to retrieve the corresponding
+        bot class (e.g., Emissor) and return an instance to handle
+        the process logic.
 
         Returns:
-            any: An instance of the specified bot.
+            ClassBots: An instance of the requested bot class.
 
         Raises:
             AttributeError: If the specified bot type is not found.
