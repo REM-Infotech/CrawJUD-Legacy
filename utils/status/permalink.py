@@ -1,4 +1,4 @@
-"""Module generate signed URLs for GCS blobs."""
+"""Generate secure, time-limited signed URLs for accessing files in Google Cloud Storage."""
 
 from datetime import timedelta
 

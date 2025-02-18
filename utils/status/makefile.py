@@ -1,4 +1,4 @@
-"""Module for creating ZIP archives of executions in CrawJUD-Bots."""
+"""Create and manage ZIP archives for bot execution outputs with automatic cleanup of temp files."""
 
 import os
 import zipfile

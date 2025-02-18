@@ -45,11 +45,7 @@ env = Environment(
 
 
 class TaskExec:
-    """Manage bot execution tasks.
-
-    This class orchestrates bot start and stop tasks, including file operations,
-    database interactions and email notifications.
-    """
+    """Manage bot status tracking, task execution, and notifications with database integration."""
 
     def __init__(self) -> None:
         """Initialize the TaskExec instance."""

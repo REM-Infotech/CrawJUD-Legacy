@@ -1,4 +1,4 @@
-"""Module for uninstalling certificates."""
+"""Remove certificates from the Windows certificate store using the certutil command line tool."""
 
 import subprocess  # noqa: S404 # nosec: B404 # noqa: S404
 

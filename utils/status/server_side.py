@@ -1,4 +1,4 @@
-"""Module for server-side operations in CrawJUD-Bots."""
+"""Handle server-side operations for bot status tracking and caching with Redis integration."""
 
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart

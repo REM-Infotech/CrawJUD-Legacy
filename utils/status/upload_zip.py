@@ -1,4 +1,4 @@
-"""Module for uploading ZIP files to Google Cloud Storage (GCS)."""
+"""Upload ZIP files to Google Cloud Storage with error handling and verification."""
 
 from pathlib import Path
 
