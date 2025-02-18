@@ -838,6 +838,11 @@ class PropertiesCrawJUD:
     def total_rows(self, total: int) -> None:
         PropertiesCrawJUD.total_rows_ = total
 
+    @property
+    def format_string(self) -> Callable[..., str]:
+        """Return the format_string callable."""
+        return self.OtherUtils.format_string
+
 
 # from pydantic import BaseModel, ValidationError
 # from typing import get_type_hints
