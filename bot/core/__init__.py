@@ -195,7 +195,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.driver = driver
             self.wait = wait
 
-            self.elements = self.ElementsBot.config().Elements
+            self.elements = self.ElementsBot.config()._elements
 
         except Exception as e:
             self.row = 0

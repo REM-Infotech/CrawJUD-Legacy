@@ -1,13 +1,20 @@
 """Module: calculadoras.
 
-This module contains the TJDFT class which includes elements related to TJDFT.
+Provide TJDFT elements for legal processing tasks.
 
 Classes:
-    TJDFT: A class that encapsulates elements specific to TJDFT.
+    TJDFT: Represent TJDFT-related elements.
 """
 
 
 class TJDFT:
-    """Class representing TJDFT elements."""
+    """Represent TJDFT elements.
+
+    Encapsulate elements and functionality specific to the TJDFT system.
+
+    Attributes:
+        # Define attributes here as needed.
+
+    """
 
     # ELEMENTOS TJDFT
