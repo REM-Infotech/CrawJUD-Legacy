@@ -23,6 +23,7 @@ sdist/
 .version
 var/
 wheels/
+cache_logs.py
 share/python-wheels/
 *.egg-info/
 .installed.cfg

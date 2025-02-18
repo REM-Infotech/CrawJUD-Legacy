@@ -1,15 +1,21 @@
-"""Module for head_gpt function.
+"""
+Module for the head_gpt function.
 
-Provides GPT head text with legal instructions for judicial documents.
+Provides legal instructions for analyzing different types of judicial documents
+and extracting relevant information from each.
 """
 
 from typing import LiteralString
 
 
 def head_gpt() -> LiteralString:
-    """Return GPT head text with legal instructions.
+    """
+    Return a GPT head text with guidelines for legal document analysis.
 
-    The returned text describes document types and the output format.
+    Returns:
+        LiteralString: Multiline string of instructions describing which
+            details to extract according to the type of legal document.
+
     """
     return (
         "Você é um assistente jurídico especializado em analisar\n"
