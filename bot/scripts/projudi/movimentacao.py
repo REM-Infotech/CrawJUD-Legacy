@@ -1,6 +1,6 @@
 """Module: movimentacao.
 
-This module handles movement-related operations within the Projudi system of the CrawJUD-Bots application.
+Handle movement-related operations in the Projudi system with data scraping and reporting.
 """
 
 import os
@@ -25,41 +25,32 @@ from ...core import CrawJUD
 
 
 class Movimentacao(CrawJUD):
-    """Handles movement-related operations within the Projudi system.
+    """Manage movements in Projudi by scraping, filtering, and logging process-related actions.
 
-    Inherits from CrawJUD.
-
-    Attributes:
-        start_time (float): The start time of execution.
-
+    This class extends CrawJUD to handle operations including movement search,
+    keyword filtering, and report generation for movement activities.
     """
 
     @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """
-        Initialize bot instance.
+    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
+        """Initialize a Movimentacao instance with provided arguments.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
+
+        Returns:
+            Self: An initialized Movimentacao instance.
 
         """
         return cls(*args, **kwargs)
 
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the movimentacao instance.
+    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
+        """Initialize the Movimentacao instance and execute authentication.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
 
         """
         super().__init__()
@@ -69,9 +60,9 @@ class Movimentacao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute the movement processing.
+        """Loop through data rows and process each movement with error management.
 
-        Processes each row in the data frame and handles queueing and error management.
+        Iterates over data frame entries and queues movement processing.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -117,10 +108,10 @@ class Movimentacao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage the queuing of movement operations.
+        """Manage queuing of movement operations and scrape required data.
 
         Raises:
-            ExecutionError: If the process is not found or other execution errors occur.
+            ExecutionError: If processing fails during movement queue operations.
 
         """
         try:
@@ -166,22 +157,17 @@ class Movimentacao(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def set_page_size(self) -> None:
-        """Set the page size for the movement table.
-
-        Selects the value '1000' from the page size dropdown.
-        """
+        """Set the page size of the movement table to 1000."""
         select = Select(
             self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.select_page_size))),
         )
         select.select_by_value("1000")
 
     def setup_config(self) -> None:
-        """Configure the setup for movement scraping.
-
-        Sets the page size, table moves, and initiates the scraping based on keywords.
+        """Configure movement scraping by setting page size, table moves, and keywords.
 
         Raises:
-            ExecutionError: If no movements are found.
+            ExecutionError: If no movements are found in the scraping process.
 
         """
         encontrado = False
@@ -204,14 +190,14 @@ class Movimentacao(CrawJUD):
         if encontrado is False:
             raise ExecutionError("Nenhuma movimentação encontrada")
 
-    def filter_moves(self, move: WebElement) -> bool:  # noqa: C901
-        """Filter movements based on date and keyword criteria.
+    def filter_moves(self, move: WebElement) -> bool:
+        """Filter a movement element based on given date and keyword criteria.
 
         Args:
-            move (WebElement): The movement element to filter.
+            move (WebElement): A movement element to be filtered.
 
         Returns:
-            bool: True if the movement meets all filtering criteria, False otherwise.
+            bool: True if the movement meets all criteria; otherwise, False.
 
         """
         keyword = self.kword
@@ -339,17 +325,17 @@ class Movimentacao(CrawJUD):
 
         return resultados
 
-    def scrap_moves(self, keyword: str) -> None:  # noqa: C901
+    def scrap_moves(self, keyword: str) -> None:
         """Scrape movements that contain the specified keyword.
 
         Args:
-            keyword (str): The keyword to search for in movements.
+            keyword (str): The keyword to filter movements by.
 
         Raises:
-            ExecutionError: If an error occurs during scraping.
+            ExecutionError: If an error is encountered during scraping.
 
         Returns:
-            bool: True if any movements are found, False otherwise.
+            bool: True if movements are found, otherwise False.
 
         """
         self.kword = keyword
@@ -443,7 +429,7 @@ class Movimentacao(CrawJUD):
             """ Verifica se o usuario optou por trazer o texto do documento caso seja mencionado um no andamento """
             if trazerteor:
                 if mov_chk:
-                    move_doct = self.getAnotherMoveWithDoc(mov_name)
+                    move_doct = self.get_another_move(mov_name)
                     for sub_mov in move_doct:
                         mov_texdoc = self.getdocmove(sub_mov, save_another_file)
 
@@ -473,14 +459,14 @@ class Movimentacao(CrawJUD):
 
             self.appends.append(data)
 
-    def getAnotherMoveWithDoc(self, keyword: str) -> list[WebElement]:  # noqa: N802
-        """Retrieve another move with the specified document keyword.
+    def get_another_move(self, keyword: str) -> list[WebElement]:
+        """Retrieve movement entries that contain a document matching the keyword.
 
         Args:
-            keyword (str): The keyword to search for in moves.
+            keyword (str): Document keyword to search for.
 
         Returns:
-            list: A list of moves that match the keyword.
+            list[WebElement]: List of movement elements that match.
 
         """
 
@@ -495,13 +481,13 @@ class Movimentacao(CrawJUD):
         return list(filter(getmovewithdoc, self.table_moves))
 
     def movecontainsdoc(self, move: WebElement) -> bool:
-        """Check if a movement contains a document.
+        """Determine if a movement element includes an associated document.
 
         Args:
             move (WebElement): The movement element to check.
 
         Returns:
-            bool: True if the movement contains a document, False otherwise.
+            bool: True if the document exists; otherwise, False.
 
         """
         expand = None
@@ -512,15 +498,15 @@ class Movimentacao(CrawJUD):
 
         return expand is not None
 
-    def getdocmove(self, move: WebElement, save_in_anotherfile: bool = None) -> str:  # noqa: C901, FBT001
-        """Retrieve the document associated with a movement.
+    def getdocmove(self, move: WebElement, save_in_anotherfile: bool = None) -> str:
+        """Extract the document text from the movement element.
 
         Args:
-            move (WebElement): The movement element.
-            save_in_anotherfile (bool, optional): Whether to save the document in another file. Defaults to False.
+            move (WebElement): Movement element to process.
+            save_in_anotherfile (bool, optional): If True, save the doc info in a separate file.
 
         Returns:
-            str: The text content of the document.
+            str: The extracted document text.
 
         """
         itensmove = move.find_elements(By.TAG_NAME, "td")
@@ -631,13 +617,13 @@ class Movimentacao(CrawJUD):
         return text_doc_1
 
     def openfile(self, path_pdf: str) -> str:
-        """Open and reads the content of a PDF file.
+        """Open a PDF file and extract its text content.
 
         Args:
-            path_pdf (str): The path to the PDF file.
+            path_pdf (str): The file path of the PDF.
 
         Returns:
-            str: The extracted text content from the PDF.
+            str: The extracted text from the PDF.
 
         """
         with open(path_pdf, "rb") as pdf:
@@ -653,9 +639,6 @@ class Movimentacao(CrawJUD):
         return pagescontent
 
     def set_tablemoves(self) -> None:
-        """Set the table of movements from the web driver.
-
-        Locates and assigns the movement table elements to the instance.
-        """
+        """Locate the movement table and assign its elements to self.table_moves."""
         table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
         self.table_moves = table_moves.find_elements(By.XPATH, self.elements.table_moves)

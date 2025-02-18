@@ -1,7 +1,6 @@
 """Module: projudi.
 
-This module defines the projudi class, which manages the initialization and execution
-of different bot types within the CrawJUD-Bots application.
+Manage initialization and execution of various Projudi bot types within CrawJUD-Bots.
 """
 
 from __future__ import annotations
@@ -22,30 +21,17 @@ logger_ = logging.getLogger(__name__)
 
 
 class Projudi:
-    """The projudi class initializes and executes the specified bot based on provided configurations.
+    """Initialize and execute the specified Projudi bot type with detailed configuration.
 
-    Attributes:
-        kwargs (dict): Keyword arguments containing configuration parameters for the bot.
-
+    Reads parameters such as system, typebot, and display_name and launches the corresponding bot.
     """
 
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize Bot instance.
-
-        Sets up the bot and executes the bot module based on the system type.
+    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
+        """Initialize the Projudi instance and start execution of the selected bot.
 
         Args:
-            *args (tuple[str | any]): Additional positional arguments.
-            **kwargs (dict[str | any]): Additional keyword arguments.
-            path_args (str): Path to the bot's arguments file.
-            display_name (str): The display name for the bot.
-            system (str): The system for the bot (e.g., projudi).
-            typebot (str): The type of bot (e.g., capa).
-            logger (logging.Logger, optional): The logger instance.
+            *args (tuple[str | int]): Additional positional arguments.
+            **kwargs (dict[str, str | int]): Arbitrary keyword arguments (including system and typebot).
 
         """
         try:
@@ -66,12 +52,10 @@ class Projudi:
 
     @property
     def bot_call(self) -> ClassBots:
-        """Bot property.
-
-        Dynamically imports and returns an instance of the specified bot type.
+        """Retrieve the bot class corresponding to the chosen type.
 
         Returns:
-            any: An instance of the specified bot.
+            ClassBots: An instance of the selected bot type.
 
         Raises:
             AttributeError: If the specified bot type is not found.

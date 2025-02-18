@@ -1,7 +1,6 @@
 """Module: Intimações.
 
-This module defines the Intimações class, which handles process information extraction and management
-within the CrawJUD-Bots application.
+Extract and manage process intimation information from the Projudi system.
 """
 
 import re  # noqa: F401
@@ -20,9 +19,10 @@ from ...core import CrawJUD
 
 
 class Intimacoes(CrawJUD):
-    """The Intimações class extends CrawJUD to handle specific execution tasks related to process.
+    """Extract and process intimations in Projudi by navigating pages and extracting data.
 
-    information extraction and management.
+    This class extends CrawJUD to enter the intimacoes tab, set page sizes,
+    and retrieve detailed process intimation information.
     """
 
     @classmethod
@@ -31,12 +31,14 @@ class Intimacoes(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize an Intimacoes instance with given parameters.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
+
+        Returns:
+            Self: The initialized Intimacoes instance.
 
         """
         return cls(*args, **kwargs)
@@ -46,11 +48,11 @@ class Intimacoes(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize the Intimações instance.
+        """Initialize the Intimacoes instance and authenticate.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
 
         """
         super().__init__()
@@ -60,11 +62,9 @@ class Intimacoes(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute the main processing loop, handling each frame of data.
+        """Execute the intimation extraction loop and handle pagination.
 
-        Raises:
-            Exception: If an unexpected error occurs during execution.
-
+        Iterates through intimation pages and queues extraction of process data.
         """
         self.driver.get(self.elements.url_mesa_adv)
         self.enter_intimacoes()
@@ -117,20 +117,22 @@ class Intimacoes(CrawJUD):
         self.finalize_execution()
 
     def enter_intimacoes(self) -> None:
-        """Enter the 'intimações' tab in the Projudi system."""
+        """Enter the 'intimações' tab in the Projudi system via script execution."""
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.btn_aba_intimacoes)))
         self.driver.execute_script(self.elements.tab_intimacoes_script)
         time.sleep(1)
 
     def aba_initmacoes(self) -> WebElement:
-        """Get the intimações table and its elements."""
+        """Retrieve the intimações table element for data extraction.
+
+        Returns:
+            WebElement: The intimações table element.
+
+        """
         return self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, 'div[id="tabprefix1"]')))
 
     def set_page_size(self) -> None:
-        """Set the page size for the 'intimação' table.
-
-        Selects the value '100' from the page size dropdown.
-        """
+        """Set the page size for the intimacoes table to 100."""
         select = Select(
             self.wait.until(
                 ec.presence_of_element_located(
@@ -141,10 +143,13 @@ class Intimacoes(CrawJUD):
         select.select_by_value("100")
 
     def calculate_pages(self, aba_intimacoes: WebElement) -> int:
-        """Calculate the number of pages in the intimações table.
+        """Calculate the total number of intimation pages using table info.
 
         Args:
-            aba_intimacoes (WebElement): The intimações table element.
+            aba_intimacoes (WebElement): The intimacoes table element.
+
+        Returns:
+            int: The total number of pages.
 
         """
         info_count = aba_intimacoes.find_element(By.CSS_SELECTOR, 'div[class="navLeft"]').text.split(" ")[0]
@@ -160,10 +165,10 @@ class Intimacoes(CrawJUD):
         return 1
 
     def queue(self) -> None:
-        """Handle the queue processing, refreshing the driver and extracting process information.
+        """Handle the intimation extraction queue and advance pagination.
 
         Raises:
-            ExecutionError: If the process is not found or extraction fails.
+            ExecutionError: If extraction or navigation fails.
 
         """
         try:
@@ -182,8 +187,16 @@ class Intimacoes(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def get_intimacao_information(self, name_colunas: list[WebElement], intimacoes: list[WebElement]) -> dict:
-        """"""  # noqa: D419
+        """Extract detailed intimation information from table rows.
 
+        Args:
+            name_colunas (list[WebElement]): Table header elements.
+            intimacoes (list[WebElement]): Table row elements for intimations.
+
+        Returns:
+            dict: Processed intimation data.
+
+        """
         list_data = []
         for item in intimacoes:
             data: dict[str, str] = {}
@@ -213,10 +226,13 @@ class Intimacoes(CrawJUD):
         return list_data
 
     def get_intimacoes(self, aba_intimacoes: WebElement) -> tuple[list[WebElement], list[WebElement]]:
-        """Get the intimações table and its elements.
+        """Retrieve the header and row elements from the intimações table.
+
+        Args:
+            aba_intimacoes (WebElement): The intimacoes table element.
 
         Returns:
-            tuple: A tuple containing the table headers and rows.
+            tuple: A tuple containing headers and row elements.
 
         """
         table_intimacoes = aba_intimacoes.find_element(By.CSS_SELECTOR, 'table[class="resultTable"]')

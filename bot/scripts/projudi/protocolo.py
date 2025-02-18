@@ -1,6 +1,7 @@
 """Module: protocolo.
 
-This module handles protocol-related functionalities within the Projudi system of the CrawJUD-Bots application.
+Handles protocol-related functionalities in the Projudi system. Extend CrawJUD to manage
+protocol operations such as adding moves, uploading files, signing documents, and capturing screenshots.
 """
 
 import os
@@ -34,12 +35,10 @@ dotenv.load_dotenv()
 
 
 class Protocolo(CrawJUD):
-    """Handles protocol operations within the Projudi system.
+    """Handle protocol operations and execute moves, uploads, signing, and screenshot capture in Projudi.
 
-    This class extends CrawJUD to manage the creation, handling, and finalization
-    of protocols within the Projudi system. It includes functionalities such as
-    adding moves, uploading files, signing documents, and capturing screenshots
-    upon successful protocol processing.
+    This class extends CrawJUD to manage protocols by sequentially processing moves,
+    file uploads, digital signing and capturing confirmation screenshots.
     """
 
     @classmethod
@@ -48,12 +47,14 @@ class Protocolo(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize a Protocolo instance with provided arguments.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
+            *args (tuple[str | int]): Variable length positional arguments.
             **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+
+        Returns:
+            Self: The initialized Protocolo instance.
 
         """
         return cls(*args, **kwargs)
@@ -63,11 +64,11 @@ class Protocolo(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize the protocolo instance.
+        """Initialize the Protocolo instance and set up authentication.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str | int]): Keyword arguments.
 
         """
         super().__init__()
@@ -77,10 +78,10 @@ class Protocolo(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute the protocol processing.
+        """Execute protocol processing over each data frame entry and handle errors.
 
-        Iterates through each entry in the data frame, managing the execution flow,
-        handling session expirations, and logging any errors that occur during processing.
+        Iterates through the data rows and executes protocol operations including moves,
+        file uploads, signing and final finalization.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -127,7 +128,12 @@ class Protocolo(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage the execution queue for protocol processing."""
+        """Manage the execution queue for protocol processing.
+
+        Raises:
+            ExecutionError: When protocol processing fails.
+
+        """
         try:
             search = self.search_bot()
 
@@ -170,13 +176,10 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def confirm_protocol(self) -> str | None:
-        """Confirm the protocol and retrieve the success message.
-
-        Waits for the success message element to appear and extracts the protocol
-        number from the message.
+        """Confirm protocol action and extract the protocol number from the success message.
 
         Returns:
-            str | None: The extracted protocol number if available, otherwise None.
+            str | None: The extracted protocol number if available; otherwise, None.
 
         """
         successMessage = None  # noqa: N806
@@ -190,16 +193,13 @@ class Protocolo(CrawJUD):
         return successMessage
 
     def set_parte(self) -> bool:  # noqa: C901
-        """Select the appropriate party for the protocol.
-
-        Navigates through the available parties and selects the one specified in
-        the bot data. Ensures that the selection is successful.
+        """Select the appropriate party as specified in bot data.
 
         Returns:
-            bool: True if the party was successfully selected, False otherwise.
+            bool: True if the party is successfully selected, otherwise False.
 
         Raises:
-            ExecutionError: If unable to select the specified party.
+            ExecutionError: If selection of the specified party fails.
 
         """
         # self.driver.switch_to.frame(self.driver.find_element(By.CSS_SELECTOR, 'iframe[name="userMainFrame"]'))
@@ -274,13 +274,10 @@ class Protocolo(CrawJUD):
         return selected_parte
 
     def add_new_move(self) -> None:
-        """Add a new move to the protocol.
-
-        Initiates the process of adding a new move by interacting with the web
-        elements, entering the type of protocol, and confirming the addition.
+        """Initiate the addition of a new protocol move with necessary web interactions.
 
         Raises:
-            ExecutionError: If an error occurs during the addition of a new move.
+            ExecutionError: If adding the move fails.
 
         """
         try:
@@ -322,14 +319,10 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def add_new_file(self) -> None:
-        """Add a new file to the protocol.
-
-        Handles the uploading of the primary petition and any additional attachments.
-        Interacts with the file input elements and ensures that files are uploaded
-        successfully.
+        """Upload the main petition file and its attachments for a protocol.
 
         Raises:
-            ExecutionError: If an error occurs during file upload.
+            ExecutionError: If file upload encounters an error.
 
         """
         try:
@@ -389,13 +382,10 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def set_file_principal(self) -> None:
-        """Set the principal file for the protocol.
-
-        Selects the main file from the list of uploaded files to designate it as
-        the primary document for the protocol.
+        """Designate the principal file among the uploaded documents.
 
         Raises:
-            ExecutionError: If unable to set the principal file.
+            ExecutionError: If the main file is not set correctly.
 
         """
         try:
@@ -411,13 +401,10 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def more_files(self) -> None:
-        """Add more files to the protocol.
-
-        Uploads additional files if specified in the bot data. Iterates through
-        the list of attachments and uploads each one, setting their types accordingly.
+        """Upload additional files as defined in the bot data for protocol documentation.
 
         Raises:
-            ExecutionError: If an error occurs during the uploading of additional files.
+            ExecutionError: When extra file upload operations fail.
 
         """
         try:
@@ -467,13 +454,10 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def sign_files(self) -> None:
-        """Sign the protocol files.
-
-        Automates the signing process by entering the certificate password and
-        confirming the signing action. Handles any errors related to incorrect passwords.
+        """Sign the protocol documents by providing the certificate password and confirming.
 
         Raises:
-            ExecutionError: If signing fails due to incorrect password or other issues.
+            ExecutionError: If the signing process fails.
 
         """
         try:
@@ -518,11 +502,7 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def finish_move(self) -> None:
-        """Finalize the protocol move.
-
-        Completes the protocol by confirming the selection and concluding the
-        move process. Ensures that the protocol is properly finalized in the system.
-        """
+        """Finalize the protocol move by confirming selections and concluding the operation."""
         self.message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
         self.type_log = "log"
         self.prt()
@@ -541,18 +521,13 @@ class Protocolo(CrawJUD):
         finish_button.click()
 
     def screenshot_sucesso(self) -> list:
-        """Capture a screenshot upon successful protocol processing.
-
-        Takes screenshots of the protocol confirmation and combines them into a
-        single image for verification. Saves the final screenshot to the specified
-        output directory and returns relevant information.
+        """Capture and merge screenshots after successful protocol processing.
 
         Returns:
-            list: A list containing the process number, success message, and
-                  the path to the combined screenshot.
+            list: A list containing the process number, success message, and screenshot file path.
 
         Raises:
-            ExecutionError: If an error occurs during the screenshot process.
+            ExecutionError: If an error occurs during the screenshot capture.
 
         """
         try:
@@ -608,13 +583,10 @@ class Protocolo(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def remove_files(self) -> None:
-        """Remove files from the protocol.
-
-        Deletes uploaded files from the protocol by interacting with the web
-        elements responsible for file management. Confirms deletions through alerts.
+        """Delete the uploaded files from the protocol after processing.
 
         Raises:
-            ExecutionError: If an error occurs during file removal.
+            ExecutionError: If file removal fails.
 
         """
         tablefiles = None
@@ -648,12 +620,7 @@ class Protocolo(CrawJUD):
                 sleep(2)
 
     def wait_progressbar(self) -> None:
-        """Wait for the progress bar to complete.
-
-        Continuously checks the state of the progress bar and waits until
-        the upload or processing is finished. Handles any exceptions related
-        to the progress bar's presence or state.
-        """
+        """Wait until the progress bar completes the file upload or processing."""
         while True:
             try:
                 divprogressbar: WebElement = self.wait.until(

@@ -1,7 +1,6 @@
 """Module: capa.
 
-This module defines the capa class, which handles process information extraction and management
-within the CrawJUD-Bots application.
+Extract and manage process details from Projudi by scraping and formatting data.
 """
 
 import re
@@ -17,15 +16,14 @@ from selenium.webdriver.remote.webelement import WebElement
 from ...common import ExecutionError
 from ...core import CrawJUD
 
-#
-
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
 class Capa(CrawJUD):
-    """The capa class extends CrawJUD to handle specific execution tasks related to process.
+    """Extract process information from Projudi and populate structured data.
 
-    information extraction and management.
+    This class extends CrawJUD to click through information panels,
+    extract process data and participant details, and format them accordingly.
     """
 
     @classmethod
@@ -34,12 +32,14 @@ class Capa(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize a Capa instance with provided arguments.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
+            *args (tuple[str | int]): Variable length positional arguments.
             **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+
+        Returns:
+            Self: The initialized Capa instance.
 
         """
         return cls(*args, **kwargs)
@@ -49,11 +49,11 @@ class Capa(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize the capa instance.
+        """Initialize the Capa instance and start authentication.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
 
         """
         super().__init__()
@@ -63,11 +63,9 @@ class Capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute the main processing loop, handling each frame of data.
+        """Execute the main processing loop to extract process information.
 
-        Raises:
-            Exception: If an unexpected error occurs during execution.
-
+        Iterates over each data row and queues process data extraction.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -106,7 +104,7 @@ class Capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Handle the queue processing, refreshing the driver and extracting process information.
+        """Handle the process information extraction queue by refreshing the driver.
 
         Raises:
             ExecutionError: If the process is not found or extraction fails.
@@ -126,14 +124,14 @@ class Capa(CrawJUD):
             self.logger.error(str(e))
             raise ExecutionError(e=e) from e
 
-    def get_process_informations(self) -> list:  # noqa: C901
-        """Extract information from the current process in the web driver.
+    def get_process_informations(self) -> list:
+        """Extract detailed process information from the current web page.
 
         Returns:
-            list: A list of dictionaries containing process information.
+            list: A list of dictionaries containing formatted process information.
 
         Raises:
-            Exception: If an error occurs during information extraction.
+            Exception: If extraction encounters an error.
 
         """
         try:

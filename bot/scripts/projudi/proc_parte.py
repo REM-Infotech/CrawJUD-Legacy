@@ -1,6 +1,6 @@
 """Module: proc_parte.
 
-This module manages process-participant interactions within the Projudi system of the CrawJUD-Bots application.
+Manage participant processing in the Projudi system by interacting with process lists and varas.
 """
 
 import os
@@ -18,9 +18,10 @@ from ...core import CrawJUD
 
 
 class ProcParte(CrawJUD):
-    """proc_parte class.
+    """Handle participant processing in Projudi with detailed queue management and error handling.
 
-    Handles the processing of participants in Projudi within the CrawJUD framework.
+    This class extends CrawJUD to retrieve process lists, store participant information,
+    and manage queue execution for the Projudi system.
     """
 
     @classmethod
@@ -29,12 +30,14 @@ class ProcParte(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """
-        Initialize bot instance.
+        """Initialize a ProcParte instance with the specified parameters.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
+
+        Returns:
+            Self: The initialized ProcParte instance.
 
         """
         return cls(*args, **kwargs)
@@ -44,9 +47,12 @@ class ProcParte(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize a new proc_parte instance.
+        """Initialize the ProcParte instance and start authentication.
 
-        Sets up authentication and initializes necessary variables.
+        Args:
+            *args (tuple[str | int]): Positional arguments.
+            **kwargs (dict[str, str | int]): Keyword arguments.
+
         """
         super().__init__()
 
@@ -56,9 +62,9 @@ class ProcParte(CrawJUD):
         self.data_append = []
 
     def execution(self) -> None:
-        """Execute the main processing loop.
+        """Execute the main loop for participant processing continuously.
 
-        Continuously processes queues until stopped, handling session expiration and errors.
+        Continuously process queues until stopping, while handling session expirations and errors.
         """
         self.graphicMode = "bar"
         while not self.isStoped:
@@ -85,9 +91,11 @@ class ProcParte(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage the processing queue.
+        """Manage the participant processing queue and handle varas search.
 
-        Iterates through varas to search and retrieve process lists, handling exceptions as needed.
+        Raises:
+            ExecutionError: If process retrieval and queue execution fail.
+
         """
         try:
             for vara in self.varas:
@@ -127,9 +135,9 @@ class ProcParte(CrawJUD):
             self.queue()
 
     def get_process_list(self) -> None:
-        """Retrieve and process the list of processes.
+        """Retrieve and process the list of processes from the web interface.
 
-        Extracts process information from the web interface and handles pagination.
+        Extracts process data, manages pagination, and stores the retrieved information.
         """
         try:
             table_processos = self.driver.find_element(By.CLASS_NAME, "resultTable").find_element(By.TAG_NAME, "tbody")
@@ -169,9 +177,11 @@ class ProcParte(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]) -> None:
-        """Process a list of WebElement process entries.
+        """Extract and log details from each process element in the provided list.
 
-        Extracts relevant details from each process and logs successful saves.
+        Args:
+            list_processos (list[WebElement]): List of process web elements.
+
         """
         self.data_append.clear()
         for processo in list_processos:
