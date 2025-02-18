@@ -1,32 +1,41 @@
-"""Module for configuration properties of web elements.
+"""Update configuration properties module docstring to Google style.
 
-Defines the Configuracao class that manages properties for each expected element.
+This module manages configuration properties for web elements.
+It defines the Configuracao class that encapsulates element property data.
 """
 
 
 class Configuracao:
-    """Define propriedades específicas para cada elemento esperado."""
+    """Initialize configuration for web element properties.
+
+    This class handles element data retrieval as properties. If a property is not
+    found, it raises an AttributeError.
+
+    Attributes:
+        element_data (dict): The dictionary containing element properties.
+
+    """
 
     def __init__(self, dados: object) -> None:
-        """Initialize the Configuracao with element data.
+        """Initialize instance with element data.
 
         Args:
-            dados: The data containing element properties.
+            dados (object): Data containing element properties.
 
         """
         self.element_data = dados
 
     def __getattr__(self, name: str) -> str:
-        """Retrieve the property of a given element by name.
+        """Retrieve a property value for a given element name.
 
         Args:
-            name (str): The name of the element property.
+            name (str): Name of the element property.
 
         Returns:
-            str: The property value of the element.
+            str: The property value.
 
         Raises:
-            AttributeError: If the element with the given name is not found.
+            AttributeError: If the property for the given name is not found.
 
         """
         element = self.element_data.get(name)

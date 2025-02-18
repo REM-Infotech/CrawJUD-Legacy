@@ -1,154 +1,160 @@
-"""Module containing configuration classes for ELAW elements."""
+"""Update ELAW_AME module docstring to Google style.
+
+This module provides selectors for automating ELAW operations.
+"""
 
 from .properties import Configuracao
 
 
 class ELAW_AME(Configuracao):  # noqa: N801
-    """Configuration class for ELAW automation module.
+    """Configure ELAW automation selectors and operations.
+
+    This class stores selectors and URLs required for ELAW automation tasks,
+    such as login and search operations.
 
     Attributes:
         url_login (str): URL for Elaw login.
-        campo_username (str): CSS selector for the username input field.
-        campo_passwd (str): CSS selector for the password input field.
-        btn_entrar (str): CSS selector for the login button.
-        chk_login (str): CSS selector to verify successful login.
+        campo_username (str): Selector for the username input.
+        campo_passwd (str): Selector for the password input.
+        btn_entrar (str): Selector for the login button.
+        chk_login (str): Selector to check for successful login.
         url_busca (str): URL for search functionality.
-        btn_busca (str): CSS selector for the search button.
-        botao_andamento (str): CSS selector for the 'Andamento' button.
-        input_data (str): CSS selector for the date input field.
-        inpt_ocorrencia (str): CSS selector for the occurrence textarea.
-        inpt_obs (str): CSS selector for the observation textarea.
-        botao_salvar_andamento (str): ID for the save andamento button.
-        switch_pautaandamento (str): CSS selector to switch pauta andamento.
-        btn_novaaudiencia (str): CSS selector for the new audiência button.
-        selectortipoaudiencia (str): CSS selector for the tipo audiência selector.
-        DataAudiencia (str): CSS selector for the data audiência input.
-        btn_salvar (str): CSS selector for the save button.
-        tableprazos (str): CSS selector for the prazos table.
-        tipo_polo (str): CSS selector for the tipo polo selector.
-        botao_novo (str): CSS selector for the new button.
-        css_label_area (str): CSS selector for the area label.
-        elemento (str): CSS selector for the area element.
-        comboareasub_css (str): CSS selector for the combo area sub.
-        elemento_comboareasub (str): CSS selector for the combo area sub element.
-        css_button (str): CSS selector for the continue button.
-        label_esfera (str): CSS selector for the esfera label.
-        css_esfera_judge (str): CSS selector for the esfera judge selector.
-        combo_rito (str): CSS selector for the rito combo.
-        estado_input (str): CSS selector for the estado input.
-        comarca_input (str): CSS selector for the comarca input.
-        foro_input (str): CSS selector for the foro input.
-        vara_input (str): CSS selector for the vara input.
-        numero_processo (str): CSS selector for the numero processo input.
-        empresa_input (str): CSS selector for the empresa input.
-        tipo_empresa_input (str): CSS selector for the tipo empresa input.
-        tipo_parte_contraria_input (str): CSS selector for the tipo parte contraria input.
-        css_table_tipo_doc (str): CSS selector for the tipo documento table.
-        css_campo_doc (str): CSS selector for the documento campo.
-        css_search_button (str): CSS selector for the search button.
-        css_div_select_opt (str): CSS selector for the select options div.
-        select_field (str): CSS selector for the select field.
-        css_other_location (str): CSS selector for the other location input.
-        comboProcessoTipo (str): CSS selector for the processo tipo combo.
-        filtro_processo (str): CSS selector for the processo filtro input.
-        css_data_distribuicao (str): CSS selector for the data distribuição input.
-        css_adv_responsavel (str): CSS selector for the advogado responsável input.
-        css_div_select_Adv (str): CSS selector for the advogado select div.
-        css_input_select_Adv (str): CSS selector for the advogado select input.
-        css_input_adv (str): CSS selector for the advogado input.
-        css_check_adv (str): CSS selector for the advogado checkbox.
-        css_valor_causa (str): CSS selector for the valor causa input.
-        escritrorio_externo (str): CSS selector for the escritório externo.
-        combo_escritorio (str): CSS selector for the combo escritório.
-        contingencia (str): CSS selector for the contingencia select.
-        contigencia_panel (str): CSS selector for the contingencia panel.
-        css_add_adv (str): CSS selector for the add advogado button.
-        xpath (str): XPath selector for the iframe.
-        css_naoinfomadoc (str): CSS selector for the naoinfomadoc.
-        botao_continuar (str): CSS selector for the continuar button.
-        css_input_nomeadv (str): CSS selector for the nome advogado input.
-        salvarcss (str): CSS selector for the salvar button.
-        parte_contraria (str): CSS selector for the parte contraria button.
-        xpath_iframe (str): XPath selector for the parte contraria iframe.
-        cpf_cnpj (str): CSS selector for the CPF/CNPJ table.
-        botao_radio_widget (str): CSS selector for the radio widget.
-        tipo_cpf_cnpj (str): CSS selector for the tipo CPF/CNPJ table.
-        tipo_cpf (str): CSS selector for the tipo CPF input.
-        tipo_cnpj (str): CSS selector for the tipo CNPJ input.
-        botao_parte_contraria (str): CSS selector for the parte contraria button.
-        css_name_parte (str): CSS selector for the nome parte input.
-        css_save_button (str): CSS selector for the save button.
-        css_salvar_proc (str): CSS selector for the salvar processo button.
-        css_t_found (str): CSS selector for the t found table.
-        div_messageerro_css (str): CSS selector for the error message div.
-        botao_editar_complementar (str): CSS selector for the editar complementar button.
-        css_input_uc (str): CSS selector for the input UC textarea.
-        elementSelect (str): CSS selector for the element select.
-        css_data_citacao (str): CSS selector for the data citação input.
-        fase_input (str): CSS selector for the fase input.
-        provimento_input (str): CSS selector for the provimento input.
-        fato_gerador_input (str): CSS selector for the fato gerador input.
-        input_descobjeto_css (str): CSS selector for the objeto description textarea.
-        objeto_input (str): CSS selector for the objeto input.
-        anexosbutton_css (str): CSS selector for the anexos button.
-        css_table_doc (str): CSS selector for the documents table.
-        botao_baixar (str): CSS selector for the baixar button.
-        valor_pagamento (str): CSS selector for the valor pagamento.
-        botao_novo_pagamento (str): CSS selector for the novo pagamento button.
-        css_typeitens (str): CSS selector for the type itens.
-        listitens_css (str): CSS selector for the list itens.
-        css_element (str): CSS selector for the element input.
-        type_doc_css (str): CSS selector for the tipo documento.
-        list_type_doc_css (str): CSS selector for the list tipo documento.
-        editar_pagamento (str): CSS selector for the editar pagamento input.
-        css_div_condenacao_type (str): CSS selector for the condenacao type div.
-        valor_sentenca (str): CSS selector for the valor sentenca.
-        valor_acordao (str): CSS selector for the valor acórdão.
-        css_desc_pgto (str): CSS selector for the description pagamento textarea.
-        css_data (str): CSS selector for the pagamento data input.
-        css_inputfavorecido (str): CSS selector for the favorecido input.
-        resultado_favorecido (str): CSS selector for the favorecido result.
-        valor_processo (str): CSS selector for the valor processo.
-        boleto (str): CSS selector for the boleto.
-        css_cod_bars (str): CSS selector for the código de barras input.
-        css_centro_custas (str): CSS selector for the centro custas input.
-        css_div_conta_debito (str): CSS selector for the conta débito div.
-        valor_guia (str): CSS selector for the valor guia input.
-        css_gru (str): CSS selector for the GRU.
-        editar_pagamentofile (str): CSS selector for the editar pagamento file.
-        css_tipocusta (str): CSS selector for the tipo custas.
-        css_listcusta (str): CSS selector for the list custas.
-        custas_civis (str): CSS selector for as custas civis.
-        custas_monitorias (str): CSS selector for as custas monitorias.
-        botao_salvar_pagamento (str): CSS selector for the salvar pagamento button.
-        valor_resultado (str): CSS selector for the valor resultado.
-        botao_ver (str): CSS selector for the ver button.
-        valor (str): CSS selector for the valor iframe.
-        visualizar_tipo_custas (str): CSS selector for visualizar tipo custas.
-        visualizar_cod_barras (str): CSS selector for visualizar código de barras.
-        visualizar_tipoCondenacao (str): CSS selector for visualizar tipo condenação.
-        css_btn_edit (str): CSS selector for the editar button.
-        ver_valores (str): CSS selector for ver valores.
-        table_valores_css (str): CSS selector for the valores table.
-        value_provcss (str): CSS selector for the valor provisão.
-        div_tipo_obj_css (str): CSS selector for the tipo objeto div.
-        itens_obj_div_css (str): CSS selector for the itens objeto div.
-        checkbox (str): CSS selector for the checkbox.
-        botao_adicionar (str): CSS selector for the adicionar botão.
-        botao_editar (str): CSS selector for the editar botão.
-        css_val_inpt (str): CSS selector for the valor input.
-        css_risk (str): CSS selector for the risco div.
-        processo_objt (str): CSS selector for o processo objeto.
-        botao_salvar_id (str): CSS selector para salvar ID botão.
-        daata_correcaoCss (str): CSS selector para data correção.
-        data_jurosCss (str): CSS selector para data juros.
-        texto_motivo (str): CSS selector para texto motivo.
-        type_risk_label (str): CSS selector para o label de risco.
-        type_risk_select (str): CSS selector para o select de risco.
-        tb_advs_resp (str): CSS selector para a tabela de advogados responsáveis.
-        tr_not_adv (str): CSS selector para a mensagem de tabela vazia.
+        btn_busca (str): Selector for the search button.
+        botao_andamento (str): Selector for the 'Andamento' button.
+        input_data (str): Selector for the date input field.
+        inpt_ocorrencia (str): Selector for the occurrence textarea.
+        inpt_obs (str): Selector for the observation textarea.
+        botao_salvar_andamento (str): Selector for the save andamento button.
+        switch_pautaandamento (str): Selector to switch pauta andamento.
+        btn_novaaudiencia (str): Selector for the new audiência button.
+        selectortipoaudiencia (str): Selector for the tipo audiência selector.
+        DataAudiencia (str): Selector for the data audiência input.
+        btn_salvar (str): Selector for the save button.
+        tableprazos (str): Selector for the prazos table.
+        tipo_polo (str): Selector for the tipo polo selector.
+        botao_novo (str): Selector for the new button.
+        css_label_area (str): Selector for the area label.
+        elemento (str): Selector for the area element.
+        comboareasub_css (str): Selector for the combo area sub.
+        elemento_comboareasub (str): Selector for the combo area sub element.
+        css_button (str): Selector for the continue button.
+        label_esfera (str): Selector for the esfera label.
+        css_esfera_judge (str): Selector for the esfera judge selector.
+        combo_rito (str): Selector for the rito combo.
+        estado_input (str): Selector for the estado input.
+        comarca_input (str): Selector for the comarca input.
+        foro_input (str): Selector for the foro input.
+        vara_input (str): Selector for the vara input.
+        numero_processo (str): Selector for the numero processo input.
+        empresa_input (str): Selector for the empresa input.
+        tipo_empresa_input (str): Selector for the tipo empresa input.
+        tipo_parte_contraria_input (str): Selector for the tipo parte contraria input.
+        css_table_tipo_doc (str): Selector for the tipo documento table.
+        css_campo_doc (str): Selector for the documento campo.
+        css_search_button (str): Selector for the search button.
+        css_div_select_opt (str): Selector for the select options div.
+        select_field (str): Selector for the select field.
+        css_other_location (str): Selector for the other location input.
+        comboProcessoTipo (str): Selector for the processo tipo combo.
+        filtro_processo (str): Selector for the processo filtro input.
+        css_data_distribuicao (str): Selector for the data distribuição input.
+        css_adv_responsavel (str): Selector for the advogado responsável input.
+        css_div_select_Adv (str): Selector for the advogado select div.
+        css_input_select_Adv (str): Selector for the advogado select input.
+        css_input_adv (str): Selector for the advogado input.
+        css_check_adv (str): Selector for the advogado checkbox.
+        css_valor_causa (str): Selector for the valor causa input.
+        escritrorio_externo (str): Selector for the escritório externo.
+        combo_escritorio (str): Selector for the combo escritório.
+        contingencia (str): Selector for the contingencia select.
+        contigencia_panel (str): Selector for the contingencia panel.
+        css_add_adv (str): Selector for the add advogado button.
+        xpath (str): Selector for the iframe.
+        css_naoinfomadoc (str): Selector for the naoinfomadoc.
+        botao_continuar (str): Selector for the continuar button.
+        css_input_nomeadv (str): Selector for the nome advogado input.
+        salvarcss (str): Selector for the salvar button.
+        parte_contraria (str): Selector for the parte contraria button.
+        xpath_iframe (str): Selector for the parte contraria iframe.
+        cpf_cnpj (str): Selector for the CPF/CNPJ table.
+        botao_radio_widget (str): Selector for the radio widget.
+        tipo_cpf_cnpj (str): Selector for the tipo CPF/CNPJ table.
+        tipo_cpf (str): Selector for the tipo CPF input.
+        tipo_cnpj (str): Selector for the tipo CNPJ input.
+        botao_parte_contraria (str): Selector for the parte contraria button.
+        css_name_parte (str): Selector for the nome parte input.
+        css_save_button (str): Selector for the save button.
+        css_salvar_proc (str): Selector for the salvar processo button.
+        css_t_found (str): Selector for the t found table.
+        div_messageerro_css (str): Selector for the error message div.
+        botao_editar_complementar (str): Selector for the editar complementar button.
+        css_input_uc (str): Selector for the input UC textarea.
+        elementSelect (str): Selector for the element select.
+        css_data_citacao (str): Selector for the data citação input.
+        fase_input (str): Selector for the fase input.
+        provimento_input (str): Selector for the provimento input.
+        fato_gerador_input (str): Selector for the fato gerador input.
+        input_descobjeto_css (str): Selector for the objeto description textarea.
+        objeto_input (str): Selector for the objeto input.
+        anexosbutton_css (str): Selector for the anexos button.
+        css_table_doc (str): Selector for the documents table.
+        botao_baixar (str): Selector for the baixar button.
+        valor_pagamento (str): Selector for the valor pagamento.
+        botao_novo_pagamento (str): Selector for the novo pagamento button.
+        css_typeitens (str): Selector for the type itens.
+        listitens_css (str): Selector for the list itens.
+        css_element (str): Selector for the element input.
+        type_doc_css (str): Selector for the tipo documento.
+        list_type_doc_css (str): Selector for the list tipo documento.
+        editar_pagamento (str): Selector for the editar pagamento input.
+        css_div_condenacao_type (str): Selector for the condenacao type div.
+        valor_sentenca (str): Selector for the valor sentenca.
+        valor_acordao (str): Selector for the valor acórdão.
+        css_desc_pgto (str): Selector for the description pagamento textarea.
+        css_data (str): Selector for the pagamento data input.
+        css_inputfavorecido (str): Selector for the favorecido input.
+        resultado_favorecido (str): Selector for the favorecido result.
+        valor_processo (str): Selector for the valor processo.
+        boleto (str): Selector for the boleto.
+        css_cod_bars (str): Selector for the código de barras input.
+        css_centro_custas (str): Selector for the centro custas input.
+        css_div_conta_debito (str): Selector for the conta débito div.
+        valor_guia (str): Selector for the valor guia input.
+        css_gru (str): Selector for the GRU.
+        editar_pagamentofile (str): Selector for the editar pagamento file.
+        css_tipocusta (str): Selector for the tipo custas.
+        css_listcusta (str): Selector for the list custas.
+        custas_civis (str): Selector for as custas civis.
+        custas_monitorias (str): Selector for as custas monitorias.
+        botao_salvar_pagamento (str): Selector for the salvar pagamento button.
+        valor_resultado (str): Selector for the valor resultado.
+        botao_ver (str): Selector for the ver button.
+        valor (str): Selector for the valor iframe.
+        visualizar_tipo_custas (str): Selector for visualizar tipo custas.
+        visualizar_cod_barras (str): Selector for visualizar código de barras.
+        visualizar_tipoCondenacao (str): Selector for visualizar tipo condenação.
+        css_btn_edit (str): Selector for the editar button.
+        ver_valores (str): Selector for ver valores.
+        table_valores_css (str): Selector for the valores table.
+        value_provcss (str): Selector for the valor provisão.
+        div_tipo_obj_css (str): Selector for the tipo objeto div.
+        itens_obj_div_css (str): Selector for the itens objeto div.
+        checkbox (str): Selector for the checkbox.
+        botao_adicionar (str): Selector for the adicionar botão.
+        botao_editar (str): Selector for the editar botão.
+        css_val_inpt (str): Selector for the valor input.
+        css_risk (str): Selector for the risco div.
+        processo_objt (str): Selector for o processo objeto.
+        botao_salvar_id (str): Selector para salvar ID botão.
+        daata_correcaoCss (str): Selector para data correção.
+        data_jurosCss (str): Selector para data juros.
+        texto_motivo (str): Selector para texto motivo.
+        type_risk_label (str): Selector para o label de risco.
+        type_risk_select (str): Selector para o select de risco.
+        tb_advs_resp (str): Selector para a tabela de advogados responsáveis.
+        tr_not_adv (str): Selector para a mensagem de tabela vazia.
 
-        dict_campos_validar (dict): Dictionary mapping field names to their CSS selectors.
+        dict_campos_validar (dict): Dictionary mapping field names to their selectors.
 
     """
 
@@ -180,8 +186,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
 
     tipo_polo = "".join(
         [
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_',
-            '9_44_3_1_2_2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
+            'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_label"]',
         ],
     )
 

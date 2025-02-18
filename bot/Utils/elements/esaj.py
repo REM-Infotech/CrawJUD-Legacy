@@ -1,13 +1,22 @@
-"""Module containing configuration classes for ESAJ elements."""
+"""Update ESAJ_AM module docstring to Google style.
+
+This module configures selectors for automating ESAJ operations.
+"""
 
 from .properties import Configuracao
 
 
 class ESAJ_AM(Configuracao):  # noqa: N801
-    """Configuration class for ESAJ automation module.
+    """Configure ESAJ automation selectors and URLs.
+
+    This class defines CSS selectors and URLs used for ESAJ system automation,
+    including login, search functionality, and process details access.
 
     Attributes:
-        get_page_custas_pagas (str): CSS selector for the 'Custas Pagas' button.
+        css_val_doc_custas_ini (str): Selector for document value element.
+        url_preparo_esaj (str): URL to prepare ESAJ calculations.
+        url_preparo_projudi (str): URL to prepare PROJUDI calculations.
+        get_page_custas_pagas (str): Selector for the custas pagas button.
         consultaproc_grau1 (str): URL for first-degree process consultation.
         consultaproc_grau2 (str): URL for second-degree process consultation.
         url_login (str): URL for the login page.

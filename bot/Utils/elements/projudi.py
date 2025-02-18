@@ -1,13 +1,36 @@
-"""Module for PROJUDI_AM element configurations.
+"""Update PROJUDI_AM module docstring to Google style.
 
-Defines the PROJUDI_AM class that manages property selectors for the PROJUDI_AM system.
+This module provides selectors for the PROJUDI_AM system.
 """
 
 from .properties import Configuracao
 
 
 class PROJUDI_AM(Configuracao):  # noqa: N801
-    """Configuration selectors for the PROJUDI_AM system."""
+    """Configure PROJUDI_AM selectors and properties.
+
+    This class inherits from Configuracao and defines the CSS selectors and URL
+    properties for automating the PROJUDI_AM system.
+
+    Class Attributes:
+        url_login (str): Login URL.
+        campo_username (str): Selector for username field.
+        campo_passwd (str): Selector for password field.
+        btn_entrar (str): Selector for the login button.
+        chk_login (str): Selector to verify successful login.
+        url_busca (str): URL for search functionality.
+        url_mesa_adv (str): URL for the lawyer's desk.
+        btn_busca (str): Selector for the search button.
+        btn_aba_intimacoes (str): Selector for the notifications tab.
+        select_page_size_intimacoes (str): Selector for the page size dropdown.
+        tab_intimacoes_script (str): Script to select the notifications tab.
+        btn_partes (str): Selector for the parties tab.
+        btn_infogeral (str): Selector for the general information tab.
+        includecontent_capa (str): Selector for the cover content.
+        infoproc (str): Selector for the process information table.
+
+
+    """
 
     url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
     campo_username = "#login"
