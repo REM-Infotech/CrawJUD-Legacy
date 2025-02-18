@@ -5,26 +5,26 @@ This module contains utility classes for template configurations.
 
 
 class Listas:  # noqa: N801
-    """Utility class providing predefined lists for template processing.
+    """Provide predefined lists for template processing.
 
     Attributes:
-        emissor_sucesso (list[str]): Fields indicating successful emissor operations.
-        esaj_guias_emissao_sucesso (list[str]): Fields indicating successful ESAJ guia emissions.
+        emissor_sucesso (list[str]): Fields for successful emissor operations.
+        esaj_guias_emissao_sucesso (list[str]): Fields for successful ESAJ guia emissions.
         capa_sucesso (list[str]): Fields for successful capa operations.
-        movimentacao_sucesso (list[str]): Fields indicating successful movimentacao operations.
-        sols_pag_sucesso (list[str]): Fields indicating successful sols_pag operations.
+        movimentacao_sucesso (list[str]): Fields for successful movimentacao operations.
+        sols_pag_sucesso (list[str]): Fields for successful sols_pag operations.
         sucesso (list[str]): General success fields.
-        protocolo_sucesso (list[str]): Fields indicating successful protocolo operations.
-        erro (list[str]): Fields indicating error messages.
+        protocolo_sucesso (list[str]): Fields for successful protocolo operations.
+        erro (list[str]): Fields for error messages.
 
     """
 
     @property
     def emissor_sucesso(self) -> list[str]:
-        """Return a list of fields indicating successful emissor operations.
+        """Return list of field names for successful emissor operations.
 
-        Return:
-            list[str]: list of field names related to emissor success.
+        Returns:
+            list[str]: Field names related to emissor success.
 
         """
         return [
@@ -40,10 +40,10 @@ class Listas:  # noqa: N801
 
     @property
     def esaj_guias_emissao_sucesso(self) -> list[str]:
-        """Return a list of fields indicating successful ESAJ guia emissions.
+        """Return list of field names for successful ESAJ guia emissions.
 
-        Return:
-            list[str]: list of field names related to ESAJ guia emission success.
+        Returns:
+            list[str]: Field names related to ESAJ guia emission success.
 
         """
         return [
@@ -59,10 +59,10 @@ class Listas:  # noqa: N801
 
     @property
     def capa_sucesso(self) -> list[str]:
-        """Return a list of fields for successful capa operations.
+        """Return list of field names for successful capa operations.
 
-        Return:
-            list[str]: list of field names related to capa success.
+        Returns:
+            list[str]: Field names related to capa success.
 
         """
         return [
@@ -88,10 +88,10 @@ class Listas:  # noqa: N801
 
     @property
     def movimentacao_sucesso(self) -> list[str]:
-        """Return a list of fields indicating successful movimentacao operations.
+        """Return list of field names for successful movimentacao operations.
 
-        Return:
-            list[str]: list of field names related to movimentacao success.
+        Returns:
+            list[str]: Field names related to movimentacao success.
 
         """
         return [
@@ -104,40 +104,40 @@ class Listas:  # noqa: N801
 
     @property
     def sols_pag_sucesso(self) -> list[str]:
-        """Return a list of fields indicating successful sols_pag operations.
+        """Return list of field names for successful sols_pag operations.
 
-        Return:
-            list[str]: list of field names related to sols_pag success.
+        Returns:
+            list[str]: Field names related to sols_pag success.
 
         """
         return ["MENSAGEM_COMCLUSAO", "TIPO_PGTO", "COMPROVANTE_1", "ID_PGTO", "COMPROVANTE_2"]
 
     @property
     def sucesso(self) -> list[str]:
-        """Return a general list of success fields.
+        """Return list of general success field names.
 
-        Return:
-            list[str]: list of general success field names.
+        Returns:
+            list[str]: General success field names.
 
         """
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE"]
 
     @property
     def protocolo_sucesso(self) -> list[str]:
-        """Return a list of fields indicating successful protocolo operations.
+        """Return list of field names for successful protocolo operations.
 
-        Return:
-            list[str]: list of field names related to protocolo success.
+        Returns:
+            list[str]: Field names related to protocolo success.
 
         """
         return ["MENSAGEM_COMCLUSAO", "NOME_COMPROVANTE", "ID_PROTOCOLO"]
 
     @property
     def erro(self) -> list[str]:
-        """Return a list of fields indicating error messages.
+        """Return list of field names for error messages.
 
-        Return:
-            list[str]: list of error message field names.
+        Returns:
+            list[str]: Error message field names.
 
         """
         return ["MOTIVO_ERRO"]
