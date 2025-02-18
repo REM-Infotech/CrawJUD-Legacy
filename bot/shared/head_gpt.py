@@ -9,12 +9,16 @@ from typing import LiteralString
 
 
 def head_gpt() -> LiteralString:
-    """
-    Return a GPT head text with guidelines for legal document analysis.
+    """Return GPT head instructions for analyzing legal documents and extracting relevant data.
+
+    Detailed docstring:
+        Return a multiline literal string that contains guidelines for analyzing
+        various judicial documents. The instructions differentiate task details based
+        on document types (sentences, petitions, contests, decisions, etc.).
+        Use this text in downstream processing for legal document analysis.
 
     Returns:
-        LiteralString: Multiline string of instructions describing which
-            details to extract according to the type of legal document.
+        LiteralString: A multiline string with guidelines (instructions text).
 
     """
     return (

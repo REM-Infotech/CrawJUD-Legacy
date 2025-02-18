@@ -27,7 +27,7 @@ class Prazos(CrawJUD):
 
     Attributes:
         attribute_name (type): Description of the attribute.
-        # ...other attributes...
+
 
     """
 

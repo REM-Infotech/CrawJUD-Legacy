@@ -24,7 +24,7 @@ class BuscaPags(CrawJUD):
 
     Attributes:
         datetimeNOW (str): The current datetime in "America/Manaus" timezone.
-        # ...other attributes...
+
 
     Methods:
         initialize: Create a new BuscaPags instance.

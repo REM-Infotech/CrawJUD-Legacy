@@ -25,7 +25,7 @@ class Movimentacao(CrawJUD):
     Attributes:
         start_time (float): Timestamp when movements begin processing.
         appends (list): Collection of movement records.
-        # ...other attributes...
+
 
     Methods:
         initialize: Create a new Movimentacao instance.

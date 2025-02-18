@@ -43,27 +43,26 @@ TypeHint = Union[list[str | Numbers | SubDict] | SubDict]
 
 
 class PropertiesCrawJUD:
-    """
-    Configuration and state holder for the CrawJUD bot.
+    """Manage CrawJUD bot configuration and runtime state; execute tasks promptly and well! OK.
 
-    Provides properties and methods to manage configuration and state details,
-    such as paths, WebDriver instances, appending logs, and runtime parameters.
+    This class holds configuration, state properties, and utility methods necessary for
+    operating the CrawJUD bot. It manages paths, WebDriver instances, logging, and various
+    bot settings required during runtime.
 
     Attributes:
-        row_ (int): Current row index in a data structure.
-        pid_ (str): Process identifier to track bot instance.
-        vara_ (str): Variable that often denotes a specific venue or court branch.
-        state_ (str): Current status or phase of the bot's workflow.
-        client_ (str): Contains the client name or client identifier.
-        message_ (str): Holds the main message processed by the bot.
-        type_bot (str): Indicates the bot type or profile.
+        row_ (int): Current row index.
+        pid_ (str): Process identifier.
+        vara_ (str): Specific venue or court branch variable.
+        state_ (str): Current bot workflow state.
+        client_ (str): Client information.
+        message_ (str): Main message content.
+        type_bot (str): Bot type or profile.
         name_cert_ (str): Certificate name for authentication.
         systembot_ (str): System bot identifier.
         message_error_ (str): Error message.
         state_or_client_ (str): State or client identifier.
-        type_log_ (str): type of log (default "info").
-        graphicMode_ (str): Mode of graphics (default "doughnut").
-        # ...other attributes...
+        type_log_ (str): Log type (default "info").
+        graphicMode_ (str): Graphic mode (default "doughnut").
 
     """
 
@@ -161,10 +160,13 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.connected = status
 
     def __init__(self) -> None:
-        """
-        Initialize the PropertiesCrawJUD instance.
+        """Initialize PropertiesCrawJUD.
 
-        Sets up references to utility classes and bot components.
+        Set up references to utility classes and bot components.
+
+        Comments:
+            Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
+
         """
         from ..Utils import AuthBot as _AuthBot_
         from ..Utils import DriverBot as _DriverBot_
@@ -186,10 +188,11 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.DriverBot_ = _DriverBot_
 
     def prt(self) -> None:
-        """
-        Print a message using the PrintBot's method.
+        """Print a message via PrintBot.
 
-        Invokes print_msg() from the PrintBot instance to display logs or messages.
+        Call the print_msg method from the PrintBot instance.
+        Comments:
+            If PrintBot is not already set, it is imported and assigned.
         """
         print_bot = getattr(PropertiesCrawJUD, "PrintBot_", None)
         if print_bot is None:
@@ -200,11 +203,12 @@ class PropertiesCrawJUD:
         self.PrintBot.print_msg()
 
     def end_prt(self, status: str) -> None:
-        """
-        End the print session with a specified status.
+        """End printing session with a final status.
+
+        Invoke PrintBot.end_prt to conclude the printing or logging process.
 
         Args:
-            status (str): Message used to conclude printing actions.
+            status (str): Final status message to conclude the session.
 
         """
         self.PrintBot.end_prt(status)

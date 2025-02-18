@@ -31,7 +31,7 @@ class Tjdft(CrawJUD):
 
     Attributes:
         cookieaceito (list): list to track accepted cookies.
-        # ...other attributes...
+
 
     """
 

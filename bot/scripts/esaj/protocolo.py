@@ -31,7 +31,7 @@ class Protocolo(CrawJUD):
     Attributes:
         start_time (float): Time when the protocol process starts.
         bot_data (dict): Data for the current protocol entry.
-        # ...other attributes...
+
 
     Methods:
         initialize: Create and return a new Protocolo instance.
