@@ -1,4 +1,11 @@
-"""Module for server-side operations in CrawJUD-Bots."""
+"""Provide database-driven task scheduling functionality for the CrawJUD-Bots celery worker.
+
+This module implements a custom Celery scheduler that loads task schedules from a database,
+allowing for dynamic schedule management without server restarts.
+
+Classes:
+    DatabaseScheduler: A Celery scheduler that manages task schedules from database records.
+"""
 
 import json
 import re
@@ -11,36 +18,33 @@ from celery.loaders.base import BaseLoader  # noqa: F401
 from celery.schedules import crontab
 from quart import current_app as app  # noqa: F401
 
-# class CustomLoader(BaseLoader):
-#     """Custom Celery Loader for Beat."""
-
-#     def read_configuration(self) -> Settings:
-#         """Read the configuration from the custom settings."""
-#         celery: Celery = app.extensions["celery"]
-
-#         settings = celery.conf
-
-#         return settings
-
-#     def on_worker_init(self) -> None:
-#         """Execute actions when the worker starts."""
-#         app.logger.info("🟢 Custom Loader: Worker iniciado!")
-
-#     def on_worker_shutdown(self) -> None:
-#         """Execute actions when the worker is shut down."""
-#         app.logger.info("🔴 Custom Loader: Worker desligado!")
-
-#     def on_task_init(self, task_id: str, task: celery.Task) -> None:
-#         """Execute actions when a task is started."""
-#         app.logger.info("🟡 Custom Loader: Tarefa %s iniciada! | Id_Task: %s", task.name, task_id)
-
 
 class DatabaseScheduler(Scheduler):
-    """Scheduler that loads task schedules from the database."""
+    """Manage Celery task schedules using database-stored configurations.
+
+    This scheduler extends the base Celery Scheduler to load task schedules from a database,
+    enabling dynamic schedule updates without requiring application restarts.
+
+    Attributes:
+        _schedule (dict): Internal cache of current schedule entries.
+
+    """
 
     @classmethod
     def fix_unicode(cls, text: str) -> str:
-        """Fix unicode characters in the text."""
+        """Convert escaped unicode sequences to proper unicode characters.
+
+        Args:
+            text (str): The text containing escaped unicode sequences (e.g., "u00ae").
+
+        Returns:
+            str: Text with properly decoded unicode characters.
+
+        Example:
+            >>> DatabaseScheduler.fix_unicode("Hello u00ae World")
+            'Hello ® World'
+
+        """
         return re.sub(r"u00([0-9a-fA-F]{2})", r"\\u00\1", text).encode().decode("unicode_escape")
 
     def __init__(
@@ -48,24 +52,28 @@ class DatabaseScheduler(Scheduler):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize the DatabaseScheduler.
+        """Initialize a new DatabaseScheduler instance.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Variable positional arguments passed to parent Scheduler.
+            **kwargs: Variable keyword arguments passed to parent Scheduler.
 
         """
         super().__init__(*args, **kwargs)
         self._schedule = {}
 
     def get_schedule(self) -> dict:
-        """Load schedules from the database.
+        """Retrieve and construct schedule entries from the database.
 
-        Retrieves all schedule entries from the ScheduleModel and constructs
-        a dictionary of ScheduleEntry objects.
+        Queries the database for all schedule entries and converts them into Celery ScheduleEntry
+        objects with their associated crontab schedules.
 
         Returns:
-            dict: A dictionary where the key is the task name and the value is the ScheduleEntry.
+            dict: Mapping of task names to their corresponding ScheduleEntry objects.
+
+        Note:
+            The schedule entries include task name, schedule (as crontab), arguments, and keyword
+            arguments loaded from the database.
 
         """
         schedules = {}
@@ -94,15 +102,21 @@ class DatabaseScheduler(Scheduler):
 
     @staticmethod
     def parse_cron(cron_string: str) -> dict[str, any]:
-        """Parse a cron string into its respective fields.
+        """Convert a cron string into a dictionary of schedule components.
+
+        Splits a standard cron string into its constituent parts and maps them to their
+        corresponding schedule fields.
 
         Args:
-            cron_string (str): A string representing the cron schedule.
+            cron_string (str): Space-separated cron schedule (e.g., "* * * * *").
 
         Returns:
-            dict: A dictionary with keys "minute", "hour", "day_of_month",
-                  "month_of_year", and "day_of_week" mapping to their respective values
-                  from the cron string.
+            dict: Mapping of cron components to their values.
+                Keys: minute, hour, day_of_month, month_of_year, day_of_week.
+
+        Example:
+            >>> DatabaseScheduler.parse_cron("0 12 * * *")
+            {'minute': '0', 'hour': '12', 'day_of_month': '*', 'month_of_year': '*', 'day_of_week': '*'}
 
         """
         fields = ["minute", "hour", "day_of_month", "month_of_year", "day_of_week"]
@@ -111,33 +125,40 @@ class DatabaseScheduler(Scheduler):
 
     @property
     def schedule(self) -> dict:
-        """Get the current schedule.
+        """Access the current task schedule.
 
-        Syncs the schedule with the database and returns the updated schedule.
+        Ensures the schedule is synchronized with the database before returning it.
 
         Returns:
-            dict: The current schedule dictionary.
+            dict: The current mapping of task names to ScheduleEntry objects.
+
+        Note:
+            This property triggers a database sync on each access to ensure schedule freshness.
 
         """
         self.sync()
         return self._schedule
 
     def sync(self) -> None:
-        """Synchronize the schedules with the database.
+        """Update the internal schedule cache with the latest database entries.
 
-        Updates the internal schedule dictionary by fetching the latest schedules
-        from the database.
+        Refreshes the internal schedule dictionary by fetching the most recent schedule
+        configurations from the database.
         """
         self._schedule = self.get_schedule()
 
-    def tick(self) -> Union[int, Any]:  # noqa: ANN401
-        """Process the schedules.
+    def tick(self) -> Union[int, Any]:
+        """Process scheduled tasks and determine the next execution time.
 
-        This method is called continuously to ensure that the scheduler stays
-        up-to-date with any changes in the schedules.
+        Processes any due tasks, updates the schedule from the database, and calculates
+        the time until the next task needs to run.
 
         Returns:
-            float: The remaining time until the next scheduled task.
+            Union[int, Any]: Number of seconds until the next scheduled task execution.
+
+        Note:
+            This method is called periodically by the Celery beat service to maintain
+            the scheduler's operation.
 
         """
         remaining_times = super().tick()
