@@ -843,6 +843,11 @@ class PropertiesCrawJUD:
         """Return the format_string callable."""
         return self.OtherUtils.format_string
 
+    @property
+    def select2_elaw(self) -> Callable[..., str]:
+        """Return the select2_elaw callable."""
+        return self.OtherUtils.select2_elaw
+
 
 # from pydantic import BaseModel, ValidationError
 # from typing import get_type_hints
