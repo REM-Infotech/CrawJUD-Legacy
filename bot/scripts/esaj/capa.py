@@ -19,44 +19,31 @@ from ...core import CrawJUD
 
 
 class Capa(CrawJUD):
-    """Class Capa.
+    """Execute capa workflow tasks: search and extract process info details with robust error handling now.
 
-    Manage capa-related tasks in the CrawJUD-Bots application.
-
-    Methods:
-        initialize: Return a new Capa instance.
-        execution: Process each capa row and log errors.
-        queue: Queue capa tasks to search and append process info.
-        get_process_informations: Retrieve detailed process information.
-
+    This class handles the retrieval and processing of detailed process information.
     """
 
     @classmethod
     def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
-        """Initialize a Capa instance.
+        """Initialize a Capa instance with provided arguments and set up necessary bot settings now.
 
         Args:
-            *args: Variable positional arguments.
+            *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
 
         Returns:
-            Self: A new instance of Capa.
+            Self: A new Capa instance.
 
         """
         return cls(*args, **kwargs)
 
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the capa instance.
-
-        Sets up the bot by initializing the parent class, configuring settings, and authenticating.
+    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
+        """Initialize capa instance: configure settings, authenticate, and record start time for processing now.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
 
         """
         super().__init__()
@@ -66,9 +53,11 @@ class Capa(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute capa processing.
+        """Perform capa processing: iterate data rows and manage session renewals and errors robustly now.
 
-        Iterate through data, manage session renewals, and log exceptions.
+        Raises:
+            Exception: Propagates exceptions after logging.
+
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -114,9 +103,11 @@ class Capa(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Queue capa tasks.
+        """Queue capa tasks: search for process data and append detailed information to success log now.
 
-        Search for process data and append extracted information.
+        Raises:
+            ExecutionError: If data retrieval fails.
+
         """
         try:
             self.search_bot()
@@ -126,12 +117,10 @@ class Capa(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:
-        """Retrieve process information.
-
-        Extract and return detailed process data in a structured list.
+        """Extract detailed process information: retrieve and structure multiple process data fields now.
 
         Returns:
-            list: Information extracted from the process page.
+            list: Structured list of extracted process information.
 
         """
         # chk_advs = ["Advogada", "Advogado"]

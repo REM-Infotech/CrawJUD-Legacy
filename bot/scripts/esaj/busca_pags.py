@@ -1,6 +1,6 @@
 """Module: busca_pags.
 
-Manage page search operations for paid costs in the CrawJUD-Bots application.
+This module manages page search operations for paid costs in the CrawJUD-Bots app.
 """
 
 import time
@@ -20,45 +20,47 @@ from ...core import CrawJUD
 class BuscaPags(CrawJUD):
     """Class BuscaPags.
 
-    Handle page search and extraction of cost-related information.
+    Manages page search and the extraction of cost-related information.
+
+    Attributes:
+        datetimeNOW (str): The current datetime in "America/Manaus" timezone.
+        # ...other attributes...
 
     Methods:
         initialize: Create a new BuscaPags instance.
-        execution: Execute the search and processing loop.
-        queue: Perform page retrieval tasks.
+        execution: Run the page search loop.
+        queue: Retrieve and process the paid costs page.
         get_page_custas_pagas: Navigate to the paid costs page.
-        page_custas: Process and extract cost data.
+        page_custas: Extract cost details from the paid costs table.
 
     """
 
     @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize a BuscaPags instance.
+    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
+        """Initialize a new BuscaPags instance.
 
         Args:
-            *args: Variable positional arguments.
-            **kwargs: Arbitrary keyword arguments.
+            *args (str | int): Positional arguments.
+            **kwargs (str | int): Keyword arguments.
 
         Returns:
-            Self: A new instance of BuscaPags.
+            Self: A new BuscaPags instance.
+
+        # Inline: Simple instantiation.
 
         """
         return cls(*args, **kwargs)
 
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the busca_pags instance.
+    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
+        """Construct the BuscaPags instance.
+
+        Sets up the crawler, authentication, and datetime configuration.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Positional arguments.
+            **kwargs: Keyword arguments.
+
+        # Inline: Calls parent setup and configures timezone.
 
         """
         super().__init__()
@@ -70,7 +72,9 @@ class BuscaPags(CrawJUD):
     def execution(self) -> None:
         """Execute page search.
 
-        Iterate through rows, manage session timeouts, and log errors.
+        Iterates over each data row, checks session status, and logs errors.
+
+        # Inline: For each row, execute the queue sequence.
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -118,7 +122,13 @@ class BuscaPags(CrawJUD):
     def queue(self) -> None:
         """Queue page search tasks.
 
-        Execute steps to retrieve and process paid costs page.
+        Retrieves the paid costs page and processes cost data.
+
+        Raises:
+            ExecutionError: Propagates errors encountered during page search.
+
+        # Inline: Call helper methods in sequence.
+
         """
         try:
             self.get_page_custas_pagas()
@@ -130,7 +140,9 @@ class BuscaPags(CrawJUD):
     def get_page_custas_pagas(self) -> None:
         """Retrieve the paid costs page.
 
-        Extract the URL from the element and navigate to it.
+        Extracts the URL from the element and navigates to it.
+
+        # Inline: Use Selenium to get the onclick attribute and redirect.
         """
         generatepdf: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.get_page_custas_pagas)),

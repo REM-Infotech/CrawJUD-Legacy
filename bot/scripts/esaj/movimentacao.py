@@ -1,7 +1,6 @@
 """Module: movimentacao.
 
-Manage movement operations in the Esaj system via CrawJUD framework.
-
+This module manages movement operations on the Esaj system using the CrawJUD framework.
 """
 
 import time
@@ -21,44 +20,47 @@ from ...core import CrawJUD
 class Movimentacao(CrawJUD):
     """Class Movimentacao.
 
-    Handle movement tasks in the Esaj system.
+    Handles all movement-related tasks in the Esaj system.
+
+    Attributes:
+        start_time (float): Timestamp when movements begin processing.
+        appends (list): Collection of movement records.
+        # ...other attributes...
 
     Methods:
-        initialize(args, kwargs): Return a new Movimentacao instance.
-        execution(): Process movement operations for each row.
-        queue(): Queue tasks for retrieving and appending movements.
-        get_moves(): Extract movement information from the page.
+        initialize: Create a new Movimentacao instance.
+        execution: Iterate over process rows and process movements.
+        queue: Queue tasks for retrieving and appending movements.
+        get_moves: Extract movement information from page elements.
 
     """
 
     @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize a Movimentacao instance.
+    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
+        """Initialize a new Movimentacao instance.
 
         Args:
-            *args: Variable positional arguments.
-            **kwargs: Arbitrary keyword arguments.
+            *args (str | int): Variable arguments.
+            **kwargs (str | int): Keyword arguments.
 
         Returns:
             Self: A new Movimentacao instance.
 
+        # Inline: Directly return an instance with given arguments.
+
         """
         return cls(*args, **kwargs)
 
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the Movimentacao instance.
+    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
+        """Construct the Movimentacao instance.
+
+        Sets up the crawler by configuring authentication and environment.
 
         Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
+            *args: Positional arguments for setup.
+            **kwargs: Keyword arguments for configuration.
+
+        # Inline: Leverage parent classes for setup and authentication.
 
         """
         super().__init__()
@@ -70,7 +72,13 @@ class Movimentacao(CrawJUD):
     def execution(self) -> None:
         """Execute movement processing.
 
-        Iterates over each process row and handles session and error management.
+        Iterates over each process row, handling session renewal and error logging.
+
+        Raises:
+            ExecutionError: If any movement processing error occurs.
+
+        # Inline: Loop through dataFrame and execute queued movement tasks.
+
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -118,7 +126,13 @@ class Movimentacao(CrawJUD):
     def queue(self) -> None:
         """Queue movement tasks.
 
-        Retrieves and appends movement data or raises an error.
+        Retrieves movement data and appends the results.
+
+        Raises:
+            ExecutionError: If the process is not found or movement data errors.
+
+        # Inline: Check for process existence and then extract moves.
+
         """
         try:
             self.appends = []
@@ -138,7 +152,9 @@ class Movimentacao(CrawJUD):
     def get_moves(self) -> None:
         """Retrieve movement information.
 
-        Extract movement details from the page elements for each process.
+        Extracts and appends movement details from the page elements.
+
+        # Inline: Scroll to element, reveal table, then iterate through rows.
         """
         show_all: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, 'a[id="linkmovimentacoes"]')),

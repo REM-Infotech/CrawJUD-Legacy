@@ -51,22 +51,13 @@ type_docscss = {
 
 
 class Emissao(CrawJUD):
-    """Class Emissao.
+    """Execute emission workflow tasks: generate URL docs and extract barcodes from PDFs safely.
 
-    Handle emission tasks, document generation, and PDF barcode extraction for processes.
+    This class handles various emission tasks, including document generation,
+    navigation, and PDF barcode extraction.
 
-    Methods:
-        initialize: Create a new Emissao instance.
-        execution: Process each emission row.
-        queue: Queue emission tasks and generate documents.
-        custas_iniciais: Process initial costs emission.
-        preparo_ri: Process preparation for RI emission.
-        renajud: (Placeholder) Process Renajud emission.
-        sisbajud: (Placeholder) Process Sisbajud emission.
-        custas_postais: (Placeholder) Process postal costs emission.
-        generate_doc: Generate and return URL of the emission document.
-        downloadpdf: Download emission PDF from given URL.
-        get_barcode: Extract barcode information from the downloaded PDF.
+    Attributes:
+        count_doc: Utility to count document type.
 
     """
 
@@ -78,7 +69,7 @@ class Emissao(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> Self:
-        """Initialize an Emissao instance.
+        """Initialize an Emissao instance with provided parameters and prepare initial settings now.
 
         Args:
             *args: Variable positional arguments.
@@ -95,7 +86,7 @@ class Emissao(CrawJUD):
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
-        """Initialize the Emissao instance.
+        """Initialize Emissao instance: configure settings, authenticate, and start timing now.
 
         Args:
             *args (tuple[str | int]): Variable length argument list.
@@ -109,7 +100,7 @@ class Emissao(CrawJUD):
         self.start_time = time.perf_counter()
 
     def execution(self) -> None:
-        """Execute emission process.
+        """Perform emission processing by iterating rows and handling errors and sessions robustly.
 
         Process each row, handle session errors, and manage PDF generation.
         """
@@ -157,7 +148,7 @@ class Emissao(CrawJUD):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Queue emission tasks.
+        """Queue emission tasks by orchestrating document generation and PDF barcode extraction safely now.
 
         Execute the emission workflow and append success or raise errors.
         """
@@ -179,7 +170,7 @@ class Emissao(CrawJUD):
             raise ExecutionError(e=e) from e
 
     def custas_iniciais(self) -> None:
-        """Process initial costs emission.
+        """Process initial costs emission: navigate to URL and fill form fields for fee calculation now.
 
         Navigate to the initial costs URL and input necessary data.
         """
@@ -234,7 +225,7 @@ class Emissao(CrawJUD):
             ).text
 
     def preparo_ri(self) -> None:
-        """Process RI preparation emission.
+        """Process RI preparation emission: handle portal navigation and form submission effectively now.
 
         Handle RI emission by directing to the appropriate portal and inputting data.
         """
@@ -291,16 +282,31 @@ class Emissao(CrawJUD):
             raise ExecutionError("Informar portal do processo na planilha (PROJUDI ou ESAJ)")
 
     def renajud(self) -> None:
-        """Handle the Renajud emission process."""
+        """Handle Renajud emission process placeholder: implement necessary navigation and actions now.
+
+        Note:
+            Implementation pending future requirements.
+
+        """
 
     def sisbajud(self) -> None:
-        """Handle the Sisbajud emission process."""
+        """Handle Sisbajud emission process placeholder: implement necessary features when needed now.
+
+        Note:
+            Functionality to be added later.
+
+        """
 
     def custas_postais(self) -> None:
-        """Handle the postal costs emission process."""
+        """Handle postal costs emission process placeholder: implement additional processing if required now.
+
+        Note:
+            Implementation pending future specifications.
+
+        """
 
     def generate_doc(self) -> str:
-        """Generate emission document URL.
+        """Generate PDF document URL: open a new tab, retrieve and validate URL for emitted document now.
 
         Opens a new tab, retrieves the PDF URL, and validates document existence.
 
@@ -343,7 +349,7 @@ class Emissao(CrawJUD):
             return f"https://consultasaj.tjam.jus.br{url}"
 
     def downloadpdf(self, link_pdf: str) -> None:
-        """Download the emission PDF file.
+        """Download and save PDF file: retrieve, write file locally, and handle window switching now.
 
         Retrieves the PDF from the URL and saves it locally, then returns to original window.
 
@@ -374,7 +380,7 @@ class Emissao(CrawJUD):
         self.prt()
 
     def get_barcode(self) -> None:
-        """Extract barcode from PDF.
+        """Extract barcode from downloaded PDF: parse text and return emission details in list now.
 
         Parse the downloaded PDF and extract the barcode using a regex pattern.
 
