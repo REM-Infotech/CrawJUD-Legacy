@@ -1,6 +1,14 @@
-"""Module: sol_pags.
+"""Module for managing payment solution processes within the ELAW system.
 
-This module handles the solution of pages within the Elaw system of the CrawJUD-Bots application.
+This module provides functionality to handle payment management and solution creation within
+the ELAW system. It enables automated payment processing, validations, and record-keeping.
+
+Classes:
+    SolPags: Handles payment solutions by extending the CrawJUD base class
+
+Attributes:
+    type_doc (dict): Maps document lengths to document types (CPF/CNPJ)
+
 """
 
 import os

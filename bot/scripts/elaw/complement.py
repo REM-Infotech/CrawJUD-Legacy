@@ -1,11 +1,15 @@
-"""Module for "Complemento de Cadastro".
+"""Module for managing registration completion tasks in the ELAW system.
 
-This module contains the `complement` class which configures and retrieves an elements bot instance
-and interacts with the ELAW system to complete the registration of a process.
+This module handles the completion and supplementation of registration data within the ELAW
+system. It automates the process of filling in missing or additional registration details.
 
 Classes:
-    complement: A class that configures and retrieves an elements bot instance
-    and interacts with the ELAW system to complete the registration of a process.
+    Complement: Manages registration completion by extending the CrawJUD base class
+
+Attributes:
+    type_doc (dict): Maps document lengths to document types (CPF/CNPJ)
+    campos_validar (list): Fields to validate during registration completion
+
 """
 
 import time

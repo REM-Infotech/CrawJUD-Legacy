@@ -1,7 +1,14 @@
-"""Module: cadastro.
+"""Module for managing new registrations in the ELAW system.
 
-This module defines the cadastro class, which handles registration processes
-within the CrawJUD-Bots application.
+This module handles the creation and management of new registrations within the ELAW system.
+It automates the process of entering new records and their associated data.
+
+Classes:
+    Cadastro: Manages new registrations by extending the CrawJUD base class
+
+Attributes:
+    type_doc (dict): Maps document lengths to document types (CPF/CNPJ)
+
 """
 
 import time

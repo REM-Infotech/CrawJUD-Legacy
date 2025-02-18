@@ -1,6 +1,15 @@
-"""Module: elaw.
+"""Module for initializing and orchestrating ELAW system automation bots.
 
-This module initializes and manages the elaw bots within the CrawJUD-Bots application.
+This module serves as the main entry point for ELAW system automation, providing bot
+initialization, management and execution capabilities for various ELAW tasks.
+
+Classes:
+    Elaw: Core class for managing ELAW automation bots
+
+Attributes:
+    logger_ (Logger): Module logger instance
+    ClassBots (Union): Union type of available bot classes
+
 """
 
 from __future__ import annotations

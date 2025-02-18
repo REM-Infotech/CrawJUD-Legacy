@@ -1,6 +1,14 @@
-"""Module: provisao.
+"""Module for managing provision entries and updates in the ELAW system.
 
-This module handles provision-related functionalities within the Elaw system of the CrawJUD-Bots application.
+This module handles provision creation, updates and management within the ELAW system.
+It automates the process of recording provisions and their associated documentation.
+
+Classes:
+    Provisao: Manages provision entries by extending the CrawJUD base class
+
+Attributes:
+    type_doc (dict): Maps document lengths to document types (CPF/CNPJ)
+
 """
 
 import time

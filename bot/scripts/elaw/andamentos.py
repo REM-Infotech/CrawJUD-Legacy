@@ -1,6 +1,10 @@
-"""Module: andamentos.
+"""Module for tracking and recording process progress in the ELAW system.
 
-This module manages the andamento (progress) tracking within the CrawJUD-Bots application.
+This module handles the creation and management of process progress records within the ELAW
+system. It automates the recording of progress updates and related documentation.
+
+Classes:
+    Andamentos: Manages process progress by extending the CrawJUD base class
 """
 
 import time

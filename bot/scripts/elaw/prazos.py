@@ -1,6 +1,10 @@
-"""Module: prazos.
+"""Module for managing deadline tracking and recording in the ELAW system.
 
-This module manages deadline-related functionalities within the Elaw system of the CrawJUD-Bots application.
+This module provides functionality for creating, updating and tracking deadlines within
+the ELAW system. It automates the process of recording and monitoring time-sensitive tasks.
+
+Classes:
+    Prazos: Manages deadline entries by extending the CrawJUD base class
 """
 
 from __future__ import annotations

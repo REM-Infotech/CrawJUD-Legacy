@@ -1,6 +1,10 @@
-"""Module: download.
+"""Module for managing document downloads from the ELAW system.
 
-This module manages the download functionalities within the CrawJUD-Bots application.
+This module handles automated document downloads from the ELAW system, including file
+management, renaming, and organization of downloaded content.
+
+Classes:
+    Download: Manages document downloads by extending the CrawJUD base class
 """
 
 import os
