@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import secrets
 from datetime import timedelta
 from os import environ
@@ -15,6 +16,7 @@ load_dotenv()
 class Config:
     """Base configuration class."""
 
+    LOG_LEVEL = logging.INFO
     DEBUG: type[bool] = False
     TESTING: type[bool] = False
     SECRET_KEY: type[str] = secrets.token_hex()
@@ -177,7 +179,7 @@ class DevelopmentConfig(Config):
     """Configuration settings for development environment."""
 
     env = environ
-
+    LOG_LEVEL = logging.DEBUG
     # Flask-mail config
 
     if env.get("MAIL_SERVER"):
@@ -231,7 +233,7 @@ class TestingConfig(Config):
 
     TESTTING = True
     env = environ
-
+    LOG_LEVEL = logging.DEBUG
     # Flask-mail config
 
     if env.get("MAIL_SERVER"):

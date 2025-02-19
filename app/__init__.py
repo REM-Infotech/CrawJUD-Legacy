@@ -92,7 +92,10 @@ class AppFactory:
             celery.autodiscover_tasks(["bot", "utils"])
 
             io = await self.init_extensions(app)
-            app.logger = await init_log()
+            logfile = Path(__file__).parent.resolve().joinpath("logs", "%s.log" % getenv("APPLICATION_APP", "asgi"))
+            logfile.touch(exist_ok=True)
+
+            app.logger = await init_log(logfile, log_level=app.config["LOG_LEVEL"], mx_bt=8192, bkp_ct=5)
             await self.init_routes(app)
         return app, ASGIApp(io, app), celery
 
