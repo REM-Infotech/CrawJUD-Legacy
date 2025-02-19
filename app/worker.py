@@ -10,6 +10,7 @@ import os
 
 from celery import Celery
 from celery.apps.worker import Worker
+from clear import clear
 from quart import Quart
 
 from app import AppFactory
@@ -19,7 +20,7 @@ os.environ.update({"APPLICATION_APP": "worker", "IN_PRODUCTION": "True"})
 
 # Create the Quart application and Celery instance via AppFactory.
 quart_app, app = AppFactory.start_app()
-
+clear()
 if __name__ == "__main__":
 
     async def run_worker(app: Celery, quart_app: Quart) -> None:

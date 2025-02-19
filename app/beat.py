@@ -10,6 +10,7 @@ from pathlib import Path
 
 from celery import Celery
 from celery.apps.beat import Beat
+from clear import clear
 from quart import Quart
 
 from app import AppFactory
@@ -22,7 +23,7 @@ os.environ.update({
 
 # Create the Quart application and Celery instance via AppFactory.
 quart_app, app = AppFactory.start_app()
-
+clear()
 if __name__ == "__main__":
 
     async def run_beat(app: Celery, quart_app: Quart) -> None:

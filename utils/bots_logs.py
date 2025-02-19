@@ -15,7 +15,6 @@ async def asyncinit_log(
     log_level: int = None,
     mx_bt: int = None,
     bkp_ct: int = None,
-    *args: tuple,
     **kwargs: dict,
 ) -> Logger:
     """Initialize and configure logging for the application.
@@ -25,7 +24,6 @@ async def asyncinit_log(
         log_level (int, optional): The logging level. Defaults to logger.DEBUG.
         mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
         bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
-        *args: Variable length argument list.
         **kwargs: Arbitrary keyword arguments.
 
     Returns:
@@ -40,15 +38,20 @@ async def asyncinit_log(
     max_bytes = mx_bt * 1024
 
     logger.setLevel(logging.INFO)
+
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    log_path: Path = await AsyncPath(Path(__file__)).cwd()
-    log_path: Path = await log_path.joinpath(log_file).resolve()
-    log_path_file: Path = log_path.joinpath("app.log")
+    log_path_file = str(log_file)
+
+    if log_file == "app/logs":
+        log_path: Path = await AsyncPath(Path(__file__)).cwd()
+        log_path: Path = await log_path.joinpath(log_file).resolve()
+        log_path_file: Path = log_path.joinpath("app.log")
+
+        if await log_path.exists() is False:
+            await log_path.mkdir(parents=True, exist_ok=True)
 
     # File handler
-    if await log_path.exists() is False:
-        await log_path.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
         str(log_path_file),
         maxBytes=max_bytes,

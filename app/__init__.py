@@ -16,7 +16,6 @@ from threading import Thread
 import quart_flask_patch  # noqa: F401
 import uvicorn
 from celery import Celery
-from clear import clear  # noqa: F401
 from dotenv_vault import load_dotenv
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
@@ -95,7 +94,7 @@ class AppFactory:
             logfile = Path(__file__).parent.resolve().joinpath("logs", "%s.log" % getenv("APPLICATION_APP", "asgi"))
             logfile.touch(exist_ok=True)
 
-            app.logger = await init_log(logfile, log_level=app.config["LOG_LEVEL"], mx_bt=8192, bkp_ct=5)
+            app.logger = await init_log(log_file=logfile, log_level=app.config["LOG_LEVEL"], mx_bt=8192, bkp_ct=5)
             await self.init_routes(app)
         return app, ASGIApp(io, app), celery
 
