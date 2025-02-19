@@ -326,9 +326,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_novo_pagamento = 'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]'
     css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
     listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'
-    css_element = "".join(
-        'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:proces","soValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]',
-    )
+    css_element = "".join((
+        'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:proces',
+        'soValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]',
+    ))
     type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo"]'
     list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
     editar_pagamento = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]'
