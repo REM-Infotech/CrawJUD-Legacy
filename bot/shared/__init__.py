@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from ..Utils import OtherUtils as _OtherUtils_
     from ..Utils import PrintBot as _PrintBot_
     from ..Utils import SearchBot as _SearchBot_
+    from ..Utils import SendMessage as _SendMessage_
 
 Numbers = Union[int, float, complex, datetime, timedelta]
 TypeValues = Union[str, Numbers, list, tuple]
@@ -86,6 +87,7 @@ class PropertiesCrawJUD:
     _AuthBot_ = None
     _DriverBot_ = None
     _ElementsBot_ = None
+    _SendMessage_ = None
     Interact_ = None
     MakeXlsx_ = None
     OtherUtils_ = None
@@ -105,7 +107,7 @@ class PropertiesCrawJUD:
     appends_: list[str] = []
     cr_list_args: list[str] = []
     another_append_: list[str] = []
-
+    prompt_: str = None
     kwargs_: dict[str, Union[TypeValues, SubDict]] = {}
     bot_data_: dict[str, TypeValues | SubDict] = {}
     logger = None
@@ -175,6 +177,7 @@ class PropertiesCrawJUD:
         from ..Utils import OtherUtils as _OtherUtils_
         from ..Utils import PrintBot as _PrintBot_
         from ..Utils import SearchBot as _SearchBot_
+        from ..Utils import SendMessage as _SendMessage_
 
         PropertiesCrawJUD.OtherUtils_ = _OtherUtils_()
         PropertiesCrawJUD.SearchBot_ = _SearchBot_()
@@ -185,45 +188,61 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.ElementsBot_ = _ElementsBot_()
         PropertiesCrawJUD.PrintBot_ = _PrintBot_()
         PropertiesCrawJUD.DriverBot_ = _DriverBot_()
+        PropertiesCrawJUD.SendMessage_ = _SendMessage_()
 
-    def prt(self) -> None:
-        """Print a message via PrintBot.
+    def prt(self, status: str = "Em Execução") -> None:
+        """Print a message via print_bot.
 
-        Call the print_msg method from the PrintBot instance.
+        Call the print_msg method from the print_bot instance.
+
+        Args:
+            status (str, optional): The message to print. Defaults to "Em Execução".
+
         Comments:
-            If PrintBot is not already set, it is imported and assigned.
+            If print_bot is not already set, it is imported and assigned.
+
         """
         print_bot = getattr(PropertiesCrawJUD, "PrintBot_", None)
         if print_bot is None:
             from ..Utils import PrintBot as _PrintBot_
 
-            self.PrintBot = _PrintBot_()
-            PropertiesCrawJUD.PrintBot_ = self.PrintBot
-        self.PrintBot.print_msg()
-
-    def end_prt(self, status: str) -> None:
-        """End printing session with a final status.
-
-        Invoke PrintBot.end_prt to conclude the printing or logging process.
-
-        Args:
-            status (str): Final status message to conclude the session.
-
-        """
-        self.PrintBot.end_prt(status)
+            self.print_bot = _PrintBot_()
+            PropertiesCrawJUD.PrintBot_ = self.print_bot
+        self.print_bot.print_msg(status)
 
     @property
-    def PrintBot(self) -> _PrintBot_:  # noqa: N802
-        """Return the PrintBot instance."""
-        return PropertiesCrawJUD.PrintBot_
+    def prompt(self) -> str:
+        """Return the current prompt."""
+        return PropertiesCrawJUD.prompt_
 
-    @PrintBot.setter
-    def PrintBot(self, new_var: _PrintBot_) -> None:  # noqa: N802
+    @prompt.setter
+    def prompt(self, new_prompt: str) -> None:
         """
-        Set the PrintBot instance.
+        Set the current prompt.
 
         Args:
-            new_var (_PrintBot_): The new PrintBot instance.
+            new_prompt (str): The new prompt.
+
+        """
+        PropertiesCrawJUD.prompt_ = new_prompt
+
+    @property
+    def sendmsg(self) -> _SendMessage_:
+        """Return the sendmsg instance."""
+        return PropertiesCrawJUD.SendMessage_
+
+    @property
+    def print_bot(self) -> _PrintBot_:
+        """Return the print_bot instance."""
+        return PropertiesCrawJUD.PrintBot_
+
+    @print_bot.setter
+    def print_bot(self, new_var: _PrintBot_) -> None:
+        """
+        Set the print_bot instance.
+
+        Args:
+            new_var (_PrintBot_): The new print_bot instance.
 
         """
         PropertiesCrawJUD.PrintBot_ = new_var

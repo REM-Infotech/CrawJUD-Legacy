@@ -207,8 +207,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.row = 0
             self.message = "Falha ao iniciar"
             self.type_log = "error"
-            self.prt()
-            # self.end_prt({"status": "Falha ao iniciar", "pid": self.pid})
+            self.prt(status="Falha ao iniciar")
 
             if self.driver:
                 self.driver.quit()
@@ -249,7 +248,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.type_log = "error"
 
             self.prt()
-            # self.end_prt({"status": "Falha ao iniciar", "pid": self.pid})
+            self.prt(status="Falha ao iniciar")
             if self.driver:
                 self.driver.quit()
 
