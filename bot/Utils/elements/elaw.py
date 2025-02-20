@@ -184,11 +184,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
     btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
     tableprazos = 'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
 
-    tipo_polo = "".join(
-        [
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_label"]',
-        ],
-    )
+    tipo_polo = "".join((
+        'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_9_44_3_1_',
+        '2_2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
+    ))
 
     # CADASTRO
     botao_novo = 'button[id="btnNovo"]'
