@@ -31,7 +31,7 @@ class ConfigRedis:
     encoding_errors = "strict"
     charset = None
     errors = None
-    decode_responses = False
+    decode_responses = True
     retry_on_timeout = False
     retry_on_error = None
     ssl = False
@@ -63,15 +63,25 @@ class ConfigRedis:
     cache_config: Optional[CacheConfig] = None
     url_server = "redis://localhost:6379/0"
 
+    kwargs_config = {}
+
     @classmethod
     def configure(cls, args: TypesArg) -> ConfigRedis:
         """Configure the Redis client with the provided settings."""
         object_ = ConfigRedis
+        dicted_args = {}
 
         for key in dir(ConfigRedis):
             value = args.get(key)
             if value:
                 setattr(object_, key, convert_to_type(value))
+
+            if "__" not in key:
+                val = getattr(object_, key)
+                if val is not None:
+                    dicted_args.update({key: val})
+
+        object_.kwargs_config = dicted_args
 
         return object_
 

@@ -1,11 +1,12 @@
 """Redis client extension for WSGI | ASGI applications."""
 
 from contextlib import suppress
-from typing import Any, Awaitable, Optional
+from typing import Any, Awaitable, Optional, Union
 
 from .base import BaseRedisClient
+from .base import Redis as RedisBase
 from .config import ConfigRedis
-from .hybrid import HybridFunction
+from .hybrid import HybridFunction  # noqa: F401
 
 
 class Redis(BaseRedisClient):
@@ -91,7 +92,43 @@ class Redis(BaseRedisClient):
 
         self.redis_params = ConfigRedis.configure(args)
 
-    def init_app(self, app: Any) -> None:
+    def _config_to_app(self, app: Any) -> None:
+        """Configure Redis client with WSGI | ASGI application settings."""
+        with suppress(ImportError):
+            self.config_from_object(app.config.get("REDIS_CONFIG", {}))
+            from quart import Quart  # noqa: F401
+
+            if isinstance(app, Quart):
+                app.extensions["redis"] = self
+                self.config_from_object(app.config.get("REDIS_CONFIG", {}))
+                return
+
+        with suppress(ImportError):
+            from flask import Flask
+
+            if isinstance(app, Flask):
+                app.extensions["redis"] = self
+                self.config_from_object(app.config.get("REDIS_CONFIG", {}))
+                return
+
+        with suppress(ImportError):
+            from starlette.applications import Starlette  # type: ignore # noqa: PGH003
+
+            if isinstance(app, Starlette):
+                raise NotImplementedError("Starlette not supported app initialization")
+
+        with suppress(ImportError):
+            from fastapi import FastAPI  # type: ignore # noqa: PGH003
+
+            if isinstance(app, FastAPI):
+                app: FastAPI = app
+                raise NotImplementedError("FastAPI not supported app initialization")
+
+    def init_app(
+        self,
+        app: Any = None,
+        config: Optional[Union[object, dict]] = None,
+    ) -> None:
         """Configure Redis client with WSGI | ASGI application settings.
 
         Sets up Redis connection using either REDIS_URL or individual configuration parameters
@@ -99,7 +136,8 @@ class Redis(BaseRedisClient):
         connection timeouts, and encoding options.
 
         Args:
-            app (Any): WSGI | ASGI application instance to configure Redis for.
+            app (Any, optional): WSGI | ASGI application instance to configure. Defaults to None.
+            config (Optional[object, dict], optional): Configuration object or dictionary to load settings from if app.
 
         Returns:
             None
@@ -110,39 +148,31 @@ class Redis(BaseRedisClient):
 
         """
         # Obter URL se fornecida
-        redis_url = self.redis_params.url_server
-        if redis_url:
-            self.redis_client = super().from_url(redis_url, **self.redis_params)
+
+        if config:
+            self.config_from_object(config)
+
+        elif app:
+            self._config_to_app(app)
+
         else:
-            self.redis_client = super().__init__(**self.redis_params)
+            raise ValueError("No configuration provided for Redis client")
+
+        redis_url = self.redis_params.url_server
+        kwargs_ = self.redis_params.kwargs_config
+
+        if redis_url:
+            self.redis_client = RedisBase.from_url(
+                redis_url,
+                **{k: v for k, v in kwargs_.items() if v is not None},
+            )
+        else:
+            self.redis_client = RedisBase(
+                **{k: v for k, v in kwargs_.items() if v is not None},
+            )
 
         # Adicionar a extensão ao app
 
-        with suppress(ImportError):
-            from quart import Quart  # noqa: F401
-
-            if isinstance(app, Quart):
-                app.extensions["redis"] = self
-
-        with suppress(ImportError):
-            from flask import Flask
-
-            if isinstance(app, Flask):
-                app.extensions["redis"] = self
-
-        with suppress(ImportError):
-            from starlette.applications import Starlette  # type: ignore # noqa: PGH003
-
-            if isinstance(app, Starlette):
-                app.state.redis = self
-
-        with suppress(ImportError):
-            from fastapi import FastAPI  # type: ignore # noqa: PGH003
-
-            if isinstance(app, FastAPI):
-                app.state.redis = self
-
-    @HybridFunction
     async def hgetall(
         self,
         name: tuple[str] | str,
@@ -180,7 +210,6 @@ class Redis(BaseRedisClient):
             name = ":".join(name)
         return self.redis_client.execute_command("HGETALL", name, keys=keys)
 
-    @HybridFunction
     async def hget(
         self,
         name: tuple[str] | str,
@@ -220,18 +249,3 @@ class Redis(BaseRedisClient):
             name = ":".join(name)
 
         return self.redis_client.execute_command("HGET", name, key, keys=keys)
-
-    def __getattr__(self, name: str) -> Any:
-        """Delegate attribute access to the underlying Redis client instance.
-
-        Args:
-            name (str): Name of the attribute to access.
-
-        Returns:
-            Any: The requested attribute from the Redis client.
-
-        Raises:
-            AttributeError: If the attribute doesn't exist in the Redis client.
-
-        """
-        return getattr(self.redis_client, name)

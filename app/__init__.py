@@ -111,10 +111,7 @@ class AppFactory:
         )
         from utils import check_allowed_origin
 
-        host_redis = getenv("REDIS_HOST")
-        pass_redis = getenv("REDIS_PASSWORD")
-        port_redis = getenv("REDIS_PORT")
-
+        redis_url: str | None = app.config.get("REDIS_URL", None)
         redis.init_app(app)
         mail.init_app(app)
         db.init_app(app)
@@ -127,7 +124,7 @@ class AppFactory:
             strict_transport_security_max_age=timedelta(days=31).max.seconds,
             x_content_type_options=True,
         )
-        redis_manager = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8")
+        redis_manager = AsyncRedisManager(url=f"{redis_url}/8")
         io = AsyncServer(
             async_mode=async_mode,
             cors_allowed_origins=check_allowed_origin,
