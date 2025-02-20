@@ -165,6 +165,14 @@ class ProductionConfig(Config):
     RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
     WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
+    REDIS_CONFIG: dict[str, str] = {
+        "host": REDIS_HOST,
+        "port": REDIS_PORT,
+        "db": REDIS_DB,
+        "password": REDIS_PASSWORD,
+        "url_server": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
+    }
+
     CELERY: dict[str, str | bool] = {
         "broker_url": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{BROKER_DATABASE}",
         "result_backend": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{RESULT_BACKEND_DATABASE}",

@@ -21,10 +21,10 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
-from redis_flask import Redis
 from socketio import ASGIApp, AsyncRedisManager, AsyncServer
 
 from app.routes import register_routes
+from plugins import Redis
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,

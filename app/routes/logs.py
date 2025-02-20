@@ -7,13 +7,13 @@ log message processing, and bot control actions (stop, terminate, join, etc.).
 import asyncio
 import logging
 import traceback
-from datetime import datetime
+from datetime import datetime  # noqa: F401
 
-from pytz import timezone
+from pytz import timezone  # noqa: F401
 from socketio import AsyncServer
 
 from app import app
-from utils import format_message_log, load_cache
+from utils import format_message_log, load_cache  # noqa: F401
 from utils.status import TaskExec
 
 logger = logging.getLogger(__name__)
@@ -192,43 +192,43 @@ async def join(sid: str = None, data: dict[str, str] = None, namespace: str = No
     """
     room = data["pid"]
 
-    async with app.app_context():
-        try:
-            # Load cached data for the room to send previous logs, if any.
-            data = await load_cache(room, app)
-            from app import db
-            from app.models import ThreadBots
-            from bot import WorkerBot
+    # async with app.app_context():
+    #     try:
+    #         # Load cached data for the room to send previous logs, if any.
+    #         data = await load_cache(room, app)
+    #         from app import db
+    #         from app.models import ThreadBots
+    #         from bot import WorkerBot
 
-            pid = room
-            process_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+    #         pid = room
+    #         process_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
 
-            message = "Fim da Execução"
+    #         message = "Fim da Execução"
 
-            if process_id:
-                process_id = process_id.processID
+    #         if process_id:
+    #             process_id = process_id.processID
 
-            # Check the current status of the bot.
-            message = await WorkerBot.check_status(process_id, pid, app)
+    #         # Check the current status of the bot.
+    #         message = await WorkerBot.check_status(process_id, pid, app)
 
-            if message != "Process running!":
-                # Update the data with a final log message.
-                data.update(
-                    {
-                        "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
-                            pid=pid,
-                            type_log="success",
-                            row=0,
-                            dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
-                            log="fim da execução",
-                        ),
-                    },
-                )
-            # Format the message log and emit it to the room.
-            data = await format_message_log(data, pid, app)
-            await io.emit("log_message", data, room=room, namespace="/log")
+    #         if message != "Process running!":
+    #             # Update the data with a final log message.
+    #             data.update(
+    #                 {
+    #                     "message": "[({pid}, {type_log}, {row}, {dateTime})> {log}]".format(
+    #                         pid=pid,
+    #                         type_log="success",
+    #                         row=0,
+    #                         dateTime=datetime.now(timezone("America/Manaus")).strftime("%H:%M:%S"),
+    #                         log="fim da execução",
+    #                     ),
+    #                 },
+    #             )
+    #         # Format the message log and emit it to the room.
+    #         data = await format_message_log(data, pid, app)
+    #         await io.emit("log_message", data, room=room, namespace="/log")
 
-        except Exception:
-            await io.send("Failed to check bot has stopped")
+    #     except Exception:
+    #         await io.send("Failed to check bot has stopped")
     # Confirm joining the room.
     await io.send(f"Joinned room! Room: {room}", to=sid, namespace="/log")

@@ -2,7 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
-from redis_flask import Redis
+
+from plugins import Redis
 
 
 async def load_cache(pid: str, app: Quart) -> dict[str, str]:

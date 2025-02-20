@@ -8,39 +8,45 @@ from __future__ import annotations
 
 import json
 import logging
+import platform
 import traceback
 from datetime import datetime
 from pathlib import Path
 
+import pandas as pd
+from openai import OpenAI
 from pytz import timezone
 
 from bot.common.exceptions import StartError
 
-from .. import (
-    Application,
+if platform.system() == "Windows":
+    from pywinauto import Application
+
+from rich.console import Group
+from rich.live import Live
+from rich.panel import Panel
+from rich.progress import (
     BarColumn,
-    Chrome,
     DownloadColumn,
-    Group,
-    Live,
-    Options,
-    Panel,
     Progress,
-    Service,
     TaskID,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
-    WebDriver,
-    WebDriverWait,
-    pd,
 )
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+
 from ..common import ExecutionError
 from ..shared import PropertiesCrawJUD, TypeHint
 
 __all__ = [
     pd,
+    OpenAI,
     "Application",
     Group,
     Live,
@@ -202,7 +208,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.message = "Falha ao iniciar"
             self.type_log = "error"
             self.prt()
-            self.end_prt({"status": "Falha ao iniciar", "pid": self.pid})
+            # self.end_prt({"status": "Falha ao iniciar", "pid": self.pid})
 
             if self.driver:
                 self.driver.quit()
@@ -243,7 +249,7 @@ class CrawJUD(PropertiesCrawJUD):
             self.type_log = "error"
 
             self.prt()
-            self.end_prt({"status": "Falha ao iniciar", "pid": self.pid})
+            # self.end_prt({"status": "Falha ao iniciar", "pid": self.pid})
             if self.driver:
                 self.driver.quit()
 
