@@ -21,10 +21,10 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
+from redis_flask import Redis
 from socketio import ASGIApp, AsyncRedisManager, AsyncServer
 
 from app.routes import register_routes
-from redis_flask import Redis
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,
@@ -111,7 +111,10 @@ class AppFactory:
         )
         from utils import check_allowed_origin
 
-        redis_url: str | None = app.config.get("REDIS_URL", None)
+        host_redis = getenv("REDIS_HOST")
+        pass_redis = getenv("REDIS_PASSWORD")
+        port_redis = getenv("REDIS_PORT")
+
         redis.init_app(app)
         mail.init_app(app)
         db.init_app(app)
@@ -124,7 +127,7 @@ class AppFactory:
             strict_transport_security_max_age=timedelta(days=31).max.seconds,
             x_content_type_options=True,
         )
-        redis_manager = AsyncRedisManager(url=f"{redis_url}/8")
+        redis_manager = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8")
         io = AsyncServer(
             async_mode=async_mode,
             cors_allowed_origins=check_allowed_origin,
