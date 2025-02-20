@@ -29,6 +29,9 @@ class SendMessage(CrawJUD):
 
     """
 
+    def __init__(self) -> None:
+        """Initialize the SendMessage class."""
+
     def setup_message(self, status_bot: str = "Em Execução") -> None:
         """Set up the message to be sent by the bot."""
         data = {
@@ -100,6 +103,7 @@ class SendMessage(CrawJUD):
 
     def connectionerror(self, e: Exception, url: str, event: str, data: dict) -> str:
         """Handle connection error when emitting an event."""
+        err = str(e)
         try:
             if "One or more namespaces failed to connect" in str(e):
                 self.connected = False

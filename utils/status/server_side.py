@@ -135,6 +135,9 @@ class LogsManager:
             data = self.model_data
 
         try:
+            if client is None:
+                client: Redis = app.extensions["redis"]
+
             querylog = client.ft("idx:executions:%s" % pid).search(Query("@pid:%s" % pid))  # noqa: F841
 
             message = data.get("type")  # noqa: F841

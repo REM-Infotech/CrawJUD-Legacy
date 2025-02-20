@@ -249,3 +249,7 @@ class Redis(BaseRedisClient):
             name = ":".join(name)
 
         return self.redis_client.execute_command("HGET", name, key, keys=keys)
+
+    def __getattr__(self, name: str) -> Any:
+        """Get an attribute from the Redis client."""
+        return getattr(self.redis_client, name)
