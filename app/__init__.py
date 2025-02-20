@@ -24,7 +24,7 @@ from quart import Quart as Quart
 from socketio import ASGIApp, AsyncRedisManager, AsyncServer
 
 from app.routes import register_routes
-from plugins import Redis
+from redis_flask import Redis
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,
