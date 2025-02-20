@@ -28,7 +28,6 @@ from celery.result import AsyncResult
 from quart import Quart
 
 from .class_thead import BotThread
-from .scripts import Caixa, Calculadoras, Elaw, Esaj, PJe, Projudi
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +78,8 @@ class WorkerBot:
             Exception: If bot initialization or execution fails.
 
         """
+        from .scripts import Projudi
+
         bot_class = Projudi
         try:
             display_name = kwargs.get("display_name")
@@ -124,6 +125,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Esaj
+
         bot_class = Esaj
         try:
             display_name = kwargs.get("display_name")
@@ -169,6 +172,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import PJe
+
         bot_class = PJe
         try:
             display_name = kwargs.get("display_name")
@@ -214,6 +219,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Elaw
+
         bot_class = Elaw
         try:
             display_name = kwargs.get("display_name")
@@ -259,6 +266,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Caixa
+
         bot_class = Caixa
         try:
             display_name = kwargs.get("display_name")
@@ -304,6 +313,8 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
+        from .scripts import Calculadoras
+
         bot_class = Calculadoras
         try:
             display_name = kwargs.get("display_name")
