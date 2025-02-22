@@ -1,4 +1,12 @@
 repos:
+  - repo: local
+    hooks:
+      - id: count-lines
+        name: Count Changed Lines
+        entry: python hooks/count_lines.py
+        language: python
+        types: ["python"]
+
   # 1. Faz linting e correções adicionais no final
   - repo: "https://github.com/astral-sh/ruff-pre-commit"
     rev: "v0.9.3"

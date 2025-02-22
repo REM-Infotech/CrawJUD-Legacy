@@ -30,7 +30,7 @@ exclude = [
     "Lib",
 ]
 
-extend-exclude = ["count-commits.py"]
+extend-exclude = ["hooks"]
 extend-include = ["*.ipynb"]
 line-length = 120
 indent-width = 4

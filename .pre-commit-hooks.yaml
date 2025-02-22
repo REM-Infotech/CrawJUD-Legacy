@@ -1,6 +1,6 @@
 - id: count-lines
   name: Count Changed Lines
   description: Conta a quantidade total de linhas modificadas no branch.
-  entry: python count_lines.py
+  entry: python hooks/count_lines.py
   language: python
-  types: [python, yaml, json, text]
+  types: ["python"]
