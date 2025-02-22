@@ -159,7 +159,7 @@ class ProductionConfig(Config):
 
     REDIS_HOST = env["REDIS_HOST"]
     REDIS_PORT = env["REDIS_PORT"]
-    REDIS_DB = int(env["REDIS_DB"])
+    REDIS_DB = int(env["REDIS_DB_LOGS"])
     REDIS_PASSWORD = env["REDIS_PASSWORD"]
     REDIS_URL = env["REDIS_URL"]
 
@@ -214,7 +214,7 @@ class DevelopmentConfig(Config):
 
     REDIS_HOST = env["REDIS_HOST"]
     REDIS_PORT = env["REDIS_PORT"]
-    REDIS_DB = int(env["REDIS_DB"])
+    REDIS_DB = int(env["REDIS_DB_LOGS"])
     REDIS_PASSWORD = env["REDIS_PASSWORD"]
     REDIS_URL = env["REDIS_URL"]
 
@@ -270,7 +270,7 @@ class TestingConfig(Config):
 
     REDIS_HOST = env["REDIS_HOST"]
     REDIS_PORT = env["REDIS_PORT"]
-    REDIS_DB = int(env["REDIS_DB"])
+    REDIS_DB = int(env["REDIS_DB_LOGS"])
     REDIS_PASSWORD = env["REDIS_PASSWORD"]
     REDIS_URL = env["REDIS_URL"]
 
