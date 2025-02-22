@@ -1,12 +1,8 @@
 """Database initialization and configuration module.
 
-This module provides functionality to initialize and configure the application's
-database connection, create necessary tables, and ensure basic server information
-is recorded in the database.
-
-Attributes:
-    None
-
+This module handles the database setup and initial configuration for the application.
+It provides functionality to create and initialize the database, including setting up
+the server information in the database.
 """
 
 from os import getenv
@@ -20,19 +16,21 @@ from app import db
 async def database_start(app: Quart) -> None:
     """Initialize and configure the application database.
 
-    This function performs the following operations:
+    This function performs the following tasks:
     1. Checks if the current server exists in the database
     2. Creates a new server entry if it doesn't exist
     3. Initializes all database tables
 
     Args:
-        app (Quart): The Quart application instance.
+        app (Quart): The Quart application instance
 
     Returns:
         None
 
-    Raises:
-        SQLAlchemyError: If there's an error communicating with the database.
+    Note:
+        This function requires the following environment variables:
+        - NAMESERVER: The name of the server
+        - HOSTNAME: The address of the server
 
     """
     from app.models import Servers
