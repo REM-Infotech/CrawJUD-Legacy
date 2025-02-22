@@ -1,5 +1,7 @@
 # Security Policy
 
+> Portuguese version available [here](./doc/SECURITY-pt-BR.md)
+
 ## Supported Versions
 
 Currently, the following versions of the project receive security updates:

@@ -1,6 +1,6 @@
 # Code of Conduct
 
-> Portuguese version available at [docs/CODE_OF_CONDUCT.pt.md](docs/CODE_OF_CONDUCT.pt.md)
+> Portuguese version available [here](doc/CODE_OF_CONDUCT.pt.md)
 
 ## Our Pledge
 
