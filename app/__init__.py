@@ -10,7 +10,6 @@ import subprocess
 import sys
 from os import environ, getenv
 from pathlib import Path
-from threading import Thread
 
 import quart_flask_patch  # noqa: F401
 import uvicorn
@@ -97,16 +96,9 @@ class AppFactory:
 
         try:
             application = getenv("APPLICATION_APP")
-            in_production = getenv("IN_PRODUCTION", "False")
 
-            if application != "beat":
-                if application == "quart" and in_production == "True":
-                    cls.starter(**args_run)
-
-                elif application == "worker" and in_production == "False":
-                    starter = Thread(target=cls.starter, kwargs=args_run)
-                    starter.daemon = True
-                    starter.start()
+            if application == "quart":
+                cls.run_asgi(**args_run)
 
         except (KeyboardInterrupt, TypeError):
             sys.exit(0)
@@ -114,7 +106,7 @@ class AppFactory:
         return quart, celery
 
     @classmethod
-    def starter(
+    def run_asgi(
         cls,
         port: int,
         log_output: bool,

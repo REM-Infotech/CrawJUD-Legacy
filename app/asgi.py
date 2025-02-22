@@ -15,10 +15,6 @@ os.environ.update({
     "APPLICATION_APP": "quart",
 })
 
-if not os.environ.get("CONTAINER_DOCKER_APP"):
-    os.environ.update({
-        "IN_PRODUCTION": "True",
-    })
 
 clear()
 # Start the Quart application using the AppFactory.

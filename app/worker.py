@@ -22,10 +22,6 @@ os.environ.update({
     "APPLICATION_APP": "worker",
 })
 
-if not os.environ.get("CONTAINER_DOCKER_APP"):
-    os.environ.update({
-        "IN_PRODUCTION": "True",
-    })
 
 # Create the Quart application and Celery instance via AppFactory.
 quart_app, app = AppFactory.construct_app()
