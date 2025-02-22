@@ -1,0 +1,20 @@
+name: Check Number of Commits
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Contar o número de commits no PR
+        run: |
+          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} --json commits --jq '.commits | length')
+          MAX_COMMITS=100
+          if [ "$COMMITS" -gt "$MAX_COMMITS" ]; then
+            echo "❌ O Pull Request tem $COMMITS commits, mas o limite é $MAX_COMMITS."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
