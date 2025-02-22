@@ -127,8 +127,10 @@ class AppFactory:
             **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
-        # Create a WebSocket
+        from utils.bots_logs import asyncinit_log_dict
 
+        # Create a WebSocket
+        log_dict = asyncio.run(asyncinit_log_dict())
         port = kwargs.pop("port", port)
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
@@ -150,4 +152,5 @@ class AppFactory:
             app,
             host=hostname,
             port=port,
+            log_config=log_dict,
         )
