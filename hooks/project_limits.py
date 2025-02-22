@@ -5,8 +5,14 @@ from count_lines import count_changed_lines
 
 def check_project_limits() -> None:
 
-    message1, commit_count = count_branch_commits()
-    message2, total_lines_changed = count_changed_lines()
+    returns1 = count_branch_commits()
+    returns2 = count_changed_lines()
+
+    message1 = str(returns1[0])
+    commit_count = int(returns1[1])
+
+    message2 = str(returns2[0])
+    total_lines_changed = int(returns2[1])
 
 
     if total_lines_changed > 500:
