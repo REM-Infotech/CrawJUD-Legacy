@@ -18,63 +18,16 @@ Classes:
 from __future__ import annotations
 
 import logging
-import platform
 
 # from importlib import import_module
 from pathlib import Path
 from time import sleep
 
-import pandas as pd
 from celery import shared_task
 from celery.result import AsyncResult
-from openai import OpenAI
 from quart import Quart
 
-if platform.system() == "Windows":
-    from pywinauto import Application
-
-from rich.console import Group
-from rich.live import Live
-from rich.panel import Panel
-from rich.progress import (
-    BarColumn,
-    DownloadColumn,
-    Progress,
-    TaskID,
-    TextColumn,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-    TransferSpeedColumn,
-)
-from selenium.webdriver import Chrome
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
-
 from .class_thead import BotThread
-
-__all__ = [
-    "Application",
-    "BarColumn",
-    "DownloadColumn",
-    "Group",
-    "Live",
-    "OpenAI",
-    "Panel",
-    "Progress",
-    "TaskID",
-    "TextColumn",
-    "TimeElapsedColumn",
-    "TimeRemainingColumn",
-    "TransferSpeedColumn",
-    "pd",
-    "Chrome",
-    "Options",
-    "Service",
-    "WebDriver",
-    "WebDriverWait",
-]
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,20 @@
+name: Check Number of Lines Changed
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-lines:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Contar o número de linhas alteradas no PR
+        run: |
+          LINES_CHANGED=$(gh pr view ${{ github.event.pull_request.number }} --json additions,deletions --jq '.additions + .deletions')
+          MAX_LINES=500
+          if [ "$LINES_CHANGED" -gt "$MAX_LINES" ]; then
+            echo "❌ O Pull Request tem $LINES_CHANGED linhas alteradas, mas o limite é $MAX_LINES."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

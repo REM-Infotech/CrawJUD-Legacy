@@ -8,7 +8,6 @@ import asyncio
 import platform
 import subprocess
 import sys
-from datetime import timedelta
 from os import environ, getenv
 from pathlib import Path
 from threading import Thread
@@ -16,16 +15,12 @@ from threading import Thread
 import quart_flask_patch  # noqa: F401
 import uvicorn
 from celery import Celery
-from clear import clear  # noqa: F401
 from dotenv_vault import load_dotenv
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
-from redis_flask import Redis
-from socketio import ASGIApp, AsyncRedisManager, AsyncServer
-
-from app.routes import register_routes
+from socketio import ASGIApp
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,
@@ -35,24 +30,14 @@ valides = [
 
 asc = any(valides)
 
-async_mode = "asgi"
-
 load_dotenv()
 
 
 mail = Mail()
 tslm = Talisman()
 db = SQLAlchemy()
-io = None
 app = Quart(__name__)
-clean_prompt = False
-redis = Redis()
 
-objects_config = {
-    "development": "app.config.DevelopmentConfig",
-    "production": "app.config.ProductionConfig",
-    "testing": "app.config.TestingConfig",
-}
 
 load_dotenv()
 
@@ -77,75 +62,12 @@ class AppFactory:
             tuple: A tuple containing ASGIApp and Celery worker.
 
         """
-        env_ambient = environ["AMBIENT_CONFIG"]
-        ambient = objects_config[env_ambient]
-        app.config.from_object(ambient)
+        from app.core.configurator import app_configurator
 
-        async with app.app_context():
-            from utils import asyncinit_log as init_log
-            from utils import make_celery
-
-            celery = await make_celery(app)
-            celery.set_default()
-            app.extensions["celery"] = celery
-
-            celery.autodiscover_tasks(["bot", "utils"])
-
-            io = await self.init_extensions(app)
-            app.logger = await init_log()
-            await self.init_routes(app)
-        return app, ASGIApp(io, app), celery
-
-    async def init_routes(self, app: Quart) -> None:
-        """Initialize and register the application routes."""
-        async with app.app_context():
-            await register_routes(app)
-
-    async def init_extensions(self, app: Quart) -> AsyncServer:
-        """Initialize and configure the application extensions."""
-        from app.models import (  # noqa: F401
-            Servers,
-            ThreadBots,
-        )
-        from utils import check_allowed_origin
-
-        host_redis = getenv("REDIS_HOST")
-        pass_redis = getenv("REDIS_PASSWORD")
-        port_redis = getenv("REDIS_PORT")
-
-        redis.init_app(app)
-        mail.init_app(app)
-        db.init_app(app)
-        tslm.init_app(
-            app,
-            content_security_policy=app.config["CSP"],
-            session_cookie_http_only=True,
-            session_cookie_samesite="Lax",
-            strict_transport_security=True,
-            strict_transport_security_max_age=timedelta(days=31).max.seconds,
-            x_content_type_options=True,
-        )
-        redis_manager = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/8")
-        io = AsyncServer(
-            async_mode=async_mode,
-            cors_allowed_origins=check_allowed_origin,
-            client_manager=redis_manager,
-            ping_interval=25,
-            ping_timeout=10,
-        )
-        db.create_all()
-
-        if not Servers.query.filter(Servers.name == environ.get("NAMESERVER")).first():  # pragma: no cover
-            server = Servers(name=environ.get("NAMESERVER"), address=environ.get("HOSTNAME"), system=platform.system())
-            db.session.add(server)
-            db.session.commit()
-
-        app.extensions["socketio"] = io
-
-        return io
+        return await app_configurator(app)
 
     @classmethod
-    def start_app(cls) -> tuple[Quart, Celery]:  # pragma: no cover
+    def construct_app(cls) -> tuple[Quart, Celery]:  # pragma: no cover
         """Initialize and start the Quart application with AsyncServer.
 
         Sets up the application context, configures server settings,

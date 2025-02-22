@@ -8,7 +8,7 @@ Classes:
 Methods:
     __init__: Initializes the ElementsBot instance.
     Config: Configures the elements_bot attribute by dynamically importing a module based on the system and state_or_client attributes.
-    _elements: Retrieves the elements bot instance.
+    bot_elements: Retrieves the elements bot instance.
 
 Attributes:
     elements_bot: Stores the elements bot instance.
@@ -65,7 +65,7 @@ class ElementsBot(CrawJUD):
         return self
 
     @property
-    def _elements(self) -> ELAW_AME | ESAJ_AM | PJE_AM | PROJUDI_AM:
+    def bot_elements(self) -> ELAW_AME | ESAJ_AM | PJE_AM | PROJUDI_AM:
         """Retrieve the configured elements bot instance.
 
         Returns:

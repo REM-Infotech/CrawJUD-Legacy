@@ -8,6 +8,7 @@ from .bots_logs import (
 )
 from .check_cors import check_allowed_origin
 from .gcs_mgmt import get_file
+from .gen_seed import worker_name_generator
 from .get_location import GeoLoc
 from .git_py import _release_tag, check_latest, checkout_release, update_servers, version_file
 from .make_celery import make_celery
@@ -23,6 +24,7 @@ from .status import (
 
 signed_url_lifetime = 300
 __all__ = [
+    worker_name_generator,
     DatabaseScheduler,
     _release_tag,
     check_latest,

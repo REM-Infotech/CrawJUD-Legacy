@@ -24,20 +24,7 @@ repos:
           - "-c"
           - "pyproject.toml"
           - "-o"
-          - "bandit_results.html"
+          - "results/bandit.html"
           - "-f"
           - "html"
         additional_dependencies: ["bandit[toml]"]
-
-  # - repo: "https://github.com/PyCQA/flake8"
-  #   rev: "7.0.0"
-  #   hooks:
-  #     - id: "flake8"
-  #       entry: pflake8
-  #       additional_dependencies:
-  #         [
-  #           "pyproject-flake8",
-  #           "flake8-docstrings",
-  #           "flake8-bandit",
-  #           "flake8-bugbear",
-  #         ]

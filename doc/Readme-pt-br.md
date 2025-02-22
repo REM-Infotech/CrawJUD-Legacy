@@ -40,7 +40,8 @@ _Última contagem: `10/12/2024 10:16`_
   - [`Forms/`](./app/Forms/): Formulários do projeto, organizados por funcionalidade.
 
   - [`routes/`](./app/routes/): Rotas do projeto, organizadas por funcionalidade.
-
+  > Para mais detalhes, consulte a [documentação da estrutura do app](../doc/estrutura_app.md).
+  
 - [`bot/`](./bot/): Contém scripts e configurações relacionadas a robôs.
 
 ## Installation
