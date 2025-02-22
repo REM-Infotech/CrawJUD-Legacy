@@ -3,7 +3,7 @@ import subprocess
 import sys
 import os
 
-def count_changed_lines():
+def count_changed_lines()  -> int | None:
     try:
         # Garante que o script rode no diretório raiz do repositório
         repo_root = subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).strip().decode()
@@ -25,8 +25,11 @@ def count_changed_lines():
                 removed_lines += int(parts[1]) if parts[1].isdigit() else 0
 
         total_lines_changed = added_lines + removed_lines
+        message = f"[INFO] Total de linhas alteradas no branch '{branch}': {total_lines_changed}"
+        if __name__ != "__main__":
+            return message
 
-        print(f"[INFO] Total de linhas alteradas no branch '{branch}': {total_lines_changed}")
+        print(message)
 
         # Definir um limite opcional
         MAX_LINES = 500  # Altere conforme necessário

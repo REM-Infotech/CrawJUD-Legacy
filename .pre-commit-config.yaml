@@ -1,17 +1,9 @@
 repos:
   - repo: local
     hooks:
-      - id: count-lines
-        name: Count Changed Lines
-        entry: python hooks/count_lines.py
-        language: python
-        types: ["python"]
-
-  - repo: local
-    hooks:
-      - id: count-commits
-        name: Count Changed Lines
-        entry: python hooks/count_commits.py
+      - id: project_limits
+        name: Check Project Limits
+        entry: python hooks/project_limits.py
         language: python
         types: ["python"]
 
