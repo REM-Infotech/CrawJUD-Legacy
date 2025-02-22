@@ -34,7 +34,7 @@ async def test_create_app(app_factory) -> None:
 
 @pytest.mark.asyncio
 async def test_start_app(app_factory) -> None:
-    """Test the start_app method of AppFactory."""
+    """Test the construct_app method of AppFactory."""
     with mock.patch('app.__init__.asyncio.set_event_loop_policy'), \
          mock.patch('app.__init__.asyncio.get_event_loop'), \
          mock.patch.object(AppFactory, 'main', return_value=(mock.Mock(spec=ASGIApp), mock.Mock(spec=Celery))), \

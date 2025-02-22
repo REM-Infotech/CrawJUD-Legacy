@@ -91,8 +91,7 @@ ignore = [
     "S607",
     "S404",
     "C901",
-    "ANN401",
-    "F401",
+    "ANN401"
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

@@ -22,7 +22,7 @@ os.environ.update({
 })
 
 # Create the Quart application and Celery instance via AppFactory.
-quart_app, app = AppFactory.start_app()
+quart_app, app = AppFactory.construct_app()
 clear()
 if __name__ == "__main__":
 

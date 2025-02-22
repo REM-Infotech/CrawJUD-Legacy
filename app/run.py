@@ -6,4 +6,4 @@ from app import AppFactory
 
 os.environ.update({"APPLICATION_APP": "worker", "INTO_PRODUCTION": "False"})
 
-_, app = AppFactory.start_app()
+_, app = AppFactory.construct_app()

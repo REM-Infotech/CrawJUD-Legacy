@@ -6,7 +6,6 @@ Classes:
 """
 
 from os import getenv
-from time import sleep
 from typing import Self
 
 import socketio

@@ -6,7 +6,6 @@ Additional utilities are available to emit, print, and store log messages.
 
 import traceback
 from datetime import datetime
-from os import environ
 from pathlib import Path
 from threading import Thread  # noqa: F401
 from time import sleep
@@ -18,7 +17,6 @@ import socketio.exceptions  # noqa: F401
 from dotenv_vault import load_dotenv
 
 from ...core import CrawJUD
-from .emit_ import SendMessage
 
 codificacao = "UTF-8"
 mensagens = []

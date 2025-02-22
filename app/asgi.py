@@ -18,4 +18,4 @@ os.environ.update({
 
 clear()
 # Start the Quart application using the AppFactory.
-AppFactory.start_app()
+AppFactory.construct_app()
