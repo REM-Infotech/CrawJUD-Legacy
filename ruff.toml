@@ -29,6 +29,8 @@ exclude = [
     "tests",
     "Lib",
 ]
+
+extend-exclude = ["count-commits.py"]
 extend-include = ["*.ipynb"]
 line-length = 120
 indent-width = 4
@@ -91,8 +93,9 @@ ignore = [
     "S607",
     "S404",
     "C901",
-    "ANN401"
+    "ANN401",
 ]
+
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
