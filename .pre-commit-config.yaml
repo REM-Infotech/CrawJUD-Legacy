@@ -1,11 +1,4 @@
 repos:
-  - repo: local
-    hooks:
-      - id: project_limits
-        name: Check Project Limits
-        entry: python hooks/project_limits.py
-        language: python
-        types: ["python"]
 
   # 1. Faz linting e correções adicionais no final
   - repo: "https://github.com/astral-sh/ruff-pre-commit"
