@@ -34,8 +34,12 @@ class SocketIOLogClientHandler(logging.Handler):
     def _connect(self) -> None:
         try:
             self.sio.connect(
-                self.server_url,
-                namespaces=["/application_logs", f"/{self._app}"],
+                url=self.server_url,
+                namespaces=[
+                    "/application_logs",
+                    f"/{self._app}",
+                ],
+                wait_timeout=5,
             )
         except Exception as e:
             tqdm.write(f"SocketIO connection error: {e}")
@@ -44,7 +48,7 @@ class SocketIOLogClientHandler(logging.Handler):
         """Emit the log message to the server via Socket.IO."""
         try:
             msg = self.format(record)
-            self.sio.emit(f"{self._app}_log", msg, namespace=f"/{self._app}")
+            self.sio.emit(f"{self._app}_logs", msg, namespace=f"/{self._app}")
         except Exception:
             self.handleError(record)
 

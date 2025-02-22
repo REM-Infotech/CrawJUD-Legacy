@@ -31,25 +31,24 @@ async def disconnect(sid: str, *arg: str | int, **kwargs: str | int) -> None:
 async def system_log(sid: str, *arg: str | int, **kwargs: str | int) -> None:
     """Receive and log system log messages."""
     tqdm.write(f"System log: {arg}")
-    await io.emit("system_log", {"data": arg})
+    await io.emit("system_log", {"data": arg}, namespace="/application_logs")
 
 
 @io.on("quart_logs", namespace="/quart")
 async def quart_logs(sid: str, *arg: str | int, **kwargs: str | int) -> None:
     """Receive and log Quart log messages."""
-    tqdm.write(f"Quart log: {arg}")
-    await io.emit("quart_logs", {"data": arg})
+    await io.emit("quart_logs", {"data": arg}, namespace="/quart")
 
 
 @io.on("worker_logs", namespace="/worker")
 async def worker_logs(sid: str, *arg: str | int, **kwargs: str | int) -> None:
     """Receive and log worker log messages."""
     tqdm.write(f"Worker log: {arg}")
-    await io.emit("worker_logs", {"data": arg})
+    await io.emit("worker_logs", {"data": arg}, namespace="/worker")
 
 
 @io.on("beat_logs", namespace="/beat")
 async def beat_logs(sid: str, *arg: str | int, **kwargs: str | int) -> None:
     """Receive and log beat log messages."""
     tqdm.write(f"Beat log: {arg}")
-    await io.emit("beat_logs", {"data": arg})
+    await io.emit("beat_logs", {"data": arg}, namespace="/beat")

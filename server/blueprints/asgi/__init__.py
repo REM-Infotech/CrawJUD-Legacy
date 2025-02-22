@@ -21,7 +21,7 @@ asgi_ = Blueprint(
 @asgi_.get("/status")
 async def status() -> Response:
     """Check the status of the ASGI server."""
-    return await make_response(await render_template("index.html", page="status.html"))
+    return await make_response(await render_template("status.html"))
 
 
 @asgi_.get("/shutdown")
