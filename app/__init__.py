@@ -92,6 +92,7 @@ class AppFactory:
             "port": port,
             "log_output": True,
             "app": app,
+            "quart": quart,
         }
 
         try:
@@ -110,7 +111,8 @@ class AppFactory:
         cls,
         port: int,
         log_output: bool,
-        app: Quart,
+        app: ASGIApp,
+        quart: Quart,
         *args: str | int,
         **kwargs: str | int,
     ) -> None:
@@ -119,7 +121,8 @@ class AppFactory:
         Args:
             port (int): The port to listen on.
             log_output (bool): Whether to log output.
-            app (Quart): The Quart application instance.
+            app (ASGIApp): ASGI application instance.
+            quart (Quart): The Quart application instance.
             *args (tuple[str | int]): Variable length argument list.
             **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
@@ -129,6 +132,7 @@ class AppFactory:
         port = kwargs.pop("port", port)
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)
+        quart = kwargs.pop("quart", quart)
 
         hostname = getenv(
             "SERVER_HOSTNAME",

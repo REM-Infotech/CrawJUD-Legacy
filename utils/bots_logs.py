@@ -4,10 +4,38 @@ import logging
 from logging import Logger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from uuid import uuid4
 
+import socketio
 from aiopath import AsyncPath
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
+
+
+class SocketIOLogClientHandler(logging.Handler):
+    """Logging handler that sends log messages to a Socket.IO server."""
+
+    def __init__(self, server_url: str = "http://localhost:7000") -> None:
+        """Initialize the handler with the server URL."""
+        super().__init__()
+        self.sio = socketio.Client()
+        self.server_url = server_url
+        self._connect()
+
+    def _connect(self) -> None:
+        try:
+            self.sio.connect(self.server_url)
+        except Exception as e:
+            tqdm.write(f"SocketIO connection error: {e}")
+
+    def emit(self, record: logging.LogRecord) -> None:
+        """Emit the log message to the server via Socket.IO."""
+        try:
+            msg = self.format(record)
+            self.sio.emit("system_log", msg)
+        except Exception:
+            self.handleError(record)
 
 
 async def asyncinit_log(
@@ -17,19 +45,12 @@ async def asyncinit_log(
     bkp_ct: int = None,
     **kwargs: dict,
 ) -> Logger:
-    """Initialize and configure logging for the application.
+    """Initialize and configure logging for the application with Socket.IO handler.
 
-    Args:
-        log_file (str, optional): The name of the log file. Defaults to "app.log".
-        log_level (int, optional): The logging level. Defaults to logger.DEBUG.
-        mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
-        bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
-        **kwargs: Arbitrary keyword arguments.
-
-    Returns:
-        Logger: Configured logger instance.
-
+    Além dos handlers de arquivo e console, adiciona o handler SocketIOLogClientHandler
+    para transmitir logs para o servidor de logs via Socket.IO (por exemplo, para o Quart).
     """
+    logger = logging.getLogger(uuid4().hex)
     log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))  # noqa: N806
     log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))  # noqa: N806
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024))
@@ -46,24 +67,31 @@ async def asyncinit_log(
     if log_file == "app/logs":
         log_path: Path = await AsyncPath(Path(__file__)).cwd()
         log_path: Path = await log_path.joinpath(log_file).resolve()
-        log_path_file: Path = log_path.joinpath("app.log")
+        log_path_file = str(log_path.joinpath("app.log"))
 
-        if await log_path.exists() is False:
+        if not await log_path.exists():
             await log_path.mkdir(parents=True, exist_ok=True)
+
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(log_level)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
 
     # File handler
     file_handler = RotatingFileHandler(
-        str(log_path_file),
+        log_path_file,
         maxBytes=max_bytes,
         backupCount=bkp_ct,
     )
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    # Console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    # Socket.IO handler (cliente)
+    socketio_handler = SocketIOLogClientHandler(server_url="http://localhost:7000")
+    socketio_handler.setLevel(log_level)
+    socketio_handler.setFormatter(formatter)
+    logger.addHandler(socketio_handler)
 
     return logger
 
@@ -76,20 +104,8 @@ def init_log(
     *args: tuple,
     **kwargs: dict,
 ) -> Logger:
-    """Initialize and configure logging for the application.
-
-    Args:
-        log_file (str, optional): The name of the log file. Defaults to "app.log".
-        log_level (int, optional): The logging level. Defaults to logger.DEBUG.
-        mx_bt (int, optional): The maximum size of the log file in bytes before it is rotated. Defaults to 1MB.
-        bkp_ct (int, optional): The number of backup log files to keep. Defaults to 1.
-        *args: Variable length argument list.
-        **kwargs: Arbitrary keyword arguments.
-
-    Returns:
-        Logger: Configured logger instance.
-
-    """
+    """Sincronamente inicializa e configura o logger, incluindo o handler Socket.IO."""
+    logger = logging.getLogger(uuid4().hex)
     log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))
     log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024 * 1024))
@@ -99,12 +115,12 @@ def init_log(
 
     # Formatter
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    log_path_file = str(log_file)
     if log_file == "app/logs":
         log_path_file = Path(__file__).cwd().joinpath(log_file).joinpath("app.log").resolve()
-
-        if log_path_file.parent.exists() is False:
+        if not log_path_file.parent.exists():
             log_path_file.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        log_path_file = Path(log_file).resolve()
 
     # File handler
     file_handler = RotatingFileHandler(
@@ -119,5 +135,10 @@ def init_log(
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
+
+    # Socket.IO handler (cliente)
+    socketio_handler = SocketIOLogClientHandler(server_url="http://localhost:7000")
+    socketio_handler.setFormatter(formatter)
+    logger.addHandler(socketio_handler)
 
     return logger
