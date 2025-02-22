@@ -23,6 +23,7 @@ _Total lines: `13865`_
 _Last count: `16/02/2025 19:00 (América\São Paulo)`_
 
 ## Table of Contents
+- [Portuguese (Br) version available here](./doc/Readme-pt-br.md)
 
 - [Project Structure](#project-structure)
 - [Dependencies](./doc/dependencies.md)
@@ -41,6 +42,8 @@ _Last count: `16/02/2025 19:00 (América\São Paulo)`_
   - [`Forms/`](./app/Forms/): Project forms, organized by functionality.
 
   - [`routes/`](./app/routes/): Project routes, organized by functionality.
+
+  > For more details, check the [app structure documentation](./doc/app_structure.md).
 
 - [`bot/`](./bot/): Contains bot-related scripts and configurations.
 
