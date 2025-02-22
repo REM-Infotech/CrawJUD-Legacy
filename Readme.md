@@ -23,7 +23,7 @@ _Total lines: `14551`_
 _Last count: `22/02/2025 11:00 (América\São Paulo)`_
 
 ## Table of Contents
-- [Portuguese (Br) version available here](./doc/Readme-pt-br.md)
+> Portuguese (Br) version available [here](./doc/Readme-pt-br.md)
 
 - [Project Structure](#project-structure)
 - [Dependencies](./doc/dependencies.md)
