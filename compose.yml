@@ -18,6 +18,7 @@ services:
   celery_beat:
     shm_size: "2gb"
     environment:
+      CONTAINER_DOCKER_APP: "True"
       DOTENV_KEY: "${DOTENV_KEY_BACK:-default_value}"
       IN_PRODUCTION: "${IN_PRODUCTION:-default_value}"
     build:

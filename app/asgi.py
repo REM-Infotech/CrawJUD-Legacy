@@ -13,8 +13,12 @@ from app import AppFactory
 # Set environment variables to designate Quart app mode and production status.
 os.environ.update({
     "APPLICATION_APP": "quart",
-    "IN_PRODUCTION": "True",
 })
+
+if not os.environ.get("CONTAINER_DOCKER_APP"):
+    os.environ.update({
+        "IN_PRODUCTION": "True",
+    })
 
 clear()
 # Start the Quart application using the AppFactory.

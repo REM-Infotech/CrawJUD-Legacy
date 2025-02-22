@@ -18,7 +18,14 @@ from app import AppFactory
 from utils import worker_name_generator
 
 # Set environment variables to designate worker mode and production status.
-os.environ.update({"APPLICATION_APP": "worker", "IN_PRODUCTION": "True"})
+os.environ.update({
+    "APPLICATION_APP": "worker",
+})
+
+if not os.environ.get("CONTAINER_DOCKER_APP"):
+    os.environ.update({
+        "IN_PRODUCTION": "True",
+    })
 
 # Create the Quart application and Celery instance via AppFactory.
 quart_app, app = AppFactory.construct_app()
