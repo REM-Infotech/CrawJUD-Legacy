@@ -121,13 +121,13 @@ class TaskExec:
                 if not pid:
                     return 500
                 db: SQLAlchemy = app.extensions["sqlalchemy"]
-                dict_status: dict[str, str] = data_bot.get("status")
+                # dict_status: dict[str, str] = data_bot.get("status")
 
-                if isinstance(dict_status, str) or dict_status is None:
-                    dict_status: dict[str, str] = {"status": "Finalizado", "schedule": "False"}
+                # if isinstance(dict_status, str) or dict_status is None:
+                #     dict_status: dict[str, str] = {"status": "Finalizado", "schedule": "False"}
 
-                status = dict_status.get("status")
-                schedule = dict_status.get("schedule")
+                status = data_bot.get("status")
+                schedule = data_bot.get("schedule")
 
                 filename, _ = await cls.make_zip(pid)
                 execut = await cls.send_stop_exec(app, db, pid, status, filename)

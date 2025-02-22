@@ -30,7 +30,7 @@ from .Driver import DriverBot
 from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
 from .interator import Interact
 from .MakeTemplate import MakeXlsx
-from .PrintLogs import PrintBot
+from .PrintLogs import PrintBot, SendMessage
 from .search import SearchBot
 
 __all__ = [
@@ -45,6 +45,7 @@ __all__ = [
     "MakeXlsx",
     "PrintBot",
     "SearchBot",
+    "SendMessage",
 ]
 
 TypeData = Union[list[dict[str, Union[str, Numbers, datetime]]], dict[str, Union[str, Numbers, datetime]]]
@@ -590,12 +591,7 @@ class OtherUtils(CrawJUD):
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
         minutes, seconds = divmod(int(execution_time), 60)
-
-        self.end_prt({
-            "status": "Finalizado",
-            "pid": self.pid,
-            "schedule": self.schedule,
-        })
+        self.prt(status="Finalizado")
 
         self.type_log = "success"
         self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"

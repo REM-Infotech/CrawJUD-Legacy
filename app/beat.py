@@ -10,6 +10,7 @@ from pathlib import Path
 
 from celery import Celery
 from celery.apps.beat import Beat
+from clear import clear
 from quart import Quart
 
 from app import AppFactory
@@ -17,12 +18,16 @@ from app import AppFactory
 # Set environment variables to designate worker mode and production status.
 os.environ.update({
     "APPLICATION_APP": "worker",
-    "IN_PRODUCTION": "True",
 })
 
-# Create the Quart application and Celery instance via AppFactory.
-quart_app, app = AppFactory.start_app()
+if not os.environ.get("CONTAINER_DOCKER_APP"):
+    os.environ.update({
+        "IN_PRODUCTION": "True",
+    })
 
+# Create the Quart application and Celery instance via AppFactory.
+quart_app, app = AppFactory.construct_app()
+clear()
 if __name__ == "__main__":
 
     async def run_beat(app: Celery, quart_app: Quart) -> None:

@@ -184,11 +184,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
     btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
     tableprazos = 'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
 
-    tipo_polo = "".join(
-        [
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_label"]',
-        ],
-    )
+    tipo_polo = "".join((
+        'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_9_44_3_1_',
+        '2_2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
+    ))
 
     # CADASTRO
     botao_novo = 'button[id="btnNovo"]'
@@ -326,9 +325,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_novo_pagamento = 'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]'
     css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
     listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'
-    css_element = "".join(
-        'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:proces","soValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]',
-    )
+    css_element = "".join((
+        'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_1_1_9_1f_1:proces',
+        'soValorRateioAmountAllDt:0:j_id_2m_1_i_1_1_9_1f_2_2_q_input"]',
+    ))
     type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo"]'
     list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
     editar_pagamento = 'input[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile_input"]'
@@ -405,8 +405,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_risk = 'div[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1"]'
     processo_objt = 'ul[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_items"]'
     botao_salvar_id = 'button[id="salvarBtn"]'
-    daata_correcaoCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountdaata_correcao_input"]'  # noqa: N815
-    data_jurosCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountdata_juros_input"]'  # noqa: N815
+    daata_correcaoCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataCorrecao_input"]'  # noqa: N815
+    data_jurosCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataJuros_input"]'  # noqa: N815
     texto_motivo = 'textarea[id="j_id_2m:j_id_2p_2e:j_id_2p_2i_8:j_id_2p_2i_j"]'
 
     type_risk_label = 'label[id="j_id_2m:provisaoTipoPedidoCombo_label"]'

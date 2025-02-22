@@ -47,6 +47,7 @@ pip-delete-this-directory.txt
 results_pre-commit.md
 redis_flask/
 bandit_results.html
+bandit.html
 # Unit test / coverage reports
 htmlcov/
 .tox/

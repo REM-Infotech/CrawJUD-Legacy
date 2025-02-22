@@ -12,32 +12,18 @@ services:
     ports:
       - "8000:8000"
 
-    hostname: "crawjudbot_app"
+    hostname: "hockenheimring"
     command: "poetry run python -m app.asgi"
-
-  celery_worker:
-    shm_size: "2gb"
-    environment:
-      DOTENV_KEY: "${DOTENV_KEY_BACK:-default_value}"
-      IN_PRODUCTION: "True"
-    build:
-      context: "."
-    volumes:
-      - ".:C:\\crawjudbot_app"
-    ports:
-      - "3336:3389"
-
-    hostname: "crawjudbot_app"
-    command: "poetry run python -m app.worker"
 
   celery_beat:
     shm_size: "2gb"
     environment:
+      CONTAINER_DOCKER_APP: "True"
       DOTENV_KEY: "${DOTENV_KEY_BACK:-default_value}"
       IN_PRODUCTION: "${IN_PRODUCTION:-default_value}"
     build:
       context: "."
     volumes:
       - ".:C:\\crawjudbot_app"
-    hostname: "crawjudbot_app"
+    hostname: "hungaroring"
     command: "poetry run python -m app.beat"

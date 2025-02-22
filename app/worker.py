@@ -7,19 +7,29 @@ settings such as task events, log level, concurrency, and thread pool.
 
 import asyncio
 import os
+from platform import node
 
 from celery import Celery
 from celery.apps.worker import Worker
+from clear import clear
 from quart import Quart
 
 from app import AppFactory
+from utils import worker_name_generator
 
 # Set environment variables to designate worker mode and production status.
-os.environ.update({"APPLICATION_APP": "worker", "IN_PRODUCTION": "True"})
+os.environ.update({
+    "APPLICATION_APP": "worker",
+})
+
+if not os.environ.get("CONTAINER_DOCKER_APP"):
+    os.environ.update({
+        "IN_PRODUCTION": "True",
+    })
 
 # Create the Quart application and Celery instance via AppFactory.
-quart_app, app = AppFactory.start_app()
-
+quart_app, app = AppFactory.construct_app()
+clear()
 if __name__ == "__main__":
 
     async def run_worker(app: Celery, quart_app: Quart) -> None:
@@ -34,10 +44,12 @@ if __name__ == "__main__":
             quart_app (Quart): The Quart application instance.
 
         """
+        worker_name = f"{worker_name_generator()}@{node()}"
         async with quart_app.app_context():
             # Instantiate the worker with the app and specific settings.
             worker = Worker(
                 app=app,
+                hostname=worker_name,
                 task_events=True,
                 loglevel="INFO",
                 concurrency=50.0,
