@@ -472,8 +472,8 @@ class SetupDriver:
 
             url_driver += f"{item}/"
 
-        with open("url_driver.txt", "w") as f:  # FURB103
-            f.write(url_driver)
+        # with open("url_driver.txt", "w") as f:  # FURB103
+        #     f.write(url_driver)
 
         return url_driver
 
