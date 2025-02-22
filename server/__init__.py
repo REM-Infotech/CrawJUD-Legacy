@@ -58,4 +58,4 @@ async def register_blueprint() -> None:
 async def create_app() -> Quart:
     """Create and configure the Quart application."""
     await register_blueprint()
-    return ASGIApp(app, io)
+    return ASGIApp(io, app)

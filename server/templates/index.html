@@ -11,6 +11,20 @@
     {% if message %}
     <h1>{{ message }}</h1>
     {% endif %}
+    <!-- Este é um exemplo de como você pode receber os logs na sua dashboard -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+      const socket = io("http://localhost:7000");
+
+      socket.on('connect', () => {
+        console.log('Conectado ao servidor Socket.IO');
+      });
+
+      socket.on('system_log', (msg) => {
+        console.log('Log recebido:', msg);
+        // Atualize sua dashboard conforme necessário
+      });
+    </script>
   </body>
 
 </html>

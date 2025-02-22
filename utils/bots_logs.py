@@ -3,6 +3,7 @@
 import logging
 from logging import Logger
 from logging.handlers import RotatingFileHandler
+from os import getenv
 from pathlib import Path
 from uuid import uuid4
 
@@ -16,6 +17,8 @@ logger = logging.getLogger(__name__)
 class SocketIOLogClientHandler(logging.Handler):
     """Logging handler that sends log messages to a Socket.IO server."""
 
+    _app = getenv("APPLICATION_APP")
+
     def __init__(self, server_url: str = "http://localhost:7000") -> None:
         """Initialize the handler with the server URL."""
         super().__init__()
@@ -25,7 +28,10 @@ class SocketIOLogClientHandler(logging.Handler):
 
     def _connect(self) -> None:
         try:
-            self.sio.connect(self.server_url)
+            self.sio.connect(
+                self.server_url,
+                namespaces=["/application_logs", f"/{self._app}"],
+            )
         except Exception as e:
             tqdm.write(f"SocketIO connection error: {e}")
 
@@ -33,7 +39,7 @@ class SocketIOLogClientHandler(logging.Handler):
         """Emit the log message to the server via Socket.IO."""
         try:
             msg = self.format(record)
-            self.sio.emit("system_log", msg)
+            self.sio.emit(f"{self._app}_log", msg, namespace=f"{self._app}")
         except Exception:
             self.handleError(record)
 
@@ -92,6 +98,7 @@ async def asyncinit_log(
     socketio_handler.setLevel(log_level)
     socketio_handler.setFormatter(formatter)
     logger.addHandler(socketio_handler)
+    logger.info("Logger initialized.")
 
     return logger
 
