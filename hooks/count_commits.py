@@ -3,7 +3,7 @@ import subprocess
 import sys
 import os
 
-def count_branch_commits() -> int | None:
+def count_branch_commits() -> tuple[str, int] | None:
     try:
         # Garante que o script rode no diretório raiz do repositório
         repo_root = subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).strip().decode()
@@ -20,7 +20,7 @@ def count_branch_commits() -> int | None:
         message = f"[INFO] Total de commits no branch '{branch}': {commit_count}"
 
         if __name__ != "__main__":
-            return message
+            return message, commit_count
 
         print(message)
 
