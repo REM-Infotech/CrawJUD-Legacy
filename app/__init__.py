@@ -147,8 +147,3 @@ class AppFactory:
             host=hostname,
             port=port,
         )
-
-    @staticmethod
-    def handle_exit(a: any = None, b: any = None) -> None:
-        """Handle termination signals and exit the program gracefully."""
-        sys.exit(0)
