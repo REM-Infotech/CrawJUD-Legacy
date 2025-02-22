@@ -1,6 +1,6 @@
 name: "CrawJUD-Bots"
 services:
-  quart_restapi:
+  hockenheimring_rest:
     shm_size: "2gb"
     environment:
       IN_PRODUCTION: "True"
@@ -15,7 +15,7 @@ services:
     hostname: "hockenheimring"
     command: "poetry run python -m app.asgi"
 
-  celery_beat:
+  hungaroring_beat:
     shm_size: "2gb"
     environment:
       CONTAINER_DOCKER_APP: "True"
