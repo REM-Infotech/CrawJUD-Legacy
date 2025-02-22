@@ -31,13 +31,13 @@ async def shutdown() -> Response:
     return await make_response(await render_template("index.html", page="shutdown.html"))
 
 
-@worker_.get("/restart")
+@worker_.post("/restart")
 async def restart() -> Response:
     """Restart the worker server."""
     return await make_response(await render_template("index.html", page="restart.html"))
 
 
-@worker_.get("/start")
+@worker_.post("/start")
 async def start() -> Response:
     """Start the worker server."""
     worker_process = Process(target=start_worker)

@@ -24,7 +24,7 @@ async def status() -> Response:
     return await make_response(await render_template("status.html"))
 
 
-@asgi_.get("/shutdown")
+@asgi_.post("/shutdown")
 async def shutdown() -> Response:
     """Shutdown the ASGI server."""
     store_process: StoreProcess = running_servers.pop("ASGI")
@@ -36,13 +36,13 @@ async def shutdown() -> Response:
     return await make_response(await render_template("index.html", message="Process stopped."))
 
 
-@asgi_.get("/restart")
+@asgi_.post("/restart")
 async def restart() -> Response:
     """Restart the ASGI server."""
     return await make_response(await render_template("index.html", page="restart.html"))
 
 
-@asgi_.get("/start")
+@asgi_.post("/start")
 async def start() -> Response:
     """Start the ASGI server."""
     asgi_process = Process(target=start_process_asgi)

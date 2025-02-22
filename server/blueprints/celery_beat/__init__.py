@@ -31,13 +31,13 @@ async def shutdown() -> Response:
     return await make_response(await render_template("index.html", page="shutdown.html"))
 
 
-@beat_.get("/restart")
+@beat_.post("/restart")
 async def restart() -> Response:
     """Restart the beat server."""
     return await make_response(await render_template("index.html", page="restart.html"))
 
 
-@beat_.get("/start")
+@beat_.post("/start")
 async def start() -> Response:
     """Start the beat server."""
     beat_process = Process(target=start_beat)
