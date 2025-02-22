@@ -2,8 +2,10 @@
 
 from dataclasses import dataclass
 from importlib import import_module
+from os import getenv
 from pathlib import Path
 
+from flask_sqlalchemy import SQLAlchemy
 from quart import Quart, Response, make_response, render_template
 from socketio import ASGIApp, AsyncServer
 
@@ -19,7 +21,7 @@ app = Quart(
     static_folder=str(static_dir),
     instance_path=str(instance_dir),
 )
-
+db = SQLAlchemy()
 io = AsyncServer(
     async_mode="asgi",
     cors_allowed_origins="*",
@@ -28,6 +30,12 @@ io = AsyncServer(
 )
 
 import_module("server.logs", __package__)
+
+objects_config = {
+    "development": "server.config.DevelopmentConfig",
+    "production": "server.config.ProductionConfig",
+    "testing": "server.config.TestingConfig",
+}
 
 
 @dataclass
@@ -58,4 +66,11 @@ async def register_blueprint() -> None:
 async def create_app() -> Quart:
     """Create and configure the Quart application."""
     await register_blueprint()
+
+    async with app.app_context():
+        env_ambient = getenv("AMBIENT_CONFIG")
+        ambient = objects_config[env_ambient]
+        app.config.from_object(ambient)
+        db.init_app(app)
+
     return ASGIApp(io, app)

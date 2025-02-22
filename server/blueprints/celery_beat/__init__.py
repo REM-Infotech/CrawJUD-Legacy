@@ -4,6 +4,7 @@ import asyncio
 from pathlib import Path
 
 from billiard.context import Process
+from flask_login import login_required
 from quart import Blueprint, Response, make_response, render_template
 
 from server import StoreProcess, running_servers
@@ -20,24 +21,28 @@ beat_ = Blueprint(
 
 
 @beat_.get("/status")
+@login_required
 async def status() -> Response:
     """Check the status of the beat server."""
     return await make_response(await render_template("index.html", page="status.html"))
 
 
 @beat_.post("/shutdown")
+@login_required
 async def shutdown() -> Response:
     """Shutdown the beat server."""
     return await make_response(await render_template("index.html", page="shutdown.html"))
 
 
 @beat_.post("/restart")
+@login_required
 async def restart() -> Response:
     """Restart the beat server."""
     return await make_response(await render_template("index.html", page="restart.html"))
 
 
 @beat_.post("/start")
+@login_required
 async def start() -> Response:
     """Start the beat server."""
     beat_process = Process(target=start_beat)
