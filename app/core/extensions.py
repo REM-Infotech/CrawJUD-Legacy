@@ -34,7 +34,7 @@ async def init_extensions(app: Quart) -> AsyncServer:
     await database_start(app)
     await security_config(app)
 
-    app.extensions["redis"] = Redis(host=host_redis, port=port_redis, password=pass_redis, db=8)
+    app.extensions["redis"] = Redis(host=host_redis, port=port_redis, password=pass_redis, db=4)
     app.extensions["socketio"] = io
 
     return io
