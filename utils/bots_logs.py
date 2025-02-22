@@ -47,8 +47,21 @@ class SocketIOLogClientHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
         """Emit the log message to the server via Socket.IO."""
         try:
+            dict_record = list(record.__dict__.items())
+            not_formated = {}
+            for key, value in dict_record:
+                try:
+                    not_formated.update({
+                        key: str(value),
+                    })
+                except Exception as e:
+                    tqdm.write(f"Error: {e}")
+                    continue
             msg = self.format(record)
-            self.sio.emit(f"{self._app}_logs", msg, namespace=f"/{self._app}")
+
+            data = {"message": msg}
+            data.update(not_formated)
+            self.sio.emit(f"{self._app}_logs", data=data, namespace=f"/{self._app}")
         except Exception:
             self.handleError(record)
 

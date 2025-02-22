@@ -27,9 +27,10 @@
         console.log('Conectado ao servidor Socket.IO');
       });
 
-      socket.on('quart_logs', (msg) => {
+      socket.on('quart_logs', (data) => {
+        msg = data.message
         console.log('Log recebido:', msg);
-
+        var li = document.createElement("li");
         li.style.fontWeight = "bold";
         li.style.color = "orange";
 
