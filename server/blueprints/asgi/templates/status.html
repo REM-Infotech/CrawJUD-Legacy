@@ -8,8 +8,19 @@
   </head>
 
   <body>
+
+    <h1>Status do Quart</h1>
+
+    <ul id="messages">
+
+    </ul>
+
+
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
+
+
+      var ul = document.getElementById("messages");
       const socket = io("http://localhost:7000/quart");
 
       socket.on('connect', () => {
@@ -18,6 +29,12 @@
 
       socket.on('quart_logs', (msg) => {
         console.log('Log recebido:', msg);
+
+        li.style.fontWeight = "bold";
+        li.style.color = "orange";
+
+        li.innerHTML = msg.replace(/\n/g, "<br>");
+        ul.appendChild(li);
         // Atualize sua dashboard conforme necessário
       });
     </script>

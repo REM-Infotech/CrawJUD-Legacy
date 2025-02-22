@@ -81,7 +81,7 @@ async def asyncinit_log_dict(
         if not await log_path.exists():
             await log_path.mkdir(parents=True, exist_ok=True)
 
-    return {
+    config = {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
@@ -93,12 +93,6 @@ async def asyncinit_log_dict(
             "default": {
                 "class": "logging.StreamHandler",
                 "stream": "ext://sys.stdout",
-                "formatter": "default",
-            },
-            "socketio_handler": {
-                "class": "utils.bots_logs.SocketIOLogClientHandler",
-                "server_url": "http://localhost:7000",
-                "level": "DEBUG",
                 "formatter": "default",
             },
             "file_handler": {
@@ -122,6 +116,16 @@ async def asyncinit_log_dict(
             },
         },
     }
+
+    if getenv("SERVER_MANAGEMENT"):
+        config["handlers"]["socketio_handler"] = {
+            "class": "utils.bots_logs.SocketIOLogClientHandler",
+            "server_url": "http://localhost:7000",
+            "level": "DEBUG",
+            "formatter": "default",
+        }
+
+    return config
 
 
 async def asyncinit_log(
@@ -174,10 +178,12 @@ async def asyncinit_log(
     logger.addHandler(file_handler)
 
     # Socket.IO handler (cliente)
-    socketio_handler = SocketIOLogClientHandler(server_url="http://localhost:7000")
-    socketio_handler.setLevel(log_level)
-    socketio_handler.setFormatter(formatter)
-    logger.addHandler(socketio_handler)
+    if getenv("SERVER_MANAGEMENT"):
+        socketio_handler = SocketIOLogClientHandler(server_url="http://localhost:7000")
+        socketio_handler.setLevel(log_level)
+        socketio_handler.setFormatter(formatter)
+        logger.addHandler(socketio_handler)
+
     logger.info("Logger initialized.")
 
     return logger
