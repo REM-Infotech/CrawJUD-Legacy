@@ -1,5 +1,4 @@
 repos:
-
   # 1. Faz linting e correções adicionais no final
   - repo: "https://github.com/astral-sh/ruff-pre-commit"
     rev: "v0.9.3"

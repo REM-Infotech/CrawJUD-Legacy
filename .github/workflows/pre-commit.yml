@@ -1,4 +1,4 @@
-name: pre-commit
+name:  🚀 Checagem de Pull Request com Pre-Commit
 
 on:
   pull_request:
