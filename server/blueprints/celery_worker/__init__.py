@@ -5,7 +5,6 @@ from pathlib import Path
 
 from billiard.context import Process
 from quart import Blueprint, Response, make_response, render_template
-from quart_login import login_required
 
 from server import StoreProcess, running_servers
 
@@ -21,28 +20,24 @@ worker_ = Blueprint(
 
 
 @worker_.get("/status")
-@login_required
 async def status() -> Response:
     """Check the status of the worker server."""
     return await make_response(await render_template("index.html", page="status.html"))
 
 
 @worker_.post("/shutdown")
-@login_required
 async def shutdown() -> Response:
     """Shutdown the worker server."""
     return await make_response(await render_template("index.html", page="shutdown.html"))
 
 
 @worker_.post("/restart")
-@login_required
 async def restart() -> Response:
     """Restart the worker server."""
     return await make_response(await render_template("index.html", page="restart.html"))
 
 
 @worker_.post("/start")
-@login_required
 async def start() -> Response:
     """Start the worker server."""
     worker_process = Process(target=start_worker)

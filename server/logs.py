@@ -2,14 +2,12 @@
 
 from typing import Any
 
-from quart_login import login_required
 from tqdm import tqdm
 
 from server import io
 
 
 @io.on("connect", namespace="*")
-@login_required
 async def connect(
     namespace: str = "/",
     sid: str = None,
@@ -25,7 +23,6 @@ async def connect(
 
 
 @io.on("join", namespace="*")
-@login_required
 async def join(
     namespace: str = "/",
     sid: str = None,
@@ -40,7 +37,6 @@ async def join(
 
 
 @io.on("disconnect", namespace="*")
-@login_required
 async def disconnect(
     namespace: str = "/",
     sid: str = None,
@@ -54,7 +50,6 @@ async def disconnect(
 
 
 @io.on("application_logs", namespace="/application_logs")
-@login_required
 async def system_log(
     sid: str = None,
     data: dict[str, str] = None,
@@ -67,7 +62,6 @@ async def system_log(
 
 
 @io.on("quart_logs", namespace="/quart")
-@login_required
 async def quart_logs(
     sid: str = None,
     data: dict[str, str] = None,
@@ -79,7 +73,6 @@ async def quart_logs(
 
 
 @io.on("worker_logs", namespace="/worker")
-@login_required
 async def worker_logs(
     sid: str = None,
     data: dict[str, str] = None,
@@ -92,7 +85,6 @@ async def worker_logs(
 
 
 @io.on("beat_logs", namespace="/beat")
-@login_required
 async def beat_logs(
     sid: str = None,
     data: dict[str, str] = None,

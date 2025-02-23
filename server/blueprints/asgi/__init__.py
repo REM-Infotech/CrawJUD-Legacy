@@ -4,7 +4,6 @@ from pathlib import Path
 
 from billiard.context import Process
 from quart import Blueprint, Response, make_response, render_template
-from quart_login import login_required
 
 from ... import StoreProcess, running_servers
 
@@ -20,14 +19,12 @@ asgi_ = Blueprint(
 
 
 @asgi_.get("/status")
-@login_required
 async def status() -> Response:
     """Check the status of the ASGI server."""
     return await make_response(await render_template("status.html"))
 
 
 @asgi_.post("/shutdown")
-@login_required
 async def shutdown() -> Response:
     """Shutdown the ASGI server."""
     store_process: StoreProcess = running_servers.pop("ASGI")
@@ -40,14 +37,12 @@ async def shutdown() -> Response:
 
 
 @asgi_.post("/restart")
-@login_required
 async def restart() -> Response:
     """Restart the ASGI server."""
     return await make_response(await render_template("index.html", page="restart.html"))
 
 
 @asgi_.post("/start")
-@login_required
 async def start() -> Response:
     """Start the ASGI server."""
     asgi_process = Process(target=start_process_asgi)
