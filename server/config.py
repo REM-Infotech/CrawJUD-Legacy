@@ -9,6 +9,7 @@ from datetime import timedelta
 from os import environ
 from pathlib import Path
 
+from billiard.context import Process
 from dotenv_vault import load_dotenv
 
 load_dotenv()
@@ -22,7 +23,7 @@ class StoreProcess:
     process_name: str
     process_id: int
     process_status: str
-    process_object: object
+    process_object: Process
 
 
 class Config:
