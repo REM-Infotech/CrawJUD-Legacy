@@ -35,11 +35,15 @@ async def status() -> None:
 
 async def shutdown() -> None:
     """Shutdown the server."""
-    store_process: StoreProcess = running_servers.pop("Quart")
-    if store_process:
-        process_stop: Process = store_process.process_object
-        process_stop.terminate()
-        process_stop.join(15)
+    try:
+        store_process: StoreProcess = running_servers.pop("Quart")
+        if store_process:
+            process_stop: Process = store_process.process_object
+            process_stop.terminate()
+            process_stop.join(15)
+
+    except Exception as e:
+        return [f"Error: {e}", "ERROR", "red"]
 
 
 async def restart() -> None:
