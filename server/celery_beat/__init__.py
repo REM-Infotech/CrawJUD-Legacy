@@ -10,11 +10,12 @@ from tqdm import tqdm
 from server.config import StoreProcess, running_servers
 
 
-async def status() -> None:
+async def status() -> None | str:
     """Log the status of the server."""
     if not running_servers.get("Beat"):
-        tqdm.write("Server not running.")
-        return
+        return ["Server not running.", "ERROR", "red"]
+
+    tqdm.write("Type 'Ctrl+C' to exit.")
 
     io = Client()
     io.connect("http://localhost:7000")
@@ -30,6 +31,8 @@ async def status() -> None:
             io.disconnect()
             break
 
+    return ["Exiting logs.", "INFO", "yellow"]
+
 
 async def shutdown() -> None:
     """Shutdown the server."""
@@ -39,11 +42,15 @@ async def shutdown() -> None:
         process_stop.terminate()
         process_stop.join(15)
 
+    return ["Server closed.", "SUCCESS", "green"]
+
 
 async def restart() -> None:
     """Restart the server."""
     await shutdown()
     await start()
+
+    return ["Server restarted.", "INFO", "yellow"]
 
 
 async def start() -> None:
@@ -59,6 +66,8 @@ async def start() -> None:
     )
 
     running_servers["Beat"] = store_process
+
+    return ["Server started.", "INFO", "yellow"]
 
 
 def start_beat() -> None:

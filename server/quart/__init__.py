@@ -12,8 +12,9 @@ from server.config import StoreProcess, running_servers
 async def status() -> None:
     """Log the status of the server."""
     if not running_servers.get("Quart"):
-        tqdm.write("Server not running.")
-        return
+        return ["Server not running.", "ERROR", "red"]
+
+    tqdm.write("Type 'Ctrl+C' to exit.")
 
     io = Client()
     io.connect("http://localhost:7000")
@@ -28,6 +29,8 @@ async def status() -> None:
         except KeyboardInterrupt:
             io.disconnect()
             break
+
+    return ["Server running.", "INFO", "green"]
 
 
 async def shutdown() -> None:
@@ -44,6 +47,8 @@ async def restart() -> None:
     await shutdown()
     await start()
 
+    return ["Server restarted.", "INFO", "green"]
+
 
 async def start() -> None:
     """Start the server."""
@@ -58,6 +63,8 @@ async def start() -> None:
     )
 
     running_servers["Quart"] = store_process
+
+    return ["Server started.", "INFO", "green"]
 
 
 def start_process_asgi() -> None:

@@ -13,8 +13,9 @@ from server.config import StoreProcess, running_servers
 async def status() -> None:
     """Log the status of the server."""
     if not running_servers.get("Worker"):
-        tqdm.write("Server not running.")
-        return
+        return ["Server not running.", "ERROR", "red"]
+
+    tqdm.write("Type 'Ctrl+C' to exit.")
 
     io = Client()
     io.connect("http://localhost:7000")
@@ -30,8 +31,10 @@ async def status() -> None:
             io.disconnect()
             break
 
+    return ["Exiting logs.", "INFO", "yellow"]
 
-async def shutdown() -> None:
+
+async def shutdown() -> list[str]:
     """Shutdown the server."""
     store_process: StoreProcess = running_servers.pop("Worker")
     if store_process:
@@ -39,14 +42,18 @@ async def shutdown() -> None:
         process_stop.terminate()
         process_stop.join(15)
 
+    return ["Server closed.", "SUCCESS", "green"]
 
-async def restart() -> None:
+
+async def restart() -> list[str]:
     """Restart the server."""
     await shutdown()
     await start()
 
+    return ["Server restarted.", "INFO", "yellow"]
 
-async def start() -> None:
+
+async def start() -> list[str]:
     """Start the server."""
     asgi_process = Process(target=start_worker)
     asgi_process.start()
@@ -59,6 +66,8 @@ async def start() -> None:
     )
 
     running_servers["Worker"] = store_process
+
+    return ["Server started.", "SUCCESS", "green"]
 
 
 def start_worker() -> None:

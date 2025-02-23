@@ -197,6 +197,4 @@ async def asyncinit_log(
         socketio_handler.setFormatter(formatter)
         logger.addHandler(socketio_handler)
 
-    logger.info("Logger initialized.")
-
     return logger

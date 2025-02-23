@@ -4,10 +4,12 @@
 
 import asyncio
 from importlib import import_module
+from time import sleep
 
 import inquirer
 from clear import clear
 from socketio import ASGIApp, AsyncServer
+from termcolor import colored
 from tqdm import tqdm  # noqa: F401
 
 import server.celery_beat
@@ -30,10 +32,79 @@ clear()
 class MasterApp:
     """Master application class."""
 
+    def prompt(self) -> None:
+        """Prompt the user for server options."""
+        self.current_menu_name = "Main Menu"
+        while True:
+            clear()
+
+            if self.returns_message:
+                message = self.returns_message[0]
+                colour = self.returns_message[1]
+                type_message = self.returns_message[2].upper()
+
+                tqdm.write(colored(f"[{type_message}] {message}", colour, attrs=["blink", "bold"]))
+                sleep(5)
+                self.returns_message_ = ""
+                clear()
+
+            menu = {
+                "Quart ASGI": self.quart_menu,
+                "Celery Worker": self.worker_menu,
+                "Celery Beat": self.beat_menu,
+            }
+
+            server_answer = inquirer.prompt([self.current_menu])
+
+            if server_answer is None:
+                server_answer = {"application_list": "Close Server"}
+
+            choice = server_answer.get("application_list", "Back")
+
+            if choice in menu:
+                self.current_menu_name = choice
+
+            if choice == "Close Server":
+                clear()
+                config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
+                if config_exit.get("exit") is True:
+                    self.application.join()
+                    clear()
+                    tqdm.write("Server closed.")
+                    break
+
+                self.current_menu = self.main_menu
+                self.current_app = ""
+                self.current_choice = ""
+                self.current_menu_name = "Main Menu"
+                continue
+
+            if choice == "Back":
+                self.current_menu = self.main_menu
+                self.current_app = ""
+                self.current_choice = ""
+                self.current_menu_name = "Main Menu"
+                continue
+
+            elif choice != "Close Server" and choice != "Back":
+                self.current_menu = menu.get(choice)
+                self.current_app = self.current_menu_name.split(" ")[0].lower()
+                func = self.functions.get(self.current_app).get(choice)
+                if func:
+                    returns = asyncio.run(func())
+
+                    if returns is not None and returns != "":
+                        self.returns_message_ = returns
+                choice = self.current_choice
+
     thead_io = None
     current_choice = ""
     _current_menu: inquirer.List = None
-    returns_message_ = ""
+    _current_menu_name = ""
+    returns_message_ = []
+
+    current_app = ""
+
     functions = {
         "quart": {
             "Start Server": server.quart.start,
@@ -53,7 +124,27 @@ class MasterApp:
     }
 
     @property
-    def current_menu(self) -> None:
+    def returns_message(self) -> list[str]:
+        """Return the returns message."""
+        return self.returns_message_
+
+    @returns_message.setter
+    def returns_message(self, value: list[str]) -> None:
+        """Set the returns message."""
+        self.returns_message_ = value
+
+    @property
+    def current_menu_name(self) -> str:
+        """Return the current menu name."""
+        return self._current_menu_name
+
+    @current_menu_name.setter
+    def current_menu_name(self, value: str) -> None:
+        """Set the current menu name."""
+        self._current_menu_name = value
+
+    @property
+    def current_menu(self) -> str:
         """Return the current menu."""
         return self._current_menu
 
@@ -80,7 +171,6 @@ class MasterApp:
     @property
     def quart_menu(self) -> inquirer.List:
         """Menu for Quart ASGI."""
-        self.current_app = "quart"
         self.current_choice = "Quart ASGI"
         return inquirer.List(
             "application_list",
@@ -91,7 +181,6 @@ class MasterApp:
     @property
     def worker_menu(self) -> inquirer.List:
         """Menu for Celery Worker."""
-        self.current_app = "worker"
         self.current_choice = "Celery Worker"
         return inquirer.List(
             "application_list",
@@ -102,57 +191,9 @@ class MasterApp:
     @property
     def beat_menu(self) -> inquirer.List:
         """Menu for Celery Beat."""
-        self.current_app = "beat"
         self.current_choice = "Celery Beat"
         return inquirer.List(
             "application_list",
             message="Select an option",
             choices=["Start Beat", "Close Beat", "View Logs", "Back"],
         )
-
-    def prompt(self) -> None:
-        """Prompt the user for server options."""
-        while True:
-            clear()
-
-            if self.returns_message_ != "":
-                tqdm.write(self.returns_message_)
-                self.returns_message_ = ""
-
-            menu = {
-                "Quart ASGI": self.quart_menu,
-                "Celery Worker": self.worker_menu,
-                "Celery Beat": self.beat_menu,
-            }
-
-            server_answer = inquirer.prompt([self.current_menu])
-
-            if server_answer is None:
-                server_answer = {"application_list": "Close Server"}
-
-            choice = server_answer.get("application_list", "Back")
-            if choice == "Close Server":
-                clear()
-                config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
-                if config_exit.get("exit") is True:
-                    self.application.join()
-                    clear()
-                    tqdm.write("Server closed.")
-                    break
-
-                self.current_menu = self.main_menu
-                continue
-
-            if choice == "Back":
-                self.current_menu = self.main_menu
-                continue
-
-            elif choice != "Close Server" and choice != "Back":
-                func = self.functions.get(self.current_app).get(choice)
-                if func:
-                    returns = asyncio.run(func())
-
-                    if returns is not None and returns != "":
-                        self.returns_message_ = returns
-                    choice = self.current_choice
-            self.current_menu = menu.get(choice)
