@@ -66,6 +66,12 @@
     //   "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     // },
     {
+      "name": "Application Manager",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "server"
+    },
+    {
       "name": "Debug Quart ASGI",
       "type": "debugpy",
       "request": "launch",
@@ -82,6 +88,6 @@
       "type": "debugpy",
       "request": "launch",
       "module": "app.beat"
-    },
+    }
   ]
 }
