@@ -8,6 +8,7 @@ from pathlib import Path
 import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart, Response, make_response, render_template
+from quart_login import LoginManager
 from socketio import ASGIApp, AsyncServer
 
 instance_dir = Path(__file__).parent.resolve().joinpath("instance")
@@ -29,6 +30,11 @@ io = AsyncServer(
     ping_interval=25,
     ping_timeout=10,
 )
+
+login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+login_manager.login_message = "Faça login para acessar essa página."
+login_manager.login_message_category = "info"
 
 import_module("server.logs", __package__)
 
@@ -71,5 +77,6 @@ async def create_app() -> Quart:
     ambient = objects_config[env_ambient]
     app.config.from_object(ambient)
     db.init_app(app)
+    login_manager.init_app(app)
 
     return ASGIApp(io, app)

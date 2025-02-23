@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from flask_login import login_required
+from quart_login import login_required
 from tqdm import tqdm
 
 from server import io

@@ -3,8 +3,8 @@
 from pathlib import Path
 
 from billiard.context import Process
-from flask_login import login_required
 from quart import Blueprint, Response, make_response, render_template
+from quart_login import login_required
 
 from ... import StoreProcess, running_servers
 

@@ -53,6 +53,7 @@ dependencies = [
     "aiopath (>=0.7.7,<0.8.0)",
     "flask-login (>=0.6.3,<0.7.0)",
     "flask-wtf (>=1.2.2,<2.0.0)",
+    "quart-login @ git+https://github.com/0000matteo0000/quart-login.git",
 ]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
