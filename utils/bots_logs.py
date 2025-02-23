@@ -103,10 +103,8 @@ async def asyncinit_log_dict(
             },
         },
         "handlers": {
-            "default": {
-                "class": "logging.StreamHandler",
-                "stream": "ext://sys.stdout",
-                "formatter": "default",
+            "null": {
+                "class": "logging.NullHandler",
             },
             "file_handler": {
                 "class": "logging.handlers.RotatingFileHandler",
@@ -119,7 +117,7 @@ async def asyncinit_log_dict(
         },
         "root": {
             "level": "DEBUG",
-            "handlers": ["default", "socketio_handler", "file_handler"],
+            "handlers": ["null", "socketio_handler", "file_handler"],
         },
         "loggers": {
             f"app.{getenv('APPLICATION_APP')}": {
@@ -176,9 +174,11 @@ async def asyncinit_log(
             await log_path.mkdir(parents=True, exist_ok=True)
 
     # Console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(log_level)
-    console_handler.setFormatter(formatter)
+    # console_handler = logging.StreamHandler()
+    # console_handler.setLevel(log_level)
+    # console_handler.setFormatter(formatter)
+
+    console_handler = logging.NullHandler()
     logger.addHandler(console_handler)
 
     # File handler

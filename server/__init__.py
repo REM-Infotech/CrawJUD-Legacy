@@ -40,9 +40,8 @@ class MasterApp:
 
             if self.returns_message:
                 message = self.returns_message[0]
-                colour = self.returns_message[1]
-                type_message = self.returns_message[2].upper()
-
+                type_message = self.returns_message[1].upper()
+                colour = self.returns_message[2]
                 tqdm.write(colored(f"[{type_message}] {message}", colour, attrs=["blink", "bold"]))
                 sleep(5)
                 self.returns_message_ = ""
@@ -63,14 +62,17 @@ class MasterApp:
 
             if choice in menu:
                 self.current_menu_name = choice
+                self.current_menu = menu.get(choice)
 
-            if choice == "Close Server":
+            if choice == "Close Server" or choice == "Back":
                 clear()
-                config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
-                if config_exit.get("exit") is True:
-                    self.application.join()
-                    clear()
-                    tqdm.write("Server closed.")
+
+                if choice == "Close Server":
+                    config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
+                    if config_exit.get("exit") is True:
+                        self.application.join()
+                        clear()
+                        tqdm.write("Server closed.")
                     break
 
                 self.current_menu = self.main_menu
@@ -79,15 +81,7 @@ class MasterApp:
                 self.current_menu_name = "Main Menu"
                 continue
 
-            if choice == "Back":
-                self.current_menu = self.main_menu
-                self.current_app = ""
-                self.current_choice = ""
-                self.current_menu_name = "Main Menu"
-                continue
-
             elif choice != "Close Server" and choice != "Back":
-                self.current_menu = menu.get(choice)
                 self.current_app = self.current_menu_name.split(" ")[0].lower()
                 func = self.functions.get(self.current_app).get(choice)
                 if func:
@@ -95,6 +89,7 @@ class MasterApp:
 
                     if returns is not None and returns != "":
                         self.returns_message_ = returns
+
                 choice = self.current_choice
 
     thead_io = None

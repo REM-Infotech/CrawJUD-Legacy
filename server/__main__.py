@@ -1,11 +1,17 @@
 """Main entry point for the server application."""
 
+from os import environ
+
 from tqdm import tqdm
 
 from server import MasterApp
 
 if __name__ == "__main__":
     application_instance = MasterApp()
+
+    environ.update({
+        "SERVER_MANAGEMENT": "True",
+    })
     try:
         application_instance.prompt()
 

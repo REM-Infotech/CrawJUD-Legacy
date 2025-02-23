@@ -1,5 +1,6 @@
 """Quart blueprint for the server."""
 
+from contextlib import suppress
 from pathlib import Path  # noqa: F401
 
 from billiard.context import Process
@@ -23,12 +24,10 @@ async def status() -> None:
     async def quart_logs(data: dict[str, str]) -> None:
         tqdm.write(f"{data.get('message')}")
 
-    while True:
-        try:
+    with suppress(KeyboardInterrupt):
+        while True:
             ...
-        except KeyboardInterrupt:
-            io.disconnect()
-            break
+    io.disconnect()
 
     return ["Server running.", "INFO", "green"]
 
