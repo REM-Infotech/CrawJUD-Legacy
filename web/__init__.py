@@ -12,6 +12,7 @@ from datetime import timedelta
 from importlib import import_module
 from pathlib import Path
 
+import aiofiles
 import quart_flask_patch  # noqa: F401
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -39,7 +40,7 @@ objects_config = {
 class AppFactory:
     """Factory class for creating and configuring the Quart application."""
 
-    def init_extensions(self, app: Quart) -> None:
+    async def init_extensions(self, app: Quart) -> None:
         """Initialize Quart extensions and middleware.
 
         Args:
@@ -50,8 +51,8 @@ class AppFactory:
         mail.init_app(app)
         login_manager.init_app(app)
 
-        with app.app_context():
-            self.init_database(app, db)
+        async with app.app_context():
+            await self.init_database(app, db)
 
             tlsm.init_app(
                 app,
@@ -78,8 +79,8 @@ class AppFactory:
         env_ambient = os.getenv("AMBIENT_CONFIG")
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
-        self.init_extensions(app)
-        self.init_blueprints(app)
+        asyncio.run(self.init_extensions(app))
+        asyncio.run(self.init_blueprints(app))
 
         # Initialize logs module
         from utils.bots_logs import asyncinit_log
@@ -89,7 +90,7 @@ class AppFactory:
 
         return app
 
-    def init_blueprints(self, app: Quart) -> None:
+    async def init_blueprints(self, app: Quart) -> None:
         """Register blueprints with the Quart application.
 
         Args:
@@ -109,7 +110,7 @@ class AppFactory:
         for bp in listBlueprints:
             app.register_blueprint(bp)
 
-    def init_database(self, app: Quart, db: SQLAlchemy) -> None:
+    async def init_database(self, app: Quart, db: SQLAlchemy) -> None:
         """Initialize the database schema if not already created.
 
         Args:
@@ -120,14 +121,14 @@ class AppFactory:
         from web.models import init_database
 
         if not Path("is_init.txt").exists():
-            with open("is_init.txt", "w") as f:
-                f.write(f"{init_database(app, db)}")
+            async with aiofiles.open("is_init.txt", "w") as f:
+                await f.write(f"{await init_database(app, db)}")
 
         from web.models import Users
 
         if not db.engine.dialect.has_table(db.engine.connect(), Users.__tablename__):
-            with open("is_init.txt", "w") as f:
-                f.write(f"{init_database(app, db)}")
+            async with aiofiles.open("is_init.txt", "w") as f:
+                await f.write(f"{await init_database(app, db)}")
 
 
 create_app = AppFactory().create_app

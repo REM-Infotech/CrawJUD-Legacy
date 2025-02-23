@@ -1,4 +1,4 @@
-"""Entry point for the CrawJUD-Web Flask application.
+"""Entry point for the CrawJUD-Web Quart application.
 
 This module loads environment variables, initializes the app, and starts the server.
 """

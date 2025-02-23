@@ -17,7 +17,7 @@ def schedules() -> Response:
     """Display a list of executions filtered by search criteria.
 
     Returns:
-        Response: A Flask response rendering the executions page.
+        Response: A Quart response rendering the executions page.
 
     """
     try:
@@ -70,7 +70,7 @@ def delete_schedule(id_: int) -> Response:
         id_ (int): The id of the schedule to be deleted.
 
     Returns:
-        Response: A Flask response redirecting to the schedules page.
+        Response: A Quart response redirecting to the schedules page.
 
     """
     try:

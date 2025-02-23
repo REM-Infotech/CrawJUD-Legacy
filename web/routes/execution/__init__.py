@@ -37,7 +37,7 @@ def executions() -> Response:
     """Display a list of executions filtered by search criteria.
 
     Returns:
-        Response: A Flask response rendering the executions page.
+        Response: A Quart response rendering the executions page.
 
     """
     try:
@@ -95,7 +95,7 @@ def download_file(filename: str) -> Response:
         filename (str): The name of the file to download.
 
     Returns:
-        Response: A Flask redirect response to the signed URL.
+        Response: A Quart redirect response to the signed URL.
 
     """
     signed_url = generate_signed_url(filename)
@@ -105,7 +105,7 @@ def download_file(filename: str) -> Response:
 
 
 def schedule_route() -> None:
-    """Import the schedules module and add the route to the Flask application."""
+    """Import the schedules module and add the route to the Quart application."""
     import_module(".schedules", __package__)
 
 

@@ -2,7 +2,7 @@
 
 This module initializes the application's database by creating tables and seeding
 initial data including users and bots. It also registers model classes for use with
-the Flask application.
+the Quart application.
 """
 
 from os import environ, path
@@ -12,7 +12,7 @@ from uuid import uuid4
 import pandas as pd
 from dotenv_vault import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
-from quart import Flask
+from quart import Quart
 
 from .bots import BotsCrawJUD, Credentials, Executions
 from .schedule import CrontabModel, ScheduleModel
@@ -36,14 +36,14 @@ __all__ = [
 ]
 
 
-def init_database(app: Flask, db: SQLAlchemy) -> str:
+async def init_database(app: Quart, db: SQLAlchemy) -> str:
     """Initialize the database with default configuration and seed data.
 
     This function creates all necessary tables, reads environment variables,
     and populates the database with initial data including user and bots records.
 
     Args:
-        app (Flask): The Flask application instance.
+        app (Quart): The Quart application instance.
         db (SQLAlchemy): The database instance.
 
     Returns:

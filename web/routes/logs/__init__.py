@@ -68,7 +68,7 @@ def logs_bot(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask response rendering the logs bot page.
+        Response: A Quart response rendering the logs bot page.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -133,7 +133,7 @@ def stop_bot(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask redirect response to the executions page.
+        Response: A Quart redirect response to the executions page.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -163,7 +163,7 @@ def status(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask JSON response with execution status or error message.
+        Response: A Quart JSON response with execution status or error message.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -226,7 +226,7 @@ def url_server(pid: str) -> Response:
         pid (str): The process identifier.
 
     Returns:
-        Response: A Flask JSON response containing the server URL.
+        Response: A Quart JSON response containing the server URL.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]

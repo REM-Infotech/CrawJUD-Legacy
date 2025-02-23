@@ -19,7 +19,7 @@ def profile_config() -> Response:
     """Render the user profile configuration page.
 
     Returns:
-        Response: A Flask response rendering the profile configuration.
+        Response: A Quart response rendering the profile configuration.
 
     """
     pagina = "config_page.html"

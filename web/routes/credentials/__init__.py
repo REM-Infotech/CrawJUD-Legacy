@@ -37,7 +37,7 @@ def credentials() -> Response:
     """Render the credentials dashboard page.
 
     Returns:
-        Response: A Flask response rendering the credentials page.
+        Response: A Quart response rendering the credentials page.
 
     """
     if not session.get("license_token"):
@@ -57,7 +57,7 @@ def cadastro() -> Response:
     """Handle the creation of new credentials.
 
     Returns:
-        Response: A Flask response after processing the credentials form.
+        Response: A Quart response after processing the credentials form.
 
     """
     if not session.get("license_token"):
@@ -153,7 +153,7 @@ def editar(id_: int = None) -> Response:
         id_ (int, optional): The credential identifier.
 
     Returns:
-        Response: A Flask response rendering the edit form.
+        Response: A Quart response rendering the edit form.
 
     """
     page = "FormCred.html"
@@ -195,7 +195,7 @@ def deletar(id_: int = None) -> Response:
         id_ (int, optional): The credential identifier.
 
     Returns:
-        Response: A Flask response confirming deletion.
+        Response: A Quart response confirming deletion.
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]

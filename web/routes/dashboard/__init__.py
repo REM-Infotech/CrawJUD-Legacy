@@ -33,7 +33,7 @@ def dashboard() -> Response:
     """Render the dashboard page with execution data.
 
     Returns:
-        Response: A Flask response rendering the dashboard.
+        Response: A Quart response rendering the dashboard.
 
     """
     title = "Dashboard"
@@ -64,7 +64,7 @@ def month_chart() -> Response:
     """Return JSON data representing execution counts per month.
 
     Returns:
-        Response: A Flask JSON response containing labels and values.
+        Response: A Quart JSON response containing labels and values.
 
     """
     if not session.get("license_token"):
@@ -140,7 +140,7 @@ def most_executed() -> Response:
     """Return JSON data of the most executed bots.
 
     Returns:
-        Response: A Flask JSON response with bot names and execution counts.
+        Response: A Quart JSON response with bot names and execution counts.
 
     """
     if not session.get("license_token"):

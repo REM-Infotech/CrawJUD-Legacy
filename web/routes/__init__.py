@@ -14,7 +14,7 @@ import httpx
 from deep_translator import GoogleTranslator
 from flask_login import current_user, login_required
 
-# Flask Imports
+# Quart Imports
 from quart import (
     Response,
     abort,
@@ -65,7 +65,7 @@ def index() -> Response:
     """Redirect to the authentication login page.
 
     Returns:
-        Response: A Flask redirect response to the login page.
+        Response: A Quart redirect response to the login page.
 
     """
     return make_response(redirect(url_for("auth.login")), 302)
@@ -76,7 +76,7 @@ def serve_img() -> Response:
     """Serve the favicon image.
 
     Returns:
-        Response: A Flask response serving the favicon.
+        Response: A Quart response serving the favicon.
 
     """
     try:
@@ -99,7 +99,7 @@ def serve_profile(user: str) -> Response:
         user (str): The user's login identifier.
 
     Returns:
-        Response: A Flask response containing the profile image.
+        Response: A Quart response containing the profile image.
 
     """
     try:
