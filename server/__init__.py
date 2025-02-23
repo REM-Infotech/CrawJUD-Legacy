@@ -2,11 +2,17 @@
 
 # import sys
 
+import asyncio
+from importlib import import_module
+
 import inquirer
 from clear import clear
 from socketio import ASGIApp, AsyncServer
 from tqdm import tqdm  # noqa: F401
 
+import server.celery_beat
+import server.celery_worker
+import server.quart
 from server.thead_asgi import ASGIServer
 
 io = AsyncServer(
@@ -15,6 +21,8 @@ io = AsyncServer(
     ping_interval=25,
     ping_timeout=10,
 )
+
+import_module("server.logs", __package__)
 
 clear()
 
@@ -25,6 +33,24 @@ class MasterApp:
     thead_io = None
 
     _current_menu: inquirer.List = None
+
+    functions = {
+        "quart": {
+            "Start Server": server.quart.start,
+            "Close Server": server.quart.shutdown,
+            "View Logs": server.quart.status,
+        },
+        "worker": {
+            "Start Worker": server.celery_worker.start,
+            "Close Worker": server.celery_worker.shutdown,
+            "View Logs": server.celery_worker.status,
+        },
+        "beat": {
+            "Start Beat": server.celery_beat.start,
+            "Close Beat": server.celery_beat.shutdown,
+            "View Logs": server.celery_beat.status,
+        },
+    }
 
     @property
     def current_menu(self) -> None:
@@ -54,6 +80,7 @@ class MasterApp:
     @property
     def quart_menu(self) -> inquirer.List:
         """Menu for Quart ASGI."""
+        self.current_app = "quart"
         return inquirer.List(
             "application_list",
             message="Select an option",
@@ -63,6 +90,7 @@ class MasterApp:
     @property
     def worker_menu(self) -> inquirer.List:
         """Menu for Celery Worker."""
+        self.current_app = "worker"
         return inquirer.List(
             "application_list",
             message="Select an option",
@@ -72,6 +100,7 @@ class MasterApp:
     @property
     def beat_menu(self) -> inquirer.List:
         """Menu for Celery Beat."""
+        self.current_app = "beat"
         return inquirer.List(
             "application_list",
             message="Select an option",
@@ -109,5 +138,9 @@ class MasterApp:
             if choice == "Back":
                 self.current_menu = self.main_menu
                 continue
+
+            elif choice != "Close Server" and choice != "Back":
+                func = self.functions.get(self.current_app).get(choice)
+                asyncio.run(func())
 
             self.current_menu = menu.get(choice)

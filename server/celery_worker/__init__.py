@@ -1,63 +1,64 @@
 """Blueprint for the worker server."""
 
 import asyncio
-from pathlib import Path
+from pathlib import Path  # noqa: F401
 
 from billiard.context import Process
-from quart import Blueprint, Response, make_response, render_template
+from socketio import Client
+from tqdm import tqdm
 
 from server.config import StoreProcess, running_servers
 
-template_folder = Path(__file__).parent.resolve().joinpath("templates")
-static_folder = Path(__file__).parent.resolve().joinpath("static")
-worker_ = Blueprint(
-    "worker",
-    __name__,
-    template_folder=str(template_folder),
-    static_folder=str(static_folder),
-    url_prefix="/worker",
-)
+
+async def status() -> None:
+    """Log the status of the server."""
+    if not running_servers.get("Worker"):
+        tqdm.write("Server not running.")
+        return
+
+    io = Client()
+    io.connect("http://localhost:7000")
+
+    @io.on("worker_logs", namespace="/worker")
+    async def quart_logs(data: dict[str, str]) -> None:
+        tqdm.write(f"{data.get('message')}")
+
+    while True:
+        try:
+            ...
+        except KeyboardInterrupt:
+            io.disconnect()
+            break
 
 
-@worker_.get("/status")
-async def status() -> Response:
-    """Check the status of the worker server."""
-    return await make_response(await render_template("index.html", page="status.html"))
+async def shutdown() -> None:
+    """Shutdown the server."""
+    store_process: StoreProcess = running_servers.pop("Worker")
+    if store_process:
+        process_stop: Process = store_process.process_object
+        process_stop.terminate()
+        process_stop.join(15)
 
 
-@worker_.post("/shutdown")
-async def shutdown() -> Response:
-    """Shutdown the worker server."""
-    return await make_response(await render_template("index.html", page="shutdown.html"))
+async def restart() -> None:
+    """Restart the server."""
+    await shutdown()
+    await start()
 
 
-@worker_.post("/restart")
-async def restart() -> Response:
-    """Restart the worker server."""
-    return await make_response(await render_template("index.html", page="restart.html"))
-
-
-@worker_.post("/start")
-async def start() -> Response:
-    """Start the worker server."""
-    worker_process = Process(target=start_worker)
-    worker_process.start()
+async def start() -> None:
+    """Start the server."""
+    asgi_process = Process(target=start_worker)
+    asgi_process.start()
 
     store_process = StoreProcess(
-        "celery_worker",
-        worker_process.pid,
-        "Running",
-        worker_process,
+        process_name="Worker",
+        process_id=asgi_process.pid,
+        process_status="Running",
+        process_object=asgi_process,
     )
 
-    running_servers["celery_worker"] = store_process
-
-    return await make_response(
-        await render_template(
-            "index.html",
-            message="Process started.",
-        )
-    )
+    running_servers["Worker"] = store_process
 
 
 def start_worker() -> None:
