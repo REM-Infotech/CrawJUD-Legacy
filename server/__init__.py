@@ -5,7 +5,7 @@ import os
 import ssl
 import sys
 from configparser import RawConfigParser
-from threading import Thread  # noqa: F401
+from threading import Thread
 from typing import IO, Any, Callable, Self
 
 import inquirer
@@ -164,6 +164,12 @@ class MasterApp:
         hostname = "127.0.0.1"
         port = 7000
         self.application = ASGIServer.setup_app(app=app, host=hostname, port=port)
+        io_srv = Thread(target=self.startio_srv)
+        io_srv.start()
+        self.thead_io = io_srv
+
+    def startio_srv(self) -> None:
+        """Start SocketIO server."""
         self.application.run()
 
     def prompt(self) -> None:
