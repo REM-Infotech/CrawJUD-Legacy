@@ -7,7 +7,9 @@ import os
 import pathlib
 from importlib import import_module
 
-from flask import (
+from flask_login import login_required
+from flask_sqlalchemy import SQLAlchemy
+from quart import (
     Blueprint,
     Response,
     abort,
@@ -17,9 +19,7 @@ from flask import (
     request,
     session,
 )
-from flask import current_app as app
-from flask_login import login_required
-from flask_sqlalchemy import SQLAlchemy
+from quart import current_app as app
 from sqlalchemy.orm import aliased
 
 from web import db

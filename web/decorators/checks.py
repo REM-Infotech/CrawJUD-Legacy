@@ -3,9 +3,9 @@
 from functools import wraps
 from typing import Callable, TypeVar
 
-from flask import Response, flash, make_response, redirect, session, url_for
-from flask import current_app as app
 from flask_sqlalchemy import SQLAlchemy
+from quart import Response, flash, make_response, redirect, session, url_for
+from quart import current_app as app
 
 from ..models import Users
 

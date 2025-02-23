@@ -1,7 +1,7 @@
 """Module for Super Su client route functionality."""
 
-from flask import Response, abort, make_response, render_template
 from flask_login import login_required
+from quart import Response, abort, make_response, render_template
 
 from ....decorators import check_privilegies
 from . import supersu

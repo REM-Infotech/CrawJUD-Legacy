@@ -4,7 +4,8 @@ import json
 import os
 import pathlib
 
-from flask import (
+from flask_login import login_user, logout_user
+from quart import (
     Blueprint,
     Response,
     flash,
@@ -15,7 +16,6 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import login_user, logout_user
 
 from web.forms import LoginForm
 from web.models.users import Users

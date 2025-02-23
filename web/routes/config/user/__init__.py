@@ -6,8 +6,8 @@ This module provides endpoints for user-specific profile configuration settings.
 import os
 import pathlib
 
-from flask import Blueprint, Response, make_response, render_template
 from flask_login import login_required
+from quart import Blueprint, Response, make_response, render_template
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 usr = Blueprint("usr", __name__, template_folder=path_template)

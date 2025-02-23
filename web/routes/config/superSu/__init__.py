@@ -4,8 +4,8 @@ import os
 import pathlib
 from importlib import import_module
 
-from flask import Blueprint, Response, abort, make_response, render_template
 from flask_login import login_required
+from quart import Blueprint, Response, abort, make_response, render_template
 
 from ....decorators import check_privilegies
 

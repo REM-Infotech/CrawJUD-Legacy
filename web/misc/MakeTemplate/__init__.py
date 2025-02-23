@@ -6,9 +6,9 @@ from datetime import datetime
 from pathlib import Path
 
 import openpyxl
-from flask import current_app as app
 from openpyxl.styles import Font, PatternFill
 from pytz import timezone
+from quart import current_app as app
 
 
 class MakeModels:

@@ -9,7 +9,9 @@ import pathlib
 from time import sleep
 
 import httpx as requests
-from flask import (
+from flask_login import login_required
+from flask_sqlalchemy import SQLAlchemy
+from quart import (
     Blueprint,
     Response,
     abort,
@@ -22,9 +24,7 @@ from flask import (
     session,
     url_for,
 )
-from flask import current_app as app
-from flask_login import login_required
-from flask_sqlalchemy import SQLAlchemy
+from quart import current_app as app
 
 from web.misc import generate_signed_url
 from web.models import Executions, LicensesUsers, Users

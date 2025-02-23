@@ -1,10 +1,10 @@
 """Main application module.
 
 This module initializes extensions, blueprints, and the database,
-and provides a factory for creating the Flask app.
+and provides a factory for creating the Quart app.
 """
 
-# Flask imports
+# Quart imports
 # Python Imports
 import asyncio
 import os
@@ -12,12 +12,14 @@ from datetime import timedelta
 from importlib import import_module
 from pathlib import Path
 
-# APP Imports
-from flask import Flask
+import quart_flask_patch  # noqa: F401
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
+
+# APP Imports
+from quart import Quart
 
 db = SQLAlchemy()
 tlsm = Talisman()
@@ -35,13 +37,13 @@ objects_config = {
 
 
 class AppFactory:
-    """Factory class for creating and configuring the Flask application."""
+    """Factory class for creating and configuring the Quart application."""
 
-    def init_extensions(self, app: Flask) -> None:
-        """Initialize Flask extensions and middleware.
+    def init_extensions(self, app: Quart) -> None:
+        """Initialize Quart extensions and middleware.
 
         Args:
-            app (Flask): The Flask application instance.
+            app (Quart): The Quart application instance.
 
         """
         db.init_app(app)
@@ -64,15 +66,15 @@ class AppFactory:
             )
             import_module("web.routes", __package__)
 
-    def create_app(self) -> Flask:
-        """Create and configure the Flask application.
+    def create_app(self) -> Quart:
+        """Create and configure the Quart application.
 
         Returns:
-            Flask: The configured Flask application.
+            Quart: The configured Quart application.
 
         """
         src_path = str(Path(__file__).parent.resolve().joinpath("static"))
-        app = Flask(__name__, static_folder=src_path)
+        app = Quart(__name__, static_folder=src_path)
         env_ambient = os.getenv("AMBIENT_CONFIG")
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
@@ -87,11 +89,11 @@ class AppFactory:
 
         return app
 
-    def init_blueprints(self, app: Flask) -> None:
-        """Register blueprints with the Flask application.
+    def init_blueprints(self, app: Quart) -> None:
+        """Register blueprints with the Quart application.
 
         Args:
-            app (Flask): The Flask application instance.
+            app (Quart): The Quart application instance.
 
         """
         from web.routes.auth import auth
@@ -107,11 +109,11 @@ class AppFactory:
         for bp in listBlueprints:
             app.register_blueprint(bp)
 
-    def init_database(self, app: Flask, db: SQLAlchemy) -> None:
+    def init_database(self, app: Quart, db: SQLAlchemy) -> None:
         """Initialize the database schema if not already created.
 
         Args:
-            app (Flask): The Flask application instance.
+            app (Quart): The Quart application instance.
             db (SQLAlchemy): The SQLAlchemy database instance.
 
         """

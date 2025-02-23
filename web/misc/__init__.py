@@ -7,10 +7,10 @@ from os import environ
 from typing import Any
 
 from dotenv_vault import load_dotenv
-from flask import current_app as app
 from google.cloud.storage import Bucket, Client
 from google.oauth2.service_account import Credentials
 from itsdangerous import URLSafeTimedSerializer
+from quart import current_app as app
 
 from .MakeTemplate import MakeModels
 

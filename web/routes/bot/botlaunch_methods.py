@@ -9,7 +9,9 @@ from datetime import date, datetime, time
 from typing import Any, Union  # noqa: F401
 
 import httpx
-from flask import (  # noqa: F401
+from flask_login import login_required  # noqa: F401
+from flask_sqlalchemy import SQLAlchemy
+from quart import (  # noqa: F401
     Blueprint,
     Response,
     abort,
@@ -22,9 +24,7 @@ from flask import (  # noqa: F401
     session,
     url_for,
 )
-from flask import current_app as app
-from flask_login import login_required  # noqa: F401
-from flask_sqlalchemy import SQLAlchemy
+from quart import current_app as app
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField

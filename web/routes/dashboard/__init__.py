@@ -13,8 +13,8 @@ from datetime import datetime
 
 import pandas as pd
 from deep_translator import GoogleTranslator
-from flask import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 from flask_login import login_required
+from quart import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 
 from web import db
 from web.models import Executions, LicensesUsers, SuperUser, Users

@@ -11,8 +11,8 @@ from uuid import uuid4
 
 import pandas as pd
 from dotenv_vault import load_dotenv
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from quart import Flask
 
 from .bots import BotsCrawJUD, Credentials, Executions
 from .schedule import CrontabModel, ScheduleModel

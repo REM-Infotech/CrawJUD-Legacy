@@ -12,9 +12,10 @@ from typing import Any
 
 import httpx
 from deep_translator import GoogleTranslator
+from flask_login import current_user, login_required
 
 # Flask Imports
-from flask import (
+from quart import (
     Response,
     abort,
     make_response,
@@ -25,8 +26,7 @@ from flask import (
     session,
     url_for,
 )
-from flask import current_app as app
-from flask_login import current_user, login_required
+from quart import current_app as app
 from werkzeug.exceptions import HTTPException
 from werkzeug.local import LocalProxy
 
