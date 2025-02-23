@@ -31,8 +31,8 @@ async def register_routes(app: Quart) -> None:
     """
     async with app.app_context():
         # Dynamically import additional route modules as needed.
-        import_module("app.routes.logs", package=__package__)
-        import_module("app.routes", package=__package__)
+        import_module("api.routes.logs", package=__package__)
+        import_module("api.routes", package=__package__)
 
     from api.routes.bot import bot
     from api.routes.webhook import wh

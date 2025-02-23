@@ -62,7 +62,7 @@ class AppFactory:
                 x_content_type_options=True,
                 x_xss_protection=True,
             )
-            import_module("app.routes", __package__)
+            import_module("web.routes", __package__)
 
     def create_app(self) -> Flask:
         """Create and configure the Flask application.
@@ -71,7 +71,7 @@ class AppFactory:
             Flask: The configured Flask application.
 
         """
-        src_path = os.path.join(os.getcwd(), "static")
+        src_path = str(Path(__file__).parent.resolve().joinpath("static"))
         app = Flask(__name__, static_folder=src_path)
         env_ambient = os.getenv("AMBIENT_CONFIG")
         ambient = objects_config[env_ambient]
@@ -82,7 +82,8 @@ class AppFactory:
         # Initialize logs module
         from utils.bots_logs import asyncinit_log
 
-        app.logger = asyncio.run(asyncinit_log())
+        log_file = Path(__file__).parent.resolve().joinpath("logs").joinpath("web.log")
+        app.logger = asyncio.run(asyncinit_log(log_file=log_file))
 
         return app
 

@@ -72,6 +72,12 @@
       "module": "server",
     },
     {
+      "name": "Debug Web app",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "web"
+    },
+    {
       "name": "Debug Quart ASGI",
       "type": "debugpy",
       "request": "launch",
