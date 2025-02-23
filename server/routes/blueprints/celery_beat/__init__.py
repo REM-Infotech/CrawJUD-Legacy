@@ -6,7 +6,7 @@ from pathlib import Path
 from billiard.context import Process
 from quart import Blueprint, Response, make_response, render_template
 
-from server import StoreProcess, running_servers
+from server.config import StoreProcess, running_servers
 
 template_folder = Path(__file__).parent.resolve().joinpath("templates")
 static_folder = Path(__file__).parent.resolve().joinpath("static")

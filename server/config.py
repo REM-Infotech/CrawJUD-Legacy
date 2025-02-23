@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import secrets
+from dataclasses import dataclass
 from datetime import timedelta
 from os import environ
 from pathlib import Path
@@ -11,6 +12,17 @@ from pathlib import Path
 from dotenv_vault import load_dotenv
 
 load_dotenv()
+running_servers = {}
+
+
+@dataclass
+class StoreProcess:
+    """Dataclass for storing process information."""
+
+    process_name: str
+    process_id: int
+    process_status: str
+    process_object: object
 
 
 class Config:
