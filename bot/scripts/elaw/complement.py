@@ -535,7 +535,7 @@ class Complement(CrawJUD):
             The text to set for the judicial sphere, by default "Judicial".
 
         """
-        element_select = self.elements.css_esfera_judge  # noqa: N806
+        element_select = self.elements.css_esfera_judge
         self.message = "Informando esfera do processo"
         self.type_log = "log"
         self.prt()
@@ -563,7 +563,7 @@ class Complement(CrawJUD):
 
         """
         key = "ESTADO"
-        element_select = self.elements.estado_input  # noqa: N806
+        element_select = self.elements.estado_input
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
@@ -593,7 +593,7 @@ class Complement(CrawJUD):
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        element_select = self.elements.comarca_input  # noqa: N806
+        element_select = self.elements.comarca_input
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
@@ -621,7 +621,7 @@ class Complement(CrawJUD):
             The instance of the class.
 
         """
-        element_select = self.elements.foro_input  # noqa: N806
+        element_select = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
@@ -650,7 +650,7 @@ class Complement(CrawJUD):
 
         """
         text = self.bot_data.get("VARA")
-        element_select = self.elements.vara_input  # noqa: N806
+        element_select = self.elements.vara_input
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
@@ -847,7 +847,7 @@ class Complement(CrawJUD):
 
 
         """
-        element_select = self.elements.fase_input  # noqa: N806
+        element_select = self.elements.fase_input
         text = self.bot_data.get("FASE")
 
         self.message = "Informando fase do processo"
@@ -876,7 +876,7 @@ class Complement(CrawJUD):
 
         """
         text = self.bot_data.get("PROVIMENTO")
-        element_select = self.elements.provimento_input  # noqa: N806
+        element_select = self.elements.provimento_input
 
         self.message = "Informando provimento antecipatório"
         self.type_log = "log"
@@ -943,7 +943,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        element_select = self.elements.fato_gerador_input  # noqa: N806
+        element_select = self.elements.fato_gerador_input
         text = self.bot_data.get("FATO_GERADOR")
 
         self.select2_elaw(element_select, text)
@@ -997,7 +997,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        element_select = self.elements.objeto_input  # noqa: N806
+        element_select = self.elements.objeto_input
         text = self.bot_data.get("OBJETO")
 
         self.select2_elaw(element_select, text)
@@ -1026,7 +1026,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        element_select = self.elements.contingencia  # noqa: N806
+        element_select = self.elements.contingencia
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -1035,7 +1035,7 @@ class Complement(CrawJUD):
         self.select2_elaw(element_select, text[0])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        element_select = self.elements.tipo_polo  # noqa: N806
+        element_select = self.elements.tipo_polo
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":

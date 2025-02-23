@@ -104,7 +104,7 @@ class PropertiesCrawJUD:
     total_rows_: int = None
     driver_: WebDriver = None
     webdriverwait_: WebDriverWait = None
-    schedule_: str = str("False")
+    schedule_: str = "False"
     appends_: list[str] = []
     cr_list_args: list[str] = []
     another_append_: list[str] = []
@@ -734,7 +734,7 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.ElementsBotConfig_ = obj
 
     @property
-    def driver_launch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:  # noqa: N802
+    def driver_launch(self) -> Callable[..., tuple[WebDriver, WebDriverWait]]:
         """Return the driver_launch callable."""
         return PropertiesCrawJUD.DriverBot_.driver_launch
 

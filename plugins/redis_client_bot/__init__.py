@@ -1,7 +1,8 @@
 """Redis client extension for WSGI | ASGI applications."""
 
+from collections.abc import Awaitable
 from contextlib import suppress
-from typing import Any, Awaitable, Optional, Union
+from typing import Any, Optional, Union
 
 from .base import BaseRedisClient
 from .base import Redis as RedisBase
@@ -96,7 +97,7 @@ class Redis(BaseRedisClient):
         """Configure Redis client with WSGI | ASGI application settings."""
         with suppress(ImportError):
             self.config_from_object(app.config.get("REDIS_CONFIG", {}))
-            from quart import Quart  # noqa: F401
+            from quart import Quart
 
             if isinstance(app, Quart):
                 app.extensions["redis"] = self

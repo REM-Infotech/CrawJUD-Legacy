@@ -8,12 +8,12 @@ import platform
 import shutil
 import traceback
 import zipfile
+from collections.abc import Mapping  # noqa: F401
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from os import getenv, path
 from pathlib import Path
 from time import sleep  # noqa: F401
-from typing import Mapping, Optional  # noqa: F401
 from uuid import uuid4
 
 import requests
@@ -172,7 +172,7 @@ class DriverBot(CrawJUD):
         """
         self.list_args_ = new_args
 
-    def driver_launch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:  # noqa: C901
+    def driver_launch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:
         """
         Launch WebDriver with options and extensions, then return driver and wait to run well.
 
@@ -405,7 +405,7 @@ class SetupDriver:
         shutil.copy(self.file_path, self.destination)
         return self.destination.name
 
-    def configure_bar(self, pool: ThreadPoolExecutor) -> None:  # noqa: N802
+    def configure_bar(self, pool: ThreadPoolExecutor) -> None:
         """
         Configure download progress bar for obtaining the WebDriver with ThreadPoolExecutor.
 
@@ -433,7 +433,7 @@ class SetupDriver:
                 )
                 shutil.copy(self.file_path, self.destination)
 
-    def get_url(self) -> str:  # noqa: N802
+    def get_url(self) -> str:
         """
         Construct download URL for WebDriver based on Chrome version and system architecture.
 
@@ -464,7 +464,7 @@ class SetupDriver:
         # Baixa o WebDriver conforme disponivel no repositório
         url_driver = "storage.googleapis.com/chrome-for-testing-public/"
 
-        set_url = [self.code_ver, os_sys, os_sys]  # noqa: N806
+        set_url = [self.code_ver, os_sys, os_sys]
         for pos, item in enumerate(set_url):
             if pos == len(set_url) - 1:
                 url_driver += f"chromedriver-{item}.zip"
@@ -509,8 +509,8 @@ class SetupDriver:
                 self.progress.print(member)
                 self.progress.update(task_id)
 
-                not_chrome1 = member.split("/")[-1].lower() == "chromedriver.exe"  # noqa: N806
-                not_chrome2 = member.split("/")[-1].lower() == "chromedriver"  # noqa: N806
+                not_chrome1 = member.split("/")[-1].lower() == "chromedriver.exe"
+                not_chrome2 = member.split("/")[-1].lower() == "chromedriver"
 
                 if not_chrome1 or not_chrome2:
                     # Get the original file name without any directory structure

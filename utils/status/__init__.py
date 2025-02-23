@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import logging
 import mimetypes  # noqa: F401
-import traceback  # noqa: F401
+import traceback
 import unicodedata
 from datetime import datetime
 from os import environ, path
@@ -116,7 +116,7 @@ class TaskExec:
 
                 return 200
 
-            elif exec_type == "stop":
+            if exec_type == "stop":
                 pid = data_bot.get("pid")
                 if not pid:
                     return 500
@@ -291,7 +291,7 @@ class TaskExec:
         data.update({"total_rows": rows})
 
         path_args = path.join(path_pid, f"{pid}.json")
-        async with aiofiles.open(path_args, "w") as f:  # noqa: FURB103
+        async with aiofiles.open(path_args, "w") as f:
             await f.write(json.dumps(data))
 
         return data, path_args
@@ -590,7 +590,7 @@ class TaskExec:
         try:
             admins: list[str] = []
 
-            task_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()  # noqa: N806
+            task_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
             exec_info = db.session.query(Executions).filter(Executions.pid == pid).first()
 
             if task_id or exec_info:
@@ -623,7 +623,7 @@ class TaskExec:
 
                 return exec_data
 
-            elif not task_id:
+            if not task_id:
                 raise Exception("Execution not found!")
 
             return exec_info

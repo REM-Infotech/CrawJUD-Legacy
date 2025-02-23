@@ -74,8 +74,8 @@ async def asyncinit_log_dict(
     **kwargs: str | int,
 ) -> dict[str, Any]:
     """Initialize and configure logging for the application with Socket.IO handler."""
-    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))  # noqa: N806
-    log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))  # noqa: N806
+    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))
+    log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024))
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 5))
 
@@ -152,8 +152,8 @@ async def asyncinit_log(
     para transmitir logs para o servidor de logs via Socket.IO (por exemplo, para o Quart).
     """
     logger = logging.getLogger(uuid4().hex)
-    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))  # noqa: N806
-    log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))  # noqa: N806
+    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))
+    log_level: int = log_level or int(kwargs.pop("log_level", logging.DEBUG))
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 1024))
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 5))
 

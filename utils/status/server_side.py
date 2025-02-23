@@ -42,11 +42,11 @@ async def load_cache(pid: str, app: Quart) -> dict[str, str]:
     return log_pid
 
 
-async def format_message_log(  # noqa: C901
+async def format_message_log(
     data: dict[str, str | int] = None,
     pid: str = None,
     app: Quart = None,
-) -> dict[str, str | int]:  # noqa: C901, N802
+) -> dict[str, str | int]:
     """Format and update the status message for a given process.
 
     This function interacts with a SQLAlchemy database and a Redis client to
@@ -88,7 +88,7 @@ async def format_message_log(  # noqa: C901
         data_pos = data.get("pos", 0)
 
         # Verificar informações obrigatórias
-        chk_infos = [data.get("system"), data.get("typebot")]  # noqa: F841
+        chk_infos = [data.get("system"), data.get("typebot")]
         if all(chk_infos) or data_message.split("> ")[-1].islower():
             async with app.app_context():
                 await TaskExec.task_exec(data_bot=data, exec_type="stop", app=app)
@@ -149,11 +149,11 @@ async def format_message_log(  # noqa: C901
                         "message": data_message,
                     }
 
-            type_s1 = data_type == "success"  # noqa: N806
-            type_s2 = data_type == "info"  # noqa: N806
-            type_s3 = data_graphic != "doughnut"  # noqa: N806
+            type_s1 = data_type == "success"
+            type_s2 = data_type == "info"
+            type_s3 = data_graphic != "doughnut"
 
-            type_success = type_s1 or (type_s2 and type_s3)  # noqa: N806
+            type_success = type_s1 or (type_s2 and type_s3)
 
             log_pid["pos"] = data_pos
 

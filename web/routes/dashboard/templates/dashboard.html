@@ -1,0 +1,14 @@
+<div class="container-fluid px-4">
+    <div class="card mt-4 mb-4">
+        <div class="card-header">
+            <h1 class="mb-3">Dashboard</h1>
+        </div>
+        <div class="card-body bg-warning bg-opacity-75">
+            {% include 'dash/charts.html' %}
+            {% include 'dash/tables.html' %}
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('dash.static', filename='PieChart.js') }}"></script>
+<script src="{{ url_for('dash.static', filename='BarChart.js') }}"></script>

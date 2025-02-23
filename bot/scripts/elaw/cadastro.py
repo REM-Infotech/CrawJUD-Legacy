@@ -269,7 +269,7 @@ class Cadastro(CrawJUD):
         It interacts with the web elements to set the sphere and waits for the loading to complete.
 
         """
-        element_select = self.elements.css_esfera_judge  # noqa: N806
+        element_select = self.elements.css_esfera_judge
         text = "Judicial"
 
         self.message = "Informando esfera do processo"
@@ -293,7 +293,7 @@ class Cadastro(CrawJUD):
 
         """
         key = "ESTADO"
-        element_select = self.elements.estado_input  # noqa:  N806
+        element_select = self.elements.estado_input
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
@@ -323,7 +323,7 @@ class Cadastro(CrawJUD):
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        element_select = self.elements.comarca_input  # noqa: N806
+        element_select = self.elements.comarca_input
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
@@ -350,7 +350,7 @@ class Cadastro(CrawJUD):
 
 
         """
-        element_select = self.elements.foro_input  # noqa: N806
+        element_select = self.elements.foro_input
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
@@ -381,7 +381,7 @@ class Cadastro(CrawJUD):
 
         """
         text = self.bot_data.get("VARA")
-        element_select = self.elements.vara_input  # noqa: N806
+        element_select = self.elements.vara_input
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
@@ -433,7 +433,7 @@ class Cadastro(CrawJUD):
 
         """
         text = self.bot_data.get("EMPRESA")
-        element_select = self.elements.empresa_input  # noqa: N806
+        element_select = self.elements.empresa_input
 
         self.message = "Informando Empresa"
         self.type_log = "log"
@@ -458,7 +458,7 @@ class Cadastro(CrawJUD):
 
         """
         key = "TIPO_EMPRESA"
-        element_select = self.elements.tipo_empresa_input  # noqa: N806
+        element_select = self.elements.tipo_empresa_input
         text = self.bot_data.get(key).__str__().capitalize()
 
         self.message = "Informando classificação da Empresa"
@@ -488,7 +488,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
-        element_select = self.elements.tipo_parte_contraria_input  # noqa: N806
+        element_select = self.elements.tipo_parte_contraria_input
         self.select2_elaw(element_select, text)
 
         table_tipo_doc: WebElement = self.wait.until(
@@ -822,7 +822,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        element_select = self.elements.contingencia  # noqa: N806
+        element_select = self.elements.contingencia
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -831,7 +831,7 @@ class Cadastro(CrawJUD):
         self.select2_elaw(element_select, text[0])
         self.interact.sleep_load('div[id="j_id_3x"]')
 
-        element_select = self.elements.tipo_polo  # noqa: N806
+        element_select = self.elements.tipo_polo
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":

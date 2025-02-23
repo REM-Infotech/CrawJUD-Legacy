@@ -346,7 +346,7 @@ class Tjdft(CrawJUD):
         except Exception as e:
             raise ExecutionError(e=e) from e
 
-    def acessorios(self) -> None:  # noqa: C901
+    def acessorios(self) -> None:
         """Inform accessory values like penalties and fees.
 
         This method handles the input of accessory financial details in the calculation form.

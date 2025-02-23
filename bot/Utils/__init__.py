@@ -8,7 +8,7 @@ import logging
 import os
 import re
 import ssl
-import subprocess  # nosec: B404 # noqa: S404
+import subprocess  # nosec: B404
 import time
 import traceback
 import unicodedata
@@ -233,7 +233,7 @@ class OtherUtils(CrawJUD):
         Returns:
             dict[str, str]: City names with associated regional classification.
 
-        """  # noqa: E501
+        """
         return {
             "Alvarães": "Interior",
             "Amaturá": "Interior",
@@ -335,7 +335,7 @@ class OtherUtils(CrawJUD):
 
         return vars_df
 
-    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:  # noqa: N802, C901
+    def elawFormats(self, data: dict[str, str]) -> dict[str, str]:  # noqa: N802
         """Format a legal case dictionary according to pre-defined rules.
 
         Args:
@@ -622,7 +622,7 @@ class OtherUtils(CrawJUD):
             path_cert = os.path.join(self.output_dir_path, self.name_cert)
             comando = ["certutil", "-importpfx", "-user", "-f", "-p", self.token, "-silent", path_cert]
             try:
-                resultado = subprocess.run(  # nosec: B603 # noqa: S603
+                resultado = subprocess.run(  # nosec: B603
                     comando,
                     check=True,
                     text=True,

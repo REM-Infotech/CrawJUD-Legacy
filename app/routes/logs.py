@@ -34,7 +34,7 @@ async def connect(sid: str = None, data: dict = None) -> None:
         None
 
     """
-    room = data.get("HTTP_PID", None)
+    room = data.get("HTTP_PID")
     # Join the client to a room based on the provided HTTP_PID.
     if room:
         await io.enter_room(sid, room, namespace="/log")
@@ -171,7 +171,7 @@ async def statusbot(sid: str, data: dict = None) -> None:
 
     """
     if data:
-        room = data.get("pid", None)
+        room = data.get("pid")
         await io.send("Bot stopped!", to=sid, namespace="/log", room=room)
 
     await io.send("Bot stopped!", to=sid, namespace="/log")

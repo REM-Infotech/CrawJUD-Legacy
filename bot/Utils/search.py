@@ -199,7 +199,7 @@ class SearchBot(CrawJUD):
 
         return returns
 
-    def search_proc(self) -> bool:  # noqa: C901
+    def search_proc(self) -> bool:
         """Perform a PROJUDI search for a legal process by process number.
 
         Returns:

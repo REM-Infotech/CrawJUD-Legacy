@@ -282,7 +282,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
             '4_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]',
         ),
     )
-    element_select = "".join(  # noqa: N815
+    element_select = "".join(
         (
             'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3',
             '_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]',

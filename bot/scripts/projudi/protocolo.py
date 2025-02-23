@@ -192,7 +192,7 @@ class Protocolo(CrawJUD):
 
         return successMessage
 
-    def set_parte(self) -> bool:  # noqa: C901
+    def set_parte(self) -> bool:
         """Select the appropriate party as specified in bot data.
 
         Returns:

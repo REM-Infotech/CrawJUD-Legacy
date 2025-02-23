@@ -58,7 +58,7 @@ class PROJUDI_AM(Configuracao):  # noqa: N801
 
     btn_partes = "#tabItemprefix2"
     btn_infogeral = "#tabItemprefix0"
-    includecontent_capa = "includeContent"  # noqa: N815
+    includecontent_capa = "includeContent"
 
     infoproc = 'table[id="informacoesProcessuais"]'
     assunto_proc = 'a[class="definitionAssuntoPrincipal"]'

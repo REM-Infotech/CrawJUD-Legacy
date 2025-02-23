@@ -69,7 +69,8 @@
       "name": "Application Manager",
       "type": "debugpy",
       "request": "launch",
-      "module": "server"
+      "module": "pre_commit_html",
+      "justMyCode": false
     },
     {
       "name": "Debug Quart ASGI",

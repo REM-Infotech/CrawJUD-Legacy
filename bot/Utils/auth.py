@@ -8,7 +8,7 @@ import logging
 import os
 import platform
 import string
-import subprocess  # nosec: B404 # noqa: S404
+import subprocess  # nosec: B404
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -274,7 +274,7 @@ class AuthBot(CrawJUD):
 
             try:
                 comando = ["xcopy", source_directory, target_directory, "/E", "/H", "/C", "/I"]
-                resultados = subprocess.run(  # noqa: S603 # nosec: B603
+                resultados = subprocess.run(  # nosec: B603
                     comando,
                     check=True,
                     text=True,

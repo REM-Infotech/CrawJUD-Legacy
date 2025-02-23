@@ -15,7 +15,7 @@ def generate_signed_url(blob_name: str) -> str:
         str: A signed URL with a limited lifetime.
 
     """
-    blob = bucket_gcs(storage_client()).blob((blob_name))
+    blob = bucket_gcs(storage_client()).blob(blob_name)
     url = blob.generate_signed_url(
         expiration=timedelta(days=365 * 100),
         # expiration=signed_url_lifetime,

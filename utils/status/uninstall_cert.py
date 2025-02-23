@@ -1,6 +1,6 @@
 """Remove certificates from the Windows certificate store using the certutil command line tool."""
 
-import subprocess  # noqa: S404 # nosec: B404 # noqa: S404
+import subprocess  # nosec: B404
 
 from tqdm import tqdm
 
@@ -18,7 +18,7 @@ def uninstall(nome_do_certificado: str) -> None:
     certs = {}
     try:
         comando = ["certutil", "-store", "-user", "my"]
-        resultados = subprocess.run(  # noqa: S603 # nosec: B603
+        resultados = subprocess.run(  # nosec: B603
             comando,
             check=True,
             text=True,
@@ -51,7 +51,7 @@ def uninstall(nome_do_certificado: str) -> None:
     try:
         thumbprint = certs[nome_do_certificado]
         comando = ["certutil", "-delstore", "-user", "my", thumbprint]
-        resultado = subprocess.run(  # noqa: S603  # nosec: B603
+        resultado = subprocess.run(  # nosec: B603
             comando,
             check=True,
             text=True,

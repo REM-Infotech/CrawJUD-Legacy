@@ -1,7 +1,7 @@
 """Blueprint for the Celery Beat server."""
 
 import asyncio
-from pathlib import Path  # noqa: F401
+from pathlib import Path
 
 from billiard.context import Process
 from socketio import Client

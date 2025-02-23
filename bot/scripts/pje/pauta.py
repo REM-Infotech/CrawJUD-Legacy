@@ -19,7 +19,7 @@ from ...common import ExecutionError
 from ...core import CrawJUD
 
 
-class Pauta(CrawJUD):  # noqa: N801
+class Pauta(CrawJUD):
     """Initialize and execute pauta operations for retrieving court hearing data now.
 
     Inherit from CrawJUD and manage the process of fetching pautas.

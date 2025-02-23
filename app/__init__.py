@@ -145,6 +145,7 @@ class AppFactory:
                 ],
                 capture_output=True,
                 text=True,
+                check=False,
             ).stdout.strip(),
         )
 

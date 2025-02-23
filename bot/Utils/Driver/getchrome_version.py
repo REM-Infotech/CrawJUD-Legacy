@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import logging
 import platform
-import subprocess  # noqa: S404 # nosec: B404
+import subprocess  # nosec: B404
 
 if platform.system() == "Windows":
     import winreg
@@ -37,7 +37,7 @@ class AnotherChromeVersion:
         command = 'scoop info googlechrome | Select-String "Version" | ForEach-Object { ($_ -split ":")[0].Trim() }'
 
         # Executar o comando no PowerShell
-        result = subprocess.run(["powershell.exe", "-Command", command], capture_output=True, text=True)  # noqa: S603, S607 # nosec: B603, B607
+        result = subprocess.run(["powershell.exe", "-Command", command], capture_output=True, text=True, check=False)  # nosec: B603, B607
 
         # Verificar o resultado
         if result.returncode == 0:

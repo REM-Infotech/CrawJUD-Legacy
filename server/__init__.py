@@ -10,7 +10,7 @@ import inquirer
 from clear import clear
 from socketio import ASGIApp, AsyncServer
 from termcolor import colored
-from tqdm import tqdm  # noqa: F401
+from tqdm import tqdm
 
 import server.celery_beat
 import server.celery_worker
@@ -81,7 +81,7 @@ class MasterApp:
                 self.current_menu_name = "Main Menu"
                 continue
 
-            elif choice != "Close Server" and choice != "Back":
+            if choice != "Close Server" and choice != "Back":
                 self.current_app = self.current_menu_name.split(" ")[0].lower()
                 func = self.functions.get(self.current_app).get(choice)
                 if func:

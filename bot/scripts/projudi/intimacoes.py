@@ -242,7 +242,7 @@ class Intimacoes(CrawJUD):
 
         return thead_table, tbody_table
 
-    # def get_process_informations(self) -> list:  # noqa: C901
+    # def get_process_informations(self) -> list:
     #     """Extract information from the current process in the web driver.
 
     #     Returns:

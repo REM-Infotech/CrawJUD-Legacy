@@ -215,7 +215,7 @@ class SolPags(CrawJUD):
         except Exception as e:
             raise ExecutionError(e=e) from e
 
-    def condenacao(self) -> None:  # noqa: C901
+    def condenacao(self) -> None:
         """Handle condemnation details.
 
         Raises:

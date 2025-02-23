@@ -16,8 +16,8 @@ async def connect(
     **kwargs: str | int,
 ) -> None:
     """Connect the client to the server."""
-    # data_kwargs = kwargs  # noqa: F841
-    # data_args = args  # noqa: F841
+    # data_kwargs = kwargs
+    # data_args = args
     tqdm.write(f"Client {sid} connected.")
     await io.emit("connected", {"message": "Connected"})
 
