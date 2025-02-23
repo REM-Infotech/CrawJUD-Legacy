@@ -10,7 +10,7 @@ from uuid import uuid4
 import bcrypt
 import pytz
 
-from app import db
+from api import db
 
 salt = bcrypt.gensalt()
 

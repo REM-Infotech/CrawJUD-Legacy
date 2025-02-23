@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from quart import Quart
 
-from app import tslm
+from api import tslm
 
 
 async def security_config(app: Quart) -> None:

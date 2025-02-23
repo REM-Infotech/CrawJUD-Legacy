@@ -38,8 +38,8 @@ class AppServerSvc(win32serviceutil.ServiceFramework):
         """Start application."""
         from threading import Thread
 
-        from app.beat import run_beat
-        from app.worker import run_worker
+        from api.beat import run_beat
+        from api.worker import run_worker
 
         def run_worker_thread() -> None:
             """Run the worker."""

@@ -78,7 +78,7 @@ class DatabaseScheduler(Scheduler):
         """
         schedules = {}
 
-        from app.models import CrontabModel, ScheduleModel
+        from api.models import CrontabModel, ScheduleModel
 
         db_entries: list[ScheduleModel] = ScheduleModel.query.all()
         for entry in db_entries:

@@ -80,7 +80,7 @@ def start_worker() -> None:
     from clear import clear
     from quart import Quart
 
-    from app import AppFactory
+    from api import AppFactory
     from utils import worker_name_generator
 
     # Set environment variables to designate worker mode and production status.

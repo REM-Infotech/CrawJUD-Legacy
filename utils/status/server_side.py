@@ -197,8 +197,8 @@ async def format_message_log(
 
 # def StatusStop(pid: str):
 
-#     from app import db
-#     from app.models import Executions
+#     from api import db
+#     from api.models import Executions
 
 #     execut = db.session.query(Executions).filter(Executions.pid == pid).first()
 #     if not execut:
@@ -212,7 +212,7 @@ async def format_message_log(
 
 # def stopped_bot(pid: str):
 
-#     from app.models import CacheLogs
+#     from api.models import CacheLogs
 
 #     checks = []
 #     log_pid = CacheLogs.query.filter(CacheLogs.pid == pid).first()

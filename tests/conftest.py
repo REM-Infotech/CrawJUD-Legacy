@@ -1,6 +1,6 @@
 import pytest
 
-from app import AppFactory
+from api import AppFactory
 
 
 @pytest.fixture(scope="module")

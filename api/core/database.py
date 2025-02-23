@@ -10,7 +10,7 @@ from platform import system
 
 from quart import Quart
 
-from app import db
+from api import db
 
 
 async def database_start(app: Quart) -> None:
@@ -33,7 +33,7 @@ async def database_start(app: Quart) -> None:
         - HOSTNAME: The address of the server
 
     """
-    from app.models import Servers
+    from api.models import Servers
 
     if not Servers.query.filter(Servers.name == getenv("NAMESERVER")).first():  # pragma: no cover
         server = Servers(name=getenv("NAMESERVER"), address=getenv("HOSTNAME"), system=system())

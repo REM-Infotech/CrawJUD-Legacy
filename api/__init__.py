@@ -61,7 +61,7 @@ class AppFactory:
             tuple: A tuple containing ASGIApp and Celery worker.
 
         """
-        from app.core.configurator import app_configurator
+        from api.core.configurator import app_configurator
 
         return await app_configurator(app)
 

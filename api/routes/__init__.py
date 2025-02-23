@@ -10,7 +10,7 @@ from dotenv_vault import load_dotenv
 from quart import Response, make_response, redirect
 from werkzeug.exceptions import HTTPException
 
-from app import app
+from api import app
 
 load_dotenv()
 
