@@ -31,9 +31,9 @@ class MasterApp:
     """Master application class."""
 
     thead_io = None
-
+    current_choice = ""
     _current_menu: inquirer.List = None
-
+    returns_message_ = ""
     functions = {
         "quart": {
             "Start Server": server.quart.start,
@@ -81,6 +81,7 @@ class MasterApp:
     def quart_menu(self) -> inquirer.List:
         """Menu for Quart ASGI."""
         self.current_app = "quart"
+        self.current_choice = "Quart ASGI"
         return inquirer.List(
             "application_list",
             message="Select an option",
@@ -91,6 +92,7 @@ class MasterApp:
     def worker_menu(self) -> inquirer.List:
         """Menu for Celery Worker."""
         self.current_app = "worker"
+        self.current_choice = "Celery Worker"
         return inquirer.List(
             "application_list",
             message="Select an option",
@@ -101,6 +103,7 @@ class MasterApp:
     def beat_menu(self) -> inquirer.List:
         """Menu for Celery Beat."""
         self.current_app = "beat"
+        self.current_choice = "Celery Beat"
         return inquirer.List(
             "application_list",
             message="Select an option",
@@ -111,6 +114,11 @@ class MasterApp:
         """Prompt the user for server options."""
         while True:
             clear()
+
+            if self.returns_message_ != "":
+                tqdm.write(self.returns_message_)
+                self.returns_message_ = ""
+
             menu = {
                 "Quart ASGI": self.quart_menu,
                 "Celery Worker": self.worker_menu,
@@ -141,6 +149,10 @@ class MasterApp:
 
             elif choice != "Close Server" and choice != "Back":
                 func = self.functions.get(self.current_app).get(choice)
-                asyncio.run(func())
+                if func:
+                    returns = asyncio.run(func())
 
+                    if returns is not None and returns != "":
+                        self.returns_message_ = returns
+                    choice = self.current_choice
             self.current_menu = menu.get(choice)
