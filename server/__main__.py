@@ -1,21 +1,14 @@
-"""Main module for the server."""
+"""Main entry point for the server application."""
 
-import asyncio
-from os import environ
+from tqdm import tqdm
 
-import uvicorn
-
-from . import create_app
+from server import MasterApp
 
 if __name__ == "__main__":
-    environ.update({
-        "SERVER_MANAGEMENT": "True",
-    })
-    app = asyncio.run(create_app())
-    hostname = "127.0.0.1"
-    port = 7000
-    uvicorn.run(
-        app,
-        host=hostname,
-        port=port,
-    )
+    application_instance = MasterApp()
+    try:
+        application_instance.prompt()
+
+    except KeyboardInterrupt:
+        tqdm.write("Stopping app")
+        application_instance.thead_io.join(10)

@@ -1,31 +1,13 @@
 """ASGI blueprint for the server."""
 
-from pathlib import Path
+from pathlib import Path  # noqa: F401
 
 from billiard.context import Process
-from quart import Blueprint, Response, make_response, render_template
 
 from server.config import StoreProcess, running_servers
 
-template_folder = Path(__file__).parent.resolve().joinpath("templates")
-static_folder = Path(__file__).parent.resolve().joinpath("static")
-asgi_ = Blueprint(
-    "asgi",
-    __name__,
-    template_folder=str(template_folder),
-    static_folder=str(static_folder),
-    url_prefix="/asgi",
-)
 
-
-@asgi_.get("/status")
-async def status() -> Response:
-    """Check the status of the ASGI server."""
-    return await make_response(await render_template("status.html"))
-
-
-@asgi_.post("/shutdown")
-async def shutdown() -> Response:
+async def shutdown() -> None:
     """Shutdown the ASGI server."""
     store_process: StoreProcess = running_servers.pop("ASGI")
     if store_process:
@@ -33,17 +15,15 @@ async def shutdown() -> Response:
         process_stop.terminate()
         process_stop.join(15)
 
-    return await make_response(await render_template("index.html", message="Process stopped."))
+    return  # await make_response(await render_template("index.html", message="Process stopped."))
 
 
-@asgi_.post("/restart")
-async def restart() -> Response:
+async def restart() -> None:
     """Restart the ASGI server."""
-    return await make_response(await render_template("index.html", page="restart.html"))
+    return  # await make_response(await render_template("index.html", page="restart.html"))
 
 
-@asgi_.post("/start")
-async def start() -> Response:
+async def start() -> None:
     """Start the ASGI server."""
     asgi_process = Process(target=start_process_asgi)
     asgi_process.start()
@@ -57,12 +37,7 @@ async def start() -> Response:
 
     running_servers["ASGI"] = store_process
 
-    return await make_response(
-        await render_template(
-            "index.html",
-            message="Process started.",
-        )
-    )
+    return
 
 
 def start_process_asgi() -> None:

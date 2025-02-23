@@ -83,11 +83,5 @@
       "request": "launch",
       "module": "app.beat"
     },
-    {
-      "name": "Application Manager",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "server"
-    }
   ]
 }
