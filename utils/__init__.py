@@ -4,7 +4,6 @@ from dotenv_vault import load_dotenv
 
 from .bots_logs import (
     asyncinit_log,
-    init_log,
 )
 from .check_cors import check_allowed_origin
 from .gcs_mgmt import get_file
@@ -33,7 +32,6 @@ __all__ = [
     GeoLoc,
     check_allowed_origin,
     make_celery,
-    init_log,
     asyncinit_log,
     version_file,
     makezip,
