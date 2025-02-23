@@ -5,6 +5,7 @@ from importlib import import_module
 from os import getenv
 from pathlib import Path
 
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart, Response, make_response, render_template
 from socketio import ASGIApp, AsyncServer
@@ -57,20 +58,18 @@ async def dashboard() -> Response:
 async def register_blueprint() -> None:
     """Register the ASGI, worker, and beat blueprints."""
     async with app.app_context():
-        from .blueprints import asgi_, beat_, worker_
+        from .blueprints import asgi_, auth_, beat_, worker_
 
-        for blueprint_ in [asgi_, worker_, beat_]:
+        for blueprint_ in [asgi_, worker_, beat_, auth_]:
             app.register_blueprint(blueprint_)
 
 
 async def create_app() -> Quart:
     """Create and configure the Quart application."""
     await register_blueprint()
-
-    async with app.app_context():
-        env_ambient = getenv("AMBIENT_CONFIG")
-        ambient = objects_config[env_ambient]
-        app.config.from_object(ambient)
-        db.init_app(app)
+    env_ambient = getenv("AMBIENT_CONFIG")
+    ambient = objects_config[env_ambient]
+    app.config.from_object(ambient)
+    db.init_app(app)
 
     return ASGIApp(io, app)
