@@ -6,13 +6,13 @@ and provides a factory for creating the Flask app.
 
 # Flask imports
 # Python Imports
+import asyncio
 import os
 from datetime import timedelta
 from importlib import import_module
 from pathlib import Path
 
 # APP Imports
-from configs import Configurator, csp
 from flask import Flask
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -26,6 +26,12 @@ login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.login_message = "Faça login para acessar essa página."
 login_manager.login_message_category = "info"
+
+objects_config = {
+    "development": "app.config.DevelopmentConfig",
+    "production": "app.config.ProductionConfig",
+    "testing": "app.config.TestingConfig",
+}
 
 
 class AppFactory:
@@ -47,7 +53,7 @@ class AppFactory:
 
             tlsm.init_app(
                 app,
-                content_security_policy=csp(),
+                content_security_policy=app.config["CSP"],
                 force_https_permanent=True,
                 force_https=True,
                 session_cookie_http_only=True,
@@ -67,17 +73,16 @@ class AppFactory:
         """
         src_path = os.path.join(os.getcwd(), "static")
         app = Flask(__name__, static_folder=src_path)
-
-        default_config = Configurator().get_configurator()
-
-        app.config.from_object(default_config)
+        env_ambient = os.getenv("AMBIENT_CONFIG")
+        ambient = objects_config[env_ambient]
+        app.config.from_object(ambient)
         self.init_extensions(app)
         self.init_blueprints(app)
 
         # Initialize logs module
-        from web.logs.setup import initialize_logging
+        from utils.bots_logs import asyncinit_log
 
-        app.logger = initialize_logging()
+        app.logger = asyncio.run(asyncinit_log())
 
         return app
 

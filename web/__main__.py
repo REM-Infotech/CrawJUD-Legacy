@@ -9,6 +9,7 @@ from os import environ, getenv
 from clear import clear
 from dotenv_vault import load_dotenv
 from git_py import version_file  # noqa: F401
+from waitress.server import create_server
 
 load_dotenv()
 
@@ -33,14 +34,14 @@ if __name__ == "__main__":
 
     debug = getenv("DEBUG", "False").lower() == "true"
     into_prod = getenv("INTO_PRODUCTION", "False")
-    # if into_prod == "True":
-    #     wsgi = WSGIServer(
-    #         (hostname, port),
-    #         app,
-    #         error_log=app.logger,
-    #         log=app.logger,
-    #     )
-    #     wsgi.serve_forever()
 
-    # elif into_prod == "False":
-    app.run(hostname, port, debug)
+    wsgi_app = create_server(
+        app,
+        host=hostname,
+        port=port,
+        threads=4,
+        connection_limit=100,
+        cleanup_interval=30,
+        max_request_body_size=10 * 1024 * 1024,
+    )
+    wsgi_app.run()
