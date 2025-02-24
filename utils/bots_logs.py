@@ -117,12 +117,12 @@ async def asyncinit_log_dict(
         },
         "root": {
             "level": "DEBUG",
-            "handlers": ["null", "socketio_handler", "file_handler"],
+            "handlers": ["null", "file_handler"],
         },
         "loggers": {
-            f"app.{getenv('APPLICATION_APP')}": {
+            __name__: {
                 "level": "DEBUG",
-                "handlers": ["default", "socketio_handler", "file_handler"],
+                "handlers": ["null", "file_handler"],
                 "propagate": False,
             },
         },
@@ -135,6 +135,8 @@ async def asyncinit_log_dict(
             "level": "DEBUG",
             "formatter": "default",
         }
+        config["root"]["handlers"].append("socketio_handler")
+        config["loggers"][__name__]["handlers"].append("socketio_handler")
 
     return config
 
