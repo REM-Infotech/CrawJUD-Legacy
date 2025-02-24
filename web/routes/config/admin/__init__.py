@@ -18,7 +18,7 @@ admin = Blueprint("admin", __name__, template_folder=path_template)
 
 @admin.route("/users", methods=["GET"])
 @login_required
-def users() -> Response:
+async def users() -> Response:
     """Render the users list template.
 
     Returns:
@@ -40,7 +40,7 @@ def users() -> Response:
         database = users.all()
 
         page = "users.html"
-        return make_response(render_template("index.html", page=page, database=database))
+        return await make_response(await render_template("index.html", page=page, database=database))
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")
@@ -48,7 +48,7 @@ def users() -> Response:
 
 @admin.route("/cadastro/usuario", methods=["GET", "POST"])
 @login_required
-def cadastro_user() -> Response:
+async def cadastro_user() -> Response:
     """Handle user registration.
 
     Returns:
@@ -59,7 +59,11 @@ def cadastro_user() -> Response:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         if not session.get("license_token"):
             flash("Sessão expirada. Faça login novamente.", "error")
-            return redirect(url_for("auth.login"))
+            return await make_response(
+                redirect(
+                    url_for("auth.login"),
+                ),
+            )
 
         title = "Cadastro Usuário"
         form = UserForm()
@@ -110,14 +114,25 @@ def cadastro_user() -> Response:
             db.session.commit()
 
             flash("Usuário cadastrado!", "success")
-            return redirect(url_for("admin.users"))
+            return make_response(
+                redirect(
+                    url_for("admin.users"),
+                ),
+            )
 
         form_items = list(form)
         for field in form_items:
             for error in field.errors:
                 flash(f"Erro: {error}. Campo: {field.label.text}", "error")
 
-        return make_response(render_template("index.html", page=page, form=form, title=title))
+        return await make_response(
+            await render_template(
+                "index.html",
+                page=page,
+                form=form,
+                title=title,
+            ),
+        )
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")
@@ -125,7 +140,7 @@ def cadastro_user() -> Response:
 
 @admin.route("/editar/usuario/<id_>", methods=["GET", "POST"])
 @login_required
-def edit_usuario(id_: int) -> Response:
+async def edit_usuario(id_: int) -> Response:
     """Handle editing a user with the given id.
 
     Args:
@@ -139,7 +154,11 @@ def edit_usuario(id_: int) -> Response:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         if not session.get("license_token"):
             flash("Sessão expirada. Faça login novamente.", "error")
-            return redirect(url_for("auth.login"))
+            return await make_response(
+                redirect(
+                    url_for("auth.login"),
+                ),
+            )
 
         title = "Editar Usuário"
 
@@ -210,9 +229,16 @@ def edit_usuario(id_: int) -> Response:
             db.session.commit()
 
             flash("Usuário editado com sucesso!", "message")
-            return make_response(redirect(url_for("admin.users")))
+            return await make_response(redirect(url_for("admin.users")))
 
-        return make_response(render_template("index.html", page=page, form=form, title=title))
+        return await make_response(
+            await render_template(
+                "index.html",
+                page=page,
+                form=form,
+                title=title,
+            ),
+        )
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")
@@ -220,7 +246,7 @@ def edit_usuario(id_: int) -> Response:
 
 @admin.route("/deletar/usuario/<id_>", methods=["GET", "POST"])
 @login_required
-def delete_usuario(id_: int) -> Response:
+async def delete_usuario(id_: int) -> Response:
     """Handle deletion of a user with the given id.
 
     Args:
@@ -233,7 +259,12 @@ def delete_usuario(id_: int) -> Response:
     try:
         message = "Usuário deletado com sucesso!"
         template = "include/show.html"
-        return make_response(render_template(template, message=message))
+        return await make_response(
+            await render_template(
+                template,
+                message=message,
+            ),
+        )
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")

@@ -29,7 +29,7 @@ dash = Blueprint("dash", __name__, template_folder=path_template, static_folder=
 
 @dash.route("/dashboard", methods=["GET"])
 @login_required
-def dashboard() -> Response:
+async def dashboard() -> Response:
     """Render the dashboard page with execution data.
 
     Returns:
@@ -55,12 +55,19 @@ def dashboard() -> Response:
 
     database = executions.all()
 
-    return make_response(render_template("index.html", page=page, title=title, database=database))
+    return await make_response(
+        await render_template(
+            "index.html",
+            page=page,
+            title=title,
+            database=database,
+        ),
+    )
 
 
 @dash.route("/PerMonth", methods=["GET"])
 @login_required
-def month_chart() -> Response:
+async def month_chart() -> Response:
     """Return JSON data representing execution counts per month.
 
     Returns:
@@ -131,12 +138,16 @@ def month_chart() -> Response:
         }
 
     # Retorna para o template
-    return jsonify(chart_data)
+    return await make_response(
+        jsonify(
+            chart_data,
+        ),
+    )
 
 
 @dash.route("/most_executed", methods=["GET"])
 @login_required
-def most_executed() -> Response:
+async def most_executed() -> Response:
     """Return JSON data of the most executed bots.
 
     Returns:
@@ -184,4 +195,8 @@ def most_executed() -> Response:
         }
 
     # Retorna para o template
-    return jsonify(chart_data)
+    return await make_response(
+        jsonify(
+            chart_data,
+        ),
+    )

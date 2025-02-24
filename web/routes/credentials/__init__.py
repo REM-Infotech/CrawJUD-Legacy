@@ -33,7 +33,7 @@ cred = Blueprint("creds", __name__, template_folder=path_template)
 
 @cred.route("/credentials/dashboard", methods=["GET"])
 @login_required
-def credentials() -> Response:
+async def credentials() -> Response:
     """Render the credentials dashboard page.
 
     Returns:
@@ -42,18 +42,31 @@ def credentials() -> Response:
     """
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")
-        return make_response(redirect(url_for("auth.login")))
+        return await make_response(
+            redirect(
+                url_for(
+                    "auth.login",
+                ),
+            ),
+        )
 
     database = db.session.query(Credentials).join(LicensesUsers).filter_by(license_token=session["license_token"]).all()
 
     title = "Credenciais"
     page = "credentials.html"
-    return make_response(render_template("index.html", page=page, title=title, database=database))
+    return await make_response(
+        await render_template(
+            "index.html",
+            page=page,
+            title=title,
+            database=database,
+        ),
+    )
 
 
 @cred.route("/credentials/cadastro", methods=["GET", "POST"])
 @login_required
-def cadastro() -> Response:
+async def cadastro() -> Response:
     """Handle the creation of new credentials.
 
     Returns:
@@ -62,7 +75,13 @@ def cadastro() -> Response:
     """
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")
-        return make_response(redirect(url_for("auth.login")))
+        return await make_response(
+            redirect(
+                url_for(
+                    "auth.login",
+                ),
+            ),
+        )
 
     page = "FormCred.html"
 
@@ -81,7 +100,13 @@ def cadastro() -> Response:
     if form.validate_on_submit():
         if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
             flash("Existem credenciais com este nome já cadastrada!", "error")
-            return make_response(redirect(url_for("creds.cadastro")))
+            return await make_response(
+                redirect(
+                    url_for(
+                        "creds.cadastro",
+                    ),
+                ),
+            )
 
         def pw(form: CredentialsForm) -> None:
             passwd = Credentials(
@@ -130,10 +155,16 @@ def cadastro() -> Response:
                 break
 
         flash("Credencial salva com sucesso!", "success")
-        return make_response(redirect(url_for("creds.credentials")))
+        return await make_response(
+            redirect(
+                url_for(
+                    "creds.credentials",
+                ),
+            ),
+        )
 
-    return make_response(
-        render_template(
+    return await make_response(
+        await render_template(
             "index.html",
             page=page,
             form=form,
@@ -146,7 +177,7 @@ def cadastro() -> Response:
 
 @cred.route("/credentials/editar/<id_>", methods=["GET", "POST"])
 @login_required
-def editar(id_: int = None) -> Response:
+async def editar(id_: int = None) -> Response:
     """Handle editing an existing credential.
 
     Args:
@@ -172,10 +203,16 @@ def editar(id_: int = None) -> Response:
 
     if form.validate_on_submit():
         flash("Credencial salva com sucesso!", "success")
-        return make_response(redirect(url_for("creds.credentials")))
+        return await make_response(
+            redirect(
+                url_for(
+                    "creds.credentials",
+                ),
+            ),
+        )
 
-    return make_response(
-        render_template(
+    return await make_response(
+        await render_template(
             "index.html",
             page=page,
             form=form,
@@ -188,7 +225,7 @@ def editar(id_: int = None) -> Response:
 
 @cred.route("/credentials/deletar/<id_>", methods=["GET", "POST"])
 @login_required
-def deletar(id_: int = None) -> Response:
+async def deletar(id_: int = None) -> Response:
     """Delete a credential identified by its id.
 
     Args:
@@ -207,4 +244,9 @@ def deletar(id_: int = None) -> Response:
     message = "Credencial deletada!"
 
     template = "include/show.html"
-    return make_response(render_template(template, message=message))
+    return await make_response(
+        await render_template(
+            template,
+            message=message,
+        ),
+    )

@@ -10,7 +10,7 @@ from . import supersu
 @supersu.route("/cadastro/cliente", methods=["GET", "POST"])
 @login_required
 @check_privilegies
-def cadastro_cliente() -> Response:
+async def cadastro_cliente() -> Response:
     """Render the client registration template.
 
     Returns:
@@ -18,7 +18,11 @@ def cadastro_cliente() -> Response:
 
     """
     try:
-        return make_response(render_template("index.html"))
+        return await make_response(
+            await render_template(
+                "index.html",
+            ),
+        )
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")
@@ -27,7 +31,7 @@ def cadastro_cliente() -> Response:
 @supersu.route("/editar/cliente", methods=["GET", "POST"])
 @login_required
 @check_privilegies
-def edit_cliente() -> Response:
+async def edit_cliente() -> Response:
     """Render the client edit template.
 
     Returns:
@@ -35,7 +39,11 @@ def edit_cliente() -> Response:
 
     """
     try:
-        return make_response(render_template("index.html"))
+        return await make_response(
+            await render_template(
+                "index.html",
+            ),
+        )
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")

@@ -33,7 +33,7 @@ exe = Blueprint("exe", __name__, template_folder=path_template)
 
 @exe.route("/executions", methods=["GET", "POST"])
 @login_required
-def executions() -> Response:
+async def executions() -> Response:
     """Display a list of executions filtered by search criteria.
 
     Returns:
@@ -83,12 +83,20 @@ def executions() -> Response:
 
     title = "Execuções"
     page = "executions.html"
-    return make_response(render_template("index.html", page=page, title=title, database=database, form=form))
+    return await make_response(
+        await render_template(
+            "index.html",
+            page=page,
+            title=title,
+            database=database,
+            form=form,
+        )
+    )
 
 
 @exe.route("/executions/download/<filename>")
 @login_required
-def download_file(filename: str) -> Response:
+async def download_file(filename: str) -> Response:
     """Generate a signed URL and redirect to the file download.
 
     Args:
@@ -101,7 +109,11 @@ def download_file(filename: str) -> Response:
     signed_url = generate_signed_url(filename)
 
     # Redireciona para a URL assinada
-    return make_response(redirect(signed_url))
+    return await make_response(
+        redirect(
+            signed_url,
+        ),
+    )
 
 
 def schedule_route() -> None:
@@ -114,7 +126,7 @@ schedule_route()
 
 @exe.post("/clear_executions")
 @login_required
-def clear_executions() -> Response:
+async def clear_executions() -> Response:
     """Clear all executions from the database."""
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -127,4 +139,9 @@ def clear_executions() -> Response:
 
     message = "Execuções removidas com sucesso!"
     template = "include/show.html"
-    return make_response(render_template(template, message=message))
+    return await make_response(
+        await render_template(
+            template,
+            message=message,
+        ),
+    )

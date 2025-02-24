@@ -15,7 +15,7 @@ usr = Blueprint("usr", __name__, template_folder=path_template)
 
 @usr.route("/profile_config", methods=["GET", "POST"])
 @login_required
-def profile_config() -> Response:
+async def profile_config() -> Response:
     """Render the user profile configuration page.
 
     Returns:
@@ -23,4 +23,9 @@ def profile_config() -> Response:
 
     """
     pagina = "config_page.html"
-    return make_response(render_template("index.html", pagina=pagina))
+    return await make_response(
+        await render_template(
+            "index.html",
+            pagina=pagina,
+        ),
+    )

@@ -29,7 +29,7 @@ def check_privilegies(func: Callable[[], Response]) -> WrappedFnReturnT:
         usuario: str = session["login"]
         if query_supersu(usuario) is False:
             flash("Acesso negado", "error")
-            return make_response(redirect(url_for("dash.dashboard")))
+            return await make_response(redirect(url_for("dash.dashboard")))
         return func(*args, **kwargs)
 
     return wrapper

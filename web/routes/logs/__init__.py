@@ -3,10 +3,10 @@
 This module defines endpoints for managing logs and controlling bot executions.
 """
 
+import asyncio
 import json
 import os
 import pathlib
-from time import sleep
 
 import httpx as requests
 from flask_login import login_required
@@ -46,7 +46,7 @@ def stopbot(user: str, pid: str, socket: str) -> None:
 
 
 @logsbot.context_processor
-def setpid_socket() -> dict[str, str | None]:
+async def setpid_socket() -> dict[str, str | None]:
     """Provide 'pid' and 'socket_bot' cookie values to the template context.
 
     Returns:
@@ -61,7 +61,7 @@ def setpid_socket() -> dict[str, str | None]:
 
 @logsbot.route("/logs_bot/<pid>")
 @login_required
-def logs_bot(pid: str) -> Response:
+async def logs_bot(pid: str) -> Response:
     """Render the logs bot page for the specified execution.
 
     Args:
@@ -74,7 +74,13 @@ def logs_bot(pid: str) -> Response:
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")
-        return make_response(redirect(url_for("auth.login")))
+        return await make_response(
+            redirect(
+                url_for(
+                    "auth.login",
+                ),
+            )
+        )
 
     title = f"Execução {pid}"
     user_id = Users.query.filter(Users.login == session["login"]).first().id
@@ -103,13 +109,29 @@ def logs_bot(pid: str) -> Response:
             execution = Executions.query.filter(Executions.pid == pid).first()
 
     if execution is None:
-        return make_response(redirect(f"{url_for('exe.executions')}"))
+        return await make_response(
+            redirect(
+                f"{url_for('exe.executions')}",
+            ),
+        )
 
     if execution.status == "Finalizado":
-        return make_response(redirect(f"{url_for('exe.executions')}?pid={pid}"))
+        return await make_response(
+            redirect(
+                f"{url_for('exe.executions')}?pid={pid}",
+            ),
+        )
 
     rows = execution.total_rows
-    resp = make_response(render_template("index.html", page="logs_bot.html", pid=pid, total_rows=rows, title=title))
+    resp = await make_response(
+        await render_template(
+            "index.html",
+            page="logs_bot.html",
+            pid=pid,
+            total_rows=rows,
+            title=title,
+        )
+    )
 
     resp.set_cookie(
         "socket_bot",
@@ -126,7 +148,7 @@ def logs_bot(pid: str) -> Response:
 
 @logsbot.route("/stop_bot/<pid>", methods=["GET"])
 @login_required
-def stop_bot(pid: str) -> Response:
+async def stop_bot(pid: str) -> Response:
     """Stop the bot execution and wait until it has finished.
 
     Args:
@@ -148,15 +170,21 @@ def stop_bot(pid: str) -> Response:
         if str(execut.status).lower() == "finalizado":
             is_stopped = False
 
-        sleep(2)
+        asyncio.sleep(2)
 
     flash("Execução encerrada", "success")
-    return make_response(redirect(url_for("exe.executions")))
+    return await make_response(
+        redirect(
+            url_for(
+                "exe.executions",
+            ),
+        ),
+    )
 
 
 @logsbot.route("/status/<pid>", methods=["GET"])
 @login_required
-def status(pid: str) -> Response:
+async def status(pid: str) -> Response:
     """Check the status of an execution and return its result.
 
     Args:
@@ -209,17 +237,27 @@ def status(pid: str) -> Response:
         if execution.status and execution.status == "Finalizado":
             signed_url = generate_signed_url(execution.file_output)
             response_data = {"message": "OK", "document_url": signed_url}
-            return make_response(jsonify(response_data), 200)
+            return await make_response(
+                jsonify(
+                    response_data,
+                ),
+                200,
+            )
 
-        sleep(1.5)
+        asyncio.sleep(1.5)
         i += 1
 
-    return make_response(jsonify(response_data), 500)
+    return await make_response(
+        jsonify(
+            response_data,
+        ),
+        500,
+    )
 
 
 @logsbot.route("/url_server/<pid>", methods=["GET"])
 @login_required
-def url_server(pid: str) -> Response:
+async def url_server(pid: str) -> Response:
     """Retrieve the server URL associated with the given execution.
 
     Args:
@@ -231,4 +269,8 @@ def url_server(pid: str) -> Response:
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     execution = db.session.query(Executions).filter(Executions.pid == pid).first()
-    return make_response(jsonify({"url_server": execution.url_socket}))
+    return await make_response(
+        jsonify(
+            {"url_server": execution.url_socket},
+        ),
+    )

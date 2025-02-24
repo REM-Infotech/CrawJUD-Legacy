@@ -173,6 +173,7 @@ async def asyncinit_log(
         if not await log_path.exists():
             await log_path.mkdir(parents=True, exist_ok=True)
 
+    Path(log_file).touch(exist_ok=True)
     # Console handler
     # console_handler = logging.StreamHandler()
     # console_handler.setLevel(log_level)

@@ -16,7 +16,7 @@ supersu = Blueprint("supersu", __name__, template_folder=path_template)
 @supersu.route("/configurações_crawjud", methods=["GET"])
 @login_required
 @check_privilegies
-def config() -> Response:
+async def config() -> Response:
     """Render the configuration template for CrawJUD.
 
     Returns:
@@ -24,7 +24,11 @@ def config() -> Response:
 
     """
     try:
-        return make_response(render_template("index.html"))
+        return await make_response(
+            await render_template(
+                "index.html",
+            ),
+        )
 
     except Exception as e:
         abort(500, description=f"Erro interno do servidor: {e!s}")

@@ -39,7 +39,7 @@ bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
 @bot.route("/get_model/<id_>/<system>/<typebot>/<filename>", methods=["GET"])
-def get_model(id_: int, system: str, typebot: str, filename: str) -> Response:
+async def get_model(id_: int, system: str, typebot: str, filename: str) -> Response:
     """Retrieve a model file for the specified bot.
 
     Args:
@@ -55,7 +55,7 @@ def get_model(id_: int, system: str, typebot: str, filename: str) -> Response:
     try:
         with app.app_context():
             path_arquivo, nome_arquivo = MakeModels(filename, filename).make_output()
-            response = make_response(send_file(f"{path_arquivo}", as_attachment=True))
+            response = await make_response(await send_file(f"{path_arquivo}", as_attachment=True))
             response.headers["Content-Disposition"] = f"attachment; filename={nome_arquivo}"
         return response
 
@@ -66,7 +66,7 @@ def get_model(id_: int, system: str, typebot: str, filename: str) -> Response:
 
 @bot.route("/bot/dashboard", methods=["GET"])
 @login_required
-def dashboard() -> Response:
+async def dashboard() -> Response:
     """Render the bot dashboard page.
 
     Returns:
@@ -78,7 +78,7 @@ def dashboard() -> Response:
         page = "botboard.html"
         bots = BotsCrawJUD.query.all()
 
-        return make_response(render_template("index.html", page=page, bots=bots, title=title))
+        return await make_response(await render_template("index.html", page=page, bots=bots, title=title))
 
     except Exception as e:
         app.logger.exception(traceback.format_exc())
@@ -87,18 +87,18 @@ def dashboard() -> Response:
 
 @bot.route("/bot/<id_>/<system>/<typebot>", methods=["GET", "POST"])
 @login_required
-def botlaunch(id_: int, system: str, typebot: str) -> Response:
+async def botlaunch(id_: int, system: str, typebot: str) -> Response:
     """Launch the specified bot process."""
     if not session.get("license_token"):
         flash("Sessão expirada. Faça login novamente.", "error")
-        return make_response(redirect(url_for("auth.login")))
+        return await make_response(redirect(url_for("auth.login")))
 
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         bot_info = get_bot_info(db, id_)
         if not bot_info:
             flash("Acesso negado!", "error")
-            return make_response(redirect(url_for("bot.dashboard")))
+            return await make_response(redirect(url_for("bot.dashboard")))
 
         display_name = bot_info.display_name
         title = display_name
@@ -122,8 +122,8 @@ def botlaunch(id_: int, system: str, typebot: str) -> Response:
             elif form.periodic_task.data is False:
                 data, files, pid = process_form_submission(form, system, typebot, bot_info)
 
-            response = send_data_to_servers(
-                data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid, periodic_bot
+            response = await make_response(
+                send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid, periodic_bot)
             )
             if response:
                 return response
@@ -135,8 +135,8 @@ def botlaunch(id_: int, system: str, typebot: str) -> Response:
         handle_form_errors(form)
 
         url = request.base_url.replace("http://", "https://")
-        return make_response(
-            render_template(
+        return await make_response(
+            await render_template(
                 "index.html",
                 page="botform.html",
                 url=url,

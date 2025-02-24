@@ -353,9 +353,9 @@ def send_data_to_servers(
                 flash(message, "success")
 
                 if periodic_bot:
-                    return make_response(redirect(url_for("dash.dashboard")))
+                    return await make_response(redirect(url_for("dash.dashboard")))
 
-                return make_response(redirect(url_for("logsbot.logs_bot", pid=pid)))
+                return await make_response(redirect(url_for("logsbot.logs_bot", pid=pid)))
             if response.status_code == 500:
                 pass
     flash("Erro ao iniciar robô", "error")

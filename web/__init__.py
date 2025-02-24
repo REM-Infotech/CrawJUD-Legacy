@@ -85,7 +85,7 @@ class AppFactory:
         # Initialize logs module
         from utils.bots_logs import asyncinit_log
 
-        log_file = Path(__file__).parent.resolve().joinpath("logs").joinpath("web.log")
+        log_file = Path(__file__).cwd().resolve().joinpath("logs").joinpath("web.log")
         app.logger = asyncio.run(asyncinit_log(log_file=log_file))
 
         return app

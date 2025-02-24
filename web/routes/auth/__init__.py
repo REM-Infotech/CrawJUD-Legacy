@@ -39,7 +39,7 @@ def nexturl() -> None:
 
 
 @auth.route("/login", methods=["GET", "POST"])
-def login() -> Response:
+async def login() -> Response:
     """Authenticate the user and start a session.
 
     Returns:
@@ -52,13 +52,13 @@ def login() -> Response:
         usr = Users.query.filter(Users.login == form.login.data).first()
         if usr is None or not usr.check_password(form.password.data):
             flash("Senha incorreta!", "error")
-            return make_response(redirect(url_for("auth.login")))
+            return await make_response(redirect(url_for("auth.login")))
 
         if not session.get("location"):
             session["location"] = url_for("dash.dashboard")
 
         login_user(usr, remember=form.remember_me.data)
-        resp = make_response(redirect(session["location"]))
+        resp = await make_response(redirect(session["location"]))
 
         if usr.admin:
             is_admin = json.dumps({"login_id": session["_id"]})
@@ -91,7 +91,7 @@ def login() -> Response:
         flash("Login efetuado com sucesso!", "success")
         return resp
 
-    return make_response(render_template("login.html", form=form))
+    return await make_response(await render_template("login.html", form=form))
 
 
 # @auth.route("/forgot-password", methods=["GET", "POST"])
@@ -102,11 +102,11 @@ def login() -> Response:
 #         str: Currently an empty string.
 
 #     """
-#     return make_response()
+#     return await make_response()
 
 
 @auth.route("/logout", methods=["GET", "POST"])
-def logout() -> Response:
+async def logout() -> Response:
     """Log out the current user and clear session cookies.
 
     Returns:
@@ -128,4 +128,4 @@ def logout() -> Response:
         if "_" not in key:
             session.pop(key)
 
-    return make_response(resp)
+    return await make_response(resp)

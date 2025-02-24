@@ -13,7 +13,7 @@ from . import exe
 
 @exe.route("/schedules", methods=["GET", "POST"])
 @login_required
-def schedules() -> Response:
+async def schedules() -> Response:
     """Display a list of executions filtered by search criteria.
 
     Returns:
@@ -54,7 +54,14 @@ def schedules() -> Response:
         database = executions.all()
         title = "Execuções"
         page = "schedules.html"
-        return make_response(render_template("index.html", page=page, title=title, database=database))
+        return await make_response(
+            await render_template(
+                "index.html",
+                page=page,
+                title=title,
+                database=database,
+            ),
+        )
 
     except Exception as e:
         app.logger.error(str(e))
@@ -63,7 +70,7 @@ def schedules() -> Response:
 
 @exe.post("/delete_schedule/<int:id_>")
 @login_required
-def delete_schedule(id_: int) -> Response:
+async def delete_schedule(id_: int) -> Response:
     """Delete a schedule from the database.
 
     Args:
@@ -82,4 +89,9 @@ def delete_schedule(id_: int) -> Response:
 
     message = "Tarefa deletada!"
     template = "include/show.html"
-    return make_response(render_template(template, message=message))
+    return await make_response(
+        await render_template(
+            template,
+            message=message,
+        ),
+    )
