@@ -8,7 +8,7 @@ from contextlib import suppress
 from datetime import date, datetime, time
 from typing import Any, Union  # noqa: F401
 
-import httpx
+import aiohttp
 from flask_login import login_required  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (  # noqa: F401
@@ -322,8 +322,12 @@ def handle_credentials(value: str, data: dict, system: str, files: dict) -> None
             break
 
 
-def send_data_to_servers(
-    data: dict, files: dict, headers: dict, pid: str, periodic_bot: bool = False
+async def send_data_to_servers(
+    data: dict,
+    files: dict,
+    headers: dict,
+    pid: str,
+    periodic_bot: bool = False,
 ) -> Response | None:
     """Send data to servers and handle the response."""
     servers = Servers.query.all()
@@ -346,23 +350,38 @@ def send_data_to_servers(
             kwargs.update({"files": files, "data": data})
         response = None
         with suppress(Exception):
-            response = httpx.post(timeout=60, **kwargs, headers=headers)
+            async with aiohttp.ClientSession() as sess:
+                async with sess.post(**kwargs, headers=headers) as resp:
+                    response = resp.status
         if response:
-            if response.status_code == 200:
+            if resp.status == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
                 flash(message, "success")
 
                 if periodic_bot:
-                    return await make_response(redirect(url_for("dash.dashboard")))
+                    return await make_response(
+                        redirect(
+                            url_for(
+                                "dash.dashboard",
+                            ),
+                        )
+                    )
 
-                return await make_response(redirect(url_for("logsbot.logs_bot", pid=pid)))
-            if response.status_code == 500:
+                return await make_response(
+                    redirect(
+                        url_for(
+                            "logsbot.logs_bot",
+                            pid=pid,
+                        ),
+                    ),
+                )
+            if resp.status == 500:
                 pass
     flash("Erro ao iniciar robô", "error")
     return None
 
 
-def handle_form_errors(form: BotForm) -> None:
+async def handle_form_errors(form: BotForm) -> None:
     """Handle form validation errors."""
     if form.errors:
         for field_err in form.errors:
