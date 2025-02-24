@@ -8,6 +8,7 @@ from contextlib import suppress
 from datetime import date, datetime, time
 from typing import Any, Union  # noqa: F401
 
+import aiofile
 import aiohttp
 import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
@@ -191,7 +192,12 @@ def process_form_submission_periodic(
     return data, files, pid, True
 
 
-def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD) -> tuple[dict, dict, str]:
+async def process_form_submission(
+    form: BotForm,
+    system: str,
+    typebot: str,
+    bot_info: BotsCrawJUD,
+) -> tuple[dict, dict, str]:
     """Process form submission and prepare data and files for sending."""
     data = {}
     pid = generate_pid()
@@ -206,7 +212,7 @@ def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: 
             continue
 
         if isinstance(value, FileStorage):
-            handle_file_storage(value, data, files, temporarypath)
+            await handle_file_storage(value, data, files, temporarypath)
             continue
         if isinstance(value, list):
             handle_file_list(item, value, data, files, temporarypath)
@@ -217,12 +223,12 @@ def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: 
     return data, files, pid
 
 
-def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
+async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
     path_save = os.path.join(temporarypath, secure_filename(value.filename))
-    value.save(path_save)
-    buff = open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
+    await value.save(path_save)
+    buff = aiofile.async_open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
     buff.seek(0)
     files.update({
         secure_filename(value.filename): (
@@ -233,7 +239,7 @@ def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypa
     })
 
 
-def handle_file_list(
+async def handle_file_list(
     item: str,
     value: FileStorage | str,
     data: dict,
@@ -247,8 +253,8 @@ def handle_file_list(
 
     for filev in value:
         if isinstance(filev, FileStorage):
-            filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
-            buff = open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
+            await filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
+            buff = aiofile.async_open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
             files.update({
                 secure_filename(filev.filename): (
                     secure_filename(filev.filename),

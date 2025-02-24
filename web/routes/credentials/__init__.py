@@ -7,6 +7,7 @@ import os
 import pathlib
 from collections import Counter
 
+import aiofiles
 import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
@@ -123,14 +124,14 @@ async def cadastro() -> Response:
             db.session.add(passwd)
             db.session.commit()
 
-        def cert(form: CredentialsForm) -> None:
+        async def cert(form: CredentialsForm) -> None:
             temporarypath = current_app.config["TEMP_DIR"]
             filecert = form.cert.data
 
             cer_path = os.path.join(temporarypath, secure_filename(filecert.filename))
-            filecert.save(cer_path)
+            await filecert.save(cer_path)
 
-            with open(cer_path, "rb") as f:
+            async with aiofiles.open(cer_path, "rb") as f:
                 certficate_blob = f.read()
 
             passwd = Credentials(
@@ -152,7 +153,7 @@ async def cadastro() -> Response:
         local_defs = list(locals().items())
         for name, func in local_defs:
             if name == form.auth_method.data:
-                func(form)
+                await func(form)
                 break
 
         await flash("Credencial salva com sucesso!", "success")

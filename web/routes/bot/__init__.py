@@ -121,10 +121,12 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
                 data, files, pid, periodic_bot = process_form_submission_periodic(form, system, typebot, bot_info)
 
             elif form.periodic_task.data is False:
-                data, files, pid = process_form_submission(form, system, typebot, bot_info)
+                data, files, pid = await process_form_submission(form, system, typebot, bot_info)
 
             response = await make_response(
-                send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid, periodic_bot)
+                await send_data_to_servers(
+                    data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid, periodic_bot
+                )
             )
             if response:
                 return response
