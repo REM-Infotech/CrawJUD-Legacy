@@ -34,7 +34,8 @@ async def app_configurator(app: Quart) -> tuple[Quart, ASGIApp, Celery]:
     app.config.from_object(ambient)
 
     async with app.app_context():
-        from logs import log_cfg, make_celery
+        from logs import log_cfg
+        from utils import make_celery
 
         from .extensions import init_extensions
         from .routing import register_routes
@@ -53,7 +54,7 @@ async def app_configurator(app: Quart) -> tuple[Quart, ASGIApp, Celery]:
         logfile = folder_logs.joinpath("%s.log" % os.getenv("APPLICATION_APP", "asgi"))
         logfile.touch(exist_ok=True)
 
-        dict_config, name_logger = await log_cfg(log_file=logfile)
+        dict_config, name_logger = log_cfg(log_file=logfile)
         logging.config.dictConfig(dict_config)
         app.logger = logging.getLogger(name_logger)
 

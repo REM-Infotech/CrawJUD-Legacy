@@ -19,6 +19,7 @@ import aiofiles
 import clear
 import quart_flask_patch  # noqa: F401
 import uvicorn
+from dotenv_vault import load_dotenv
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
@@ -41,6 +42,8 @@ objects_config = {
     "production": "app.config.ProductionConfig",
     "testing": "app.config.TestingConfig",
 }
+
+load_dotenv()
 
 
 class AppFactory:
@@ -93,7 +96,7 @@ class AppFactory:
 
         log_file = Path(__file__).cwd().resolve().joinpath("logs").joinpath("web.log")
 
-        dict_config, name_logger = await log_cfg(log_file=log_file)
+        dict_config, name_logger = log_cfg(log_file=log_file)
         logging.config.dictConfig(dict_config)
 
         app.logger = logging.getLogger(name_logger)

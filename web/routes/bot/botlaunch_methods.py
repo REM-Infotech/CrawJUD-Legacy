@@ -2,26 +2,22 @@
 
 import json
 import os
-import pathlib
-import traceback  # noqa: F401
-from contextlib import suppress
+from contextlib import asynccontextmanager, suppress
 from datetime import date, datetime, time
-from typing import Any, Union  # noqa: F401
+from pathlib import Path
+from typing import Any, AsyncGenerator
 
 import aiofile
+import aiofiles
 import aiohttp
-import quart_flask_patch  # noqa: F401
+
 from flask_sqlalchemy import SQLAlchemy
-from quart import (  # noqa: F401
-    Blueprint,
+from quart import (
     Response,
-    abort,
     flash,
     make_response,
     redirect,
-    render_template,
     request,
-    send_file,
     session,
     url_for,
 )
@@ -30,14 +26,23 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
 
-from web.decorators import login_required  # noqa: F401
-
 from ...forms import BotForm
-from ...misc import (  # noqa: F401
-    MakeModels,
+from ...misc import (
     generate_pid,
 )
 from ...models import BotsCrawJUD, Credentials, LicensesUsers, Servers
+
+
+@asynccontextmanager
+async def reopen_stream_file(file: FileStorage) -> AsyncGenerator[FileStorage, Any]:
+    """Reopen the file stream."""
+    try:
+        file.__module__
+        file = FileStorage(stream=file.stream)
+        yield file
+    finally:
+        file.close()
+
 
 FORM_CONFIGURATOR = {
     "JURIDICO": {
@@ -162,6 +167,7 @@ async def process_form_submission_periodic(
         value = field.data
         item = field_name
         if isinstance(field, FileField):
+            field
             await handle_file_storage(value, data, files, temporarypath)
             continue
 
@@ -223,18 +229,28 @@ async def process_form_submission(
     return data, files, pid
 
 
-async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
+async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | Path) -> None:
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
-    path_save = os.path.join(temporarypath, secure_filename(value.filename))
-    await value.save(path_save)
-    buff = aiofile.async_open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
-    buff.seek(0)
+    path_save = Path(temporarypath).joinpath(secure_filename(value.filename))
+    # if iscoroutinefunction(value.save):
+    #     await value.save(path_save)
+    async with reopen_stream_file(value) as f:
+        pass
+
+    async with aiofiles.open(path_save, "rb") as f:
+        file_buffer = FileStorage(
+            await f.read(),
+            filename=path_save.name,
+            content_type=value.mimetype,
+            content_length=path_save.stat().st_size,
+        )
     files.update({
-        secure_filename(value.filename): (
-            secure_filename(value.filename),
-            buff,
-            value.mimetype,
+        file_buffer.filename: (
+            file_buffer.filename,
+            file_buffer.stream,
+            file_buffer.mimetype,
+            file_buffer.content_length,
         )
     })
 
@@ -244,7 +260,7 @@ async def handle_file_list(
     value: FileStorage | str,
     data: dict,
     files: dict,
-    temporarypath: str | pathlib.Path,
+    temporarypath: str | Path,
 ) -> None:
     """Handle list of files for form submission."""
     if not isinstance(value[0], FileStorage):

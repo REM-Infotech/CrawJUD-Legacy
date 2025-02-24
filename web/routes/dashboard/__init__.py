@@ -12,7 +12,7 @@ from collections import Counter
 from datetime import datetime
 
 import pandas as pd
-import quart_flask_patch  # noqa: F401
+
 from deep_translator import GoogleTranslator
 from quart import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 

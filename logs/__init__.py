@@ -25,7 +25,7 @@ def log_cfg(
 
     logger.setLevel(logging.INFO)
 
-    # Formatter
+    logger_name = kwargs.get("logger_name", __name__)
     log_path_file = str(log_file)
 
     if log_file == "app/logs":
@@ -46,7 +46,7 @@ def log_cfg(
         },
         "handlers": {
             "stream": {
-                "class": "logging.streamHandler",
+                "class": "logging.StreamHandler",
             },
             "file_handler": {
                 "class": "logging.handlers.RotatingFileHandler",
@@ -62,7 +62,7 @@ def log_cfg(
             "handlers": ["stream", "file_handler"],
         },
         "loggers": {
-            __name__: {
+            logger_name: {
                 "level": "DEBUG",
                 "handlers": ["stream", "file_handler"],
                 "propagate": False,
@@ -79,6 +79,6 @@ def log_cfg(
             "formatter": "default",
         }
         config["root"]["handlers"].append("socketio_handler")
-        config["loggers"][__name__]["handlers"].append("socketio_handler")
+        config["loggers"][logger_name]["handlers"].append("socketio_handler")
 
-    return config, __name__
+    return config, logger_name

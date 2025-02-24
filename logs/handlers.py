@@ -15,7 +15,12 @@ class SocketIOLogClientHandler(logging.Handler):
     level: int = logging.INFO
     server_url: str = "http://localhost:7000"
 
-    def __init__(self, server_url: str = "http://localhost:7000", *args: str | int, **kwargs: str | int) -> None:
+    def __init__(
+        self,
+        server_url: str = "http://localhost:7000",
+        *args: str | int,
+        **kwargs: str | int,
+    ) -> None:
         """Initialize the handler with the server URL."""
         super().__init__()
         self.sio = socketio.Client()

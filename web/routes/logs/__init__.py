@@ -9,7 +9,7 @@ import os
 import pathlib
 
 import httpx as requests
-import quart_flask_patch  # noqa: F401
+
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,

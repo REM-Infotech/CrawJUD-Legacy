@@ -6,6 +6,7 @@ import pathlib
 from datetime import datetime
 
 import pytz
+from quart import request
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, MultipleFileField
 from wtforms import (
@@ -159,6 +160,9 @@ class BotForm(FlaskForm):
 
         if kwargs.get("creds"):
             self.creds.choices.extend(kwargs.get("creds"))
+
+    def validate_on_submit(self, extra_validators=None):
+        return super().validate_on_submit(extra_validators)
 
 
 class SearchExec(FlaskForm):

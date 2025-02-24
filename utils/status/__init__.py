@@ -25,7 +25,7 @@ from jinja2 import Environment, FileSystemLoader
 from multidict import MultiDict
 from openpyxl.worksheet.worksheet import Worksheet
 from quart import Quart
-from werkzeug.datastructures import FileStorage
+from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from api.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users

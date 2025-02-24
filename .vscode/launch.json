@@ -75,7 +75,7 @@
       "name": "Debug Web app",
       "type": "debugpy",
       "request": "launch",
-      "module": "web"
+      "module": "web",
     },
     {
       "name": "Debug Quart ASGI",
