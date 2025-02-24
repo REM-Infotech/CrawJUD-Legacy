@@ -6,7 +6,9 @@ from tqdm import tqdm
 
 from server import MasterApp
 
-if __name__ == "__main__":
+
+def main() -> None:
+    """Server main entry point."""
     application_instance = MasterApp()
 
     environ.update({
@@ -18,3 +20,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         tqdm.write("Stopping app")
         application_instance.thead_io.join(10)
+
+
+if __name__ == "__main__":
+    SystemExit(main())

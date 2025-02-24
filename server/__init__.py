@@ -49,6 +49,7 @@ class MasterApp:
                 clear()
 
             menu = {
+                "Quart Web ASGI": self.quart_menu_web,
                 "Quart API ASGI": self.quart_menu_api,
                 "Celery Worker": self.worker_menu,
                 "Celery Beat": self.beat_menu,
@@ -182,6 +183,16 @@ class MasterApp:
     def quart_menu_api(self) -> inquirer.List:
         """Menu for Quart API."""
         self.current_choice = "Quart API ASGI"
+        return inquirer.List(
+            "application_list",
+            message="Select an option",
+            choices=["Start Server", "Close Server", "View Logs", "Back"],
+        )
+
+    @property
+    def quart_menu_web(self) -> inquirer.List:
+        """Menu for Quart Web ASGI."""
+        self.current_choice = "Quart Web ASGI"
         return inquirer.List(
             "application_list",
             message="Select an option",
