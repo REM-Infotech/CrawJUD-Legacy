@@ -165,11 +165,10 @@ class AppFactory:
                 logging.DEBUG,
             )
         )
-        debug = os.getenv("DEBUG", "False").lower() == "true"
+        # debug = os.getenv("DEBUG", "False").lower() == "true"
         uvicorn.run(
             app,
             host=hostname,
             port=port,
-            debug=debug,
             log_config=log_cfg,
         )
