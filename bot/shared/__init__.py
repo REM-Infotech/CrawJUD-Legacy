@@ -6,7 +6,8 @@ application, including configuration for paths, WebDriver instances, and bot set
 
 from __future__ import annotations
 
-import asyncio
+import logging
+import logging.config
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import (
@@ -22,7 +23,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from socketio import Client
 
-from utils import asyncinit_log
+from logs import log_cfg
 
 if TYPE_CHECKING:
     from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
@@ -123,7 +124,10 @@ class PropertiesCrawJUD:
         """
         logfile = Path(self.path_args.parent).resolve().joinpath(f"{self.pid}.log")
         logfile.touch(exist_ok=True)
-        PropertiesCrawJUD.logger = asyncio.run(asyncinit_log(log_file=logfile, max_bytes=8196 * 1024, bkp_ct=5))
+        cfg, name = log_cfg(log_file=logfile, max_bytes=8196 * 1024, bkp_ct=5)
+        logging.config.dictConfig(cfg)
+
+        PropertiesCrawJUD.logger = logging.getLogger(name)
 
     @sio.on("connect", namespace="*")
     @staticmethod

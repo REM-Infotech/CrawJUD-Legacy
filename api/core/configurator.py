@@ -4,6 +4,7 @@ This module provides functionality to load configuration settings
 into a Quart application instance from various sources.
 """
 
+import logging
 import os
 from pathlib import Path
 
@@ -33,8 +34,7 @@ async def app_configurator(app: Quart) -> tuple[Quart, ASGIApp, Celery]:
     app.config.from_object(ambient)
 
     async with app.app_context():
-        from utils import asyncinit_log as init_log
-        from utils import make_celery
+        from logs import log_cfg, make_celery
 
         from .extensions import init_extensions
         from .routing import register_routes
@@ -53,7 +53,10 @@ async def app_configurator(app: Quart) -> tuple[Quart, ASGIApp, Celery]:
         logfile = folder_logs.joinpath("%s.log" % os.getenv("APPLICATION_APP", "asgi"))
         logfile.touch(exist_ok=True)
 
-        app.logger = await init_log(log_file=logfile, log_level=app.config["LOG_LEVEL"], mx_bt=8192, bkp_ct=5)
+        dict_config, name_logger = await log_cfg(log_file=logfile)
+        logging.config.dictConfig(dict_config)
+        app.logger = logging.getLogger(name_logger)
+
         await register_routes(app)
 
     return app, ASGIApp(io, app), celery

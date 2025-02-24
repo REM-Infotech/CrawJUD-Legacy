@@ -14,7 +14,7 @@
     //   "envFile": "${workspaceFolder}/.env",
     //   "args": [
     //     "-A",
-    //     "app.run.app",
+    //     "api.run.app",
     //     "worker",
     //     "-E",
     //     "--loglevel",
@@ -81,19 +81,19 @@
       "name": "Debug Quart ASGI",
       "type": "debugpy",
       "request": "launch",
-      "module": "app.asgi"
+      "module": "api.asgi"
     },
     {
       "name": "Debug Celery Worker",
       "type": "debugpy",
       "request": "launch",
-      "module": "app.worker"
+      "module": "api.worker"
     },
     {
       "name": "Debug Celery Beat",
       "type": "debugpy",
       "request": "launch",
-      "module": "app.beat"
+      "module": "api.beat"
     }
   ]
 }

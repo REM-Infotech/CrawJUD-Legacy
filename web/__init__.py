@@ -8,6 +8,7 @@ and provides a factory for creating the Quart app.
 # Python Imports
 import asyncio
 import logging
+import logging.config
 import os
 import subprocess
 from datetime import timedelta
@@ -88,10 +89,14 @@ class AppFactory:
         await self.init_blueprints(app)
 
         # Initialize logs module
-        from utils.bots_logs import asyncinit_log
+        from logs import log_cfg
 
         log_file = Path(__file__).cwd().resolve().joinpath("logs").joinpath("web.log")
-        app.logger = await asyncinit_log(log_file=log_file)
+
+        dict_config, name_logger = await log_cfg(log_file=log_file)
+        logging.config.dictConfig(dict_config)
+
+        app.logger = logging.getLogger(name_logger)
 
         return app
 
@@ -138,7 +143,7 @@ class AppFactory:
     @classmethod
     def construct_app(cls) -> None:
         """Run the Quart application with Uvicorn server."""
-        from utils.bots_logs import asyncinit_log_dict
+        from logs import log_cfg
 
         app = asyncio.run(cls().create_app())
         clear.clear()
@@ -159,11 +164,9 @@ class AppFactory:
         log_path = Path(__file__).cwd().resolve().joinpath("logs", "uvicorn_web.log")
         log_path.touch(exist_ok=True)
 
-        log_cfg = asyncio.run(
-            asyncinit_log_dict(
-                log_path,
-                logging.DEBUG,
-            )
+        log_cfg, _ = log_cfg(
+            log_path,
+            logging.DEBUG,
         )
         # debug = os.getenv("DEBUG", "False").lower() == "true"
         uvicorn.run(
