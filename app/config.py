@@ -83,7 +83,6 @@ class Config:
     PDF_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "pdf"))
     SRC_IMG_PATH = str(Path(__file__).cwd().resolve().joinpath("web", "src", "assets", "img"))
 
-    Path(ARCHIVES_PATH).rmdir(exist_ok=True)
     Path(ARCHIVES_PATH).mkdir(exist_ok=True)
 
     for paths in [
