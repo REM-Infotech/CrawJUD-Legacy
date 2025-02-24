@@ -1,11 +1,12 @@
 """Module for schedule executions page."""
 
-from flask_login import login_required
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import Response, abort, make_response, render_template, session
 from quart import current_app as app
 from sqlalchemy.orm import aliased
 
+from web.custom import login_required
 from web.models import ScheduleModel, SuperUser, Users, admins
 
 from . import exe

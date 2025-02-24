@@ -12,11 +12,12 @@ from collections import Counter
 from datetime import datetime
 
 import pandas as pd
+import quart_flask_patch  # noqa: F401
 from deep_translator import GoogleTranslator
-from flask_login import login_required
 from quart import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 
 from web import db
+from web.custom import login_required
 from web.models import Executions, LicensesUsers, SuperUser, Users
 
 translator = GoogleTranslator(source="en", target="pt")

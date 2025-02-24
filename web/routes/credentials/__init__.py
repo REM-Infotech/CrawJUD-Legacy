@@ -7,7 +7,7 @@ import os
 import pathlib
 from collections import Counter
 
-from flask_login import login_required
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
@@ -24,6 +24,7 @@ from quart import current_app as app
 from werkzeug.utils import secure_filename
 
 from web import db
+from web.custom import login_required
 from web.forms.credentials import CredentialsForm
 from web.models import BotsCrawJUD, Credentials, LicensesUsers
 
@@ -41,7 +42,7 @@ async def credentials() -> Response:
 
     """
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return await make_response(
             redirect(
                 url_for(
@@ -74,7 +75,7 @@ async def cadastro() -> Response:
 
     """
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return await make_response(
             redirect(
                 url_for(
@@ -99,7 +100,7 @@ async def cadastro() -> Response:
 
     if form.validate_on_submit():
         if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
-            flash("Existem credenciais com este nome já cadastrada!", "error")
+            await flash("Existem credenciais com este nome já cadastrada!", "error")
             return await make_response(
                 redirect(
                     url_for(
@@ -154,7 +155,7 @@ async def cadastro() -> Response:
                 func(form)
                 break
 
-        flash("Credencial salva com sucesso!", "success")
+        await flash("Credencial salva com sucesso!", "success")
         return await make_response(
             redirect(
                 url_for(
@@ -202,7 +203,7 @@ async def editar(id_: int = None) -> Response:
     action_url = url_for("creds.cadastro")
 
     if form.validate_on_submit():
-        flash("Credencial salva com sucesso!", "success")
+        await flash("Credencial salva com sucesso!", "success")
         return await make_response(
             redirect(
                 url_for(

@@ -9,7 +9,7 @@ from datetime import date, datetime, time
 from typing import Any, Union  # noqa: F401
 
 import aiohttp
-from flask_login import login_required  # noqa: F401
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (  # noqa: F401
     Blueprint,
@@ -28,6 +28,8 @@ from quart import current_app as app
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
+
+from web.custom import login_required  # noqa: F401
 
 from ...forms import BotForm
 from ...misc import (  # noqa: F401
@@ -356,7 +358,7 @@ async def send_data_to_servers(
         if response:
             if resp.status == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
-                flash(message, "success")
+                await flash(message, "success")
 
                 if periodic_bot:
                     return await make_response(
@@ -377,7 +379,7 @@ async def send_data_to_servers(
                 )
             if resp.status == 500:
                 pass
-    flash("Erro ao iniciar robô", "error")
+    await flash("Erro ao iniciar robô", "error")
     return None
 
 
@@ -386,4 +388,4 @@ async def handle_form_errors(form: BotForm) -> None:
     if form.errors:
         for field_err in form.errors:
             for error in form.errors[field_err]:
-                flash(f"Erro: {error}", "error")
+                await flash(f"Erro: {error}", "error")

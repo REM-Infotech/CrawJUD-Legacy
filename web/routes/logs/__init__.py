@@ -9,7 +9,7 @@ import os
 import pathlib
 
 import httpx as requests
-from flask_login import login_required
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
@@ -26,6 +26,7 @@ from quart import (
 )
 from quart import current_app as app
 
+from web.custom import login_required
 from web.misc import generate_signed_url
 from web.models import Executions, LicensesUsers, Users
 
@@ -73,7 +74,7 @@ async def logs_bot(pid: str) -> Response:
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     if not session.get("license_token"):
-        flash("Sessão expirada. Faça login novamente.", "error")
+        await flash("Sessão expirada. Faça login novamente.", "error")
         return await make_response(
             redirect(
                 url_for(
@@ -172,7 +173,7 @@ async def stop_bot(pid: str) -> Response:
 
         asyncio.sleep(2)
 
-    flash("Execução encerrada", "success")
+    await flash("Execução encerrada", "success")
     return await make_response(
         redirect(
             url_for(

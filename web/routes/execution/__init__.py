@@ -7,7 +7,7 @@ import os
 import pathlib
 from importlib import import_module
 
-from flask_login import login_required
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
@@ -23,6 +23,7 @@ from quart import current_app as app
 from sqlalchemy.orm import aliased
 
 from web import db
+from web.custom import login_required
 from web.forms import SearchExec
 from web.misc import generate_signed_url
 from web.models import Executions, SuperUser, Users, admins

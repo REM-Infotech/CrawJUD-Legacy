@@ -13,8 +13,8 @@ from typing import Any
 import aiofiles
 import aiohttp
 import httpx  # noqa: F401
+import quart_flask_patch  # noqa: F401
 from deep_translator import GoogleTranslator
-from flask_login import current_user, login_required
 
 # Quart Imports
 from quart import (
@@ -33,6 +33,8 @@ from trio import Path
 from werkzeug.exceptions import HTTPException
 from werkzeug.local import LocalProxy
 
+from web.custom import current_user, login_required
+
 
 @app.context_processor
 async def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None]:
@@ -44,17 +46,18 @@ async def inject_user_cookies() -> dict[str, str | LocalProxy[Any | None] | None
     """
     admin_cookie, supersu_cookie = None, None
 
-    if current_user.is_authenticated:
-        if session.get("_id"):
-            admin_cookie = request.cookies.get("roles_admin")
-            if admin_cookie:
-                if json.loads(admin_cookie).get("login_id") != session["_id"]:
-                    admin_cookie = None
+    if current_user:
+        if current_user.is_authenticated:
+            if session.get("_id"):
+                admin_cookie = request.cookies.get("roles_admin")
+                if admin_cookie:
+                    if json.loads(admin_cookie).get("login_id") != session["_id"]:
+                        admin_cookie = None
 
-                supersu_cookie = request.cookies.get("roles_supersu")
-                if supersu_cookie:
-                    if json.loads(supersu_cookie).get("login_id") != session["_id"]:
-                        supersu_cookie = None
+                    supersu_cookie = request.cookies.get("roles_supersu")
+                    if supersu_cookie:
+                        if json.loads(supersu_cookie).get("login_id") != session["_id"]:
+                            supersu_cookie = None
 
     return {
         "admin_cookie": admin_cookie,

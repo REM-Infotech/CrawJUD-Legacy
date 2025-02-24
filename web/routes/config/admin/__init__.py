@@ -4,11 +4,12 @@ import os
 import pathlib
 from typing import Dict
 
-from flask_login import login_required
+import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
 from quart import current_app as app
 
+from web.custom import login_required
 from web.forms import UserForm, UserFormEdit
 from web.models import LicensesUsers, SuperUser, Users
 
@@ -58,7 +59,7 @@ async def cadastro_user() -> Response:
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         if not session.get("license_token"):
-            flash("Sessão expirada. Faça login novamente.", "error")
+            await flash("Sessão expirada. Faça login novamente.", "error")
             return await make_response(
                 redirect(
                     url_for("auth.login"),
@@ -113,7 +114,7 @@ async def cadastro_user() -> Response:
             db.session.add(user)
             db.session.commit()
 
-            flash("Usuário cadastrado!", "success")
+            await flash("Usuário cadastrado!", "success")
             return make_response(
                 redirect(
                     url_for("admin.users"),
@@ -123,7 +124,7 @@ async def cadastro_user() -> Response:
         form_items = list(form)
         for field in form_items:
             for error in field.errors:
-                flash(f"Erro: {error}. Campo: {field.label.text}", "error")
+                await flash(f"Erro: {error}. Campo: {field.label.text}", "error")
 
         return await make_response(
             await render_template(
@@ -153,7 +154,7 @@ async def edit_usuario(id_: int) -> Response:
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         if not session.get("license_token"):
-            flash("Sessão expirada. Faça login novamente.", "error")
+            await flash("Sessão expirada. Faça login novamente.", "error")
             return await make_response(
                 redirect(
                     url_for("auth.login"),
@@ -228,7 +229,7 @@ async def edit_usuario(id_: int) -> Response:
 
             db.session.commit()
 
-            flash("Usuário editado com sucesso!", "message")
+            await flash("Usuário editado com sucesso!", "message")
             return await make_response(redirect(url_for("admin.users")))
 
         return await make_response(

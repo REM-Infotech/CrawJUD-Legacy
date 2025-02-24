@@ -3743,6 +3743,27 @@ files = [
 quart = ">=0.19"
 
 [[package]]
+name = "Quart-Login"
+version = "0.6.1"
+description = "User authentication and session management for Quart."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+Flask = ">=1.0.4"
+Quart = ">=0.17.0"
+Werkzeug = ">=2.0.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/0000matteo0000/quart-login.git"
+reference = "HEAD"
+resolved_reference = "58c78d4fdc43c8dac0b1d52ea1b03cf19fd55340"
+
+[[package]]
 name = "readchar"
 version = "4.2.1"
 description = "Library to easily read single chars and key strokes"
@@ -4779,4 +4800,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13, <4.0"
-content-hash = "278c25fafb4e07c0367d734e56182e55a6cf9f1297f1415968320b103e376cdd"
+content-hash = "9773f76562f2dffaa45b1e8cc3465e2ded421973f36cc0a88966f47fbdcf753c"

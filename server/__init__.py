@@ -15,6 +15,7 @@ from tqdm import tqdm
 import server.celery_beat
 import server.celery_worker
 import server.quart
+import server.quart_web
 from server.thead_asgi import ASGIServer
 
 io = AsyncServer(
@@ -48,7 +49,7 @@ class MasterApp:
                 clear()
 
             menu = {
-                "Quart ASGI": self.quart_menu,
+                "Quart API ASGI": self.quart_menu_api,
                 "Celery Worker": self.worker_menu,
                 "Celery Beat": self.beat_menu,
             }
@@ -82,7 +83,10 @@ class MasterApp:
                 continue
 
             if choice != "Close Server" and choice != "Back":
-                self.current_app = self.current_menu_name.split(" ")[0].lower()
+                splited_currentmenuname = self.current_menu_name.split(" ")
+                self.current_app = splited_currentmenuname[0].lower()
+                if len(splited_currentmenuname) > 2:
+                    self.current_app = f"{splited_currentmenuname[0]}_{splited_currentmenuname[1]}"
                 func = self.functions.get(self.current_app).get(choice)
                 if func:
                     returns = asyncio.run(func())
@@ -101,10 +105,15 @@ class MasterApp:
     current_app = ""
 
     functions = {
-        "quart": {
+        "quart_api": {
             "Start Server": server.quart.start,
             "Close Server": server.quart.shutdown,
             "View Logs": server.quart.status,
+        },
+        "quart_web": {
+            "Start Server": server.quart_web.start,
+            "Close Server": server.quart_web.shutdown,
+            "View Logs": server.quart_web.status,
         },
         "worker": {
             "Start Worker": server.celery_worker.start,
@@ -160,13 +169,19 @@ class MasterApp:
         return inquirer.List(
             "application_list",
             message="Select application",
-            choices=["Quart ASGI", "Celery Worker", "Celery Beat", "Close Server"],
+            choices=[
+                "Quart API ASGI",
+                "Quart Web ASGI",
+                "Celery Worker",
+                "Celery Beat",
+                "Close Server",
+            ],
         )
 
     @property
-    def quart_menu(self) -> inquirer.List:
-        """Menu for Quart ASGI."""
-        self.current_choice = "Quart ASGI"
+    def quart_menu_api(self) -> inquirer.List:
+        """Menu for Quart API."""
+        self.current_choice = "Quart API ASGI"
         return inquirer.List(
             "application_list",
             message="Select an option",

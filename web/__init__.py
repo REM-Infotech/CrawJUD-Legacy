@@ -7,20 +7,25 @@ and provides a factory for creating the Quart app.
 # Quart imports
 # Python Imports
 import asyncio
+import logging
 import os
+import subprocess
 from datetime import timedelta
 from importlib import import_module
 from pathlib import Path
 
 import aiofiles
+import clear
 import quart_flask_patch  # noqa: F401
-from flask_login import LoginManager
+import uvicorn
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 
 # APP Imports
 from quart import Quart
+
+from web.custom import QuartLoginManager as LoginManager
 
 db = SQLAlchemy()
 tlsm = Talisman()
@@ -67,7 +72,7 @@ class AppFactory:
             )
             import_module("web.routes", __package__)
 
-    def create_app(self) -> Quart:
+    async def create_app(self) -> Quart:
         """Create and configure the Quart application.
 
         Returns:
@@ -79,14 +84,14 @@ class AppFactory:
         env_ambient = os.getenv("AMBIENT_CONFIG")
         ambient = objects_config[env_ambient]
         app.config.from_object(ambient)
-        asyncio.run(self.init_extensions(app))
-        asyncio.run(self.init_blueprints(app))
+        await self.init_extensions(app)
+        await self.init_blueprints(app)
 
         # Initialize logs module
         from utils.bots_logs import asyncinit_log
 
         log_file = Path(__file__).cwd().resolve().joinpath("logs").joinpath("web.log")
-        app.logger = asyncio.run(asyncinit_log(log_file=log_file))
+        app.logger = await asyncinit_log(log_file=log_file)
 
         return app
 
@@ -130,5 +135,41 @@ class AppFactory:
             async with aiofiles.open("is_init.txt", "w") as f:
                 await f.write(f"{await init_database(app, db)}")
 
+    @classmethod
+    def construct_app(cls) -> None:
+        """Run the Quart application with Uvicorn server."""
+        from utils.bots_logs import asyncinit_log_dict
 
-create_app = AppFactory().create_app
+        app = asyncio.run(cls().create_app())
+        clear.clear()
+        port = int(os.getenv("PORT", 5000))
+        hostname = os.getenv(
+            "SERVER_HOSTNAME",
+            subprocess.run(
+                [
+                    "powershell",
+                    "hostname",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            ).stdout.strip(),
+        )
+
+        log_path = Path(__file__).cwd().resolve().joinpath("logs", "uvicorn_web.log")
+        log_path.touch(exist_ok=True)
+
+        log_cfg = asyncio.run(
+            asyncinit_log_dict(
+                log_path,
+                logging.DEBUG,
+            )
+        )
+        debug = os.getenv("DEBUG", "False").lower() == "true"
+        uvicorn.run(
+            app,
+            host=hostname,
+            port=port,
+            debug=debug,
+            log_config=log_cfg,
+        )

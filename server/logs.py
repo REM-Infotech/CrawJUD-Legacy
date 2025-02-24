@@ -72,6 +72,17 @@ async def quart_logs(
     await io.emit("quart_logs", {"message": message}, namespace="/quart")
 
 
+@io.on("quart_logs_web", namespace="/quart_web")
+async def quart_logs_web(
+    sid: str = None,
+    data: dict[str, str] = None,
+    **kwargs: str | int,
+) -> None:
+    """Receive and log Quart log messages."""
+    message = data.get("message")
+    await io.emit("quart_logs", {"message": message}, namespace="/quart_web")
+
+
 @io.on("worker_logs", namespace="/worker")
 async def worker_logs(
     sid: str = None,

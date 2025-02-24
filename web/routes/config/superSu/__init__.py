@@ -4,8 +4,10 @@ import os
 import pathlib
 from importlib import import_module
 
-from flask_login import login_required
+import quart_flask_patch  # noqa: F401
 from quart import Blueprint, Response, abort, make_response, render_template
+
+from web.custom import login_required
 
 from ....decorators import check_privilegies
 
