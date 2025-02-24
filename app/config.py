@@ -72,6 +72,29 @@ class Config:
     BROKER_DATABASE: type[int] = 1
     RESULT_BACKEND_DATABASE: type[int] = 2
 
+    ARCHIVES_PATH = str(Path(__file__).cwd().joinpath("Archives"))
+    resolved_archives = Path(ARCHIVES_PATH).resolve()
+
+    PDF_PATH = str(resolved_archives.joinpath("PDF"))
+    DOCS_PATH = str(resolved_archives.joinpath("Docs"))
+    TEMP_DIR = str(resolved_archives.joinpath("Temp"))
+    IMAGE_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "IMG"))
+    CSV_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "csv"))
+    PDF_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "pdf"))
+    SRC_IMG_PATH = str(Path(__file__).cwd().resolve().joinpath("web", "src", "assets", "img"))
+
+    Path(ARCHIVES_PATH).rmdir(exist_ok=True)
+    Path(ARCHIVES_PATH).mkdir(exist_ok=True)
+
+    for paths in [
+        DOCS_PATH,
+        TEMP_DIR,
+        IMAGE_TEMP_DIR,
+        CSV_TEMP_DIR,
+        PDF_TEMP_DIR,
+    ]:
+        Path(paths).mkdir(exist_ok=True, parents=True)
+
     CSP: dict[str, str | list[str] | list[list[str]]] = {
         "default-src": ["'self'"],
         "script-src": [
