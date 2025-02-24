@@ -87,7 +87,7 @@ class MasterApp:
                 splited_currentmenuname = self.current_menu_name.split(" ")
                 self.current_app = splited_currentmenuname[0].lower()
                 if len(splited_currentmenuname) > 2:
-                    self.current_app = f"{splited_currentmenuname[0]}_{splited_currentmenuname[1]}"
+                    self.current_app = f"{splited_currentmenuname[0]}_{splited_currentmenuname[1]}".lower()
                 func = self.functions.get(self.current_app).get(choice)
                 if func:
                     returns = asyncio.run(func())
