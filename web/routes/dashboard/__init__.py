@@ -17,7 +17,7 @@ from deep_translator import GoogleTranslator
 from quart import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 
 from web import db
-from web.custom import login_required
+from web.decorators import login_required
 from web.models import Executions, LicensesUsers, SuperUser, Users
 
 translator = GoogleTranslator(source="en", target="pt")

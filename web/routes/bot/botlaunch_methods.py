@@ -29,7 +29,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
 
-from web.custom import login_required  # noqa: F401
+from web.decorators import login_required  # noqa: F401
 
 from ...forms import BotForm
 from ...misc import (  # noqa: F401

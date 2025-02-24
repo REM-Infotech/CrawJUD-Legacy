@@ -24,7 +24,7 @@ from quart import current_app as app
 from werkzeug.utils import secure_filename
 
 from web import db
-from web.custom import login_required
+from web.decorators import login_required
 from web.forms.credentials import CredentialsForm
 from web.models import BotsCrawJUD, Credentials, LicensesUsers
 

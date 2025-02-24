@@ -7,7 +7,7 @@ from importlib import import_module
 import quart_flask_patch  # noqa: F401
 from quart import Blueprint, Response, abort, make_response, render_template
 
-from web.custom import login_required
+from web.decorators import login_required
 
 from ....decorators import check_privilegies
 

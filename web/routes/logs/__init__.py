@@ -26,7 +26,7 @@ from quart import (
 )
 from quart import current_app as app
 
-from web.custom import login_required
+from web.decorators import login_required
 from web.misc import generate_signed_url
 from web.models import Executions, LicensesUsers, Users
 

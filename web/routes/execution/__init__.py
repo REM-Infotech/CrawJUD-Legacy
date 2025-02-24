@@ -23,7 +23,7 @@ from quart import current_app as app
 from sqlalchemy.orm import aliased
 
 from web import db
-from web.custom import login_required
+from web.decorators import login_required
 from web.forms import SearchExec
 from web.misc import generate_signed_url
 from web.models import Executions, SuperUser, Users, admins

@@ -1,16 +1,15 @@
 """Module providing decorators and helper functions for access control."""
 
 from functools import wraps
-from typing import Callable, TypeVar
+from typing import Callable
 
 from flask_sqlalchemy import SQLAlchemy
 from quart import Response, flash, make_response, redirect, session, url_for
 from quart import current_app as app
 
-from ..models import Users
+from web.types import AnyStr, WrappedFnReturnT
 
-WrappedFnReturnT = TypeVar("WrappedFnReturnT")
-AnyStr = TypeVar("AnyStr", str, bytes)
+from ..models import Users
 
 
 def check_privilegies(func: Callable[[], Response]) -> WrappedFnReturnT:
