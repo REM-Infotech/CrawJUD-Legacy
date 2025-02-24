@@ -148,7 +148,7 @@ def get_form_data(
     return states, clients, credts, form_config
 
 
-def process_form_submission_periodic(
+async def process_form_submission_periodic(
     form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD
 ) -> tuple[dict, dict, str, bool]:
     """Process form submission for periodic tasks and prepare data and files for sending."""
@@ -162,7 +162,7 @@ def process_form_submission_periodic(
         value = field.data
         item = field_name
         if isinstance(field, FileField):
-            handle_file_storage(value, data, files, temporarypath)
+            await handle_file_storage(value, data, files, temporarypath)
             continue
 
         if isinstance(field, FieldList):
@@ -178,16 +178,16 @@ def process_form_submission_periodic(
 
                     if isinstance(val, time):
                         val = str(val.strftime("%H:%M"))
-                    handle_other_data(key, val, data, system, typebot, bot_info, files)
+                    await handle_other_data(key, val, data, system, typebot, bot_info, files)
 
         elif isinstance(field, list):
             field_itens = list(field.data.items())
             for key, val in field_itens:
-                handle_file_list(key, val, data, files, temporarypath)
+                await handle_file_list(key, val, data, files, temporarypath)
             continue
 
         else:
-            handle_other_data(item, value, data, system, typebot, bot_info, files)
+            await handle_other_data(item, value, data, system, typebot, bot_info, files)
 
     return data, files, pid, True
 
@@ -215,10 +215,10 @@ async def process_form_submission(
             await handle_file_storage(value, data, files, temporarypath)
             continue
         if isinstance(value, list):
-            handle_file_list(item, value, data, files, temporarypath)
+            await handle_file_list(item, value, data, files, temporarypath)
             continue
 
-        handle_other_data(item, value, data, system, typebot, bot_info, files)
+        await handle_other_data(item, value, data, system, typebot, bot_info, files)
 
     return data, files, pid
 
@@ -264,7 +264,7 @@ async def handle_file_list(
             })
 
 
-def handle_other_data(
+async def handle_other_data(
     item: str,
     value: str,
     data: str,

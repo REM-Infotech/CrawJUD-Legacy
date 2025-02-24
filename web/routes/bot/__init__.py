@@ -118,7 +118,7 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             periodic_bot = False
             data = {}
             if form.periodic_task.data is True:
-                data, files, pid, periodic_bot = process_form_submission_periodic(form, system, typebot, bot_info)
+                data, files, pid, periodic_bot = await process_form_submission_periodic(form, system, typebot, bot_info)
 
             elif form.periodic_task.data is False:
                 data, files, pid = await process_form_submission(form, system, typebot, bot_info)
