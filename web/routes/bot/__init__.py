@@ -20,6 +20,7 @@ from quart import (
     url_for,
 )
 from quart import current_app as app
+from quart_wtf import QuartForm
 
 from web.decorators import login_required
 from web.models import BotsCrawJUD
@@ -113,7 +114,7 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             clients=clients,
             system=system,
         )
-        if await form.validate_on_submit():
+        if await QuartForm.validate_on_submit(form):
             periodic_bot = False
             data = {}
             if form.periodic_task.data is True:
@@ -122,16 +123,14 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             elif form.periodic_task.data is False:
                 data, files, pid = await process_form_submission(form, system, typebot, bot_info)
 
-            response = await make_response(
-                await send_data_to_servers(
-                    data,
-                    files,
-                    {
-                        "CONTENT_TYPE": request.content_type,
-                    },
-                    pid,
-                    periodic_bot,
-                )
+            response = await send_data_to_servers(
+                data,
+                files,
+                {
+                    "CONTENT_TYPE": request.content_type,
+                },
+                pid,
+                periodic_bot,
             )
             if response:
                 return response

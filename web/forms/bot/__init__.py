@@ -13,8 +13,6 @@ from wtforms import (
     BooleanField,
     DateField,
     EmailField,
-    FieldList,
-    FormField,
     SelectField,
     SelectMultipleField,
     StringField,
@@ -24,6 +22,8 @@ from wtforms import (
 from wtforms.validators import DataRequired, InputRequired
 from wtforms.widgets import CheckboxInput, ListWidget
 
+from web.custom.fields import QuartFieldList as FieldList
+from web.custom.fields import QuartFormField as FormField
 from web.types import AnyType, T
 
 permited_file = FileAllowed(["xlsx", "xls", "csv"], 'Apenas arquivos |".xlsx"/".xls"/".csv"| são permitidos!')
@@ -79,6 +79,8 @@ class PeriodicTaskFormGroup(QuartForm):
 class BotForm(QuartForm):
     """Form to configure and execute bot tasks with file uploads and dynamic selections."""
 
+    validate = QuartForm.validate
+
     xlsx = FileField(
         "Arquivo de execução",
         validators=[permited_file],
@@ -89,11 +91,22 @@ class BotForm(QuartForm):
     doc_parte = StringField("CPF/CNPJ da parte")
     polo_parte = SelectField(
         "Classificação (Autor/Réu)",
-        choices=[("", "Selecione"), ("autor", "Autor"), ("reu", "Réu")],
-        validators=[DataRequired(message="Você deve selecionar uma classificação.")],
+        choices=[
+            ("", "Selecione"),
+            ("autor", "Autor"),
+            ("reu", "Réu"),
+        ],
+        validators=[
+            DataRequired(message="Você deve selecionar uma classificação."),
+        ],
     )
 
-    data_inicio = DateField("Data de Início", default=datetime.now(pytz.timezone("Etc/GMT+4")))
+    data_inicio = DateField(
+        "Data de Início",
+        default=datetime.now(
+            pytz.timezone("Etc/GMT+4"),
+        ),
+    )
     data_fim = DateField("Data Fim", default=datetime.now(pytz.timezone("Etc/GMT+4")))
 
     otherfiles = MultipleFileField(

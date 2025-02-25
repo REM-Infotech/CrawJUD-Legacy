@@ -7,7 +7,6 @@ from datetime import date, datetime, time
 from pathlib import Path
 from typing import Any  # , AsyncGenerator
 
-import aiofile
 import aiofiles
 import httpx
 from flask_sqlalchemy import SQLAlchemy
@@ -21,7 +20,7 @@ from quart import (
     url_for,
 )
 from quart import current_app as app
-from werkzeug.datastructures import FileStorage
+from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
 
@@ -172,10 +171,10 @@ async def process_form_submission_periodic(
                         val = str(val.strftime("%H:%M"))
                     await handle_other_data(key, val, data, system, typebot, bot_info, files)
 
-        elif isinstance(field, list):
-            field_itens = list(field.data.items())
-            for key, val in field_itens:
-                await handle_file_list(key, val, data, files, temporarypath)
+        elif isinstance(field, list) and all(isinstance(val, FileStorage) for val in field.data):
+            for val in field.data:
+                await handle_file_storage(val, data, files, temporarypath)
+
             continue
 
         else:
@@ -206,8 +205,10 @@ async def process_form_submission(
         if isinstance(value, FileStorage):
             await handle_file_storage(value, data, files, temporarypath)
             continue
-        if isinstance(value, list):
-            await handle_file_list(item, value, data, files, temporarypath)
+        if isinstance(value, list) and all(isinstance(val, FileStorage) for val in value):
+            for val in value:
+                await handle_file_storage(val, data, files, temporarypath)
+
             continue
 
         await handle_other_data(item, value, data, system, typebot, bot_info, files)
@@ -233,34 +234,8 @@ async def handle_file_storage(value: FileStorage, data: dict, files: dict, tempo
             file_buffer.filename,
             file_buffer.stream,
             file_buffer.mimetype,
-            file_buffer.content_length,
         )
     })
-
-
-async def handle_file_list(
-    item: str,
-    value: FileStorage | str,
-    data: dict,
-    files: dict,
-    temporarypath: str | Path,
-) -> None:
-    """Handle list of files for form submission."""
-    if not isinstance(value[0], FileStorage):
-        data.update({item: value})
-        return
-
-    for filev in value:
-        if isinstance(filev, FileStorage):
-            await filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
-            buff = aiofile.async_open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
-            files.update({
-                secure_filename(filev.filename): (
-                    secure_filename(filev.filename),
-                    buff,
-                    filev.mimetype,
-                )
-            })
 
 
 async def handle_other_data(
@@ -348,18 +323,18 @@ async def send_data_to_servers(
             if data.get("periodic_task_group"):
                 data.pop("periodic_task_group")
 
-        kwargs = {
+        arguments = {
             "url": f"https://{server.address}{request_path}",
             "json": json.dumps(data),
         }
         if files:
-            kwargs.pop("json")
-            kwargs.update({"files": files, "data": data})
+            arguments.pop("json")
+            arguments.update({"files": files, "data": data})
 
         response = None
         with suppress(Exception):
             async with httpx.AsyncClient() as client:
-                response = await client.post(**kwargs, headers=headers)
+                response = await client.post(**arguments, headers=headers)
         if response:
             if response.status_code == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
