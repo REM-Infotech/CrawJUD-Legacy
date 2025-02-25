@@ -62,28 +62,20 @@ class MasterApp:
 
             choice = server_answer.get("application_list", "Back")
 
+            close_app_context = all([
+                choice == "Close Server",
+                self.current_menu_name != "Main Menu",
+            ])
+            close_server_context = all([
+                choice == "Close Server",
+                self.current_menu_name == "Main Menu",
+            ])
+
             if choice in menu:
                 self.current_menu_name = choice
                 self.current_menu = menu.get(choice)
 
-            if choice == "Close Server" or choice == "Back":
-                clear()
-
-                if choice == "Close Server":
-                    config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
-                    if config_exit.get("exit") is True:
-                        self.application.join()
-                        clear()
-                        tqdm.write("Server closed.")
-                    break
-
-                self.current_menu = self.main_menu
-                self.current_app = ""
-                self.current_choice = ""
-                self.current_menu_name = "Main Menu"
-                continue
-
-            if choice != "Close Server" and choice != "Back":
+            if close_app_context or choice != "Back" and self.current_menu_name != "Main Menu":
                 splited_currentmenuname = self.current_menu_name.split(" ")
                 self.current_app = splited_currentmenuname[0].lower()
                 if len(splited_currentmenuname) > 2:
@@ -96,6 +88,23 @@ class MasterApp:
                         self.returns_message_ = returns
 
                 choice = self.current_choice
+
+            elif close_server_context or choice == "Back":
+                clear()
+
+                if close_server_context:
+                    config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
+                    if config_exit.get("exit") is True:
+                        self.application.join()
+                        clear()
+                        tqdm.write("Server closed.")
+                    break
+
+                self.current_menu = self.main_menu
+                self.current_app = ""
+                self.current_choice = ""
+                self.current_menu_name = "Main Menu"
+                continue
 
     thead_io = None
     current_choice = ""

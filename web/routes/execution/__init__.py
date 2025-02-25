@@ -75,7 +75,8 @@ async def executions() -> Response:
             if not chk_admin:
                 executions = executions.join(Users, Executions.user).filter(Users.login == session["login"])
 
-        executions = executions.filter(Executions.pid.contains(pid))
+        if pid:
+            executions = executions.filter(Executions.pid.contains(pid))
         database = executions.all()
 
     except Exception:

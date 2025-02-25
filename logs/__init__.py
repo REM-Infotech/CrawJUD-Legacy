@@ -72,13 +72,17 @@ def log_cfg(
 
     if getenv("SERVER_MANAGEMENT"):
         config["handlers"]["stream"]["class"] = "logging.NullHandler"
-        config["handlers"]["socketio_handler"] = {
-            "class": "logs.handlers.SocketIOLogClientHandler",
-            "server_url": "http://localhost:7000",
+        config["handlers"]["redis_handler"] = {
+            "class": "logs.handlers.RedisHandler",
+            "uri": getenv("REDIS_URL", "redis://localhost:6379/0"),
             "level": "DEBUG",
-            "formatter": "default",
+            "formatter": "",
         }
-        config["root"]["handlers"].append("socketio_handler")
-        config["loggers"][logger_name]["handlers"].append("socketio_handler")
+        config["formatters"]["json"] = {
+            "()": "logs.handlers.JsonFormatter",
+        }
+        config["handlers"]["redis_handler"]["formatter"] = "json"
+        config["root"]["handlers"].append("redis_handler")
+        config["loggers"][logger_name]["handlers"].append("redis_handler")
 
     return config, logger_name

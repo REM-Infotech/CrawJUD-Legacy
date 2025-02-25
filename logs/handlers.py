@@ -1,63 +1,56 @@
-"""Handler for logs module."""
-
 import logging
-from os import getenv
-
-import socketio
-import tqdm
+import redis
+import json
 
 
-class SocketIOLogClientHandler(logging.Handler):
-    """Logging handler that sends log messages to a Socket.IO server."""
+class RedisHandler(logging.Handler):
+    """Custom logging handler to send logs to Redis."""
 
-    _app = getenv("APPLICATION_APP")
-    formatter: logging.Formatter = None
-    level: int = logging.INFO
-    server_url: str = "http://localhost:7000"
+    uri = "redis://localhost:6379"
+    db = 0
+    list_name = "logs"
 
     def __init__(
         self,
-        server_url: str = "http://localhost:7000",
-        *args: str | int,
-        **kwargs: str | int,
+        uri: str = "redis://localhost:6379",
+        db: int = 0,
+        list_name: str = "logs",
     ) -> None:
-        """Initialize the handler with the server URL."""
-        super().__init__()
-        self.sio = socketio.Client()
-        self.server_url = server_url
-        self._connect()
-        self.formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        """Initialize the RedisHandler.
 
-    def _connect(self) -> None:
-        try:
-            self.sio.connect(
-                url=self.server_url,
-                namespaces=[
-                    "/application_logs",
-                    f"/{self._app}",
-                ],
-                wait_timeout=5,
-            )
-        except Exception as e:
-            tqdm.write(f"SocketIO connection error: {e}")
+        Args:
+            uri (str, optional): The Redis URI. Defaults to "redis://localhost:6379".
+            db (int, optional): The Redis database. Defaults to 0.
+            list_name (str, optional): The name of the list where the logs will be stored in Redis. Defaults to "logs".
+
+        """
+        super().__init__()
+        self.uri = uri
+        self.db = db
+        self.list_name = list_name
+
+        self.client = redis.Redis.from_url(url=self.uri, db=self.db)  # Conexão com o Redis
+        self.list_name = list_name  # Nome da lista onde os logs serão armazenados no Redis
 
     def emit(self, record: logging.LogRecord) -> None:
-        """Emit the log message to the server via Socket.IO."""
+        """Emit the log record to Redis."""
         try:
-            dict_record = list(record.__dict__.items())
-            not_formated = {}
-            for key, value in dict_record:
-                try:
-                    not_formated.update({
-                        key: str(value),
-                    })
-                except Exception as e:
-                    tqdm.write(f"Error: {e}")
-                    continue
-            msg = self.format(record)
-
-            data = {"message": msg}
-            data.update(not_formated)
-            self.sio.emit(f"{self._app}_logs", data=data, namespace=f"/{self._app}")
+            log_entry = self.format(record)  # Formata o log conforme configurado
+            self.client.rpush(self.list_name, log_entry)  # Adiciona à lista no Redis
         except Exception:
-            self.handleError(record)
+            self.handleError(record)  # Captura erros ao salvar no Redis
+
+
+# Criar o formato JSON para o log
+class JsonFormatter(logging.Formatter):
+    """Json Formatter for logging."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format the log record to JSON."""
+        log_data = {
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "time": self.formatTime(record, "%Y-%m-%d %H:%M:%S"),
+            "module": record.module,
+        }
+        return json.dumps(log_data)

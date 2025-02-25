@@ -4,10 +4,31 @@ This module sets up a Socket.IO client that listens to logging events from
 various services (web, worker, beat) and prints them using tqdm.
 """
 
+from typing import Any
+
+from pynput.keyboard import Key, Listener
 from socketio import Client
 from tqdm import tqdm
 
 io = Client()
+
+
+def watch_input() -> bool:
+    """Watch for keyboard input."""
+    pressed = False
+
+    def on_press(key: Any) -> None | bool:
+        """Handle key press events."""
+        nonlocal pressed
+
+        if key == Key.esc:
+            pressed = True
+            return False
+
+    with Listener(on_press=on_press) as listener:
+        listener.join()
+
+    return pressed
 
 
 @io.on("quart_logs_web", namespace="/quart_web")

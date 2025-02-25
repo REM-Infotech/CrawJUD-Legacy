@@ -2,13 +2,13 @@
 
 from pathlib import Path  # noqa: F401
 
-import keyboard  # type: ignore # noqa: PGH003
+import clear
 from billiard.context import Process
 from tqdm import tqdm
 
 from server.config import StoreProcess, running_servers
 
-from .io_client import io
+from .io_client import io, watch_input
 
 
 async def status() -> None:
@@ -16,12 +16,13 @@ async def status() -> None:
     if not running_servers.get("Quart"):
         return ["Server not running.", "ERROR", "red"]
 
-    tqdm.write("Type 'E' to exit.")
+    clear.clear()
+    tqdm.write("Type 'ESC' to exit.")
 
     io.connect("http://localhost:7000", namespaces=["/quart_web"])
-    while True:
-        if keyboard.read_key().lower() == "e":
-            break
+    while not watch_input():
+        ...
+
     io.disconnect()
 
     return ["Exiting logs.", "INFO", "yellow"]

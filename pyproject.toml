@@ -70,6 +70,7 @@ dependencies = [
     "waitress (>=3.0.2,<4.0.0)",
     "quart-login @ git+https://github.com/0000matteo0000/quart-login.git",
     "quart-wtforms (>=1.0.3,<2.0.0)",
+    "pynput (>=1.7.7,<2.0.0)",
 ]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
