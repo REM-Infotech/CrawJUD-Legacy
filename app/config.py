@@ -12,6 +12,8 @@ from dotenv_vault import load_dotenv
 
 load_dotenv()
 
+workdir = Path(__file__).cwd().resolve()
+
 
 class Config:
     """Base configuration class."""
@@ -57,8 +59,8 @@ class Config:
     SESSION_COOKIE_SECURE: type[bool] = True
     PERMANENT_SESSION_LIFETIME: type[int] = timedelta(days=31).max.seconds
 
-    TEMP_PATH: Path = Path(__file__).cwd().joinpath("bot/temp").resolve()
-    ARCHIVES: Path = Path(__file__).cwd().joinpath("bot/Archives").resolve()
+    TEMP_PATH: Path = workdir.joinpath("bot/temp").resolve()
+    ARCHIVES: Path = workdir.joinpath("bot/Archives").resolve()
     TEMP_PATH.mkdir(exist_ok=True)
     ARCHIVES.mkdir(exist_ok=True)
 
@@ -72,7 +74,7 @@ class Config:
     BROKER_DATABASE: type[int] = 1
     RESULT_BACKEND_DATABASE: type[int] = 2
 
-    ARCHIVES_PATH = str(Path(__file__).cwd().joinpath("Archives"))
+    ARCHIVES_PATH = str(workdir.joinpath("Archives"))
     resolved_archives = Path(ARCHIVES_PATH).resolve()
 
     PDF_PATH = str(resolved_archives.joinpath("PDF"))
@@ -81,7 +83,7 @@ class Config:
     IMAGE_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "IMG"))
     CSV_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "csv"))
     PDF_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "pdf"))
-    SRC_IMG_PATH = str(Path(__file__).cwd().resolve().joinpath("web", "src", "assets", "img"))
+    SRC_IMG_PATH = str(workdir.joinpath("web", "src", "assets", "img"))
 
     Path(ARCHIVES_PATH).mkdir(exist_ok=True)
 
