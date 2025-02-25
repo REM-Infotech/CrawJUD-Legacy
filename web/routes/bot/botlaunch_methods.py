@@ -9,7 +9,7 @@ from typing import Any  # , AsyncGenerator
 
 import aiofile
 import aiofiles
-import aiohttp
+import httpx
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Response,
@@ -219,8 +219,7 @@ async def handle_file_storage(value: FileStorage, data: dict, files: dict, tempo
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
     path_save = Path(temporarypath).joinpath(secure_filename(value.filename))
-    # if iscoroutinefunction(value.save):
-    #     await value.save(path_save)
+    await value.save(path_save)
 
     async with aiofiles.open(path_save, "rb") as f:
         file_buffer = FileStorage(
@@ -356,13 +355,13 @@ async def send_data_to_servers(
         if files:
             kwargs.pop("json")
             kwargs.update({"files": files, "data": data})
+
         response = None
         with suppress(Exception):
-            async with aiohttp.ClientSession() as sess:
-                async with sess.post(**kwargs, headers=headers) as resp:
-                    response = resp.status
+            async with httpx.AsyncClient() as client:
+                response = await client.post(**kwargs, headers=headers)
         if response:
-            if resp.status == 200:
+            if response.status_code == 200:
                 message = f"Execução iniciada com sucesso! PID: {pid}"
                 await flash(message, "success")
 
@@ -383,8 +382,6 @@ async def send_data_to_servers(
                         ),
                     ),
                 )
-            if resp.status == 500:
-                pass
     await flash("Erro ao iniciar robô", "error")
     return None
 

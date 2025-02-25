@@ -23,6 +23,7 @@ binds = Union[
     ListType,
     DictType,
 ]
+DataStores = TypeVar("DataStores", bound=datastores)
 AnyType = TypeVar("AnyType", bound=binds)
 WrappedFnReturnT = TypeVar("WrappedFnReturnT")
 AnyStr = TypeVar("AnyStr", bound=strings)
