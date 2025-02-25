@@ -42,19 +42,8 @@ class CredentialsForm(QuartForm):
 
     submit = SubmitField("Salvar")
 
-    def __init__(self, *args: str, **kwargs: str) -> None:
-        """Initialize the CredentialsForm.
-
-        Optionally extend the 'system' field choices if provided.
-        """
-        super().__init__(*args, **kwargs)
-
-        systems = kwargs.get("system")
-        if systems:
-            self.system.choices.extend(systems)
-
     @classmethod
-    async def create_form(
+    async def create_form2(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -64,7 +53,7 @@ class CredentialsForm(QuartForm):
         **kwargs: AnyType,
     ) -> T:
         """Create a form instance."""
-        return await super().create_form(
+        self: CredentialsForm = await cls.create_form(
             formdata,
             obj,
             prefix,
@@ -72,3 +61,9 @@ class CredentialsForm(QuartForm):
             meta,
             **kwargs,
         )
+
+        systems = kwargs.get("system")
+        if systems:
+            self.system.choices.extend(systems)
+
+        return self

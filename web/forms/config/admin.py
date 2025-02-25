@@ -42,17 +42,26 @@ class UserForm(QuartForm):
     )
     submit = SubmitField(label="Salvar Alterações")
 
-    def __init__(self, licenses_add: list = None, *args: tuple, **kwargs: dict) -> None:
-        """Initialize the user form with optional licensing choices.
-
-        Args:
-            licenses_add (list, optional): A list of license objects to add. Defaults to None.
-            *args (tuple): Variable length argument list.
-            **kwargs (dict): Arbitrary keyword arguments.
-
-        """
-        super().__init__(*args, **kwargs)
-
+    @classmethod
+    async def create_form2(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        self: UserForm = await cls.create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
+        licenses_add = kwargs.get("licenses")
         if licenses_add:
             licenses = []
             for lcs in licenses_add:
@@ -64,25 +73,7 @@ class UserForm(QuartForm):
         elif licenses_add is None:
             del self.licenses
 
-    @classmethod
-    async def create_form(
-        cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
-    ) -> T:
-        """Create a form instance."""
-        return await super().create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
-            **kwargs,
-        )
+        return self
 
 
 class UserFormEdit(QuartForm):
@@ -108,17 +99,27 @@ class UserFormEdit(QuartForm):
     )
     submit = SubmitField(label="Salvar Alterações")
 
-    def __init__(self, licenses_add: list = None, *args: tuple, **kwargs: dict) -> None:
-        """Initialize the edit form with optional licensing choices.
+    @classmethod
+    async def create_form2(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        self: UserForm = await cls.create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
 
-        Args:
-            licenses_add (list, optional): A list of license objects to add. Defaults to None.
-            *args (tuple): Variable length argument list.
-            **kwargs (dict): Arbitrary keyword arguments.
-
-
-        """
-        super().__init__(*args, **kwargs)
+        licenses_add = kwargs.get("licenses")
 
         if licenses_add:
             licenses = []
@@ -131,22 +132,4 @@ class UserFormEdit(QuartForm):
         elif licenses_add is None:
             del self.licenses
 
-    @classmethod
-    async def create_form(
-        cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
-    ) -> T:
-        """Create a form instance."""
-        return await super().create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
-            **kwargs,
-        )
+        return self

@@ -15,19 +15,8 @@ class ClienteForm:
     cpf_cnpj = StringField(label="CPF/CNPJ", validators=[DataRequired()])
     submit = SubmitField(label="Salvar Alterações")
 
-    def __init__(
-        self,
-        *args: AnyType,
-        **kwargs: AnyType,
-    ) -> None:
-        """Initialize the form."""
-        super().__init__(
-            *args,
-            **kwargs,
-        )
-
     @classmethod
-    async def create_form(
+    async def create_form2(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -37,7 +26,7 @@ class ClienteForm:
         **kwargs: AnyType,
     ) -> T:
         """Create a form instance."""
-        return await super().create_form(
+        return await cls.create_form(
             formdata,
             obj,
             prefix,
@@ -54,19 +43,8 @@ class BotLicenseAssociationForm:
     license_client = SelectField(label="Cliente", validators=[DataRequired()], choices=[("", "Selecione")])
     submit = SubmitField(label="Salvar Alterações")
 
-    def __init__(
-        self,
-        *args: AnyType,
-        **kwargs: AnyType,
-    ) -> None:
-        """Initialize the form."""
-        super().__init__(
-            *args,
-            **kwargs,
-        )
-
     @classmethod
-    async def create_form(
+    async def create_form2(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -76,7 +54,7 @@ class BotLicenseAssociationForm:
         **kwargs: AnyType,
     ) -> T:
         """Create a form instance."""
-        return await super().create_form(
+        return await cls.create_form(
             formdata,
             obj,
             prefix,

@@ -46,9 +46,9 @@ async def login() -> Response:
         Response: HTTP response redirecting on success or rendering the login template.
 
     """
-    form = await LoginForm.create_form()
+    form = await LoginForm.create_form2()
 
-    if form.validate_on_submit():
+    if await form.validate_on_submit():
         usr = Users.query.filter(Users.login == form.login.data).first()
         if usr is None or not usr.check_password(form.password.data):
             await flash("Senha incorreta!", "error")

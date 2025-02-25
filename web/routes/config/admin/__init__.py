@@ -66,7 +66,7 @@ async def cadastro_user() -> Response:
             )
 
         title = "Cadastro Usuário"
-        form: UserForm = await UserForm.create_form()
+        form: UserForm = await UserForm.create_form2()
         page = "FormUsr.html"
 
         user = Users.query.filter(Users.login == session["login"]).first()
@@ -81,7 +81,7 @@ async def cadastro_user() -> Response:
             for lcs in licenses_result:
                 licenses.append((str(lcs.license_token), str(lcs.name_client)))
 
-            form = await UserForm.create_form(licenses_add=licenses_result)
+            form = await UserForm.create_form2(licenses_add=licenses_result)
 
         if form.validate_on_submit():
             user = Users(

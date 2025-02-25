@@ -17,29 +17,18 @@ class LoginForm(QuartForm):
     remember_me = BooleanField("Manter sessão")
     submit = SubmitField("Entrar")
 
-    def __init__(
-        self,
-        *args: AnyType,
-        **kwargs: AnyType,
-    ) -> None:
-        """Initialize the form."""
-        super().__init__(
-            *args,
-            **kwargs,
-        )
-
     @classmethod
-    async def create_form(
+    async def create_form2(
         cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
+        formdata: Type[AnyType] = ...,
+        obj: Type[AnyType] = None,
+        prefix: Type[AnyType] = "",
+        data: Type[AnyType] = None,
+        meta: Type[AnyType] = None,
+        **kwargs: Type[AnyType],
     ) -> T:
         """Create a form instance."""
-        return await super().create_form(
+        return await cls.create_form(
             formdata,
             obj,
             prefix,

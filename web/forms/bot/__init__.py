@@ -137,21 +137,25 @@ class BotForm(QuartForm):
 
     submit = SubmitField("Iniciar Execução")
 
-    def __init__(
-        self,
-        *args: AnyType,
+    @classmethod
+    async def create_form2(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
         **kwargs: AnyType,
-    ) -> None:
-        """Initialize the BotForm with dynamic field validation and choice population.
-
-        Args:
-            dynamic_fields (list, optional): List of fields to retain. Defaults to None.
-            *args (tuple): Variable length argument list.
-            **kwargs (dict): Arbitrary keyword arguments.
-
-        """
-        super().__init__(*args, **kwargs)
-
+    ) -> T:
+        """Create a form instance."""
+        self: BotForm = await cls.create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
         dynamic_fields: list[str] | None = kwargs.get("dynamic_fields")
 
         # Remover os campos que não estão na lista de fields dinâmicos
@@ -177,36 +181,18 @@ class BotForm(QuartForm):
                                 },
                             ))
 
-        self.varas.choices.extend(choices)
-        # Se tiver 'state' e 'creds' no kwargs, popular as escolhas
-        if kwargs.get("state"):
-            self.state.choices.extend(kwargs.get("state"))
+            self.varas.choices.extend(choices)
+            # Se tiver 'state' e 'creds' no kwargs, popular as escolhas
+            if kwargs.get("state"):
+                self.state.choices.extend(kwargs.get("state"))
 
-        if kwargs.get("clients"):
-            self.client.choices.extend(kwargs.get("clients"))
+            if kwargs.get("clients"):
+                self.client.choices.extend(kwargs.get("clients"))
 
-        if kwargs.get("creds"):
-            self.creds.choices.extend(kwargs.get("creds"))
+            if kwargs.get("creds"):
+                self.creds.choices.extend(kwargs.get("creds"))
 
-    @classmethod
-    async def create_form(
-        cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
-    ) -> T:
-        """Create a form instance."""
-        return await super().create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
-            **kwargs,
-        )
+        return self
 
 
 class SearchExec(QuartForm):
@@ -215,19 +201,8 @@ class SearchExec(QuartForm):
     campo_busca = StringField("Buscar Execução")
     submit = SubmitField("Buscar")
 
-    def __init__(
-        self,
-        *args: AnyType,
-        **kwargs: AnyType,
-    ) -> None:
-        """Initialize the form."""
-        super().__init__(
-            *args,
-            **kwargs,
-        )
-
     @classmethod
-    async def create_form(
+    async def create_form2(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -237,7 +212,7 @@ class SearchExec(QuartForm):
         **kwargs: AnyType,
     ) -> T:
         """Create a form instance."""
-        return await super().create_form(
+        return await cls.create_form(
             formdata,
             obj,
             prefix,
@@ -260,19 +235,8 @@ class AddBot(QuartForm):
     text = StringField("Texto")
     submit = SubmitField("Adicionar Robô")
 
-    def __init__(
-        self,
-        *args: AnyType,
-        **kwargs: AnyType,
-    ) -> None:
-        """Initialize the form."""
-        super().__init__(
-            *args,
-            **kwargs,
-        )
-
     @classmethod
-    async def create_form(
+    async def create_form2(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -282,7 +246,7 @@ class AddBot(QuartForm):
         **kwargs: AnyType,
     ) -> T:
         """Create a form instance."""
-        return await super().create_form(
+        return await cls.create_form(
             formdata,
             obj,
             prefix,
