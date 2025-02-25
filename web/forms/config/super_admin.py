@@ -1,7 +1,11 @@
 """Module for super_admin form configurations."""
 
+from typing import Type
+
 from wtforms import SelectField, SelectMultipleField, StringField, SubmitField
 from wtforms.validators import DataRequired
+
+from web.types import AnyType, T
 
 
 class ClienteForm:
@@ -11,6 +15,37 @@ class ClienteForm:
     cpf_cnpj = StringField(label="CPF/CNPJ", validators=[DataRequired()])
     submit = SubmitField(label="Salvar Alterações")
 
+    def __init__(
+        self,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
+        """Initialize the form."""
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
+
 
 class BotLicenseAssociationForm:
     """Form for associating bots with a license."""
@@ -18,3 +53,34 @@ class BotLicenseAssociationForm:
     bot = SelectMultipleField(label="Bots", validators=[DataRequired()], choices=[("", "Selecione")])
     license_client = SelectField(label="Cliente", validators=[DataRequired()], choices=[("", "Selecione")])
     submit = SubmitField(label="Salvar Alterações")
+
+    def __init__(
+        self,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
+        """Initialize the form."""
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )

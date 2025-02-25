@@ -7,7 +7,6 @@ import os
 import pathlib
 from importlib import import_module
 
-
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,

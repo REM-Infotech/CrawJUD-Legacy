@@ -12,7 +12,6 @@ from collections import Counter
 from datetime import datetime
 
 import pandas as pd
-
 from deep_translator import GoogleTranslator
 from quart import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 

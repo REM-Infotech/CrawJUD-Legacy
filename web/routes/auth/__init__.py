@@ -4,7 +4,6 @@ import json
 import os
 import pathlib
 
-
 from flask_login import login_user, logout_user
 from quart import (
     Blueprint,
@@ -47,7 +46,7 @@ async def login() -> Response:
         Response: HTTP response redirecting on success or rendering the login template.
 
     """
-    form = LoginForm()
+    form = await LoginForm.create_form()
 
     if form.validate_on_submit():
         usr = Users.query.filter(Users.login == form.login.data).first()

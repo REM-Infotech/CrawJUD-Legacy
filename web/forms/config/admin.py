@@ -1,13 +1,17 @@
 """Module for admin user forms with validations and dynamic choices for licensing and user types."""
 
-from flask_wtf import FlaskForm
+from typing import Type
+
+from quart_wtf import QuartForm
 from wtforms import BooleanField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, Length
+
+from web.types import AnyType, T
 
 from ..validators import NotSelecioneValidator
 
 
-class UserForm(FlaskForm):
+class UserForm(QuartForm):
     """Form for creating a user with license selection and user type management."""
 
     nome_usuario = StringField(label="Nome", validators=[DataRequired()])
@@ -60,8 +64,28 @@ class UserForm(FlaskForm):
         elif licenses_add is None:
             del self.licenses
 
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
 
-class UserFormEdit(FlaskForm):
+
+class UserFormEdit(QuartForm):
     """Form for editing user details with dynamic licensing options."""
 
     nome_usuario = StringField(label="Nome", validators=[DataRequired()])
@@ -106,3 +130,23 @@ class UserFormEdit(FlaskForm):
 
         elif licenses_add is None:
             del self.licenses
+
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )

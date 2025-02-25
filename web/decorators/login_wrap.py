@@ -3,7 +3,6 @@
 from functools import wraps
 from typing import Callable
 
-
 from flask_login.config import EXEMPT_METHODS
 from quart import (
     current_app,

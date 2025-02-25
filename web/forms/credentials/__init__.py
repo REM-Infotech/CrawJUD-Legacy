@@ -1,14 +1,18 @@
 """Module for credential forms handling certificate and password authentication."""
 
-from flask_wtf import FlaskForm
+from typing import Type
+
 from flask_wtf.file import FileAllowed, FileField
+from quart_wtf import QuartForm
 from wtforms import PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
+
+from web.types import AnyType, T
 
 file_allowed = FileAllowed(["pfx", 'Apenas arquivos ".pfx" são permitidos!'])
 
 
-class CredentialsForm(FlaskForm):
+class CredentialsForm(QuartForm):
     """Form for handling credentials including certificate and login/password methods."""
 
     nome_cred = StringField("Nome da credencial", validators=[DataRequired("Informe o nome de referência!")])
@@ -43,8 +47,28 @@ class CredentialsForm(FlaskForm):
 
         Optionally extend the 'system' field choices if provided.
         """
-        super(CredentialsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         systems = kwargs.get("system")
         if systems:
             self.system.choices.extend(systems)
+
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )

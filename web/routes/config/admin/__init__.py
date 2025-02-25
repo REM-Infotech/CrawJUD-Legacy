@@ -4,7 +4,6 @@ import os
 import pathlib
 from typing import Dict
 
-
 from flask_sqlalchemy import SQLAlchemy
 from quart import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
 from quart import current_app as app
@@ -67,7 +66,7 @@ async def cadastro_user() -> Response:
             )
 
         title = "Cadastro Usuário"
-        form = UserForm()
+        form: UserForm = await UserForm.create_form()
         page = "FormUsr.html"
 
         user = Users.query.filter(Users.login == session["login"]).first()
@@ -82,7 +81,7 @@ async def cadastro_user() -> Response:
             for lcs in licenses_result:
                 licenses.append((str(lcs.license_token), str(lcs.name_client)))
 
-            form = UserForm(licenses_add=licenses_result)
+            form = await UserForm.create_form(licenses_add=licenses_result)
 
         if form.validate_on_submit():
             user = Users(

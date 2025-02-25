@@ -8,7 +8,6 @@ import pathlib
 from collections import Counter
 
 import aiofiles
-
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,

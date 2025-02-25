@@ -1,11 +1,15 @@
 """Module for form definitions used in the application.
 
-Provides various FlaskForm subclasses.
+Provides various QuartForm subclasses.
 """
 
-from flask_wtf import FlaskForm
+from typing import Type
+
 from flask_wtf.file import FileAllowed, FileField, FileRequired
+from quart_wtf import QuartForm
 from wtforms import SubmitField
+
+from web.types import AnyType, T
 
 from .auth import LoginForm
 from .bot import BotForm, SearchExec
@@ -27,7 +31,7 @@ __all__ = [
 permited_file = FileAllowed(["xlsx", "xls"], 'Apenas arquivos ".xlsx" são permitidos!')
 
 
-class IMPORTForm(FlaskForm):
+class IMPORTForm(QuartForm):
     """Form for file importation.
 
     Attributes:
@@ -41,3 +45,34 @@ class IMPORTForm(FlaskForm):
         validators=[FileRequired(), permited_file],
     )
     submit = SubmitField(label="Importar")
+
+    def __init__(
+        self,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
+        """Initialize the form."""
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )

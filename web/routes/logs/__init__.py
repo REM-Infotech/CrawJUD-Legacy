@@ -9,7 +9,6 @@ import os
 import pathlib
 
 import httpx as requests
-
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,

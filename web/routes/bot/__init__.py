@@ -39,14 +39,6 @@ path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates
 bot = Blueprint("bot", __name__, template_folder=path_template)
 
 
-@bot.before_request
-async def awaited_request():
-    if request.method == "POST":
-        form = await request.form
-        files = await request.files
-        pass
-
-
 @bot.route("/get_model/<id_>/<system>/<typebot>/<filename>", methods=["GET"])
 async def get_model(id_: int, system: str, typebot: str, filename: str) -> Response:
     """Retrieve a model file for the specified bot.
@@ -114,14 +106,14 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
 
         states, clients, credts, form_config = get_form_data(db, system, typebot, bot_info)
 
-        form = BotForm(
+        form = await BotForm.create_form(
             dynamic_fields=form_config,
             state=states,
             creds=credts,
             clients=clients,
             system=system,
         )
-        if form.validate_on_submit():
+        if await form.validate_on_submit():
             periodic_bot = False
             data = {}
             if form.periodic_task.data is True:

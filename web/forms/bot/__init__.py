@@ -4,11 +4,11 @@ import json
 import os
 import pathlib
 from datetime import datetime
+from typing import Type
 
 import pytz
-from quart import request
-from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField, MultipleFileField
+from quart_wtf import QuartForm
 from wtforms import (
     BooleanField,
     DateField,
@@ -24,11 +24,32 @@ from wtforms import (
 from wtforms.validators import DataRequired, InputRequired
 from wtforms.widgets import CheckboxInput, ListWidget
 
+from web.types import AnyType, T
+
 permited_file = FileAllowed(["xlsx", "xls", "csv"], 'Apenas arquivos |".xlsx"/".xls"/".csv"| são permitidos!')
 permited_file2 = FileAllowed(["pdf", "jpg", "jpeg"], 'Apenas arquivos |".pdf"/".jpg"/".jpeg"| são permitidos!')
 
 
-class PeriodicTaskFormGroup(FlaskForm):
+def varas() -> dict[str, dict[str, dict[str, dict[str, str]]]]:
+    """Load and return a dictionary of varas data from a JSON file.
+
+    Returns:
+        dict[str, dict[str, dict[str, dict[str, str]]]]: Nested dictionary of varas.
+
+    """
+    file_p = pathlib.Path(__file__).parent.resolve()
+    file_json = os.path.join(file_p, "varas.json")
+
+    dict_files = {}
+
+    with open(file_json, "rb") as f:
+        obj = f.read()
+        dict_files = json.loads(obj)
+
+    return dict_files
+
+
+class PeriodicTaskFormGroup(QuartForm):
     """Form to configure periodic task execution with dynamic field validation."""
 
     task_name = StringField("Nome da tarefa")
@@ -55,7 +76,7 @@ class PeriodicTaskFormGroup(FlaskForm):
     email_notify = EmailField("E-mail para notificação")
 
 
-class BotForm(FlaskForm):
+class BotForm(QuartForm):
     """Form to configure and execute bot tasks with file uploads and dynamic selections."""
 
     xlsx = FileField(
@@ -116,7 +137,11 @@ class BotForm(FlaskForm):
 
     submit = SubmitField("Iniciar Execução")
 
-    def __init__(self, dynamic_fields: list[str] = None, *args: tuple, **kwargs: dict[str, any]) -> None:
+    def __init__(
+        self,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
         """Initialize the BotForm with dynamic field validation and choice population.
 
         Args:
@@ -125,7 +150,9 @@ class BotForm(FlaskForm):
             **kwargs (dict): Arbitrary keyword arguments.
 
         """
-        super(BotForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+        dynamic_fields: list[str] | None = kwargs.get("dynamic_fields")
 
         # Remover os campos que não estão na lista de fields dinâmicos
         if dynamic_fields:
@@ -161,37 +188,66 @@ class BotForm(FlaskForm):
         if kwargs.get("creds"):
             self.creds.choices.extend(kwargs.get("creds"))
 
-    def validate_on_submit(self, extra_validators=None):
-        return super().validate_on_submit(extra_validators)
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
 
 
-class SearchExec(FlaskForm):
+class SearchExec(QuartForm):
     """Form to search within bot executions by execution field."""
 
     campo_busca = StringField("Buscar Execução")
     submit = SubmitField("Buscar")
 
+    def __init__(
+        self,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
+        """Initialize the form."""
+        super().__init__(
+            *args,
+            **kwargs,
+        )
 
-def varas() -> dict[str, dict[str, dict[str, dict[str, str]]]]:
-    """Load and return a dictionary of varas data from a JSON file.
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )
 
-    Returns:
-        dict[str, dict[str, dict[str, dict[str, str]]]]: Nested dictionary of varas.
 
-    """
-    file_p = pathlib.Path(__file__).parent.resolve()
-    file_json = os.path.join(file_p, "varas.json")
-
-    dict_files = {}
-
-    with open(file_json, "rb") as f:
-        obj = f.read()
-        dict_files = json.loads(obj)
-
-    return dict_files
-
-
-class AddBot(FlaskForm):
+class AddBot(QuartForm):
     """Form to add a new bot configuration with various selection options."""
 
     display_name = StringField("Nome do Robô")
@@ -203,3 +259,34 @@ class AddBot(FlaskForm):
     classification = SelectField("Classificação", choices=[])
     text = StringField("Texto")
     submit = SubmitField("Adicionar Robô")
+
+    def __init__(
+        self,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
+        """Initialize the form."""
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
+    @classmethod
+    async def create_form(
+        cls: Type[T],
+        formdata: AnyType = ...,
+        obj: AnyType = None,
+        prefix: AnyType = "",
+        data: AnyType = None,
+        meta: AnyType = None,
+        **kwargs: AnyType,
+    ) -> T:
+        """Create a form instance."""
+        return await super().create_form(
+            formdata,
+            obj,
+            prefix,
+            data,
+            meta,
+            **kwargs,
+        )

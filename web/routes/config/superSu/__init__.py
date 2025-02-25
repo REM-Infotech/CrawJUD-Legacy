@@ -4,7 +4,6 @@ import os
 import pathlib
 from importlib import import_module
 
-
 from quart import Blueprint, Response, abort, make_response, render_template
 
 from web.decorators import login_required
