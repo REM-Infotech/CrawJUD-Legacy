@@ -22,6 +22,7 @@ from wtforms import (
 from wtforms.validators import DataRequired, InputRequired
 from wtforms.widgets import CheckboxInput, ListWidget
 
+from web.custom.fields import QuartBaseForm as BaseForm  # noqa: F401
 from web.custom.fields import QuartFieldList as FieldList
 from web.custom.fields import QuartFormField as FormField
 from web.types import AnyType, T
@@ -78,8 +79,6 @@ class PeriodicTaskFormGroup(QuartForm):
 
 class BotForm(QuartForm):
     """Form to configure and execute bot tasks with file uploads and dynamic selections."""
-
-    validate = QuartForm.validate
 
     xlsx = FileField(
         "Arquivo de execução",
@@ -146,7 +145,10 @@ class BotForm(QuartForm):
         "Execução periódica (experimental).",
     )
 
-    periodic_task_group = FieldList(FormField(PeriodicTaskFormGroup), min_entries=1)
+    periodic_task_group = FieldList(
+        FormField(PeriodicTaskFormGroup),
+        min_entries=1,
+    )
 
     submit = SubmitField("Iniciar Execução")
 
