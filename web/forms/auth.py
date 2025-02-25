@@ -20,19 +20,11 @@ class LoginForm(QuartForm):
     @classmethod
     async def create_form2(
         cls: Type[T],
-        formdata: Type[AnyType] = ...,
-        obj: Type[AnyType] = None,
-        prefix: Type[AnyType] = "",
-        data: Type[AnyType] = None,
-        meta: Type[AnyType] = None,
+        *args: AnyType,
         **kwargs: Type[AnyType],
     ) -> T:
         """Create a form instance."""
         return await cls.create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
+            *args,
             **kwargs,
         )

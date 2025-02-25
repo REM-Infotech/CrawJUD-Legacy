@@ -45,20 +45,12 @@ class UserForm(QuartForm):
     @classmethod
     async def create_form2(
         cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
+        *args: AnyType,
+        **kwargs: Type[AnyType],
     ) -> T:
         """Create a form instance."""
         self: UserForm = await cls.create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
+            *args,
             **kwargs,
         )
         licenses_add = kwargs.get("licenses")
@@ -102,20 +94,12 @@ class UserFormEdit(QuartForm):
     @classmethod
     async def create_form2(
         cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
+        *args: AnyType,
+        **kwargs: Type[AnyType],
     ) -> T:
         """Create a form instance."""
-        self: UserForm = await cls.create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
+        self: UserFormEdit = await cls.create_form(
+            *args,
             **kwargs,
         )
 

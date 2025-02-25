@@ -46,19 +46,11 @@ class BotLicenseAssociationForm:
     @classmethod
     async def create_form2(
         cls: Type[T],
-        formdata: AnyType = ...,
-        obj: AnyType = None,
-        prefix: AnyType = "",
-        data: AnyType = None,
-        meta: AnyType = None,
-        **kwargs: AnyType,
+        *args: AnyType,
+        **kwargs: Type[AnyType],
     ) -> T:
         """Create a form instance."""
         return await cls.create_form(
-            formdata,
-            obj,
-            prefix,
-            data,
-            meta,
+            *args,
             **kwargs,
         )
