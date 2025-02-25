@@ -58,16 +58,16 @@ class MasterApp:
             server_answer = inquirer.prompt([self.current_menu])
 
             if server_answer is None:
-                server_answer = {"application_list": "Shutdown App"}
+                server_answer = {"application_list": "Close Server"}
 
             choice = server_answer.get("application_list", "Back")
 
             close_app_context = all([
-                choice == "Shutdown App",
+                choice == "Close Server",
                 self.current_menu_name != "Main Menu",
             ])
             close_server_context = all([
-                choice == "Shutdown App",
+                choice == "Close Server",
                 self.current_menu_name == "Main Menu",
             ])
 
