@@ -1,6 +1,5 @@
 """Module for schedule executions page."""
 
-import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import Response, abort, make_response, render_template, session
 from quart import current_app as app

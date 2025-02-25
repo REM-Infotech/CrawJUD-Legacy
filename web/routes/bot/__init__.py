@@ -2,9 +2,9 @@
 
 import os
 import pathlib
+import sys  # noqa: F401
 import traceback
 
-import quart_flask_patch  # noqa: F401
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
@@ -37,6 +37,14 @@ from .botlaunch_methods import (
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 bot = Blueprint("bot", __name__, template_folder=path_template)
+
+
+@bot.before_request
+async def awaited_request():
+    if request.method == "POST":
+        form = await request.form
+        files = await request.files
+        pass
 
 
 @bot.route("/get_model/<id_>/<system>/<typebot>/<filename>", methods=["GET"])
@@ -113,18 +121,25 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             clients=clients,
             system=system,
         )
-
         if form.validate_on_submit():
             periodic_bot = False
             data = {}
             if form.periodic_task.data is True:
-                data, files, pid, periodic_bot = process_form_submission_periodic(form, system, typebot, bot_info)
+                data, files, pid, periodic_bot = await process_form_submission_periodic(form, system, typebot, bot_info)
 
             elif form.periodic_task.data is False:
-                data, files, pid = process_form_submission(form, system, typebot, bot_info)
+                data, files, pid = await process_form_submission(form, system, typebot, bot_info)
 
             response = await make_response(
-                send_data_to_servers(data, files, {"CONTENT_TYPE": request.environ["CONTENT_TYPE"]}, pid, periodic_bot)
+                await send_data_to_servers(
+                    data,
+                    files,
+                    {
+                        "CONTENT_TYPE": request.content_type,
+                    },
+                    pid,
+                    periodic_bot,
+                )
             )
             if response:
                 return response

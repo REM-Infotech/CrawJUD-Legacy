@@ -7,7 +7,7 @@ import os
 import pathlib
 from importlib import import_module
 
-import quart_flask_patch  # noqa: F401
+
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,

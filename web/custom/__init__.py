@@ -1,6 +1,5 @@
 """Flask-Login for Quart."""
 
-import quart_flask_patch  # noqa: F401
 from flask_login import LoginManager
 from flask_login.config import (
     USE_SESSION_FOR_NEXT,

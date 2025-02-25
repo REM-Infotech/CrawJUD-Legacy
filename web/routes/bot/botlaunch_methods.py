@@ -2,25 +2,22 @@
 
 import json
 import os
-import pathlib
-import traceback  # noqa: F401
-from contextlib import suppress
+from contextlib import asynccontextmanager, suppress
 from datetime import date, datetime, time
-from typing import Any, Union  # noqa: F401
+from pathlib import Path
+from typing import Any, AsyncGenerator
 
+import aiofile
+import aiofiles
 import aiohttp
-import quart_flask_patch  # noqa: F401
+
 from flask_sqlalchemy import SQLAlchemy
-from quart import (  # noqa: F401
-    Blueprint,
+from quart import (
     Response,
-    abort,
     flash,
     make_response,
     redirect,
-    render_template,
     request,
-    send_file,
     session,
     url_for,
 )
@@ -29,14 +26,23 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
 
-from web.decorators import login_required  # noqa: F401
-
 from ...forms import BotForm
-from ...misc import (  # noqa: F401
-    MakeModels,
+from ...misc import (
     generate_pid,
 )
 from ...models import BotsCrawJUD, Credentials, LicensesUsers, Servers
+
+
+@asynccontextmanager
+async def reopen_stream_file(file: FileStorage) -> AsyncGenerator[FileStorage, Any]:
+    """Reopen the file stream."""
+    try:
+        file.__module__
+        file = FileStorage(stream=file.stream)
+        yield file
+    finally:
+        file.close()
+
 
 FORM_CONFIGURATOR = {
     "JURIDICO": {
@@ -147,7 +153,7 @@ def get_form_data(
     return states, clients, credts, form_config
 
 
-def process_form_submission_periodic(
+async def process_form_submission_periodic(
     form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD
 ) -> tuple[dict, dict, str, bool]:
     """Process form submission for periodic tasks and prepare data and files for sending."""
@@ -161,7 +167,8 @@ def process_form_submission_periodic(
         value = field.data
         item = field_name
         if isinstance(field, FileField):
-            handle_file_storage(value, data, files, temporarypath)
+            field
+            await handle_file_storage(value, data, files, temporarypath)
             continue
 
         if isinstance(field, FieldList):
@@ -177,21 +184,26 @@ def process_form_submission_periodic(
 
                     if isinstance(val, time):
                         val = str(val.strftime("%H:%M"))
-                    handle_other_data(key, val, data, system, typebot, bot_info, files)
+                    await handle_other_data(key, val, data, system, typebot, bot_info, files)
 
         elif isinstance(field, list):
             field_itens = list(field.data.items())
             for key, val in field_itens:
-                handle_file_list(key, val, data, files, temporarypath)
+                await handle_file_list(key, val, data, files, temporarypath)
             continue
 
         else:
-            handle_other_data(item, value, data, system, typebot, bot_info, files)
+            await handle_other_data(item, value, data, system, typebot, bot_info, files)
 
     return data, files, pid, True
 
 
-def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD) -> tuple[dict, dict, str]:
+async def process_form_submission(
+    form: BotForm,
+    system: str,
+    typebot: str,
+    bot_info: BotsCrawJUD,
+) -> tuple[dict, dict, str]:
     """Process form submission and prepare data and files for sending."""
     data = {}
     pid = generate_pid()
@@ -206,39 +218,49 @@ def process_form_submission(form: BotForm, system: str, typebot: str, bot_info: 
             continue
 
         if isinstance(value, FileStorage):
-            handle_file_storage(value, data, files, temporarypath)
+            await handle_file_storage(value, data, files, temporarypath)
             continue
         if isinstance(value, list):
-            handle_file_list(item, value, data, files, temporarypath)
+            await handle_file_list(item, value, data, files, temporarypath)
             continue
 
-        handle_other_data(item, value, data, system, typebot, bot_info, files)
+        await handle_other_data(item, value, data, system, typebot, bot_info, files)
 
     return data, files, pid
 
 
-def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | pathlib.Path) -> None:
+async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | Path) -> None:
     """Handle file storage for form submission."""
     data.update({"xlsx": secure_filename(value.filename)})
-    path_save = os.path.join(temporarypath, secure_filename(value.filename))
-    value.save(path_save)
-    buff = open(os.path.join(temporarypath, secure_filename(value.filename)), "rb")
-    buff.seek(0)
+    path_save = Path(temporarypath).joinpath(secure_filename(value.filename))
+    # if iscoroutinefunction(value.save):
+    #     await value.save(path_save)
+    async with reopen_stream_file(value) as f:
+        pass
+
+    async with aiofiles.open(path_save, "rb") as f:
+        file_buffer = FileStorage(
+            await f.read(),
+            filename=path_save.name,
+            content_type=value.mimetype,
+            content_length=path_save.stat().st_size,
+        )
     files.update({
-        secure_filename(value.filename): (
-            secure_filename(value.filename),
-            buff,
-            value.mimetype,
+        file_buffer.filename: (
+            file_buffer.filename,
+            file_buffer.stream,
+            file_buffer.mimetype,
+            file_buffer.content_length,
         )
     })
 
 
-def handle_file_list(
+async def handle_file_list(
     item: str,
     value: FileStorage | str,
     data: dict,
     files: dict,
-    temporarypath: str | pathlib.Path,
+    temporarypath: str | Path,
 ) -> None:
     """Handle list of files for form submission."""
     if not isinstance(value[0], FileStorage):
@@ -247,8 +269,8 @@ def handle_file_list(
 
     for filev in value:
         if isinstance(filev, FileStorage):
-            filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
-            buff = open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
+            await filev.save(os.path.join(temporarypath, secure_filename(filev.filename)))
+            buff = aiofile.async_open(os.path.join(temporarypath, secure_filename(filev.filename)), "rb")
             files.update({
                 secure_filename(filev.filename): (
                     secure_filename(filev.filename),
@@ -258,7 +280,7 @@ def handle_file_list(
             })
 
 
-def handle_other_data(
+async def handle_other_data(
     item: str,
     value: str,
     data: str,

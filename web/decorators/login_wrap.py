@@ -3,7 +3,7 @@
 from functools import wraps
 from typing import Callable
 
-import quart_flask_patch  # noqa: F401
+
 from flask_login.config import EXEMPT_METHODS
 from quart import (
     current_app,

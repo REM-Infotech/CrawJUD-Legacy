@@ -6,7 +6,7 @@ This module provides endpoints for user-specific profile configuration settings.
 import os
 import pathlib
 
-import quart_flask_patch  # noqa: F401
+
 from quart import Blueprint, Response, make_response, render_template
 
 from web.decorators import login_required

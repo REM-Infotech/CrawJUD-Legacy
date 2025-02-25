@@ -4,7 +4,7 @@ import json
 import os
 import pathlib
 
-import quart_flask_patch  # noqa: F401
+
 from flask_login import login_user, logout_user
 from quart import (
     Blueprint,

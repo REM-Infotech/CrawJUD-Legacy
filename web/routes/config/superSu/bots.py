@@ -1,6 +1,5 @@
 """Module for Super Su client route functionality."""
 
-import quart_flask_patch  # noqa: F401
 from quart import Response, abort, make_response, render_template
 
 from web.decorators import login_required
