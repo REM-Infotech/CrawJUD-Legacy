@@ -58,16 +58,16 @@ class MasterApp:
             server_answer = inquirer.prompt([self.current_menu])
 
             if server_answer is None:
-                server_answer = {"application_list": "Close Server"}
+                server_answer = {"application_list": "Shutdown App"}
 
             choice = server_answer.get("application_list", "Back")
 
             close_app_context = all([
-                choice == "Close Server",
+                choice == "Shutdown App",
                 self.current_menu_name != "Main Menu",
             ])
             close_server_context = all([
-                choice == "Close Server",
+                choice == "Shutdown App",
                 self.current_menu_name == "Main Menu",
             ])
 
@@ -117,22 +117,26 @@ class MasterApp:
     functions = {
         "quart_api": {
             "Start Server": server.quart.start,
-            "Close Server": server.quart.shutdown,
+            "Shutdown App": server.quart.shutdown,
+            "Restart App": server.quart.restart,
             "View Logs": server.quart.status,
         },
         "quart_web": {
             "Start Server": server.quart_web.start,
-            "Close Server": server.quart_web.shutdown,
+            "Shutdown App": server.quart_web.shutdown,
+            "Restart App": server.quart_web.restart,
             "View Logs": server.quart_web.status,
         },
         "worker": {
             "Start Worker": server.celery_worker.start,
-            "Close Worker": server.celery_worker.shutdown,
+            "Shutdown App": server.celery_worker.shutdown,
+            "Restart App": server.celery_worker.restart,
             "View Logs": server.celery_worker.status,
         },
         "beat": {
             "Start Beat": server.celery_beat.start,
-            "Close Beat": server.celery_beat.shutdown,
+            "Shutdown App": server.celery_beat.shutdown,
+            "Restart App": server.celery_beat.restart,
             "View Logs": server.celery_beat.status,
         },
     }
@@ -195,7 +199,13 @@ class MasterApp:
         return inquirer.List(
             "application_list",
             message="Select an option",
-            choices=["Start Server", "Close Server", "View Logs", "Back"],
+            choices=[
+                "Start Server",
+                "Restart App",
+                "Shutdown App",
+                "View Logs",
+                "Back",
+            ],
         )
 
     @property
@@ -205,7 +215,13 @@ class MasterApp:
         return inquirer.List(
             "application_list",
             message="Select an option",
-            choices=["Start Server", "Close Server", "View Logs", "Back"],
+            choices=[
+                "Start Server",
+                "Restart App",
+                "Shutdown App",
+                "View Logs",
+                "Back",
+            ],
         )
 
     @property
@@ -215,7 +231,13 @@ class MasterApp:
         return inquirer.List(
             "application_list",
             message="Select an option",
-            choices=["Start Worker", "Close Worker", "View Logs", "Back"],
+            choices=[
+                "Start Worker",
+                "Restart App",
+                "Shutdown App",
+                "View Logs",
+                "Back",
+            ],
         )
 
     @property
@@ -225,5 +247,11 @@ class MasterApp:
         return inquirer.List(
             "application_list",
             message="Select an option",
-            choices=["Start Beat", "Close Beat", "View Logs", "Back"],
+            choices=[
+                "Start Beat",
+                "Restart App",
+                "Shutdown App",
+                "View Logs",
+                "Back",
+            ],
         )
