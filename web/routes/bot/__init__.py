@@ -4,6 +4,7 @@ import os
 import pathlib
 import sys  # noqa: F401
 import traceback
+import warnings
 
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
@@ -114,26 +115,30 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             clients=clients,
             system=system,
         )
-        if await QuartForm.validate_on_submit(form):
-            periodic_bot = False
-            data = {}
-            if form.periodic_task.data is True:
-                data, files, pid, periodic_bot = await process_form_submission_periodic(form, system, typebot, bot_info)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            if await QuartForm.validate_on_submit(form):
+                periodic_bot = False
+                data = {}
+                if form.periodic_task.data is True:
+                    data, files, pid, periodic_bot = await process_form_submission_periodic(
+                        form, system, typebot, bot_info
+                    )
 
-            elif form.periodic_task.data is False:
-                data, files, pid = await process_form_submission(form, system, typebot, bot_info)
+                elif form.periodic_task.data is False:
+                    data, files, pid = await process_form_submission(form, system, typebot, bot_info)
 
-            response = await send_data_to_servers(
-                data,
-                files,
-                {
-                    "CONTENT_TYPE": request.content_type,
-                },
-                pid,
-                periodic_bot,
-            )
-            if response:
-                return response
+                response = await send_data_to_servers(
+                    data,
+                    files,
+                    {
+                        "CONTENT_TYPE": request.content_type,
+                    },
+                    pid,
+                    periodic_bot,
+                )
+                if response:
+                    return response
 
         # for f in form.periodic_task_group:
         #     for pform in f:
