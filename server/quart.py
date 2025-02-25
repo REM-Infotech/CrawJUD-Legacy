@@ -1,13 +1,14 @@
 """Quart blueprint for the server."""
 
-from contextlib import suppress
 from pathlib import Path  # noqa: F401
 
+import keyboard  # type: ignore # noqa: PGH003
 from billiard.context import Process
-from socketio import Client
 from tqdm import tqdm
 
 from server.config import StoreProcess, running_servers
+
+from .io_client import io
 
 
 async def status() -> None:
@@ -15,21 +16,15 @@ async def status() -> None:
     if not running_servers.get("Quart"):
         return ["Server not running.", "ERROR", "red"]
 
-    tqdm.write("Type 'Ctrl+C' to exit.")
+    tqdm.write("Type 'E' to exit.")
 
-    io = Client()
-    io.connect("http://localhost:7000")
-
-    @io.on("quart_logs", namespace="/quart")
-    async def quart_logs(data: dict[str, str]) -> None:
-        tqdm.write(f"{data.get('message')}")
-
-    with suppress(KeyboardInterrupt):
-        while True:
-            ...
+    io.connect("http://localhost:7000", namespaces=["/quart"])
+    while True:
+        if keyboard.read_key().lower() == "e":
+            break
     io.disconnect()
 
-    return ["Server running.", "INFO", "green"]
+    return ["Exiting logs.", "INFO", "yellow"]
 
 
 async def shutdown() -> None:
