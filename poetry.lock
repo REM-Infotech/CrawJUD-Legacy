@@ -3764,6 +3764,40 @@ reference = "HEAD"
 resolved_reference = "58c78d4fdc43c8dac0b1d52ea1b03cf19fd55340"
 
 [[package]]
+name = "quart-uploads"
+version = "0.0.4"
+description = ""
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "quart_uploads-0.0.4-py3-none-any.whl", hash = "sha256:67f7f53b975afb12c0630cebd6acde234c797fca98dd769a9088225aaacdd14a"},
+    {file = "quart_uploads-0.0.4.tar.gz", hash = "sha256:fc19a99b45feada44e750c3b4b9ff323800451e5550e4b66b3003e688011d3fb"},
+]
+
+[package.dependencies]
+aiofiles = ">=24.0.0"
+quart = ">=0.19"
+types-aiofiles = "*"
+
+[[package]]
+name = "quart-wtforms"
+version = "1.0.3"
+description = "Simple Integration of Quart and WTForms."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "quart_wtforms-1.0.3-py3-none-any.whl", hash = "sha256:7d08214c9606d40d2b35c78a8c1eecc2913b03b09cd256d233c82c29c8526fab"},
+    {file = "quart_wtforms-1.0.3.tar.gz", hash = "sha256:9fa4b0203370d6f7294c387fae9e1f096bc1e77003f1207445ca5e1e01e80eb7"},
+]
+
+[package.dependencies]
+quart = ">=0.19"
+quart-uploads = ">=0.0.2"
+WTForms = ">=3.0"
+
+[[package]]
 name = "readchar"
 version = "4.2.1"
 description = "Library to easily read single chars and key strokes"
@@ -4252,6 +4286,18 @@ files = [
 [package.dependencies]
 trio = ">=0.11"
 wsproto = ">=0.14"
+
+[[package]]
+name = "types-aiofiles"
+version = "24.1.0.20241221"
+description = "Typing stubs for aiofiles"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "types_aiofiles-24.1.0.20241221-py3-none-any.whl", hash = "sha256:11d4e102af0627c02e8c1d17736caa3c39de1058bea37e2f4de6ef11a5b652ab"},
+    {file = "types_aiofiles-24.1.0.20241221.tar.gz", hash = "sha256:c40f6c290b0af9e902f7f3fa91213cf5bb67f37086fb21dc0ff458253586ad55"},
+]
 
 [[package]]
 name = "typing-extensions"
@@ -4800,4 +4846,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13, <4.0"
-content-hash = "9773f76562f2dffaa45b1e8cc3465e2ded421973f36cc0a88966f47fbdcf753c"
+content-hash = "743894d4cb24be96bd433dd43e931a6f95319902d66abc0bb0989ce6ab484210"
