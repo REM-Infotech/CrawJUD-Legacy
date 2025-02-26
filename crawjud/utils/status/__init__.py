@@ -28,7 +28,7 @@ from quart import Quart
 from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from crawjud.api.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
+from crawjud.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
 
 from .makefile import makezip
 from .permalink import generate_signed_url

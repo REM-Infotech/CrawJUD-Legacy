@@ -92,7 +92,7 @@ def start_worker() -> None:
     from celery.apps.worker import Worker
     from quart import Quart
 
-    from crawjud.api import AppFactory
+    from crawjud.core import AppFactory
     from crawjud.utils import worker_name_generator
 
     # Set environment variables to designate worker mode and production status.

@@ -87,7 +87,7 @@ def start_process_asgi() -> None:
     """Start the Quart server."""
     import os
 
-    from crawjud.api import AppFactory
+    from crawjud.core import AppFactory
 
     # Set environment variables to designate Quart app mode and production status.
     os.environ.update({

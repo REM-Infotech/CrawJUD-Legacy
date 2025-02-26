@@ -85,7 +85,7 @@ def start_beat() -> None:
     from celery.apps.beat import Beat
     from quart import Quart
 
-    from crawjud.api import AppFactory
+    from crawjud.core import AppFactory
 
     # Set environment variables to designate worker mode and production status.
     os.environ.update({

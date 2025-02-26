@@ -1,6 +1,6 @@
 import pytest
 
-from crawjud.api import AppFactory
+from crawjud.core import AppFactory
 
 
 @pytest.fixture(scope="module")
