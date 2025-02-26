@@ -13,8 +13,8 @@ from pytz import timezone  # noqa: F401
 from socketio import AsyncServer
 
 from crawjud.api import app
-from utils import format_message_log, load_cache  # noqa: F401
-from utils.status import TaskExec
+from crawjud.utils import format_message_log, load_cache  # noqa: F401
+from crawjud.utils.status import TaskExec
 
 logger = logging.getLogger(__name__)
 

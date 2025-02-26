@@ -12,8 +12,8 @@ from typing import TYPE_CHECKING
 from quart import Blueprint, Response, jsonify, make_response, request
 from quart import current_app as app
 
-from utils import check_latest, reload_module  # noqa: F401
-from utils.status import TaskExec
+from crawjud.utils import check_latest, reload_module  # noqa: F401
+from crawjud.utils.status import TaskExec
 
 if TYPE_CHECKING:
     from celery import Celery

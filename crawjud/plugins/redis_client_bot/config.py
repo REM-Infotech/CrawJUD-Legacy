@@ -7,7 +7,7 @@ from typing import Optional, Union
 from redis import CredentialProvider
 from redis.cache import CacheConfig, CacheInterface
 
-from plugins import convert_to_type
+from crawjud.plugins import convert_to_type
 
 ValueTypes = Union[str, int, float, bool, CredentialProvider, CacheConfig, CacheInterface, dict, list]
 

@@ -15,7 +15,7 @@ from clear import clear
 from quart import Quart
 
 from crawjud.api import AppFactory
-from utils import worker_name_generator
+from crawjud.utils import worker_name_generator
 
 # Set environment variables to designate worker mode and production status.
 os.environ.update({

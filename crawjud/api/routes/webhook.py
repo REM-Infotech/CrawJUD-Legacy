@@ -11,7 +11,7 @@ import logging
 
 from flask import Blueprint, Response, abort, current_app, jsonify, make_response, request
 
-from utils import update_servers
+from crawjud.utils import update_servers
 
 wh = Blueprint("webhook", __package__)
 logger = logging.getLogger(__name__)
