@@ -34,7 +34,7 @@ from .botlaunch_methods import (
     handle_form_errors,
     process_form_submission,
     process_form_submission_periodic,
-    send_data_to_servers,
+    setup_task_worker,
 )
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
@@ -128,21 +128,15 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
                 elif form.periodic_task.data is False:
                     data, files, pid = await process_form_submission(form, system, typebot, bot_info)
 
-                response = await send_data_to_servers(
-                    data,
-                    files,
-                    {
-                        "CONTENT_TYPE": request.content_type,
-                    },
-                    pid,
-                    periodic_bot,
+                return await setup_task_worker(
+                    id_=id_,
+                    pid=pid,
+                    data=data,
+                    files=files,
+                    system=system,
+                    typebot=typebot,
+                    periodic_bot=periodic_bot,
                 )
-                if response:
-                    return response
-
-        # for f in form.periodic_task_group:
-        #     for pform in f:
-        #         pass
 
         await handle_form_errors(form)
 

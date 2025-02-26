@@ -11,7 +11,10 @@ from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Response,
     flash,
+    make_response,
+    redirect,
     session,
+    url_for,
 )
 from quart import current_app as app
 from quart.datastructures import FileStorage
@@ -300,15 +303,14 @@ def handle_credentials(value: str, data: dict, system: str, files: dict) -> None
             break
 
 
-async def send_data_to_servers(
+async def setup_task_worker(
+    id_: int,
+    pid: str,
     data: dict,
     files: dict,
-    headers: dict,
-    pid: str,
-    periodic_bot: bool = False,
-    id_: int = None,
-    system: str = None,
-    typebot: str = None,
+    system: str,
+    typebot: str,
+    periodic_bot: bool,
 ) -> Response | None:
     """Send data to servers and handle the response."""
     db: SQLAlchemy = app.extensions["sqlalchemy"]
@@ -340,7 +342,26 @@ async def send_data_to_servers(
             data,
         )
 
-    return is_started
+    if is_started == 200:
+        await flash(message=f"Execução iniciada com sucesso! PID: {pid}")
+        return await make_response(
+            redirect(
+                url_for(
+                    "logs.logs_bot",
+                    pid=pid,
+                ),
+            ),
+        )
+
+    elif is_started != 200:
+        await flash("Erro ao iniciar a execução!", "error")
+        return await make_response(
+            redirect(
+                url_for(
+                    "bot.dashboard",
+                ),
+            ),
+        )
 
 
 async def handle_form_errors(form: BotForm) -> None:
