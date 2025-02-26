@@ -6,7 +6,7 @@ from quart import Quart
 from redis import Redis
 from socketio import AsyncRedisManager, AsyncServer
 
-from api import db, mail
+from crawjud.api import db, mail
 
 
 async def init_extensions(app: Quart) -> AsyncServer:

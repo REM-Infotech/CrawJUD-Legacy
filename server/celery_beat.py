@@ -86,7 +86,7 @@ def start_beat() -> None:
     from clear import clear
     from quart import Quart
 
-    from api import AppFactory
+    from crawjud.api import AppFactory
 
     # Set environment variables to designate worker mode and production status.
     os.environ.update({

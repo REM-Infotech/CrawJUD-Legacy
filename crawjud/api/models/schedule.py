@@ -5,7 +5,7 @@ Includes scheduled jobs and their corresponding crontab configurations.
 
 from datetime import datetime
 
-from api import db
+from crawjud.api import db
 
 # from sqlalchemy.orm.relationships import RelationshipProperty
 

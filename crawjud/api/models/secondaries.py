@@ -3,7 +3,7 @@
 These tables establish many-to-many relationships between users, licenses, and bot configurations.
 """
 
-from api import db
+from crawjud.api import db
 
 admins = db.Table(
     "admins",

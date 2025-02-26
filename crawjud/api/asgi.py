@@ -8,7 +8,7 @@ import os
 
 from clear import clear
 
-from api import AppFactory
+from crawjud.api import AppFactory
 
 # Set environment variables to designate Quart app mode and production status.
 os.environ.update({

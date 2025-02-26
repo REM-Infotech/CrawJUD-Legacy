@@ -4,7 +4,7 @@ from unittest import mock
 from quart import Quart
 from celery import Celery
 from socketio import AsyncServer
-from api import AppFactory
+from crawjud.api import AppFactory
 from socketio import ASGIApp
 """Unit tests for the AppFactory class in app/__init__.py."""
 

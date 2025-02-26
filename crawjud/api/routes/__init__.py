@@ -10,7 +10,7 @@ from dotenv_vault import load_dotenv
 from quart import Response, make_response, redirect
 from werkzeug.exceptions import HTTPException
 
-from api import app
+from crawjud.api import app
 
 load_dotenv()
 

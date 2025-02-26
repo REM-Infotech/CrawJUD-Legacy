@@ -3,7 +3,7 @@
 This model stores server configuration details such as name, address, and system type.
 """
 
-from api import db
+from crawjud.api import db
 
 
 class Servers(db.Model):

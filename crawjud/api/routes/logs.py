@@ -12,7 +12,7 @@ from datetime import datetime  # noqa: F401
 from pytz import timezone  # noqa: F401
 from socketio import AsyncServer
 
-from api import app
+from crawjud.api import app
 from utils import format_message_log, load_cache  # noqa: F401
 from utils.status import TaskExec
 
@@ -107,8 +107,8 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
         None
 
     """
-    from api import db
-    from api.models import ThreadBots
+    from crawjud.api import db
+    from crawjud.api.models import ThreadBots
     from bot import WorkerBot
 
     async with app.app_context():
@@ -196,8 +196,8 @@ async def join(sid: str = None, data: dict[str, str] = None, namespace: str = No
     #     try:
     #         # Load cached data for the room to send previous logs, if any.
     #         data = await load_cache(room, app)
-    #         from api import db
-    #         from api.models import ThreadBots
+    #         from crawjud.api import db
+    #         from crawjud.api.models import ThreadBots
     #         from bot import WorkerBot
 
     #         pid = room
