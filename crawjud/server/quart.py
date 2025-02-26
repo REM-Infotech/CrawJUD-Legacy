@@ -8,7 +8,7 @@ from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
-from server.config import StoreProcess, running_servers
+from crawjud.server.config import StoreProcess, running_servers
 
 from .io_client import io, watch_input
 

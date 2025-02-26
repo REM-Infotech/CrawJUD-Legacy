@@ -4,7 +4,7 @@ from typing import Any
 
 from tqdm import tqdm
 
-from server import io
+from crawjud.server import io
 
 
 @io.on("connect", namespace="*")

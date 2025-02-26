@@ -14,11 +14,8 @@ from socketio import ASGIApp, AsyncServer
 from termcolor import colored
 from tqdm import tqdm
 
-import server.celery_beat
-import server.celery_worker
-import server.quart
-import server.quart_web
-from server.thead_asgi import ASGIServer
+from crawjud.server import celery_beat, celery_worker, quart, quart_web
+from crawjud.server.thead_asgi import ASGIServer
 
 io = AsyncServer(
     async_mode="asgi",
@@ -54,28 +51,28 @@ class MenuManager:
         ],
     ] = {
         "quart_api": {
-            "Start Server": server.quart.start,
-            "Shutdown App": server.quart.shutdown,
-            "Restart App": server.quart.restart,
-            "View Logs": server.quart.status,
+            "Start Server": quart.start,
+            "Shutdown App": quart.shutdown,
+            "Restart App": quart.restart,
+            "View Logs": quart.status,
         },
         "quart_web": {
-            "Start Server": server.quart_web.start,
-            "Shutdown App": server.quart_web.shutdown,
-            "Restart App": server.quart_web.restart,
-            "View Logs": server.quart_web.status,
+            "Start Server": quart_web.start,
+            "Shutdown App": quart_web.shutdown,
+            "Restart App": quart_web.restart,
+            "View Logs": quart_web.status,
         },
         "worker": {
-            "Start Worker": server.celery_worker.start,
-            "Shutdown App": server.celery_worker.shutdown,
-            "Restart App": server.celery_worker.restart,
-            "View Logs": server.celery_worker.status,
+            "Start Worker": celery_worker.start,
+            "Shutdown App": celery_worker.shutdown,
+            "Restart App": celery_worker.restart,
+            "View Logs": celery_worker.status,
         },
         "beat": {
-            "Start Beat": server.celery_beat.start,
-            "Shutdown App": server.celery_beat.shutdown,
-            "Restart App": server.celery_beat.restart,
-            "View Logs": server.celery_beat.status,
+            "Start Beat": celery_beat.start,
+            "Shutdown App": celery_beat.shutdown,
+            "Restart App": celery_beat.restart,
+            "View Logs": celery_beat.status,
         },
     }
 

@@ -1,38 +1,38 @@
-"""Blueprint for the Celery Beat server."""
+"""Blueprint for the worker server."""
 
 import asyncio
-from pathlib import Path
+from pathlib import Path  # noqa: F401
 
 import clear
 from billiard.context import Process
 from termcolor import colored
 from tqdm import tqdm
 
-from server.config import StoreProcess, running_servers
+from crawjud.server.config import StoreProcess, running_servers
 
 from .io_client import io, watch_input
 
 
 async def start() -> None:
     """Start the server."""
-    celery_process = Process(target=start_beat)
+    celery_process = Process(target=start_worker)
     celery_process.start()
 
     store_process = StoreProcess(
-        process_name="Beat",
+        process_name="Worker",
         process_id=celery_process.pid,
         process_status="Running",
         process_object=celery_process,
     )
 
-    running_servers["Beat"] = store_process
+    running_servers["Worker"] = store_process
 
     return ["Server started.", "INFO", "green"]
 
 
 async def restart() -> None:
     """Restart the server."""
-    if not running_servers.get("Beat"):
+    if not running_servers.get("Worker"):
         tqdm.write(colored("[INFO] Server not running. Starting server...", "yellow", attrs=["bold"]))
         asyncio.sleep(2)
         return await start()
@@ -49,8 +49,12 @@ async def restart() -> None:
 
 async def shutdown() -> None:
     """Shutdown the server."""
+    store_process: StoreProcess = running_servers.get("Worker")
+    if not store_process:
+        return ["Server not running.", "WARNING", "yellow"]
+
     try:
-        store_process: StoreProcess = running_servers.pop("Beat")
+        store_process: StoreProcess = running_servers.pop("Worker")
         if store_process:
             process_stop: Process = store_process.process_object
             process_stop.terminate()
@@ -62,13 +66,13 @@ async def shutdown() -> None:
 
 async def status() -> None:
     """Log the status of the server."""
-    if not running_servers.get("Beat"):
+    if not running_servers.get("Worker"):
         return ["Server not running.", "ERROR", "red"]
 
     clear()
     tqdm.write("Type 'ESC' to exit.")
 
-    io.connect("http://localhost:7000", namespaces=["/beat"])
+    io.connect("http://localhost:7000", namespaces=["/worker"])
     while not watch_input():
         ...
 
@@ -77,53 +81,51 @@ async def status() -> None:
     return ["Exiting logs.", "INFO", "yellow"]
 
 
-def start_beat() -> None:
-    """Initialize and run the Celery beat scheduler."""
+def start_worker() -> None:
+    """Initialize and run the Celery worker."""
     import os
+    from platform import node
 
     from celery import Celery
-    from celery.apps.beat import Beat
+    from celery.apps.worker import Worker
     from clear import clear
     from quart import Quart
 
     from crawjud.api import AppFactory
+    from crawjud.utils import worker_name_generator
 
     # Set environment variables to designate worker mode and production status.
     os.environ.update({
-        "APPLICATION_APP": "beat",
+        "APPLICATION_APP": "worker",
     })
 
-    # Create the Beat application and Celery instance via AppFactory.
+    # Create the Quart application and Celery instance via AppFactory.
     quart_app, app = AppFactory.construct_app()
     clear()
 
-    async def run_beat(app: Celery, quart_app: Quart) -> None:
-        """Run the Celery beat scheduler within the Beat application context.
+    async def run_worker(app: Celery, quart_app: Quart) -> None:
+        """Run the Celery worker within the Quart application context.
 
-        This function sets up the log file for beat scheduler output, ensures
-        the logging directory exists, and starts the beat scheduler with a
-        specified maximum interval and a custom database scheduler.
+        This function starts the Celery worker with detailed configurations,
+        enabling task events, setting the log level, defining concurrency, and
+        specifying the thread pool for execution.
 
         Args:
             app (Celery): The Celery application instance.
-            quart_app (Beat): The Beat application instance.
+            quart_app (Quart): The Quart application instance.
 
         """
+        worker_name = f"{worker_name_generator()}@{node()}"
         async with quart_app.app_context():
-            # Define the path for the beat scheduler log file.
-            logfile = str(Path(__file__).cwd().joinpath("logs", "beat.log"))
-            # Ensure the directory for logs exists.
-            Path(logfile).parent.mkdir(parents=True, exist_ok=True)
-            # Create the log file if it does not already exist.
-            Path(logfile).touch(exist_ok=True)
-            # Initialize the beat scheduler with debug logging and custom scheduler.
-            beat = Beat(
+            # Instantiate the worker with the app and specific settings.
+            worker = Worker(
                 app=app,
-                loglevel="DEBUG",
-                max_interval=10,
-                scheduler="utils.scheduler:DatabaseScheduler",
-                logfile=logfile,
+                hostname=worker_name,
+                task_events=True,
+                loglevel="INFO",
+                concurrency=50.0,
+                pool="threads",
             )
-            beat.run()
+            worker.start()
 
-    asyncio.run(run_beat(app, quart_app))
+    asyncio.run(run_worker(app, quart_app))

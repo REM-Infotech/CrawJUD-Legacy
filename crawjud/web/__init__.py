@@ -91,7 +91,7 @@ class AppFactory:
         await self.init_blueprints(app)
 
         # Initialize logs module
-        from logs import log_cfg
+        from crawjud.logs import log_cfg
 
         log_file = Path(__file__).cwd().resolve().joinpath("logs").joinpath("web.log")
 
@@ -145,7 +145,7 @@ class AppFactory:
     @classmethod
     def construct_app(cls) -> None:
         """Run the Quart application with Uvicorn server."""
-        from logs import log_cfg
+        from crawjud.logs import log_cfg
 
         app = asyncio.run(cls().create_app())
         port = int(os.getenv("PORT", 5000))

@@ -127,7 +127,7 @@ class AppFactory:
             **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
 
         """
-        from logs import log_cfg
+        from crawjud.logs import log_cfg
 
         # Create a WebSocket
         cfg, _ = log_cfg()

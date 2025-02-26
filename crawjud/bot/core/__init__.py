@@ -14,10 +14,9 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+from bot.common.exceptions import StartError
 from openai import OpenAI
 from pytz import timezone
-
-from bot.common.exceptions import StartError
 
 if platform.system() == "Windows":
     from pywinauto import Application

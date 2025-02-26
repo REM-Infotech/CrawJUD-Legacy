@@ -107,9 +107,10 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
         None
 
     """
+    from bot import WorkerBot
+
     from crawjud.api import db
     from crawjud.api.models import ThreadBots
-    from bot import WorkerBot
 
     async with app.app_context():
         try:

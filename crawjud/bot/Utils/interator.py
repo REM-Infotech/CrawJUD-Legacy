@@ -7,6 +7,7 @@ web elements, including clicking, sending keys, and waiting for visual changes.
 from contextlib import suppress
 from time import sleep
 
+from bot.common.exceptions import NotFoundError
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -14,8 +15,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
-from bot.common.exceptions import NotFoundError
 
 from ..core import CrawJUD
 
