@@ -1,5 +1,5 @@
 [project]
-name = "crawjud-bots"
+name = "crawjud"
 version = "0.1.0"
 description = ""
 authors = [{ name = "Robotz213", email = "nicholas@robotz.dev" }]
@@ -69,6 +69,9 @@ dependencies = [
     "yamllint (>=1.35.1,<2.0.0)",
     "waitress (>=3.0.2,<4.0.0)",
     "quart-login @ git+https://github.com/0000matteo0000/quart-login.git",
+    "quart-wtforms (>=1.0.3,<2.0.0)",
+    "pynput (>=1.7.7,<2.0.0)",
+    "tailer (>=0.4.1,<0.5.0)",
 ]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
@@ -87,6 +90,3 @@ build-backend = "poetry.core.masonry.api"
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
 skips = ["B603", "B404", "B607"]
-
-[tool.poetry]
-package-mode = false

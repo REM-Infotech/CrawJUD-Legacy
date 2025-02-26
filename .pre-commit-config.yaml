@@ -24,7 +24,7 @@ repos:
           - "-c"
           - "pyproject.toml"
           - "-o"
-          - "results/bandit.html"
+          - "bandit.html"
           - "-f"
           - "html"
         additional_dependencies: ["bandit[toml]"]
