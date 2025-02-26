@@ -37,9 +37,9 @@ login_manager.login_message = "Faça login para acessar essa página."
 login_manager.login_message_category = "info"
 
 objects_config = {
-    "development": "app.config.DevelopmentConfig",
-    "production": "app.config.ProductionConfig",
-    "testing": "app.config.TestingConfig",
+    "development": "crawjud.app.config.DevelopmentConfig",
+    "production": "crawjud.app.config.ProductionConfig",
+    "testing": "crawjud.app.config.TestingConfig",
 }
 
 load_dotenv()
