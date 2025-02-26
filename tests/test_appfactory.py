@@ -4,7 +4,7 @@ from unittest import mock
 from quart import Quart
 from celery import Celery
 from socketio import AsyncServer
-from crawjud_bots.api import AppFactory
+from api import AppFactory
 from socketio import ASGIApp
 """Unit tests for the AppFactory class in app/__init__.py."""
 
@@ -22,7 +22,7 @@ async def test_create_app(app_factory) -> None:
     """Test the create_app method of AppFactory."""
     with mock.patch('app.__init__.app') as mock_app, \
          mock.patch('app.__init__.environ', {'AMBIENT_CONFIG': 'development'}), \
-         mock.patch('app.__init__.objects_config', {'development': 'crawjud_bots.app.config.DevelopmentConfig'}), \
+         mock.patch('app.__init__.objects_config', {'development': 'app.config.DevelopmentConfig'}), \
          mock.patch('app.__init__.AppFactory.init_extensions', return_value=mock.Mock()), \
          mock.patch('app.__init__.AppFactory.init_routes', return_value=mock.Mock()):
 

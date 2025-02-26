@@ -3,7 +3,7 @@
 
 def main() -> None:
     """Run the server application."""
-    from crawjud_bots.server.main import main_server
+    from server.main import main_server
 
     main_server()
 
