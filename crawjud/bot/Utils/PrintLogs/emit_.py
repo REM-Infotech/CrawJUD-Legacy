@@ -9,8 +9,9 @@ from os import getenv
 from typing import Self
 
 import socketio
-from bot.core import CrawJUD
 from dotenv_vault import load_dotenv
+
+from crawjud.bot.core import CrawJUD
 
 load_dotenv()
 

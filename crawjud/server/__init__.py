@@ -5,6 +5,7 @@
 import asyncio
 from contextlib import contextmanager
 from importlib import import_module
+from pathlib import Path
 from time import sleep
 from typing import Any, Callable, Coroutine, Generator
 
@@ -102,8 +103,8 @@ class MenuManager:
             if len(splited_currentmenuname) > 2 and latest_menu == "Main Menu":
                 self.current_app = f"{splited_currentmenuname[0]}_{splited_currentmenuname[1]}".lower()
 
-            elif len(splited_currentmenuname) < 2:
-                self.current_app = choice.lower()
+            elif len(splited_currentmenuname) == 2:
+                self.current_app = splited_currentmenuname[1].lower()
 
             if server_answer is None:
                 server_answer = {"application_list": "Close Server"}
@@ -152,6 +153,7 @@ class MenuManager:
                 "Quart Web ASGI",
                 "Celery Worker",
                 "Celery Beat",
+                "Get Bot LOG",
                 "Close Server",
             ],
         )
@@ -255,6 +257,13 @@ class MasterApp(MenuManager):
             with self.answer_prompt(self.current_menu, menu) as server_answer:
                 choice = server_answer.get("application_list", "Back")
 
+                if choice == "Get Bot LOG":
+                    self.get_log_bot()
+                    tqdm.write(colored("[INFO] Log file closed.", "yellow", attrs=["bold"]))
+                    sleep(2)
+                    clear()
+                    continue
+
                 if choice == "Close Server":
                     config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
                     if config_exit.get("exit") is True:
@@ -285,3 +294,37 @@ class MasterApp(MenuManager):
         self.current_menu_name = "Main Menu"
         self.current_choice = ""
         self.current_app = ""
+
+    def get_log_bot(self) -> None:
+        """Get the bot logs."""
+        while True:
+            answer_logger = inquirer.prompt([inquirer.Text("log", message="Enter the log file name")])
+
+            text_choice = answer_logger.get("log")
+
+            if not text_choice:
+                break
+
+            file_path = (
+                Path(__file__)
+                .cwd()
+                .resolve()
+                .joinpath(
+                    "crawjud",
+                    "bot",
+                    "temp",
+                    text_choice,
+                    f"{text_choice}.log",
+                )
+            )
+            tqdm.write(file_path.as_uri())
+            if file_path.exists():
+                from .watch import monitor_log
+
+                monitor_log(file_path=file_path)
+
+            else:
+                tqdm.write(colored(f"[ERROR] File '{text_choice}' does not exist.", "red", attrs=["bold"]))
+                sleep(2)
+                clear()
+                break

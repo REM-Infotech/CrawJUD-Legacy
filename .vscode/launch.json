@@ -5,41 +5,35 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python Debugger: Module",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "crawjud"
-    },
-    {
       "name": "Application Manager",
       "type": "debugpy",
       "request": "launch",
-      "module": "server",
+      "module": "crawjud",
       //   "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
     {
       "name": "Debug Web app",
       "type": "debugpy",
       "request": "launch",
-      "module": "web",
+      "module": "crawjud.web",
     },
     {
       "name": "Debug Quart ASGI",
       "type": "debugpy",
       "request": "launch",
-      "module": "api.asgi"
+      "module": "crawjud.api.asgi"
     },
     {
       "name": "Debug Celery Worker",
       "type": "debugpy",
       "request": "launch",
-      "module": "api.worker"
+      "module": "crawjud.api.worker"
     },
     {
       "name": "Debug Celery Beat",
       "type": "debugpy",
       "request": "launch",
-      "module": "api.beat"
+      "module": "crawjud.api.beat"
     }
   ]
 }

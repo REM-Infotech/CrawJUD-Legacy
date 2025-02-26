@@ -107,10 +107,9 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
         None
 
     """
-    from bot import WorkerBot
-
     from crawjud.api import db
     from crawjud.api.models import ThreadBots
+    from crawjud.bot import WorkerBot
 
     async with app.app_context():
         try:
@@ -132,7 +131,7 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
 
 @io.on("log_message", namespace="/log")
 async def log_message(sid: str, data: dict[str, str] = None) -> None:
-    """Process and forward incoming log messages from bots.
+    """Process and forward incoming log messages from crawjud.bots.
 
     Args:
         sid (str): The session ID of the client sending the log.
@@ -161,7 +160,7 @@ async def log_message(sid: str, data: dict[str, str] = None) -> None:
 
 @io.on("statusbot", namespace="/log")
 async def statusbot(sid: str, data: dict = None) -> None:
-    """Handle status updates from bots.
+    """Handle status updates from crawjud.bots.
 
     Args:
         sid (str): The session ID of the client.
@@ -199,7 +198,7 @@ async def join(sid: str = None, data: dict[str, str] = None, namespace: str = No
     #         data = await load_cache(room, app)
     #         from crawjud.api import db
     #         from crawjud.api.models import ThreadBots
-    #         from bot import WorkerBot
+    #         from crawjud.bot import WorkerBot
 
     #         pid = room
     #         process_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()

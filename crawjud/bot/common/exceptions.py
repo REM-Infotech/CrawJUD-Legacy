@@ -1,6 +1,6 @@
 """Module defining custom exceptions for CrawJUD bot."""
 
-from bot.common.selenium_excepts import exceptionsBot, webdriver_exepts
+from crawjud.bot.common.selenium_excepts import exceptionsBot, webdriver_exepts
 
 
 class StartError(Exception):

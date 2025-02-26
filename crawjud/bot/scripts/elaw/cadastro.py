@@ -313,7 +313,7 @@ class Cadastro(CrawJUD):
         This method retrieves the comarca information from the bot data, selects the appropriate
         input element, and inputs the comarca text. It also logs the actions performed.
         Steps:
-        1. Retrieve the comarca information from bot data.
+        1. Retrieve the comarca information from crawjud.bot data.
         2. Select the comarca input element.
         3. Log the action of informing the comarca.
         4. Use the select2_elaw method to input the comarca text.

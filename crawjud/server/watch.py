@@ -25,10 +25,15 @@ def watch_input(stop_event: threading.Event) -> None:
         listener.join()
 
 
-def monitor_log(file_name: str) -> None:
+def monitor_log(file_name: str = None, file_path: Path = None) -> None:
     """Monitora um arquivo de log usando tailer e para quando ESC for pressionado."""
     stop_event = threading.Event()
-    file_path = Path(__file__).cwd().joinpath("crawjud", "logs", file_name)
+
+    if not file_path:
+        file_path = Path(__file__).cwd().joinpath("crawjud", "logs", file_name)
+
+    if not isinstance(file_path, Path):
+        raise ValueError("file_path must be a pathlib.Path object.")
 
     # Inicia a thread para capturar entrada do teclado
     threading.Thread(target=watch_input, args=(stop_event,), daemon=True).start()
