@@ -18,7 +18,7 @@ async def start() -> None:
     if running_servers.get("Quart Web"):
         return ["Server already running.", "ERROR", "red"]
 
-    asgi_process = Process(target=start_process_asgi)
+    asgi_process = Process(target=start_process_asgi, name="Quart Web")
     asgi_process.start()
 
     store_process = StoreProcess(
@@ -64,6 +64,7 @@ async def shutdown() -> None:
             process_stop.join(15)
 
         tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
+        asyncio.sleep(2)
 
     except Exception as e:
         return [f"Error: {e}", "ERROR", "red"]

@@ -16,6 +16,7 @@ from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.server import celery_beat, celery_worker, quart, quart_web
+from crawjud.server.config import running_servers
 from crawjud.server.thead_asgi import ASGIServer  # noqa: F401
 
 io = AsyncServer(
@@ -64,13 +65,13 @@ class MenuManager:
             "View Logs": quart_web.status,
         },
         "worker": {
-            "Start Worker": celery_worker.start,
+            "Start Server": celery_worker.start,
             "Shutdown App": celery_worker.shutdown,
             "Restart App": celery_worker.restart,
             "View Logs": celery_worker.status,
         },
         "beat": {
-            "Start Beat": celery_beat.start,
+            "Start Server": celery_beat.start,
             "Shutdown App": celery_beat.shutdown,
             "Restart App": celery_beat.restart,
             "View Logs": celery_beat.status,
@@ -149,11 +150,13 @@ class MenuManager:
             "application_list",
             message="Select application",
             choices=[
+                "Start All",
                 "Quart API ASGI",
                 "Quart Web ASGI",
                 "Celery Worker",
                 "Celery Beat",
                 "Get Bot LOG",
+                "Clear Prompt",
                 "Close Server",
             ],
         )
@@ -198,7 +201,7 @@ class MenuManager:
             "application_list",
             message="Select an option",
             choices=[
-                "Start Worker",
+                "Start Server",
                 "Restart App",
                 "Shutdown App",
                 "View Logs",
@@ -214,7 +217,7 @@ class MenuManager:
             "application_list",
             message="Select an option",
             choices=[
-                "Start Beat",
+                "Start Server",
                 "Restart App",
                 "Shutdown App",
                 "View Logs",
@@ -238,6 +241,14 @@ class MasterApp(MenuManager):
         while True:
             clear()
 
+            if self.current_menu_name == "Main Menu":
+                if running_servers:
+                    tqdm.write("=============================================================")
+                    tqdm.write("Running servers:")
+                    for server in running_servers.keys():
+                        tqdm.write(f" - {server}")
+                    tqdm.write("=============================================================")
+
             if self.returns_message:
                 message = self.returns_message[0]
                 type_message = self.returns_message[1].upper()
@@ -257,11 +268,23 @@ class MasterApp(MenuManager):
             with self.answer_prompt(self.current_menu, menu) as server_answer:
                 choice = server_answer.get("application_list", "Back")
 
+                if choice == "Clear Prompt":
+                    clear()
+                    continue
+
+                if choice == "Start All":
+                    for _, functions in self.functions.items():
+                        func = functions.get("Start Server")
+                        asyncio.run(func())
+
+                    tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
+                    sleep(2)
+                    continue
+
                 if choice == "Get Bot LOG":
                     self.get_log_bot()
                     tqdm.write(colored("[INFO] Log file closed.", "yellow", attrs=["bold"]))
                     sleep(2)
-                    clear()
                     continue
 
                 if choice == "Close Server":
@@ -297,34 +320,32 @@ class MasterApp(MenuManager):
 
     def get_log_bot(self) -> None:
         """Get the bot logs."""
-        while True:
-            answer_logger = inquirer.prompt([inquirer.Text("log", message="Enter the log file name")])
+        answer_logger = inquirer.prompt([inquirer.Text("log", message="Enter the log file name")])
 
-            text_choice = answer_logger.get("log")
+        text_choice = answer_logger.get("log")
 
-            if not text_choice:
-                break
+        if not text_choice:
+            return
 
-            file_path = (
-                Path(__file__)
-                .cwd()
-                .resolve()
-                .joinpath(
-                    "crawjud",
-                    "bot",
-                    "temp",
-                    text_choice,
-                    f"{text_choice}.log",
-                )
+        file_path = (
+            Path(__file__)
+            .cwd()
+            .resolve()
+            .joinpath(
+                "crawjud",
+                "bot",
+                "temp",
+                text_choice,
+                f"{text_choice}.log",
             )
-            tqdm.write(file_path.as_uri())
-            if file_path.exists():
-                from .watch import monitor_log
+        )
+        tqdm.write(file_path.as_uri())
+        if file_path.exists():
+            from .watch import monitor_log
 
-                monitor_log(file_path=file_path)
+            monitor_log(file_path=file_path)
+            return
 
-            else:
-                tqdm.write(colored(f"[ERROR] File '{text_choice}' does not exist.", "red", attrs=["bold"]))
-                sleep(2)
-                clear()
-                break
+        tqdm.write(colored(f"[ERROR] File '{text_choice}' does not exist.", "red", attrs=["bold"]))
+        sleep(2)
+        clear()

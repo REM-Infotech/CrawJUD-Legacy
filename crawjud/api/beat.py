@@ -17,7 +17,7 @@ from crawjud.api import AppFactory
 
 # Set environment variables to designate worker mode and production status.
 os.environ.update({
-    "APPLICATION_APP": "worker",
+    "APPLICATION_APP": "beat",
 })
 
 

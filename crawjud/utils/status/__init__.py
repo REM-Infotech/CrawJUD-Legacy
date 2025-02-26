@@ -105,7 +105,7 @@ class TaskExec:
                     "system": system,
                     "typebot": typebot,
                 }
-                task: Task = celery_app.send_task(f"bot.{system.lower()}_launcher", kwargs=kwargs_)
+                task: Task = celery_app.send_task(f"crawjud.bot.{system.lower()}_launcher", kwargs=kwargs_)
 
                 process_id = str(task.id)
 
@@ -334,7 +334,7 @@ class TaskExec:
         cron = CrontabModel(day_of_week=days, hour=str(hour_minute.hour), minute=str(hour_minute.minute))
 
         task_name = data.get("task_name")
-        task_schedule = "bot.%s_launcher" % system.lower()
+        task_schedule = "crawjud.bot.%s_launcher" % system.lower()
         args_ = json.dumps([])
         kwargs_ = json.dumps({
             "schedule": "True",

@@ -99,6 +99,9 @@ async def format_message_log(
         # Carregar dados do processo do Redis
         log_pid = redis_client.hgetall(redis_key)
 
+        if isinstance(log_pid, bytes):
+            log_pid = log_pid.decode("utf-8")
+
         # Caso não exista, inicializar o registro
         if not log_pid and int(data_pos) == 0:
             log_pid = {

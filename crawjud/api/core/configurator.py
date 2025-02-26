@@ -38,11 +38,12 @@ async def app_configurator(app: Quart) -> tuple[Quart, ASGIApp, Celery]:
         from .extensions import init_extensions
         from .routing import register_routes
 
+        celery = None
         celery = await make_celery(app)
         celery.set_default()
         app.extensions["celery"] = celery
 
-        celery.autodiscover_tasks(["bot", "utils"])
+        celery.autodiscover_tasks(["crawjud.bot", "crawjud.utils"])
 
         io = await init_extensions(app)
 

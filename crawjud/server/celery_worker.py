@@ -3,8 +3,8 @@
 import asyncio
 from pathlib import Path  # noqa: F401
 
-import clear
 from billiard.context import Process
+from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
@@ -18,7 +18,7 @@ async def start() -> None:
     if running_servers.get("Worker"):
         return ["Server already running.", "ERROR", "red"]
 
-    celery_process = Process(target=start_worker)
+    celery_process = Process(target=start_worker, name="Worker Celery")
     celery_process.start()
 
     store_process = StoreProcess(
@@ -64,6 +64,7 @@ async def shutdown() -> None:
             process_stop.join(15)
 
         tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
+        asyncio.sleep(2)
 
     except Exception as e:
         return [f"Error: {e}", "ERROR", "red"]
@@ -116,6 +117,10 @@ def start_worker() -> None:
             quart_app (Quart): The Quart application instance.
 
         """
+        os.environ.update({
+            "APPLICATION_APP": "worker",
+        })
+
         worker_name = f"{worker_name_generator()}@{node()}"
         async with quart_app.app_context():
             # Instantiate the worker with the app and specific settings.

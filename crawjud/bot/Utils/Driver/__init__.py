@@ -19,7 +19,6 @@ from uuid import uuid4
 import requests
 from selenium.common.exceptions import WebDriverException  # noqa: F401
 from selenium.webdriver.remote.webdriver import WebDriver
-from tqdm import tqdm
 
 from ...core import (
     BarColumn,
@@ -40,10 +39,9 @@ from ...core import (
     WebDriverWait,
 )
 
-try:
+if __name__ == "__main__":
     from getchrome_version import another_chrome_ver, chrome_ver
-
-except ModuleNotFoundError:
+else:
     from .getchrome_version import another_chrome_ver, chrome_ver  # noqa: F401
 
 import socket
@@ -194,11 +192,8 @@ class DriverBot(CrawJUD):
             self.prt()
 
             list_args = self.list_args
-            for item in list_args:
-                tqdm.write(item)
 
             chrome_options = Options()
-            tqdm.write(chrome_options.binary_location)
 
             chrome_options.binary_location = getenv("CHROME_EXECUTABLE")
 

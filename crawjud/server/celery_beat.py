@@ -1,10 +1,9 @@
 """Blueprint for the Celery Beat server."""
 
 import asyncio
-from pathlib import Path
 
-import clear
 from billiard.context import Process
+from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
@@ -18,7 +17,7 @@ async def start() -> None:
     if running_servers.get("Beat"):
         return ["Server already running.", "ERROR", "red"]
 
-    celery_process = Process(target=start_beat)
+    celery_process = Process(target=start_beat, name="Beat Celery")
     celery_process.start()
 
     store_process = StoreProcess(
@@ -60,6 +59,7 @@ async def shutdown() -> None:
             process_stop.join(15)
 
         tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
+        asyncio.sleep(2)
 
     except Exception as e:
         return [f"Error: {e}", "ERROR", "red"]
@@ -110,19 +110,9 @@ def start_beat() -> None:
 
         """
         async with quart_app.app_context():
-            # Define the path for the beat scheduler log file.
-            logfile = str(Path(__file__).cwd().joinpath("logs", "beat.log"))
-            # Ensure the directory for logs exists.
-            Path(logfile).parent.mkdir(parents=True, exist_ok=True)
-            # Create the log file if it does not already exist.
-            Path(logfile).touch(exist_ok=True)
-            # Initialize the beat scheduler with debug logging and custom scheduler.
             beat = Beat(
                 app=app,
-                loglevel="DEBUG",
-                max_interval=10,
-                scheduler="utils.scheduler:DatabaseScheduler",
-                logfile=logfile,
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
             )
             beat.run()
 
