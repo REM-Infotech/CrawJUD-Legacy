@@ -9,7 +9,7 @@ import traceback
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from os import getcwd, path
+from os import path
 from pathlib import Path
 
 import requests
@@ -156,13 +156,13 @@ class DriverBot(CrawJUD):
 
             chrome_options = Options()
 
-            chrome_options.binary_location = str(Path(getcwd()).joinpath("chrome-win64", "chrome.exe"))
+            # chrome_options.binary_location = str(Path(getcwd()).joinpath("chrome-win64", "chrome.exe"))
 
             self.create_path_accepted()
             self.add_options(chrome_options)
 
             getdriver = SetupDriver(destination=self.pid_path)
-
+            path_chrome = None
             if message != "Inicializando WebDriver":
                 version = getdriver.code_ver
                 chrome_name = f"chromedriver{version}"
@@ -176,7 +176,6 @@ class DriverBot(CrawJUD):
                 path_chrome = self.pid_path.joinpath(getdriver()).resolve()
 
             serve = Service(path_chrome)
-            serve.start()
             driver = Chrome(service=serve, options=chrome_options)
 
             wait = WebDriverWait(driver, 20, 0.01)
