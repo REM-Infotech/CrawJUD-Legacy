@@ -1,23 +1,26 @@
-"""ASGI server module."""
-
-# import sys
+"""Main module for the CrawJUD Package."""
 
 import asyncio
-from contextlib import contextmanager
 from importlib import import_module
 from pathlib import Path
+from platform import node
+from threading import Event, Thread
 from time import sleep
-from typing import Any, Callable, Coroutine, Generator
 
 import inquirer
+from celery.apps.beat import Beat
+from celery.apps.worker import Worker
 from clear import clear
-from socketio import ASGIApp, AsyncServer  # noqa: F401
+from socketio import AsyncServer  # noqa: F401
 from termcolor import colored
 from tqdm import tqdm
+from uvicorn import Server  # noqa: F401
 
-from crawjud.config import running_servers
-from crawjud.server import celery_beat, celery_worker, quart, quart_web
-from crawjud.server.thead_asgi import ASGIServer  # noqa: F401
+from crawjud.config import StoreThread, running_servers
+from crawjud.core import create_app
+from crawjud.core.watch import monitor_log
+from crawjud.menu_manager import MenuManager
+from crawjud.utils.gen_seed import worker_name_generator
 
 io = AsyncServer(
     async_mode="asgi",
@@ -31,209 +34,97 @@ import_module("crawjud.server.logs", __package__)
 clear()
 
 
-class MenuManager:
-    """Menu manager class."""
-
-    thead_io = None
-    current_choice = ""
-    _current_menu: inquirer.List = None
-    _current_menu_name = ""
-    returns_message_ = []
-
-    current_app = ""
-
-    functions: dict[
-        str,
-        dict[
-            str,
-            Callable[
-                [],
-                Coroutine[Any, Any, list[str] | None],
-            ],
-        ],
-    ] = {
-        "quart_api": {
-            "Start Server": quart.start,
-            "Shutdown App": quart.shutdown,
-            "Restart App": quart.restart,
-            "View Logs": quart.status,
-        },
-        "quart_web": {
-            "Start Server": quart_web.start,
-            "Shutdown App": quart_web.shutdown,
-            "Restart App": quart_web.restart,
-            "View Logs": quart_web.status,
-        },
-        "worker": {
-            "Start Server": celery_worker.start,
-            "Shutdown App": celery_worker.shutdown,
-            "Restart App": celery_worker.restart,
-            "View Logs": celery_worker.status,
-        },
-        "beat": {
-            "Start Server": celery_beat.start,
-            "Shutdown App": celery_beat.shutdown,
-            "Restart App": celery_beat.restart,
-            "View Logs": celery_beat.status,
-        },
-    }
-
-    @contextmanager
-    def answer_prompt(
-        self,
-        current_menu: inquirer.List,
-        menu: dict[str, inquirer.List],
-    ) -> Generator[
-        dict[str, str],
-        Any,
-        None,
-    ]:
-        """Answer prompt context manager."""
-        try:
-            server_answer = inquirer.prompt([current_menu])
-            choice = server_answer.get("application_list", "Back")
-
-            latest_menu = self.current_menu_name
-
-            if choice in menu:
-                self.current_menu_name = choice
-                self.current_menu = menu.get(choice)
-
-            splited_currentmenuname = self.current_menu_name.split(" ")
-
-            if len(splited_currentmenuname) > 2 and latest_menu == "Main Menu":
-                self.current_app = f"{splited_currentmenuname[0]}_{splited_currentmenuname[1]}".lower()
-
-            elif len(splited_currentmenuname) == 2:
-                self.current_app = splited_currentmenuname[1].lower()
-
-            if server_answer is None:
-                server_answer = {"application_list": "Close Server"}
-            yield server_answer
-        finally:
-            pass
-
-    @property
-    def returns_message(self) -> list[str]:
-        """Return the returns message."""
-        return self.returns_message_
-
-    @returns_message.setter
-    def returns_message(self, value: list[str]) -> None:
-        """Set the returns message."""
-        self.returns_message_ = value
-
-    @property
-    def current_menu_name(self) -> str:
-        """Return the current menu name."""
-        return self._current_menu_name
-
-    @current_menu_name.setter
-    def current_menu_name(self, value: str) -> None:
-        """Set the current menu name."""
-        self._current_menu_name = value
-
-    @property
-    def current_menu(self) -> str:
-        """Return the current menu."""
-        return self._current_menu
-
-    @current_menu.setter
-    def current_menu(self, value: inquirer.List) -> None:
-        """Set the current menu."""
-        self._current_menu = value
-
-    @property
-    def main_menu(self) -> None:
-        """Main menu for the server."""
-        return inquirer.List(
-            "application_list",
-            message="Select application",
-            choices=[
-                "Start All",
-                "Quart API ASGI",
-                "Quart Web ASGI",
-                "Celery Worker",
-                "Celery Beat",
-                "Get Bot LOG",
-                "Clear Prompt",
-                "Close Server",
-            ],
-        )
-
-    @property
-    def quart_menu_api(self) -> inquirer.List:
-        """Menu for Quart API."""
-        self.current_choice = "Quart API ASGI"
-        return inquirer.List(
-            "application_list",
-            message="Select an option",
-            choices=[
-                "Start Server",
-                "Restart App",
-                "Shutdown App",
-                "View Logs",
-                "Back",
-            ],
-        )
-
-    @property
-    def quart_menu_web(self) -> inquirer.List:
-        """Menu for Quart Web ASGI."""
-        self.current_choice = "Quart Web ASGI"
-        return inquirer.List(
-            "application_list",
-            message="Select an option",
-            choices=[
-                "Start Server",
-                "Restart App",
-                "Shutdown App",
-                "View Logs",
-                "Back",
-            ],
-        )
-
-    @property
-    def worker_menu(self) -> inquirer.List:
-        """Menu for Celery Worker."""
-        self.current_choice = "Celery Worker"
-        return inquirer.List(
-            "application_list",
-            message="Select an option",
-            choices=[
-                "Start Server",
-                "Restart App",
-                "Shutdown App",
-                "View Logs",
-                "Back",
-            ],
-        )
-
-    @property
-    def beat_menu(self) -> inquirer.List:
-        """Menu for Celery Beat."""
-        self.current_choice = "Celery Beat"
-        return inquirer.List(
-            "application_list",
-            message="Select an option",
-            choices=[
-                "Start Server",
-                "Restart App",
-                "Shutdown App",
-                "View Logs",
-                "Back",
-            ],
-        )
-
-
 class MasterApp(MenuManager):
     """Master application class."""
 
+    def start_worker(self, stop_event: Event) -> None:
+        """Run the Celery worker in a thread controlled by a stop event.
+
+        Args:
+            stop_event (Event): Event to signal the thread to stop.
+
+        """
+        worker_name = f"{worker_name_generator}@{node()}"
+        worker = Worker(
+            app=self.celery,
+            hostname=worker_name,
+            task_events=True,
+            loglevel="INFO",
+            concurrency=50.0,
+            pool="threads",
+        )
+        Thread(target=worker.start, name="Worker Celery").start()
+        while not stop_event.is_set():
+            sleep(1)
+
+        worker.stop()
+
+    def start_quart(self, stop_event: Event) -> None:
+        """Run the Quart server in a thread controlled by a stop event.
+
+        Args:
+            stop_event (Event): Event to signal the thread to stop.
+
+        """
+        while not stop_event.is_set():
+            ...
+
+    def start_beat(self, stop_event: Event) -> None:
+        """Run the Celery beat in a thread controlled by a stop event.
+
+        Args:
+            stop_event (Event): Event to signal the thread to stop.
+
+        """
+        beat = Beat(
+            app=self.celery,
+            scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+        )
+        Thread(target=beat.run, name="Beat Celery").start()
+        while not stop_event.is_set():
+            ...
+
+        beat.Service.stop()
+
+    def start_all(self) -> None:
+        """Start all server components in separate threads and allow stopping with an event.
+
+        This method creates threads for the worker, Quart server, and Celery beat.
+        It listens for a keyboard interrupt and then signals all threads to stop.
+        """
+        stop_event = Event()
+        worker_thread = Thread(target=self.start_worker, args=(stop_event,))
+        quart_thread = Thread(target=self.start_quart, args=(stop_event,))
+        beat_thread = Thread(target=self.start_beat, args=(stop_event,))
+
+        worker_thread.start()
+        quart_thread.start()
+        beat_thread.start()
+
+        store_thread = StoreThread(
+            process_name="Worker",
+            process_id=worker_thread.ident,
+            process_status="Running",
+        )
+
+        running_servers["Worker"] = store_thread
+
+    def status(self) -> None:
+        """Log the status of the server."""
+        if not running_servers.get("Quart API"):
+            return ["Server not running.", "ERROR", "red"]
+
+        clear()
+        tqdm.write("Type 'ESC' to exit.")
+
+        monitor_log("uvicorn_api.log")
+
+        return ["Exiting logs.", "INFO", "yellow"]
+
     def __init__(self) -> None:
         """Initialize the ASGI server."""
-        # self.asgi_app = ASGIApp(io)
-        # self.application = ASGIServer.startio_srv(self.asgi_app)
         self.current_menu = self.main_menu
+        self.app, self.srv, self.asgi, self.celery = asyncio.run(create_app())
 
     def prompt(self) -> None:
         """Prompt the user for server options."""
@@ -304,7 +195,7 @@ class MasterApp(MenuManager):
 
                 func = self.functions.get(self.current_app).get(choice)
                 if func:
-                    returns = asyncio.run(func())
+                    returns = func()
 
                     if returns is not None and returns != "":
                         self.returns_message_ = returns
@@ -341,7 +232,7 @@ class MasterApp(MenuManager):
         )
         tqdm.write(file_path.as_uri())
         if file_path.exists():
-            from .watch import monitor_log
+            from crawjud.core.watch import monitor_log
 
             monitor_log(file_path=file_path)
             return

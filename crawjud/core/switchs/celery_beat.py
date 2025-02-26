@@ -3,13 +3,15 @@
 import asyncio
 from threading import Thread
 
+from celery import Celery
+from celery.apps.beat import Beat
 from clear import clear
+from quart import Quart
 from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.config import StoreThread, running_servers
-
-from .watch import monitor_log
+from crawjud.core.watch import monitor_log
 
 
 async def start() -> None:
@@ -81,19 +83,12 @@ def start_beat() -> None:
     """Initialize and run the Celery beat scheduler."""
     import os
 
-    from celery import Celery
-    from celery.apps.beat import Beat
-    from quart import Quart
-
-    from crawjud.core import AppFactory
-
     # Set environment variables to designate worker mode and production status.
     os.environ.update({
         "APPLICATION_APP": "beat",
     })
 
-    # Create the Beat application and Celery instance via AppFactory.
-    quart_app, app = AppFactory.construct_app()
+    # Create the Beat application and Celery instance via ApplicationFactory.
 
     async def run_beat(app: Celery, quart_app: Quart) -> None:
         """Run the Celery beat scheduler within the Beat application context.
@@ -113,5 +108,3 @@ def start_beat() -> None:
                 scheduler="crawjud.utils.scheduler:DatabaseScheduler",
             )
             beat.run()
-
-    asyncio.run(run_beat(app, quart_app))

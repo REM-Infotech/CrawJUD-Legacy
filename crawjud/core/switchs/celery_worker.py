@@ -1,16 +1,21 @@
 """Blueprint for the worker server."""
 
 import asyncio
+import os
 from pathlib import Path  # noqa: F401
+from platform import node
 from threading import Thread
 
+from celery import Celery
+from celery.apps.worker import Worker
 from clear import clear
+from quart import Quart
 from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.config import StoreThread, running_servers
-
-from .watch import monitor_log
+from crawjud.core.watch import monitor_log
+from crawjud.utils import worker_name_generator
 
 
 async def start() -> None:
@@ -20,15 +25,6 @@ async def start() -> None:
 
     celery_thread = Thread(target=start_worker, name="Worker Celery")
     celery_thread.start()
-
-    store_thread = StoreThread(
-        process_name="Worker",
-        process_id=celery_thread.ident,
-        process_status="Running",
-        process_object=celery_thread,
-    )
-
-    running_servers["Worker"] = store_thread
 
     return ["Server started.", "INFO", "green"]
 
@@ -85,23 +81,12 @@ async def status() -> None:
 
 def start_worker() -> None:
     """Initialize and run the Celery worker."""
-    import os
-    from platform import node
-
-    from celery import Celery
-    from celery.apps.worker import Worker
-    from quart import Quart
-
-    from crawjud.core import AppFactory
-    from crawjud.utils import worker_name_generator
-
     # Set environment variables to designate worker mode and production status.
     os.environ.update({
         "APPLICATION_APP": "worker",
     })
 
-    # Create the Quart application and Celery instance via AppFactory.
-    quart_app, app = AppFactory.construct_app()
+    # Create the Quart application and Celery instance via ApplicationFactory.
 
     async def run_worker(app: Celery, quart_app: Quart) -> None:
         """Run the Celery worker within the Quart application context.
@@ -131,5 +116,3 @@ def start_worker() -> None:
                 pool="threads",
             )
             worker.start()
-
-    asyncio.run(run_worker(app, quart_app))

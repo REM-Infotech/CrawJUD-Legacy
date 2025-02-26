@@ -4,7 +4,7 @@ from os import environ
 
 from tqdm import tqdm
 
-from crawjud.server import MasterApp
+from crawjud import MasterApp
 
 
 def main_server() -> None:
