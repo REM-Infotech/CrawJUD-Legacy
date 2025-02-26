@@ -9,7 +9,7 @@ from quart import Blueprint, Response, abort, flash, make_response, redirect, re
 from quart import current_app as app
 
 from crawjud.decorators import login_required
-from crawjud.web.forms import UserForm, UserFormEdit
+from crawjud.forms import UserForm, UserFormEdit
 from crawjud.web.models import LicensesUsers, SuperUser, Users
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")

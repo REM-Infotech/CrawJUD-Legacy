@@ -77,10 +77,10 @@ class AppFactory:
             tuple: A tuple containing the Quart application and Celery worker.
 
         """
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        loop = asyncio.get_event_loop()
+        # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        # loop = asyncio.get_event_loop()
 
-        quart, app, celery = loop.run_until_complete(AppFactory().main())
+        quart, app, celery = asyncio.run(AppFactory().main())
         args_run: dict[str, str | int | bool] = {}
         # app.app_context().push()
 

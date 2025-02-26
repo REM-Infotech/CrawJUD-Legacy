@@ -25,7 +25,7 @@ from werkzeug.utils import secure_filename
 
 from crawjud.decorators import login_required
 from crawjud.web import db
-from crawjud.web.forms.credentials import CredentialsForm
+from crawjud.forms.credentials import CredentialsForm
 from crawjud.web.models import BotsCrawJUD, Credentials, LicensesUsers
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")

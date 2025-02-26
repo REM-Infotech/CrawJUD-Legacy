@@ -26,7 +26,7 @@ from flask_talisman import Talisman
 # APP Imports
 from quart import Quart
 
-from crawjud.web.custom import QuartLoginManager as LoginManager
+from crawjud.custom import QuartLoginManager as LoginManager
 
 db = SQLAlchemy()
 tlsm = Talisman()

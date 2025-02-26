@@ -24,9 +24,9 @@ from quart import current_app as app
 from quart_wtf import QuartForm
 
 from crawjud.decorators import login_required
+from crawjud.forms import BotForm
 from crawjud.web.models import BotsCrawJUD
 
-from ...forms import BotForm
 from ...misc import MakeModels
 from .botlaunch_methods import (
     get_bot_info,

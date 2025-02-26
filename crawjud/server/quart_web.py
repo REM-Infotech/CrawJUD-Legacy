@@ -23,7 +23,7 @@ async def start() -> None:
 
     store_process = StoreThread(
         process_name="Quart Web",
-        process_id=asgi_process.pid,
+        process_id=asgi_process.ident,
         process_status="Running",
         process_object=asgi_process,
     )

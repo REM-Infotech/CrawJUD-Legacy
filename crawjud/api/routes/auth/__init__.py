@@ -17,7 +17,7 @@ from quart import (
     url_for,
 )
 
-from crawjud.web.forms import LoginForm
+from crawjud.forms import LoginForm
 from crawjud.web.models.users import Users
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
