@@ -1,12 +1,6 @@
-"""Crawjud bots package main entry point."""
+"""Main entry point for the server application."""
 
+from crawjud.main import main_server
 
-# def main() -> None:
-#     """Run the server application."""
-#     from crawjud.server.main import main_server
-
-#     main_server()
-
-
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    SystemExit(main_server())

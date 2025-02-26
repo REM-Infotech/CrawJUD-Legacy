@@ -4,15 +4,30 @@ from __future__ import annotations
 
 import logging
 import secrets
+from dataclasses import dataclass
 from datetime import timedelta
 from os import environ
 from pathlib import Path
+from threading import Event
 
+from billiard.context import Process
 from dotenv_vault import load_dotenv
 
 load_dotenv()
 
 workdir = Path(__file__).cwd().resolve()
+running_servers: dict[StoreThread] = {}
+
+
+@dataclass
+class StoreThread:
+    """Dataclass for storing process information."""
+
+    process_name: str
+    process_id: int
+    process_status: str
+    process_object: Process
+    event_stop: Event = None
 
 
 class Config:

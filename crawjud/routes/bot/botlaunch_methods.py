@@ -1,34 +1,30 @@
 """Module for botlaunch route."""
 
-import json
 import os
-from contextlib import suppress  # , asynccontextmanager
 from datetime import date, datetime, time
 from pathlib import Path
 from typing import Any  # , AsyncGenerator
 
 import aiofiles
-import httpx
+from celery import Celery
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Response,
     flash,
-    make_response,
-    redirect,
-    request,
     session,
-    url_for,
 )
 from quart import current_app as app
 from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
 
+from crawjud.utils.status import TaskExec
+
 from ...forms import BotForm
 from ...misc import (
     generate_pid,
 )
-from ...models import BotsCrawJUD, Credentials, LicensesUsers, Servers
+from ...models import BotsCrawJUD, Credentials, LicensesUsers
 
 FORM_CONFIGURATOR = {
     "JURIDICO": {
@@ -310,55 +306,41 @@ async def send_data_to_servers(
     headers: dict,
     pid: str,
     periodic_bot: bool = False,
+    id_: int = None,
+    system: str = None,
+    typebot: str = None,
 ) -> Response | None:
     """Send data to servers and handle the response."""
-    servers = Servers.query.all()
-    for server in servers:
-        data.update({"url_socket": server.address})
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
+    celery_app: Celery = app.extensions["celery"]
 
-        request_path = request.path
-        if periodic_bot:
-            request_path = request_path.replace("/bot", "/periodic_bot")
-        elif not periodic_bot:
-            if data.get("periodic_task_group"):
-                data.pop("periodic_task_group")
+    if periodic_bot:
+        # Schedule the bot task execution.
+        is_started = await TaskExec.task_exec_schedule(
+            id_,
+            system,
+            typebot,
+            "start",
+            app,
+            db,
+            files,
+            data,
+        )
 
-        arguments = {
-            "url": f"https://{server.address}{request_path}",
-            "json": json.dumps(data),
-        }
-        if files:
-            arguments.pop("json")
-            arguments.update({"files": files, "data": data})
+    elif not periodic_bot:
+        is_started = await TaskExec.task_exec(
+            id_,
+            system,
+            typebot,
+            "start",
+            app,
+            db,
+            files,
+            celery_app,
+            data,
+        )
 
-        response = None
-        with suppress(Exception):
-            async with httpx.AsyncClient() as client:
-                response = await client.post(**arguments, headers=headers)
-        if response:
-            if response.status_code == 200:
-                message = f"Execução iniciada com sucesso! PID: {pid}"
-                await flash(message, "success")
-
-                if periodic_bot:
-                    return await make_response(
-                        redirect(
-                            url_for(
-                                "dash.dashboard",
-                            ),
-                        )
-                    )
-
-                return await make_response(
-                    redirect(
-                        url_for(
-                            "logsbot.logs_bot",
-                            pid=pid,
-                        ),
-                    ),
-                )
-    await flash("Erro ao iniciar robô", "error")
-    return None
+    return is_started
 
 
 async def handle_form_errors(form: BotForm) -> None:

@@ -1,4 +1,4 @@
-"""Quart blueprint for the server web."""
+"""Quart blueprint for the server."""
 
 import asyncio
 from pathlib import Path  # noqa: F401
@@ -8,34 +8,34 @@ from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.server.config import StoreThread, running_servers
+from crawjud.config import StoreThread, running_servers
 
 from .watch import monitor_log
 
 
 async def start() -> None:
     """Start the server."""
-    if running_servers.get("Quart Web"):
+    if running_servers.get("Quart API"):
         return ["Server already running.", "ERROR", "red"]
 
-    asgi_process = Thread(target=start_process_asgi, name="Quart Web")
+    asgi_process = Thread(target=start_process_asgi, name="Quart API")
     asgi_process.start()
 
-    store_process = StoreThread(
-        process_name="Quart Web",
+    store_thread = StoreThread(
+        process_name="Quart API",
         process_id=asgi_process.ident,
         process_status="Running",
         process_object=asgi_process,
     )
 
-    running_servers["Quart Web"] = store_process
+    running_servers["Quart API"] = store_thread
 
     return ["Server started.", "INFO", "green"]
 
 
 async def restart() -> None:
     """Restart the server."""
-    if not running_servers.get("Quart Web"):
+    if not running_servers.get("Quart API"):
         tqdm.write(colored("[INFO] Server not running. Starting server...", "yellow", attrs=["bold"]))
         asyncio.sleep(2)
         return await start()
@@ -52,14 +52,14 @@ async def restart() -> None:
 
 async def shutdown() -> None:
     """Shutdown the server."""
-    store_process: StoreThread = running_servers.get("Quart Web")
-    if not store_process:
+    store_thread: StoreThread = running_servers.get("Quart API")
+    if not store_thread:
         return ["Server not running.", "WARNING", "yellow"]
 
     try:
-        store_process: StoreThread = running_servers.pop("Quart Web")
-        if store_process:
-            thread_stop: Thread = store_process.process_object
+        store_thread: StoreThread = running_servers.pop("Quart API")
+        if store_thread:
+            thread_stop: Thread = store_thread.process_object
 
             thread_stop.join(15)
 
@@ -72,13 +72,13 @@ async def shutdown() -> None:
 
 async def status() -> None:
     """Log the status of the server."""
-    if not running_servers.get("Quart Web"):
+    if not running_servers.get("Quart API"):
         return ["Server not running.", "ERROR", "red"]
 
     clear()
     tqdm.write("Type 'ESC' to exit.")
 
-    monitor_log("uvicorn_web.log")
+    monitor_log("uvicorn_api.log")
 
     return ["Exiting logs.", "INFO", "yellow"]
 
@@ -87,11 +87,11 @@ def start_process_asgi() -> None:
     """Start the Quart server."""
     import os
 
-    from crawjud.web import AppFactory
+    from crawjud.core import AppFactory
 
     # Set environment variables to designate Quart app mode and production status.
     os.environ.update({
-        "APPLICATION_APP": "quart_web",
+        "APPLICATION_APP": "quart",
     })
     # Start the Quart application using the AppFactory.
     AppFactory.construct_app()

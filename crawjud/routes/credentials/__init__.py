@@ -23,10 +23,10 @@ from quart import (
 from quart import current_app as app
 from werkzeug.utils import secure_filename
 
+from crawjud import db
 from crawjud.decorators import login_required
 from crawjud.forms.credentials import CredentialsForm
 from crawjud.models import BotsCrawJUD, Credentials, LicensesUsers
-from crawjud.web import db
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 cred = Blueprint("creds", __name__, template_folder=path_template)

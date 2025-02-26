@@ -7,7 +7,7 @@ from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.server.config import StoreThread, running_servers
+from crawjud.config import StoreThread, running_servers
 
 from .watch import monitor_log
 
