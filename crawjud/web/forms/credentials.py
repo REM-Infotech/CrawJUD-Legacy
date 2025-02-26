@@ -7,7 +7,7 @@ from quart_wtf import QuartForm
 from wtforms import PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
-from web.types import AnyType, T
+from crawjud.web.types import AnyType, T
 
 file_allowed = FileAllowed(["pfx", 'Apenas arquivos ".pfx" são permitidos!'])
 

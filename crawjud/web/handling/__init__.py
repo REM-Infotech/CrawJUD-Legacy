@@ -6,7 +6,7 @@ from os import environ
 
 from dotenv_vault import load_dotenv
 
-from web import app
+from crawjud.web import app
 
 load_dotenv()
 values = environ

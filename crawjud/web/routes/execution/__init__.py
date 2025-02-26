@@ -21,11 +21,11 @@ from quart import (
 from quart import current_app as app
 from sqlalchemy.orm import aliased
 
-from web import db
-from web.decorators import login_required
-from web.forms import SearchExec
-from web.misc import generate_signed_url
-from web.models import Executions, SuperUser, Users, admins
+from crawjud.web import db
+from crawjud.web.decorators import login_required
+from crawjud.web.forms import SearchExec
+from crawjud.web.misc import generate_signed_url
+from crawjud.web.models import Executions, SuperUser, Users, admins
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 exe = Blueprint("exe", __name__, template_folder=path_template)

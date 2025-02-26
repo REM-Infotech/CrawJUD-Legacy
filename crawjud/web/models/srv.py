@@ -1,6 +1,6 @@
 """Module for server-related models."""
 
-from web import db
+from crawjud.web import db
 
 
 class Servers(db.Model):

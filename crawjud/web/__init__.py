@@ -26,7 +26,7 @@ from flask_talisman import Talisman
 # APP Imports
 from quart import Quart
 
-from web.custom import QuartLoginManager as LoginManager
+from crawjud.web.custom import QuartLoginManager as LoginManager
 
 db = SQLAlchemy()
 tlsm = Talisman()
@@ -109,13 +109,13 @@ class AppFactory:
             app (Quart): The Quart application instance.
 
         """
-        from web.routes.auth import auth
-        from web.routes.bot import bot
-        from web.routes.config import admin, supersu, usr
-        from web.routes.credentials import cred
-        from web.routes.dashboard import dash
-        from web.routes.execution import exe
-        from web.routes.logs import logsbot
+        from crawjud.web.routes.auth import auth
+        from crawjud.web.routes.bot import bot
+        from crawjud.web.routes.config import admin, supersu, usr
+        from crawjud.web.routes.credentials import cred
+        from crawjud.web.routes.dashboard import dash
+        from crawjud.web.routes.execution import exe
+        from crawjud.web.routes.logs import logsbot
 
         listBlueprints = [bot, auth, logsbot, exe, dash, cred, admin, supersu, usr]  # noqa: N806
 
@@ -130,13 +130,13 @@ class AppFactory:
             db (SQLAlchemy): The SQLAlchemy database instance.
 
         """
-        from web.models import init_database
+        from crawjud.web.models import init_database
 
         if not Path("is_init.txt").exists():
             async with aiofiles.open("is_init.txt", "w") as f:
                 await f.write(f"{await init_database(app, db)}")
 
-        from web.models import Users
+        from crawjud.web.models import Users
 
         if not db.engine.dialect.has_table(db.engine.connect(), Users.__tablename__):
             async with aiofiles.open("is_init.txt", "w") as f:

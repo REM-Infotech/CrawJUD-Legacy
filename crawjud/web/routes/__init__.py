@@ -33,7 +33,7 @@ from trio import Path
 from werkzeug.exceptions import HTTPException
 from werkzeug.local import LocalProxy
 
-from web.decorators import current_user, login_required
+from crawjud.web.decorators import current_user, login_required
 
 
 @app.context_processor
@@ -111,7 +111,7 @@ async def serve_profile(user: str) -> Response:
     """
     try:
         with app.app_context():
-            from web.models import Users
+            from crawjud.web.models import Users
 
             user = Users.query.filter(Users.login == user).first()
             image_data = user.blob_doc

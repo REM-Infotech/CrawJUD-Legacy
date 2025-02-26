@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from quart import Response, flash, make_response, redirect, session, url_for
 from quart import current_app as app
 
-from web.types import AnyStr, WrappedFnReturnT
+from crawjud.web.types import AnyStr, WrappedFnReturnT
 
 from ..models import Users
 

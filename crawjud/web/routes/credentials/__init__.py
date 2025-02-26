@@ -23,10 +23,10 @@ from quart import (
 from quart import current_app as app
 from werkzeug.utils import secure_filename
 
-from web import db
-from web.decorators import login_required
-from web.forms.credentials import CredentialsForm
-from web.models import BotsCrawJUD, Credentials, LicensesUsers
+from crawjud.web import db
+from crawjud.web.decorators import login_required
+from crawjud.web.forms.credentials import CredentialsForm
+from crawjud.web.models import BotsCrawJUD, Credentials, LicensesUsers
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 cred = Blueprint("creds", __name__, template_folder=path_template)

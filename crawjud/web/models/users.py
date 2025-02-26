@@ -8,7 +8,7 @@ import pytz
 from flask_login import UserMixin
 from quart import request
 
-from web import db, login_manager
+from crawjud.web import db, login_manager
 
 salt = bcrypt.gensalt()
 

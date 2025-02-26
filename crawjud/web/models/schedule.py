@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from web import db
+from crawjud.web import db
 
 # from sqlalchemy.orm.relationships import RelationshipProperty
 

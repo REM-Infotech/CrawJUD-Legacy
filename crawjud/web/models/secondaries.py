@@ -1,6 +1,6 @@
 """Module defining secondary association tables for many-to-many relationships."""
 
-from web import db
+from crawjud.web import db
 
 admins = db.Table(
     "admins",

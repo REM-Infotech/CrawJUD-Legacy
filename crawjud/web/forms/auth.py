@@ -6,7 +6,7 @@ from quart_wtf import QuartForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
-from web.types import AnyType, T
+from crawjud.web.types import AnyType, T
 
 
 class LoginForm(QuartForm):

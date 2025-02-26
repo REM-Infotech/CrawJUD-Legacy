@@ -17,8 +17,8 @@ from quart import (
     url_for,
 )
 
-from web.forms import LoginForm
-from web.models.users import Users
+from crawjud.web.forms import LoginForm
+from crawjud.web.models.users import Users
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 auth = Blueprint("auth", __name__, template_folder=path_template)

@@ -15,9 +15,9 @@ import pandas as pd
 from deep_translator import GoogleTranslator
 from quart import Blueprint, Response, abort, jsonify, make_response, render_template, request, session
 
-from web import db
-from web.decorators import login_required
-from web.models import Executions, LicensesUsers, SuperUser, Users
+from crawjud.web import db
+from crawjud.web.decorators import login_required
+from crawjud.web.models import Executions, LicensesUsers, SuperUser, Users
 
 translator = GoogleTranslator(source="en", target="pt")
 

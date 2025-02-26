@@ -25,9 +25,9 @@ from quart import (
 )
 from quart import current_app as app
 
-from web.decorators import login_required
-from web.misc import generate_signed_url
-from web.models import Executions, LicensesUsers, Users
+from crawjud.web.decorators import login_required
+from crawjud.web.misc import generate_signed_url
+from crawjud.web.models import Executions, LicensesUsers, Users
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 logsbot = Blueprint("logsbot", __name__, template_folder=path_template)
