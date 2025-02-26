@@ -23,7 +23,7 @@ async def start() -> None:
 
     store_thread = StoreThread(
         process_name="Quart API",
-        process_id=asgi_process.pid,
+        process_id=asgi_process.ident,
         process_status="Running",
         process_object=asgi_process,
     )
@@ -59,9 +59,9 @@ async def shutdown() -> None:
     try:
         store_thread: StoreThread = running_servers.pop("Quart API")
         if store_thread:
-            process_stop: Thread = store_thread.process_object
-            process_stop.terminate()
-            process_stop.join(15)
+            thread_stop: Thread = store_thread.process_object
+
+            thread_stop.join(15)
 
         tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
         asyncio.sleep(2)

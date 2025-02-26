@@ -8,12 +8,13 @@ from dataclasses import dataclass
 from datetime import timedelta
 from os import environ
 from pathlib import Path
+from threading import Event
 
 from billiard.context import Process
 from dotenv_vault import load_dotenv
 
 load_dotenv()
-running_servers = {}
+running_servers: dict[StoreThread] = {}
 
 
 @dataclass
@@ -24,6 +25,7 @@ class StoreThread:
     process_id: int
     process_status: str
     process_object: Process
+    event_stop: Event = None
 
 
 class Config:

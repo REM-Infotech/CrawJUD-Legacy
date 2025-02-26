@@ -21,14 +21,14 @@ async def start() -> None:
     asgi_process = Thread(target=start_process_asgi, name="Quart Web")
     asgi_process.start()
 
-    store_thread = StoreThread(
+    store_process = StoreThread(
         process_name="Quart Web",
         process_id=asgi_process.pid,
         process_status="Running",
         process_object=asgi_process,
     )
 
-    running_servers["Quart Web"] = store_thread
+    running_servers["Quart Web"] = store_process
 
     return ["Server started.", "INFO", "green"]
 
@@ -52,16 +52,16 @@ async def restart() -> None:
 
 async def shutdown() -> None:
     """Shutdown the server."""
-    store_thread: StoreThread = running_servers.get("Quart Web")
-    if not store_thread:
+    store_process: StoreThread = running_servers.get("Quart Web")
+    if not store_process:
         return ["Server not running.", "WARNING", "yellow"]
 
     try:
-        store_thread: StoreThread = running_servers.pop("Quart Web")
-        if store_thread:
-            process_stop: Thread = store_thread.process_object
-            process_stop.terminate()
-            process_stop.join(15)
+        store_process: StoreThread = running_servers.pop("Quart Web")
+        if store_process:
+            thread_stop: Thread = store_process.process_object
+
+            thread_stop.join(15)
 
         tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
         asyncio.sleep(2)

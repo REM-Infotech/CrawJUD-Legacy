@@ -22,7 +22,7 @@ async def start() -> None:
 
     store_thread = StoreThread(
         process_name="Beat",
-        process_id=celery_thread.pid,
+        process_id=celery_thread.ident,
         process_status="Running",
         process_object=celery_thread,
     )
@@ -54,9 +54,9 @@ async def shutdown() -> None:
     try:
         store_thread: StoreThread = running_servers.pop("Beat")
         if store_thread:
-            process_stop: Thread = store_thread.process_object
-            process_stop.terminate()
-            process_stop.join(15)
+            thread_stop: Thread = store_thread.process_object
+
+            thread_stop.join(15)
 
         tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
         asyncio.sleep(2)
