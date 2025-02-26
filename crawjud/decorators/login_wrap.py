@@ -12,7 +12,7 @@ from quart import (
 )
 from werkzeug.local import LocalProxy
 
-from crawjud.web.types import AnyType, WrappedFnReturnT
+from crawjud.types import AnyType, WrappedFnReturnT
 
 current_user = LocalProxy(lambda: _get_user())
 

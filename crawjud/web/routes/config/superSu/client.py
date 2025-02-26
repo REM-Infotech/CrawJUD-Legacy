@@ -2,9 +2,8 @@
 
 from quart import Response, abort, make_response, render_template
 
-from crawjud.web.decorators import login_required
+from crawjud.decorators import check_privilegies, login_required
 
-from ....decorators import check_privilegies
 from . import supersu
 
 

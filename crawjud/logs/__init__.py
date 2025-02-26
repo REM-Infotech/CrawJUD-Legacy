@@ -73,13 +73,13 @@ def log_cfg(
     if getenv("SERVER_MANAGEMENT"):
         config["handlers"]["stream"]["class"] = "logging.NullHandler"
         config["handlers"]["redis_handler"] = {
-            "class": "logs.handlers.RedisHandler",
+            "class": "crawjud.logs.handlers.RedisHandler",
             "uri": getenv("REDIS_URL", "redis://localhost:6379/0"),
             "level": "DEBUG",
             "formatter": "",
         }
         config["formatters"]["json"] = {
-            "()": "logs.handlers.JsonFormatter",
+            "()": "crawjud.logs.handlers.JsonFormatter",
         }
         config["handlers"]["redis_handler"]["formatter"] = "json"
         config["root"]["handlers"].append("redis_handler")

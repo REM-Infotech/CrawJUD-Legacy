@@ -1,7 +1,24 @@
 """Celery configuration for Quart application."""
 
 from celery import Celery
+from celery.signals import setup_logging
 from quart import Quart
+
+from crawjud.types import AnyType
+
+
+@setup_logging.connect()
+def config_loggers(
+    *args: AnyType,
+    **kwargs: AnyType,
+) -> None:
+    """Configure logging for Celery."""
+    from logging.config import dictConfig
+
+    from crawjud.logs import log_cfg
+
+    cfg, _ = log_cfg()
+    dictConfig(cfg)
 
 
 async def make_celery(app: Quart) -> Celery:

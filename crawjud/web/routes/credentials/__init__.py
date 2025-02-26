@@ -23,8 +23,8 @@ from quart import (
 from quart import current_app as app
 from werkzeug.utils import secure_filename
 
+from crawjud.decorators import login_required
 from crawjud.web import db
-from crawjud.web.decorators import login_required
 from crawjud.web.forms.credentials import CredentialsForm
 from crawjud.web.models import BotsCrawJUD, Credentials, LicensesUsers
 

@@ -69,8 +69,8 @@ class Config:
     SESSION_COOKIE_SECURE: type[bool] = True
     PERMANENT_SESSION_LIFETIME: type[int] = timedelta(days=31).max.seconds
 
-    TEMP_PATH: Path = Path(__file__).cwd().joinpath("bot/temp").resolve()
-    ARCHIVES: Path = Path(__file__).cwd().joinpath("bot/Archives").resolve()
+    TEMP_PATH: Path = Path(__file__).cwd().joinpath("crawjud/bot/temp").resolve()
+    ARCHIVES: Path = Path(__file__).cwd().joinpath("crawjud/bot/Archives").resolve()
     TEMP_PATH.mkdir(exist_ok=True)
     ARCHIVES.mkdir(exist_ok=True)
 

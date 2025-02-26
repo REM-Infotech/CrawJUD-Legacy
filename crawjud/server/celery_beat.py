@@ -56,6 +56,8 @@ async def shutdown() -> None:
             process_stop.terminate()
             process_stop.join(15)
 
+        tqdm.write(colored("[INFO] Server stopped.", "yellow", attrs=["bold"]))
+
     except Exception as e:
         return [f"Error: {e}", "ERROR", "red"]
 

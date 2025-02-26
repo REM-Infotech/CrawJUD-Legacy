@@ -24,7 +24,7 @@ io = AsyncServer(
     ping_timeout=10,
 )
 
-import_module("server.logs", __package__)
+import_module("crawjud.server.logs", __package__)
 
 clear()
 

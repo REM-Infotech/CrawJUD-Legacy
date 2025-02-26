@@ -371,7 +371,7 @@ class SetupDriver:
         self.url_driver = self.get_url()
         new_stem = f"chromedriver{self.code_ver}.zip"
         root_dir = Path(__file__).parent.cwd()
-        without_stem = root_dir.joinpath("bot", "webdriver", "chromedriver")
+        without_stem = root_dir.joinpath("crawjud/bot", "webdriver", "chromedriver")
         self.file_path = without_stem.with_stem(new_stem).resolve()
 
         if platform.system() == "Linux":

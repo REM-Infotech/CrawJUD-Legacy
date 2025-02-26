@@ -5,7 +5,7 @@ from quart import Response, abort, make_response, render_template, session
 from quart import current_app as app
 from sqlalchemy.orm import aliased
 
-from crawjud.web.decorators import login_required
+from crawjud.decorators import login_required
 from crawjud.web.models import ScheduleModel, SuperUser, Users, admins
 
 from . import exe

@@ -73,7 +73,7 @@ class AppFactory:
                 x_content_type_options=True,
                 x_xss_protection=True,
             )
-            import_module("web.routes", __package__)
+            import_module("crawjud.web.routes", __package__)
 
     async def create_app(self) -> Quart:
         """Create and configure the Quart application.
@@ -91,14 +91,6 @@ class AppFactory:
         await self.init_blueprints(app)
 
         # Initialize logs module
-        from crawjud.logs import log_cfg
-
-        log_file = Path(__file__).cwd().resolve().joinpath("logs").joinpath("web.log")
-
-        dict_config, name_logger = log_cfg(log_file=log_file)
-        logging.config.dictConfig(dict_config)
-
-        app.logger = logging.getLogger(name_logger)
 
         return app
 

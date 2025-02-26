@@ -25,7 +25,7 @@ from quart import (
 )
 from quart import current_app as app
 
-from crawjud.web.decorators import login_required
+from crawjud.decorators import login_required
 from crawjud.web.misc import generate_signed_url
 from crawjud.web.models import Executions, LicensesUsers, Users
 

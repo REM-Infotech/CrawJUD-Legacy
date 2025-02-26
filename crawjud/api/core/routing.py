@@ -31,8 +31,8 @@ async def register_routes(app: Quart) -> None:
     """
     async with app.app_context():
         # Dynamically import additional route modules as needed.
-        import_module("api.routes.logs", package=__package__)
-        import_module("api.routes", package=__package__)
+        import_module("crawjud.api.routes.logs", package=__package__)
+        import_module("crawjud.api.routes", package=__package__)
 
     from crawjud.api.routes.bot import bot
     from crawjud.api.routes.webhook import wh

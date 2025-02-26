@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from quart import Blueprint, Response, abort, flash, make_response, redirect, render_template, session, url_for
 from quart import current_app as app
 
-from crawjud.web.decorators import login_required
+from crawjud.decorators import login_required
 from crawjud.web.forms import UserForm, UserFormEdit
 from crawjud.web.models import LicensesUsers, SuperUser, Users
 
