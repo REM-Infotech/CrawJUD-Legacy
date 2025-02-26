@@ -1,5 +1,9 @@
 """Celery configuration for Quart application."""
 
+import logging
+from os import getenv
+from pathlib import Path
+
 from celery import Celery
 from celery.signals import setup_logging
 from quart import Quart
@@ -17,7 +21,21 @@ def config_loggers(
 
     from crawjud.logs import log_cfg
 
-    cfg, _ = log_cfg()
+    logger_name = f"{getenv('APPLICATION_APP')}_celery"
+    log_file = Path(__file__).cwd().resolve().joinpath("logs", f"{logger_name}.log")
+    log_file.touch(exist_ok=True)
+
+    log_level = logging.INFO
+    if getenv("DEBUG", "False").lower() == "True":
+        log_level = logging.DEBUG
+
+    cfg, _ = log_cfg(
+        str(log_file),
+        log_level,
+        logger_name=logger_name.replace("_", "."),
+        max_bytes=8196 * 1024,
+        bkp_ct=5,
+    )
     dictConfig(cfg)
 
 

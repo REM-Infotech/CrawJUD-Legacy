@@ -5,6 +5,7 @@ AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 """
 
 import asyncio
+import logging
 import platform
 import subprocess
 import sys
@@ -130,7 +131,23 @@ class AppFactory:
         from crawjud.logs import log_cfg
 
         # Create a WebSocket
-        cfg, _ = log_cfg()
+
+        log_file = Path(__file__).cwd().joinpath("crawjud", "logs", "uvicorn_api.log")
+        log_file.touch(exist_ok=True)
+
+        log_level = logging.INFO
+        if getenv("DEBUG", "False").lower() == "True":
+            log_level = logging.DEBUG
+
+        logger_name = __name__
+        cfg, _ = log_cfg(
+            str(log_file),
+            log_level,
+            logger_name=logger_name,
+            max_bytes=8196 * 1024,
+            bkp_ct=5,
+        )
+
         port = kwargs.pop("port", port)
         log_output = kwargs.pop("log_output", log_output)
         app = kwargs.pop("app", app)

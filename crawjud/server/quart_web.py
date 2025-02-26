@@ -3,18 +3,21 @@
 import asyncio
 from pathlib import Path  # noqa: F401
 
-import clear
 from billiard.context import Process
+from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.server.config import StoreProcess, running_servers
 
-from .io_client import io, watch_input
+from .watch import monitor_log
 
 
 async def start() -> None:
     """Start the server."""
+    if running_servers.get("Quart Web"):
+        return ["Server already running.", "ERROR", "red"]
+
     asgi_process = Process(target=start_process_asgi)
     asgi_process.start()
 
@@ -71,14 +74,10 @@ async def status() -> None:
     if not running_servers.get("Quart Web"):
         return ["Server not running.", "ERROR", "red"]
 
-    clear.clear()
+    clear()
     tqdm.write("Type 'ESC' to exit.")
 
-    io.connect("http://localhost:7000", namespaces=["/quart_web"])
-    while not watch_input():
-        ...
-
-    io.disconnect()
+    monitor_log("uvicorn_web.log")
 
     return ["Exiting logs.", "INFO", "yellow"]
 

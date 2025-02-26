@@ -10,12 +10,12 @@ from typing import Any, Callable, Coroutine, Generator
 
 import inquirer
 from clear import clear
-from socketio import ASGIApp, AsyncServer
+from socketio import ASGIApp, AsyncServer  # noqa: F401
 from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.server import celery_beat, celery_worker, quart, quart_web
-from crawjud.server.thead_asgi import ASGIServer
+from crawjud.server.thead_asgi import ASGIServer  # noqa: F401
 
 io = AsyncServer(
     async_mode="asgi",
@@ -226,8 +226,8 @@ class MasterApp(MenuManager):
 
     def __init__(self) -> None:
         """Initialize the ASGI server."""
-        self.asgi_app = ASGIApp(io)
-        self.application = ASGIServer.startio_srv(self.asgi_app)
+        # self.asgi_app = ASGIApp(io)
+        # self.application = ASGIServer.startio_srv(self.asgi_app)
         self.current_menu = self.main_menu
 
     def prompt(self) -> None:

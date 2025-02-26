@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import logging.config
 from datetime import datetime, timedelta
+from os import getenv
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -122,9 +123,21 @@ class PropertiesCrawJUD:
 
         Creates or reuses a log file, and sets up a rotating file handler.
         """
-        logfile = Path(self.path_args.parent).resolve().joinpath(f"{self.pid}.log")
-        logfile.touch(exist_ok=True)
-        cfg, name = log_cfg(log_file=logfile, max_bytes=8196 * 1024, bkp_ct=5)
+        log_file = Path(self.path_args.parent).resolve().joinpath(f"{self.pid}.log")
+        log_file.touch(exist_ok=True)
+
+        log_level = logging.INFO
+        if getenv("DEBUG", "False").lower() == "True":
+            log_level = logging.DEBUG
+
+        logger_name = self.pid
+        cfg, name = log_cfg(
+            str(log_file),
+            log_level,
+            logger_name=logger_name,
+            max_bytes=8196 * 1024,
+            bkp_ct=5,
+        )
         logging.config.dictConfig(cfg)
 
         PropertiesCrawJUD.logger = logging.getLogger(name)

@@ -154,17 +154,24 @@ class AppFactory:
             ).stdout.strip(),
         )
 
-        log_path = Path(__file__).cwd().resolve().joinpath("logs", "uvicorn_web.log")
-        log_path.touch(exist_ok=True)
+        log_file = Path(__file__).cwd().joinpath("crawjud", "logs", "uvicorn_web.log")
+        log_file.touch(exist_ok=True)
 
-        log_cfg, _ = log_cfg(
-            log_path,
-            logging.DEBUG,
+        log_level = logging.INFO
+        if os.getenv("DEBUG", "False").lower() == "True":
+            log_level = logging.DEBUG
+
+        logger_name = __name__
+        cfg, _ = log_cfg(
+            str(log_file),
+            log_level,
+            logger_name=logger_name,
+            max_bytes=8196 * 1024,
+            bkp_ct=5,
         )
-        # debug = os.getenv("DEBUG", "False").lower() == "true"
         uvicorn.run(
             app,
             host=hostname,
             port=port,
-            log_config=log_cfg,
+            log_config=cfg,
         )
