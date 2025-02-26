@@ -1,8 +1,11 @@
 """Quart blueprint for the server."""
 
+import asyncio
 from pathlib import Path  # noqa: F401
 
 from billiard.context import Process
+from clear import clear
+from termcolor import colored
 from tqdm import tqdm
 
 from server.config import StoreProcess, running_servers
@@ -10,26 +13,48 @@ from server.config import StoreProcess, running_servers
 from .io_client import io, watch_input
 
 
-async def status() -> None:
-    """Log the status of the server."""
-    if not running_servers.get("Quart"):
-        return ["Server not running.", "ERROR", "red"]
+async def start() -> None:
+    """Start the server."""
+    asgi_process = Process(target=start_process_asgi)
+    asgi_process.start()
 
-    tqdm.write("Type 'ESC' to exit.")
+    store_process = StoreProcess(
+        process_name="Quart API",
+        process_id=asgi_process.pid,
+        process_status="Running",
+        process_object=asgi_process,
+    )
 
-    io.connect("http://localhost:7000", namespaces=["/quart"])
-    while not watch_input():
-        ...
+    running_servers["Quart API"] = store_process
 
-    io.disconnect()
+    return ["Server started.", "INFO", "green"]
 
-    return ["Exiting logs.", "INFO", "yellow"]
+
+async def restart() -> None:
+    """Restart the server."""
+    if not running_servers.get("Quart API"):
+        tqdm.write(colored("[INFO] Server not running. Starting server...", "yellow", attrs=["bold"]))
+        asyncio.sleep(2)
+        return await start()
+
+    tqdm.write(colored("[INFO] Restarting server...", "yellow", attrs=["bold"]))
+
+    await shutdown()
+    await start()
+
+    asyncio.sleep(2)
+
+    return ["Server restarted.", "INFO", "green"]
 
 
 async def shutdown() -> None:
     """Shutdown the server."""
+    store_process: StoreProcess = running_servers.get("Quart API")
+    if not store_process:
+        return ["Server not running.", "WARNING", "yellow"]
+
     try:
-        store_process: StoreProcess = running_servers.pop("Quart")
+        store_process: StoreProcess = running_servers.pop("Quart API")
         if store_process:
             process_stop: Process = store_process.process_object
             process_stop.terminate()
@@ -39,29 +64,21 @@ async def shutdown() -> None:
         return [f"Error: {e}", "ERROR", "red"]
 
 
-async def restart() -> None:
-    """Restart the server."""
-    await shutdown()
-    await start()
+async def status() -> None:
+    """Log the status of the server."""
+    if not running_servers.get("Quart API"):
+        return ["Server not running.", "ERROR", "red"]
 
-    return ["Server restarted.", "INFO", "green"]
+    clear()
+    tqdm.write("Type 'ESC' to exit.")
 
+    io.connect("http://localhost:7000", namespaces=["/quart"])
+    while not watch_input():
+        ...
 
-async def start() -> None:
-    """Start the server."""
-    asgi_process = Process(target=start_process_asgi)
-    asgi_process.start()
+    io.disconnect()
 
-    store_process = StoreProcess(
-        process_name="Quart",
-        process_id=asgi_process.pid,
-        process_status="Running",
-        process_object=asgi_process,
-    )
-
-    running_servers["Quart"] = store_process
-
-    return ["Server started.", "INFO", "green"]
+    return ["Exiting logs.", "INFO", "yellow"]
 
 
 def start_process_asgi() -> None:

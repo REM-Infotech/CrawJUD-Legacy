@@ -16,7 +16,6 @@ from importlib import import_module
 from pathlib import Path
 
 import aiofiles
-import clear
 import quart_flask_patch  # noqa: F401
 import uvicorn
 from dotenv_vault import load_dotenv
@@ -149,7 +148,6 @@ class AppFactory:
         from logs import log_cfg
 
         app = asyncio.run(cls().create_app())
-        clear.clear()
         port = int(os.getenv("PORT", 5000))
         hostname = os.getenv(
             "SERVER_HOSTNAME",

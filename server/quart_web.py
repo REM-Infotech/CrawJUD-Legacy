@@ -1,9 +1,11 @@
-"""Quart blueprint for the server."""
+"""Quart blueprint for the server web."""
 
+import asyncio
 from pathlib import Path  # noqa: F401
 
 import clear
 from billiard.context import Process
+from termcolor import colored
 from tqdm import tqdm
 
 from server.config import StoreProcess, running_servers
@@ -11,9 +13,60 @@ from server.config import StoreProcess, running_servers
 from .io_client import io, watch_input
 
 
+async def start() -> None:
+    """Start the server."""
+    asgi_process = Process(target=start_process_asgi)
+    asgi_process.start()
+
+    store_process = StoreProcess(
+        process_name="Quart Web",
+        process_id=asgi_process.pid,
+        process_status="Running",
+        process_object=asgi_process,
+    )
+
+    running_servers["Quart Web"] = store_process
+
+    return ["Server started.", "INFO", "green"]
+
+
+async def restart() -> None:
+    """Restart the server."""
+    if not running_servers.get("Quart Web"):
+        tqdm.write(colored("[INFO] Server not running. Starting server...", "yellow", attrs=["bold"]))
+        asyncio.sleep(2)
+        return await start()
+
+    tqdm.write(colored("[INFO] Restarting server...", "yellow", attrs=["bold"]))
+
+    await shutdown()
+    await start()
+
+    asyncio.sleep(2)
+
+    return ["Server restarted.", "INFO", "green"]
+
+
+async def shutdown() -> None:
+    """Shutdown the server."""
+    store_process: StoreProcess = running_servers.get("Quart Web")
+    if not store_process:
+        return ["Server not running.", "WARNING", "yellow"]
+
+    try:
+        store_process: StoreProcess = running_servers.pop("Quart Web")
+        if store_process:
+            process_stop: Process = store_process.process_object
+            process_stop.terminate()
+            process_stop.join(15)
+
+    except Exception as e:
+        return [f"Error: {e}", "ERROR", "red"]
+
+
 async def status() -> None:
     """Log the status of the server."""
-    if not running_servers.get("Quart"):
+    if not running_servers.get("Quart Web"):
         return ["Server not running.", "ERROR", "red"]
 
     clear.clear()
@@ -26,44 +79,6 @@ async def status() -> None:
     io.disconnect()
 
     return ["Exiting logs.", "INFO", "yellow"]
-
-
-async def shutdown() -> None:
-    """Shutdown the server."""
-    try:
-        store_process: StoreProcess = running_servers.pop("Quart")
-        if store_process:
-            process_stop: Process = store_process.process_object
-            process_stop.terminate()
-            process_stop.join(15)
-
-    except Exception as e:
-        return [f"Error: {e}", "ERROR", "red"]
-
-
-async def restart() -> None:
-    """Restart the server."""
-    await shutdown()
-    await start()
-
-    return ["Server restarted.", "INFO", "green"]
-
-
-async def start() -> None:
-    """Start the server."""
-    asgi_process = Process(target=start_process_asgi)
-    asgi_process.start()
-
-    store_process = StoreProcess(
-        process_name="Quart",
-        process_id=asgi_process.pid,
-        process_status="Running",
-        process_object=asgi_process,
-    )
-
-    running_servers["Quart"] = store_process
-
-    return ["Server started.", "INFO", "green"]
 
 
 def start_process_asgi() -> None:

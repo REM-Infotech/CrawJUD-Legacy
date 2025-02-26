@@ -1,6 +1,9 @@
-import logging
-import redis
+"""Custom logging handlers."""
+
 import json
+import logging
+
+import redis
 
 
 class RedisHandler(logging.Handler):

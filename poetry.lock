@@ -4316,6 +4316,17 @@ pymysql = ["pymysql"]
 sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
+name = "tailer"
+version = "0.4.1"
+description = "Python tail is a simple implementation of GNU tail and head."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "tailer-0.4.1.tar.gz", hash = "sha256:78d60f23a1b8a2d32f400b3c8c06b01142ac7841b75d8a1efcb33515877ba531"},
+]
+
+[[package]]
 name = "tenacity"
 version = "9.0.0"
 description = "Retry code until it succeeds"
@@ -4984,4 +4995,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13, <4.0"
-content-hash = "dbdd1c9efbd3f47e00ad02a95114769c2e7e031e53aa7935b49310abfed04922"
+content-hash = "2d382504a8323b50e196038ff607c28831c9a23ef10f58563abde2cd022ab6d5"
