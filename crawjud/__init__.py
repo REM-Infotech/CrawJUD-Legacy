@@ -1,15 +1,17 @@
 """Main module for the CrawJUD Package."""
 
 import asyncio
-from importlib import import_module
+import socket
 from pathlib import Path
 from platform import node
 from threading import Event, Thread
 from time import sleep
 
 import inquirer
+from celery import platforms
 from celery.apps.beat import Beat
 from celery.apps.worker import Worker
+from celery.utils.log import get_logger
 from clear import clear
 from socketio import AsyncServer  # noqa: F401
 from termcolor import colored
@@ -29,9 +31,68 @@ io = AsyncServer(
     ping_timeout=10,
 )
 
-import_module("crawjud.server.logs", __package__)
-
 clear()
+
+
+class CustomBeat(Beat):  # noqa: D101
+    def __init__(  # noqa: D107
+        self,
+        max_interval=None,  # noqa: ANN001
+        app=None,  # noqa: ANN001
+        socket_timeout=30,  # noqa: ANN001
+        pidfile=None,  # noqa: ANN001
+        no_color=None,  # noqa: ANN001
+        loglevel="WARN",  # noqa: ANN001
+        logfile=None,  # noqa: ANN001
+        schedule=None,  # noqa: ANN001
+        scheduler=None,  # noqa: ANN001
+        scheduler_cls=None,  # noqa: ANN001
+        redirect_stdouts=None,  # noqa: ANN001
+        redirect_stdouts_level=None,  # noqa: ANN001
+        quiet=False,  # noqa: ANN001
+        **kwargs,  # noqa: ANN003
+    ) -> None:
+        super().__init__(
+            max_interval,
+            app,
+            socket_timeout,
+            pidfile,
+            no_color,
+            loglevel,
+            logfile,
+            schedule,
+            scheduler,
+            scheduler_cls,
+            redirect_stdouts,
+            redirect_stdouts_level,
+            quiet,
+            **kwargs,
+        )
+
+    def start_scheduler(self) -> None:  # noqa: D102
+        if self.pidfile:
+            platforms.create_pidlock(self.pidfile)
+        self.service = self.Service(
+            app=self.app,
+            max_interval=self.max_interval,
+            scheduler_cls=self.scheduler_cls,
+            schedule_filename=self.schedule,
+        )
+
+        if not self.quiet:
+            tqdm.write(self.banner(self.service))
+
+        logger = get_logger("celery.beat")
+        self.setup_logging()
+        if self.socket_timeout:
+            logger.debug("Setting default socket timeout to %r", self.socket_timeout)
+            socket.setdefaulttimeout(self.socket_timeout)
+        try:
+            self.install_sync_handler(self.service)
+            self.service.start()
+        except Exception as exc:
+            logger.critical("beat raised exception %s: %r", exc.__class__, exc, exc_info=True)
+            raise
 
 
 class MasterApp(MenuManager):
@@ -76,7 +137,7 @@ class MasterApp(MenuManager):
             stop_event (Event): Event to signal the thread to stop.
 
         """
-        beat = Beat(
+        beat = CustomBeat(
             app=self.celery,
             scheduler="crawjud.utils.scheduler:DatabaseScheduler",
         )
@@ -84,7 +145,7 @@ class MasterApp(MenuManager):
         while not stop_event.is_set():
             ...
 
-        beat.Service.stop()
+        beat.service.stop()
 
     def start_all(self) -> None:
         """Start all server components in separate threads and allow stopping with an event.
