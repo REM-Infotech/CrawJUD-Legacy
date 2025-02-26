@@ -3,21 +3,16 @@
 from __future__ import annotations
 
 import json
-import logging
 import platform
 import shutil
 import traceback
 import zipfile
-from collections.abc import Mapping  # noqa: F401
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from os import getenv, path
+from os import getcwd, path
 from pathlib import Path
-from time import sleep  # noqa: F401
-from uuid import uuid4
 
 import requests
-from selenium.common.exceptions import WebDriverException  # noqa: F401
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from ...core import (
@@ -43,83 +38,6 @@ if __name__ == "__main__":
     from getchrome_version import another_chrome_ver, chrome_ver
 else:
     from .getchrome_version import another_chrome_ver, chrome_ver  # noqa: F401
-
-import socket
-
-default_dir = Path(__file__).cwd().resolve()
-logger = logging.getLogger(__name__)
-# from typing import list, tuple
-_is_connectable_exceptions = (socket.error, ConnectionResetError, ConnectionRefusedError, ConnectionAbortedError)
-
-
-# class CustomService(Service):
-#     """Custom service class that is responsible for the starting and stopping of `chromedriver`."""
-
-#     def __init__(
-#         self,
-#         executable_path: str = None,
-#         port: int = 0,
-#         service_args: list = None,
-#         log_output: int = None,
-#         env: Optional[Mapping[str, str]] = None,
-#         **kwargs: dict[str, any],
-#     ) -> None:
-#         """
-#         Service class that is responsible for the starting and stopping of `chromedriver`.
-
-#         Args:
-#             executable_path (str, optional): install path of the chromedriver executable, defaults to `chromedriver`.
-#             port (int, optional): Port for the service to run on, defaults to 0 where the operating system will decide
-#             service_args (list, optional): List of args to be passed to the subprocess when launching the executable.
-#             log_output (int, optional): int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-#             env (Optional[Mapping[str, str]], optional): Mapping of environment variables, defaults to `os.environ`.
-#             **kwargs: Additional keyword arguments.
-
-#         """
-#         super().__init__(executable_path, port, service_args, log_output, env, **kwargs)
-
-#     def start(self) -> None:
-#         """Start the Service.
-
-#         Raises:
-#             WebDriverException: Raised either when it can't start the service
-#            or when it can't connect to the service
-
-#         """
-#         if self._path is None:
-#             raise WebDriverException("Service path cannot be None.")
-#         self._start_process(self._path)
-
-#         count = 0
-#         while True:
-#             self.assert_process_still_running()
-#             if self.is_connectable():
-#                 break
-#             # sleep increasing: 0.01, 0.06, 0.11, 0.16, 0.21, 0.26, 0.31, 0.36, 0.41, 0.46, 0.5
-#             sleep(min(0.01 + 0.05 * count, 0.5))
-#             count += 1
-#             if count == 70:
-#                 raise WebDriverException(f"Can not connect to the Service {self._path}")
-
-#     def is_connectable(self, host: Optional[str] = "127.0.0.1") -> bool:
-#         """Try to connect to the server at port to see if it is running.
-
-#         Args:
-#             host (Optional[str], optional): The host to connect to. Defaults to "localhost".
-
-#         """
-#         socket_ = None
-#         try:
-#             socket_ = socket.create_connection((host, self.port), 300)
-#             result = True
-#         except _is_connectable_exceptions:
-#             err = traceback.format_exc()
-#             logger.exception(err)
-#             result = False
-#         finally:
-#             if socket_:
-#                 socket_.close()
-#         return result
 
 
 class DriverBot(CrawJUD):
@@ -170,6 +88,51 @@ class DriverBot(CrawJUD):
         """
         self.list_args_ = new_args
 
+    def create_path_accepted(self) -> None:
+        """Create the path for the WebDriver instance."""
+        if platform.system() == "Windows" and self.login_method == "cert":
+            state = str(self.state)
+            self.path_accepted = Path(
+                path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome"),
+            )
+            path_exist = self.path_accepted.exists()
+            if path_exist:
+                for root, _, __ in self.path_accepted.walk():
+                    try:
+                        shutil.copytree(root, self.chr_dir)
+                    except Exception:
+                        err = traceback.format_exc()
+                        self.logger.exception(err)
+
+            elif not path_exist:
+                self.path_accepted.mkdir(parents=True, exist_ok=True)
+
+    def add_options(self, chrome_options: Options) -> None:
+        """Add options to the Chrome WebDriver instance."""
+        self.chr_dir = Path(self.pid_path).joinpath("chrome").resolve()
+        chrome_options.add_argument(f"user-data-dir={str(self.chr_dir)}")
+
+        list_args = self.list_args
+        for argument in list_args:
+            chrome_options.add_argument(argument)
+
+        this_path = Path(__file__).parent.resolve().joinpath("extensions")
+        for root, _, files in this_path.walk():
+            for file_ in files:
+                if ".crx" in file_:
+                    path_plugin = str(root.joinpath(file_).resolve())
+                    chrome_options.add_extension(path_plugin)
+
+        chrome_prefs = {
+            "download.prompt_for_download": False,
+            "plugins.always_open_pdf_externally": True,
+            "profile.default_content_settings.popups": 0,
+            "printing.print_preview_sticky_settings.appState": json.dumps(self.settings),
+            "download.default_directory": f"{self.pid_path}",
+        }
+
+        chrome_options.add_experimental_option("prefs", chrome_prefs)
+
     def driver_launch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:
         """
         Launch WebDriver with options and extensions, then return driver and wait to run well.
@@ -185,65 +148,20 @@ class DriverBot(CrawJUD):
 
         """
         try:
-            pid_path = self.output_dir_path.resolve()
+            self.pid_path = self.output_dir_path.resolve()
 
             self.message = message
             self.type_log = "log"
             self.prt()
 
-            list_args = self.list_args
-
             chrome_options = Options()
 
-            chrome_options.binary_location = getenv("CHROME_EXECUTABLE")
+            chrome_options.binary_location = str(Path(getcwd()).joinpath("chrome-win64", "chrome.exe"))
 
-            self.logger.info("Chrome Executable: %s", chrome_options.binary_location)
+            self.create_path_accepted()
+            self.add_options(chrome_options)
 
-            self.chr_dir = Path(pid_path).joinpath("chrome").resolve()
-
-            if platform.system() == "Windows" and self.login_method == "cert":
-                state = str(self.state)
-                self.path_accepted = Path(
-                    path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome"),
-                )
-                path_exist = self.path_accepted.exists()
-                if path_exist:
-                    for root, _, __ in self.path_accepted.walk():
-                        try:
-                            shutil.copytree(root, self.chr_dir)
-                        except Exception:
-                            err = traceback.format_exc()
-                            logger.exception(err)
-
-                elif not path_exist:
-                    self.path_accepted.mkdir(parents=True, exist_ok=True)
-
-            usr_dt_dir = Path(__file__).cwd().joinpath("temp").joinpath(uuid4().hex).joinpath("chrome")
-            usr_dt_dir.mkdir(parents=True, exist_ok=True)
-
-            # chrome_options.add_argument(f"user-data-dir={str(usr_dt_dir)}")
-            for argument in list_args:
-                chrome_options.add_argument(argument)
-
-            this_path = Path(__file__).parent.resolve().joinpath("extensions")
-            for root, _, files in this_path.walk():
-                for file_ in files:
-                    if ".crx" in file_:
-                        path_plugin = str(root.joinpath(file_).resolve())
-                        chrome_options.add_extension(path_plugin)
-
-            chrome_prefs = {
-                "download.prompt_for_download": False,
-                "plugins.always_open_pdf_externally": True,
-                "profile.default_content_settings.popups": 0,
-                "printing.print_preview_sticky_settings.appState": json.dumps(self.settings),
-                "download.default_directory": f"{pid_path!s}",
-            }
-
-            path_chrome = None
-            chrome_options.add_experimental_option("prefs", chrome_prefs)
-
-            getdriver = SetupDriver(destination=pid_path)
+            getdriver = SetupDriver(destination=self.pid_path)
 
             if message != "Inicializando WebDriver":
                 version = getdriver.code_ver
@@ -251,20 +169,15 @@ class DriverBot(CrawJUD):
                 if platform.system() == "Windows":
                     chrome_name += ".exe"
 
-                existspath_ = Path(pid_path).joinpath(chrome_name)
+                existspath_ = self.pid_path.joinpath(chrome_name)
                 path_chrome = existspath_ if existspath_.exists() else None
 
             if path_chrome is None:
-                path_chrome = Path(pid_path).joinpath(getdriver()).resolve()
-
-            path_chrome.chmod(0o777, follow_symlinks=True)
+                path_chrome = self.pid_path.joinpath(getdriver()).resolve()
 
             serve = Service(path_chrome)
             serve.start()
             driver = Chrome(service=serve, options=chrome_options)
-            # cliente = ClientConfig(f"http://localhost:{serve.port}")
-            # remote = RemoteConnection(client_config=cliente)
-            # driver = WebDriver(options=chrome_options, command_executor=remote)
 
             wait = WebDriverWait(driver, 20, 0.01)
             driver.delete_all_cookies()
@@ -282,17 +195,19 @@ class DriverBot(CrawJUD):
 class SetupDriver:
     """Utility to download and configure the appropriate WebDriver binary."""
 
-    # another_ver = False
-    # try:
-    #     chrome_v = ".".join(chrome_ver().split(".")[:-1])
+    another_ver = False
+    current_version = ""
+    try:
+        current_version = chrome_ver()
+        chrome_v = ".".join(current_version.split(".")[:-1])
 
-    # except Exception:
-    #     another_ver = True
-    #     chrome_v = another_chrome_ver()
+    except Exception:
+        another_ver = True
+        chrome_v = another_chrome_ver()
 
-    another_ver = True
-    chrome_v = another_chrome_ver()
-    _url_driver: str = None
+    # another_ver = True
+    # chrome_v = another_chrome_ver()
+    # _url_driver: str = None
 
     @property
     def url_driver(self) -> str:
@@ -354,7 +269,7 @@ class SetupDriver:
 
     progress_group = Group(painel)
 
-    def __init__(self, destination: Path = default_dir, **kwargs: dict[str, any]) -> None:
+    def __init__(self, destination: Path = None, **kwargs: dict[str, any]) -> None:
         """
         Initialize SetupDriver to download and configure the appropriate WebDriver binary aptly.
 
@@ -363,10 +278,14 @@ class SetupDriver:
             **kwargs: Additional configuration parameters.
 
         """
+        if destination is None:
+            destination = Path(__file__).parent.resolve().joinpath("webdriver")
+            destination.mkdir(exist_ok=True, parents=True)
+
         self.url_driver = self.get_url()
         new_stem = f"chromedriver{self.code_ver}.zip"
         root_dir = Path(__file__).parent.cwd()
-        without_stem = root_dir.joinpath("crawjud/bot", "webdriver", "chromedriver")
+        without_stem = root_dir.joinpath("crawjud", "bot", "webdriver", "chromedriver")
         self.file_path = without_stem.with_stem(new_stem).resolve()
 
         if platform.system() == "Linux":

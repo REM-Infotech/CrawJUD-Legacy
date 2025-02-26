@@ -2,6 +2,7 @@
 
 import json
 import logging
+from os import getenv
 
 import redis
 
@@ -17,7 +18,7 @@ class RedisHandler(logging.Handler):
         self,
         uri: str = "redis://localhost:6379",
         db: int = 0,
-        list_name: str = "logs",
+        list_name: str = None,
     ) -> None:
         """Initialize the RedisHandler.
 
@@ -30,6 +31,10 @@ class RedisHandler(logging.Handler):
         super().__init__()
         self.uri = uri
         self.db = db
+
+        if list_name is None:
+            list_name = getenv("APPLICATION_APP", "logs")
+
         self.list_name = list_name
 
         self.client = redis.Redis.from_url(url=self.uri, db=self.db)  # Conexão com o Redis

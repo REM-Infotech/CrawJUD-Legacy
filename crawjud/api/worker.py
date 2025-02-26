@@ -11,7 +11,6 @@ from platform import node
 
 from celery import Celery
 from celery.apps.worker import Worker
-from clear import clear
 from quart import Quart
 
 from crawjud.api import AppFactory
@@ -25,7 +24,6 @@ os.environ.update({
 
 # Create the Quart application and Celery instance via AppFactory.
 quart_app, app = AppFactory.construct_app()
-clear()
 if __name__ == "__main__":
 
     async def run_worker(app: Celery, quart_app: Quart) -> None:

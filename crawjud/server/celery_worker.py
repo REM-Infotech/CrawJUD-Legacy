@@ -90,7 +90,6 @@ def start_worker() -> None:
 
     from celery import Celery
     from celery.apps.worker import Worker
-    from clear import clear
     from quart import Quart
 
     from crawjud.api import AppFactory
@@ -103,7 +102,6 @@ def start_worker() -> None:
 
     # Create the Quart application and Celery instance via AppFactory.
     quart_app, app = AppFactory.construct_app()
-    clear()
 
     async def run_worker(app: Celery, quart_app: Quart) -> None:
         """Run the Celery worker within the Quart application context.

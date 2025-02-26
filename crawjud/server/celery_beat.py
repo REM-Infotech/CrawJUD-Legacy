@@ -83,7 +83,6 @@ def start_beat() -> None:
 
     from celery import Celery
     from celery.apps.beat import Beat
-    from clear import clear
     from quart import Quart
 
     from crawjud.api import AppFactory
@@ -95,7 +94,6 @@ def start_beat() -> None:
 
     # Create the Beat application and Celery instance via AppFactory.
     quart_app, app = AppFactory.construct_app()
-    clear()
 
     async def run_beat(app: Celery, quart_app: Quart) -> None:
         """Run the Celery beat scheduler within the Beat application context.

@@ -9,6 +9,7 @@ Browser/
 Archives/
 # Distribution / packaging
 .Python
+chrome-win64
 build/
 develop-eggs/
 dist/

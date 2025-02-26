@@ -6,8 +6,6 @@ application in production mode and initiates the application using AppFactory.
 
 import os
 
-from clear import clear
-
 from crawjud.api import AppFactory
 
 # Set environment variables to designate Quart app mode and production status.
@@ -16,6 +14,5 @@ os.environ.update({
 })
 
 
-clear()
 # Start the Quart application using the AppFactory.
 AppFactory.construct_app()
