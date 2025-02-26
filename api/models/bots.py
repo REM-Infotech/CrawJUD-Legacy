@@ -126,7 +126,6 @@ class CacheLogs(db.Model):
 
     """
 
-    __bind_key__ = "cachelogs"
     __tablename__ = "cachelogs"
     id = db.Column(db.Integer, primary_key=True)
     pid = db.Column(db.String(length=12), nullable=False)
@@ -151,7 +150,6 @@ class ThreadBots(db.Model):
 
     """
 
-    __bind_key__ = "cachelogs"
     __tablename__ = "thread_bots"
     id = db.Column(db.Integer, primary_key=True)
     pid: str = db.Column(db.String(length=12), nullable=False)

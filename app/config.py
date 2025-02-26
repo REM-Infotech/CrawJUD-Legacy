@@ -48,7 +48,6 @@ class Config:
     # Verificar a saúde da conexão antes de usá-la
     SQLALCHEMY_POOL_PRE_PING: type[bool] = True
 
-    SQLALCHEMY_BINDS: dict[str, str] = {"cachelogs": "sqlite:///cachelogs.db"}
     SQLALCHEMY_DATABASE_URI: type[str] = "sqlite:///local.db"
     SQLALCHEMY_ENGINE_OPTIONS: dict[str, str | bool] = {"pool_pre_ping": True}
     SQLALCHEMY_TRACK_MODIFICATIONS: type[bool] = False
