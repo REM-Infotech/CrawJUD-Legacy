@@ -1,13 +1,13 @@
 """Blueprint for the Celery Beat server."""
 
 import asyncio
+from threading import Thread
 
-from billiard.context import Process
 from clear import clear
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.server.config import StoreProcess, running_servers
+from crawjud.server.config import StoreThread, running_servers
 
 from .watch import monitor_log
 
@@ -17,17 +17,17 @@ async def start() -> None:
     if running_servers.get("Beat"):
         return ["Server already running.", "ERROR", "red"]
 
-    celery_process = Process(target=start_beat, name="Beat Celery")
-    celery_process.start()
+    celery_thread = Thread(target=start_beat, name="Beat Celery")
+    celery_thread.start()
 
-    store_process = StoreProcess(
+    store_thread = StoreThread(
         process_name="Beat",
-        process_id=celery_process.pid,
+        process_id=celery_thread.pid,
         process_status="Running",
-        process_object=celery_process,
+        process_object=celery_thread,
     )
 
-    running_servers["Beat"] = store_process
+    running_servers["Beat"] = store_thread
 
     return ["Server started.", "INFO", "green"]
 
@@ -52,9 +52,9 @@ async def restart() -> None:
 async def shutdown() -> None:
     """Shutdown the server."""
     try:
-        store_process: StoreProcess = running_servers.pop("Beat")
-        if store_process:
-            process_stop: Process = store_process.process_object
+        store_thread: StoreThread = running_servers.pop("Beat")
+        if store_thread:
+            process_stop: Thread = store_thread.process_object
             process_stop.terminate()
             process_stop.join(15)
 

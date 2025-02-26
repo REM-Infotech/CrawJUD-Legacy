@@ -17,7 +17,7 @@ running_servers = {}
 
 
 @dataclass
-class StoreProcess:
+class StoreThread:
     """Dataclass for storing process information."""
 
     process_name: str
