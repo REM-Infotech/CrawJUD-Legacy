@@ -9,7 +9,7 @@ from flask_wtf.file import FileAllowed, FileField, FileRequired
 from quart_wtf import QuartForm
 from wtforms import SubmitField
 
-from crawjud.types import AnyType, T
+from crawjud._types import AnyType, T
 
 from .auth import LoginForm
 from .bot import BotForm, SearchExec

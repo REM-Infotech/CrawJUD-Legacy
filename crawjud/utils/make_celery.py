@@ -8,7 +8,7 @@ from celery import Celery
 from celery.signals import after_setup_logger
 from quart import Quart
 
-from crawjud.types import AnyType
+from crawjud._types import AnyType
 
 
 @after_setup_logger.connect

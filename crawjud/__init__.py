@@ -17,10 +17,10 @@ from termcolor import colored
 from tqdm import tqdm
 from uvicorn import Server
 
+from crawjud._types import app_name
 from crawjud.config import running_servers
 from crawjud.core import create_app
 from crawjud.crawjud_manager import HeadCrawjudManager
-from crawjud.types import app_name
 
 io = AsyncServer(
     async_mode="asgi",
