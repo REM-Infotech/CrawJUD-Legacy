@@ -105,6 +105,6 @@ def start_beat() -> None:
         async with quart_app.app_context():
             beat = Beat(
                 app=app,
-                scheduler="crawjud._utils.scheduler:DatabaseScheduler",
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
             )
             beat.run()

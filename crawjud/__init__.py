@@ -14,10 +14,10 @@ from socketio import AsyncServer
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud._types import app_name
 from crawjud.config import running_servers
 from crawjud.core import create_app
 from crawjud.crawjud_manager import HeadCrawjudManager
+from crawjud.types import app_name
 
 io = AsyncServer(
     async_mode="asgi",
@@ -38,7 +38,7 @@ def start_beat() -> None:
         async with app.app_context():
             beat = Beat(
                 app=celery,
-                scheduler="crawjud._utils.scheduler:DatabaseScheduler",
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
                 quiet=True,
             )
             beat.run()

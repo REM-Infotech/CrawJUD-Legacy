@@ -6,7 +6,7 @@ from quart_wtf import QuartForm
 from wtforms import BooleanField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 
-from crawjud._types import AnyType, T
+from crawjud.types import AnyType, T
 
 from ..validators import NotSelecioneValidator
 

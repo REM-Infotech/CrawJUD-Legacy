@@ -12,9 +12,9 @@ from datetime import datetime  # noqa: F401
 from pytz import timezone  # noqa: F401
 from socketio import AsyncServer
 
-from crawjud._utils import format_message_log, load_cache  # noqa: F401
-from crawjud._utils.status import TaskExec
 from crawjud.core import app
+from crawjud.utils import format_message_log, load_cache  # noqa: F401
+from crawjud.utils.status import TaskExec
 
 logger = logging.getLogger(__name__)
 

@@ -21,8 +21,8 @@ from quart import (
 from quart import current_app as app
 from sqlalchemy.orm import aliased
 
-from crawjud._decorators import login_required
 from crawjud.core import db
+from crawjud.decorators import login_required
 from crawjud.forms import SearchExec
 from crawjud.misc import generate_signed_url
 from crawjud.models import Executions, SuperUser, Users, admins

@@ -14,7 +14,7 @@ from quart import Quart
 from socketio import ASGIApp
 from uvicorn import Config, Server
 
-from crawjud._logs import log_cfg
+from crawjud.logs import log_cfg
 
 objects_config = {
     "development": "crawjud.config.DevelopmentConfig",
@@ -51,7 +51,7 @@ async def app_configurator(app: Quart) -> tuple[Quart, Server, ASGIApp, Celery]:
     app.config.from_object(ambient)
 
     async with app.app_context():
-        from crawjud._utils import make_celery
+        from crawjud.utils import make_celery
 
         from .extensions import init_extensions
         from .routing import register_routes
@@ -61,11 +61,11 @@ async def app_configurator(app: Quart) -> tuple[Quart, Server, ASGIApp, Celery]:
         celery.set_default()
         app.extensions["celery"] = celery
 
-        celery.autodiscover_tasks(["crawjud.bot", "crawjud._utils"])
+        celery.autodiscover_tasks(["crawjud.bot", "crawjud.utils"])
 
         io = await init_extensions(app)
 
-        folder_logs = Path(__file__).cwd().joinpath("_logs").resolve()
+        folder_logs = Path(__file__).cwd().joinpath("logs").resolve()
         folder_logs.mkdir(exist_ok=True)
 
         logfile = folder_logs.joinpath("%s.log" % os.getenv("APPLICATION_APP", "asgi"))

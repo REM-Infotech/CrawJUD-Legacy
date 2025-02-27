@@ -13,9 +13,9 @@ from quart import Quart
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud._utils import worker_name_generator
 from crawjud.config import StoreThread, running_servers
 from crawjud.core.watch import monitor_log
+from crawjud.utils import worker_name_generator
 
 
 async def start() -> None:

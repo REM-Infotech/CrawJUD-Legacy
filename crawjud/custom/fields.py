@@ -13,7 +13,7 @@ from wtforms.utils import unset_value
 from wtforms.validators import StopValidation
 from wtforms.widgets import ListWidget
 
-from crawjud._types import AnyType
+from crawjud.types import AnyType
 
 
 class QuartBaseForm(Form):

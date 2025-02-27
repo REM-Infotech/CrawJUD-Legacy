@@ -21,7 +21,7 @@ from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from wtforms import FieldList, FileField
 
-from crawjud._utils.status import TaskExec
+from crawjud.utils.status import TaskExec
 
 from ...forms import BotForm
 from ...misc import (

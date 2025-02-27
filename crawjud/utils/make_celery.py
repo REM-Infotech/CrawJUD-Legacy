@@ -8,7 +8,7 @@ from celery import Celery
 from celery.signals import after_setup_logger
 from quart import Quart
 
-from crawjud._types import AnyType
+from crawjud.types import AnyType
 
 
 @after_setup_logger.connect
@@ -31,10 +31,10 @@ def config_loggers(
     """
     from logging.config import dictConfig
 
-    from crawjud._logs import log_cfg
+    from crawjud.logs import log_cfg
 
     logger_name = f"{getenv('APPLICATION_APP')}_celery"
-    log_file = Path(__file__).cwd().resolve().joinpath("crawjud", "_logs", f"{logger_name}.log")
+    log_file = Path(__file__).cwd().resolve().joinpath("crawjud", "logs", f"{logger_name}.log")
     log_file.touch(exist_ok=True)
 
     log_level = logging.INFO
@@ -68,10 +68,10 @@ def config_loggers(
 #     keywork_args = kwargs
 #     from logging.config import dictConfig
 
-#     from crawjud._logs import log_cfg
+#     from crawjud.logs import log_cfg
 
 #     logger_name = f"{getenv('APPLICATION_APP')}_celery"
-#     log_file = Path(__file__).cwd().resolve().joinpath("_logs", f"{logger_name}.log")
+#     log_file = Path(__file__).cwd().resolve().joinpath("logs", f"{logger_name}.log")
 #     log_file.touch(exist_ok=True)
 
 #     log_level = logging.INFO

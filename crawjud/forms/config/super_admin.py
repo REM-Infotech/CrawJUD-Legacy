@@ -5,7 +5,7 @@ from typing import Type
 from wtforms import SelectField, SelectMultipleField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
-from crawjud._types import AnyType, T
+from crawjud.types import AnyType, T
 
 
 class ClienteForm:

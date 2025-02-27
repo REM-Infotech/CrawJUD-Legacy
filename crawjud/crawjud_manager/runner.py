@@ -13,10 +13,10 @@ from termcolor import colored
 from tqdm import tqdm
 from uvicorn import Server
 
-from crawjud._types import app_name
-from crawjud._utils.gen_seed import worker_name_generator
 from crawjud.config import StoreThread, running_servers
 from crawjud.core.watch import monitor_log
+from crawjud.types import app_name
+from crawjud.utils.gen_seed import worker_name_generator
 
 
 class RunnerServices:
