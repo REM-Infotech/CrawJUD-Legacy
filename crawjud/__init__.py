@@ -147,7 +147,6 @@ class MasterApp(HeadCrawjudManager):
         config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
         if config_exit.get("exit") is True:
             clear()
-            tqdm.write("Server closed.")
             self.loop_app = False
 
         self.return_main_menu()

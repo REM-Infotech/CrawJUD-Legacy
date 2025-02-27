@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from os import environ
+from time import sleep
 
+from termcolor import colored
 from tqdm import tqdm
 
 from crawjud import MasterApp
@@ -24,7 +26,8 @@ def main_server() -> None:
     except KeyboardInterrupt:
         tqdm.write("Stopping app")
 
-    tqdm.write("Server closed.")
+    tqdm.write(colored("Server closed!", "green", attr=["bold"]))
+    sleep(2)
 
 
 __all__ = [MenuManager, RunnerServices, main_server]

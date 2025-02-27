@@ -13,7 +13,7 @@ from dotenv_vault import load_dotenv
 
 load_dotenv()
 
-workdir = Path(__file__).cwd().resolve()
+workdir = Path(__file__).cwd().joinpath("crawjud")
 running_servers: dict["str", StoreThread] = {}
 
 
