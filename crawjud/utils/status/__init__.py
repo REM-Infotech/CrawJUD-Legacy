@@ -302,25 +302,15 @@ class TaskExec:
     async def insert_into_database(
         cls,
         db: SQLAlchemy,
-        data: dict[str, str | int | datetime],
         pid: str,
         id_: int,
         user: str,
+        bot_info: BotsCrawJUD,
+        data: dict[str, str | int | datetime],
         *args: str | int,
         **kwargs: str | int,
     ) -> tuple[dict[str, str | list[str]], str]:
-        """Insert the bot execution data into the database.
-
-        Args:
-            db (SQLAlchemy): The SQLAlchemy database instance.
-            data (dict[str, str | int | datetime]): A dictionary containing the bot execution data.
-            pid (str): The process identifier of the bot.
-            id_ (int): The bot ID.
-            user (str): The user login.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        """
+        """Insert the bot execution data into the database."""
         name_column = Executions.__table__.columns["arquivo_xlsx"]
         max_length = name_column.type.length
         xlsx_ = str(data.get("xlsx", "Sem Arquivo"))
@@ -331,8 +321,14 @@ class TaskExec:
 
         execut = db.session.query(Executions).filter(Executions.pid == pid).first()
         usr = db.session.query(Users).filter(Users.login == user).first()
-        bt = db.session.query(BotsCrawJUD).filter(BotsCrawJUD.id == id_).first()
-        license_ = db.session.query(LicensesUsers).filter_by(license_token=usr.licenseusr.license_token).first()
+        bt = bot_info
+        license_ = (
+            db.session.query(LicensesUsers)
+            .filter_by(
+                license_token=usr.licenseusr.license_token,
+            )
+            .first()
+        )
         if not execut:
             execut = Executions(
                 pid=pid,

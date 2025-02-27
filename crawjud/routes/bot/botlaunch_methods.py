@@ -20,6 +20,7 @@ from quart.datastructures import FileStorage  # noqa: F401
 from werkzeug.utils import secure_filename  # noqa: F401
 from wtforms import FieldList, FileField, FormField, MultipleFileField, TimeField  # noqa: F401
 
+from crawjud.forms.bot import PeriodicTaskFormGroup
 from crawjud.models.bots import ThreadBots
 from crawjud.types import AnyType, Numbers, strings
 from crawjud.utils.status import TaskExec
@@ -184,14 +185,15 @@ def get_form_data(
 
 
 def perform_submited_form(
-    form: BotForm,
+    form: BotForm | PeriodicTaskFormGroup,
     data: dict,
     files: dict,
     system: str,
     typebot: str,
-) -> None:
+) -> tuple[dict, dict, bool]:
     """Perform the submitted form."""
     form_data = form._fields.items()
+    periodic_task = form.periodic_task.data
     for field_name, attributes_field in form_data:
         data_field: Union[
             strings,
@@ -199,19 +201,27 @@ def perform_submited_form(
             FileStorage,
         ] = attributes_field.data
 
-        if isinstance(attributes_field, FileField):
+        if field_name == "confirm_fields" or field_name == "periodic_task":
+            continue
+
+        if attributes_field.type == "FileField":
             files.update({data_field.filename: data_field})
             continue
 
-        elif isinstance(attributes_field, MultipleFileField):
+        elif attributes_field.type == "MultipleFileField":
             for file_ in data_field:
                 files.update({file_.filename: file_})
             continue
 
         elif isinstance(attributes_field, FieldList):
+            if periodic_task is False:
+                continue
+
+            data.update({"schedule": True})
+
             for entry in attributes_field.entries:
-                for formfield in entry.form:
-                    perform_submited_form(formfield, data, files)
+                entry_form: PeriodicTaskFormGroup = entry.form
+                perform_submited_form(entry_form, data, files, system, typebot)
             continue
 
         elif field_name == "creds":
@@ -221,7 +231,13 @@ def perform_submited_form(
         if isinstance(attributes_field, TimeField):
             data_field = data_field.strftime("%H:%M:%S")
 
+        elif field_name == "password":
+            data.update({"token": data_field})
+            continue
+
         data.update({field_name: data_field})
+
+    return data, files, periodic_task
 
 
 async def setup_task_worker(
@@ -244,9 +260,15 @@ async def setup_task_worker(
         periodic_bot = False
         cls = TaskExec
 
-        data, files, periodic_bot = perform_submited_form(form, data, files)
+        data, files, periodic_bot = perform_submited_form(
+            form=form,
+            data=data,
+            files=files,
+            system=system,
+            typebot=typebot,
+        )
 
-        path_pid = await cls.configure_path()
+        path_pid = await cls.configure_path(pid=pid, files=files)
         data, path_args = await cls.args_tojson(
             path_pid=path_pid,
             pid=pid,
@@ -254,13 +276,20 @@ async def setup_task_worker(
             system=system,
             typebot=typebot,
         )
-        execut, display_name = await cls.insert_into_database
+        execut, display_name = await cls.insert_into_database(
+            db=db,
+            pid=pid,
+            id_=id_,
+            user=user,
+            data=data,
+            bot_info=bot_info,
+        )
 
         kwargs_ = {
             "display_name": display_name,
             "system": system,
             "typebot": typebot,
-            "path_args": path_args,
+            "path_args": str(path_args),
         }
 
         if periodic_bot:
