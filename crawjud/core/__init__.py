@@ -18,7 +18,7 @@ from quart import Quart as Quart
 from socketio import ASGIApp
 from uvicorn import Server
 
-from crawjud.custom import QuartLoginManager as LoginManager
+from crawjud._custom import QuartLoginManager as LoginManager
 
 valides = [
     getenv("IN_PRODUCTION", None) is None,

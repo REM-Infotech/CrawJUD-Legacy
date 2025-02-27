@@ -11,7 +11,7 @@ from crawjud.core import db, login_manager, mail
 
 async def init_extensions(app: Quart) -> AsyncServer:
     """Initialize and configure the application extensions."""
-    from crawjud.utils import check_allowed_origin
+    from crawjud._utils import check_allowed_origin
 
     from .database import database_start
     from .security import security_config

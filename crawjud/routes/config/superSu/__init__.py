@@ -6,7 +6,7 @@ from importlib import import_module
 
 from quart import Blueprint, Response, abort, make_response, render_template
 
-from crawjud.decorators import check_privilegies, login_required
+from crawjud._decorators import check_privilegies, login_required
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 supersu = Blueprint("supersu", __name__, template_folder=path_template)

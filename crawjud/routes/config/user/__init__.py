@@ -8,7 +8,7 @@ import pathlib
 
 from quart import Blueprint, Response, make_response, render_template
 
-from crawjud.decorators import login_required
+from crawjud._decorators import login_required
 
 path_template = os.path.join(pathlib.Path(__file__).parent.resolve(), "templates")
 usr = Blueprint("usr", __name__, template_folder=path_template)

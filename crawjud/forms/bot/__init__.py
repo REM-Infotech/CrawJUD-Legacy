@@ -22,9 +22,9 @@ from wtforms import (
 from wtforms.validators import DataRequired, InputRequired
 from wtforms.widgets import CheckboxInput, ListWidget
 
+from crawjud._custom.fields import QuartFieldList as FieldList
+from crawjud._custom.fields import QuartFormField as FormField
 from crawjud._types import AnyType, T
-from crawjud.custom.fields import QuartFieldList as FieldList
-from crawjud.custom.fields import QuartFormField as FormField
 
 permited_file = FileAllowed(["xlsx", "xls", "csv"], 'Apenas arquivos |".xlsx"/".xls"/".csv"| são permitidos!')
 permited_file2 = FileAllowed(["pdf", "jpg", "jpeg"], 'Apenas arquivos |".pdf"/".jpg"/".jpeg"| são permitidos!')

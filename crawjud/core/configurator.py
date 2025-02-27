@@ -14,7 +14,7 @@ from quart import Quart
 from socketio import ASGIApp
 from uvicorn import Config, Server
 
-from crawjud.logs import log_cfg
+from crawjud._logs import log_cfg
 
 objects_config = {
     "development": "crawjud.config.DevelopmentConfig",
@@ -51,7 +51,7 @@ async def app_configurator(app: Quart) -> tuple[Quart, Server, ASGIApp, Celery]:
     app.config.from_object(ambient)
 
     async with app.app_context():
-        from crawjud.utils import make_celery
+        from crawjud._utils import make_celery
 
         from .extensions import init_extensions
         from .routing import register_routes

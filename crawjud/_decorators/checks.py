@@ -1,4 +1,4 @@
-"""Module providing decorators and helper functions for access control."""
+"""Module providing _decorators and helper functions for access control."""
 
 from functools import wraps
 from typing import Callable

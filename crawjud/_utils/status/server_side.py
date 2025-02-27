@@ -72,7 +72,7 @@ async def format_message_log(
         dictionary is returned without modifications.
 
     """
-    from crawjud.utils import TaskExec
+    from crawjud._utils import TaskExec
 
     if data is None:
         data = {}

@@ -24,7 +24,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from socketio import Client
 
-from crawjud.logs import log_cfg
+from crawjud._logs import log_cfg
 
 if TYPE_CHECKING:
     from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM

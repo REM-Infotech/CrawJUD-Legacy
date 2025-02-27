@@ -23,7 +23,7 @@ from quart import (
 from quart import current_app as app
 from quart_wtf import QuartForm
 
-from crawjud.decorators import login_required
+from crawjud._decorators import login_required
 from crawjud.forms import BotForm
 from crawjud.models import BotsCrawJUD
 

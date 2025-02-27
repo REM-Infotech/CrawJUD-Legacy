@@ -1,4 +1,4 @@
-"""Module for importing and managing decorators in the application."""
+"""Module for importing and managing _decorators in the application."""
 
 from .checks import check_privilegies
 from .login_wrap import current_user, login_required

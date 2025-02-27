@@ -22,7 +22,7 @@ from quart import (
 )
 from quart import current_app as app
 
-from crawjud.decorators import login_required
+from crawjud._decorators import login_required
 from crawjud.misc import generate_signed_url
 from crawjud.models import Executions, LicensesUsers, Users
 

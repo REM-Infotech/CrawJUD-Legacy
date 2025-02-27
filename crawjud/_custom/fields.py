@@ -101,7 +101,7 @@ class QuartFieldList(FieldList):
         formdata,  # noqa: ANN001
         data=unset_value,  # noqa: ANN001
         extra_filters=None,  # noqa: ANN001
-    ):
+    ) -> None:
         if extra_filters:
             raise TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field.")
 

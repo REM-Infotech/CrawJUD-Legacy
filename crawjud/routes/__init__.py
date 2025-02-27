@@ -33,7 +33,7 @@ from trio import Path
 from werkzeug.exceptions import HTTPException
 from werkzeug.local import LocalProxy
 
-from crawjud.decorators import current_user, login_required
+from crawjud._decorators import current_user, login_required
 
 
 @app.context_processor
