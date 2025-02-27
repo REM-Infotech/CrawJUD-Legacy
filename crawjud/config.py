@@ -4,30 +4,49 @@ from __future__ import annotations
 
 import logging
 import secrets
-from dataclasses import dataclass
 from datetime import timedelta
 from os import environ
 from pathlib import Path
-from threading import Event
+from threading import Thread
 
-from billiard.context import Process
 from dotenv_vault import load_dotenv
 
 load_dotenv()
 
 workdir = Path(__file__).cwd().resolve()
-running_servers: dict[StoreThread] = {}
+running_servers: dict["str", StoreThread] = {}
 
 
-@dataclass
 class StoreThread:
     """Dataclass for storing process information."""
 
     process_name: str
     process_id: int
     process_status: str
-    process_object: Process
-    event_stop: Event = None
+    process_object: Thread
+
+    def __init__(
+        self,
+        process_name: str,
+        process_status: str,
+        process_object: Thread,
+        process_id: int = None,
+    ) -> None:
+        """Initialize the StoreThread class."""
+        self.process_name = process_name
+        self.process_status = process_status
+        self.process_id = process_id
+        self.process_object = process_object
+        if not process_id:
+            self.process_id = process_object.ident
+
+    def start(self) -> None:
+        """Start the process."""
+        self.process_object.start()
+
+    def stop(self) -> None:
+        """Stop the process."""
+        self.process_object.join(10)
 
 
 class Config:

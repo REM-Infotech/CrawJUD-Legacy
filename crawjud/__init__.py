@@ -3,12 +3,13 @@
 import asyncio
 from pathlib import Path
 from time import sleep
-from typing import Dict
+from typing import Callable, Dict, Literal
 
 import inquirer
 from billiard.context import Process
 from celery import Celery
 from celery.apps.beat import Beat
+from celery.apps.worker import Worker
 from clear import clear
 from quart import Quart
 from socketio import ASGIApp, AsyncServer
@@ -17,8 +18,9 @@ from tqdm import tqdm
 from uvicorn import Server
 
 from crawjud.config import running_servers
-from crawjud.context_manager.menu import MenuManager
 from crawjud.core import create_app
+from crawjud.crawjud_manager import HeadCrawjudManager
+from crawjud.types import app_name
 
 io = AsyncServer(
     async_mode="asgi",
@@ -46,13 +48,18 @@ def start_beat() -> None:
     asyncio.run(beat_start())
 
 
-class MasterApp(MenuManager):
+class MasterApp(HeadCrawjudManager):
     """Master application class."""
 
-    celery_: Celery
-    app_: Quart
-    srv_: Server
-    asgi_: ASGIApp
+    celery_: Celery = None
+    app_: Quart = None
+    srv_: Server = None
+    asgi_: ASGIApp = None
+    worker_: Worker = None
+    status: Callable[[app_name], None] = None
+    start: Callable[[app_name], None] = None
+    stop: Callable[[app_name], None] = None
+    restart: Callable[[app_name], None] = None
 
     def __init__(self) -> None:
         """Initialize the ASGI server."""
@@ -60,6 +67,21 @@ class MasterApp(MenuManager):
         self.app, self.srv, self.asgi, self.celery = asyncio.run(create_app())
         Process(target=start_beat, daemon=True).start()
         clear()
+
+    @property
+    def functions(
+        self,
+    ) -> dict[
+        str,
+        Callable[[app_name], None],
+    ]:
+        """Return the functions for the server."""
+        return {
+            "status": self.status,
+            "start": self.start,
+            "stop": self.stop,
+            "restart": self.restart,
+        }
 
     @property
     def celery(self) -> Celery:
@@ -101,6 +123,16 @@ class MasterApp(MenuManager):
         """Set the ASGI instance."""
         self.asgi_ = value
 
+    @property
+    def worker(self) -> Process:
+        """Return the worker process."""
+        return self.worker_
+
+    @worker.setter
+    def worker(self, value: Worker) -> None:
+        """Set the worker process."""
+        self.worker_ = value
+
     def prompt(self) -> None:
         """Prompt the user for server options."""
         self.current_menu_name = "Main Menu"
@@ -129,6 +161,21 @@ class MasterApp(MenuManager):
                 "Celery Worker": self.worker_menu,
             }
 
+            translated_args: dict[
+                str,
+                Literal[
+                    "start",
+                    "restart",
+                    "stop",
+                    "status",
+                ],
+            ] = {
+                "Start Service": "start",
+                "Restart Service": "restart",
+                "Shutdown Service": "stop",
+                "View Logs": "status",
+            }
+
             with self.answer_prompt(self.current_menu, menu) as server_answer:
                 choice = server_answer.get("server_options", "Back")
 
@@ -137,11 +184,7 @@ class MasterApp(MenuManager):
                     continue
 
                 if choice == "Start Services":
-                    for _, functions in self.functions.items():
-                        func = functions.get("Start Server")
-                        asyncio.run(func())
-
-                    tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
+                    self.start_all()
                     sleep(2)
                     continue
 
@@ -154,7 +197,6 @@ class MasterApp(MenuManager):
                 if choice == "Close Server":
                     config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
                     if config_exit.get("exit") is True:
-                        self.application.join()
                         clear()
                         tqdm.write("Server closed.")
                         break
@@ -166,9 +208,9 @@ class MasterApp(MenuManager):
                     self.return_main_menu()
                     continue
 
-                func = self.functions.get(self.current_app).get(choice)
+                func = self.functions.get(translated_args.get(choice))
                 if func:
-                    returns = func()
+                    returns = func(self.current_app)
 
                     if returns is not None and returns != "":
                         self.returns_message_ = returns

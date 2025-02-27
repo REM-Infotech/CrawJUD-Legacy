@@ -1,10 +1,14 @@
 """Server main entry point."""
 
+from __future__ import annotations
+
 from os import environ
 
 from tqdm import tqdm
 
 from crawjud import MasterApp
+from crawjud.crawjud_manager.menu import MenuManager
+from crawjud.crawjud_manager.runner import RunnerServices
 
 
 def main_server() -> None:
@@ -20,3 +24,6 @@ def main_server() -> None:
     except KeyboardInterrupt:
         tqdm.write("Stopping app")
         application_instance.thead_io.join(10)
+
+
+__all__ = [MenuManager, RunnerServices, main_server]

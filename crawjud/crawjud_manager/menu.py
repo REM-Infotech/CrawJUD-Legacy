@@ -5,10 +5,8 @@ from typing import Any, Generator
 
 import inquirer
 
-from crawjud.context_manager.runner import RunnerServices
 
-
-class MenuManager(RunnerServices):
+class MenuManager:
     """Menu manager class."""
 
     thead_io = None
@@ -107,9 +105,9 @@ class MenuManager(RunnerServices):
             "server_options",
             message="Select an option",
             choices=[
-                "Start Server",
-                "Restart App",
-                "Shutdown App",
+                "Start Service",
+                "Restart Service",
+                "Shutdown Service",
                 "View Logs",
                 "Back",
             ],

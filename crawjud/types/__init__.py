@@ -1,6 +1,6 @@
 """Web types module."""
 
-from typing import Dict, List, Tuple, TypeVar, Union
+from typing import Dict, List, Literal, Tuple, TypeVar, Union
 
 from quart_wtf import QuartForm
 
@@ -27,5 +27,5 @@ DataStores = TypeVar("DataStores", bound=datastores)
 AnyType = TypeVar("AnyType", bound=binds)
 WrappedFnReturnT = TypeVar("WrappedFnReturnT")
 AnyStr = TypeVar("AnyStr", bound=strings)
-
+app_name = Literal["Quart", "Worker"]
 T = TypeVar("T", bound=QuartForm)  # Tipo genérico baseado em Pai

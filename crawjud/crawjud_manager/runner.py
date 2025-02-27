@@ -5,10 +5,12 @@ from threading import Thread
 
 from celery.apps.worker import Worker
 from clear import clear
+from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.config import StoreThread, running_servers
 from crawjud.core.watch import monitor_log
+from crawjud.types import app_name
 from crawjud.utils.gen_seed import worker_name_generator
 
 
@@ -33,8 +35,8 @@ class RunnerServices:
             concurrency=50.0,
             pool="threads",
         )
-        Thread(target=worker.start, name="Worker Celery").start()
-        worker.stop()
+        self.worker = worker
+        worker.start()
 
     def start_quart(
         self,
@@ -45,6 +47,7 @@ class RunnerServices:
             stop_event (Event): Event to signal the thread to stop.
 
         """
+        self.srv.run()
 
     def start_all(self) -> None:
         """Start all server components in separate threads and allow stopping with an event.
@@ -52,23 +55,31 @@ class RunnerServices:
         This method creates threads for the worker, Quart server, and Celery beat.
         It listens for a keyboard interrupt and then signals all threads to stop.
         """
-        worker_thread = Thread(target=self.start_worker)
-        quart_thread = Thread(target=self.start_quart)
-
-        worker_thread.start()
-        quart_thread.start()
-
-        store_thread = StoreThread(
-            process_name="Worker",
-            process_id=worker_thread.ident,
+        store_quart_thread = StoreThread(
+            process_name="Quart",
             process_status="Running",
+            process_object=Thread(target=self.start_quart),
         )
 
-        running_servers["Worker"] = store_thread
+        store_thread_worker = StoreThread(
+            process_name="Worker",
+            process_status="Running",
+            process_object=Thread(target=self.start_worker),
+        )
 
-    def status(self) -> None:
+        running_servers.update({
+            "Quart": store_quart_thread,
+            "Worker": store_thread_worker,
+        })
+
+        store_thread_worker.start()
+        store_quart_thread.start()
+
+        tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
+
+    def status(self, app_name: app_name) -> None:
         """Log the status of the server."""
-        if not running_servers.get("Quart API"):
+        if not running_servers.get(app_name):
             return ["Server not running.", "ERROR", "red"]
 
         clear()
