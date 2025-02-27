@@ -5,7 +5,6 @@ from datetime import date, datetime, time
 from pathlib import Path
 from typing import Any  # , AsyncGenerator
 
-import aiofiles
 from celery import Celery
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
@@ -152,7 +151,7 @@ async def process_form_submission_periodic(
         value = field.data
         item = field_name
         if isinstance(field, FileField):
-            await handle_file_storage(value, data, files, temporarypath)
+            handle_file_storage(await save_file(value, data, temporarypath), files)
             continue
 
         if isinstance(field, FieldList):
@@ -172,7 +171,7 @@ async def process_form_submission_periodic(
 
         elif isinstance(field, list) and all(isinstance(val, FileStorage) for val in field.data):
             for val in field.data:
-                await handle_file_storage(val, data, files, temporarypath)
+                handle_file_storage(await save_file(val, data, temporarypath), files)
 
             continue
 
@@ -202,11 +201,11 @@ async def process_form_submission(
             continue
 
         if isinstance(value, FileStorage):
-            await handle_file_storage(value, data, files, temporarypath)
+            handle_file_storage(await save_file(value, data, temporarypath), files)
             continue
         if isinstance(value, list) and all(isinstance(val, FileStorage) for val in value):
             for val in value:
-                await handle_file_storage(val, data, files, temporarypath)
+                handle_file_storage(await save_file(val, data, temporarypath), files)
 
             continue
 
@@ -215,21 +214,27 @@ async def process_form_submission(
     return data, files, pid
 
 
-async def handle_file_storage(value: FileStorage, data: dict, files: dict, temporarypath: str | Path) -> None:
-    """Handle file storage for form submission."""
-    data.update({"xlsx": secure_filename(value.filename)})
+async def save_file(value: FileStorage, data: dict, temporarypath: str | Path) -> Path:
+    """Save file to temporary directory."""
+    if not data.get("xlsx"):
+        data.update({"xlsx": secure_filename(value.filename)})
+
     path_save = Path(temporarypath).joinpath(secure_filename(value.filename))
     await value.save(path_save)
 
-    async with aiofiles.open(path_save, "rb") as f:
-        files.update({
-            value.filename: FileStorage(
-                await f.read(),
-                filename=path_save.name,
-                content_type=value.mimetype,
-                content_length=path_save.stat().st_size,
-            )
-        })
+    return path_save
+
+
+def handle_file_storage(path_save: Path, files: dict[str, FileStorage]) -> None:
+    """Handle file storage for form submission."""
+    files.update({
+        path_save.name: FileStorage(
+            open(path_save, "rb"),
+            filename=path_save.name,
+            content_type=mimetypes.guess_type(path_save),
+            content_length=path_save.stat().st_size,
+        )
+    })
 
 
 async def handle_other_data(
