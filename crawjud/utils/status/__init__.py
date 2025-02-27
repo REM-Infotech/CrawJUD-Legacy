@@ -18,13 +18,11 @@ from typing import Any, Literal  # noqa: F401
 import aiofiles
 import openpyxl
 import pytz
-from celery import Celery
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
-from multidict import MultiDict
 from openpyxl.worksheet.worksheet import Worksheet
-from quart import Quart
+from quart import Quart, session
 from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -53,30 +51,18 @@ class TaskExec:
     @classmethod
     async def task_exec(
         cls,
-        id_: int = None,
-        system: str = None,
-        typebot: str = None,
-        exec_type: str = None,
         app: Quart = None,
         db: SQLAlchemy = None,
-        files: MultiDict = None,
-        celery_app: Celery = None,
-        data_bot: MultiDict = None,
+        data: dict = None,
         *args: str | int,
         **kwargs: str | int,
     ) -> int:
         """Execute a bot task based on the execution type.
 
         Args:
-            id_ (int): Bot identifier.
-            system (str): System name.
-            typebot (str): Type of bot.
-            exec_type (str): 'start' or 'stop'.
             app (Quart): Quart application instance.
             db (SQLAlchemy): Database instance.
-            files (MultiDict): Files provided in the request.
-            celery_app (Celery): Celery application instance.
-            data_bot (MultiDict): Bot data.
+            data (dict): Bot data.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -85,51 +71,22 @@ class TaskExec:
 
         """
         async with app.app_context():
-            if exec_type == "start":
-                user = data_bot.get("user")
-                pid: str = data_bot.get("pid")
+            pid = data.get("pid")
+            if not pid:
+                return 500
+            db: SQLAlchemy = app.extensions["sqlalchemy"]
+            status = data.get("status")
+            schedule = data.get("schedule")
 
-                # Configure file path and convert arguments to JSON
-                path_pid = await cls.configure_path(app, pid, files)
-                data, path_args = await cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
-                execut, _ = await cls.insert_into_database(db, data, pid, id_, user)
-                display_name = execut.get("display_name")
-                try:
-                    await cls.send_email(execut, app, "start")
-                except Exception as e:
-                    app.logger.error("Error sending email: %s", str(e))
+            filename, _ = await cls.make_zip(pid)
+            execut = await cls.send_stop_exec(app, db, pid, status, filename)
 
-                kwargs_: dict[str, str | list[str]] = {  # noqa: F841
-                    "path_args": path_args,
-                    "display_name": display_name,
-                    "system": system,
-                    "typebot": typebot,
-                }
+            try:
+                await cls.send_email(execut, app, "stop", schedule=schedule)
+            except Exception as e:
+                app.logger.error("Error sending email: %s", str(e))
 
-                return 200
-
-            if exec_type == "stop":
-                pid = data_bot.get("pid")
-                if not pid:
-                    return 500
-                db: SQLAlchemy = app.extensions["sqlalchemy"]
-                # dict_status: dict[str, str] = data_bot.get("status")
-
-                # if isinstance(dict_status, str) or dict_status is None:
-                #     dict_status: dict[str, str] = {"status": "Finalizado", "schedule": "False"}
-
-                status = data_bot.get("status")
-                schedule = data_bot.get("schedule")
-
-                filename, _ = await cls.make_zip(pid)
-                execut = await cls.send_stop_exec(app, db, pid, status, filename)
-
-                try:
-                    await cls.send_email(execut, app, "stop", schedule=schedule)
-                except Exception as e:
-                    app.logger.error("Error sending email: %s", str(e))
-
-                return 200
+            return 200
 
         return 500
 
@@ -187,50 +144,31 @@ class TaskExec:
     @classmethod
     async def args_tojson(
         cls,
-        path_pid: Path,
         pid: str,
-        id_: int,
-        system: str,
         typebot: str,
+        path_pid: Path,
+        data: dict[str, str | int | datetime],
         *args: tuple[str],
         **kwargs: dict[str, any],
-    ) -> tuple[dict[str, str | int | datetime], str]:
-        """Convert the bot arguments to a JSON file.
-
-        Args:
-            path_pid (Path): The path to the bot's arguments file.
-            pid (str): The process identifier of the bot.
-            id_ (int): The bot ID.
-            system (str): The system name.
-            typebot (str): The type of bot.
-            form (dict[str, str], optional): A dictionary containing form data. Defaults to None.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        """
-        data: dict[str, str | int | datetime] = {}
-        data.update({
-            "id": id_,
-            "system": system,
-            "typebot": typebot,
-        })
-
+    ) -> Path:
+        """Convert the bot arguments to a JSON file."""
         rows = 0
         if data.get("xlsx"):
+            data.update({"xlsx": str(data.get("xlsx"))})
             input_file = Path(path_pid).joinpath(data.get("xlsx"))
             if input_file.exists():
                 wb = openpyxl.load_workbook(filename=input_file)
                 ws: Worksheet = wb.active
                 rows = ws.max_row
 
-        elif data.get("typebot") == "pauta":
+        elif typebot == "pauta":
             data_inicio_formated = datetime.strptime(data.get("data_inicio"), "%Y-%m-%d")
             data_fim_formated = datetime.strptime(data.get("data_fim"), "%Y-%m-%d")
 
             diff = data_fim_formated - data_inicio_formated
             rows = diff.days + 2
 
-        elif data.get("typebot") == "proc_parte":
+        elif typebot == "proc_parte":
             rows = len(list(data.get("varas"))) + 1
 
         data.update({"total_rows": rows})
@@ -239,7 +177,7 @@ class TaskExec:
         async with aiofiles.open(path_args, "w") as f:
             await f.write(json.dumps(data))
 
-        return data, path_args
+        return path_args
 
     @classmethod
     async def schedule_into_database(
@@ -258,7 +196,7 @@ class TaskExec:
             **kwargs(dict[str, Any]): Additional keyword arguments.
 
         """
-        user = data.get("user")
+        user = session["login"]
 
         system = kwargs.pop("system")
         path_args = kwargs.pop("path_args")
@@ -275,7 +213,7 @@ class TaskExec:
 
         days_list = data.get("days", ["mon"])
         days: str = ",".join(days_list if len(days_list) > 0 else ["mon"])
-        hour_minute = datetime.strptime(data.get("hour_minute", "08:00"), "%H:%M")
+        hour_minute = datetime.strptime(data.get("hour_minute", "08:00:00"), "%H:%M:%S")
         cron = CrontabModel(day_of_week=days, hour=str(hour_minute.hour), minute=str(hour_minute.minute))
 
         task_name = data.get("task_name")
@@ -283,7 +221,7 @@ class TaskExec:
         args_ = json.dumps([])
         kwargs_ = json.dumps({
             "schedule": "True",
-            "path_args": path_args,
+            "path_args": str(path_args),
             "display_name": display_name,
             "system": system,
             "typebot": typebot,

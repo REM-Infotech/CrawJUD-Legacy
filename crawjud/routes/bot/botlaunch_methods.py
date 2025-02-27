@@ -190,11 +190,12 @@ def perform_submited_form(
     files: dict,
     system: str,
     typebot: str,
+    periodic_task: bool = False,
 ) -> tuple[dict, dict, bool]:
     """Perform the submitted form."""
     form_data = form._fields.items()
-    if form._fields.get("periodic_task"):
-        periodic_task = form._fields.get("periodic_task")
+
+    periodic_task = form._fields.get("periodic_task", periodic_task)
 
     for field_name, attributes_field in form_data:
         data_field: Union[
@@ -223,7 +224,7 @@ def perform_submited_form(
 
             for entry in attributes_field.entries:
                 entry_form: PeriodicTaskFormGroup = entry.form
-                perform_submited_form(entry_form, data, files, system, typebot)
+                perform_submited_form(entry_form, data, files, system, typebot, periodic_task)
             continue
 
         elif field_name == "creds":
@@ -255,7 +256,7 @@ async def setup_task_worker(
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         celery_app: Celery = app.extensions["celery"]
-
+        is_started = 200
         user = session["login"]  # noqa: F841
         data: dict[str, str] = {}
         files: dict[str, FileStorage] = {}
@@ -271,11 +272,10 @@ async def setup_task_worker(
         )
 
         path_pid = await cls.configure_path(pid=pid, files=files)
-        data, path_args = await cls.args_tojson(
+        path_args = await cls.args_tojson(
             path_pid=path_pid,
             pid=pid,
-            id_=id_,
-            system=system,
+            data=data,
             typebot=typebot,
         )
         execut, display_name = await cls.insert_into_database(
@@ -312,7 +312,6 @@ async def setup_task_worker(
             add_thread = ThreadBots(pid=pid, processID=process_id)
             db.session.add(add_thread)
             db.session.commit()
-            is_started = 200
 
         try:
             await cls.send_email(execut, app, "start")
@@ -338,9 +337,7 @@ async def setup_task_worker(
         await flash("Erro ao iniciar a execução!", "error")
         return await make_response(
             redirect(
-                url_for(
-                    "bot.dashboard",
-                ),
+                f"/bot/{id_}/{system}/{typebot}",
             ),
         )
 
