@@ -8,6 +8,7 @@ from time import sleep
 from typing import Callable, Dict
 
 import inquirer
+import rich
 from billiard.context import Process
 from celery.apps.beat import Beat
 from clear import clear
@@ -15,7 +16,7 @@ from socketio import AsyncServer
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.config import running_servers
+from crawjud.config import StoreService, running_servers
 from crawjud.core import create_app
 from crawjud.crawjud_manager import HeadCrawjudManager
 from crawjud.types import app_name
@@ -53,11 +54,24 @@ class MasterApp(HeadCrawjudManager):
 
     loop_app = True
 
+    def boot_app(self) -> None:
+        """Boot Beat and the application."""
+        rich.print("[bold green]Starting application object...[/bold green]")
+        self.app, self.asgi, self.celery = asyncio.run(create_app())
+
+        process_beat = Process(target=start_beat, daemon=True)
+
+        running_servers["Beat"] = StoreService(
+            process_name="Beat",
+            process_object=process_beat,
+            process_id=process_beat.pid,
+        )
+
+        process_beat.start()
+
     def __init__(self) -> None:
         """Initialize the ASGI server."""
         self.current_menu = self.main_menu
-        self.app, self.asgi, self.celery = asyncio.run(create_app())
-        Process(target=start_beat, daemon=True).start()
         self.current_menu_name = "Main Menu"
 
     @property

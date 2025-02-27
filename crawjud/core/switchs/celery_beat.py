@@ -10,7 +10,7 @@ from quart import Quart
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.config import StoreThread, running_servers
+from crawjud.config import StoreService, running_servers
 from crawjud.core.watch import monitor_log
 
 
@@ -22,7 +22,7 @@ async def start() -> None:
     celery_thread = Thread(target=start_beat, name="Beat Celery")
     celery_thread.start()
 
-    store_thread = StoreThread(
+    store_thread = StoreService(
         process_name="Beat",
         process_id=celery_thread.ident,
         process_status="Running",
@@ -54,7 +54,7 @@ async def restart() -> None:
 async def shutdown() -> None:
     """Shutdown the server."""
     try:
-        store_thread: StoreThread = running_servers.pop("Beat")
+        store_thread: StoreService = running_servers.pop("Beat")
         if store_thread:
             thread_stop: Thread = store_thread.process_object
 

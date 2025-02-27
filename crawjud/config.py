@@ -9,15 +9,17 @@ from os import environ
 from pathlib import Path
 from threading import Thread
 
+import rich
+from billiard.context import Process
 from dotenv_vault import load_dotenv
 
 load_dotenv()
 
 workdir = Path(__file__).cwd().joinpath("crawjud")
-running_servers: dict["str", StoreThread] = {}
+running_servers: dict["str", StoreService] = {}
 
 
-class StoreThread:
+class StoreService:
     """Dataclass for storing process information."""
 
     process_name: str
@@ -29,10 +31,10 @@ class StoreThread:
         self,
         process_name: str,
         process_status: str,
-        process_object: Thread,
+        process_object: Thread | Process,
         process_id: int = None,
     ) -> None:
-        """Initialize the StoreThread class."""
+        """Initialize the StoreService class."""
         self.process_name = process_name
         self.process_status = process_status
         self.process_id = process_id
@@ -47,6 +49,14 @@ class StoreThread:
     def stop(self) -> None:
         """Stop the process."""
         self.process_object.join(10)
+
+    def terminate(self) -> None:
+        """Terminate the process."""
+        if isinstance(self.process_object, Process):
+            rich.print(f"[bold yellow]Terminating process {self.process_name}[/bold yellow]")
+
+        elif isinstance(self.process_object, Thread):
+            rich.print("[bold red]Operation not allowed for 'Thread' type[/bold red]")
 
 
 class Config:

@@ -16,7 +16,7 @@ from termcolor import colored
 from tqdm import tqdm
 from uvicorn import Config, Server
 
-from crawjud.config import StoreThread, running_servers
+from crawjud.config import StoreService, running_servers
 from crawjud.core.configurator import get_hostname
 from crawjud.core.watch import monitor_log
 from crawjud.logs import log_cfg
@@ -158,13 +158,13 @@ class RunnerServices:
         This method creates threads for the worker, Quart server, and Celery beat.
         It listens for a keyboard interrupt and then signals all threads to stop.
         """
-        store_quart_thread = StoreThread(
+        store_quart_thread = StoreService(
             process_name="Quart",
             process_status="Running",
             process_object=Thread(target=self.start_quart),
         )
 
-        # store_thread_worker = StoreThread(
+        # store_thread_worker = StoreService(
         #     process_name="Worker",
         #     process_status="Running",
         #     process_object=Thread(target=self.start_worker),

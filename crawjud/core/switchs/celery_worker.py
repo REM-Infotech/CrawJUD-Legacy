@@ -13,7 +13,7 @@ from quart import Quart
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.config import StoreThread, running_servers
+from crawjud.config import StoreService, running_servers
 from crawjud.core.watch import monitor_log
 from crawjud.utils import worker_name_generator
 
@@ -48,12 +48,12 @@ async def restart() -> None:
 
 async def shutdown() -> None:
     """Shutdown the server."""
-    store_thread: StoreThread = running_servers.get("Worker")
+    store_thread: StoreService = running_servers.get("Worker")
     if not store_thread:
         return ["Server not running.", "WARNING", "yellow"]
 
     try:
-        store_thread: StoreThread = running_servers.pop("Worker")
+        store_thread: StoreService = running_servers.pop("Worker")
         if store_thread:
             thread_stop: Thread = store_thread.process_object
 

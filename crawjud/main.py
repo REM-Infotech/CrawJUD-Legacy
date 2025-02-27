@@ -26,7 +26,7 @@ def main_server() -> None:
     except KeyboardInterrupt:
         tqdm.write("Stopping app")
 
-    tqdm.write(colored("Server closed!", "green", attr=["bold"]))
+    tqdm.write(colored("Server closed!", "green", attrs=["bold"]))
     sleep(2)
 
 
