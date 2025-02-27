@@ -58,6 +58,7 @@ class MasterApp(HeadCrawjudManager):
         self.current_menu = self.main_menu
         self.app, self.asgi, self.celery = asyncio.run(create_app())
         Process(target=start_beat, daemon=True).start()
+        self.current_menu_name = "Main Menu"
 
     @property
     def functions(
@@ -76,7 +77,6 @@ class MasterApp(HeadCrawjudManager):
 
     def prompt(self) -> None:
         """Prompt the user for server options."""
-        self.current_menu_name = "Main Menu"
         clear()
 
         if self.current_menu_name == "Main Menu":
@@ -116,31 +116,31 @@ class MasterApp(HeadCrawjudManager):
             "Back": self.return_main_menu,
         }
         with self.answer_prompt(self.current_menu, menu) as server_answer:
+            func = None
             choice = server_answer.get("server_options", "Back")
+            translated_arg = translated_args.get(choice)
+            if translated_arg:
+                func = self.functions.get(translated_arg)
 
             if choice == "Show Prompt":
                 clear()
-                self.prompt()
 
-            if choice in options:
+            elif choice in options:
                 if choice == "Start Services":
                     call_obj = options.get(choice)
                     Thread(target=call_obj, daemon=True).start()
                 elif choice != "Start Services":
                     options.get(choice)()
-                self.prompt()
 
-            func = self.functions.get(translated_args.get(choice))
-            if func:
+            elif func:
                 returns = func(self.current_app)
 
                 if returns is not None and returns != "":
                     self.returns_message_ = returns
 
             choice = self.current_choice
-            self.prompt()
-
-        tqdm.write("Server closed.")
+            if self.loop_app:
+                self.prompt()
 
     def close_server(self) -> bool:
         """Close the server."""

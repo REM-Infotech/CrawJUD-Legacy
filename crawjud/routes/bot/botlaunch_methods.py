@@ -1,6 +1,6 @@
 """Module for botlaunch route."""
 
-import os
+import mimetypes
 from datetime import date, datetime, time
 from pathlib import Path
 from typing import Any  # , AsyncGenerator
@@ -222,19 +222,14 @@ async def handle_file_storage(value: FileStorage, data: dict, files: dict, tempo
     await value.save(path_save)
 
     async with aiofiles.open(path_save, "rb") as f:
-        file_buffer = FileStorage(
-            await f.read(),
-            filename=path_save.name,
-            content_type=value.mimetype,
-            content_length=path_save.stat().st_size,
-        )
-    files.update({
-        file_buffer.filename: (
-            file_buffer.filename,
-            file_buffer.stream,
-            file_buffer.mimetype,
-        )
-    })
+        files.update({
+            value.filename: FileStorage(
+                await f.read(),
+                filename=path_save.name,
+                content_type=value.mimetype,
+                content_length=path_save.stat().st_size,
+            )
+        })
 
 
 async def handle_other_data(
@@ -284,16 +279,17 @@ def handle_credentials(value: str, data: dict, system: str, files: dict) -> None
                     "login_method": credential.login_method,
                 })
             elif credential.login_method == "cert":
-                certpath = os.path.join(temporarypath, credential.certficate)
-                with open(certpath, "wb") as f:
+                certpath = Path(temporarypath).joinpath(credential.certficate)
+                with certpath.open("wb") as f:
                     f.write(credential.certficate_blob)
-                buff = open(os.path.join(certpath), "rb")
-                files.update({
-                    credential.certficate: (
-                        credential.certficate,
-                        buff,
-                    )
-                })
+                    files.update({
+                        credential.certficate: FileStorage(
+                            f.read(),
+                            filename=credential.certficate,
+                            content_type=mimetypes.guess_type(certpath),
+                            content_length=len(credential.certficate_blob),
+                        )
+                    })
                 data.update({
                     "username": credential.login,
                     "name_cert": credential.certficate,

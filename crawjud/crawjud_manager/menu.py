@@ -56,11 +56,8 @@ class MenuManager:
 
             splited_currentmenuname = self.current_menu_name.split(" ")
 
-            if len(splited_currentmenuname) > 2 and latest_menu == "Main Menu":
-                self.current_app = f"{splited_currentmenuname[0]}_{splited_currentmenuname[1]}".lower()
-
-            elif len(splited_currentmenuname) == 2:
-                self.current_app = splited_currentmenuname[1].lower()
+            if latest_menu == "Main Menu" and self.current_app == "":
+                self.current_app = splited_currentmenuname[0].lower()
 
             if server_answer is None:
                 server_answer = {"server_options": "Close Server"}

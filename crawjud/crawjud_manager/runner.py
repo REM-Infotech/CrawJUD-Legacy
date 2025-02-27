@@ -103,7 +103,24 @@ class RunnerServices:
             pool="threads",
         )
         self.worker = worker
-        worker.start()
+
+        try:
+            worker_thread = Thread(target=worker.start)
+            worker_thread.daemon = True
+            worker_thread.start()
+
+        except Exception as e:
+            if isinstance(e, KeyboardInterrupt):
+                worker.stop()
+
+            else:
+                tqdm.write(
+                    colored(
+                        f"{colored('[ERROR]', 'red', attrs=['bold', 'blink'])} {e}",
+                        "red",
+                        attrs=["bold"],
+                    )
+                )
 
     def start_quart(
         self,
@@ -165,7 +182,7 @@ class RunnerServices:
 
     def status(self, app_name: app_name) -> None:
         """Log the status of the server."""
-        if not running_servers.get(app_name):
+        if not running_servers.get(app_name.capitalize()):
             return ["Server not running.", "ERROR", "red"]
 
         clear()
@@ -192,3 +209,8 @@ class RunnerServices:
             self.worker.stop()
         else:
             raise ValueError("Invalid app name.")
+
+    def restart(self, app_name: app_name) -> None:
+        """Restart the server."""
+        self.stop(app_name)
+        self.start(app_name)

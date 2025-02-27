@@ -23,7 +23,8 @@ def main_server() -> None:
 
     except KeyboardInterrupt:
         tqdm.write("Stopping app")
-        application_instance.thead_io.join(10)
+
+    tqdm.write("Server closed.")
 
 
 __all__ = [MenuManager, RunnerServices, main_server]
