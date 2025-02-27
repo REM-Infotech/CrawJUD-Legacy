@@ -18,7 +18,7 @@ from quart import (
 from quart import current_app as app
 from quart.datastructures import FileStorage  # noqa: F401
 from werkzeug.utils import secure_filename  # noqa: F401
-from wtforms import FieldList, FileField, FormField, MultipleFileField, TimeField  # noqa: F401
+from wtforms import BooleanField, FieldList, FileField, FormField, MultipleFileField, TimeField  # noqa: F401
 
 from crawjud.forms.bot import PeriodicTaskFormGroup
 from crawjud.models.bots import ThreadBots
@@ -196,6 +196,8 @@ def perform_submited_form(
     form_data = form._fields.items()
 
     periodic_task = form._fields.get("periodic_task", periodic_task)
+    if isinstance(periodic_task, BooleanField):
+        periodic_task = periodic_task.data
 
     for field_name, attributes_field in form_data:
         data_field: Union[
@@ -323,11 +325,21 @@ async def setup_task_worker(
         is_started = 500
 
     if is_started == 200:
+        if periodic_bot:
+            await flash(message=f"Tarefa agendada com sucesso! PID: {pid}")
+            return await make_response(
+                redirect(
+                    url_for(
+                        "exe.schedules",
+                        pid=pid,
+                    ),
+                ),
+            )
         await flash(message=f"Execução iniciada com sucesso! PID: {pid}")
         return await make_response(
             redirect(
                 url_for(
-                    "logs.logs_bot",
+                    "logsbot.logs_bot",
                     pid=pid,
                 ),
             ),
