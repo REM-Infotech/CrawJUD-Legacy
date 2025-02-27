@@ -23,6 +23,7 @@ class MenuManager:
             "server_options",
             message="Select an option",
             choices=[
+                "Show Prompt",
                 "Start Services",
                 "Quart Application",
                 "Celery Worker",
@@ -44,7 +45,7 @@ class MenuManager:
     ]:
         """Answer prompt context manager."""
         try:
-            server_answer = inquirer.prompt([current_menu])
+            server_answer: dict[str, str] = inquirer.prompt([current_menu])
             choice = server_answer.get("server_options", "Back")
 
             latest_menu = self.current_menu_name

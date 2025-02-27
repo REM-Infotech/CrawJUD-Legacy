@@ -45,9 +45,6 @@ def log_cfg(
             },
         },
         "handlers": {
-            "stream": {
-                "class": "logging.StreamHandler",
-            },
             "file_handler": {
                 "class": "logging.handlers.RotatingFileHandler",
                 "level": "DEBUG",
@@ -59,19 +56,18 @@ def log_cfg(
         },
         "root": {
             "level": "DEBUG",
-            "handlers": ["stream", "file_handler"],
+            "handlers": ["file_handler"],
         },
         "loggers": {
             logger_name: {
                 "level": "DEBUG",
-                "handlers": ["stream", "file_handler"],
+                "handlers": ["file_handler"],
                 "propagate": False,
             },
         },
     }
 
     if getenv("SERVER_MANAGEMENT"):
-        config["handlers"]["stream"]["class"] = "logging.NullHandler"
         config["handlers"]["redis_handler"] = {
             "class": "crawjud.logs.handlers.RedisHandler",
             "uri": getenv("REDIS_URL", "redis://localhost:6379/0"),

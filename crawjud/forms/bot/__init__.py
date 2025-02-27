@@ -13,6 +13,8 @@ from wtforms import (
     BooleanField,
     DateField,
     EmailField,
+    FieldList,
+    FormField,
     SelectField,
     SelectMultipleField,
     StringField,
@@ -22,8 +24,6 @@ from wtforms import (
 from wtforms.validators import DataRequired, InputRequired
 from wtforms.widgets import CheckboxInput, ListWidget
 
-from crawjud.custom.fields import QuartFieldList as FieldList
-from crawjud.custom.fields import QuartFormField as FormField
 from crawjud.types import AnyType, T
 
 permited_file = FileAllowed(["xlsx", "xls", "csv"], 'Apenas arquivos |".xlsx"/".xls"/".csv"| são permitidos!')

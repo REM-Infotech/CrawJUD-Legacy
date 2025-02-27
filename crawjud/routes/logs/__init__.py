@@ -13,3 +13,6 @@ def imports() -> None:
     """Import the routes for the logs module."""
     import_module(".route", __package__)
     import_module(".logbot", __package__)
+
+
+imports()

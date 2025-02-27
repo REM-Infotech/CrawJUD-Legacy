@@ -147,18 +147,18 @@ class RunnerServices:
             process_object=Thread(target=self.start_quart),
         )
 
-        store_thread_worker = StoreThread(
-            process_name="Worker",
-            process_status="Running",
-            process_object=Thread(target=self.start_worker),
-        )
+        # store_thread_worker = StoreThread(
+        #     process_name="Worker",
+        #     process_status="Running",
+        #     process_object=Thread(target=self.start_worker),
+        # )
 
         running_servers.update({
             "Quart": store_quart_thread,
-            "Worker": store_thread_worker,
+            # "Worker": store_thread_worker,
         })
 
-        store_thread_worker.start()
+        # store_thread_worker.start()
         store_quart_thread.start()
 
         tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))

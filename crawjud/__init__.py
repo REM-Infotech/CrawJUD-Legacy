@@ -3,8 +3,9 @@
 import asyncio
 from os import environ
 from pathlib import Path
+from threading import Thread
 from time import sleep
-from typing import Callable, Dict, Literal
+from typing import Callable, Dict
 
 import inquirer
 from billiard.context import Process
@@ -43,19 +44,20 @@ def start_beat() -> None:
             )
             beat.run()
 
-    app, _, _, celery = asyncio.run(create_app())
+    app, _, celery = asyncio.run(create_app())
     asyncio.run(beat_start())
 
 
 class MasterApp(HeadCrawjudManager):
     """Master application class."""
 
+    loop_app = True
+
     def __init__(self) -> None:
         """Initialize the ASGI server."""
         self.current_menu = self.main_menu
         self.app, self.asgi, self.celery = asyncio.run(create_app())
         Process(target=start_beat, daemon=True).start()
-        clear()
 
     @property
     def functions(
@@ -75,86 +77,80 @@ class MasterApp(HeadCrawjudManager):
     def prompt(self) -> None:
         """Prompt the user for server options."""
         self.current_menu_name = "Main Menu"
-        while True:
+        clear()
+
+        if self.current_menu_name == "Main Menu":
+            if running_servers:
+                tqdm.write("=============================================================")
+                tqdm.write("Running servers:")
+                for server in running_servers.keys():
+                    tqdm.write(f" {colored('[ x ]', color='green')} {server}")
+                tqdm.write("=============================================================")
+
+        if self.returns_message:
+            message = self.returns_message[0]
+            type_message = self.returns_message[1].upper()
+            colour = self.returns_message[2]
+            tqdm.write(colored(f"[{type_message}] {message}", colour, attrs=["blink", "bold"]))
+            sleep(5)
+            self.returns_message_ = ""
             clear()
 
-            if self.current_menu_name == "Main Menu":
-                if running_servers:
-                    tqdm.write("=============================================================")
-                    tqdm.write("Running servers:")
-                    for server in running_servers.keys():
-                        tqdm.write(f" {colored('[ x ]', color='green')} {server}")
-                    tqdm.write("=============================================================")
+        menu = {
+            "Quart Application": self.quart_application,
+            "Celery Worker": self.worker_menu,
+        }
 
-            if self.returns_message:
-                message = self.returns_message[0]
-                type_message = self.returns_message[1].upper()
-                colour = self.returns_message[2]
-                tqdm.write(colored(f"[{type_message}] {message}", colour, attrs=["blink", "bold"]))
-                sleep(5)
-                self.returns_message_ = ""
+        translated_args: dict[str, str] = {
+            "Start Service": "start",
+            "Restart Service": "restart",
+            "Shutdown Service": "stop",
+            "View Logs": "status",
+        }
+
+        options: dict[str, Callable[[], None]] = {
+            "Clear Prompt": clear,
+            "Start Services": self.start_all,
+            "Get Executions Logs": self.get_log_bot,
+            "Close Server": self.close_server,
+            "Back": self.return_main_menu,
+        }
+        with self.answer_prompt(self.current_menu, menu) as server_answer:
+            choice = server_answer.get("server_options", "Back")
+
+            if choice == "Show Prompt":
                 clear()
+                self.prompt()
 
-            menu = {
-                "Quart Application": self.quart_application,
-                "Celery Worker": self.worker_menu,
-            }
-
-            translated_args: dict[
-                str,
-                Literal[
-                    "start",
-                    "restart",
-                    "stop",
-                    "status",
-                ],
-            ] = {
-                "Start Service": "start",
-                "Restart Service": "restart",
-                "Shutdown Service": "stop",
-                "View Logs": "status",
-            }
-
-            with self.answer_prompt(self.current_menu, menu) as server_answer:
-                choice = server_answer.get("server_options", "Back")
-
-                if choice == "Clear Prompt":
-                    clear()
-                    continue
-
+            if choice in options:
                 if choice == "Start Services":
-                    self.start_all()
-                    sleep(2)
-                    continue
+                    call_obj = options.get(choice)
+                    Thread(target=call_obj, daemon=True).start()
+                elif choice != "Start Services":
+                    options.get(choice)()
+                self.prompt()
 
-                if choice == "Get Executions Logs":
-                    self.get_log_bot()
-                    tqdm.write(colored("[INFO] Log file closed.", "yellow", attrs=["bold"]))
-                    sleep(2)
-                    continue
+            func = self.functions.get(translated_args.get(choice))
+            if func:
+                returns = func(self.current_app)
 
-                if choice == "Close Server":
-                    config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
-                    if config_exit.get("exit") is True:
-                        clear()
-                        tqdm.write("Server closed.")
-                        break
+                if returns is not None and returns != "":
+                    self.returns_message_ = returns
 
-                    self.return_main_menu()
-                    continue
+            choice = self.current_choice
+            self.prompt()
 
-                elif choice == "Back":
-                    self.return_main_menu()
-                    continue
+        tqdm.write("Server closed.")
 
-                func = self.functions.get(translated_args.get(choice))
-                if func:
-                    returns = func(self.current_app)
+    def close_server(self) -> bool:
+        """Close the server."""
+        config_exit = inquirer.prompt([inquirer.Confirm("exit", message="Do you want to exit?")])
+        if config_exit.get("exit") is True:
+            clear()
+            tqdm.write("Server closed.")
+            self.loop_app = False
 
-                    if returns is not None and returns != "":
-                        self.returns_message_ = returns
-
-                choice = self.current_choice
+        self.return_main_menu()
 
     def return_main_menu(self) -> None:
         """Return to the main menu."""
@@ -191,6 +187,9 @@ class MasterApp(HeadCrawjudManager):
             from crawjud.core.watch import monitor_log
 
             monitor_log(file_path=file_path)
+            tqdm.write(colored("[INFO] Log file closed.", "yellow", attrs=["bold"]))
+            sleep(2)
+            clear()
             return
 
         tqdm.write(colored(f"[ERROR] File '{text_choice}' does not exist.", "red", attrs=["bold"]))
