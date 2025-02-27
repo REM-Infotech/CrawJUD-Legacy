@@ -3,6 +3,7 @@
 Provides structures for bot configurations, credentials, and execution logging.
 """
 
+from collections.abc import Buffer
 from datetime import datetime
 
 import pytz
@@ -57,16 +58,16 @@ class Credentials(db.Model):
 
     __tablename__ = "credentials"
     id = db.Column(db.Integer, primary_key=True)
-    nome_credencial = db.Column(db.String(length=45), nullable=False)
-    system = db.Column(db.String(length=45), nullable=False)
-    login_method = db.Column(db.String(length=45), nullable=False)
-    login = db.Column(db.String(length=45), nullable=False)
-    password = db.Column(db.String(length=45))
-    key = db.Column(db.String(length=45))
-    certficate = db.Column(db.String(length=45))
-    certficate_blob = db.Column(db.LargeBinary(length=(2**32) - 1))
+    nome_credencial: str = db.Column(db.String(length=45), nullable=False)
+    system: str = db.Column(db.String(length=45), nullable=False)
+    login_method: str = db.Column(db.String(length=45), nullable=False)
+    login: str = db.Column(db.String(length=45), nullable=False)
+    password: str = db.Column(db.String(length=45))
+    key: str = db.Column(db.String(length=45))
+    certficate: str = db.Column(db.String(length=45))
+    certficate_blob: Buffer = db.Column(db.LargeBinary(length=(2**32) - 1))
 
-    license_id = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     license_usr = db.relationship("LicensesUsers", backref=db.backref("credentials", lazy=True))
 
 

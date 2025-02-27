@@ -1,5 +1,6 @@
 """Web types module."""
 
+from datetime import datetime, timedelta
 from typing import Dict, List, Literal, Tuple, TypeVar, Union
 
 from quart_wtf import QuartForm
@@ -23,6 +24,12 @@ binds = Union[
     ListType,
     DictType,
 ]
+
+Numbers = Union[int, float, complex, datetime, timedelta]
+TypeValues = Union[str, Numbers, list, tuple]
+SubDict = dict[str, Union[TypeValues, Numbers]]
+TypeHint = Union[list[str | Numbers | SubDict] | SubDict]
+
 DataStores = TypeVar("DataStores", bound=datastores)
 AnyType = TypeVar("AnyType", bound=binds)
 WrappedFnReturnT = TypeVar("WrappedFnReturnT")

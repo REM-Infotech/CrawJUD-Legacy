@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import logging
 import logging.config
-from datetime import datetime, timedelta
 from os import getenv
 from pathlib import Path
 from typing import (
@@ -25,6 +24,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from socketio import Client
 
 from crawjud.logs import log_cfg
+from crawjud.types import SubDict, TypeValues
 
 if TYPE_CHECKING:
     from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
@@ -36,13 +36,8 @@ if TYPE_CHECKING:
     from ..Utils import SearchBot as _SearchBot_
     from ..Utils import SendMessage as _SendMessage_
 
-Numbers = Union[int, float, complex, datetime, timedelta]
-TypeValues = Union[str, Numbers, list, tuple]
-SubDict = dict[str, Union[TypeValues, Numbers]]
 
 load_dotenv()
-
-TypeHint = Union[list[str | Numbers | SubDict] | SubDict]
 
 
 class PropertiesCrawJUD:

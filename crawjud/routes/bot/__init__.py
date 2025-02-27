@@ -26,14 +26,13 @@ from quart_wtf import QuartForm
 from crawjud.decorators import login_required
 from crawjud.forms import BotForm
 from crawjud.models import BotsCrawJUD
+from crawjud.utils.gen_seed import generate_pid
 
 from ...misc import MakeModels
 from .botlaunch_methods import (
     get_bot_info,
     get_form_data,
     handle_form_errors,
-    process_form_submission,
-    process_form_submission_periodic,
     setup_task_worker,
 )
 
@@ -119,23 +118,16 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
             warnings.simplefilter("ignore", RuntimeWarning)
             if await QuartForm.validate_on_submit(form):
                 periodic_bot = False
-                data = {}
-                if form.periodic_task.data is True:
-                    data, files, pid, periodic_bot = await process_form_submission_periodic(
-                        form, system, typebot, bot_info
-                    )
-
-                elif form.periodic_task.data is False:
-                    data, files, pid = await process_form_submission(form, system, typebot, bot_info)
+                pid = generate_pid()
 
                 return await setup_task_worker(
                     id_=id_,
                     pid=pid,
-                    data=data,
-                    files=files,
+                    form=form,
                     system=system,
                     typebot=typebot,
                     periodic_bot=periodic_bot,
+                    bot_info=bot_info,
                 )
 
         await handle_form_errors(form)

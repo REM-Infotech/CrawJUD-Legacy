@@ -1,11 +1,11 @@
 """Module for botlaunch route."""
 
-import mimetypes
-from datetime import date, datetime, time
-from pathlib import Path
-from typing import Any  # , AsyncGenerator
+import mimetypes  # noqa: F401
+from datetime import date, datetime, time  # noqa: F401
+from pathlib import Path  # noqa: F401
+from typing import Any, Union  # , AsyncGenerator
 
-from celery import Celery
+from celery import Celery, Task
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Response,
@@ -16,15 +16,17 @@ from quart import (
     url_for,
 )
 from quart import current_app as app
-from quart.datastructures import FileStorage
-from werkzeug.utils import secure_filename
-from wtforms import FieldList, FileField
+from quart.datastructures import FileStorage  # noqa: F401
+from werkzeug.utils import secure_filename  # noqa: F401
+from wtforms import FieldList, FileField, FormField, MultipleFileField, TimeField  # noqa: F401
 
+from crawjud.models.bots import ThreadBots
+from crawjud.types import AnyType, Numbers, strings
 from crawjud.utils.status import TaskExec
 
 from ...forms import BotForm
 from ...misc import (
-    generate_pid,
+    generate_pid,  # noqa: F401
 )
 from ...models import BotsCrawJUD, Credentials, LicensesUsers
 
@@ -70,6 +72,50 @@ FORM_CONFIGURATOR = {
     },
     "INTERNO": {"multipe_files": ["xlsx", "otherfiles"]},
 }
+
+
+def handle_credentials(value: str, data: dict, system: str, files: dict) -> None:
+    """Handle credentials for form submission."""
+    db: SQLAlchemy = app.extensions["sqlalchemy"]
+    temporarypath = app.config["TEMP_DIR"]
+    creds = (
+        db.session.query(Credentials)
+        .join(LicensesUsers)
+        .filter(LicensesUsers.license_token == session["license_token"])
+        .all()
+    )
+    for credential in creds:
+        if all([
+            credential.nome_credencial == value,
+            credential.system == system.upper(),
+        ]):
+            if credential.login_method == "pw":
+                data.update({
+                    "username": credential.login,
+                    "password": credential.password,
+                    "login_method": credential.login_method,
+                })
+            elif credential.login_method == "cert":
+                cert_path = Path(temporarypath).joinpath(credential.certficate)
+                with cert_path.open("wb") as f:
+                    f.write(credential.certficate_blob)
+
+                content_type = mimetypes.guess_type(cert_path)
+                content_lenght = cert_path.stat().st_size
+                credential_object = FileStorage(
+                    cert_path.open("rb"),
+                    filename=credential.certficate,
+                    content_type=content_type,
+                    content_length=content_lenght,
+                )
+                files.update({credential.certficate: credential_object})
+                data.update({
+                    "username": credential.login,
+                    "name_cert": credential.certficate,
+                    "token": credential.key,
+                    "login_method": credential.login_method,
+                })
+            break
 
 
 def get_bot_info(db: SQLAlchemy, id_: int) -> BotsCrawJUD | None:
@@ -137,211 +183,114 @@ def get_form_data(
     return states, clients, credts, form_config
 
 
-async def process_form_submission_periodic(
-    form: BotForm, system: str, typebot: str, bot_info: BotsCrawJUD
-) -> tuple[dict, dict, str, bool]:
-    """Process form submission for periodic tasks and prepare data and files for sending."""
-    data = {}
-    pid = generate_pid()
-    data.update({"pid": pid, "user": session["login"]})
-    data_fields = form._fields.items()
-    files = {}
-    temporarypath = app.config["TEMP_DIR"]
-    for field_name, field in data_fields:
-        value = field.data
-        item = field_name
-        if isinstance(field, FileField):
-            handle_file_storage(await save_file(value, data, temporarypath), files)
-            continue
-
-        if isinstance(field, FieldList):
-            for pfield in field.data:
-                pfield: dict[str, str | datetime | list[str]] = pfield
-                field_itens = list(pfield.items())
-                for key, val in field_itens:
-                    if key == "csrf_token":
-                        continue
-
-                    if key == "days" and len(val) == 0:
-                        val = "*"
-
-                    if isinstance(val, time):
-                        val = str(val.strftime("%H:%M"))
-                    await handle_other_data(key, val, data, system, typebot, bot_info, files)
-
-        elif isinstance(field, list) and all(isinstance(val, FileStorage) for val in field.data):
-            for val in field.data:
-                handle_file_storage(await save_file(val, data, temporarypath), files)
-
-            continue
-
-        else:
-            await handle_other_data(item, value, data, system, typebot, bot_info, files)
-
-    return data, files, pid, True
-
-
-async def process_form_submission(
+def perform_submited_form(
     form: BotForm,
+    data: dict,
+    files: dict,
     system: str,
     typebot: str,
-    bot_info: BotsCrawJUD,
-) -> tuple[dict, dict, str]:
-    """Process form submission and prepare data and files for sending."""
-    data = {}
-    pid = generate_pid()
-    data.update({"pid": pid, "user": session["login"]})
-
-    temporarypath = app.config["TEMP_DIR"]
-    data_form = form.data.items()
-    files = {}
-
-    for item, value in data_form:
-        if item == "periodic_task":
-            continue
-
-        if isinstance(value, FileStorage):
-            handle_file_storage(await save_file(value, data, temporarypath), files)
-            continue
-        if isinstance(value, list) and all(isinstance(val, FileStorage) for val in value):
-            for val in value:
-                handle_file_storage(await save_file(val, data, temporarypath), files)
-
-            continue
-
-        await handle_other_data(item, value, data, system, typebot, bot_info, files)
-
-    return data, files, pid
-
-
-async def save_file(value: FileStorage, data: dict, temporarypath: str | Path) -> Path:
-    """Save file to temporary directory."""
-    if not data.get("xlsx"):
-        data.update({"xlsx": secure_filename(value.filename)})
-
-    path_save = Path(temporarypath).joinpath(secure_filename(value.filename))
-    await value.save(path_save)
-
-    return path_save
-
-
-def handle_file_storage(path_save: Path, files: dict[str, FileStorage]) -> None:
-    """Handle file storage for form submission."""
-    files.update({
-        path_save.name: FileStorage(
-            open(path_save, "rb"),
-            filename=path_save.name,
-            content_type=mimetypes.guess_type(path_save),
-            content_length=path_save.stat().st_size,
-        )
-    })
-
-
-async def handle_other_data(
-    item: str,
-    value: str,
-    data: str,
-    system: str,
-    typebot: str,
-    bot_info: BotsCrawJUD,
-    files: dict = None,
 ) -> None:
-    """Handle other types of data for form submission."""
-    if item == "creds":
-        handle_credentials(value, data, system, files)
-    else:
-        if not data.get(item):
-            data.update({item: value})
-        if isinstance(value, date):
-            data.update({item: value.strftime("%Y-%m-%d")})
+    """Perform the submitted form."""
+    form_data = form._fields.items()
+    for field_name, attributes_field in form_data:
+        data_field: Union[
+            strings,
+            Numbers,
+            FileStorage,
+        ] = attributes_field.data
 
-        chks = [
-            system.upper() == "PROJUDI",
-            typebot.upper() == "PROTOCOLO",
-            bot_info.state == "AM",
-            item == "password",
-        ]
-        if all(chks):
-            data.update({"token": value})
+        if isinstance(attributes_field, FileField):
+            files.update({data_field.filename: data_field})
+            continue
 
+        elif isinstance(attributes_field, MultipleFileField):
+            for file_ in data_field:
+                files.update({file_.filename: file_})
+            continue
 
-def handle_credentials(value: str, data: dict, system: str, files: dict) -> None:
-    """Handle credentials for form submission."""
-    db: SQLAlchemy = app.extensions["sqlalchemy"]
-    temporarypath = app.config["TEMP_DIR"]
-    creds = (
-        db.session.query(Credentials)
-        .join(LicensesUsers)
-        .filter(LicensesUsers.license_token == session["license_token"])
-        .all()
-    )
-    for credential in creds:
-        if credential.nome_credencial == value:
-            if credential.login_method == "pw":
-                data.update({
-                    "username": credential.login,
-                    "password": credential.password,
-                    "login_method": credential.login_method,
-                })
-            elif credential.login_method == "cert":
-                certpath = Path(temporarypath).joinpath(credential.certficate)
-                with certpath.open("wb") as f:
-                    f.write(credential.certficate_blob)
-                    files.update({
-                        credential.certficate: FileStorage(
-                            f.read(),
-                            filename=credential.certficate,
-                            content_type=mimetypes.guess_type(certpath),
-                            content_length=len(credential.certficate_blob),
-                        )
-                    })
-                data.update({
-                    "username": credential.login,
-                    "name_cert": credential.certficate,
-                    "token": credential.key,
-                    "login_method": credential.login_method,
-                })
-            break
+        elif isinstance(attributes_field, FieldList):
+            for entry in attributes_field.entries:
+                for formfield in entry.form:
+                    perform_submited_form(formfield, data, files)
+            continue
+
+        elif field_name == "creds":
+            handle_credentials(data_field, data, system, files)
+            continue
+
+        if isinstance(attributes_field, TimeField):
+            data_field = data_field.strftime("%H:%M:%S")
+
+        data.update({field_name: data_field})
 
 
 async def setup_task_worker(
     id_: int,
     pid: str,
-    data: dict,
-    files: dict,
+    form: BotForm,
     system: str,
     typebot: str,
-    periodic_bot: bool,
+    bot_info: BotsCrawJUD,
+    **kwargs: AnyType,
 ) -> Response | None:
     """Send data to servers and handle the response."""
-    db: SQLAlchemy = app.extensions["sqlalchemy"]
-    celery_app: Celery = app.extensions["celery"]
+    try:
+        db: SQLAlchemy = app.extensions["sqlalchemy"]
+        celery_app: Celery = app.extensions["celery"]
 
-    if periodic_bot:
-        # Schedule the bot task execution.
-        is_started = await TaskExec.task_exec_schedule(
-            id_,
-            system,
-            typebot,
-            "start",
-            app,
-            db,
-            files,
-            data,
-        )
+        user = session["login"]  # noqa: F841
+        data: dict[str, str] = {}
+        files: dict[str, FileStorage] = {}
+        periodic_bot = False
+        cls = TaskExec
 
-    elif not periodic_bot:
-        is_started = await TaskExec.task_exec(
-            id_,
-            system,
-            typebot,
-            "start",
-            app,
-            db,
-            files,
-            celery_app,
-            data,
+        data, files, periodic_bot = perform_submited_form(form, data, files)
+
+        path_pid = await cls.configure_path()
+        data, path_args = await cls.args_tojson(
+            path_pid=path_pid,
+            pid=pid,
+            id_=id_,
+            system=system,
+            typebot=typebot,
         )
+        execut, display_name = await cls.insert_into_database
+
+        kwargs_ = {
+            "display_name": display_name,
+            "system": system,
+            "typebot": typebot,
+            "path_args": path_args,
+        }
+
+        if periodic_bot:
+            await cls.schedule_into_database(
+                db,
+                data,
+                system=system,
+                typebot=typebot,
+                path_args=path_args,
+                display_name=display_name,
+            )
+
+        elif not periodic_bot:
+            task: Task = celery_app.send_task(f"crawjud.bot.{system.lower()}_launcher", kwargs=kwargs_)
+            process_id = str(task.id)
+
+            # Salva o ID no "banco de dados"
+            add_thread = ThreadBots(pid=pid, processID=process_id)
+            db.session.add(add_thread)
+            db.session.commit()
+            is_started = 200
+
+        try:
+            await cls.send_email(execut, app, "start")
+        except Exception as e:
+            app.logger.error("Error sending email: %s", str(e))
+
+    except Exception as e:
+        app.logger.error("Error starting bot: %s", str(e))
+        is_started = 500
 
     if is_started == 200:
         await flash(message=f"Execução iniciada com sucesso! PID: {pid}")

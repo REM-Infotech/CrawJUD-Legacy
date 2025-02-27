@@ -11,14 +11,14 @@ import mimetypes  # noqa: F401
 import traceback
 import unicodedata
 from datetime import datetime
-from os import environ, path
+from os import environ, getcwd
 from pathlib import Path
 from typing import Any, Literal  # noqa: F401
 
 import aiofiles
 import openpyxl
 import pytz
-from celery import Celery, Task
+from celery import Celery
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
@@ -99,20 +99,12 @@ class TaskExec:
                 except Exception as e:
                     app.logger.error("Error sending email: %s", str(e))
 
-                kwargs_: dict[str, str | list[str]] = {
+                kwargs_: dict[str, str | list[str]] = {  # noqa: F841
                     "path_args": path_args,
                     "display_name": display_name,
                     "system": system,
                     "typebot": typebot,
                 }
-                task: Task = celery_app.send_task(f"crawjud.bot.{system.lower()}_launcher", kwargs=kwargs_)
-
-                process_id = str(task.id)
-
-                # Salva o ID no "banco de dados"
-                add_thread = ThreadBots(pid=pid, processID=process_id)
-                db.session.add(add_thread)
-                db.session.commit()
 
                 return 200
 
@@ -142,64 +134,6 @@ class TaskExec:
         return 500
 
     @classmethod
-    async def task_exec_schedule(
-        cls,
-        id_: int = None,
-        system: str = None,
-        typebot: str = None,
-        exec_type: str = None,
-        app: Quart = None,
-        db: SQLAlchemy = None,
-        files: MultiDict = None,
-        data_bot: MultiDict = None,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> int:
-        """Execute a scheduled bot task.
-
-        Args:
-            id_ (int): Bot identifier.
-            system (str): System name.
-            typebot (str): Type of bot.
-            exec_type (str): Should be "start" to schedule.
-            app (Quart): Quart application instance.
-            db (SQLAlchemy): Database instance.
-            files (MultiDict): Files received.
-            data_bot (MultiDict): Bot data.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            int: HTTP status code.
-
-        """
-        async with app.app_context():
-            if exec_type == "start":
-                user: str = data_bot.get("user")
-                pid: str = data_bot.get("pid")
-                data_bot.update({"schedule": "True"})
-                path_pid = await cls.configure_path(app, pid, files)
-                data, path_args = await cls.args_tojson(path_pid, pid, id_, system, typebot, data_bot)
-                execut, display_name = await cls.insert_into_database(db, data, pid, id_, user)
-                await cls.schedule_into_database(
-                    db,
-                    data_bot,
-                    system=system,
-                    typebot=typebot,
-                    path_args=path_args,
-                    display_name=display_name,
-                )
-
-                try:
-                    await cls.send_email(execut, app, "start")
-                except Exception as e:
-                    app.logger.error("Error sending email: %s", str(e))
-
-                return 200
-
-        return 500
-
-    @classmethod
     async def format_string(cls, string: str) -> str:
         """Format a string to be a secure filename.
 
@@ -215,7 +149,11 @@ class TaskExec:
         )
 
     @classmethod
-    async def configure_path(cls, app: Quart, pid: str, files: dict[str, FileStorage] = None) -> Path:
+    async def configure_path(
+        cls,
+        pid: str,
+        files: dict[str, FileStorage] = None,
+    ) -> Path:
         """Configure the path for the bot.
 
         Args:
@@ -224,8 +162,17 @@ class TaskExec:
             files (dict[str, FileStorage], optional): A dictionary containing file data. Defaults to None.
 
         """
-        path_pid = Path(__file__).cwd().joinpath(app.config["TEMP_PATH"]).joinpath(pid).resolve()
-        path_pid.mkdir(parents=True, exist_ok=True, mode=777)
+        path_pid = (
+            Path(getcwd())
+            .joinpath(
+                "crawjud",
+                "bot",
+                "temp",
+            )
+            .joinpath(pid)
+        )
+
+        path_pid.mkdir(parents=True, exist_ok=True)
 
         if files is not None:
             for f, value in files.items():
@@ -245,7 +192,6 @@ class TaskExec:
         id_: int,
         system: str,
         typebot: str,
-        form: dict[str, str] = None,
         *args: tuple[str],
         **kwargs: dict[str, any],
     ) -> tuple[dict[str, str | int | datetime], str]:
@@ -263,23 +209,22 @@ class TaskExec:
 
         """
         data: dict[str, str | int | datetime] = {}
+        data.update({
+            "id": id_,
+            "system": system,
+            "typebot": typebot,
+        })
 
-        if form is not None:
-            for key, value in form.items():
-                data.update({key: value})
-
-        data.update({"id": id_, "system": system, "typebot": typebot})
         rows = 0
         if data.get("xlsx"):
-            input_file = path.join(path_pid, data["xlsx"])
-            if path.exists(input_file):
+            input_file = Path(path_pid).joinpath(data.get("xlsx"))
+            if input_file.exists():
                 wb = openpyxl.load_workbook(filename=input_file)
                 ws: Worksheet = wb.active
                 rows = ws.max_row
 
         elif data.get("typebot") == "pauta":
             data_inicio_formated = datetime.strptime(data.get("data_inicio"), "%Y-%m-%d")
-
             data_fim_formated = datetime.strptime(data.get("data_fim"), "%Y-%m-%d")
 
             diff = data_fim_formated - data_inicio_formated
@@ -290,7 +235,7 @@ class TaskExec:
 
         data.update({"total_rows": rows})
 
-        path_args = path.join(path_pid, f"{pid}.json")
+        path_args = path_pid.joinpath(f"{pid}.json")
         async with aiofiles.open(path_args, "w") as f:
             await f.write(json.dumps(data))
 
