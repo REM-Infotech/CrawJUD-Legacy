@@ -1,12 +1,17 @@
 """Run the server components in separate threads and allow stopping with an event."""
 
+import asyncio
 from platform import node
 from threading import Thread
 
+from celery import Celery
 from celery.apps.worker import Worker
 from clear import clear
+from quart import Quart
+from socketio import ASGIApp
 from termcolor import colored
 from tqdm import tqdm
+from uvicorn import Server
 
 from crawjud._types import app_name
 from crawjud._utils.gen_seed import worker_name_generator
@@ -16,6 +21,62 @@ from crawjud.core.watch import monitor_log
 
 class RunnerServices:
     """Run the server components in separate threads and allow stopping with an event."""
+
+    celery_: Celery = None
+    app_: Quart = None
+    srv_: Server = None
+    asgi_: ASGIApp = None
+    worker_: Worker = None
+
+    @property
+    def celery(self) -> Celery:
+        """Return the celery instance."""
+        return self.celery_
+
+    @celery.setter
+    def celery(self, value: Celery) -> None:
+        """Set the celery instance."""
+        self.celery_ = value
+
+    @property
+    def app(self) -> Quart:
+        """Return the app instance."""
+        return self.app_
+
+    @app.setter
+    def app(self, value: Quart) -> None:
+        """Set the app instance."""
+        self.app_ = value
+
+    @property
+    def srv(self) -> Server:
+        """Return the server instance."""
+        return self.srv_
+
+    @srv.setter
+    def srv(self, value: Server) -> None:
+        """Set the server instance."""
+        self.srv_ = value
+
+    @property
+    def asgi(self) -> ASGIApp:
+        """Return the ASGI instance."""
+        return self.asgi_
+
+    @asgi.setter
+    def asgi(self, value: ASGIApp) -> None:
+        """Set the ASGI instance."""
+        self.asgi_ = value
+
+    @property
+    def worker(self) -> Worker:
+        """Return the worker process."""
+        return self.worker_
+
+    @worker.setter
+    def worker(self, value: Worker) -> None:
+        """Set the worker process."""
+        self.worker_ = value
 
     def start_worker(
         self,
@@ -88,3 +149,21 @@ class RunnerServices:
         monitor_log("uvicorn_api.log")
 
         return ["Exiting logs.", "INFO", "yellow"]
+
+    def start(self, app_name: app_name) -> None:
+        """Start the server."""
+        if app_name == "Quart":
+            self.start_quart()
+        elif app_name == "Worker":
+            self.start_worker()
+        else:
+            raise ValueError("Invalid app name.")
+
+    def stop(self, app_name: app_name) -> None:
+        """Stop the server."""
+        if app_name == "Quart":
+            asyncio.run(self.srv.shutdown())
+        elif app_name == "Worker":
+            self.worker.stop()
+        else:
+            raise ValueError("Invalid app name.")

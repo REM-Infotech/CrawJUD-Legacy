@@ -7,15 +7,11 @@ from typing import Callable, Dict, Literal
 
 import inquirer
 from billiard.context import Process
-from celery import Celery
 from celery.apps.beat import Beat
-from celery.apps.worker import Worker
 from clear import clear
-from quart import Quart
-from socketio import ASGIApp, AsyncServer
+from socketio import AsyncServer
 from termcolor import colored
 from tqdm import tqdm
-from uvicorn import Server
 
 from crawjud._types import app_name
 from crawjud.config import running_servers
@@ -51,16 +47,6 @@ def start_beat() -> None:
 class MasterApp(HeadCrawjudManager):
     """Master application class."""
 
-    celery_: Celery = None
-    app_: Quart = None
-    srv_: Server = None
-    asgi_: ASGIApp = None
-    worker_: Worker = None
-    status: Callable[[app_name], None] = None
-    start: Callable[[app_name], None] = None
-    stop: Callable[[app_name], None] = None
-    restart: Callable[[app_name], None] = None
-
     def __init__(self) -> None:
         """Initialize the ASGI server."""
         self.current_menu = self.main_menu
@@ -82,56 +68,6 @@ class MasterApp(HeadCrawjudManager):
             "stop": self.stop,
             "restart": self.restart,
         }
-
-    @property
-    def celery(self) -> Celery:
-        """Return the celery instance."""
-        return self.celery_
-
-    @celery.setter
-    def celery(self, value: Celery) -> None:
-        """Set the celery instance."""
-        self.celery_ = value
-
-    @property
-    def app(self) -> Quart:
-        """Return the app instance."""
-        return self.app_
-
-    @app.setter
-    def app(self, value: Quart) -> None:
-        """Set the app instance."""
-        self.app_ = value
-
-    @property
-    def srv(self) -> Server:
-        """Return the server instance."""
-        return self.srv_
-
-    @srv.setter
-    def srv(self, value: Server) -> None:
-        """Set the server instance."""
-        self.srv_ = value
-
-    @property
-    def asgi(self) -> ASGIApp:
-        """Return the ASGI instance."""
-        return self.asgi_
-
-    @asgi.setter
-    def asgi(self, value: ASGIApp) -> None:
-        """Set the ASGI instance."""
-        self.asgi_ = value
-
-    @property
-    def worker(self) -> Process:
-        """Return the worker process."""
-        return self.worker_
-
-    @worker.setter
-    def worker(self, value: Worker) -> None:
-        """Set the worker process."""
-        self.worker_ = value
 
     def prompt(self) -> None:
         """Prompt the user for server options."""
