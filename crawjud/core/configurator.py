@@ -61,11 +61,11 @@ async def app_configurator(app: Quart) -> tuple[Quart, Server, ASGIApp, Celery]:
         celery.set_default()
         app.extensions["celery"] = celery
 
-        celery.autodiscover_tasks(["crawjud.bot", "crawjud.utils"])
+        celery.autodiscover_tasks(["crawjud.bot", "crawjud._utils"])
 
         io = await init_extensions(app)
 
-        folder_logs = Path(__file__).cwd().joinpath("logs").resolve()
+        folder_logs = Path(__file__).cwd().joinpath("_logs").resolve()
         folder_logs.mkdir(exist_ok=True)
 
         logfile = folder_logs.joinpath("%s.log" % os.getenv("APPLICATION_APP", "asgi"))

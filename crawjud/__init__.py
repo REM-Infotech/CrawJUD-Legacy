@@ -1,6 +1,7 @@
 """Main module for the CrawJUD Package."""
 
 import asyncio
+from os import environ
 from pathlib import Path
 from time import sleep
 from typing import Callable, Dict, Literal
@@ -31,11 +32,13 @@ def start_beat() -> None:
     """Start the Celery beat scheduler."""
     from crawjud.core import create_app
 
+    environ.update({"APPLICATION_APP": "beat"})
+
     async def beat_start() -> None:
         async with app.app_context():
             beat = Beat(
                 app=celery,
-                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+                scheduler="crawjud._utils.scheduler:DatabaseScheduler",
                 quiet=True,
             )
             beat.run()
