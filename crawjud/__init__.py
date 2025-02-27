@@ -3,18 +3,22 @@
 import asyncio
 from pathlib import Path
 from time import sleep
+from typing import Dict
 
 import inquirer
 from billiard.context import Process
+from celery import Celery
 from celery.apps.beat import Beat
 from clear import clear
-from socketio import AsyncServer
+from quart import Quart
+from socketio import ASGIApp, AsyncServer
 from termcolor import colored
 from tqdm import tqdm
+from uvicorn import Server
 
 from crawjud.config import running_servers
+from crawjud.context_manager.menu import MenuManager
 from crawjud.core import create_app
-from crawjud.menu_manager import MenuManager
 
 io = AsyncServer(
     async_mode="asgi",
@@ -45,12 +49,57 @@ def start_beat() -> None:
 class MasterApp(MenuManager):
     """Master application class."""
 
+    celery_: Celery
+    app_: Quart
+    srv_: Server
+    asgi_: ASGIApp
+
     def __init__(self) -> None:
         """Initialize the ASGI server."""
         self.current_menu = self.main_menu
         self.app, self.srv, self.asgi, self.celery = asyncio.run(create_app())
         Process(target=start_beat, daemon=True).start()
         clear()
+
+    @property
+    def celery(self) -> Celery:
+        """Return the celery instance."""
+        return self.celery_
+
+    @celery.setter
+    def celery(self, value: Celery) -> None:
+        """Set the celery instance."""
+        self.celery_ = value
+
+    @property
+    def app(self) -> Quart:
+        """Return the app instance."""
+        return self.app_
+
+    @app.setter
+    def app(self, value: Quart) -> None:
+        """Set the app instance."""
+        self.app_ = value
+
+    @property
+    def srv(self) -> Server:
+        """Return the server instance."""
+        return self.srv_
+
+    @srv.setter
+    def srv(self, value: Server) -> None:
+        """Set the server instance."""
+        self.srv_ = value
+
+    @property
+    def asgi(self) -> ASGIApp:
+        """Return the ASGI instance."""
+        return self.asgi_
+
+    @asgi.setter
+    def asgi(self, value: ASGIApp) -> None:
+        """Set the ASGI instance."""
+        self.asgi_ = value
 
     def prompt(self) -> None:
         """Prompt the user for server options."""
@@ -63,7 +112,7 @@ class MasterApp(MenuManager):
                     tqdm.write("=============================================================")
                     tqdm.write("Running servers:")
                     for server in running_servers.keys():
-                        tqdm.write(f" - {server}")
+                        tqdm.write(f" {colored('[ x ]', color='green')} {server}")
                     tqdm.write("=============================================================")
 
             if self.returns_message:
@@ -78,17 +127,16 @@ class MasterApp(MenuManager):
             menu = {
                 "Quart Application": self.quart_application,
                 "Celery Worker": self.worker_menu,
-                "Celery Beat": self.beat_menu,
             }
 
             with self.answer_prompt(self.current_menu, menu) as server_answer:
-                choice = server_answer.get("application_list", "Back")
+                choice = server_answer.get("server_options", "Back")
 
                 if choice == "Clear Prompt":
                     clear()
                     continue
 
-                if choice == "Start All":
+                if choice == "Start Services":
                     for _, functions in self.functions.items():
                         func = functions.get("Start Server")
                         asyncio.run(func())
@@ -97,7 +145,7 @@ class MasterApp(MenuManager):
                     sleep(2)
                     continue
 
-                if choice == "Get Bot LOG":
+                if choice == "Get Executions Logs":
                     self.get_log_bot()
                     tqdm.write(colored("[INFO] Log file closed.", "yellow", attrs=["bold"]))
                     sleep(2)
@@ -136,7 +184,9 @@ class MasterApp(MenuManager):
 
     def get_log_bot(self) -> None:
         """Get the bot logs."""
-        answer_logger = inquirer.prompt([inquirer.Text("log", message="Enter the log file name")])
+        answer_logger: Dict[str, str | None] | None = inquirer.prompt([
+            inquirer.Text("log", message="Enter the log file name")
+        ])
 
         text_choice = answer_logger.get("log")
 
