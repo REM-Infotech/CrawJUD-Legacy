@@ -1,6 +1,9 @@
 """Run the server components in separate threads and allow stopping with an event."""
 
 import asyncio
+import logging
+from os import environ, getcwd, getenv
+from pathlib import Path
 from platform import node
 from threading import Thread
 
@@ -11,10 +14,12 @@ from quart import Quart
 from socketio import ASGIApp
 from termcolor import colored
 from tqdm import tqdm
-from uvicorn import Server
+from uvicorn import Config, Server
 
 from crawjud.config import StoreThread, running_servers
+from crawjud.core.configurator import get_hostname
 from crawjud.core.watch import monitor_log
+from crawjud.logs import log_cfg
 from crawjud.types import app_name
 from crawjud.utils.gen_seed import worker_name_generator
 
@@ -87,6 +92,7 @@ class RunnerServices:
             stop_event (Event): Event to signal the thread to stop.
 
         """
+        environ.update({"APPLICATION_APP": "worker"})
         worker_name = f"{worker_name_generator}@{node()}"
         worker = Worker(
             app=self.celery,
@@ -108,6 +114,25 @@ class RunnerServices:
             stop_event (Event): Event to signal the thread to stop.
 
         """
+        log_file = Path(getcwd()).joinpath("crawjud", "logs", "uvicorn_api.log")
+        cfg, _ = log_cfg(log_file=log_file)
+        port = getenv("SERVER_PORT", 5000)
+        hostname = getenv(
+            "SERVER_HOSTNAME",
+            get_hostname(),
+        )
+
+        log_level = logging.INFO
+        if getenv("DEBUG", "False").lower() == "true":
+            log_level = logging.DEBUG
+        cfg = Config(
+            self.asgi,
+            host=hostname,
+            port=port,
+            log_config=cfg,
+            log_level=log_level,
+        )
+        self.srv = Server(cfg)
         self.srv.run()
 
     def start_all(self) -> None:

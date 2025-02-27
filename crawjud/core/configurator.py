@@ -4,17 +4,12 @@ This module provides functionality to load configuration settings
 into a Quart application instance from various sources.
 """
 
-import logging
 import os
 import subprocess
-from pathlib import Path
 
 from celery.app.base import Celery
 from quart import Quart
 from socketio import ASGIApp
-from uvicorn import Config, Server
-
-from crawjud.logs import log_cfg
 
 objects_config = {
     "development": "crawjud.config.DevelopmentConfig",
@@ -36,7 +31,7 @@ def get_hostname() -> str:
     ).stdout.strip()
 
 
-async def app_configurator(app: Quart) -> tuple[Quart, Server, ASGIApp, Celery]:
+async def app_configurator(app: Quart) -> tuple[Quart, ASGIApp, Celery]:
     """Load configuration settings into the Quart application.
 
     Args:
@@ -65,33 +60,8 @@ async def app_configurator(app: Quart) -> tuple[Quart, Server, ASGIApp, Celery]:
 
         io = await init_extensions(app)
 
-        folder_logs = Path(__file__).cwd().joinpath("logs").resolve()
-        folder_logs.mkdir(exist_ok=True)
-
-        logfile = folder_logs.joinpath("%s.log" % os.getenv("APPLICATION_APP", "asgi"))
-        logfile.touch(exist_ok=True)
-
         await register_routes(app)
 
-        cfg, _ = log_cfg()
-        port = os.getenv("SERVER_PORT", 5000)
-        hostname = os.getenv(
-            "SERVER_HOSTNAME",
-            get_hostname(),
-        )
-
-        log_level = logging.INFO
-        if os.getenv("DEBUG", "False").lower() == "true":
-            log_level = logging.DEBUG
-
         asgi = ASGIApp(io, app)
-        cfg = Config(
-            asgi,
-            host=hostname,
-            port=port,
-            log_config=cfg,
-            log_level=log_level,
-        )
-        srv = Server(cfg)
 
-    return app, srv, asgi, celery
+    return app, asgi, celery
