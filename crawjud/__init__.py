@@ -53,7 +53,7 @@ class MasterApp(HeadCrawjudManager):
     def __init__(self) -> None:
         """Initialize the ASGI server."""
         self.current_menu = self.main_menu
-        self.app, self.srv, self.asgi, self.celery = asyncio.run(create_app())
+        self.app, self.asgi, self.celery = asyncio.run(create_app())
         Process(target=start_beat, daemon=True).start()
         clear()
 

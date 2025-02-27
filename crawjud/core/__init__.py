@@ -16,7 +16,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
 from socketio import ASGIApp
-from uvicorn import Server
 
 from crawjud.custom import QuartLoginManager as LoginManager
 
@@ -46,7 +45,7 @@ values = environ.get
 is_init = Path("is_init.txt").resolve()
 
 
-async def create_app() -> tuple[Quart, Server, ASGIApp, Celery]:
+async def create_app() -> tuple[Quart, ASGIApp, Celery]:
     """Create and configure the ASGIApp and Celery worker.
 
     Returns:
