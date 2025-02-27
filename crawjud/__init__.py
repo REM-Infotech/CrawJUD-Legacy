@@ -71,6 +71,7 @@ class MasterApp(HeadCrawjudManager):
 
     def __init__(self) -> None:
         """Initialize the ASGI server."""
+        self.boot_app()
         self.current_menu = self.main_menu
         self.current_menu_name = "Main Menu"
 
