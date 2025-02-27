@@ -30,8 +30,8 @@ class StoreService:
     def __init__(
         self,
         process_name: str,
-        process_status: str,
         process_object: Thread | Process,
+        process_status: str = "Running",
         process_id: int = None,
     ) -> None:
         """Initialize the StoreService class."""

@@ -72,6 +72,8 @@ dependencies = [
     "quart-wtforms (>=1.0.3,<2.0.0)",
     "pynput (>=1.7.7,<2.0.0)",
     "tailer (>=0.4.1,<0.5.0)",
+    "prompt-toolkit (>=3.0.50,<4.0.0)",
+    "click-repl (>=0.3.0,<0.4.0)",
 ]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"

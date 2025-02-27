@@ -23,7 +23,6 @@ class MenuManager:
             "server_options",
             message="Select an option",
             choices=[
-                "Show Prompt",
                 "Start Services",
                 "Quart Application",
                 "Celery Worker",

@@ -49,6 +49,25 @@ def start_beat() -> None:
     asyncio.run(beat_start())
 
 
+def start_worker() -> None:
+    """Start the Celery beat scheduler."""
+    from crawjud.core import create_app
+
+    environ.update({"APPLICATION_APP": "beat"})
+
+    async def beat_start() -> None:
+        async with app.app_context():
+            beat = Beat(
+                app=celery,
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+                quiet=True,
+            )
+            beat.run()
+
+    app, _, celery = asyncio.run(create_app())
+    asyncio.run(beat_start())
+
+
 class MasterApp(HeadCrawjudManager):
     """Master application class."""
 
