@@ -7,6 +7,7 @@ from threading import Event, Thread
 from time import sleep
 
 import inquirer
+from billiard.context import Process
 from celery.apps.beat import Beat
 from celery.apps.worker import Worker
 from clear import clear
@@ -30,8 +31,32 @@ io = AsyncServer(
 clear()
 
 
+def start_beat() -> None:
+    """Start the Celery beat scheduler."""
+    from crawjud.core import create_app
+
+    async def beat_start() -> None:
+        async with app.app_context():
+            beat = Beat(
+                app=celery,
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+                quiet=True,
+            )
+            beat.run()
+
+    app, _, _, celery = asyncio.run(create_app())
+    asyncio.run(beat_start())
+
+
 class MasterApp(MenuManager):
     """Master application class."""
+
+    def __init__(self) -> None:
+        """Initialize the ASGI server."""
+        self.current_menu = self.main_menu
+        self.app, self.srv, self.asgi, self.celery = asyncio.run(create_app())
+        Process(target=start_beat, daemon=True).start()
+        clear()
 
     def start_worker(self, stop_event: Event) -> None:
         """Run the Celery worker in a thread controlled by a stop event.
@@ -65,24 +90,6 @@ class MasterApp(MenuManager):
         while not stop_event.is_set():
             ...
 
-    def start_beat(self) -> None:
-        """Run the Celery beat in a thread controlled by a stop event.
-
-        Args:
-            stop_event (Event): Event to signal the thread to stop.
-
-        """
-
-        async def beat_start() -> None:
-            async with self.app.app_context():
-                beat = Beat(
-                    app=self.celery,
-                    scheduler="crawjud.utils.scheduler:DatabaseScheduler",
-                )
-                beat.run()
-
-        asyncio.run(beat_start())
-
     def start_all(self) -> None:
         """Start all server components in separate threads and allow stopping with an event.
 
@@ -92,11 +99,9 @@ class MasterApp(MenuManager):
         stop_event = Event()
         worker_thread = Thread(target=self.start_worker, args=(stop_event,))
         quart_thread = Thread(target=self.start_quart, args=(stop_event,))
-        beat_thread = Thread(target=self.start_beat, args=(stop_event,))
 
         worker_thread.start()
         quart_thread.start()
-        beat_thread.start()
 
         store_thread = StoreThread(
             process_name="Worker",
@@ -117,12 +122,6 @@ class MasterApp(MenuManager):
         monitor_log("uvicorn_api.log")
 
         return ["Exiting logs.", "INFO", "yellow"]
-
-    def __init__(self) -> None:
-        """Initialize the ASGI server."""
-        self.current_menu = self.main_menu
-        self.app, self.srv, self.asgi, self.celery = asyncio.run(create_app())
-        Thread(target=self.start_beat).start()
 
     def prompt(self) -> None:
         """Prompt the user for server options."""
