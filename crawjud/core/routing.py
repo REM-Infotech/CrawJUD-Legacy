@@ -41,12 +41,8 @@ async def register_routes(app: Quart) -> None:
     from crawjud.routes.dashboard import dash
     from crawjud.routes.execution import exe
     from crawjud.routes.logs import logsbot
-    from crawjud.routes.webhook import wh
 
     listBlueprints = [bot, auth, logsbot, exe, dash, cred, admin, supersu, usr]  # noqa: N806
 
     for bp in listBlueprints:
         app.register_blueprint(bp)
-    # Register the blueprints for bot and webhook endpoints.
-    app.register_blueprint(wh)
-    app.register_blueprint(bot)

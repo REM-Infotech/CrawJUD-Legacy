@@ -35,7 +35,6 @@ db = SQLAlchemy()
 tlsm = Talisman()
 mail = Mail()
 login_manager = LoginManager()
-
 template_path = str(Path(__file__).parent.resolve().joinpath("templates"))
 src_path = str(Path(__file__).parent.resolve().joinpath("static"))
 app = Quart(__name__, static_folder=src_path, template_folder=template_path)

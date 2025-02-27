@@ -4,13 +4,13 @@ from datetime import timedelta
 
 from quart import Quart
 
-from crawjud.core import tslm
+from crawjud.core import tlsm
 
 
 async def security_config(app: Quart) -> None:
     """Configure the application security settings."""
     # Configure the Content Security Policy (CSP) for the application.
-    tslm.init_app(
+    tlsm.init_app(
         app,
         content_security_policy=app.config["CSP"],
         session_cookie_http_only=True,
