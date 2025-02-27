@@ -193,7 +193,9 @@ def perform_submited_form(
 ) -> tuple[dict, dict, bool]:
     """Perform the submitted form."""
     form_data = form._fields.items()
-    periodic_task = form.periodic_task.data
+    if form._fields.get("periodic_task"):
+        periodic_task = form._fields.get("periodic_task")
+
     for field_name, attributes_field in form_data:
         data_field: Union[
             strings,
