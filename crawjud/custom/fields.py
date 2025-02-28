@@ -77,7 +77,7 @@ class QuartFieldList(FieldList):
         separator="-",  # noqa: ANN001
         default=(),  # noqa: ANN001
         **kwargs,  # noqa: ANN003
-    ):
+    ) -> None:
         # Ensure _prefix is always a string
         kwargs["_prefix"] = kwargs.get("_prefix", "")
 
