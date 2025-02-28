@@ -18,14 +18,14 @@ import logging
 import traceback
 from typing import Callable, Union
 
-from ...common import StartError
-from .andamentos import Andamentos
-from .cadastro import Cadastro
-from .complement import Complement
-from .download import Download
-from .prazos import Prazos
-from .provisao import Provisao
-from .sol_pags import SolPags as Sol_pags
+from crawjud.bot.common import StartError
+from crawjud.bot.scripts.elaw.andamentos import Andamentos
+from crawjud.bot.scripts.elaw.cadastro import Cadastro
+from crawjud.bot.scripts.elaw.complement import Complement
+from crawjud.bot.scripts.elaw.download import Download
+from crawjud.bot.scripts.elaw.prazos import Prazos
+from crawjud.bot.scripts.elaw.provisao import Provisao
+from crawjud.bot.scripts.elaw.sol_pags import SolPags as Sol_pags
 
 logger_ = logging.getLogger(__name__)
 ClassBots = Union[Andamentos, Cadastro, Complement, Download, Prazos, Provisao, Sol_pags]

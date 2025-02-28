@@ -122,19 +122,10 @@ class RunnerServices:
             process_status="Running",
             process_object=Thread(target=self.start_quart),
         )
-
-        store_thread_worker = StoreService(
-            process_name="Worker",
-            process_status="Running",
-            process_object=Thread(target=self.start_worker),
-        )
-
         running_servers.update({
             "Quart": store_quart_thread,
-            "Worker": store_thread_worker,
         })
 
-        store_thread_worker.start()
         store_quart_thread.start()
 
         tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
@@ -155,10 +146,10 @@ class RunnerServices:
         """Start the server."""
         if app_name == "Quart":
             self.start_quart()
-        elif app_name == "Worker":
-            self.start_worker()
-        else:
-            raise ValueError("Invalid app name.")
+        # elif app_name == "Worker":
+        #     self.start_worker()
+        # else:
+        #     raise ValueError("Invalid app name.")
 
     def stop(self, app_name: app_name) -> None:
         """Stop the server."""

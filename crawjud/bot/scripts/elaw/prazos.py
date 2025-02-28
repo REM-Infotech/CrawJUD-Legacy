@@ -18,8 +18,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
-from ...common import ExecutionError
-from ...core import CrawJUD
+from crawjud.bot.common import ExecutionError
+from crawjud.bot.core import CrawJUD
 
 
 class Prazos(CrawJUD):

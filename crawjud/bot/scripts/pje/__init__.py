@@ -9,8 +9,8 @@ import logging
 import traceback
 from typing import Callable, Union
 
-from ...common import StartError
-from .pauta import Pauta
+from crawjud.bot.common import StartError
+from crawjud.bot.scripts.pje.pauta import Pauta
 
 logger_ = logging.getLogger(__name__)
 ClassBots = Union[Pauta]

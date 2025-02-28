@@ -27,7 +27,7 @@ from celery import shared_task
 from celery.result import AsyncResult
 from quart import Quart
 
-from .class_thead import BotThread
+from crawjud.bot.class_thead import BotThread
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class WorkerBot:
             Exception: If bot initialization or execution fails.
 
         """
-        from .scripts import Projudi
+        from crawjud.bot.scripts import Projudi
 
         bot_class = Projudi
         try:
@@ -125,7 +125,7 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
-        from .scripts import Esaj
+        from crawjud.bot.scripts import Esaj
 
         bot_class = Esaj
         try:
@@ -172,7 +172,7 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
-        from .scripts import PJe
+        from crawjud.bot.scripts import PJe
 
         bot_class = PJe
         try:
@@ -219,7 +219,7 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
-        from .scripts import Elaw
+        from crawjud.bot.scripts import Elaw
 
         bot_class = Elaw
         try:
@@ -266,7 +266,7 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
-        from .scripts import Caixa
+        from crawjud.bot.scripts import Caixa
 
         bot_class = Caixa
         try:
@@ -313,7 +313,7 @@ class WorkerBot:
             str: Status message indicating bot completion.
 
         """
-        from .scripts import Calculadoras
+        from crawjud.bot.scripts import Calculadoras
 
         bot_class = Calculadoras
         try:

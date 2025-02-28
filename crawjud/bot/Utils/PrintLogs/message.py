@@ -16,7 +16,7 @@ import socketio
 import socketio.exceptions  # noqa: F401
 from dotenv_vault import load_dotenv
 
-from ...core import CrawJUD
+from crawjud.bot.core import CrawJUD
 
 codificacao = "UTF-8"
 mensagens = []

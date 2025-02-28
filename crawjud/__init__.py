@@ -73,9 +73,7 @@ def start_worker() -> None:
             worker = worker
 
             try:
-                worker_thread = Thread(target=worker.start)
-                worker_thread.daemon = True
-                worker_thread.start()
+                worker.start()
 
             except Exception as e:
                 if isinstance(e, KeyboardInterrupt):
@@ -104,13 +102,19 @@ class MasterApp(HeadCrawjudManager):
         self.app, self.asgi, self.celery = asyncio.run(create_app())
 
         process_beat = Process(target=start_beat, daemon=True)
+        process_worker = Process(target=start_worker, daemon=True)
 
+        running_servers["Worker"] = StoreService(
+            process_name="Worker",
+            process_object=process_worker,
+            process_id=process_worker.pid,
+        )
         running_servers["Beat"] = StoreService(
             process_name="Beat",
             process_object=process_beat,
             process_id=process_beat.pid,
         )
-
+        process_worker.start()
         process_beat.start()
 
     def __init__(self) -> None:

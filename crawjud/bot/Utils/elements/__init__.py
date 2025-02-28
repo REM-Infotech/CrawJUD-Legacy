@@ -20,7 +20,7 @@ from __future__ import annotations
 from importlib import import_module
 from typing import Self
 
-from ...core import CrawJUD
+from crawjud.bot.core import CrawJUD
 from .elaw import ELAW_AME
 from .esaj import ESAJ_AM
 from .pje import PJE_AM

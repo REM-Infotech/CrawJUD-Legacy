@@ -41,8 +41,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ..common import ExecutionError
-from ..shared import PropertiesCrawJUD, TypeHint
+from crawjud.bot.common import ExecutionError
+from crawjud.bot.shared import PropertiesCrawJUD
+from crawjud.types import TypeHint
 
 __all__ = [
     pd,

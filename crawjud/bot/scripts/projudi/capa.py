@@ -13,8 +13,8 @@ from typing import Self
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from ...common import ExecutionError
-from ...core import CrawJUD
+from crawjud.bot.common import ExecutionError
+from crawjud.bot.core import CrawJUD
 
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 

@@ -24,7 +24,7 @@ from werkzeug.utils import secure_filename
 
 from ..common import ExecutionError
 from ..core import CrawJUD, pd
-from ..shared import Numbers
+from crawjud.bot.shared import Numbers
 from .auth import AuthBot
 from .Driver import DriverBot
 from .elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot

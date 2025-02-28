@@ -5,6 +5,7 @@ This module defines endpoints for managing logs and controlling bot executions.
 
 import asyncio
 import json
+from os import environ
 
 import httpx as requests
 from flask_sqlalchemy import SQLAlchemy
@@ -131,7 +132,7 @@ async def logs_bot(pid: str) -> Response:
 
     resp.set_cookie(
         "socket_bot",
-        execution.url_socket,
+        environ.get("URL_WEB"),
         max_age=60 * 60 * 24,
         httponly=True,
         secure=True,

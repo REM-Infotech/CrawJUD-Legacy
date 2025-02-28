@@ -7,8 +7,8 @@ import logging
 import traceback
 from typing import Callable, Union
 
-from ...common import StartError
-from .tjdft import Tjdft
+from crawjud.bot.common import StartError
+from crawjud.bot.scripts.calculadoras.tjdft import Tjdft
 
 __all__ = ["Tjdft"]
 logger_ = logging.getLogger(__name__)
