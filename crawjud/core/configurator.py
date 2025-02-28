@@ -12,9 +12,9 @@ from quart import Quart
 from socketio import ASGIApp
 
 objects_config = {
-    "development": "crawjud.config.DevelopmentConfig",
-    "production": "crawjud.config.ProductionConfig",
-    "testing": "crawjud.config.TestingConfig",
+    "development": "crawjud.core.config.DevelopmentConfig",
+    "production": "crawjud.core.config.ProductionConfig",
+    "testing": "crawjud.core.config.TestingConfig",
 }
 
 
