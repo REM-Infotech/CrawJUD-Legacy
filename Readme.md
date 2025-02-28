@@ -5,17 +5,15 @@
 [![Python 3.13](https://shields.io/badge/python-3.13%20-green?style=for-the-badge&logo=python)](https://python.org/downloads/release/python-3132/)
 [![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge&logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-[![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=for-the-badge&logo=celery&logoColor=ddf4a4)](https://docs.celeryq.dev/en/stable/)
 [![Quart](https://img.shields.io/badge/Quart-8A2BE2?style=for-the-badge)](https://quart.palletsprojects.com/en/stable/)
+[![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=for-the-badge&logo=celery&logoColor=ddf4a4)](https://docs.celeryq.dev/en/stable/)
 [![Poetry](https://img.shields.io/badge/Poetry-430098?style=for-the-badge&logo=python&logoColor=white)](https://python-poetry.org/docs/)
 [![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-<!-- [![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://quart.palletsprojects.com/en/stable/) -->
-
 ## Description
 
-CrawJUD is a suite of automation robots designed to streamline and enhance judicial processes. Built with Flask and various Python libraries, CrawJUD aims to automate routine tasks, manage data efficiently, and provide seamless integration with existing systems.
+CrawJUD is a suite of automation robots designed to streamline and enhance judicial processes. Built with Quart and Celery, CrawJUD provides a robust async-first architecture for automating routine tasks across multiple Brazilian judicial systems including Projudi, PJe, eSaj, Elaw, and Caixa.
 
 _Total lines: `14551`_
 _Last count: `22/02/2025 11:00 (América\São Paulo)`_
@@ -35,17 +33,23 @@ _Last count: `22/02/2025 11:00 (América\São Paulo)`_
 
 ## Project Structure
 
-- [`app/`](./app/): Centralizes routes, forms, and Flask models.
+- [`crawjud/`](./crawjud/): Core package containing all bot functionality
 
-  - [`models/`](./app/models/): Contains models and SQL bindings.
+  - [`bot/`](./crawjud/bot/): Bot implementations and automation scripts
+    - [`scripts/`](./crawjud/bot/scripts/): Individual bot implementations for each system
+      - `Projudi.py`: Projudi system automation
+      - `PJe.py`: PJe system automation
+      - `Esaj.py`: eSaj system automation
+      - `Elaw.py`: Elaw system automation
+      - `Caixa.py`: Caixa system automation
+      - `Calculadoras.py`: Calculator utilities
 
-  - [`Forms/`](./app/Forms/): Project forms, organized by functionality.
+- [`app/`](./app/): Web application and API components
+  - [`models/`](./app/models/): Database models and SQL bindings
+  - [`Forms/`](./app/Forms/): Form definitions and validation
+  - [`routes/`](./app/routes/): API endpoints and route handlers
 
-  - [`routes/`](./app/routes/): Project routes, organized by functionality.
-
-  > For more details, check the [app structure documentation](./doc/app_structure.md).
-
-- [`bot/`](./bot/): Contains bot-related scripts and configurations.
+> For more details, check the [app structure documentation](./doc/app_structure.md)
 
 ## Installation
 
@@ -71,7 +75,7 @@ To set up the project locally, follow these steps:
 4. **Run the application:**
 
    ```bash
-   poetry run flask run
+   poetry run python -m crawjud
    ```
 
 ## Usage

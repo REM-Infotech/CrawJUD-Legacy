@@ -5,7 +5,7 @@ description = ""
 authors = [{ name = "Robotz213", email = "nicholas@robotz.dev" }]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.13, <4.0"
+requires-python = ">=3.13,<3.14"
 dependencies = [
     "flask (>=3.1.0,<4.0.0)",
     "flask-mail (>=0.10.0,<0.11.0)",
@@ -74,6 +74,8 @@ dependencies = [
     "tailer (>=0.4.1,<0.5.0)",
     "prompt-toolkit (>=3.0.50,<4.0.0)",
     "click-repl (>=0.3.0,<0.4.0)",
+    "pythonnet (==3.0.5)",
+    "pywebview (>=5.4,<6.0)",
 ]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
