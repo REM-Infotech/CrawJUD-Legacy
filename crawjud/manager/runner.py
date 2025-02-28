@@ -15,7 +15,7 @@ from termcolor import colored
 from tqdm import tqdm
 from uvicorn import Config, Server
 
-from crawjud.config import StoreService, running_servers
+from crawjud.core.config import StoreService, running_servers
 from crawjud.core.configurator import get_hostname
 from crawjud.core.watch import monitor_log
 from crawjud.logs import log_cfg

@@ -18,9 +18,9 @@ from socketio import AsyncServer
 from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.config import StoreService, running_servers
+from crawjud.core.config import StoreService, running_servers
 from crawjud.core import create_app
-from crawjud.crawjud_manager import HeadCrawjudManager
+from crawjud.manager import HeadCrawjudManager
 from crawjud.types import app_name
 from crawjud.utils.gen_seed import worker_name_generator
 

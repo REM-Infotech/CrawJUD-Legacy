@@ -9,8 +9,8 @@ from termcolor import colored
 from tqdm import tqdm
 
 from crawjud import MasterApp
-from crawjud.crawjud_manager.menu import MenuManager
-from crawjud.crawjud_manager.runner import RunnerServices
+from crawjud.manager.menu import MenuManager
+from crawjud.manager.runner import RunnerServices
 
 
 def main_server() -> None:
