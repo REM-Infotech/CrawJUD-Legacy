@@ -41,7 +41,7 @@ async def executions() -> Response:
 
     """
     try:
-        form = SearchExec.setup_form()
+        form = await SearchExec.setup_form()
         pid = request.args.get("pid", "")
 
         if await form.validate_on_submit():
@@ -87,6 +87,7 @@ async def executions() -> Response:
     return await make_response(
         await render_template(
             "index.html",
+            url_socket=os.getenv("URL_WEB"),
             page=page,
             title=title,
             database=database,

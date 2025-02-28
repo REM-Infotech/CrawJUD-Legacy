@@ -164,7 +164,7 @@ async def edit_usuario(id_: int) -> Response:
 
         user = db.session.query(Users).filter(Users.id == id_).first()
 
-        form = UserFormEdit.setup_form(**user.dict_query)
+        form = await UserFormEdit.setup_form(**user.dict_query)
         page = "FormUsr.html"
 
         chksupersu = db.session.query(SuperUser).join(Users).filter(Users.login == session["login"]).first()
@@ -172,7 +172,7 @@ async def edit_usuario(id_: int) -> Response:
         if chksupersu:
             licenses_result = db.session.query(LicensesUsers).all()
 
-            form = UserFormEdit.setup_form(
+            form = await UserFormEdit.setup_form(
                 licenses_add=licenses_result,
                 **user.dict_query,
             )

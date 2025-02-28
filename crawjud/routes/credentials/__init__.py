@@ -91,7 +91,7 @@ async def cadastro() -> Response:
 
     system = [(syst, syst) for syst in count_system]
 
-    form = CredentialsForm.setup_form(system=system)
+    form = await CredentialsForm.setup_form(system=system)
 
     func = "Cadastro"
     title = "Credenciais"
@@ -195,7 +195,7 @@ async def editar(id_: int = None) -> Response:
 
     system = [(syst, syst) for syst in count_system]
 
-    form = CredentialsForm.setup_form(system=system)
+    form = await CredentialsForm.setup_form(system=system)
 
     func = "Cadastro"
     title = "Credenciais"
