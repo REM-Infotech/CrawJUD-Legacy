@@ -47,7 +47,7 @@ class IMPORTForm(QuartForm):
     submit = SubmitField(label="Importar")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         *args: AnyType,
         **kwargs: Type[AnyType],

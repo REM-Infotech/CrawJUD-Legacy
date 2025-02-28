@@ -41,10 +41,10 @@ async def executions() -> Response:
 
     """
     try:
-        form = SearchExec()
+        form = SearchExec.setup_form()
         pid = request.args.get("pid", "")
 
-        if form.validate_on_submit():
+        if await form.validate_on_submit():
             pid = form.campo_busca.data
 
         chksupersu = (

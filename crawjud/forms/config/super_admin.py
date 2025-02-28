@@ -16,7 +16,7 @@ class ClienteForm:
     submit = SubmitField(label="Salvar Alterações")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -44,7 +44,7 @@ class BotLicenseAssociationForm:
     submit = SubmitField(label="Salvar Alterações")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         *args: AnyType,
         **kwargs: Type[AnyType],

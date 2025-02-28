@@ -43,7 +43,7 @@ class UserForm(QuartForm):
     submit = SubmitField(label="Salvar Alterações")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         *args: AnyType,
         **kwargs: Type[AnyType],
@@ -92,7 +92,7 @@ class UserFormEdit(QuartForm):
     submit = SubmitField(label="Salvar Alterações")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         *args: AnyType,
         **kwargs: Type[AnyType],

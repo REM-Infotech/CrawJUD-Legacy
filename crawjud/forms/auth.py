@@ -18,7 +18,7 @@ class LoginForm(QuartForm):
     submit = SubmitField("Entrar")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         *args: AnyType,
         **kwargs: Type[AnyType],

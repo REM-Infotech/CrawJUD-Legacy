@@ -91,14 +91,14 @@ async def cadastro() -> Response:
 
     system = [(syst, syst) for syst in count_system]
 
-    form = CredentialsForm(system=system)
+    form = CredentialsForm.setup_form(system=system)
 
     func = "Cadastro"
     title = "Credenciais"
 
     action_url = url_for("creds.cadastro")
 
-    if form.validate_on_submit():
+    if await form.validate_on_submit():
         if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
             await flash("Existem credenciais com este nome já cadastrada!", "error")
             return await make_response(
@@ -195,14 +195,14 @@ async def editar(id_: int = None) -> Response:
 
     system = [(syst, syst) for syst in count_system]
 
-    form = CredentialsForm(system=system)
+    form = CredentialsForm.setup_form(system=system)
 
     func = "Cadastro"
     title = "Credenciais"
 
     action_url = url_for("creds.cadastro")
 
-    if form.validate_on_submit():
+    if await form.validate_on_submit():
         await flash("Credencial salva com sucesso!", "success")
         return await make_response(
             redirect(

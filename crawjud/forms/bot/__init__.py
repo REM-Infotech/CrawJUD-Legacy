@@ -152,7 +152,7 @@ class BotForm(QuartForm):
     submit = SubmitField("Iniciar Execução")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         *args: AnyType,
         **kwargs: Type[AnyType],
@@ -208,7 +208,7 @@ class SearchExec(QuartForm):
     submit = SubmitField("Buscar")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,
@@ -242,7 +242,7 @@ class AddBot(QuartForm):
     submit = SubmitField("Adicionar Robô")
 
     @classmethod
-    async def create_form2(
+    async def setup_form(
         cls: Type[T],
         formdata: AnyType = ...,
         obj: AnyType = None,

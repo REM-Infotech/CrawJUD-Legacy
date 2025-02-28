@@ -107,7 +107,7 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
 
         states, clients, credts, form_config = get_form_data(db, system, typebot, bot_info)
 
-        form = await BotForm.create_form2(
+        form = await BotForm.setup_form(
             dynamic_fields=form_config,
             state=states,
             creds=credts,

@@ -66,7 +66,7 @@ async def cadastro_user() -> Response:
             )
 
         title = "Cadastro Usuário"
-        form: UserForm = await UserForm.create_form2()
+        form: UserForm = await UserForm.setup_form()
         page = "FormUsr.html"
 
         user = Users.query.filter(Users.login == session["login"]).first()
@@ -81,9 +81,9 @@ async def cadastro_user() -> Response:
             for lcs in licenses_result:
                 licenses.append((str(lcs.license_token), str(lcs.name_client)))
 
-            form = await UserForm.create_form2(licenses_add=licenses_result)
+            form = await UserForm.setup_form(licenses_add=licenses_result)
 
-        if form.validate_on_submit():
+        if await form.validate_on_submit():
             user = Users(
                 login=form.login.data,
                 nome_usuario=form.nome_usuario.data,
@@ -164,7 +164,7 @@ async def edit_usuario(id_: int) -> Response:
 
         user = db.session.query(Users).filter(Users.id == id_).first()
 
-        form = UserFormEdit(**user.dict_query)
+        form = UserFormEdit.setup_form(**user.dict_query)
         page = "FormUsr.html"
 
         chksupersu = db.session.query(SuperUser).join(Users).filter(Users.login == session["login"]).first()
@@ -172,12 +172,12 @@ async def edit_usuario(id_: int) -> Response:
         if chksupersu:
             licenses_result = db.session.query(LicensesUsers).all()
 
-            form = UserFormEdit(
+            form = UserFormEdit.setup_form(
                 licenses_add=licenses_result,
                 **user.dict_query,
             )
 
-        if form.validate_on_submit():
+        if await form.validate_on_submit():
             data: Dict[str, str | bool] = form.data
 
             [

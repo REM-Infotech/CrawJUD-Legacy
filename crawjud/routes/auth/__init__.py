@@ -46,7 +46,7 @@ async def login() -> Response:
         Response: HTTP response redirecting on success or rendering the login template.
 
     """
-    form = await LoginForm.create_form2()
+    form = await LoginForm.setup_form()
 
     if await form.validate_on_submit():
         usr = Users.query.filter(Users.login == form.login.data).first()
