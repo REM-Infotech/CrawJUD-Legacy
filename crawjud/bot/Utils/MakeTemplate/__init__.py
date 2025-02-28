@@ -7,7 +7,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill
 
 from crawjud.bot.core import CrawJUD
-from .appends import Listas
+from crawjud.bot.Utils.MakeTemplate.appends import Listas
 
 # from typing import list
 

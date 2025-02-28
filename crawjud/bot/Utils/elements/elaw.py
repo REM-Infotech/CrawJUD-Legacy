@@ -3,7 +3,7 @@
 This module provides selectors for automating ELAW operations.
 """
 
-from .properties import Configuracao
+from crawjud.bot.Utils.elements.properties import Configuracao
 
 
 class ELAW_AME(Configuracao):  # noqa: N801

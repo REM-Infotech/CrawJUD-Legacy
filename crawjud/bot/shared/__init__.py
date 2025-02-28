@@ -27,14 +27,14 @@ from crawjud.logs import log_cfg
 from crawjud.types import SubDict, TypeValues
 
 if TYPE_CHECKING:
-    from ..Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
-    from ..Utils import ElementsBot as ElementsBot_
-    from ..Utils import Interact as _Interact_
-    from ..Utils import MakeXlsx as _MakeXlsx_
-    from ..Utils import OtherUtils as _OtherUtils_
-    from ..Utils import PrintBot as _PrintBot_
-    from ..Utils import SearchBot as _SearchBot_
-    from ..Utils import SendMessage as _SendMessage_
+    from crawjud.bot.Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
+    from crawjud.bot.Utils import ElementsBot as ElementsBot_
+    from crawjud.bot.Utils import Interact as _Interact_
+    from crawjud.bot.Utils import MakeXlsx as _MakeXlsx_
+    from crawjud.bot.Utils import OtherUtils as _OtherUtils_
+    from crawjud.bot.Utils import PrintBot as _PrintBot_
+    from crawjud.bot.Utils import SearchBot as _SearchBot_
+    from crawjud.bot.Utils import SendMessage as _SendMessage_
 
 
 load_dotenv()
@@ -182,15 +182,15 @@ class PropertiesCrawJUD:
             Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
 
         """
-        from ..Utils import AuthBot as _AuthBot_
-        from ..Utils import DriverBot as _DriverBot_
-        from ..Utils import ElementsBot as _ElementsBot_
-        from ..Utils import Interact as _Interact_
-        from ..Utils import MakeXlsx as _MakeXlsx_
-        from ..Utils import OtherUtils as _OtherUtils_
-        from ..Utils import PrintBot as _PrintBot_
-        from ..Utils import SearchBot as _SearchBot_
-        from ..Utils import SendMessage as _SendMessage_
+        from crawjud.bot.Utils import AuthBot as _AuthBot_
+        from crawjud.bot.Utils import DriverBot as _DriverBot_
+        from crawjud.bot.Utils import ElementsBot as _ElementsBot_
+        from crawjud.bot.Utils import Interact as _Interact_
+        from crawjud.bot.Utils import MakeXlsx as _MakeXlsx_
+        from crawjud.bot.Utils import OtherUtils as _OtherUtils_
+        from crawjud.bot.Utils import PrintBot as _PrintBot_
+        from crawjud.bot.Utils import SearchBot as _SearchBot_
+        from crawjud.bot.Utils import SendMessage as _SendMessage_
 
         PropertiesCrawJUD.OtherUtils_ = _OtherUtils_()
         PropertiesCrawJUD.SearchBot_ = _SearchBot_()
@@ -217,7 +217,7 @@ class PropertiesCrawJUD:
         """
         print_bot = getattr(PropertiesCrawJUD, "PrintBot_", None)
         if print_bot is None:
-            from ..Utils import PrintBot as _PrintBot_
+            from crawjud.bot.Utils import PrintBot as _PrintBot_
 
             self.print_bot = _PrintBot_()
             PropertiesCrawJUD.PrintBot_ = self.print_bot
@@ -622,7 +622,7 @@ class PropertiesCrawJUD:
     @property
     def headgpt(self) -> LiteralString:
         """Return the head_gpt value."""
-        from .head_gpt import head_gpt
+        from crawjud.bot.shared.head_gpt import head_gpt
 
         return head_gpt()
 

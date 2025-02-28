@@ -15,7 +15,7 @@ from pathlib import Path
 import requests
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from ...core import (
+from crawjud.bot.core import (
     BarColumn,
     Chrome,
     CrawJUD,
@@ -37,7 +37,7 @@ from ...core import (
 if __name__ == "__main__":
     from getchrome_version import another_chrome_ver, chrome_ver
 else:
-    from .getchrome_version import another_chrome_ver, chrome_ver  # noqa: F401
+    from crawjud.bot.Utils.Driver.getchrome_version import another_chrome_ver, chrome_ver  # noqa: F401
 
 
 class DriverBot(CrawJUD):

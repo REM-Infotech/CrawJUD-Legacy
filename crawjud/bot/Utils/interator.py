@@ -17,7 +17,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bot.common.exceptions import NotFoundError
 
-from ..core import CrawJUD
+from crawjud.bot.core import CrawJUD
 
 
 class Interact(CrawJUD):

@@ -3,7 +3,7 @@
 This module provides selectors for the PROJUDI_AM system.
 """
 
-from .properties import Configuracao
+from crawjud.bot.Utils.elements.properties import Configuracao
 
 
 class PROJUDI_AM(Configuracao):  # noqa: N801

@@ -3,7 +3,7 @@
 This module configures selectors for automating ESAJ operations.
 """
 
-from .properties import Configuracao
+from crawjud.bot.Utils.elements.properties import Configuracao
 
 
 class ESAJ_AM(Configuracao):  # noqa: N801
