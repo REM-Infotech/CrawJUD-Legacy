@@ -209,13 +209,14 @@ def perform_submited_form(
         if field_name == "confirm_fields" or field_name == "periodic_task":
             continue
 
-        if attributes_field.type == "FileField":
-            files.update({data_field.filename: data_field})
+        if attributes_field.type == "FileField" and field_name == "xlsx":
+            data.update({"xlsx": secure_filename(data_field.filename)})
+            files.update({secure_filename(data_field.filename): data_field})
             continue
 
         elif attributes_field.type == "MultipleFileField":
             for file_ in data_field:
-                files.update({file_.filename: file_})
+                files.update({secure_filename(file_.filename): file_})
             continue
 
         elif isinstance(attributes_field, FieldList):
@@ -264,6 +265,8 @@ async def setup_task_worker(
         files: dict[str, FileStorage] = {}
         periodic_bot = False
         cls = TaskExec
+
+        data.update({"pid": pid})
 
         data, files, periodic_bot = perform_submited_form(
             form=form,

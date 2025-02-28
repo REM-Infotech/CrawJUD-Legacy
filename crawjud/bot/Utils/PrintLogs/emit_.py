@@ -60,11 +60,10 @@ class SendMessage(CrawJUD):
             event (str, optional): The event to emit. Defaults to "log_message".
 
         """
-        url = getenv("HOSTNAME")
+        url = getenv("URL_WEB")
         err = None
 
         try:
-            url = f"https://{url}"
             # Verifica se já está conectado antes de tentar se conectar
             if self.connected is False:
                 self.connect_socket(url)

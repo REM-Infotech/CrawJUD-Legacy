@@ -16,7 +16,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bot.common.exceptions import NotFoundError
-
 from crawjud.bot.core import CrawJUD
 
 

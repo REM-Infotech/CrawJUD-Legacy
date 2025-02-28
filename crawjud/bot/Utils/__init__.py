@@ -24,7 +24,6 @@ from werkzeug.utils import secure_filename
 
 from crawjud.bot.common import ExecutionError
 from crawjud.bot.core import CrawJUD, pd
-from crawjud.bot.shared import Numbers
 from crawjud.bot.Utils.auth import AuthBot
 from crawjud.bot.Utils.Driver import DriverBot
 from crawjud.bot.Utils.elements import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM, ElementsBot
@@ -32,6 +31,7 @@ from crawjud.bot.Utils.interator import Interact
 from crawjud.bot.Utils.MakeTemplate import MakeXlsx
 from crawjud.bot.Utils.PrintLogs import PrintBot, SendMessage
 from crawjud.bot.Utils.search import SearchBot
+from crawjud.types import Numbers
 
 __all__ = [
     "ELAW_AME",
