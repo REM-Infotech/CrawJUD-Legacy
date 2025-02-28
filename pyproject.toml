@@ -85,6 +85,10 @@ pytest-mock = "^3.14.0"
 yamllint = "^1.35.1"
 pytest-asyncio = "^0.25.3"
 
+[tool.poetry.scripts]
+crawjud = "crawjud.core:main_server"
+
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
