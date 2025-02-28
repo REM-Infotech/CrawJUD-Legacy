@@ -2,11 +2,15 @@
 
 import asyncio
 import logging
-from os import getcwd, getenv
+from os import environ, getcwd, getenv
 from pathlib import Path
+from platform import node
 from threading import Thread
 
+import webview
+from billiard.context import Process
 from celery import Celery
+from celery.apps.beat import Beat
 from celery.apps.worker import Worker
 from clear import clear
 from quart import Quart
@@ -20,6 +24,65 @@ from crawjud.core.configurator import get_hostname
 from crawjud.core.watch import monitor_log
 from crawjud.logs import log_cfg
 from crawjud.types import app_name
+from crawjud.utils.gen_seed import worker_name_generator
+
+
+def start_beat() -> None:
+    """Start the Celery beat scheduler."""
+    from crawjud.core import create_app
+
+    environ.update({"APPLICATION_APP": "beat"})
+
+    async def beat_start() -> None:
+        async with app.app_context():
+            beat = Beat(
+                app=celery,
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+                quiet=True,
+            )
+            beat.run()
+
+    app, _, celery = asyncio.run(create_app())
+    asyncio.run(beat_start())
+
+
+def start_worker() -> None:
+    """Start the Celery beat scheduler."""
+    from crawjud.core import create_app
+
+    app, _, celery = asyncio.run(create_app())
+    environ.update({"APPLICATION_APP": "worker"})
+
+    async def start_worker() -> None:
+        async with app.app_context():
+            worker_name = f"{worker_name_generator()}@{node()}"
+            worker = Worker(
+                app=celery,
+                hostname=worker_name,
+                task_events=True,
+                loglevel="INFO",
+                concurrency=50.0,
+                pool="threads",
+            )
+            worker = worker
+
+            try:
+                worker.start()
+
+            except Exception as e:
+                if isinstance(e, KeyboardInterrupt):
+                    worker.stop()
+
+                else:
+                    tqdm.write(
+                        colored(
+                            f"{colored('[ERROR]', 'red', attrs=['bold', 'blink'])} {e}",
+                            "red",
+                            attrs=["bold"],
+                        )
+                    )
+
+    asyncio.run(start_worker())
 
 
 class RunnerServices:
@@ -117,16 +180,32 @@ class RunnerServices:
         This method creates threads for the worker, Quart server, and Celery beat.
         It listens for a keyboard interrupt and then signals all threads to stop.
         """
-        store_quart_thread = StoreService(
-            process_name="Quart",
-            process_status="Running",
-            process_object=Thread(target=self.start_quart),
-        )
         running_servers.update({
-            "Quart": store_quart_thread,
+            "Quart": StoreService(
+                process_name="Quart",
+                process_status="Running",
+                process_object=Thread(target=self.start_quart),
+            ),
+            "Beat": StoreService(
+                process_name="Beat",
+                process_object=Process(target=start_beat),
+            ),
+            "Worker": StoreService(
+                process_name="Worker",
+                process_object=Process(target=start_worker),
+            ),
         })
 
-        store_quart_thread.start()
+        for _, store in running_servers.items():
+            store.start()
+
+        def custom_logic(window) -> None:
+            """"""
+            pass
+
+        url_srv = getenv("URL_WEB")
+        window = webview.create_window("CrawJUD", url_srv)
+        webview.start(custom_logic, window)
 
         tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
 

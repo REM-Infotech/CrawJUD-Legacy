@@ -40,7 +40,11 @@ class StoreService:
         self.process_id = process_id
         self.process_object = process_object
         if not process_id:
-            self.process_id = process_object.ident
+            if isinstance(process_object, Process):
+                self.process_id = process_object.pid
+
+            elif isinstance(process_object, Thread):
+                self.process_id = process_object.ident
 
     def start(self) -> None:
         """Start the process."""
