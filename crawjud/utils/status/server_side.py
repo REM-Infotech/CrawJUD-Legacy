@@ -195,34 +195,3 @@ async def format_message_log(
         data = data
 
     return data
-
-
-# def StatusStop(pid: str):
-
-#     from crawjud.api import db
-#     from crawjud.api.models import Executions
-
-#     execut = db.session.query(Executions).filter(Executions.pid == pid).first()
-#     if not execut:
-#         execut = False
-
-#     elif execut:
-#         execut = str(execut.status) != "Em Execução"
-
-#     return execut
-
-
-# def stopped_bot(pid: str):
-
-#     from crawjud.api.models import CacheLogs
-
-#     checks = []
-#     log_pid = CacheLogs.query.filter(CacheLogs.pid == pid).first()
-#     check1 = log_pid is not None
-#     checks.append(check1)
-#     if check1:
-#         check2 = str(log_pid.status) == "Finalizado"
-#         checks.append(check2)
-
-#     allchecks = all(checks)
-#     return allchecks

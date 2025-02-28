@@ -111,36 +111,6 @@ class Executions(db.Model):
     license_usr = db.relationship("LicensesUsers", backref=db.backref("executions", lazy=True))
 
 
-class CacheLogs(db.Model):
-    """Stores cache logs for bot executions.
-
-    Attributes:
-        id (int): Primary key for the cache log.
-        pid (str): Process identifier for the related execution.
-        pos (int): Current position or step in execution.
-        total (int): Total items to process.
-        success (int): Successful items processed.
-        errors (int): Errors encountered.
-        remaining (int): Remaining items to be processed.
-        status (str): Execution status or stage.
-        last_log (str): Last log entry for the process.
-
-    """
-
-    __tablename__ = "cachelogs"
-    id = db.Column(db.Integer, primary_key=True)
-    pid = db.Column(db.String(length=12), nullable=False)
-    pos = db.Column(db.Integer, nullable=False)
-
-    total = db.Column(db.Integer, nullable=False)
-    success = db.Column(db.Integer, nullable=False)
-    errors = db.Column(db.Integer, nullable=False)
-    remaining = db.Column(db.Integer, nullable=False)
-    status = db.Column(db.String(length=45), nullable=False)
-
-    last_log = db.Column(db.Text, nullable=False)
-
-
 class ThreadBots(db.Model):
     """Manages thread references linked to bot processes.
 

@@ -14,10 +14,9 @@ from dotenv_vault import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 
-from .bots import BotsCrawJUD, CacheLogs, Credentials, Executions, ThreadBots
+from .bots import BotsCrawJUD, Credentials, Executions, ThreadBots
 from .schedule import CrontabModel, ScheduleModel
 from .secondaries import admins, execution_bots
-from .srv import Servers
 from .users import LicensesUsers, SuperUser, Users
 
 load_dotenv()
@@ -30,11 +29,9 @@ __all__ = [
     BotsCrawJUD,
     Credentials,
     Executions,
-    Servers,
     ScheduleModel,
     CrontabModel,
     ThreadBots,
-    CacheLogs,
 ]
 
 
