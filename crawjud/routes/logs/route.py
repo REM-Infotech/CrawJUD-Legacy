@@ -5,7 +5,7 @@ This module defines endpoints for managing logs and controlling bot executions.
 
 import asyncio
 import json
-from os import environ
+from os import environ, getenv
 
 import httpx as requests
 from flask_sqlalchemy import SQLAlchemy
@@ -264,10 +264,8 @@ async def url_server(pid: str) -> Response:
         Response: A Quart JSON response containing the server URL.
 
     """
-    db: SQLAlchemy = app.extensions["sqlalchemy"]
-    execution = db.session.query(Executions).filter(Executions.pid == pid).first()
     return await make_response(
         jsonify(
-            {"url_server": execution.url_socket},
+            {"url_server": getenv("URL_WEB")},
         ),
     )

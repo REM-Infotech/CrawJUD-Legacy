@@ -91,7 +91,7 @@ async def format_message_log(
         chk_infos = [data.get("system"), data.get("typebot")]
         if all(chk_infos) or data_message.split("> ")[-1].islower():
             async with app.app_context():
-                await TaskExec.task_exec(data_bot=data, exec_type="stop", app=app)
+                await TaskExec.task_exec(data=data, exec_type="stop", app=app)
 
         # Chave única para o processo no Redis
         redis_key = f"process:{data_pid}:pos:{data_pos}"

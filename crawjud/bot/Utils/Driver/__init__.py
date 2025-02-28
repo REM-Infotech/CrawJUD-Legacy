@@ -335,8 +335,7 @@ class SetupDriver:
             if not root_path.exists():
                 root_path.mkdir(exist_ok=True, parents=True)
 
-            url = self.get_url()
-            pool.submit(self.copy_url, task_id, url, self.file_path)
+            pool.submit(self.copy_url, task_id, self.file_path)
 
         elif root_path.exists():
             if self.file_path.exists():
@@ -390,7 +389,7 @@ class SetupDriver:
 
         return url_driver
 
-    def copy_url(self, task_id: TaskID, url: str, path: Path) -> None:
+    def copy_url(self, task_id: TaskID, path: Path) -> None:
         """
         Download, extract, and move WebDriver from URL zip file to specified path ready now.
 
@@ -401,7 +400,7 @@ class SetupDriver:
 
         """
         zip_name = path.with_name(f"{path.name}.zip")
-        response = requests.get(f"https://{url}", stream=True, timeout=60)
+        response = requests.get(f"https://{self.url_driver}", stream=True, timeout=60)
         # input("teste")
         # This will break if the response doesn't contain content length
         self.progress.update(task_id, total=int(response.headers["Content-length"]))

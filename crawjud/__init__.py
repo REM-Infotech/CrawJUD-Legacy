@@ -101,8 +101,8 @@ class MasterApp(HeadCrawjudManager):
         rich.print("[bold green]Starting application object...[/bold green]")
         self.app, self.asgi, self.celery = asyncio.run(create_app())
 
-        process_beat = Process(target=start_beat, daemon=True)
-        process_worker = Process(target=start_worker, daemon=True)
+        process_beat = Process(target=start_beat)
+        process_worker = Process(target=start_worker)
 
         running_servers["Worker"] = StoreService(
             process_name="Worker",

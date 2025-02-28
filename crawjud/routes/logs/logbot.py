@@ -90,7 +90,7 @@ async def stop_bot(sid: str, data: dict[str, str]) -> None:
     """
     pid = data["pid"]
     # Trigger bot stop execution.
-    await TaskExec.task_exec(data_bot=data, exec_type="stop", app=app)
+    await TaskExec.task_exec(data=data, exec_type="stop", app=app)
     # Notify the client that the bot was stopped.
     await io.send({"message": "Bot stopped!"}, to=sid, namespace="/log", room=pid)
 
