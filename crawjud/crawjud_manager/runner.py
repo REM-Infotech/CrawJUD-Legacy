@@ -2,9 +2,8 @@
 
 import asyncio
 import logging
-from os import environ, getcwd, getenv
+from os import getcwd, getenv
 from pathlib import Path
-from platform import node
 from threading import Thread
 
 from celery import Celery
@@ -21,7 +20,6 @@ from crawjud.core.configurator import get_hostname
 from crawjud.core.watch import monitor_log
 from crawjud.logs import log_cfg
 from crawjud.types import app_name
-from crawjud.utils.gen_seed import worker_name_generator
 
 
 class RunnerServices:
@@ -83,45 +81,6 @@ class RunnerServices:
         """Set the worker process."""
         self.worker_ = value
 
-    def start_worker(
-        self,
-    ) -> None:
-        """Run the Celery worker in a thread controlled by a stop event.
-
-        Args:
-            stop_event (Event): Event to signal the thread to stop.
-
-        """
-        environ.update({"APPLICATION_APP": "worker"})
-        worker_name = f"{worker_name_generator}@{node()}"
-        worker = Worker(
-            app=self.celery,
-            hostname=worker_name,
-            task_events=True,
-            loglevel="INFO",
-            concurrency=50.0,
-            pool="threads",
-        )
-        self.worker = worker
-
-        try:
-            worker_thread = Thread(target=worker.start)
-            worker_thread.daemon = True
-            worker_thread.start()
-
-        except Exception as e:
-            if isinstance(e, KeyboardInterrupt):
-                worker.stop()
-
-            else:
-                tqdm.write(
-                    colored(
-                        f"{colored('[ERROR]', 'red', attrs=['bold', 'blink'])} {e}",
-                        "red",
-                        attrs=["bold"],
-                    )
-                )
-
     def start_quart(
         self,
     ) -> None:
@@ -164,18 +123,18 @@ class RunnerServices:
             process_object=Thread(target=self.start_quart),
         )
 
-        # store_thread_worker = StoreService(
-        #     process_name="Worker",
-        #     process_status="Running",
-        #     process_object=Thread(target=self.start_worker),
-        # )
+        store_thread_worker = StoreService(
+            process_name="Worker",
+            process_status="Running",
+            process_object=Thread(target=self.start_worker),
+        )
 
         running_servers.update({
             "Quart": store_quart_thread,
-            # "Worker": store_thread_worker,
+            "Worker": store_thread_worker,
         })
 
-        # store_thread_worker.start()
+        store_thread_worker.start()
         store_quart_thread.start()
 
         tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))

@@ -3,6 +3,7 @@
 import asyncio
 from os import environ
 from pathlib import Path
+from platform import node
 from threading import Thread
 from time import sleep
 from typing import Callable, Dict
@@ -11,6 +12,7 @@ import inquirer
 import rich
 from billiard.context import Process
 from celery.apps.beat import Beat
+from celery.apps.worker import Worker
 from clear import clear
 from socketio import AsyncServer
 from termcolor import colored
@@ -20,6 +22,7 @@ from crawjud.config import StoreService, running_servers
 from crawjud.core import create_app
 from crawjud.crawjud_manager import HeadCrawjudManager
 from crawjud.types import app_name
+from crawjud.utils.gen_seed import worker_name_generator
 
 io = AsyncServer(
     async_mode="asgi",
@@ -53,19 +56,41 @@ def start_worker() -> None:
     """Start the Celery beat scheduler."""
     from crawjud.core import create_app
 
-    environ.update({"APPLICATION_APP": "beat"})
-
-    async def beat_start() -> None:
-        async with app.app_context():
-            beat = Beat(
-                app=celery,
-                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
-                quiet=True,
-            )
-            beat.run()
-
     app, _, celery = asyncio.run(create_app())
-    asyncio.run(beat_start())
+    environ.update({"APPLICATION_APP": "worker"})
+
+    async def start_worker() -> None:
+        async with app.app_context():
+            worker_name = f"{worker_name_generator()}@{node()}"
+            worker = Worker(
+                app=celery,
+                hostname=worker_name,
+                task_events=True,
+                loglevel="INFO",
+                concurrency=50.0,
+                pool="threads",
+            )
+            worker = worker
+
+            try:
+                worker_thread = Thread(target=worker.start)
+                worker_thread.daemon = True
+                worker_thread.start()
+
+            except Exception as e:
+                if isinstance(e, KeyboardInterrupt):
+                    worker.stop()
+
+                else:
+                    tqdm.write(
+                        colored(
+                            f"{colored('[ERROR]', 'red', attrs=['bold', 'blink'])} {e}",
+                            "red",
+                            attrs=["bold"],
+                        )
+                    )
+
+    asyncio.run(start_worker())
 
 
 class MasterApp(HeadCrawjudManager):
