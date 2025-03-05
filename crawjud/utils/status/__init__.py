@@ -174,8 +174,13 @@ class TaskExec:
                 rows = ws.max_row
 
         elif typebot == "pauta":
-            data_inicio_formated = datetime.strptime(data.get("data_inicio"), "%Y-%m-%d")
-            data_fim_formated = datetime.strptime(data.get("data_fim"), "%Y-%m-%d")
+            data_inicio_formated = data.get("data_inicio")
+            if not isinstance(data_inicio_formated, datetime.date):
+                data_inicio_formated = datetime.strptime(data_inicio_formated, "%Y-%m-%d")
+
+            data_fim_formated = data.get("data_fim")
+            if not isinstance(data_fim_formated, datetime.date):
+                data_fim_formated = datetime.strptime(data_fim_formated, "%Y-%m-%d")
 
             diff = data_fim_formated - data_inicio_formated
             rows = diff.days + 2
