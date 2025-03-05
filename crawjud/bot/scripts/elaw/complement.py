@@ -94,6 +94,7 @@ class Complement(CrawJUD):
 
         """
         super().__init__()
+        self.module_bot = __name__
 
         super().setup(*args, **kwargs)
         super().auth_bot()

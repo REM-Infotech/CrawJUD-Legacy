@@ -77,6 +77,7 @@ class PropertiesCrawJUD:
     systembot_: str = None
     message_error_: str = None
     state_or_client_: str = None
+    _module_bot_: str = None
     type_log_: str = "info"
     graphicMode_: str = "doughnut"  # noqa: N815
     name_colunas_: list[str] = None
@@ -125,7 +126,7 @@ class PropertiesCrawJUD:
         if getenv("DEBUG", "False").lower() == "True":
             log_level = logging.DEBUG
 
-        logger_name = self.pid
+        logger_name = self.module_bot if self.module_bot else __name__
         cfg, name = log_cfg(
             str(log_file),
             log_level,
@@ -222,6 +223,22 @@ class PropertiesCrawJUD:
             self.print_bot = _PrintBot_()
             PropertiesCrawJUD.PrintBot_ = self.print_bot
         self.print_bot.print_msg(status)
+
+    @property
+    def module_bot(self) -> str:
+        """Return the module bot name."""
+        return PropertiesCrawJUD._module_bot_
+
+    @module_bot.setter
+    def module_bot(self, module_bot: str) -> None:
+        """
+        Set the module bot name.
+
+        Args:
+            module_bot (str): The new module bot name.
+
+        """
+        PropertiesCrawJUD._module_bot_ = module_bot
 
     @property
     def prompt(self) -> str:
