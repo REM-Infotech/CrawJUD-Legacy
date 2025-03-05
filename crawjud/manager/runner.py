@@ -7,7 +7,6 @@ from pathlib import Path
 from platform import node
 from threading import Thread
 
-import webview
 from billiard.context import Process
 from celery import Celery
 from celery.apps.beat import Beat
@@ -198,14 +197,6 @@ class RunnerServices:
 
         for _, store in running_servers.items():
             store.start()
-
-        def custom_logic(window) -> None:
-            """"""
-            pass
-
-        url_srv = getenv("URL_WEB")
-        window = webview.create_window("CrawJUD", url_srv)
-        webview.start(custom_logic, window)
 
         tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
 
