@@ -6,8 +6,10 @@ This module defines endpoints for listing, creating, editing, and deleting crede
 import os
 import pathlib
 from collections import Counter
+from typing import Any, Callable, Coroutine
 
 import aiofiles
+from flask import abort
 from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
@@ -74,106 +76,113 @@ async def cadastro() -> Response:
         Response: A Quart response after processing the credentials form.
 
     """
-    if not session.get("license_token"):
-        await flash("Sessão expirada. Faça login novamente.", "error")
-        return await make_response(
-            redirect(
-                url_for(
-                    "auth.login",
-                ),
-            ),
-        )
-
-    page = "FormCred.html"
-
-    systems = [bot.system for bot in BotsCrawJUD.query.all()]
-    count_system = Counter(systems).keys()
-
-    system = [(syst, syst) for syst in count_system]
-
-    form = await CredentialsForm.setup_form(system=system)
-
-    func = "Cadastro"
-    title = "Credenciais"
-
-    action_url = url_for("creds.cadastro")
-
-    if await form.validate_on_submit():
-        if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
-            await flash("Existem credenciais com este nome já cadastrada!", "error")
+    try:
+        if not session.get("license_token"):
+            await flash("Sessão expirada. Faça login novamente.", "error")
             return await make_response(
                 redirect(
                     url_for(
-                        "creds.cadastro",
+                        "auth.login",
                     ),
                 ),
             )
 
-        def pw(form: CredentialsForm) -> None:
-            passwd = Credentials(
-                nome_credencial=form.nome_cred.data,
-                system=form.system.data,
-                login_method=form.auth_method.data,
-                login=form.login.data,
-                password=form.password.data,
+        page = "FormCred.html"
+
+        systems = [bot.system for bot in BotsCrawJUD.query.all()]
+        count_system = Counter(systems).keys()
+
+        system = [(syst, syst) for syst in count_system]
+
+        form = await CredentialsForm.setup_form(system=system)
+
+        func = "Cadastro"
+        title = "Credenciais"
+
+        action_url = url_for("creds.cadastro")
+
+        if await form.validate_on_submit():
+            if Credentials.query.filter(Credentials.nome_credencial == form.nome_cred.data).first():
+                await flash("Existem credenciais com este nome já cadastrada!", "error")
+                return await make_response(
+                    redirect(
+                        url_for(
+                            "creds.cadastro",
+                        ),
+                    ),
+                )
+
+            async def pw(form: CredentialsForm) -> None:
+                passwd = Credentials(
+                    nome_credencial=form.nome_cred.data,
+                    system=form.system.data,
+                    login_method=form.auth_method.data,
+                    login=form.login.data,
+                    password=form.password.data,
+                )
+                licenseusr = LicensesUsers.query.filter(LicensesUsers.license_token == session["license_token"]).first()
+
+                passwd.license_usr = licenseusr
+                db.session.add(passwd)
+                db.session.commit()
+
+            async def cert(form: CredentialsForm) -> None:
+                temporarypath = current_app.config["TEMP_DIR"]
+                filecert = form.cert.data
+
+                cer_path = os.path.join(temporarypath, secure_filename(filecert.filename))
+                await filecert.save(cer_path)
+
+                async with aiofiles.open(cer_path, "rb") as f:
+                    certficate_blob = f.read()
+
+                passwd = Credentials(
+                    nome_credencial=form.nome_cred.data,
+                    system=form.system.data,
+                    login_method=form.auth_method.data,
+                    login=form.doc_cert.data,
+                    key=form.key.data,
+                    certficate=filecert.filename,
+                    certficate_blob=certficate_blob,
+                )
+                licenseusr = LicensesUsers.query.filter(LicensesUsers.license_token == session["license_token"]).first()
+
+                passwd.license_usr = licenseusr
+
+                db.session.add(passwd)
+                db.session.commit()
+
+            local_defs: list[tuple[str, Callable[[CredentialsForm], Coroutine[Any, Any, None]]]] = list(
+                locals().items()
             )
-            licenseusr = LicensesUsers.query.filter(LicensesUsers.license_token == session["license_token"]).first()
+            for name, func in local_defs:
+                if name == form.auth_method.data:
+                    await func(form)
+                    break
 
-            passwd.license_usr = licenseusr
-            db.session.add(passwd)
-            db.session.commit()
+            try:
+                await flash("Credencial salva com sucesso!", "success")
+            except Exception as e:
+                app.logger.exception(str(e))
 
-        async def cert(form: CredentialsForm) -> None:
-            temporarypath = current_app.config["TEMP_DIR"]
-            filecert = form.cert.data
+            _url_for = url_for("creds.credentials")
+            _redirect = redirect(_url_for)
+            _response = await make_response(_redirect)
+            return _response
 
-            cer_path = os.path.join(temporarypath, secure_filename(filecert.filename))
-            await filecert.save(cer_path)
-
-            async with aiofiles.open(cer_path, "rb") as f:
-                certficate_blob = f.read()
-
-            passwd = Credentials(
-                nome_credencial=form.nome_cred.data,
-                system=form.system.data,
-                login_method=form.auth_method.data,
-                login=form.doc_cert.data,
-                key=form.key.data,
-                certficate=filecert.filename,
-                certficate_blob=certficate_blob,
-            )
-            licenseusr = LicensesUsers.query.filter(LicensesUsers.license_token == session["license_token"]).first()
-
-            passwd.license_usr = licenseusr
-
-            db.session.add(passwd)
-            db.session.commit()
-
-        local_defs = list(locals().items())
-        for name, func in local_defs:
-            if name == form.auth_method.data:
-                await func(form)
-                break
-
-        await flash("Credencial salva com sucesso!", "success")
         return await make_response(
-            redirect(
-                url_for(
-                    "creds.credentials",
-                ),
-            ),
+            await render_template(
+                "index.html",
+                page=page,
+                form=form,
+                title=title,
+                func=func,
+                action_url=action_url,
+            )
         )
-
-    return await make_response(
-        await render_template(
-            "index.html",
-            page=page,
-            form=form,
-            title=title,
-            func=func,
-            action_url=action_url,
-        )
-    )
+    except Exception as e:
+        app.logger.exception(str(e))
+        abort(500)
 
 
 @cred.route("/credentials/editar/<id_>", methods=["GET", "POST"])
