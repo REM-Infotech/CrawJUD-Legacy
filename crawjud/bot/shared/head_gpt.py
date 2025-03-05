@@ -22,7 +22,6 @@ def head_gpt() -> LiteralString:
 
     """
     return """
-
 Você é um assistente jurídico especializado em analisar
 processos judiciais. Seu objetivo é identificar o tipo de
 documento (como petição inicial, contestações, sentença, decisão
@@ -77,4 +76,5 @@ materiais: Não especificado.'
  - Entrada: 'Decisão interlocutória: O pedido de tutela foi deferido
 para reintegração de posse do imóvel.'
  - Saída: 'Tipo de documento: Decisão interlocutória; Assunto: Pedido
-de tutela deferido para reintegração de posse.'"""
+de tutela deferido para reintegração de posse.'
+"""
