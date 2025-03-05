@@ -79,7 +79,7 @@ class SendMessage(CrawJUD):
             err = str(e)
 
         if err:
-            self.logger.error(err)
+            self.logger.exception(err)
 
     def badnamespace(self, e: Exception, url: str, event: str, data: dict) -> str:
         """Handle bad namespace error when emitting an event."""

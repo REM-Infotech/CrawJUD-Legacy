@@ -191,7 +191,7 @@ async def format_message_log(
         )
 
     except Exception as e:
-        app.logger.error("An error occurred: %s", str(e))
+        app.logger.exception("An error occurred: %s", str(e))
         data = data
 
     return data

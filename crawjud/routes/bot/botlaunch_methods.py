@@ -330,10 +330,10 @@ async def setup_task_worker(
                 email_notify=data.get("email_notify"),
             )
         except Exception as e:
-            app.logger.error("Error sending email: %s", str(e))
+            app.logger.exception("Error sending email: %s", str(e))
 
     except Exception as e:
-        app.logger.error("Error starting bot: %s", str(e))
+        app.logger.exception("Error starting bot: %s", str(e))
         is_started = 500
 
     if is_started == 200:

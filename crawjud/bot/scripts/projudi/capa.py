@@ -85,7 +85,7 @@ class Capa(CrawJUD):
                 self.queue()
 
             except Exception as e:
-                self.logger.error(str(e))
+                self.logger.exception(str(e))
                 old_message = None
 
                 if old_message is None:
@@ -122,7 +122,7 @@ class Capa(CrawJUD):
             self.append_success(data, "Informações do processo extraidas com sucesso!")
 
         except Exception as e:
-            self.logger.error(str(e))
+            self.logger.exception(str(e))
             raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:

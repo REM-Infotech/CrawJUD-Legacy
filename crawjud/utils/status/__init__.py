@@ -84,11 +84,11 @@ class TaskExec:
                 try:
                     await cls.send_email(execut, app, "stop", schedule=schedule)
                 except Exception as e:
-                    app.logger.error("Error sending email: %s", str(e))
+                    app.logger.exception("Error sending email: %s", str(e))
 
                 return 200
         except Exception as e:
-            app.logger.error("An error occurred: %s", str(e))
+            app.logger.exception("An error occurred: %s", str(e))
 
         return 500
 
@@ -545,7 +545,7 @@ class TaskExec:
             return exec_info
 
         except Exception as e:
-            app.logger.error("An error occurred: %s", str(e))
+            app.logger.exception("An error occurred: %s", str(e))
             return {"message": "An internal error has occurred!"}, 500
 
 

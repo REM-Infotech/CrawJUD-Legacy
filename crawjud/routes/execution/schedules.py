@@ -64,7 +64,7 @@ async def schedules() -> Response:
         )
 
     except Exception as e:
-        app.logger.error(str(e))
+        app.logger.exception(str(e))
         abort(500)
 
 

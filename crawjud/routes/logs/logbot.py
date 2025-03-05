@@ -146,7 +146,7 @@ async def terminate_bot(
             await io.emit("log_message", result, to=sid, namespace="/log", room=pid)
 
         except Exception as e:
-            app.logger.error("An error occurred: %s", str(e))
+            app.logger.exception("An error occurred: %s", str(e))
             await io.send("Failed to stop bot!", to=sid, namespace="/log", room=pid)
 
 

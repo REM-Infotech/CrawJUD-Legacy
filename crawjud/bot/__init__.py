@@ -413,7 +413,7 @@ class WorkerBot:
                         return f"Process {task_id} stopped!"
 
             except Exception as e:
-                app.logger.error("An error occurred: %s", str(e))
+                app.logger.exception("An error occurred: %s", str(e))
                 process = None
 
             if process is None:
