@@ -384,9 +384,6 @@ class SetupDriver:
 
             url_driver += f"{item}/"
 
-        # with open("url_driver.txt", "w") as f:  # FURB103
-        #     f.write(url_driver)
-
         return url_driver
 
     def copy_url(self, task_id: TaskID, path: Path) -> None:
