@@ -224,6 +224,14 @@ class TaskExec:
             .first()
         )
 
+        exec_ = (
+            db.session.query(Executions)
+            .filter(
+                Executions.pid == data.get("pid"),
+            )
+            .first()
+        )
+
         days_list = data.get("days", ["mon"])
         days: str = ",".join(days_list if len(days_list) > 0 else ["mon"])
         hour_minute = datetime.strptime(data.get("hour_minute", "08:00:00"), "%H:%M:%S")
@@ -242,9 +250,15 @@ class TaskExec:
 
         user = db.session.query(Users).filter(Users.login == user).first()
 
-        new_schedule = ScheduleModel(name=task_name, task=task_schedule, args=args_, kwargs=kwargs_)
+        new_schedule = ScheduleModel(
+            name=task_name,
+            task=task_schedule,
+            args=args_,
+            kwargs=kwargs_,
+        )
         new_schedule.schedule = cron
         new_schedule.license_usr = license_
+        new_schedule.exec = exec_
         new_schedule.user = user
         db.session.add(new_schedule)
         db.session.commit()
@@ -357,6 +371,9 @@ class TaskExec:
         destinatario = execut.get("email")
         username = execut.get("username")
         scheduled = kwargs.get("schedule", "False")
+
+        schedule_email = execut.get("schedule_email", kwargs.get("schedule_email"))
+
         async with app.app_context():
             sendermail = environ["MAIL_DEFAULT_SENDER"]
 
@@ -388,6 +405,8 @@ class TaskExec:
                     username=username,  # username user
                     file_url=await cls.make_permalink(),  # permalink file
                 )
+                if schedule_email:
+                    msg.recipients.append(schedule_email)
                 # file_zip = Path(kwargs.get("file_zip"))
                 # async with aiofiles.open(file_zip, "rb") as f:
                 #     content_type = mimetypes.guess_type(str(file_zip))[0]
@@ -406,7 +425,7 @@ class TaskExec:
                 #     )
 
             if destinatario not in admins:
-                msg.cc = admins
+                msg.cc.extend(admins)
 
             mail.send(msg)
 
@@ -508,6 +527,7 @@ class TaskExec:
                     "username": str(usr.nome_usuario),
                     "email": str(usr.email),
                     "admins": admins,
+                    "email_notify": exec_info.scheduled_execution.email,
                 }
 
                 db.session.commit()

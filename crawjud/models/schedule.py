@@ -47,6 +47,9 @@ class ScheduleModel(db.Model):
     user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("Users", backref=db.backref("scheduled_execution", lazy=True))
 
+    exec_id: int = db.Column(db.Integer, db.ForeignKey("executions.id"))
+    exec = db.relationship("Executions", backref=db.backref("scheduled_execution", lazy=True))
+
     def __repr__(self) -> str:  # pragma: no cover
         """Return the string representation of the scheduled job."""
         return f"<Schedule {self.name}>"

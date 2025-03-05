@@ -301,8 +301,8 @@ async def setup_task_worker(
 
         if periodic_bot:
             await cls.schedule_into_database(
-                db,
-                data,
+                db=db,
+                data=data,
                 system=system,
                 typebot=typebot,
                 path_args=path_args,
@@ -319,7 +319,12 @@ async def setup_task_worker(
             db.session.commit()
 
         try:
-            await cls.send_email(execut, app, "start")
+            await cls.send_email(
+                execut=execut,
+                app=app,
+                type_notify="start",
+                schedule_email=data.get("schedule_email"),
+            )
         except Exception as e:
             app.logger.error("Error sending email: %s", str(e))
 
