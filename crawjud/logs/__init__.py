@@ -50,7 +50,7 @@ def log_cfg(
         "handlers": {
             "file_handler": {
                 "class": "logging.handlers.RotatingFileHandler",
-                "level": "DEBUG",
+                "level": log_level,
                 "formatter": "json",
                 "filename": log_path_file,
                 "maxBytes": max_bytes,
@@ -59,17 +59,17 @@ def log_cfg(
             "redis_handler": {
                 "class": "crawjud.logs.handlers.RedisHandler",
                 "uri": getenv("REDIS_URL", "redis://localhost:6379/0"),
-                "level": "DEBUG",
+                "level": log_level,
                 "formatter": "json",
             },
         },
         "root": {
-            "level": "DEBUG",
+            "level": log_level,
             "handlers": ["redis_handler", "file_handler"],
         },
         "loggers": {
             logger_name: {
-                "level": "DEBUG",
+                "level": log_level,
                 "handlers": ["redis_handler", "file_handler"],
                 "propagate": False,
             },
