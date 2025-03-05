@@ -37,7 +37,7 @@ url_cache = []
 logger = logging.getLogger(__name__)
 
 env = Environment(
-    loader=FileSystemLoader(Path(__file__).parent.resolve().joinpath("mail/templates")),
+    loader=FileSystemLoader(Path(__file__).parent.resolve().joinpath("mail", "templates")),
     autoescape=True,
 )
 
@@ -151,10 +151,20 @@ class TaskExec:
         typebot: str,
         path_pid: Path,
         data: dict[str, str | int | datetime],
-        *args: tuple[str],
-        **kwargs: dict[str, any],
+        *args: str,
+        **kwargs: str,
     ) -> Path:
-        """Convert the bot arguments to a JSON file."""
+        """Convert the bot arguments to a JSON file.
+
+        Args:
+            pid (str): The process identifier of the bot.
+            typebot (str): The type of bot.
+            path_pid (Path): The path to the bot's directory.
+            data (dict[str, str | int | datetime]): The bot arguments.
+            *args (tuple[str]): Variable length argument list.
+            **kwargs (dict[str, str]): Arbitrary keyword arguments.
+
+        """
         rows = 0
         if data.get("xlsx"):
             data.update({"xlsx": str(data.get("xlsx"))})

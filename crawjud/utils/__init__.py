@@ -7,7 +7,6 @@ from .gcs_mgmt import get_file
 from .gen_seed import worker_name_generator
 from .get_location import GeoLoc
 from .make_celery import make_celery
-from .mod_mgmt import reload_module
 from .scheduler import DatabaseScheduler
 from .status import (
     TaskExec,
@@ -29,7 +28,6 @@ __all__ = [
     get_file,
     load_cache,
     format_message_log,
-    reload_module,
     TaskExec,
 ]
 

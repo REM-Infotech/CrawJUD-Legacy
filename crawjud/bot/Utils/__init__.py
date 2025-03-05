@@ -624,8 +624,8 @@ class OtherUtils(CrawJUD):
         installed = CertIsInstall(self.name_cert.split(".pfx")[0])
 
         if not installed:
-            path_cert = os.path.join(self.output_dir_path, self.name_cert)
-            comando = ["certutil", "-importpfx", "-user", "-f", "-p", self.token, "-silent", path_cert]
+            path_cert = Path(self.output_dir_path).joinpath(self.name_cert)
+            comando = ["certutil", "-importpfx", "-user", "-f", "-p", self.token, "-silent", str(path_cert)]
             try:
                 resultado = subprocess.run(  # nosec: B603
                     comando,
