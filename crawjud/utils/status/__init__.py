@@ -70,23 +70,26 @@ class TaskExec:
             int: HTTP status code indicating the outcome.
 
         """
-        async with app.app_context():
-            pid = data.get("pid")
-            if not pid:
-                return 500
-            db: SQLAlchemy = app.extensions["sqlalchemy"]
-            status = data.get("status")
-            schedule = data.get("schedule")
+        try:
+            async with app.app_context():
+                pid = data.get("pid")
+                if not pid:
+                    return 500
+                db: SQLAlchemy = app.extensions["sqlalchemy"]
+                status = data.get("status")
+                schedule = data.get("schedule")
 
-            filename, _ = await cls.make_zip(pid)
-            execut = await cls.send_stop_exec(app, db, pid, status, filename)
+                filename, _ = await cls.make_zip(pid)
+                execut = await cls.send_stop_exec(app, db, pid, status, filename)
 
-            try:
-                await cls.send_email(execut, app, "stop", schedule=schedule)
-            except Exception as e:
-                app.logger.error("Error sending email: %s", str(e))
+                try:
+                    await cls.send_email(execut, app, "stop", schedule=schedule)
+                except Exception as e:
+                    app.logger.error("Error sending email: %s", str(e))
 
-            return 200
+                return 200
+        except Exception as e:
+            app.logger.error("An error occurred: %s", str(e))
 
         return 500
 

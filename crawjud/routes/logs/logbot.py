@@ -23,7 +23,10 @@ io: AsyncServer = app.extensions["socketio"]
 
 
 @io.on("connect", namespace="/log")
-async def connect(sid: str = None, data: dict = None) -> None:
+async def connect(
+    sid: str = None,
+    data: dict = None,
+) -> None:
     """Handle a new client connection to the /log namespace.
 
     Args:
@@ -43,7 +46,11 @@ async def connect(sid: str = None, data: dict = None) -> None:
 
 
 @io.on("disconnect", namespace="/log")
-async def disconnect(sid: str = None, event: any = None, namespace: str = None) -> None:
+async def disconnect(
+    sid: str = None,
+    event: any = None,
+    namespace: str = None,
+) -> None:
     """Handle client disconnection from the /log namespace.
 
     Args:
@@ -59,7 +66,10 @@ async def disconnect(sid: str = None, event: any = None, namespace: str = None) 
 
 
 @io.on("leave", namespace="/log")
-async def leave(sid: str, data: dict) -> None:
+async def leave(
+    sid: str,
+    data: dict,
+) -> None:
     """Handle a client leaving a specific logging room.
 
     Args:
@@ -77,7 +87,10 @@ async def leave(sid: str, data: dict) -> None:
 
 
 @io.on("stop_bot", namespace="/log")
-async def stop_bot(sid: str, data: dict[str, str]) -> None:
+async def stop_bot(
+    sid: str,
+    data: dict[str, str],
+) -> None:
     """Stop a running bot identified by its PID.
 
     Args:
@@ -92,11 +105,19 @@ async def stop_bot(sid: str, data: dict[str, str]) -> None:
     # Trigger bot stop execution.
     await TaskExec.task_exec(data=data, exec_type="stop", app=app)
     # Notify the client that the bot was stopped.
-    await io.send({"message": "Bot stopped!"}, to=sid, namespace="/log", room=pid)
+    await io.send(
+        {"message": "Bot stopped!"},
+        to=sid,
+        namespace="/log",
+        room=pid,
+    )
 
 
 @io.on("terminate_bot", namespace="/log")
-async def terminate_bot(sid: str, data: dict[str, str]) -> None:
+async def terminate_bot(
+    sid: str,
+    data: dict[str, str],
+) -> None:
     """Terminate a running bot identified by its PID.
 
     Args:
@@ -130,7 +151,10 @@ async def terminate_bot(sid: str, data: dict[str, str]) -> None:
 
 
 @io.on("log_message", namespace="/log")
-async def log_message(sid: str, data: dict[str, str] = None) -> None:
+async def log_message(
+    sid: str,
+    data: dict[str, str] = None,
+) -> None:
     """Process and forward incoming log messages from crawjud.bots.
 
     Args:
@@ -159,7 +183,10 @@ async def log_message(sid: str, data: dict[str, str] = None) -> None:
 
 
 @io.on("statusbot", namespace="/log")
-async def statusbot(sid: str, data: dict = None) -> None:
+async def statusbot(
+    sid: str,
+    data: dict = None,
+) -> None:
     """Handle status updates from crawjud.bots.
 
     Args:
@@ -178,7 +205,11 @@ async def statusbot(sid: str, data: dict = None) -> None:
 
 
 @io.on("join", namespace="/log")
-async def join(sid: str = None, data: dict[str, str] = None, namespace: str = None) -> None:
+async def join(
+    sid: str = None,
+    data: dict[str, str] = None,
+    namespace: str = None,
+) -> None:
     """Handle a client joining a logging room.
 
     Args:

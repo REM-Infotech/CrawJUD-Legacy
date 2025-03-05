@@ -241,7 +241,7 @@ async def status(pid: str) -> Response:
                 200,
             )
 
-        asyncio.sleep(1.5)
+        await asyncio.sleep(1.5)
         i += 1
 
     return await make_response(

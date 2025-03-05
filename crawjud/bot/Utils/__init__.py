@@ -591,7 +591,12 @@ class OtherUtils(CrawJUD):
         end_time = time.perf_counter()
         execution_time = end_time - self.start_time
         minutes, seconds = divmod(int(execution_time), 60)
+
         self.prt(status="Finalizado")
+
+        flag_path = Path(self.output_dir_path).joinpath(f"{self.pid}.flag")
+        with flag_path.open("w") as f:
+            f.write(self.pid)
 
         self.type_log = "success"
         self.message = f"Fim da execução, tempo: {minutes} minutos e {seconds} segundos"
