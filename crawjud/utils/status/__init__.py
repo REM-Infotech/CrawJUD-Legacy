@@ -251,6 +251,7 @@ class TaskExec:
         user = db.session.query(Users).filter(Users.login == user).first()
 
         new_schedule = ScheduleModel(
+            email=data.get("email_notify"),
             name=task_name,
             task=task_schedule,
             args=args_,
@@ -372,7 +373,7 @@ class TaskExec:
         username = execut.get("username")
         scheduled = kwargs.get("schedule", "False")
 
-        schedule_email = execut.get("schedule_email", kwargs.get("schedule_email"))
+        schedule_email = execut.get("email_notify", kwargs.get("email_notify"))
 
         async with app.app_context():
             sendermail = environ["MAIL_DEFAULT_SENDER"]
@@ -503,6 +504,7 @@ class TaskExec:
 
             task_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
             exec_info = db.session.query(Executions).filter(Executions.pid == pid).first()
+            email_notify = None
 
             if task_id or exec_info:
                 exec_info.status = status
@@ -520,6 +522,9 @@ class TaskExec:
                     for adm in exec_info.license_usr.admins:
                         admins.append(adm.email)
 
+                if exec_info.scheduled_execution:
+                    email_notify = str(exec_info.scheduled_execution[-1].email)
+
                 exec_data: dict[str, str | list[str]] = {
                     "pid": pid,
                     "display_name": display_name,
@@ -527,7 +532,7 @@ class TaskExec:
                     "username": str(usr.nome_usuario),
                     "email": str(usr.email),
                     "admins": admins,
-                    "email_notify": exec_info.scheduled_execution.email,
+                    "email_notify": email_notify,
                 }
 
                 db.session.commit()

@@ -206,7 +206,11 @@ def perform_submited_form(
             FileStorage,
         ] = attributes_field.data
 
-        if field_name == "confirm_fields" or field_name == "periodic_task":
+        if any([
+            field_name == "confirm_fields",
+            field_name == "periodic_task",
+            field_name == "csrf_token",
+        ]):
             continue
 
         if attributes_field.type == "FileField" and field_name == "xlsx":
@@ -323,7 +327,7 @@ async def setup_task_worker(
                 execut=execut,
                 app=app,
                 type_notify="start",
-                schedule_email=data.get("schedule_email"),
+                email_notify=data.get("email_notify"),
             )
         except Exception as e:
             app.logger.error("Error sending email: %s", str(e))
