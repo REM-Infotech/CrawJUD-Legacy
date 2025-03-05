@@ -7,13 +7,12 @@ from __future__ import annotations
 
 import json
 import logging
-import mimetypes  # noqa: F401
 import traceback
 import unicodedata
 from datetime import datetime
 from os import environ, getcwd
 from pathlib import Path
-from typing import Any, Literal  # noqa: F401
+from typing import Literal
 
 import aiofiles
 import openpyxl
