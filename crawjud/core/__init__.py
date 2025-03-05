@@ -4,8 +4,7 @@ This module creates the Quart app and configures extensions like Celery,
 AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 """
 
-import platform
-from os import environ, getenv
+from os import environ
 from pathlib import Path
 
 import quart_flask_patch  # noqa: F401
@@ -19,16 +18,7 @@ from socketio import ASGIApp
 
 from crawjud.custom import QuartLoginManager as LoginManager
 
-valides = [
-    getenv("IN_PRODUCTION", None) is None,
-    platform.system() == "Windows",
-    getenv("DEBUG", "False").lower() == "true",
-]
-
-asc = any(valides)
-
 load_dotenv()
-
 
 db = SQLAlchemy()
 tlsm = Talisman()
