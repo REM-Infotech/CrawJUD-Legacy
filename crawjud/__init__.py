@@ -1,4 +1,4 @@
-"""Main module for the CrawJUD Package."""
+"""CrawJUD Robots Process Automation Application."""
 
 import asyncio
 from pathlib import Path

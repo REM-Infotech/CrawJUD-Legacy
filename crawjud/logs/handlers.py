@@ -2,6 +2,7 @@
 
 import json
 import logging
+import logging.handlers
 from os import getenv
 
 import redis
@@ -52,6 +53,24 @@ class RedisHandler(logging.Handler):
 # Criar o formato JSON para o log
 class JsonFormatter(logging.Formatter):
     """Json Formatter for logging."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format the log record to JSON."""
+        log_data = {
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "time": self.formatTime(record, "%Y-%m-%d %H:%M:%S"),
+            "module": record.module,
+        }
+        return json.dumps(log_data)
+
+
+class CustomFileHandler(logging.handlers.RotatingFileHandler):
+    """Custom logging handler to send logs to a file."""
+
+    filename = "app.logs"
+    max_bytes = 1024
+    backup_count = 1
 
     def format(self, record: logging.LogRecord) -> str:
         """Format the log record to JSON."""

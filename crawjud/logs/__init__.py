@@ -43,42 +43,37 @@ def log_cfg(
             "default": {
                 "format": "%(levelname)s:%(name)s:%(message)s",
             },
+            "json": {
+                "()": "crawjud.logs.handlers.JsonFormatter",
+            },
         },
         "handlers": {
             "file_handler": {
                 "class": "logging.handlers.RotatingFileHandler",
                 "level": "DEBUG",
-                "formatter": "default",
+                "formatter": "json",
                 "filename": log_path_file,
                 "maxBytes": max_bytes,
                 "backupCount": bkp_ct,
             },
+            "redis_handler": {
+                "class": "crawjud.logs.handlers.RedisHandler",
+                "uri": getenv("REDIS_URL", "redis://localhost:6379/0"),
+                "level": "DEBUG",
+                "formatter": "json",
+            },
         },
         "root": {
             "level": "DEBUG",
-            "handlers": ["file_handler"],
+            "handlers": ["redis_handler", "file_handler"],
         },
         "loggers": {
             logger_name: {
                 "level": "DEBUG",
-                "handlers": ["file_handler"],
+                "handlers": ["redis_handler", "file_handler"],
                 "propagate": False,
             },
         },
     }
-
-    if getenv("SERVER_MANAGEMENT"):
-        config["handlers"]["redis_handler"] = {
-            "class": "crawjud.logs.handlers.RedisHandler",
-            "uri": getenv("REDIS_URL", "redis://localhost:6379/0"),
-            "level": "DEBUG",
-            "formatter": "",
-        }
-        config["formatters"]["json"] = {
-            "()": "crawjud.logs.handlers.JsonFormatter",
-        }
-        config["handlers"]["redis_handler"]["formatter"] = "json"
-        config["root"]["handlers"].append("redis_handler")
-        config["loggers"][logger_name]["handlers"].append("redis_handler")
 
     return config, logger_name
