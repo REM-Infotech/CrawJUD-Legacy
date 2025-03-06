@@ -77,6 +77,7 @@ class TaskExec:
                 db: SQLAlchemy = app.extensions["sqlalchemy"]
                 status = data.get("status")
                 schedule = data.get("schedule")
+                path_flag = kwargs.get("path_flag")
 
                 filename, _ = await cls.make_zip(pid)
                 execut = await cls.send_stop_exec(app, db, pid, status, filename)
@@ -86,6 +87,8 @@ class TaskExec:
                 except Exception as e:
                     app.logger.exception("Error sending email: %s", str(e))
 
+                if path_flag:
+                    Path(path_flag).touch(exist_ok=True)
                 return 200
         except Exception as e:
             app.logger.exception("An error occurred: %s", str(e))

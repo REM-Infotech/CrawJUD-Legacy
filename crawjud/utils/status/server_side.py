@@ -3,6 +3,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from redis_flask import Redis
+from trio import Path
 
 
 async def load_cache(pid: str, app: Quart) -> dict[str, str]:
@@ -91,7 +92,12 @@ async def format_message_log(
         chk_infos = [data.get("system"), data.get("typebot")]
         if all(chk_infos) or data_message.split("> ")[-1].islower():
             async with app.app_context():
-                await TaskExec.task_exec(data=data, exec_type="stop", app=app)
+                cwd = await Path(__file__).cwd()
+                join_path_pid = await cwd.joinpath("crawjud", "bot", "temp", f"{data_pid}").resolve()
+                path_flag = await join_path_pid.joinpath(f"{data_pid}.flag").resolve()
+
+                if not await path_flag.exists():
+                    await TaskExec.task_exec(data=data, exec_type="stop", app=app, path_flag=path_flag)
 
         # Chave única para o processo no Redis
         redis_key = f"process:{data_pid}:pos:{data_pos}"
