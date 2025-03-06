@@ -67,12 +67,9 @@ class Pauta(CrawJUD):
 
         This method continuously processes each court hearing date and handles errors.
         """
-        frame = self.dataFrame()
-        self.max_rows = len(frame)
-
         self.row = 2
         self.current_date = self.data_inicio
-
+        self.graphicMode = "bar"
         while not self.isStoped and self.current_date <= self.data_fim:
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
