@@ -13,12 +13,12 @@ from flask_login.utils import (
 )
 from flask_login.utils import login_url as make_login_url
 from quart import (
+    abort,
     current_app,
     flash,
     redirect,
     request,
     session,
-    url_for,
 )
 
 from crawjud.types import AnyType
@@ -66,8 +66,7 @@ class QuartLoginManager(LoginManager):
             login_view = self.login_view
 
         if not login_view:
-            await flash("Please log in to access this page.", category="info")
-            return redirect(url_for("auth.login"))
+            abort(401)
 
         if self.login_message:
             if self.localize_callback is not None:

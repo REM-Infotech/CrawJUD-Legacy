@@ -409,7 +409,7 @@ class WorkerBot:
                         return "Erro ao inicializar robô"
 
                     if status == "PENDING" and path_flag.exists():
-                        process.revoke(wait=True, signal="SIGTERM")
+                        process.revoke(wait=True, signal="SIGTERM", timeout=5)
                         return f"Process {task_id} stopped!"
 
             except Exception as e:

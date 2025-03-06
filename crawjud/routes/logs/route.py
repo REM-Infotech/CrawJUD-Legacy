@@ -6,6 +6,7 @@ This module defines endpoints for managing logs and controlling bot executions.
 import asyncio
 import json
 from os import environ, getenv
+from pathlib import Path
 
 import httpx as requests
 from flask_sqlalchemy import SQLAlchemy
@@ -26,6 +27,7 @@ from quart import current_app as app
 from crawjud.decorators import login_required
 from crawjud.misc import generate_signed_url
 from crawjud.models import Executions, LicensesUsers, Users
+from crawjud.utils.status import TaskExec
 
 from . import logsbot
 
@@ -69,6 +71,55 @@ async def logs_bot(pid: str) -> Response:
 
     """
     db: SQLAlchemy = app.extensions["sqlalchemy"]
+    async with app.app_context():
+        try:
+            # Load cached data for the room to send previous logs, if any.
+            from crawjud.bot import WorkerBot
+            from crawjud.models import ThreadBots
+
+            process_id = db.session.query(ThreadBots).filter(ThreadBots.pid == pid).first()
+
+            message = "Fim da Execução"
+
+            if process_id:
+                process_id = process_id.processID
+
+                # Check the current status of the bot.
+                message = await WorkerBot.check_status(process_id, pid, app)
+
+                if message != "Process running!":
+                    # Update the data with a final log message.
+                    cwd = Path(__file__).cwd()
+                    join_path_pid = cwd.joinpath("crawjud", "bot", "temp", f"{pid}").resolve()
+                    path_flag = join_path_pid.joinpath(f"{pid}.flag").resolve()
+
+                    json_file = join_path_pid.joinpath(f"{pid}.json")
+                    schedule_ask = None
+
+                    if json_file.exists():
+                        with json_file.open("r") as f:
+                            schedule_ask = json.load(f).get("schedule", "False")
+
+                    if not schedule_ask:
+                        schedule_ask = "False"
+
+                    data = {
+                        "status": "Finalizado",
+                        "schedule": schedule_ask,
+                        "pid": pid,
+                    }
+
+                    await TaskExec.task_exec(
+                        data=data,
+                        exec_type="stop",
+                        app=app,
+                        path_flag=path_flag,
+                    )
+                    await flash("Execução encerrada!", "success")
+
+        except Exception as e:
+            app.logger.exception("An error occurred: %s", str(e))
+
     if not session.get("license_token"):
         await flash("Sessão expirada. Faça login novamente.", "error")
         return await make_response(
