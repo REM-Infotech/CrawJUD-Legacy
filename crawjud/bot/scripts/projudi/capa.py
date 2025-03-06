@@ -142,6 +142,7 @@ class Capa(CrawJUD):
                 'input[id="btnMenuExportar"]',
             ))
         )
+        time.sleep(0.5)
         btn_exportar.click()
 
         btn_exportar_processo = self.wait.until(
@@ -149,16 +150,18 @@ class Capa(CrawJUD):
                 (By.CSS_SELECTOR, 'input[id="exportarProcessoButton"]'),
             )
         )
-
+        time.sleep(0.5)
         btn_exportar_processo.click()
 
         def unmark_gen_mov() -> None:
+            time.sleep(0.5)
             self.driver.find_element(
                 By.ID,
                 'input[name="gerarMovimentacoes"][value="false"]',
             ).click()
 
         def unmark_add_validate_tag() -> None:
+            time.sleep(0.5)
             self.driver.find_element(
                 By.CSS_SELECTOR,
                 'input[name="adicionarTarjaValidacao"][value="false"]',
