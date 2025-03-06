@@ -184,7 +184,7 @@ class Capa(CrawJUD):
                 if path_copia.exists():
                     break
 
-                time.sleep(1.5)
+                time.sleep(2)
                 count += 1
 
             if not path_copia.exists():
