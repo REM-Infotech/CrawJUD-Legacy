@@ -134,7 +134,7 @@ class Capa(CrawJUD):
 
     def copia_pdf(self, data: dict[str, str | int | datetime]) -> dict[str, str | int | datetime]:
         """Extract the movements of the legal proceedings and saves a PDF copy."""
-        id_proc = self.driver.find_element(By.CSS_SELECTOR, 'input[name="id"]').text
+        id_proc = self.driver.find_element(By.CSS_SELECTOR, 'input[name="id"]').get_attribute("value")
 
         btn_exportar = self.wait.until(
             ec.presence_of_element_located((
@@ -155,16 +155,20 @@ class Capa(CrawJUD):
 
         def unmark_gen_mov() -> None:
             time.sleep(0.5)
-            self.driver.find_element(
-                By.ID,
-                'input[name="gerarMovimentacoes"][value="false"]',
+            self.wait.until(
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    'input[name="gerarMovimentacoes"][value="false"]',
+                ))
             ).click()
 
         def unmark_add_validate_tag() -> None:
             time.sleep(0.5)
-            self.driver.find_element(
-                By.CSS_SELECTOR,
-                'input[name="adicionarTarjaValidacao"][value="false"]',
+            self.wait.until(
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    'input[name="adicionarTarjaValidacao"][value="false"]',
+                ))
             ).click()
 
         def export() -> None:
