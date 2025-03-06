@@ -9,7 +9,7 @@ import json
 import logging
 import traceback
 import unicodedata
-from datetime import datetime
+from datetime import date, datetime
 from os import environ, getcwd
 from pathlib import Path
 from typing import Literal
@@ -178,15 +178,20 @@ class TaskExec:
 
         elif typebot == "pauta":
             data_inicio_formated = data.get("data_inicio")
-            if not isinstance(data_inicio_formated, datetime.date):
-                data_inicio_formated = datetime.strptime(data_inicio_formated, "%Y-%m-%d")
+            if not isinstance(data_inicio_formated, date):
+                data_inicio_formated = datetime.strptime(data_inicio_formated, "%Y-%m-%d").date()
 
             data_fim_formated = data.get("data_fim")
-            if not isinstance(data_fim_formated, datetime.date):
-                data_fim_formated = datetime.strptime(data_fim_formated, "%Y-%m-%d")
+            if not isinstance(data_fim_formated, date):
+                data_fim_formated = datetime.strptime(data_fim_formated, "%Y-%m-%d").date()
 
             diff = data_fim_formated - data_inicio_formated
             rows = diff.days + 2
+
+            data.update({
+                "data_inicio": data.get("data_inicio").strftime("%Y-%m-%d"),
+                "data_fim": data.get("data_fim").strftime("%Y-%m-%d"),
+            })
 
         elif typebot == "proc_parte":
             rows = len(list(data.get("varas"))) + 1

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from os import environ
 from time import sleep
 
@@ -28,6 +29,7 @@ def main_server() -> None:
 
     tqdm.write(colored("Server closed!", "green", attrs=["bold"]))
     sleep(2)
+    sys.exit(0)
 
 
 __all__ = [MenuManager, RunnerServices, main_server]
