@@ -117,7 +117,7 @@ class Movimentacao(CrawJUD):
         """
         try:
             self.appends = []
-            self.another_append: list[tuple[any, str, str]] = []
+            self.another_append: list[tuple[dict, str, str]] = []
             self.resultados = []
 
             self.table_moves = None
@@ -144,6 +144,7 @@ class Movimentacao(CrawJUD):
 
             if len(self.another_append) > 0:
                 for data, msg, fileN in self.another_append:  # noqa: N806
+                    self.type_log = "info"
                     self.append_success([data], msg, fileN)
 
             elif len(self.appends) == 0 and len(self.another_append) == 0:
@@ -542,10 +543,10 @@ class Movimentacao(CrawJUD):
             while table_docs.get_attribute("style") == "display: none;":
                 sleep(0.25)
 
-            table_docs: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
-
         text_doc_1 = ""
 
+        sleep(2)
+        table_docs: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
         rows = table_docs.find_elements(By.TAG_NAME, "tr")
         for pos, docs in enumerate(rows):
             nomearquivo = (
@@ -591,7 +592,7 @@ class Movimentacao(CrawJUD):
 
             text_mov = self.openfile(path_pdf)
 
-            if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO":
+            if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO" or pos != 0:
                 sleep(1)
                 Path(path_pdf).unlink(missing_ok=True)
 
