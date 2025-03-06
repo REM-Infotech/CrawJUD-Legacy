@@ -3,19 +3,22 @@
 Extract and manage process details from Projudi by scraping and formatting data.
 """
 
+from pathlib import Path
 import re
+import shutil
 import time
 from contextlib import suppress
 from datetime import datetime
 from typing import Self
 
-# from memory_profiler import profile
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bot.common import ExecutionError
 from crawjud.bot.core import CrawJUD
-
+# from memory_profiler import profile
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
 
@@ -113,19 +116,85 @@ class Capa(CrawJUD):
         """
         try:
             search = self.search_bot()
-
+            trazer_copia = self.bot_data.get("TRAZER_COPIA", "não")
             if search is not True:
                 raise ExecutionError("Processo não encontrado!")
 
             self.driver.refresh()
             data = self.get_process_informations()
-            self.append_success(data, "Informações do processo extraidas com sucesso!")
+
+            if trazer_copia and trazer_copia.lower() == "sim":
+                data = self.copia_pdf(data)
+
+            self.append_success([data], "Informações do processo extraidas com sucesso!")
 
         except Exception as e:
             self.logger.exception(str(e))
             raise ExecutionError(e=e) from e
 
-    def get_process_informations(self) -> list:
+    def copia_pdf(self, data: dict[str, str | int | datetime]) -> dict[str, str | int | datetime]:
+        """Extract the movements of the legal proceedings and saves a PDF copy."""
+        id_proc = self.driver.find_element(By.CSS_SELECTOR, 'input[name="id"]').text
+
+        btn_exportar = self.wait.until(
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'input[id="btnMenuExportar"]',
+            ))
+        )
+        btn_exportar.click()
+
+        btn_exportar_processo = self.wait.until(
+            ec.presence_of_element_located(
+                (By.CSS_SELECTOR, 'input[id="exportarProcessoButton"]'),
+            )
+        )
+
+        btn_exportar_processo.click()
+
+        def unmark_gen_mov() -> None:
+            self.driver.find_element(
+                By.ID,
+                'input[name="gerarMovimentacoes"][value="false"]',
+            ).click()
+
+        def unmark_add_validate_tag() -> None:
+            self.driver.find_element(
+                By.CSS_SELECTOR,
+                'input[name="adicionarTarjaValidacao"][value="false"]',
+            ).click()
+
+        def export() -> None:
+            btn_exportar_proc = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btnExportar"]')
+            btn_exportar_proc.click()
+
+            n_processo = self.bot_data.get("NUMERO_PROCESSO")
+
+            path_copia = None
+            count = 0
+            while count < 6:
+                path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
+                if path_copia.exists():
+                    break
+
+                time.sleep(1.5)
+                count += 1
+
+            if not path_copia.exists():
+                raise ExecutionError("Arquivo não encontrado!")
+
+            new_path_path = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo}.pdf")
+            shutil.move(path_copia, new_path_path)
+
+            data.update({"CÓPIA_INTEGRAL": new_path_path.name})
+
+        unmark_gen_mov()
+        unmark_add_validate_tag()
+        export()
+
+        return data
+
+    def get_process_informations(self) -> dict[str, str | int | datetime]:
         """Extract detailed process information from the current web page.
 
         Returns:
@@ -318,7 +387,7 @@ class Capa(CrawJUD):
 
                             process_info.update({key: value})
 
-            return [process_info]
+            return process_info
 
         except Exception as e:
             raise e
