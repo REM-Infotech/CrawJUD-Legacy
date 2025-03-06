@@ -54,6 +54,8 @@ $(document).ready(function () {
       document
         .getElementById(randomId)
         .scrollIntoView({ behavior: "smooth", block: "end" });
+
+      window.location.reload();
     });
 
     socket.on("connect", function () {

@@ -172,6 +172,11 @@ class Capa(CrawJUD):
             ).click()
 
         def export() -> None:
+            self.message = "Baixando cópia integral do processo..."
+            self.type_log = "log"
+            self.prt()
+            time.sleep(5)
+
             btn_exportar_proc = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btnExportar"]')
             btn_exportar_proc.click()
 

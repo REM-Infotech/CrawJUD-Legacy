@@ -198,7 +198,7 @@ def perform_submited_form(
     periodic_task = form._fields.get("periodic_task", periodic_task)
     if isinstance(periodic_task, BooleanField):
         periodic_task = periodic_task.data
-        data.update({"schedule": periodic_task.data})
+        data.update({"schedule": periodic_task})
 
     for field_name, attributes_field in form_data:
         data_field: Union[
