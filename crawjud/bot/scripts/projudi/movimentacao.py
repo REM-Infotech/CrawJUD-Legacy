@@ -548,7 +548,9 @@ class Movimentacao(CrawJUD):
         sleep(2)
         table_docs: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)))
         rows = table_docs.find_elements(By.TAG_NAME, "tr")
-        for pos, docs in enumerate(rows):
+        rows_reverse = rows[::-1]
+        max_rows = len(rows) - 1
+        for pos, docs in enumerate(rows_reverse):
             nomearquivo = (
                 f"{self.bot_data.get('NUMERO_PROCESSO')}",
                 f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
@@ -565,34 +567,28 @@ class Movimentacao(CrawJUD):
             url = link_doc.get_attribute("href")
 
             self.driver.get(url)
+            sleep(2)
             while True:
-                recent_folder = self.get_recent(self.output_dir_path)
-                file_recent = ""
+                for root, _, files in self.output_dir_path.walk():
+                    for f in files:
+                        grau_similaridade = self.similaridade(name_pdf, f)
+                        if grau_similaridade > 0.8:
+                            old_pdf = Path(root).joinpath(f)
+                            file_found = True
+                            break
 
-                if recent_folder is not None:
-                    file_recent = os.path.basename(recent_folder)
+                    if file_found:
+                        break
 
-                grau_similaridade = self.similaridade(name_pdf, file_recent)
-
-                if grau_similaridade > 0.8:
-                    old_pdf = recent_folder
-
-                    if Path(old_pdf).exists() is False:
-                        continue
-
+                if file_found:
                     break
-
-                if old_pdf.exists():
-                    old_pdf = str(old_pdf)
-                    break
-
                 sleep(0.5)
 
             shutil.move(old_pdf, path_pdf)
 
             text_mov = self.openfile(path_pdf)
 
-            if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO" or pos != 0:
+            if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO" or pos < max_rows:
                 sleep(1)
                 Path(path_pdf).unlink(missing_ok=True)
 
@@ -613,7 +609,7 @@ class Movimentacao(CrawJUD):
 
                 self.another_append.append((data, "".join(msg), f"{self.pid} - Info_Mov_Docs.xlsx"))
 
-            if pos == 0:
+            if pos == max_rows:
                 text_doc_1 = text_mov
 
         return text_doc_1
