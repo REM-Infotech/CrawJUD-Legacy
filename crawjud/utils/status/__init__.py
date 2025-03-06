@@ -380,6 +380,13 @@ class TaskExec:
         username = execut.get("username")
         scheduled = kwargs.get("schedule", "False")
 
+        if isinstance(scheduled, str):
+            if scheduled.lower() == "true":
+                scheduled = True
+
+            elif scheduled.lower() == "false":
+                scheduled = False
+
         schedule_email = execut.get("email_notify", kwargs.get("email_notify"))
 
         async with app.app_context():
@@ -394,17 +401,15 @@ class TaskExec:
                 sender=robot,  # sender
                 recipients=[destinatario],  # recipients
             )
+            msg.html = render_template(f"email_{type_notify}.jinja").render(
+                display_name=display_name,  # display name bot
+                pid=pid,  # pid bot
+                xlsx=xlsx,  # xlsx file
+                url_web=url_web,  # url web
+                username=username,  # username user
+            )
 
-            if scheduled == "False":
-                msg.html = render_template(f"email_{type_notify}.jinja").render(
-                    display_name=display_name,  # display name bot
-                    pid=pid,  # pid bot
-                    xlsx=xlsx,  # xlsx file
-                    url_web=url_web,  # url web
-                    username=username,  # username user
-                )
-
-            elif scheduled == "True" and type_notify == "stop":
+            if type_notify == "stop" and scheduled is True:
                 task_name = execut.get("task_name")
                 msg.html = render_template("email_schedule.jinja").render(
                     task_name=task_name,
@@ -413,10 +418,10 @@ class TaskExec:
                     xlsx=xlsx,  # xlsx file
                     url_web=url_web,  # url web
                     username=username,  # username user
-                    file_url=await cls.make_permalink(),  # permalink file
+                    file_url=await cls.make_permalink(pid=pid),  # permalink file
                 )
-                if schedule_email:
-                    msg.recipients.append(schedule_email)
+            if schedule_email:
+                msg.recipients.append(schedule_email)
                 # file_zip = Path(kwargs.get("file_zip"))
                 # async with aiofiles.open(file_zip, "rb") as f:
                 #     content_type = mimetypes.guess_type(str(file_zip))[0]
