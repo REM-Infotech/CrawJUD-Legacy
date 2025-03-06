@@ -4,6 +4,7 @@ This module creates the Quart app and configures extensions like Celery,
 AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 """
 
+import warnings
 from os import environ
 from pathlib import Path
 
@@ -17,6 +18,8 @@ from quart import Quart as Quart
 from socketio import ASGIApp
 
 from crawjud.custom import QuartLoginManager as LoginManager
+
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="google_crc32c")
 
 load_dotenv()
 
