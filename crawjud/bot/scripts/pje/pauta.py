@@ -114,8 +114,17 @@ class Pauta(CrawJUD):
             self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
             self.type_log = "log"
             self.prt()
-            varas: list[str] = self.varas
-            for vara in varas:
+            list_varas: list[str] | dict[str, str] = self.varas
+            varas = None
+            if "TODAS AS VARAS" in list_varas:
+                from crawjud.bot.scripts.pje.common.varas_dict import varas as varas_pje
+
+                varas = varas_pje()
+                list_varas = list(varas.keys())
+            for vara in list_varas:
+                if varas:
+                    vara_name = varas.get(vara)  # noqa: F841
+
                 date = self.current_date.strftime("%Y-%m-%d")
                 self.data_append.update({vara: {date: []}})
 

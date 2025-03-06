@@ -4,7 +4,7 @@ This module provides a dictionary mapping court names to their corresponding cod
 """
 
 
-def varas() -> dict:
+def varas() -> dict[str, str]:
     """Return a dictionary mapping court branch names to their unique codes now.
 
     Returns:
