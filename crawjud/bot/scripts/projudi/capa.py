@@ -190,7 +190,7 @@ class Capa(CrawJUD):
             if not path_copia.exists():
                 raise ExecutionError("Arquivo não encontrado!")
 
-            new_path_path = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo}.pdf")
+            new_path_path = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo} - {self.pid}.pdf")
             shutil.move(path_copia, new_path_path)
 
             data.update({"CÓPIA_INTEGRAL": new_path_path.name})
