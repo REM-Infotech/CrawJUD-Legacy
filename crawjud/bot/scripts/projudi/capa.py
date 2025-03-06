@@ -3,14 +3,13 @@
 Extract and manage process details from Projudi by scraping and formatting data.
 """
 
-from pathlib import Path
 import re
 import shutil
 import time
 from contextlib import suppress
 from datetime import datetime
+from pathlib import Path
 from typing import Self
-
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -18,6 +17,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bot.common import ExecutionError
 from crawjud.bot.core import CrawJUD
+
 # from memory_profiler import profile
 # fp = open("memory_profiler_capa_projudi.log", "+w")
 
