@@ -37,7 +37,10 @@ def start_beat() -> None:
             beat = Beat(
                 app=celery,
                 scheduler="crawjud.utils.scheduler:DatabaseScheduler",
-                quiet=True,
+                max_interval=5,
+                loglevel="INFO",
+                logfile=Path(getcwd()).joinpath("crawjud", "logs", "beat_celery.log"),
+                no_color=False,
             )
             beat.run()
 

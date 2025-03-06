@@ -243,7 +243,7 @@ class ProductionConfig(Config):
         "result_backend": f"{REDIS_URL}/{RESULT_BACKEND_DATABASE}",
         "task_ignore_result": True,
         "broker_connection_retry_on_startup": True,
-        "timezone": "America/Sao_Paulo",
+        "timezone": "America/Manaus",
         "task_create_missing_queues": True,
     }
 
@@ -354,6 +354,6 @@ class TestingConfig(Config):
         "result_backend": f"{REDIS_URL}/{RESULT_BACKEND_DATABASE}",
         "task_ignore_result": True,
         "broker_connection_retry_on_startup": True,
-        "timezone": "America/Sao_Paulo",
+        "timezone": "America/Manaus",
         "task_create_missing_queues": True,
     }

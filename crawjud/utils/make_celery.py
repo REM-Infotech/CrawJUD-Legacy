@@ -1,14 +1,14 @@
 """Celery configuration for Quart application."""
 
-import logging
-from os import getenv
-from pathlib import Path
+import logging  # noqa: F401
+from os import getenv  # noqa: F401
+from pathlib import Path  # noqa: F401
 
 from celery import Celery
-from celery.signals import after_setup_logger
+from celery.signals import after_setup_logger  # noqa: F401
 from quart import Quart
 
-from crawjud.types import AnyType
+from crawjud.types import AnyType  # noqa: F401
 
 
 @after_setup_logger.connect
@@ -54,36 +54,6 @@ def config_loggers(
     configured_logger = logging.getLogger(logger_name.replace("_", "."))
     for handler in configured_logger.handlers:
         logger.addHandler(handler)
-
-
-# @setup_logging.connect
-# def config_loggers(
-#     *args: AnyType,
-#     **kwargs: AnyType,
-# ) -> None:
-#     """Configure logging for Celery."""
-
-#     keywork_args = kwargs
-#     from logging.config import dictConfig
-
-#     from crawjud.logs import log_cfg
-
-#     logger_name = f"{getenv('APPLICATION_APP')}_celery"
-#     log_file = Path(__file__).cwd().resolve().joinpath("logs", f"{logger_name}.log")
-#     log_file.touch(exist_ok=True)
-
-#     log_level = logging.INFO
-#     if getenv("DEBUG", "False").lower() == "True":
-#         log_level = logging.DEBUG
-
-#     cfg, _ = log_cfg(
-#         str(log_file),
-#         log_level,
-#         logger_name=logger_name.replace("_", "."),
-#         max_bytes=8196 * 1024,
-#         bkp_ct=5,
-#     )
-#     dictConfig(cfg)
 
 
 async def make_celery(app: Quart) -> Celery:
