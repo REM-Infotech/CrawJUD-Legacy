@@ -45,8 +45,6 @@ def config_loggers(
         str(log_file),
         log_level,
         logger_name=logger_name.replace("_", "."),
-        max_bytes=8196 * 1024,
-        bkp_ct=5,
     )
     dictConfig(cfg)
     # Alter the Celery logger using the provided logger from kwargs if available.
