@@ -197,7 +197,7 @@ class Capa(CrawJUD):
 
             new_path_path = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo} - {self.pid}.pdf")
             shutil.move(path_copia, new_path_path)
-
+            time.sleep(0.5)
             data.update({"CÓPIA_INTEGRAL": new_path_path.name})
 
         unmark_gen_mov()
