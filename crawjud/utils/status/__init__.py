@@ -405,7 +405,9 @@ class TaskExec:
                 )
 
             elif scheduled == "True" and type_notify == "stop":
+                task_name = execut.get("task_name")
                 msg.html = render_template("email_schedule.jinja").render(
+                    task_name=task_name,
                     display_name=display_name,  # display name bot
                     pid=pid,  # pid bot
                     xlsx=xlsx,  # xlsx file
@@ -529,9 +531,6 @@ class TaskExec:
                     for adm in exec_info.license_usr.admins:
                         admins.append(adm.email)
 
-                if exec_info.scheduled_execution:
-                    email_notify = str(exec_info.scheduled_execution[-1].email)
-
                 exec_data: dict[str, str | list[str]] = {
                     "pid": pid,
                     "display_name": display_name,
@@ -539,8 +538,15 @@ class TaskExec:
                     "username": str(usr.nome_usuario),
                     "email": str(usr.email),
                     "admins": admins,
-                    "email_notify": email_notify,
                 }
+
+                if exec_info.scheduled_execution:
+                    email_notify = str(exec_info.scheduled_execution[-1].email)
+                    task_name = str(exec_info.scheduled_execution[-1].name)
+                    exec_data.update({
+                        "email_notify": email_notify,
+                        "task_name": task_name,
+                    })
 
                 db.session.commit()
                 db.session.close()
