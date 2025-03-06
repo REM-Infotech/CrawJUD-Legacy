@@ -24,6 +24,11 @@ db = SQLAlchemy()
 tlsm = Talisman()
 mail = Mail()
 login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+login_manager.login_message = "Faça login para acessar essa página."
+login_manager.login_message_category = "info"
+
+
 template_path = str(Path(__file__).parent.resolve().joinpath("templates"))
 src_path = str(Path(__file__).parent.resolve().joinpath("static"))
 app = Quart(__name__, static_folder=src_path, template_folder=template_path)

@@ -3,7 +3,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from redis_flask import Redis
-from trio import Path
 
 
 async def load_cache(pid: str, app: Quart) -> dict[str, str]:
@@ -25,8 +24,9 @@ async def load_cache(pid: str, app: Quart) -> dict[str, str]:
 
     get_cache: list | None = redis_client.keys(redis_key)
     if get_cache:
-        list_cache: list[str] = list(get_cache)
+        list_cache: list[str | bytes] = list(get_cache)
         for cache in list_cache:
+            cache = cache.decode()
             _, k_pid, __, k_value = cache.split(":")
             cached = [{"pid": k_pid, "pos": int(k_value)}]
             list_cached.extend(cached)
@@ -39,6 +39,7 @@ async def load_cache(pid: str, app: Quart) -> dict[str, str]:
             logs_pid = redis_client.hgetall(redis_key)
 
             log_pid = dict(logs_pid)
+            log_pid = {key.decode(): value.decode() for key, value in log_pid.items()}
 
     return log_pid
 
@@ -92,12 +93,7 @@ async def format_message_log(
         chk_infos = [data.get("system"), data.get("typebot")]
         if all(chk_infos) or data_message.split("> ")[-1].islower():
             async with app.app_context():
-                cwd = await Path(__file__).cwd()
-                join_path_pid = await cwd.joinpath("crawjud", "bot", "temp", f"{data_pid}").resolve()
-                path_flag = await join_path_pid.joinpath(f"{data_pid}.flag").resolve()
-
-                if not await path_flag.exists():
-                    await TaskExec.task_exec(data=data, exec_type="stop", app=app, path_flag=path_flag)
+                await TaskExec.task_exec(data=data, exec_type="stop", app=app)
 
         # Chave única para o processo no Redis
         redis_key = f"process:{data_pid}:pos:{data_pos}"
