@@ -141,7 +141,10 @@ class ProcParte(CrawJUD):
         Extracts process data, manages pagination, and stores the retrieved information.
         """
         try:
-            table_processos = self.driver.find_element(By.CLASS_NAME, "resultTable").find_element(By.TAG_NAME, "tbody")
+            table_processos = self.driver.find_element(
+                By.CLASS_NAME,
+                "resultTable",
+            ).find_element(By.TAG_NAME, "tbody")
 
             list_processos = None
             next_page = None
