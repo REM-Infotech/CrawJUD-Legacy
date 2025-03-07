@@ -9,7 +9,7 @@ import traceback
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-from os import path
+from os import getcwd, path
 from pathlib import Path
 
 import requests
@@ -93,7 +93,7 @@ class DriverBot(CrawJUD):
         if platform.system() == "Windows" and self.login_method == "cert":
             state = str(self.state)
             self.path_accepted = Path(
-                path.join(Path(__file__).cwd().resolve(), "Browser", state, self.username, "chrome"),
+                path.join(Path(getcwd()).resolve(), "Browser", state, self.username, "chrome"),
             )
             path_exist = self.path_accepted.exists()
             if path_exist:

@@ -1,7 +1,7 @@
 """Celery configuration for Quart application."""
 
 import logging  # noqa: F401
-from os import getenv  # noqa: F401
+from os import getcwd, getenv  # noqa: F401
 from pathlib import Path  # noqa: F401
 
 from celery import Celery
@@ -34,7 +34,7 @@ def config_loggers(
     from crawjud.logs import log_cfg
 
     logger_name = f"{getenv('APPLICATION_APP')}_celery"
-    log_file = Path(__file__).cwd().resolve().joinpath("crawjud", "logs", f"{logger_name}.log")
+    log_file = Path(getcwd()).resolve().joinpath("crawjud", "logs", f"{logger_name}.log")
     log_file.touch(exist_ok=True)
 
     log_level = logging.INFO

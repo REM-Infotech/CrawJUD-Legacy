@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import secrets
 from datetime import timedelta
-from os import environ
+from os import environ, getcwd
 from pathlib import Path
 from threading import Thread
 
@@ -15,7 +15,7 @@ from dotenv_vault import load_dotenv
 
 load_dotenv()
 
-workdir = Path(__file__).cwd().joinpath("crawjud")
+workdir = Path(getcwd()).joinpath("crawjud")
 running_servers: dict["str", StoreService] = {}
 
 
@@ -26,6 +26,7 @@ class StoreService:
     process_id: int
     process_status: str
     process_object: Thread
+    process__log_file: str
 
     def __init__(
         self,
@@ -33,6 +34,7 @@ class StoreService:
         process_object: Thread | Process,
         process_status: str = "Running",
         process_id: int = None,
+        process_log_file: str = None,
     ) -> None:
         """Initialize the StoreService class."""
         self.process_name = process_name
@@ -46,6 +48,9 @@ class StoreService:
             elif isinstance(process_object, Thread):
                 self.process_id = process_object.ident
 
+        if process_log_file:
+            self.process_log_file = process_log_file
+
     def start(self) -> None:
         """Start the process."""
         self.process_object.start()
@@ -58,6 +63,7 @@ class StoreService:
         """Terminate the process."""
         if isinstance(self.process_object, Process):
             rich.print(f"[bold yellow]Terminating process {self.process_name}[/bold yellow]")
+            self.process_object.terminate()
 
         elif isinstance(self.process_object, Thread):
             rich.print("[bold red]Operation not allowed for 'Thread' type[/bold red]")

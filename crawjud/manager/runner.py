@@ -5,13 +5,16 @@ import logging
 from os import environ, getcwd, getenv
 from pathlib import Path
 from platform import node
-from threading import Thread
+from queue import Queue  # noqa: F401
+from threading import Condition, Event, Thread, current_thread  # noqa: F401
+from typing import Any, TypeVar  # noqa: F401
 
 from billiard.context import Process
 from celery import Celery
-from celery.apps.beat import Beat
+from celery.apps.beat import Beat  # noqa: F401
 from celery.apps.worker import Worker
 from clear import clear
+from pynput._util import AbstractListener  # noqa: F401
 from quart import Quart
 from socketio import ASGIApp
 from termcolor import colored
@@ -24,6 +27,12 @@ from crawjud.core.watch import monitor_log
 from crawjud.logs import log_cfg
 from crawjud.types import app_name
 from crawjud.utils.gen_seed import worker_name_generator
+
+# F = TypeVar("F", bound=Any)
+
+
+# class ShutdownListener(AbstractListener):
+#     """Thread that listens for a shutdown signal."""
 
 
 def start_beat() -> None:
@@ -174,7 +183,15 @@ class RunnerServices:
             log_level=log_level,
         )
         self.srv = Server(cfg)
-        self.srv.run()
+        Thread(target=self.srv.run, daemon=True).start()
+
+    def watch_shutdown(self) -> None:
+        """Watch for a keyboard interrupt and signal all threads to stop."""
+        self.event_stop.wait()
+        self.event_stop.set()
+
+        asyncio.run(self.app.shutdown())
+        asyncio.run(self.srv.shutdown())
 
     def start_all(self) -> None:
         """Start all server components in separate threads and allow stopping with an event.
@@ -182,19 +199,26 @@ class RunnerServices:
         This method creates threads for the worker, Quart server, and Celery beat.
         It listens for a keyboard interrupt and then signals all threads to stop.
         """
+        self.event_stop = Event()
+
+        Thread(target=self.watch_shutdown, daemon=True).start()
+
         running_servers.update({
             "Quart": StoreService(
                 process_name="Quart",
                 process_status="Running",
                 process_object=Thread(target=self.start_quart),
+                process_log_file="uvicorn_api.log",
             ),
             "Beat": StoreService(
                 process_name="Beat",
                 process_object=Process(target=start_beat),
+                process_log_file="beat_celery.log",
             ),
             "Worker": StoreService(
                 process_name="Worker",
                 process_object=Process(target=start_worker),
+                process_log_file="worker_celery.log",
             ),
         })
 
@@ -209,9 +233,11 @@ class RunnerServices:
             return ["Server not running.", "ERROR", "red"]
 
         clear()
+
+        log_file = running_servers[app_name.capitalize()].process_log_file
         tqdm.write("Type 'ESC' to exit.")
 
-        monitor_log("uvicorn_api.log")
+        monitor_log(file_name=log_file)
 
         return ["Exiting logs.", "INFO", "yellow"]
 

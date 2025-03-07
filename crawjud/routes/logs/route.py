@@ -5,7 +5,7 @@ This module defines endpoints for managing logs and controlling bot executions.
 
 import asyncio
 import json
-from os import environ, getenv
+from os import environ, getcwd, getenv
 from pathlib import Path
 
 import httpx as requests
@@ -89,7 +89,7 @@ async def logs_bot(pid: str) -> Response:
 
                 if message != "Process running!":
                     # Update the data with a final log message.
-                    cwd = Path(__file__).cwd()
+                    cwd = Path(getcwd())
                     join_path_pid = cwd.joinpath("crawjud", "bot", "temp", f"{pid}").resolve()
                     path_flag = join_path_pid.joinpath(f"{pid}.flag").resolve()
 

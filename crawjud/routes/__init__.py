@@ -88,7 +88,7 @@ async def serve_img() -> Response:
     try:
         path_icon = os.path.join(os.getcwd(), "static", "img")
 
-        parent_path = await Path(__file__).cwd()
+        parent_path = await Path(os.getcwd())
         path_icon = parent_path.joinpath("web", "static", "img")
         path_icon = await path_icon.resolve()
 

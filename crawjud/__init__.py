@@ -134,6 +134,18 @@ class MasterApp(HeadCrawjudManager):
             clear()
             self.loop_app = False
 
+            running_servers_ = running_servers.items()
+            running_servers_ = [running_servers_ for running_servers_ in running_servers_]  # noqa: C416
+            running_servers_ = running_servers_[::-1]
+            for application_name, application in running_servers_:
+                if application_name == "Quart":
+                    self.event_stop.set()
+                    running_servers["Quart"].process_object.join()
+
+                else:
+                    application.terminate()
+                    application.stop()
+
         self.return_main_menu()
 
     def return_main_menu(self) -> None:

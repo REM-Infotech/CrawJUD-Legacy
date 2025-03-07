@@ -4,8 +4,9 @@ This module sets up a Socket.IO client that listens to logging events from
 various services (web, worker, beat) and prints them using tqdm.
 """
 
-import threading
+from os import getcwd
 from pathlib import Path
+from threading import Event, Thread
 from typing import Any
 
 import tailer
@@ -13,7 +14,7 @@ from pynput.keyboard import Key, Listener
 from tqdm import tqdm
 
 
-def watch_input(stop_event: threading.Event) -> None:
+def watch_input(stop_event: Event) -> None:
     """Escuta a tecla ESC e ativa o evento de parada."""
 
     def on_press(key: Any) -> None:
@@ -27,16 +28,16 @@ def watch_input(stop_event: threading.Event) -> None:
 
 def monitor_log(file_name: str = None, file_path: Path = None) -> None:
     """Monitora um arquivo de log usando tailer e para quando ESC for pressionado."""
-    stop_event = threading.Event()
+    stop_event = Event()
 
     if not file_path:
-        file_path = Path(__file__).cwd().joinpath("crawjud", "logs", file_name)
+        file_path = Path(getcwd()).joinpath("crawjud", "logs", file_name)
 
     if not isinstance(file_path, Path):
         raise ValueError("file_path must be a pathlib.Path object.")
 
     # Inicia a thread para capturar entrada do teclado
-    threading.Thread(target=watch_input, args=(stop_event,), daemon=True).start()
+    Thread(target=watch_input, args=(stop_event,), daemon=True).start()
 
     # Função para rodar tailer.follow() em uma thread separada
     def tailer_thread() -> None:
@@ -47,7 +48,7 @@ def monitor_log(file_name: str = None, file_path: Path = None) -> None:
                 tqdm.write(line.strip())
 
     # Inicia a thread do tailer
-    t = threading.Thread(target=tailer_thread, daemon=True)
+    t = Thread(target=tailer_thread, daemon=True)
     t.start()
 
     # Aguarda a tecla ESC ser pressionada
