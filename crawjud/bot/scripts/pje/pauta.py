@@ -70,7 +70,7 @@ class Pauta(CrawJUD):
         """
         self.current_date = self.data_inicio
         self.graphicMode = "bar"
-        self.data_append = {}
+        self.data_append: dict[str, dict[str, list[dict[str, str]]]] = {}
         list_varas = []
         varas_ = self.varas
 
@@ -153,7 +153,7 @@ class Pauta(CrawJUD):
                 self.driver.get(url_)
                 self.get_pautas(date, vara)
 
-                data_append = self.data_append[vara][date]
+                data_append: list = self.data_append[vara][date]
                 if len(data_append) == 0:
                     self.data_append[vara].pop(date)
 
