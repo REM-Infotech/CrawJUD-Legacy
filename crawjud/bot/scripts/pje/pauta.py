@@ -6,7 +6,7 @@ This module fetches and processes court hearing schedules (pautas) for automated
 import os
 import time
 from contextlib import suppress
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import sleep
 from typing import Self
 
@@ -17,6 +17,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bot.common import ExecutionError
 from crawjud.bot.core import CrawJUD
+from crawjud.bot.scripts.pje.common.varas_dict import varas as varas_pje
 
 
 class Pauta(CrawJUD):
@@ -70,13 +71,18 @@ class Pauta(CrawJUD):
         self.current_date = self.data_inicio
         self.graphicMode = "bar"
         self.data_append = {}
-        list_varas: list[str] | dict[str, str] = self.varas
-        varas = None
-        if "TODAS AS VARAS" in list_varas:
-            from crawjud.bot.scripts.pje.common.varas_dict import varas as varas_pje
+        list_varas = []
+        varas_ = self.varas
 
+        if "TODAS AS VARAS" in varas_:
             varas = varas_pje()
             list_varas = list(varas.items())
+
+        elif "TODAS AS VARAS" not in varas_:
+            varas = {k: v for k, v in varas_pje().items() if v in varas_}
+            list_varas = list(varas.items())
+
+        self.total_rows = len(list_varas)
         for pos, row in enumerate(list_varas):
             vara_name, vara = row
             self.row = pos + 1
@@ -131,10 +137,7 @@ class Pauta(CrawJUD):
         Iterates over the varas list, aggregates data, and attempts pagination if available.
         """
         try:
-            self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
-            self.type_log = "log"
-            self.prt()
-
+            self.current_date = self.data_inicio
             while self.current_date <= self.data_fim:
                 self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
                 self.type_log = "log"
@@ -158,6 +161,8 @@ class Pauta(CrawJUD):
                     vara = vara.replace("#", "").upper()
                     fileN = f"{vara} - {date.replace('-', '.')} - {self.pid}.xlsx"  # noqa: N806
                     self.append_success(data=data_append, fileN=fileN)
+
+                self.current_date += timedelta(days=1)
 
             data_append = self.group_date_all(self.data_append)
             fileN = os.path.basename(self.path)  # noqa: N806
