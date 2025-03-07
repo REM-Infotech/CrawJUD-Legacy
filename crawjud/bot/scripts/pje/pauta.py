@@ -70,7 +70,11 @@ class Pauta(CrawJUD):
         self.row = 2
         self.current_date = self.data_inicio
         self.graphicMode = "bar"
-        while not self.isStoped and self.current_date <= self.data_fim:
+        self.data_append = {}
+        while self.current_date <= self.data_fim:
+            if self.isStoped:
+                break
+
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
                     self.auth_bot()
@@ -122,6 +126,9 @@ class Pauta(CrawJUD):
                 varas = varas_pje()
                 list_varas = list(varas.keys())
             for vara in list_varas:
+                if self.isStoped:
+                    break
+
                 if varas:
                     vara_name = varas.get(vara)  # noqa: F841
 
