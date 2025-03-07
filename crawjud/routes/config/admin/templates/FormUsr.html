@@ -31,10 +31,12 @@
           {{ form.tipo_user(class="form-control", placeholder=form.tipo_user.label.text) }}
         </div>
         {% if current_user.is_authenticated and supersu_cookie %}
+        {% if form.licenses %}
         <div id="licenses_usr" class="col-md-10 border border-secondary p-2 border-2 rounded bg-white">
           {{ form.licenses.label(class="form-label") }}
           {{ form.licenses(class="form-control", id=form.licenses.id, **{"data-placeholder":form.licenses.label.text}) }}
         </div>
+        {% endif %}
         {% endif %}
       </div>
     </div>

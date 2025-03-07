@@ -53,7 +53,7 @@ class UserForm(QuartForm):
             *args,
             **kwargs,
         )
-        licenses_add = kwargs.get("licenses")
+        licenses_add = kwargs.get("licenses_add")
         if licenses_add:
             licenses = []
             for lcs in licenses_add:
