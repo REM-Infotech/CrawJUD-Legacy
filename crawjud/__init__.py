@@ -24,7 +24,6 @@ io = AsyncServer(
     ping_interval=25,
     ping_timeout=10,
 )
-clear()
 
 
 class MasterApp(HeadCrawjudManager):
@@ -62,8 +61,6 @@ class MasterApp(HeadCrawjudManager):
 
     def prompt(self) -> None:
         """Prompt the user for server options."""
-        clear()
-
         if self.current_menu_name == "Main Menu":
             if running_servers:
                 tqdm.write("=============================================================")
@@ -140,11 +137,10 @@ class MasterApp(HeadCrawjudManager):
             for application_name, application in running_servers_:
                 if application_name == "Quart":
                     self.event_stop.set()
-                    running_servers["Quart"].process_object.join()
-
-                else:
-                    application.terminate()
                     application.stop()
+                    continue
+
+                application.stop()
 
         self.return_main_menu()
 

@@ -9,6 +9,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "crawjud",
+      "justMyCode": false
       //   "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },
     {

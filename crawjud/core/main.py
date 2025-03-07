@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 from os import environ
+from threading import Thread
 from time import sleep
 
 from termcolor import colored
@@ -22,7 +23,10 @@ def main_server() -> None:
         "SERVER_MANAGEMENT": "True",
     })
     try:
-        application_instance.prompt()
+        Thread(target=application_instance.prompt, daemon=True).start()
+
+        while True:
+            ...
 
     except KeyboardInterrupt:
         tqdm.write("Stopping app")

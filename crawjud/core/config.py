@@ -10,6 +10,7 @@ from pathlib import Path
 from threading import Thread
 
 import rich
+from billiard.connection import PipeConnection
 from billiard.context import Process
 from dotenv_vault import load_dotenv
 
@@ -25,8 +26,9 @@ class StoreService:
     process_name: str
     process_id: int
     process_status: str
-    process_object: Thread
+    process_object: Thread | Process
     process__log_file: str
+    process_conn: PipeConnection
 
     def __init__(
         self,
@@ -35,6 +37,7 @@ class StoreService:
         process_status: str = "Running",
         process_id: int = None,
         process_log_file: str = None,
+        process_conn: PipeConnection = None,
     ) -> None:
         """Initialize the StoreService class."""
         self.process_name = process_name
@@ -51,22 +54,23 @@ class StoreService:
         if process_log_file:
             self.process_log_file = process_log_file
 
+        self.process_conn = process_conn
+
     def start(self) -> None:
         """Start the process."""
         self.process_object.start()
 
     def stop(self) -> None:
         """Stop the process."""
-        self.process_object.join(10)
-
-    def terminate(self) -> None:
-        """Terminate the process."""
         if isinstance(self.process_object, Process):
-            rich.print(f"[bold yellow]Terminating process {self.process_name}[/bold yellow]")
+            rich.print(f"[bold yellow]Stopping '{self.process_name}'[/bold yellow]")
             self.process_object.terminate()
+            self.process_object.join(60)
 
         elif isinstance(self.process_object, Thread):
-            rich.print("[bold red]Operation not allowed for 'Thread' type[/bold red]")
+            rich.print(f"[bold yellow]Stopping '{self.process_name}'[/bold yellow]")
+
+        rich.print(f"[bold green]{self.process_name} stopped.[/bold green]")
 
 
 class Config:
