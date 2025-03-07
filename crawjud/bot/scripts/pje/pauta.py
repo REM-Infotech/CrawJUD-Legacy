@@ -67,20 +67,36 @@ class Pauta(CrawJUD):
 
         This method continuously processes each court hearing date and handles errors.
         """
-        self.row = 2
         self.current_date = self.data_inicio
         self.graphicMode = "bar"
         self.data_append = {}
-        while self.current_date <= self.data_fim:
+        list_varas: list[str] | dict[str, str] = self.varas
+        varas = None
+        if "TODAS AS VARAS" in list_varas:
+            from crawjud.bot.scripts.pje.common.varas_dict import varas as varas_pje
+
+            varas = varas_pje()
+            list_varas = list(varas.items())
+        for pos, row in enumerate(list_varas):
+            vara_name, vara = row
+            self.row = pos + 1
+
+            self.message = "Buscando pautas na vara: " + vara_name
+            self.type_log = "log"
+            self.prt()
+
             if self.isStoped:
                 break
+
+            if varas:
+                vara_name = varas.get(vara)  # noqa: F841
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
                     self.auth_bot()
 
             try:
-                self.queue()
+                self.queue(vara=vara)
 
             except Exception as e:
                 old_message = None
@@ -109,7 +125,7 @@ class Pauta(CrawJUD):
 
         self.finalize_execution()
 
-    def queue(self) -> None:
+    def queue(self, vara: str) -> None:
         """Process each court branch in the queue to fetch and update corresponding pauta data now.
 
         Iterates over the varas list, aggregates data, and attempts pagination if available.
@@ -118,24 +134,20 @@ class Pauta(CrawJUD):
             self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
             self.type_log = "log"
             self.prt()
-            list_varas: list[str] | dict[str, str] = self.varas
-            varas = None
-            if "TODAS AS VARAS" in list_varas:
-                from crawjud.bot.scripts.pje.common.varas_dict import varas as varas_pje
 
-                varas = varas_pje()
-                list_varas = list(varas.keys())
-            for vara in list_varas:
+            while self.current_date <= self.data_fim:
+                self.message = f"Buscando pautas na data {self.current_date.strftime('%d/%m/%Y')}"
+                self.type_log = "log"
+                self.prt()
+
                 if self.isStoped:
                     break
-
-                if varas:
-                    vara_name = varas.get(vara)  # noqa: F841
 
                 date = self.current_date.strftime("%Y-%m-%d")
                 self.data_append.update({vara: {date: []}})
 
-                self.driver.get(f"{self.elements.url_pautas}{vara}-{date}")
+                url_ = f"{self.elements.url_pautas}/{vara}-{date}"
+                self.driver.get(url_)
                 self.get_pautas(date, vara)
 
                 data_append = self.data_append[vara][date]
@@ -176,8 +188,18 @@ class Pauta(CrawJUD):
             times = 4
             itens_pautas = None
             table_pautas: WebElement = self.wait.until(
-                ec.all_of(ec.presence_of_element_located((By.CSS_SELECTOR, 'pje-data-table[id="tabelaResultado"]'))),
-                (ec.visibility_of_element_located((By.CSS_SELECTOR, 'table[name="Tabela de itens de pauta"]'))),
+                ec.all_of(
+                    ec.presence_of_element_located((
+                        By.CSS_SELECTOR,
+                        'pje-data-table[id="tabelaResultado"]',
+                    ))
+                ),
+                (
+                    ec.visibility_of_element_located((
+                        By.CSS_SELECTOR,
+                        'table[name="Tabela de itens de pauta"]',
+                    ))
+                ),
             )[-1]
 
             with suppress(NoSuchElementException, TimeoutException):
@@ -201,11 +223,11 @@ class Pauta(CrawJUD):
 
                         appends = {
                             "INDICE": int(itens_tr[0].text),
+                            "NUMERO_PROCESSO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[1],
                             "VARA": vara_name,
                             "HORARIO": itens_tr[1].text,
                             "TIPO": itens_tr[2].text,
                             "ATO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[0],
-                            "NUMERO_PROCESSO": itens_tr[3].find_element(By.TAG_NAME, "a").text.split(" ")[1],
                             "PARTES": itens_tr[3]
                             .find_element(By.TAG_NAME, "span")
                             .find_element(By.TAG_NAME, "span")
@@ -216,7 +238,7 @@ class Pauta(CrawJUD):
 
                         self.data_append[vara][current_date].append(appends)
                         self.message = f"Processo {appends['NUMERO_PROCESSO']} adicionado!"
-                        self.type_log = "log"
+                        self.type_log = "info"
                         self.prt()
 
                 try:
