@@ -13,6 +13,7 @@ from pathlib import Path
 from time import sleep
 from typing import Self
 
+import requests
 from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -563,28 +564,40 @@ class Movimentacao(CrawJUD):
             doc = docs.find_elements(By.TAG_NAME, "td")[4]
             link_doc = doc.find_element(By.TAG_NAME, "a")
             name_pdf = self.format_string(str(link_doc.text))
-            old_pdf = Path(os.path.join(self.output_dir_path), name_pdf)
+            old_pdf = Path(os.path.join(self.output_dir_path), name_pdf)  # noqa: F841
             url = link_doc.get_attribute("href")
 
-            self.driver.get(url)
-            sleep(2)
-            while True:
-                for root, _, files in self.output_dir_path.walk():
-                    for f in files:
-                        grau_similaridade = self.similaridade(name_pdf, f)
-                        if grau_similaridade > 0.8:
-                            old_pdf = Path(root).joinpath(f)
-                            file_found = True
+            # Get cookies from ChromeDriver session
+            cookies = {cookie["name"]: cookie["value"] for cookie in self.driver.get_cookies()}
+
+            # Download using requests
+            response = requests.get(url, cookies=cookies, allow_redirects=True, timeout=60)
+
+            if response.status_code == 200:
+                with open(path_pdf, "wb") as f:
+                    f.write(response.content)
+            elif response.status_code != 200:
+                # Fallback to ChromeDriver download if requests fails
+                self.driver.get(url)
+
+                sleep(2)
+                while True:
+                    for root, _, files in self.output_dir_path.walk():
+                        for f in files:
+                            grau_similaridade = self.similaridade(name_pdf, f)
+                            if grau_similaridade > 0.8:
+                                old_pdf = Path(root).joinpath(f)
+                                file_found = True
+                                break
+
+                        if file_found:
                             break
 
                     if file_found:
                         break
+                    sleep(0.5)
 
-                if file_found:
-                    break
-                sleep(0.5)
-
-            shutil.move(old_pdf, path_pdf)
+                shutil.move(old_pdf, path_pdf)
 
             text_mov = self.openfile(path_pdf)
 
