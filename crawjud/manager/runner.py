@@ -31,8 +31,43 @@ from crawjud.utils.gen_seed import worker_name_generator
 # F = TypeVar("F", bound=Any)
 
 
-# class ShutdownListener(AbstractListener):
-#     """Thread that listens for a shutdown signal."""
+def start_worker() -> None:
+    """Start the Celery beat scheduler."""
+    from crawjud.core import create_app
+
+    app, _, celery = asyncio.run(create_app())
+    environ.update({"APPLICATION_APP": "worker"})
+
+    async def start_worker() -> None:
+        async with app.app_context():
+            worker_name = f"{worker_name_generator()}@{node()}"
+            worker = Worker(
+                app=celery,
+                hostname=worker_name,
+                task_events=True,
+                loglevel="INFO",
+                concurrency=50.0,
+                pool="threads",
+            )
+            worker = worker
+
+            try:
+                worker.start()
+
+            except Exception as e:
+                if isinstance(e, KeyboardInterrupt):
+                    worker.stop()
+
+                else:
+                    tqdm.write(
+                        colored(
+                            f"{colored('[ERROR]', 'red', attrs=['bold', 'blink'])} {e}",
+                            "red",
+                            attrs=["bold"],
+                        )
+                    )
+
+    asyncio.run(start_worker())
 
 
 def start_beat() -> None:
@@ -96,27 +131,6 @@ class RunnerServices:
         self.srv = Server(cfg)
         Thread(target=self.srv.run, daemon=True).start()
 
-    def start_worker(self) -> None:
-        """Start the Celery Worker scheduler in async mode.
-
-        This method initializes and starts a Celery worker using multiprocessing
-        to avoid blocking the main process. It sets up the worker with custom
-        configuration including task events tracking.
-        """
-        environ.update({"APPLICATION_APP": "worker"})
-
-        worker_name = f"{worker_name_generator()}@{node()}"
-        worker = Worker(
-            app=self.celery,
-            hostname=worker_name,
-            task_events=True,
-            loglevel="INFO",
-            concurrency=50,
-            pool="threads",
-        )
-        self.worker = worker
-        worker.start()
-
     def watch_shutdown(self) -> None:
         """Watch for a keyboard interrupt and signal all threads to stop."""
         self.event_stop.wait()
@@ -139,17 +153,17 @@ class RunnerServices:
             "Quart": StoreService(
                 process_name="Quart",
                 process_status="Running",
-                process_object=Thread(target=self.start_quart),
+                process_object=Thread(target=self.start_quart, daemon=True),
                 process_log_file="uvicorn_api.log",
             ),
             "Beat": StoreService(
                 process_name="Beat",
-                process_object=Process(target=start_beat),
+                process_object=Process(target=start_beat, daemon=True),
                 process_log_file="beat_celery.log",
             ),
             "Worker": StoreService(
                 process_name="Worker",
-                process_object=Thread(target=self.start_worker, daemon=True),
+                process_object=Process(target=start_worker, daemon=True),
                 process_log_file="worker_celery.log",
             ),
         })

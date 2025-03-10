@@ -35,7 +35,6 @@ class MasterApp(HeadCrawjudManager):
         """Boot Beat and the application."""
         rich.print("[bold green]Starting application object...[/bold green]")
         self.app, self.asgi, self.celery = asyncio.run(create_app())
-        self.start_all()
 
     def __init__(self) -> None:
         """Initialize the ASGI server."""
@@ -108,11 +107,8 @@ class MasterApp(HeadCrawjudManager):
                 clear()
 
             elif choice in options:
-                if choice == "Start Services":
-                    call_obj = options.get(choice)
-                    call_obj()
-                elif choice != "Start Services":
-                    options.get(choice)()
+                call_obj = options.get(choice)
+                call_obj()
 
             elif func:
                 returns = func(self.current_app)

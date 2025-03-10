@@ -23,10 +23,9 @@ def main_server() -> None:
         "SERVER_MANAGEMENT": "True",
     })
     try:
-        Thread(target=application_instance.prompt, daemon=True).start()
-
-        while True:
-            ...
+        prompt = Thread(target=application_instance.prompt, daemon=True)
+        prompt.start()
+        prompt.join()
 
     except KeyboardInterrupt:
         tqdm.write("Stopping app")
