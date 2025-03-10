@@ -186,10 +186,16 @@ class Capa(CrawJUD):
             count = 0
             while count < 6:
                 for root, _, files in Path(self.output_dir_path).walk():
-                    for file_ in files:
-                        if id_proc in file_:
-                            path_copia = root.joinpath(file_)
-                            break
+                    filter_files = list(filter(lambda x: id_proc in x, files))
+                    if len(filter_files) > 1:
+                        for file_ in filter_files:
+                            if id_proc in file_ and "crdownload" in file_:
+                                path_copia = root.joinpath(file_)
+                                break
+
+                            elif id_proc in file_ and "crdownload" not in file_:
+                                path_copia = root.joinpath(file_)
+                                break
 
                 if "crdownload" in path_copia.name:
                     time.sleep(0.5)
