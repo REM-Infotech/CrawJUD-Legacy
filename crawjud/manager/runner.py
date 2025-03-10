@@ -158,11 +158,13 @@ class RunnerServices:
             ),
             "Beat": StoreService(
                 process_name="Beat",
+                process_status="Running",
                 process_object=Process(target=start_beat, daemon=True),
                 process_log_file="beat_celery.log",
             ),
             "Worker": StoreService(
                 process_name="Worker",
+                process_status="Running",
                 process_object=Process(target=start_worker, daemon=True),
                 process_log_file="worker_celery.log",
             ),
