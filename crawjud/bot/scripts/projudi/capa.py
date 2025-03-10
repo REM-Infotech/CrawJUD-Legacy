@@ -11,7 +11,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Self
 
-import requests
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -178,85 +177,38 @@ class Capa(CrawJUD):
             self.prt()
             time.sleep(5)
 
+            btn_exportar_proc = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btnExportar"]')
+            btn_exportar_proc.click()
+
             n_processo = self.bot_data.get("NUMERO_PROCESSO")
-            path_pdf = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo} - {self.pid}.pdf")
 
-            # Get cookies from ChromeDriver session
-            cookies = {cookie["name"]: cookie["value"] for cookie in self.driver.get_cookies()}
+            path_copia = None
+            count = 0
+            while count < 6:
+                for root, _, files in Path(self.output_dir_path).walk():
+                    for file_ in files:
+                        if id_proc in file_:
+                            path_copia = root.joinpath(file_)
+                            break
 
-            form = self.driver.find_element(
-                By.CSS_SELECTOR,
-                'form[id="processoExportarForm"]',
-            )
-            form_path = form.get_attribute("action")
-            url = form_path
-            value_achives: list[str] = []
-            for file_ in form.find_elements(
-                By.CSS_SELECTOR,
-                'input[name="arquivos"]',
-            ):
-                value_achives.append(file_.get_attribute("value"))
+                if "crdownload" in path_copia.name:
+                    time.sleep(0.5)
+                    continue
 
-            archives = ",".join(value_achives)
+                path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
+                if path_copia.exists():
+                    break
 
-            form_values = {
-                "selectedItems": archives,
-            }
+                time.sleep(3)
+                count += 1
 
-            other_inputs = form.find_elements(
-                By.XPATH, ".//input[not(contains(@name, 'arquivos'))][not(contains(@name, 'selectedItems'))]"
-            )
-            for input_ in other_inputs:
-                if input_.get_attribute("name") and input_.get_attribute("value"):
-                    if input_.get_attribute("name") == "adicionarCapa":
-                        form_values.update({input_.get_attribute("name"): "true"})
-                        continue
+            if not path_copia.exists():
+                raise ExecutionError("Arquivo não encontrado!")
 
-                    form_values.update({input_.get_attribute("name"): input_.get_attribute("value")})
-
-            # Download using requests
-            try:
-                response = requests.post(url=url, data=form_values, cookies=cookies, timeout=60)
-
-            except Exception as e:
-                raise ExecutionError(f"Erro ao baixar cópia integral do processo: {e}") from e
-
-            if response.status_code == 200:
-                with open(path_pdf, "wb") as f:
-                    f.write(response.content)
-            elif response.status_code != 200:
-                # Fallback to ChromeDriver download if requests fails
-                self.driver.get(url)
-
-                time.sleep(2)
-                path_copia = None
-                count = 0
-                while count < 6:
-                    for root, _, files in Path(self.output_dir_path).walk():
-                        for file_ in files:
-                            if id_proc in file_:
-                                path_copia = root.joinpath(file_).resolve()
-                                break
-
-                    if "crdownload" in path_copia.name:
-                        time.sleep(0.5)
-                        continue
-
-                    path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
-                    if path_copia.exists():
-                        break
-
-                    time.sleep(2)
-                    count += 1
-
-                if not path_copia.exists():
-                    raise ExecutionError("Arquivo não encontrado!")
-
-                old_pdf = path_copia
-                shutil.move(old_pdf, path_pdf)
-
+            new_path_path = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo} - {self.pid}.pdf")
+            shutil.move(path_copia, new_path_path)
             time.sleep(0.5)
-            data.update({"CÓPIA_INTEGRAL": path_pdf.name})
+            data.update({"CÓPIA_INTEGRAL": new_path_path.name})
 
         unmark_gen_mov()
         unmark_add_validate_tag()
