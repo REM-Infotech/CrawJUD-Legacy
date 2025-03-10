@@ -232,6 +232,16 @@ class Capa(CrawJUD):
                 path_copia = None
                 count = 0
                 while count < 6:
+                    for root, _, files in Path(self.output_dir_path).walk():
+                        for file_ in files:
+                            if id_proc in file_:
+                                path_copia = root.joinpath(file_).resolve()
+                                break
+
+                    if "crdownload" in path_copia.name:
+                        time.sleep(0.5)
+                        continue
+
                     path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
                     if path_copia.exists():
                         break
