@@ -133,8 +133,6 @@ class MasterApp(HeadCrawjudManager):
             for application_name, application in running_servers_:
                 if application_name == "Quart":
                     self.event_stop.set()
-                    application.stop()
-                    continue
 
                 application.stop()
 
