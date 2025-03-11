@@ -2,12 +2,16 @@
 
 import asyncio
 from pathlib import Path
+from threading import Event
 from time import sleep
 from typing import Callable, Dict
 
 import inquirer
-import rich
 from clear import clear
+from rich import print as printf  # noqa: F401
+from rich.live import Live
+from rich.spinner import Spinner
+from rich.text import Text  # noqa: F401
 from socketio import AsyncServer
 from termcolor import colored
 from tqdm import tqdm
@@ -33,8 +37,12 @@ class MasterApp(HeadCrawjudManager):
 
     def boot_app(self) -> None:
         """Boot Beat and the application."""
-        rich.print("[bold green]Starting application object...[/bold green]")
-        self.app, self.asgi, self.celery = asyncio.run(create_app())
+        clear()
+        self.event_stop = Event()
+        with Live(Spinner("dots", text="[bold yellow]Starting application server"), refresh_per_second=10) as live:
+            live.update(Spinner("dots", text="[bold yellow]Starting application server"))
+            self.app, self.asgi, self.celery = asyncio.run(create_app())
+            live.update(Text("✅ Application server started.", style="bold green"))
 
     def __init__(self) -> None:
         """Initialize the ASGI server."""
@@ -131,10 +139,22 @@ class MasterApp(HeadCrawjudManager):
             running_servers_ = [running_servers_ for running_servers_ in running_servers_]  # noqa: C416
             running_servers_ = running_servers_[::-1]
             for application_name, application in running_servers_:
-                if application_name == "Quart":
-                    self.event_stop.set()
+                with Live(
+                    Spinner("dots", text=f"[bold yellow]Stopping {application_name} application"), refresh_per_second=10
+                ) as live:
+                    if application_name == "Quart":
+                        self.event_stop.set()
 
-                application.stop()
+                    sleep(5)
+                    application.stop()
+                    sleep(5)
+                    live.update(
+                        Text(
+                            text=f"✅ {application_name} application stopped successfully!",
+                            style="bold green",
+                        )
+                    )
+                    sleep(2)
 
         self.return_main_menu()
 

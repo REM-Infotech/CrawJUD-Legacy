@@ -9,7 +9,6 @@ from os import environ, getcwd
 from pathlib import Path
 from threading import Thread
 
-import rich
 from billiard.connection import PipeConnection
 from billiard.context import Process
 from dotenv_vault import load_dotenv
@@ -63,14 +62,11 @@ class StoreService:
     def stop(self) -> None:
         """Stop the process."""
         if isinstance(self.process_object, Process):
-            rich.print(f"[bold yellow]Stopping '{self.process_name}'[/bold yellow]")
             self.process_object.terminate()
             self.process_object.join(60)
 
         elif isinstance(self.process_object, Thread):
-            rich.print(f"[bold yellow]Stopping '{self.process_name}'[/bold yellow]")
-
-        rich.print(f"[bold green]{self.process_name} stopped.[/bold green]")
+            self.process_object.join(60)
 
 
 class Config:

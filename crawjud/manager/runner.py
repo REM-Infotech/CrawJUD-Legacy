@@ -6,7 +6,8 @@ from os import environ, getcwd, getenv
 from pathlib import Path
 from platform import node
 from queue import Queue  # noqa: F401
-from threading import Condition, Event, Thread, current_thread  # noqa: F401
+from threading import Condition, Thread, current_thread  # noqa: F401
+from time import sleep
 from typing import Any, TypeVar  # noqa: F401
 
 from billiard.context import Process
@@ -16,9 +17,11 @@ from celery.apps.worker import Worker
 from clear import clear
 from pynput._util import AbstractListener  # noqa: F401
 from quart import Quart
+from rich.console import Console  # noqa: F401
+from rich.live import Live  # noqa: F401
+from rich.spinner import Spinner
+from rich.text import Text  # noqa: F401
 from socketio import ASGIApp
-from termcolor import colored
-from tqdm import tqdm
 from uvicorn import Config, Server
 
 from crawjud.core.config import StoreService, running_servers
@@ -28,7 +31,7 @@ from crawjud.logs import log_cfg
 from crawjud.types import app_name
 from crawjud.utils.gen_seed import worker_name_generator
 
-# F = TypeVar("F", bound=Any)
+printf = Console().print
 
 
 def start_worker() -> None:
@@ -59,13 +62,7 @@ def start_worker() -> None:
                     worker.stop()
 
                 else:
-                    tqdm.write(
-                        colored(
-                            f"{colored('[ERROR]', 'red', attrs=['bold', 'blink'])} {e}",
-                            "red",
-                            attrs=["bold"],
-                        )
-                    )
+                    printf("[bold red]Error starting worker.")
 
     asyncio.run(start_worker())
 
@@ -145,11 +142,8 @@ class RunnerServices:
         This method creates threads for the worker, Quart server, and Celery beat.
         It listens for a keyboard interrupt and then signals all threads to stop.
         """
-        self.event_stop = Event()
-
-        Thread(target=self.watch_shutdown, daemon=True).start()
-
-        running_servers.update({
+        clear()
+        to_start = {
             "Quart": StoreService(
                 process_name="Quart",
                 process_status="Running",
@@ -168,12 +162,36 @@ class RunnerServices:
                 process_object=Process(target=start_worker, daemon=True),
                 process_log_file="worker_celery.log",
             ),
-        })
+        }
 
-        for _, store in running_servers.items():
-            store.start()
+        for k, store in to_start.items():
+            if not running_servers.get(k):
+                with Live(
+                    Spinner(
+                        name="dots",
+                        text=f"[bold yellow]Starting {k} application[/bold yellow]",
+                    ),
+                    refresh_per_second=4,
+                ) as live:
+                    sleep(1)
+                    running_servers.update({k: store})
 
-        tqdm.write(colored("[INFO] All servers started.", "green", attrs=["bold"]))
+                    if k == "Quart":
+                        Thread(target=self.watch_shutdown, daemon=True).start()
+
+                    store.start()
+                    sleep(10)
+                    live.update(
+                        Text(
+                            text=f"✅ {k} application started successfully!",
+                            style="bold green",
+                        )
+                    )
+                    sleep(2)
+        clear()
+        printf(Text("✅ All Application server started successfully", style="bold green"))
+        sleep(5)
+        clear()
 
     def status(self, app_name: app_name) -> None:
         """Log the status of the server."""
@@ -183,7 +201,7 @@ class RunnerServices:
         clear()
 
         log_file = running_servers[app_name.capitalize()].process_log_file
-        tqdm.write("Type 'ESC' to exit.")
+        printf("[bold yellow]Type 'ESC' to exit.")
 
         monitor_log(file_name=log_file)
 
