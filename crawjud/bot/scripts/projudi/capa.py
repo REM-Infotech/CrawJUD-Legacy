@@ -204,7 +204,8 @@ class Capa(CrawJUD):
             }
 
             other_inputs = form.find_elements(
-                By.XPATH, ".//input[not(contains(@name, 'arquivos'))][not(contains(@name, 'selectedItems'))]"
+                By.XPATH,
+                ".//input[not(contains(@name, 'arquivos'))][not(contains(@name, 'selectedItems'))]",
             )
             for input_ in other_inputs:
                 if input_.get_attribute("name") and input_.get_attribute("value"):
@@ -212,7 +213,9 @@ class Capa(CrawJUD):
                         form_values.update({input_.get_attribute("name"): "true"})
                         continue
 
-                    form_values.update({input_.get_attribute("name"): input_.get_attribute("value")})
+                    form_values.update(
+                        {input_.get_attribute("name"): input_.get_attribute("value")},
+                    )
 
             # Download using requests
             try:
