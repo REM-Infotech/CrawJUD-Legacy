@@ -11,7 +11,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Self
 
-import requests
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -181,72 +180,78 @@ class Capa(CrawJUD):
             n_processo = self.bot_data.get("NUMERO_PROCESSO")
             path_pdf = Path(self.output_dir_path).joinpath(f"Cópia Integral - {n_processo} - {self.pid}.pdf")
 
-            # Get cookies from ChromeDriver session
-            cookies = {cookie["name"]: cookie["value"] for cookie in self.driver.get_cookies()}
+            # # Get cookies from ChromeDriver session
+            # cookies = {cookie["name"]: cookie["value"] for cookie in self.driver.get_cookies()}
 
-            form = self.driver.find_element(
-                By.CSS_SELECTOR,
-                'form[id="processoExportarForm"]',
-            )
-            form_path = form.get_attribute("action")
-            url = form_path
-            value_achives: list[str] = []
-            for file_ in form.find_elements(
-                By.CSS_SELECTOR,
-                'input[name="arquivos"]',
-            ):
-                value_achives.append(file_.get_attribute("value"))
+            # form = self.driver.find_element(
+            #     By.CSS_SELECTOR,
+            #     'form[id="processoExportarForm"]',
+            # )
+            # form_path = form.get_attribute("action")
+            # url = form_path
+            # value_achives: list[str] = []
+            # for file_ in form.find_elements(
+            #     By.CSS_SELECTOR,
+            #     'input[name="arquivos"]',
+            # ):
+            #     value_achives.append(file_.get_attribute("value"))
 
-            archives = ",".join(value_achives)
+            # archives = ",".join(value_achives)
 
-            form_values = {
-                "selectedItems": archives,
-            }
+            # form_values = {
+            #     "selectedItems": archives,
+            # }
 
-            other_inputs = form.find_elements(
-                By.XPATH,
-                ".//input[not(contains(@name, 'arquivos'))][not(contains(@name, 'selectedItems'))]",
-            )
-            for input_ in other_inputs:
-                if input_.get_attribute("name") and input_.get_attribute("value"):
-                    if input_.get_attribute("name") == "adicionarCapa":
-                        form_values.update({input_.get_attribute("name"): "true"})
-                        continue
+            # other_inputs = form.find_elements(
+            #     By.XPATH,
+            #     ".//input[not(contains(@name, 'arquivos'))][not(contains(@name, 'selectedItems'))]",
+            # )
+            # for input_ in other_inputs:
+            #     if input_.get_attribute("name") and input_.get_attribute("value"):
+            #         if input_.get_attribute("name") == "adicionarCapa":
+            #             form_values.update({input_.get_attribute("name"): "true"})
+            #             continue
 
-                    form_values.update(
-                        {input_.get_attribute("name"): input_.get_attribute("value")},
-                    )
+            #         form_values.update(
+            #             {input_.get_attribute("name"): input_.get_attribute("value")},
+            #         )
 
-            # Download using requests
-            try:
-                response = requests.post(url=self.driver.current_url, data=form_values, cookies=cookies, timeout=60)
+            # # Download using requests
+            # try:
+            #     response = requests.post(url=self.driver.current_url, data=form_values, cookies=cookies, timeout=60)
 
-            except Exception as e:
-                raise ExecutionError(f"Erro ao baixar cópia integral do processo: {e}") from e
+            # except Exception as e:
+            #     raise ExecutionError(f"Erro ao baixar cópia integral do processo: {e}") from e
 
-            if response.status_code == 200:
-                with open(path_pdf, "wb") as f:
-                    f.write(response.content)
-            elif response.status_code != 200:
-                # Fallback to ChromeDriver download if requests fails
-                self.driver.get(url)
+            # if response.status_code == 200:
+            #     with open(path_pdf, "wb") as f:
+            #         f.write(response.content)
+
+            #     is_pdf = mimetypes.guess_type(path_pdf)[0]
+            #     if is_pdf != "application/pdf":
+
+            # elif response.status_code != 200:
+            # Fallback to ChromeDriver download if requests fails
+
+            btn_exportar = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btnExportar"]')
+            btn_exportar.click()
+
+            time.sleep(5)
+            path_copia = None
+            count = 0
+            while count <= 300:
+                path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
+                if path_copia.exists():
+                    break
 
                 time.sleep(2)
-                path_copia = None
-                count = 0
-                while count < 6:
-                    path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
-                    if path_copia.exists():
-                        break
+                count += 1
 
-                    time.sleep(2)
-                    count += 1
+            if not path_copia.exists():
+                raise ExecutionError("Arquivo não encontrado!")
 
-                if not path_copia.exists():
-                    raise ExecutionError("Arquivo não encontrado!")
-
-                old_pdf = path_copia
-                shutil.move(old_pdf, path_pdf)
+            old_pdf = path_copia
+            shutil.move(old_pdf, path_pdf)
 
             time.sleep(0.5)
             data.update({"CÓPIA_INTEGRAL": path_pdf.name})
