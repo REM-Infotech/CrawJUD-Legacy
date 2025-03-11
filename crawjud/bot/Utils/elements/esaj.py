@@ -154,3 +154,5 @@ class ESAJ_AM(Configuracao):  # noqa: N801
     botao_protocolar = '//*[@id="botaoProtocolar"]'
     botao_confirmar = "div.popover-content button.confirm-button"
     botao_recibo = 'button[ng-click="consultarReciboPeticao(peticao)"]'
+
+    table_moves = './/tr[contains(@class, "fundoClaro") or contains(@class, "fundoEscuro")]'
