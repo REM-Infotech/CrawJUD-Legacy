@@ -72,6 +72,15 @@ class Elaw:
             self.bot_call.initialize(*args, **kwargs).execution()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             err = traceback.format_exc()
             logger.exception(err)
             raise StartError(traceback.format_exc()) from e

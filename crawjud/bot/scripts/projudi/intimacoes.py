@@ -5,6 +5,7 @@ Extract and manage process intimation information from the Projudi system.
 
 import re  # noqa: F401
 import time
+import traceback
 from contextlib import suppress
 from datetime import datetime  # noqa: F401
 from typing import Self
@@ -89,6 +90,15 @@ class Intimacoes(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 self.logger.exception(str(e))
                 old_message = None
                 # windows = self.driver.window_handles
@@ -184,6 +194,15 @@ class Intimacoes(CrawJUD):
                 self.driver.find_element(By.CSS_SELECTOR, 'a[class="arrowNextOn"]').click()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             self.logger.exception(str(e))
             raise ExecutionError(e=e) from e
 
@@ -439,4 +458,13 @@ class Intimacoes(CrawJUD):
     #         return [process_info]
 
     #     except Exception as e:
+    # self.logger.exception(
+    #     "".join(
+    #         traceback.format_exception(
+    #             etype=type(e),
+    #             value=e,
+    #             tb=e.__traceback__,
+    #         )
+    #     )
+    # )
     #         raise e

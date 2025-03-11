@@ -5,6 +5,7 @@ Manage participant processing in the Projudi system by interacting with process 
 
 import os
 import time
+import traceback
 from contextlib import suppress
 from typing import Self
 
@@ -77,6 +78,15 @@ class ProcParte(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old = self.message
                 message_error = str(e)
 
@@ -110,6 +120,15 @@ class ProcParte(CrawJUD):
                         self.auth_bot()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             old_message = None
 
             # check_window = any([isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)])
@@ -178,6 +197,15 @@ class ProcParte(CrawJUD):
                     self.auth_bot()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]) -> None:

@@ -6,6 +6,7 @@ Extract and manage process details from Projudi by scraping and formatting data.
 import re
 import shutil
 import time
+import traceback
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -88,6 +89,15 @@ class Capa(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 self.logger.exception(str(e))
                 old_message = None
 
@@ -129,6 +139,15 @@ class Capa(CrawJUD):
             self.append_success([data], "Informações do processo extraidas com sucesso!")
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             self.logger.exception(str(e))
             raise ExecutionError(e=e) from e
 
@@ -221,6 +240,15 @@ class Capa(CrawJUD):
             #     response = requests.post(url=self.driver.current_url, data=form_values, cookies=cookies, timeout=60)
 
             # except Exception as e:
+            #   self.logger.exception(
+            #     "".join(
+            #         traceback.format_exception(
+            #             etype=type(e),
+            #             value=e,
+            #             tb=e.__traceback__,
+            #         )
+            #     )
+            # )
             #     raise ExecutionError(f"Erro ao baixar cópia integral do processo: {e}") from e
 
             # if response.status_code == 200:
@@ -457,4 +485,13 @@ class Capa(CrawJUD):
             return process_info
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise e

@@ -5,6 +5,7 @@ ensuring detailed extraction and logging of information.
 """
 
 import time
+import traceback
 from contextlib import suppress
 from time import sleep
 from typing import Self
@@ -81,6 +82,15 @@ class Capa(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -117,6 +127,15 @@ class Capa(CrawJUD):
             self.append_success(self.get_process_informations())
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:

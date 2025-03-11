@@ -4,6 +4,7 @@ This module manages page search operations for paid costs in the CrawJUD-Bots ap
 """
 
 import time
+import traceback
 from contextlib import suppress
 from datetime import datetime
 from typing import Self
@@ -94,6 +95,15 @@ class BuscaPags(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -136,6 +146,15 @@ class BuscaPags(CrawJUD):
             self.page_custas()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def get_page_custas_pagas(self) -> None:

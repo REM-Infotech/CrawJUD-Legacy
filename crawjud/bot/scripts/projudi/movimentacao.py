@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import time
+import traceback
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -83,6 +84,15 @@ class Movimentacao(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old_message = None
                 # windows = self.driver.window_handles
 
@@ -157,6 +167,15 @@ class Movimentacao(CrawJUD):
                 self.append_error(data)
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def set_page_size(self) -> None:

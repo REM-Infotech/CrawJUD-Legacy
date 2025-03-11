@@ -13,6 +13,7 @@ Attributes:
 """
 
 import time
+import traceback
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -128,6 +129,15 @@ class Complement(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -243,6 +253,15 @@ class Complement(CrawJUD):
                 raise ExecutionError(message="Processo não encontrado!")
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def save_all(self) -> None:
@@ -293,6 +312,15 @@ class Complement(CrawJUD):
                 validar.update({campo.upper(): element})
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 try:
                     message = e.message
 

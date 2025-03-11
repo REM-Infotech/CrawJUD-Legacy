@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import os
 import time
+import traceback
 from contextlib import suppress
 from typing import Self
 
@@ -85,6 +86,15 @@ class Prazos(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -152,6 +162,15 @@ class Prazos(CrawJUD):
             self.append_success([comprovante], self.message)
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def TablePautas(self) -> None:  # noqa: N802
@@ -171,6 +190,15 @@ class Prazos(CrawJUD):
             self.prt()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def NovaPauta(self) -> None:  # noqa: N802
@@ -228,6 +256,15 @@ class Prazos(CrawJUD):
             DataAudiencia.send_keys(self.data_Concat)
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def save_Prazo(self) -> None:  # noqa: N802
@@ -247,6 +284,15 @@ class Prazos(CrawJUD):
             btn_salvar.click()
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def CheckLancamento(self) -> dict[str, str] | None:  # noqa: N802
@@ -296,4 +342,13 @@ class Prazos(CrawJUD):
             return data
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e

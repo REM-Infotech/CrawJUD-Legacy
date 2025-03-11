@@ -5,6 +5,7 @@ This module manages movement operations on the Esaj system using the CrawJUD fra
 
 import re
 import time
+import traceback
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
@@ -99,6 +100,15 @@ class Movimentacao(CrawJUD):
                 self.queue()
 
             except Exception as e:
+                self.logger.exception(
+                    "".join(
+                        traceback.format_exception(
+                            etype=type(e),
+                            value=e,
+                            tb=e.__traceback__,
+                        )
+                    )
+                )
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -137,8 +147,6 @@ class Movimentacao(CrawJUD):
             self.another_append: list[tuple[dict, str, str]] = []
             self.resultados = []
 
-            self.table_moves = None
-
             list_botdata = list(self.bot_data.items())
             for key, value in list_botdata:
                 if value is None:
@@ -173,6 +181,15 @@ class Movimentacao(CrawJUD):
                 self.append_error(data)
 
         except Exception as e:
+            self.logger.exception(
+                "".join(
+                    traceback.format_exception(
+                        etype=type(e),
+                        value=e,
+                        tb=e.__traceback__,
+                    )
+                )
+            )
             raise ExecutionError(e=e) from e
 
     def setup_config(self) -> None:
