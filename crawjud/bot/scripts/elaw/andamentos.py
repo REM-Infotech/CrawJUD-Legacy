@@ -143,13 +143,7 @@ class Andamentos(CrawJUD):
                 self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def info_data(self) -> None:
@@ -177,13 +171,7 @@ class Andamentos(CrawJUD):
             self.interact.sleep_load('div[id="j_id_34"]')
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def info_ocorrencia(self) -> None:
@@ -206,13 +194,7 @@ class Andamentos(CrawJUD):
             self.interact.send_key(ocorrencia, text_andamento)
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def info_observacao(self) -> None:
@@ -235,13 +217,7 @@ class Andamentos(CrawJUD):
             self.interact.send_key(observacao, text_andamento)
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def add_anexo(self) -> None:
@@ -273,13 +249,7 @@ class Andamentos(CrawJUD):
             save_button.click()
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(message="Não foi possivel salvar andamento", e=e) from e
 
         try:

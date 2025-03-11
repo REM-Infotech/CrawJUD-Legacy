@@ -106,15 +106,7 @@ class Pauta(CrawJUD):
                 self.queue(vara=vara)
 
             except Exception as e:
-                self.logger.exception(
-                    "".join(
-                        traceback.format_exception(
-                            exc=type(e),
-                            value=e,
-                            tb=e.__traceback__,
-                        )
-                    )
-                )
+                self.logger.exception("".join(traceback.format_exception(e)))
                 old_message = None
                 windows = self.driver.window_handles
 
@@ -185,13 +177,7 @@ class Pauta(CrawJUD):
                 self.prt()
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def get_pautas(self, current_date: type[datetime], vara: str) -> None:
@@ -272,15 +258,7 @@ class Pauta(CrawJUD):
                         self.get_pautas(current_date, vara)
 
                 except Exception as e:
-                    self.logger.exception(
-                        "".join(
-                            traceback.format_exception(
-                                exc=type(e),
-                                value=e,
-                                tb=e.__traceback__,
-                            )
-                        )
-                    )
+                    self.logger.exception("".join(traceback.format_exception(e)))
                     raise ExecutionError(e) from e
 
             elif not itens_pautas:
@@ -289,11 +267,5 @@ class Pauta(CrawJUD):
             sleep(times)
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e

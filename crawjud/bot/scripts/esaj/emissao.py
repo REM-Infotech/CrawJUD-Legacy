@@ -175,13 +175,7 @@ class Emissao(CrawJUD):
             self.append_success(self.get_barcode())
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def custas_iniciais(self) -> None:
@@ -450,11 +444,5 @@ class Emissao(CrawJUD):
             ]
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e

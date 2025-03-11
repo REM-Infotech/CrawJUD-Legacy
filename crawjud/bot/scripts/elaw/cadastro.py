@@ -196,13 +196,7 @@ class Cadastro(CrawJUD):
                     self.print_comprovante()
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def area_direito(self) -> None:
@@ -545,15 +539,7 @@ class Cadastro(CrawJUD):
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
             except Exception as e:
-                self.logger.exception(
-                    "".join(
-                        traceback.format_exception(
-                            exc=type(e),
-                            value=e,
-                            tb=e.__traceback__,
-                        )
-                    )
-                )
+                self.logger.exception("".join(traceback.format_exception(e)))
                 raise ExecutionError(message="Não foi possível cadastrar parte", e=e) from e
 
         self.messsage = "Parte adicionada!"
@@ -944,13 +930,7 @@ class Cadastro(CrawJUD):
             self.interact.sleep_load('div[id="j_id_3x"]')
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(message="Não foi possível cadastrar advogado", e=e) from e
 
     def cad_parte(self) -> None:
@@ -1062,13 +1042,7 @@ class Cadastro(CrawJUD):
             self.prt()
 
         except Exception as e:
-            self.logger.exception(
-                "".join(
-                    traceback.format_exception(
-                        exc=type(e),
-                    )
-                )
-            )
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def salvar_tudo(self) -> None:
