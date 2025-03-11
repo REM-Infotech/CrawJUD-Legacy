@@ -240,7 +240,7 @@ class Capa(CrawJUD):
             path_copia = None
             count = 0
             while count <= 300:
-                path_copia = Path(self.output_dir_path).joinpath(f"{id_proc}.pdf")
+                path_copia = self.output_dir_path.joinpath(f"{id_proc}.pdf").resolve()
                 if path_copia.exists():
                     break
 
@@ -250,8 +250,7 @@ class Capa(CrawJUD):
             if not path_copia.exists():
                 raise ExecutionError("Arquivo não encontrado!")
 
-            old_pdf = path_copia
-            shutil.move(old_pdf, path_pdf)
+            shutil.move(path_copia, path_pdf)
 
             time.sleep(0.5)
             data.update({"CÓPIA_INTEGRAL": path_pdf.name})
