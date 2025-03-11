@@ -219,7 +219,7 @@ class Capa(CrawJUD):
 
             # Download using requests
             try:
-                response = requests.post(url=url, data=form_values, cookies=cookies, timeout=60)
+                response = requests.post(url=self.driver.current_url, data=form_values, cookies=cookies, timeout=60)
 
             except Exception as e:
                 raise ExecutionError(f"Erro ao baixar cópia integral do processo: {e}") from e
