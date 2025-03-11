@@ -89,15 +89,6 @@ class Capa(CrawJUD):
                 self.queue()
 
             except Exception as e:
-                self.logger.exception(
-                    "".join(
-                        traceback.format_exception(
-                            exc=type(e),
-                            value=e,
-                            tb=e.__traceback__,
-                        )
-                    )
-                )
                 self.logger.exception(str(e))
                 old_message = None
 
