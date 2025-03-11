@@ -53,8 +53,6 @@ class Caixa:
                 "".join(
                     traceback.format_exception(
                         exc=type(e),
-                        value=e,
-                        tb=e.__traceback__,
                     )
                 )
             )

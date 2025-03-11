@@ -179,8 +179,6 @@ class Emissao(CrawJUD):
                 "".join(
                     traceback.format_exception(
                         exc=type(e),
-                        value=e,
-                        tb=e.__traceback__,
                     )
                 )
             )
@@ -456,8 +454,6 @@ class Emissao(CrawJUD):
                 "".join(
                     traceback.format_exception(
                         exc=type(e),
-                        value=e,
-                        tb=e.__traceback__,
                     )
                 )
             )
