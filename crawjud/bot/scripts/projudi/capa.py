@@ -236,11 +236,11 @@ class Capa(CrawJUD):
             btn_exportar = self.driver.find_element(By.CSS_SELECTOR, 'input[name="btnExportar"]')
             btn_exportar.click()
 
-            time.sleep(5)
-            path_copia = None
             count = 0
+            time.sleep(5)
+            path_copia = self.output_dir_path.joinpath(f"{id_proc}.pdf").resolve()
+
             while count <= 300:
-                path_copia = self.output_dir_path.joinpath(f"{id_proc}.pdf").resolve()
                 if path_copia.exists():
                     break
 
