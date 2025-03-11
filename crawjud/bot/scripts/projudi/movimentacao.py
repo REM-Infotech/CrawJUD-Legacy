@@ -191,7 +191,7 @@ class Movimentacao(CrawJUD):
             encontrado = self.scrap_moves(keyword)
 
         if encontrado is False:
-            raise ExecutionError("Nenhuma movimentação encontrada")
+            raise ExecutionError(message="Nenhuma movimentação encontrada")
 
     def filter_moves(self, move: WebElement) -> bool:
         """Filter a movement element based on given date and keyword criteria.

@@ -143,7 +143,7 @@ class Provisao(CrawJUD):
                 self.save_changes()
 
             if search is False:
-                raise ExecutionError("Processo não encontrado!")
+                raise ExecutionError(message="Processo não encontrado!")
 
         except Exception as e:
             raise e
@@ -265,7 +265,7 @@ class Provisao(CrawJUD):
             self.interact.sleep_load('div[id="j_id_7t"]')
 
         except Exception as e:
-            raise ExecutionError("Não foi possivel atualizar provisão", e=e) from e
+            raise ExecutionError(message="Não foi possivel atualizar provisão", e=e) from e
 
     def edit_valor(self) -> None:
         """Edit an existing value entry."""
@@ -291,7 +291,7 @@ class Provisao(CrawJUD):
 
             valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
             if valor_informar == 0:
-                raise ExecutionError("Valor de atualização inválido")
+                raise ExecutionError(message="Valor de atualização inválido")
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
@@ -443,7 +443,7 @@ class Provisao(CrawJUD):
             )
 
         if not check_provisao_atualizada:
-            raise ExecutionError("Não foi possivel atualizar provisão")
+            raise ExecutionError(message="Não foi possivel atualizar provisão")
 
         comprovante = self.print_comprovante()
         data = [str(self.bot_data.get("NUMERO_PROCESSO")), comprovante, "Provisão atualizada com sucesso!"]

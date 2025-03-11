@@ -244,7 +244,7 @@ class Andamentos(CrawJUD):
             save_button.click()
 
         except Exception as e:
-            raise ExecutionError("Não foi possivel salvar andamento", e=e) from e
+            raise ExecutionError(message="Não foi possivel salvar andamento", e=e) from e
 
         try:
             check_save: WebElement = WebDriverWait(self.driver, 10).until(
@@ -256,4 +256,4 @@ class Andamentos(CrawJUD):
                 self.append_success([self.numproc, "Andamento salvo com sucesso!", ""], "Andamento salvo com sucesso!")
 
         except Exception:
-            raise ExecutionError("Aviso: não foi possivel validar salvamento de andamento") from None
+            raise ExecutionError(message="Aviso: não foi possivel validar salvamento de andamento") from None

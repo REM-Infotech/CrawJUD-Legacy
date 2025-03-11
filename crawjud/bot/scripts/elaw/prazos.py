@@ -122,7 +122,7 @@ class Prazos(CrawJUD):
             search = self.search_bot()
             if not search:
                 self.message = "Buscando Processo"
-                raise ExecutionError("Não Encontrado!")
+                raise ExecutionError(message="Não Encontrado!")
 
             comprovante = ""
             self.data_Concat = f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
@@ -145,7 +145,7 @@ class Prazos(CrawJUD):
                 self.save_Prazo()
                 comprovante = self.CheckLancamento()
                 if not comprovante:
-                    raise ExecutionError("Não foi possível comprovar lançamento, verificar manualmente")
+                    raise ExecutionError(message="Não foi possível comprovar lançamento, verificar manualmente")
 
                 self.message = "Pauta lançada!"
 

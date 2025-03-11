@@ -139,12 +139,12 @@ class Protocolo(CrawJUD):
             search = self.search_bot()
 
             if search is not True:
-                raise ExecutionError("Processo não encontrado!")
+                raise ExecutionError(message="Processo não encontrado!")
 
             self.add_new_move()
 
             if self.set_parte() is not True:
-                raise ExecutionError("Não foi possível selecionar parte")
+                raise ExecutionError(message="Não foi possível selecionar parte")
 
             self.add_new_file()
             if self.bot_data.get("ANEXOS", None) is not None:
@@ -161,12 +161,12 @@ class Protocolo(CrawJUD):
                 confirm_protocol = self.confirm_protocol()
                 if not confirm_protocol:
                     if self.set_parte() is not True:
-                        raise ExecutionError("Nao foi possivel confirmar protocolo")
+                        raise ExecutionError(message="Nao foi possivel confirmar protocolo")
 
                     self.finish_move()
                     confirm_protocol = self.confirm_protocol()
                     if not confirm_protocol:
-                        raise ExecutionError("Nao foi possivel confirmar protocolo")
+                        raise ExecutionError(message="Nao foi possivel confirmar protocolo")
 
                 data = self.screenshot_sucesso()
                 data.append(confirm_protocol)
@@ -245,7 +245,7 @@ class Protocolo(CrawJUD):
                             cmd2 = f"return document.getElementById('{self.id_part}').checked"
                             return_cmd = self.driver.execute_script(cmd2)
                             if return_cmd is False:
-                                raise ExecutionError("Não é possivel selecionar parte")
+                                raise ExecutionError(message="Não é possivel selecionar parte")
 
                         selected_parte = True
                         break
@@ -264,7 +264,7 @@ class Protocolo(CrawJUD):
                     cmd2 = f"return document.getElementById('{self.id_part}').checked"
                     return_cmd = self.driver.execute_script(cmd2)
                     if return_cmd is False:
-                        raise ExecutionError("Não é possivel selecionar parte")
+                        raise ExecutionError(message="Não é possivel selecionar parte")
 
                 selected_parte = True
                 break
@@ -480,7 +480,7 @@ class Protocolo(CrawJUD):
                 )
 
             if check_p_element != "":
-                raise ExecutionError("Senha Incorreta!")
+                raise ExecutionError(message="Senha Incorreta!")
 
             """ PARA CORRIGIR """
             # confirm_button = self.driver.find_element(

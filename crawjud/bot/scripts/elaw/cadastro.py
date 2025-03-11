@@ -537,7 +537,7 @@ class Cadastro(CrawJUD):
                 self.interact.sleep_load('div[id="j_id_3x"]')
 
             except Exception as e:
-                raise ExecutionError("Não foi possível cadastrar parte", e) from e
+                raise ExecutionError(message="Não foi possível cadastrar parte", e=e) from e
 
         self.messsage = "Parte adicionada!"
         self.type_log = "info"
@@ -927,7 +927,7 @@ class Cadastro(CrawJUD):
             self.interact.sleep_load('div[id="j_id_3x"]')
 
         except Exception as e:
-            raise ExecutionError("Não foi possível cadastrar advogado", e) from e
+            raise ExecutionError(message="Não foi possível cadastrar advogado", e=e) from e
 
     def cad_parte(self) -> None:
         """Register the party information.

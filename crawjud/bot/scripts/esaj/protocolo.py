@@ -207,7 +207,7 @@ class Protocolo(CrawJUD):
                 self.driver.execute_script(f"return window.location.href = '{link}';")
 
         except Exception:
-            raise ExecutionError("Erro ao inicializar peticionamento") from None
+            raise ExecutionError(message="Erro ao inicializar peticionamento") from None
 
     def set_tipo_protocolo(self) -> None:
         """Set protocol type.
@@ -242,7 +242,7 @@ class Protocolo(CrawJUD):
             self.interact.send_key(input_tipo_peticao, Keys.ENTER)
 
         except Exception:
-            raise ExecutionError("Erro ao informar tipo de protocolo") from None
+            raise ExecutionError(message="Erro ao informar tipo de protocolo") from None
 
     def set_subtipo_protocolo(self) -> None:
         """Set protocol subtype.
@@ -275,7 +275,7 @@ class Protocolo(CrawJUD):
             sleep(1)
 
         except Exception:
-            raise ExecutionError("Erro ao informar subtipo de protocolo") from None
+            raise ExecutionError(message="Erro ao informar subtipo de protocolo") from None
 
     def set_petition_file(self) -> None:
         """Attach petition file.
@@ -314,12 +314,12 @@ class Protocolo(CrawJUD):
                 )
 
             if file_uploaded == "":
-                raise ExecutionError("Erro ao enviar petição")
+                raise ExecutionError(message="Erro ao enviar petição")
 
             self.prt.print_log("log", "Petição do processo anexada com sucesso")
 
         except Exception:
-            raise ExecutionError("Erro ao enviar petição") from None
+            raise ExecutionError(message="Erro ao enviar petição") from None
 
     def vincular_parte(self) -> None:
         """Link party to petition.
@@ -372,10 +372,10 @@ class Protocolo(CrawJUD):
                                 break
 
             elif not partes:
-                raise ExecutionError("Não foi possivel vincular parte a petição")
+                raise ExecutionError(message="Não foi possivel vincular parte a petição")
 
         except Exception:
-            raise ExecutionError("Não foi possivel vincular parte a petição") from None
+            raise ExecutionError(message="Não foi possivel vincular parte a petição") from None
 
     def finish_petition(self) -> None:
         """Finalize petition process.
@@ -438,4 +438,4 @@ class Protocolo(CrawJUD):
             ]
 
         except Exception as e:
-            raise ExecutionError("Erro ao confirmar protocolo", e=e) from e
+            raise ExecutionError(message="Erro ao confirmar protocolo", e=e) from e

@@ -118,7 +118,7 @@ class Capa(CrawJUD):
             search = self.search_bot()
             trazer_copia = self.bot_data.get("TRAZER_COPIA", "não")
             if search is not True:
-                raise ExecutionError("Processo não encontrado!")
+                raise ExecutionError(message="Processo não encontrado!")
 
             self.driver.refresh()
             data = self.get_process_informations()
@@ -248,7 +248,7 @@ class Capa(CrawJUD):
                 count += 1
 
             if not path_copia.exists():
-                raise ExecutionError("Arquivo não encontrado!")
+                raise ExecutionError(message="Arquivo não encontrado!")
 
             shutil.move(path_copia, path_pdf)
 

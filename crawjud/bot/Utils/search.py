@@ -123,7 +123,7 @@ class SearchBot(CrawJUD):
             id_consultar = "pbConsultar"
 
         elif not grau or grau != 1 or grau != 2:
-            raise ExecutionError("Informar instancia!")
+            raise ExecutionError(message="Informar instancia!")
 
         sleep(1)
         # Coloca o campo em formato "Outros" para inserir o número do processo
@@ -224,7 +224,7 @@ class SearchBot(CrawJUD):
 
         def detect_intimacao() -> None:
             if "intimacaoAdvogado.do" in self.driver.current_url:
-                raise ExecutionError("Processo com Intimação pendente de leitura!")
+                raise ExecutionError(message="Processo com Intimação pendente de leitura!")
 
         def get_link_grau2() -> str | None:
             """Retrieve the link to access the resources related to the process for the second grade.

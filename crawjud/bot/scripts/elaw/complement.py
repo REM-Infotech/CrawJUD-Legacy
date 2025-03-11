@@ -240,7 +240,7 @@ class Complement(CrawJUD):
                 self.prt()
 
             elif search is not True:
-                raise ExecutionError("Processo não encontrado!")
+                raise ExecutionError(message="Processo não encontrado!")
 
         except Exception as e:
             raise ExecutionError(e=e) from e

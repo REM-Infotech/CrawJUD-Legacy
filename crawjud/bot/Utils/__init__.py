@@ -405,7 +405,7 @@ class OtherUtils(CrawJUD):
             for append in self.appends:
                 self.append_success(append, "Movimentação salva na planilha com sucesso!!")
         else:
-            raise ExecutionError("Nenhuma Movimentação encontrada")
+            raise ExecutionError(message="Nenhuma Movimentação encontrada")
 
     def append_success(
         self,

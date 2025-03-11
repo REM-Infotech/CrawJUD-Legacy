@@ -286,7 +286,7 @@ class Emissao(CrawJUD):
             ).text
 
         elif portal == "não informado":
-            raise ExecutionError("Informar portal do processo na planilha (PROJUDI ou ESAJ)")
+            raise ExecutionError(message="Informar portal do processo na planilha (PROJUDI ou ESAJ)")
 
     def renajud(self) -> None:
         """Implement Renajud emission process navigation and actions when needed.
@@ -348,7 +348,7 @@ class Emissao(CrawJUD):
             self.driver.close()
             sleep(0.7)
             self.driver.switch_to.window(original_window)
-            raise ExecutionError("Esaj não gerou a guia")
+            raise ExecutionError(message="Esaj não gerou a guia")
 
         if not check:
             return f"https://consultasaj.tjam.jus.br{url}"

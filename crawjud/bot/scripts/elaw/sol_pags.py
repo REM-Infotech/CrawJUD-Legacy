@@ -142,7 +142,7 @@ class SolPags(CrawJUD):
                 self.append_success(self.confirm_save())
 
             elif search is not True:
-                raise ExecutionError("Processo não encontrado!")
+                raise ExecutionError(message="Processo não encontrado!")
 
         except Exception as e:
             raise ExecutionError(e=e) from e
@@ -211,7 +211,7 @@ class SolPags(CrawJUD):
                             item.click()
                             return
 
-            raise ExecutionError("Tipo de Pagamento não encontrado")
+            raise ExecutionError(message="Tipo de Pagamento não encontrado")
 
         except Exception as e:
             raise ExecutionError(e=e) from e
@@ -620,7 +620,7 @@ class SolPags(CrawJUD):
 
             for pos, item in enumerate(check_solicitacoes):
                 if item.text == "Nenhum registro encontrado!":
-                    raise ExecutionError("Pagamento não solicitado")
+                    raise ExecutionError(message="Pagamento não solicitado")
 
                 open_details = item.find_element(By.CSS_SELECTOR, self.elements.botao_ver)
                 open_details.click()
@@ -715,7 +715,7 @@ class SolPags(CrawJUD):
                 closeContext.click()
                 sleep(0.25)
 
-            raise ExecutionError("Pagamento não solicitado")
+            raise ExecutionError(message="Pagamento não solicitado")
 
         except Exception as e:
             raise ExecutionError(e=e) from e
