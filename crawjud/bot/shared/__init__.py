@@ -407,7 +407,13 @@ class PropertiesCrawJUD:
 
     @property
     def pid(self) -> str:
-        """Return the execution bot ID."""
+        """Return the execution bot ID.
+
+        Example:
+        -------
+        >>> print(self.pid)
+
+        """
         return PropertiesCrawJUD.pid_
 
     @pid.setter
