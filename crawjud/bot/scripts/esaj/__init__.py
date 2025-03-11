@@ -54,7 +54,7 @@ class Esaj:
             self.logger.exception(
                 "".join(
                     traceback.format_exception(
-                        etype=type(e),
+                        exc=type(e),
                         value=e,
                         tb=e.__traceback__,
                     )
