@@ -147,7 +147,7 @@ class SearchBot(CrawJUD):
         check_process = None
         with suppress(NoSuchElementException, TimeoutException):
             check_process = WebDriverWait(self.driver, 5).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, "#mensagemRetorno")),
+                ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
             )
 
         # Retry 1

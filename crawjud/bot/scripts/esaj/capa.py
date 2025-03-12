@@ -114,7 +114,11 @@ class Capa(CrawJUD):
         Calls the search method and retrieves detailed process information.
         """
         try:
-            self.search_bot()
+            search = self.search_bot()
+
+            if search is False:
+                raise ExecutionError(message="Processo não encontrado.")
+
             self.append_success(self.get_process_informations())
 
         except Exception as e:
