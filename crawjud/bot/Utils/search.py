@@ -108,6 +108,9 @@ class SearchBot(CrawJUD):
         """
         grau = self.bot_data.get("GRAU", 1)
 
+        if not grau:
+            grau = 1
+
         if isinstance(grau, str):
             if "º" in grau:
                 grau = grau.replace("º", "").replace(" ", "")

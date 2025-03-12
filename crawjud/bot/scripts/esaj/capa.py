@@ -139,7 +139,16 @@ class Capa(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        grau = int(str(self.bot_data.get("GRAU", "1")).replace("º", ""))
+        grau = self.bot_data.get("GRAU", 1)
+
+        if not grau:
+            grau = 1
+
+        elif isinstance(grau, str):
+            if "º" in grau:
+                grau = grau.replace("º", "")
+
+            grau = int(grau)
 
         self.driver.execute_script("$('div#maisDetalhes').show()")
 

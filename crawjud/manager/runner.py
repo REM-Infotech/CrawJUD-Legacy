@@ -180,7 +180,7 @@ class RunnerServices:
                         Thread(target=self.watch_shutdown, daemon=True).start()
 
                     store.start()
-                    sleep(10)
+                    sleep(2)
                     live.update(
                         Text(
                             text=f"✅ {k} application started successfully!",
@@ -190,7 +190,7 @@ class RunnerServices:
                     sleep(2)
         clear()
         printf(Text("✅ All Application server started successfully", style="bold green"))
-        sleep(5)
+        sleep(2)
         clear()
 
     def status(self, app_name: app_name) -> None:
