@@ -11,7 +11,7 @@ from datetime import datetime
 from time import sleep
 
 import pytz
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -91,7 +91,21 @@ class SearchBot(CrawJUD):
         if open_proc:
             chkTypeBot = diff_cad and diff_complement  # noqa: N806
             if chkTypeBot:
-                open_proc.click()
+                clicked = False
+                with suppress(StaleElementReferenceException):
+                    open_proc.click()
+                    clicked = True
+
+                if not clicked:
+                    self.wait.until(
+                        ec.presence_of_element_located((
+                            By.ID,
+                            "dtProcessoResults_data",
+                        ))
+                    ).find_element(
+                        By.ID,
+                        "dtProcessoResults:0:btnProcesso",
+                    ).click()
 
             return True
 
