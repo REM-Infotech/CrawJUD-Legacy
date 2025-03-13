@@ -124,6 +124,20 @@ class ESAJ_AM(Configuracao):  # noqa: N801
     orgao_processual = '//*[@id="orgaoJulgadorProcesso"]'
     status_processual = 'span[id="situacaoProcesso"]'
     relator = '//*[@id="relatorProcesso"]'
+    numproc = "unj-larger-1"
+    statusproc = "unj-tag"
+
+    nameitemsumary = "unj-label"
+    valueitemsumary = 'div[class="lh-1-1 line-clamp__2"]'
+
+    value2_itemsumary = {
+        "CLASSE": "#classeProcesso",
+        "DISTRIBUIÇÃO": "#dataHoraDistribuicaoProcesso",
+        "CONTROLE": "#numeroControleProcesso",
+        "VALOR_DA_AÇÃO": "#valorAcaoProcesso",
+        "JUIZ": "#juizProcesso",
+        "OUTROS_ASSUNTOS": 'div[class="line-clamp__2"]',
+    }
 
     nome_foro = 'input[name="entity.nmForo"]'
     tree_selection = 'input[name="classesTreeSelection.text"]'
