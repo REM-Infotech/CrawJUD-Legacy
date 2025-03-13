@@ -285,6 +285,7 @@ class Provisao(CrawJUD):
 
         """
         try:
+            self.interact.sleep_load('div[id="j_id_2z"]')
             self.message = "Informando valores"
             self.type_log = "log"
             self.prt()
@@ -298,6 +299,7 @@ class Provisao(CrawJUD):
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
+            self.interact.sleep_load('div[id="j_id_2z"]')
 
             if isinstance(valor_informar, int):
                 valor_informar = str(valor_informar) + ",00"
@@ -309,6 +311,8 @@ class Provisao(CrawJUD):
 
             id_campo_valor_dml = campo_valor_dml.get_attribute("id")
             self.driver.execute_script(f"document.getElementById('{id_campo_valor_dml}').blur()")
+            self.interact.sleep_load('div[id="j_id_2z"]')
+
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))
             raise e
