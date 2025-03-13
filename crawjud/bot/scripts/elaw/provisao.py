@@ -182,7 +182,9 @@ class Provisao(CrawJUD):
         possible = provisao == "possível"
 
         if chk_getvals1 and possible:
-            raise ExecutionError('Provisão "Possível" já inserida')
+            self.message = "Aviso: Já existe uma provisão possível cadastrada."
+            self.type_log = "info"
+            self.prt()
 
         edit_button: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_btn_edit)),
