@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 
-from ..gcs_mgmt import bucket_gcs, credentials_gcs, storage_client
+from crawjud.utils.gcs_mgmt import bucket_gcs, credentials_gcs, storage_client
 
 
 def generate_signed_url(blob_name: str) -> str:

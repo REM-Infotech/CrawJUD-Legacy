@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from ..gcs_mgmt import bucket_gcs, storage_client
+from crawjud.utils.gcs_mgmt import bucket_gcs, storage_client
 
 
 def enviar_arquivo_para_gcs(zip_file: str, file_path: Path) -> tuple[str, Path]:

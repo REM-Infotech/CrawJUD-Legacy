@@ -23,18 +23,18 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from socketio import Client
 
-from crawjud.logs import log_cfg
 from crawjud.types import SubDict, TypeValues
+from logs import log_cfg
 
 if TYPE_CHECKING:
-    from crawjud.bot.Utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
-    from crawjud.bot.Utils import ElementsBot as ElementsBot_
-    from crawjud.bot.Utils import Interact as _Interact_
-    from crawjud.bot.Utils import MakeXlsx as _MakeXlsx_
-    from crawjud.bot.Utils import OtherUtils as _OtherUtils_
-    from crawjud.bot.Utils import PrintBot as _PrintBot_
-    from crawjud.bot.Utils import SearchBot as _SearchBot_
-    from crawjud.bot.Utils import SendMessage as _SendMessage_
+    from crawjud.bot.utils import ELAW_AME, ESAJ_AM, PJE_AM, PROJUDI_AM
+    from crawjud.bot.utils import ElementsBot as ElementsBot_
+    from crawjud.bot.utils import Interact as _Interact_
+    from crawjud.bot.utils import MakeXlsx as _MakeXlsx_
+    from crawjud.bot.utils import OtherUtils as _OtherUtils_
+    from crawjud.bot.utils import PrintBot as _PrintBot_
+    from crawjud.bot.utils import SearchBot as _SearchBot_
+    from crawjud.bot.utils import SendMessage as _SendMessage_
 
 
 load_dotenv()
@@ -183,15 +183,15 @@ class PropertiesCrawJUD:
             Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
 
         """
-        from crawjud.bot.Utils import AuthBot as _AuthBot_
-        from crawjud.bot.Utils import DriverBot as _DriverBot_
-        from crawjud.bot.Utils import ElementsBot as _ElementsBot_
-        from crawjud.bot.Utils import Interact as _Interact_
-        from crawjud.bot.Utils import MakeXlsx as _MakeXlsx_
-        from crawjud.bot.Utils import OtherUtils as _OtherUtils_
-        from crawjud.bot.Utils import PrintBot as _PrintBot_
-        from crawjud.bot.Utils import SearchBot as _SearchBot_
-        from crawjud.bot.Utils import SendMessage as _SendMessage_
+        from crawjud.bot.utils import AuthBot as _AuthBot_
+        from crawjud.bot.utils import DriverBot as _DriverBot_
+        from crawjud.bot.utils import ElementsBot as _ElementsBot_
+        from crawjud.bot.utils import Interact as _Interact_
+        from crawjud.bot.utils import MakeXlsx as _MakeXlsx_
+        from crawjud.bot.utils import OtherUtils as _OtherUtils_
+        from crawjud.bot.utils import PrintBot as _PrintBot_
+        from crawjud.bot.utils import SearchBot as _SearchBot_
+        from crawjud.bot.utils import SendMessage as _SendMessage_
 
         PropertiesCrawJUD.OtherUtils_ = _OtherUtils_()
         PropertiesCrawJUD.SearchBot_ = _SearchBot_()
@@ -218,7 +218,7 @@ class PropertiesCrawJUD:
         """
         print_bot = getattr(PropertiesCrawJUD, "PrintBot_", None)
         if print_bot is None:
-            from crawjud.bot.Utils import PrintBot as _PrintBot_
+            from crawjud.bot.utils import PrintBot as _PrintBot_
 
             self.print_bot = _PrintBot_()
             PropertiesCrawJUD.PrintBot_ = self.print_bot
@@ -476,12 +476,12 @@ class PropertiesCrawJUD:
         PropertiesCrawJUD.webdriverwait_ = new_webdriverwait_
 
     @property
-    def chr_dir(self) -> Path:
+    def user_data_diretory(self) -> Path:
         """Return the user data directory path."""
         return PropertiesCrawJUD.user_data_dir
 
-    @chr_dir.setter
-    def chr_dir(self, new_path: Path) -> None:
+    @user_data_diretory.setter
+    def user_data_diretory(self, new_path: Path) -> None:
         """
         Set the user data directory path.
 

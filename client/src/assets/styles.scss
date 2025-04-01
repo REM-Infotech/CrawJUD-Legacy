@@ -1,0 +1,99 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+@import "../../../node_modules/bootstrap/scss/variables-dark";
+@import "../../../node_modules/bootstrap/scss/maps";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/bootstrap/scss/root";
+@import "../../../node_modules/bootstrap/scss/utilities";
+@import "../../../node_modules/bootstrap/scss/reboot";
+@import "../../../node_modules/bootstrap/scss/type";
+@import "../../../node_modules/bootstrap/scss/images";
+@import "../../../node_modules/bootstrap/scss/containers";
+@import "../../../node_modules/bootstrap/scss/grid";
+@import "../../../node_modules/bootstrap/scss/helpers";
+@import "../../../node_modules/bootstrap/scss/utilities/api";
+
+// 8. Add additional custom code here
+.navbar-indigo {
+  --#{$prefix}navbar-color: #{$white};
+  --#{$prefix}navbar-hover-color: #{$white};
+  --#{$prefix}navbar-disabled-color: #{$white};
+  --#{$prefix}navbar-active-color: #{$white};
+  --#{$prefix}navbar-brand-color: #{$white};
+  --#{$prefix}navbar-brand-hover-color: #{$white};
+  --#{$prefix}navbar-toggler-border-color: #{$white};
+  --#{$prefix}navbar-toggler-icon-bg: #{$white};
+  background-color: #290f38;
+  // background-color: #{$indigo-600};
+}
+
+.bg-purple {
+  --bs-bg-opacity: 1;
+  background-color: rgb(93, 22, 111);
+  // background-color: #{$indigo-300};
+}
+.bg-dark-purple2 {
+  --bs-bg-opacity: 1;
+  background-color: rgb(34, 7, 65);
+  // background-color: #{$indigo-900};
+}
+
+.bg-dark-purple-transparent {
+  --bs-bg-opacity: 1;
+  background-color: rgba(41, 15, 56, 0.91);
+  // background-color: #{$indigo-900};
+}
+
+.bg-indigo {
+  --bs-bg-opacity: 1;
+  background-color: #{$indigo-900};
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(300, 97%, 37%, 0.2);
+  }
+}
+
+.bg-robot {
+  --bs-bg-opacity: 1;
+  background-color: rgba(36, 4, 63, 0.425);
+  color: white;
+  // background-color: #{$indigo-300};
+}
+
+// .navbar-indigo {
+//   --#{$prefix}navbar-color: #{$white};
+//   --#{$prefix}navbar-hover-color: #{$white};
+//   --#{$prefix}navbar-disabled-color: #{$white};
+//   --#{$prefix}navbar-active-color: #{$white};
+//   --#{$prefix}navbar-brand-color: #{$white};
+//   --#{$prefix}navbar-brand-hover-color: #{$white};
+//   --#{$prefix}navbar-toggler-border-color: #{$white};
+//   --#{$prefix}navbar-toggler-icon-bg: #{$white};
+//   background-color: #290f38;
+//   // background-color: #{$indigo-600};
+// }
+
+// .bg-purple {
+//   --bs-bg-opacity: 1;
+//   background-color: rgba(93, 22, 111, 0.493);
+//   // background-color: #{$indigo-300};
+// }
+
+// .bg-dark-purple-transparent {
+//   --bs-bg-opacity: 1;
+//   background-color: #290f38cb;
+//   // background-color: #{$indigo-900};
+// }
+
+// .bg-indigo {
+//   --bs-bg-opacity: 1;
+//   background-color: #{$indigo-900};
+// }
+
+// @media (hover: hover) {
+//   a:hover {
+//     background-color: hsla(300, 97%, 37%, 0.2);
+//   }
+// }

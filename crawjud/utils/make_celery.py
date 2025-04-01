@@ -31,10 +31,10 @@ def config_loggers(
     """
     from logging.config import dictConfig
 
-    from crawjud.logs import log_cfg
+    from logs import log_cfg
 
     logger_name = f"{getenv('APPLICATION_APP')}_celery"
-    log_file = Path(getcwd()).resolve().joinpath("crawjud", "logs", f"{logger_name}.log")
+    log_file = Path(getcwd()).resolve().joinpath("logs", f"{logger_name}.log")
     log_file.touch(exist_ok=True)
 
     log_level = logging.INFO

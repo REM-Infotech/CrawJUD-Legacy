@@ -5,9 +5,9 @@ ensuring detailed extraction and logging of information.
 """
 
 import time
-import traceback
 from contextlib import suppress
 from time import sleep
+from traceback import format_exception
 from typing import Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -122,7 +122,7 @@ class Capa(CrawJUD):
             self.append_success(self.get_process_informations())
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("\n".join(format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:
@@ -156,90 +156,223 @@ class Capa(CrawJUD):
 
         self.driver.execute_script("$('div#maisDetalhes').show()")
 
-        data = {"NUMERO_PROCESSO": ""}
+        if grau == 1:
+            acao: WebElement = self.wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.acao)),
+            ).text
+            area_do_direito = "Diversos"
 
-        sumary_1_esaj = self.wait.until(
-            ec.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1)),
-        )
+            if acao == "Procedimento do Juizado Especial Cível":
+                area_do_direito = str(acao).replace("Procedimento do ", "")
 
-        sumary_2_esaj = self.wait.until(
-            ec.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2)),
-        )
+            subarea_direito = "Geral"
+            estado = "Amazonas"
+            comarca = self.driver.find_element(By.ID, "foroProcesso").text
 
-        list_sumary = [sumary_1_esaj, sumary_2_esaj]
+            if "Fórum de " in comarca:
+                comarca = str(comarca).replace("Fórum de ", "")
 
-        for pos_, sumary in enumerate(list_sumary):
-            for pos, rows in enumerate(sumary):
-                subitems_sumary = rows.find_elements(By.CSS_SELECTOR, self.elements.rows_sumary_)
+            vara: WebElement = self.wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
+            ).text.split(" ")[0]
+            foro: WebElement = self.wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.vara_processual)),
+            ).text.replace(f"{vara} ", "")
 
-                for item in subitems_sumary:
-                    if pos == 0 and pos_ == 0:
-                        num_proc = item.find_element(By.CLASS_NAME, self.elements.numproc).text
-                        status_proc = "Em Andamento"
-                        with suppress(NoSuchElementException):
-                            status_proc = item.find_element(By.CLASS_NAME, self.elements.statusproc).text
+            table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
+            polo_ativo = (
+                table_partes.find_elements(By.TAG_NAME, "tr")[0].find_elements(By.TAG_NAME, "td")[1].text.split("\n")[0]
+            )
 
-                        data.update({"NUMERO_PROCESSO": num_proc, "STATUS": status_proc.upper()})
-                        continue
+            tipo_parte = "Autor"
+            cpf_polo_ativo = "Não consta"
 
-                    value = None
-                    title = item.find_element(By.CLASS_NAME, self.elements.nameitemsumary).text
+            polo_passivo = (
+                table_partes.find_elements(By.TAG_NAME, "tr")[1].find_elements(By.TAG_NAME, "td")[1].text.split("\n")[0]
+            )
 
-                    if title:
-                        title = title.upper()
+            tipo_passivo = "réu"
+            cpf_polo_passivo = "Não consta"
 
-                    if " " in title:
-                        title = "_".join([ttl for ttl in title.split(" ") if ttl])
+            try:
+                adv_polo_ativo = (
+                    table_partes.find_elements(By.TAG_NAME, "tr")[0]
+                    .find_elements(By.TAG_NAME, "td")[1]
+                    .text.split(":")[1]
+                    .replace("Advogado:", "")
+                    .replace("Advogada:", "")
+                    .replace("  ", "")
+                )
 
-                    with suppress(NoSuchElementException):
-                        value = item.find_element(By.CSS_SELECTOR, self.elements.valueitemsumary).text
+            except Exception:
+                adv_polo_ativo = "Não consta"
+            escritorio_externo = "Fonseca Melo e Viana Advogados Associados"
+            fase = "inicial"
+            valor = ""
+            with suppress(TimeoutException):
+                valor: WebElement = (
+                    WebDriverWait(self.driver, 1, 0.01)
+                    .until(ec.presence_of_element_located((By.ID, self.elements.id_valor)))
+                    .text
+                )
 
-                    if not value:
-                        with suppress(NoSuchElementException):
-                            element_search = self.elements.value2_itemsumary.get(title)
+            def converte_valor_causa(valor_causa: str) -> str:
+                if "R$" in valor_causa:
+                    valor_causa = float(
+                        valor_causa.replace("$", "")
+                        .replace("R", "")
+                        .replace(" ", "")
+                        .replace(".", "")
+                        .replace(",", "."),
+                    )
+                    return f"{valor_causa:.2f}".replace(".", ",")
 
-                            if element_search:
-                                value = item.find_element(By.CSS_SELECTOR, element_search).text
+                if "R$" not in valor_causa:
+                    valor_causa = float(valor_causa.replace("$", "").replace("R", "").replace(" ", "").replace(",", ""))
+                    return f"{valor_causa:.2f}".replace(".", ",")
 
-                                if title == "OUTROS_ASSUNTOS":
-                                    value = " ".join([val for val in value.split(" ") if val])
+            valorDaCausa = valor  # noqa: N806
+            if valor != "":
+                valorDaCausa = converte_valor_causa(valor)  # noqa: N806
 
-                    if value:
-                        data.update({title: value.upper()})
+            sleep(0.5)
+            distnotformated: WebElement = (
+                self.wait.until(ec.presence_of_element_located((By.ID, self.elements.data_processual)))
+                .text.replace(" às ", "|")
+                .replace(" - ", "|")
+            )
+            distdata = distnotformated.split("|")[0]
+            processo_data = [
+                self.bot_data.get("NUMERO_PROCESSO"),
+                area_do_direito,
+                subarea_direito,
+                estado,
+                comarca,
+                foro,
+                vara,
+                distdata,
+                polo_ativo,
+                tipo_parte,
+                cpf_polo_ativo,
+                polo_passivo,
+                tipo_passivo,
+                cpf_polo_passivo,
+                "",
+                "",
+                "",
+                acao,
+                "",
+                "",
+                "",
+                "",
+                adv_polo_ativo,
+                "",
+                escritorio_externo,
+                valorDaCausa,
+                fase,
+            ]
 
-        table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
-        for group_parte in table_partes.find_elements(By.TAG_NAME, "tr"):
-            pos_repr = 0
-            type_parte = self.format_string(group_parte.find_elements(By.TAG_NAME, "td")[0].text.upper())
+        elif grau == 2:
+            data = {"NUMERO_PROCESSO": ""}
 
-            info_parte = group_parte.find_elements(By.TAG_NAME, "td")[1]
-            info_parte_text = info_parte.text.split("\n")
-            if "\n" in info_parte.text:
-                for attr_parte in info_parte_text:
-                    if ":" in attr_parte:
-                        representante = attr_parte.replace("  ", "").split(":")
-                        tipo_representante = representante[0].upper()
-                        nome_representante = representante[1].upper()
-                        key = {f"{tipo_representante}_{type_parte}": nome_representante}
+            sumary_1_esaj = self.wait.until(
+                ec.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_1)),
+            )
 
-                        doc_ = "Não consta"
-                        with suppress(NoSuchElementException, IndexError):
-                            doc_ = info_parte.find_elements(By.TAG_NAME, "input")[pos_repr]
-                            doc_ = doc_.get_attribute("value")
+            sumary_2_esaj = self.wait.until(
+                ec.presence_of_all_elements_located((By.CSS_SELECTOR, self.elements.sumary_header_2)),
+            )
 
-                        key_doc = {f"DOC_{tipo_representante}_{type_parte}": doc_}
+            list_sumary = [sumary_1_esaj, sumary_2_esaj]
 
-                        pos_repr += 1
+            for pos_, sumary in enumerate(list_sumary):
+                for pos, rows in enumerate(sumary):
+                    subitems_sumary = rows.find_elements(By.CSS_SELECTOR, self.elements.rows_sumary_)
 
-                        data.update(key)
-                        data.update(key_doc)
+                    for item in subitems_sumary:
+                        if pos == 0 and pos_ == 0:
+                            num_proc = item.find_element(By.CLASS_NAME, self.elements.numproc).text
+                            status_proc = "Em Andamento"
+                            with suppress(NoSuchElementException):
+                                status_proc = item.find_element(By.CLASS_NAME, self.elements.statusproc).text
 
-                    elif ":" not in attr_parte:
-                        key = {type_parte: attr_parte}
-                        data.update(key)
+                            data.update({"NUMERO_PROCESSO": num_proc, "STATUS": status_proc.upper()})
+                            continue
 
-            elif "\n" not in info_parte_text:
-                key = {type_parte: info_parte.text}
-                data.update(key)
+                        title = item.find_element(By.CLASS_NAME, self.elements.nameitemsumary).text
 
-        return [data]
+                        value = item.find_element(By.CLASS_NAME, self.elements.valueitemsumary).text
+
+                        data.update({title.upper(): value.upper()})
+
+            table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
+            for group_parte in table_partes.find_elements(By.TAG_NAME, "tr"):
+                pos_repr = 0
+                type_parte = self.format_string(group_parte.find_elements(By.TAG_NAME, "td")[0].text.upper())
+
+                info_parte = group_parte.find_elements(By.TAG_NAME, "td")[1]
+                info_parte_text = info_parte.text.split("\n")
+                if "\n" in info_parte.text:
+                    for attr_parte in info_parte_text:
+                        if ":" in attr_parte:
+                            representante = attr_parte.replace("  ", "").split(":")
+                            tipo_representante = representante[0].upper()
+                            nome_representante = representante[1].upper()
+                            key = {f"{tipo_representante}_{type_parte}": nome_representante}
+
+                            doc_ = "Não consta"
+                            with suppress(NoSuchElementException):
+                                doc_ = info_parte.find_elements(By.TAG_NAME, "input")[pos_repr]
+                                doc_ = doc_.get_attribute("value")
+
+                            key_doc = {f"DOC_{tipo_representante}_{type_parte}": doc_}
+
+                            pos_repr += 1
+
+                            data.update(key)
+                            data.update(key_doc)
+
+                        elif ":" not in attr_parte:
+                            key = {type_parte: attr_parte}
+                            data.update(key)
+
+                elif "\n" not in info_parte_text:
+                    key = {type_parte: info_parte.text}
+                    data.update(key)
+
+            # polo_ativo = (
+            #     table_partes.find_elements(By.TAG_NAME, "tr")[0]
+            #     .find_elements(By.TAG_NAME, "td")[1]
+            #     .text.split("\n")[0]
+            # )
+            # adv_polo_ativo = (
+            #     table_partes.find_elements(By.TAG_NAME, "tr")[0]
+            #     .find_elements(By.TAG_NAME, "td")[-1]
+            #     .text.split(":")[1]
+            # )
+
+            # if any(chk_adv in adv_polo_ativo for chk_adv in chk_advs):
+            #     adv_polo_ativo = adv_polo_ativo.replace("Advogado", "").replace(
+            #         "Advogado", ""
+            #     )
+
+            # polo_passivo = (
+            #     table_partes.find_elements(By.TAG_NAME, "tr")[1]
+            #     .find_elements(By.TAG_NAME, "td")[1]
+            #     .text.split("\n")[0]
+            # )
+
+            # try:
+            #     adv_polo_passivo = (
+            #         table_partes.find_elements(By.TAG_NAME, "tr")[1]
+            #         .find_elements(By.TAG_NAME, "td")[1]
+            #         .text.split(":")[1]
+            #         .replace("Advogada", "")
+            #         .replace("Advogado", "")
+            #     )
+
+            # except Exception:
+            #     adv_polo_passivo = "Não consta"
+            return [data]
+
+        return processo_data

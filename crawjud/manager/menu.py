@@ -26,6 +26,7 @@ class MenuManager:
                 "Start Services",
                 "Quart Application",
                 "Celery Worker",
+                "Celery Beat",
                 "Get Executions Logs",
                 "Clear Prompt",
                 "Close Server",
@@ -57,6 +58,8 @@ class MenuManager:
 
             if latest_menu == "Main Menu" and self.current_app == "":
                 self.current_app = splited_currentmenuname[0].lower()
+                if self.current_app == "celery":
+                    self.current_app = splited_currentmenuname[1].lower()
 
             if server_answer is None:
                 server_answer = {"server_options": "Close Server"}
@@ -118,9 +121,25 @@ class MenuManager:
             "server_options",
             message="Select an option",
             choices=[
-                "Start Server",
-                "Restart App",
-                "Shutdown App",
+                "Start Service",
+                "Restart Service",
+                "Shutdown Service",
+                "View Logs",
+                "Back",
+            ],
+        )
+
+    @property
+    def beat_menu(self) -> inquirer.List:
+        """Menu for Celery Beat."""
+        self.current_choice = "Celery Beat"
+        return inquirer.List(
+            "server_options",
+            message="Select an option",
+            choices=[
+                "Start Service",
+                "Restart Service",
+                "Shutdown Service",
                 "View Logs",
                 "Back",
             ],

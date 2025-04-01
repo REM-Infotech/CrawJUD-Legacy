@@ -168,8 +168,16 @@ async def format_message_log(
                         log_pid["success"] = int(log_pid["success"]) + 1
 
             elif data_type == "error":
-                log_pid.update({"remaining": int(log_pid["remaining"]) - 1})
-                log_pid.update({"errors": int(log_pid["errors"]) + 1})
+                remaining: int = log_pid.get("remaining", 100)
+                if not remaining:
+                    remaining = 100
+
+                errors: int = log_pid.get("errors", 0)
+                if not errors:
+                    errors = 0
+
+                log_pid.update({"remaining": int(remaining) - 1})
+                log_pid.update({"errors": int(errors) + 1})
 
                 if data_pos == 0 or app.testing:
                     log_pid["errors"] = log_pid["total"]
@@ -181,14 +189,14 @@ async def format_message_log(
         # Atualizar o dicionário de saída
         data.update(
             {
-                "pid": log_pid["pid"],
-                "pos": log_pid["pos"],
-                "total": log_pid["total"],
-                "remaining": log_pid["remaining"],
-                "success": log_pid["success"],
-                "errors": log_pid["errors"],
-                "status": log_pid["status"],
-                "message": log_pid["message"],
+                "pid": log_pid.get("pid"),
+                "pos": log_pid.get("pos"),
+                "total": log_pid.get("total"),
+                "remaining": log_pid.get("remaining"),
+                "success": log_pid.get("success"),
+                "errors": log_pid.get("errors"),
+                "status": log_pid.get("status"),
+                "message": log_pid.get("message"),
             },
         )
 

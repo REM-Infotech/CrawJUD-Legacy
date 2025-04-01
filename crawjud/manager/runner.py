@@ -6,11 +6,11 @@ from os import environ, getcwd, getenv
 from pathlib import Path
 from platform import node
 from queue import Queue  # noqa: F401
-from threading import Condition, Thread, current_thread  # noqa: F401
+from threading import Condition, Event, Thread, current_thread  # noqa: F401
 from time import sleep
 from typing import Any, TypeVar  # noqa: F401
 
-from billiard.context import Process
+from billiard.context import Process  # noqa: F401
 from celery import Celery
 from celery.apps.beat import Beat  # noqa: F401
 from celery.apps.worker import Worker
@@ -19,26 +19,26 @@ from pynput._util import AbstractListener  # noqa: F401
 from quart import Quart
 from rich.console import Console  # noqa: F401
 from rich.live import Live  # noqa: F401
-from rich.spinner import Spinner
 from rich.text import Text  # noqa: F401
 from socketio import ASGIApp
-from uvicorn import Config, Server
+from uvicorn.config import Config
+from uvicorn.server import Server
 
-from crawjud.core.config import StoreService, running_servers
-from crawjud.core.configurator import get_hostname
-from crawjud.core.watch import monitor_log
-from crawjud.logs import log_cfg
+from api import app
+from api.config import StoreService, running_servers
 from crawjud.types import app_name
-from crawjud.utils.gen_seed import worker_name_generator
+from crawjud.utils import worker_name_generator
+from crawjud.utils.watch import monitor_log
+from logs import log_cfg
 
 printf = Console().print
 
 
 def start_worker() -> None:
     """Start the Celery beat scheduler."""
-    from crawjud.core import create_app
+    from crawjud import create_celery_app
 
-    app, _, celery = asyncio.run(create_app())
+    celery = asyncio.run(create_celery_app())
     environ.update({"APPLICATION_APP": "worker"})
 
     async def start_worker() -> None:
@@ -69,7 +69,7 @@ def start_worker() -> None:
 
 def start_beat() -> None:
     """Start the Celery beat scheduler."""
-    from crawjud.core import create_app
+    from crawjud import create_celery_app
 
     environ.update({"APPLICATION_APP": "beat"})
 
@@ -80,21 +80,22 @@ def start_beat() -> None:
                 scheduler="crawjud.utils.scheduler:DatabaseScheduler",
                 max_interval=5,
                 loglevel="INFO",
-                logfile=Path(getcwd()).joinpath("crawjud", "logs", "beat_celery.log"),
+                logfile=Path(getcwd()).joinpath("logs", "beat_celery.log"),
                 no_color=False,
             )
             beat.run()
 
-    app, _, celery = asyncio.run(create_app())
+    celery = asyncio.run(create_celery_app())
     asyncio.run(beat_start())
 
 
 class RunnerServices:
     """Run the server components in separate threads and allow stopping with an event."""
 
+    _event_stop: Event = None
     celery_: Celery = None
     app_: Quart = None
-    srv_: Server = None
+    srv_ = None
     asgi_: ASGIApp = None
     worker_: Worker = None
 
@@ -107,19 +108,16 @@ class RunnerServices:
             stop_event (Event): Event to signal the thread to stop.
 
         """
-        log_file = Path(getcwd()).joinpath("crawjud", "logs", "uvicorn_api.log")
+        log_file = Path(getcwd()).joinpath("logs", "uvicorn_api.log")
         cfg, _ = log_cfg(log_file=log_file)
         port = getenv("SERVER_PORT", 5000)
-        hostname = getenv(
-            "SERVER_HOSTNAME",
-            get_hostname(),
-        )
+        hostname = "0.0.0.0"  # noqa: S104
 
         log_level = logging.INFO
         if getenv("DEBUG", "False").lower() == "true":
             log_level = logging.DEBUG
         cfg = Config(
-            self.asgi,
+            self.app,
             host=hostname,
             port=port,
             log_config=cfg,
@@ -133,8 +131,58 @@ class RunnerServices:
         self.event_stop.wait()
         self.event_stop.set()
 
-        asyncio.run(self.app.shutdown())
+        if isinstance(self.app, ASGIApp):
+            app: Quart = self.app.other_asgi_app
+            asyncio.run(app.shutdown())
+        else:
+            asyncio.run(self.app.shutdown())
+
         asyncio.run(self.srv.shutdown())
+
+    def start_specific(self, **kwargs: str) -> None:
+        """Start all server components in separate threads and allow stopping with an event.
+
+        This method creates threads for the worker, Quart server, and Celery beat.
+        It listens for a keyboard interrupt and then signals all threads to stop.
+        """
+        start_dict = {}
+        server_list = [kwargs.get("server")]
+
+        if "," in kwargs.get("server"):
+            server_list = kwargs.get("server").split(",")
+
+        for server in server_list:
+            start_dict.update({server: "True"})
+
+        to_start = {
+            "Quart": StoreService(
+                process_name="Quart",
+                process_status="Running",
+                process_object=Thread(target=self.start_quart, daemon=True),
+                process_log_file="uvicorn_api.log",
+            ),
+            "Beat": StoreService(
+                process_name="Beat",
+                process_status="Running",
+                process_object=Process(target=start_beat, daemon=True),
+                process_log_file="beat_celery.log",
+            ),
+            "Worker": StoreService(
+                process_name="Worker",
+                process_status="Running",
+                process_object=Process(target=start_worker, daemon=True),
+                process_log_file="worker_celery.log",
+            ),
+        }
+        for k, store in to_start.items():
+            if not running_servers.get(k) and start_dict.get(k):
+                running_servers.update({k: store})
+                store.start()
+
+        clear()
+        printf(Text("✅ All Application server started successfully", style="bold green"))
+        sleep(2)
+        clear()
 
     def start_all(self) -> None:
         """Start all server components in separate threads and allow stopping with an event.
@@ -166,28 +214,14 @@ class RunnerServices:
 
         for k, store in to_start.items():
             if not running_servers.get(k):
-                with Live(
-                    Spinner(
-                        name="dots",
-                        text=f"[bold yellow]Starting {k} application[/bold yellow]",
-                    ),
-                    refresh_per_second=4,
-                ) as live:
-                    sleep(1)
-                    running_servers.update({k: store})
+                running_servers.update({k: store})
+                sleep(1)
 
-                    if k == "Quart":
-                        Thread(target=self.watch_shutdown, daemon=True).start()
+                if k == "Quart":
+                    Thread(target=self.watch_shutdown, daemon=True).start()
 
-                    store.start()
-                    sleep(2)
-                    live.update(
-                        Text(
-                            text=f"✅ {k} application started successfully!",
-                            style="bold green",
-                        )
-                    )
-                    sleep(2)
+                store.start()
+
         clear()
         printf(Text("✅ All Application server started successfully", style="bold green"))
         sleep(2)
@@ -209,21 +243,55 @@ class RunnerServices:
 
     def start(self, app_name: app_name) -> None:
         """Start the server."""
-        if app_name == "Quart":
-            self.start_quart()
-        # elif app_name == "Worker":
-        #     self.start_worker()
-        # else:
-        #     raise ValueError("Invalid app name.")
+        app_ = app_name.capitalize()
+        if app_ == "Quart":
+            to_start = {
+                "Quart": StoreService(
+                    process_name="Quart",
+                    process_status="Running",
+                    process_object=Thread(target=self.start_quart, daemon=True),
+                    process_log_file="hypercorn_api.log",
+                )
+            }
+
+        elif app_ == "Worker":
+            to_start = {
+                "Worker": StoreService(
+                    process_name="Worker",
+                    process_status="Running",
+                    process_object=Process(target=start_worker, daemon=True),
+                    process_log_file="worker_celery.log",
+                ),
+            }
+
+        elif app_ == "Beat":
+            to_start = {
+                "Beat": StoreService(
+                    process_name="Beat",
+                    process_status="Running",
+                    process_object=Process(target=start_beat, daemon=True),
+                    process_log_file="beat_celery.log",
+                ),
+            }
+
+        to_start.get(app_).start()
+        running_servers.update(to_start)
+        return [f"{app_} started successfuly!", "SUCCESS", "green"]
 
     def stop(self, app_name: app_name) -> None:
         """Stop the server."""
-        if app_name == "Quart":
-            asyncio.run(self.srv.shutdown())
-        elif app_name == "Worker":
-            self.worker.stop()
-        else:
-            raise ValueError("Invalid app name.")
+        app_ = app_name.capitalize()
+        if app_ == "Quart":
+            self.event_stop.set()
+            sleep(2)
+            running_servers.pop(app_)
+        elif app_ == "Worker":
+            celery_app = running_servers.pop(app_)
+            celery_app.process_object.terminate()
+
+        elif app_ == "Beat":
+            celery_app = running_servers.pop(app_)
+            celery_app.process_object.terminate()
 
     def restart(self, app_name: app_name) -> None:
         """Restart the server."""
@@ -231,51 +299,11 @@ class RunnerServices:
         self.start(app_name)
 
     @property
-    def celery(self) -> Celery:
-        """Return the celery instance."""
-        return self.celery_
+    def event_stop(self) -> Event:
+        """Return the event stop."""
+        return self._event_stop
 
-    @celery.setter
-    def celery(self, value: Celery) -> None:
-        """Set the celery instance."""
-        self.celery_ = value
-
-    @property
-    def app(self) -> Quart:
-        """Return the app instance."""
-        return self.app_
-
-    @app.setter
-    def app(self, value: Quart) -> None:
-        """Set the app instance."""
-        self.app_ = value
-
-    @property
-    def srv(self) -> Server:
-        """Return the server instance."""
-        return self.srv_
-
-    @srv.setter
-    def srv(self, value: Server) -> None:
-        """Set the server instance."""
-        self.srv_ = value
-
-    @property
-    def asgi(self) -> ASGIApp:
-        """Return the ASGI instance."""
-        return self.asgi_
-
-    @asgi.setter
-    def asgi(self, value: ASGIApp) -> None:
-        """Set the ASGI instance."""
-        self.asgi_ = value
-
-    @property
-    def worker(self) -> Worker:
-        """Return the worker process."""
-        return self.worker_
-
-    @worker.setter
-    def worker(self, value: Worker) -> None:
-        """Set the worker process."""
-        self.worker_ = value
+    @event_stop.setter
+    def event_stop(self, value: Event) -> None:
+        """Set the event stop."""
+        self._event_stop = value

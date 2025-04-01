@@ -1,0 +1,31 @@
+services:
+  api_rest:
+    build:
+      context: "."
+      dockerfile: "back.Dockerfile"
+
+    environment:
+      SERVER_DEPLOYED: "True"
+      DOTENV_KEY: "${DOTENV_KEY:-default_value}"
+      DOCKER_HOSTNAME: "good_computers"
+      API_REST_URL: "https://backend.reminfotech.net.br"
+    ports:
+      - "5001:5000"
+    hostname: "good_computers"
+    volumes:
+      - ".:/app"
+    command: "poetry run python -m api"
+
+  front_end:
+    image: "node:latest"
+
+    build:
+      context: "."
+      dockerfile: "front.Dockerfile"
+
+    volumes:
+      - ".:/app"
+
+    ports:
+      - "3001:3000"
+    hostname: "stardust"

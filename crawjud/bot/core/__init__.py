@@ -9,9 +9,10 @@ from __future__ import annotations
 import json
 import logging
 import platform
-import traceback
 from datetime import datetime
 from pathlib import Path
+from time import sleep
+from traceback import format_exception
 
 import pandas as pd
 from openai import OpenAI
@@ -20,7 +21,11 @@ from pytz import timezone
 from crawjud.bot.common.exceptions import StartError
 
 if platform.system() == "Windows":
-    from pywinauto import Application
+    try:
+        from pywinauto import Application
+
+    except ImportError as e:
+        print(e)  # noqa: T201
 
 from rich.console import Group
 from rich.live import Live
@@ -176,7 +181,6 @@ class CrawJUD(PropertiesCrawJUD):
                 "--ignore-ssl-errors=yes",
                 "--ignore-certificate-errors",
                 "--display=:99",
-                "--window-size=1600,900",
                 "--no-sandbox",
                 "--disable-blink-features=AutomationControlled",
                 "--kiosk-printing",
@@ -205,6 +209,9 @@ class CrawJUD(PropertiesCrawJUD):
             self.elements = self.ElementsBot.config().bot_elements
 
         except Exception as e:
+            print(format_exception(e))  # noqa: T201
+            self.logger.error("\n".join(format_exception(e)))
+
             self.row = 0
             self.message = "Falha ao iniciar"
             self.type_log = "error"
@@ -213,6 +220,7 @@ class CrawJUD(PropertiesCrawJUD):
             if self.driver:
                 self.driver.quit()
 
+            sleep(5)
             raise e
 
     def auth_bot(self) -> None:
@@ -242,7 +250,7 @@ class CrawJUD(PropertiesCrawJUD):
                     raise ExecutionError(message=self.message)
 
         except Exception as e:
-            err = traceback.format_exc()
+            err = "\n".join(format_exception(e))
             logger.exception(err)
             self.row = 0
             self.message = "Erro ao realizar login"
@@ -253,4 +261,5 @@ class CrawJUD(PropertiesCrawJUD):
             if self.driver:
                 self.driver.quit()
 
+            sleep(5)
             raise e

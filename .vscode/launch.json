@@ -5,10 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug api server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "api"
+    },
+    {
       "name": "Application Manager",
       "type": "debugpy",
       "request": "launch",
       "module": "crawjud",
+      "args": [
+        "--server",
+        "Quart,Worker"
+      ],
       "justMyCode": true
       //   "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
     },

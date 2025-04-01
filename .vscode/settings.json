@@ -1,85 +1,19 @@
 {
-  "python.testing.pytestArgs": [
-    "."
-  ],
-  "[python]": {
-    "editor.formatOnType": true,
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "diffEditor.ignoreTrimWhitespace": true
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*",
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .prettier*, prettier*, .editorconfig"
   },
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "material-icon-theme.folders.customClones": [
-    {
-      "name": "superAdmin",
-      "base": "admin",
-      "color": "orange",
-      "lightColor": "orange",
-      "folderNames": [
-        "supersu",
-        "superuser",
-        "superSu"
-      ]
-    },
-    {
-      "name": "user",
-      "base": "admin",
-      "color": "brown",
-      "lightColor": "brown",
-      "folderNames": [
-        "user",
-        "usr",
-        "User",
-        "usr"
-      ]
-    },
-    {
-      "name": "forms-flask",
-      "base": "resource",
-      "color": "#1ABC9C",
-      "lightColor": "#1ABC9C",
-      "folderNames": [
-        "Forms",
-        "forms",
-        "wtforms"
-      ]
-    },
-    {
-      "name": "sqlite-instance",
-      "base": "database",
-      "color": "#880ff1",
-      "lightColor": "#880ff1",
-      "folderNames": [
-        "instance",
-        "Instance"
-      ]
-    },
-    {
-      "name": "git_folder",
-      "base": "git",
-      "color": "orange",
-      "folderNames": [
-        "git_funcs",
-      ]
-    },
-    {
-      "name": "system",
-      "base": "controller",
-      "color": "#d6d309",
-      "lightColor": "#f5f259",
-      "folderNames": [
-        "sys",
-        "System"
-      ]
-    },
-  ],
-  "liveServer.settings.port": 5501,
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "github.copilot.chat.commitMessageGeneration.instructions": [
-    {
-      "file": ".github/.copilot-commit-message-instructions.md"
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
     }
-  ],
-  "ruff.configuration": "${workspaceFolder}/pyproject.toml",
-  "ruff.lint.enable": true,
+  }
 }

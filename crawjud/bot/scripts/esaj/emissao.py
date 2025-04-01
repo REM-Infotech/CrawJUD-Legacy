@@ -7,9 +7,9 @@ navigating forms, and extracting barcodes following the ESaj requirements.
 import platform
 import re
 import time
-import traceback
 from contextlib import suppress
 from time import sleep
+from traceback import format_exception
 from typing import Self
 
 import requests
@@ -22,7 +22,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bot.common import ExecutionError
 from crawjud.bot.core import CrawJUD
-from crawjud.bot.Utils import OtherUtils
+from crawjud.bot.utils import OtherUtils
 
 type_docscss = {
     "custas_iniciais": {
@@ -175,7 +175,7 @@ class Emissao(CrawJUD):
             self.append_success(self.get_barcode())
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("\n".join(format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def custas_iniciais(self) -> None:
@@ -444,5 +444,5 @@ class Emissao(CrawJUD):
             ]
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("\n".join(format_exception(e)))
             raise ExecutionError(e=e) from e

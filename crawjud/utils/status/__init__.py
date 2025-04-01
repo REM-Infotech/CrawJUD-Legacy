@@ -7,11 +7,11 @@ from __future__ import annotations
 
 import json
 import logging
-import traceback
 import unicodedata
 from datetime import date, datetime
 from os import environ, getcwd
 from pathlib import Path
+from traceback import format_exception
 from typing import Literal
 
 import aiofiles
@@ -25,7 +25,7 @@ from quart import Quart, session
 from quart.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from crawjud.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
+from api.models import BotsCrawJUD, CrontabModel, Executions, LicensesUsers, ScheduleModel, ThreadBots, Users
 
 from .makefile import makezip
 from .permalink import generate_signed_url
@@ -333,8 +333,8 @@ class TaskExec:
                 for adm in license_.admins:
                     admins.append(adm.email)
 
-        except Exception:
-            err = traceback.format_exc()
+        except Exception as e:
+            err = "\n".join(format_exception(e))
             logger.exception(err)
 
         exec_data: dict[str, str | list[str]] = {
@@ -399,7 +399,7 @@ class TaskExec:
 
             robot = f"Robot Notifications <{sendermail}>"
             assunto = f"Bot {display_name} - {type_notify.capitalize()} Notification"
-            url_web = environ.get("URL_WEB")
+            url_web = ""
             destinatario = destinatario
             msg = Message(
                 assunto,  # subject
@@ -455,7 +455,7 @@ class TaskExec:
     @classmethod
     async def make_permalink(cls, pid: str) -> str:
         """Create a permalink for the bot output file."""
-        from ..gcs_mgmt import get_file
+        from crawjud.utils.gcs_mgmt import get_file
 
         filename = get_file(pid)
 
@@ -473,7 +473,7 @@ class TaskExec:
             pid (str): The process identifier of the bot.
 
         """
-        from ..gcs_mgmt import get_file
+        from crawjud.utils.gcs_mgmt import get_file
 
         filename = get_file(pid)
         file_path: Path = None

@@ -18,6 +18,9 @@ Classes:
 from __future__ import annotations
 
 import logging
+import shutil
+import zipfile
+from os import getcwd, remove
 
 # from importlib import import_module
 from pathlib import Path
@@ -25,9 +28,12 @@ from time import sleep
 
 from celery import shared_task
 from celery.result import AsyncResult
+from google.cloud.storage import Blob
 from quart import Quart
 
 from crawjud.bot.class_thead import BotThread
+from crawjud.bot.common.exceptions import StartError
+from crawjud.misc import bucket_gcs, storage_client
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +57,67 @@ class WorkerBot:
     system: str
     kwargs: dict[str, str]
     __dict__: dict[str, str]
+
+    @classmethod
+    def unzip_file(cls, zip_name: Path) -> None:
+        """Extract a ZIP file into a subfolder with the same name."""
+        path = zip_name.parent.resolve().joinpath(zip_name.name.split(".")[0])
+        unziped_tmp_folder = Path(getcwd()).joinpath(path.name)
+        with zipfile.ZipFile(zip_name, "r") as zip_ref:
+            # Extract each file directly into the subfolder
+            for member in zip_ref.namelist():
+                # Get the original file name without any directory structure
+                dir_name = path.name
+                extracted_path = Path(zip_ref.extract(member, dir_name))
+                # base_name = extracted_path.name
+                # If the extracted path has directories, move the file directly into the subfolder
+                # chk = base_name and extracted_path.is_dir()
+                # if chk:
+                #     continue
+
+                if not Path(path).joinpath(member).exists():
+                    shutil.move(extracted_path, path)
+
+        if unziped_tmp_folder.exists():
+            shutil.rmtree(unziped_tmp_folder)
+
+    @classmethod
+    def download_file_gcs(cls, path_pid: Path) -> str:
+        """Download a file from Google Cloud Storage (GCS).
+
+        Args:
+            path_pid (Path): Path to the file to download.
+            app (Quart): Quart application instance for configuration access.
+
+        Returns:
+            str: Message indicating download completion.
+
+        """
+        path_pid = Path(path_pid).parent.resolve()
+        path_pid.parent.mkdir(parents=True, exist_ok=True)
+
+        pid = path_pid.name
+
+        bucket = bucket_gcs(storage_client(), bucket_name="task_files_celery")
+
+        zipped_args = ""
+
+        # blob: list[Blob] = list(filter(lambda x: pid in blob.name, blobs))
+        for blob in bucket.list_blobs():
+            file_: Blob = blob
+
+            if pid in file_.name:
+                file_.download_to_filename(path_pid.with_suffix(".zip"))
+                zipped_args = path_pid.with_suffix(".zip")
+                break
+
+        if zipped_args == "":
+            raise StartError(message="Arquivo não encontrado no Storage")
+        cls.unzip_file(zipped_args)
+
+        remove(zipped_args)
+
+        return "Arquivo de execução baixado com sucesso!"
 
     @staticmethod
     @shared_task(ignore_result=False)
@@ -82,6 +149,7 @@ class WorkerBot:
 
         bot_class = Projudi
         try:
+            WorkerBot.download_file_gcs(kwargs.get("path_args"))
             display_name = kwargs.get("display_name")
             system = kwargs.get("system")
             typebot = kwargs.get("typebot")
@@ -129,6 +197,7 @@ class WorkerBot:
 
         bot_class = Esaj
         try:
+            WorkerBot.download_file_gcs(kwargs.get("path_args"))
             display_name = kwargs.get("display_name")
             system = kwargs.get("system")
             typebot = kwargs.get("typebot")
@@ -176,6 +245,7 @@ class WorkerBot:
 
         bot_class = PJe
         try:
+            WorkerBot.download_file_gcs(kwargs.get("path_args"))
             display_name = kwargs.get("display_name")
             system = kwargs.get("system")
             typebot = kwargs.get("typebot")
@@ -223,6 +293,7 @@ class WorkerBot:
 
         bot_class = Elaw
         try:
+            WorkerBot.download_file_gcs(kwargs.get("path_args"))
             display_name = kwargs.get("display_name")
             system = kwargs.get("system")
             typebot = kwargs.get("typebot")
@@ -270,6 +341,7 @@ class WorkerBot:
 
         bot_class = Caixa
         try:
+            WorkerBot.download_file_gcs(kwargs.get("path_args"))
             display_name = kwargs.get("display_name")
             system = kwargs.get("system")
             typebot = kwargs.get("typebot")
@@ -317,6 +389,7 @@ class WorkerBot:
 
         bot_class = Calculadoras
         try:
+            WorkerBot.download_file_gcs(kwargs.get("path_args"))
             display_name = kwargs.get("display_name")
             system = kwargs.get("system")
             typebot = kwargs.get("typebot")

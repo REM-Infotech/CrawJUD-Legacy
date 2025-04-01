@@ -19,6 +19,8 @@ def check_allowed_origin(origin: str = "https://google.com") -> bool:
 
     """
     allowed_origins = [
+        r"https:\/\/.*\.reminfotech\.net\.br",
+        r"http:\/\/localhost*",
         r"https:\/\/.*\.nicholas\.dev\.br",
         r"https:\/\/.*\.robotz\.dev",
         r"https:\/\/.*\.rhsolutions\.info",

@@ -13,10 +13,10 @@ Attributes:
 """
 
 import time
-import traceback
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
+from traceback import format_exception
 from typing import Callable, Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -244,7 +244,7 @@ class Complement(CrawJUD):
                 raise ExecutionError(message="Processo não encontrado!")
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("\n".join(format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def save_all(self) -> None:
@@ -295,7 +295,7 @@ class Complement(CrawJUD):
                 validar.update({campo.upper(): element})
 
             except Exception as e:
-                self.logger.exception("".join(traceback.format_exception(e)))
+                self.logger.exception("\n".join(format_exception(e)))
                 try:
                     message = e.message
 

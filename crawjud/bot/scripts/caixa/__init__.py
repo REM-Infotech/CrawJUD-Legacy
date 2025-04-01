@@ -5,7 +5,7 @@ configure logging. This file follows Google/PEP 257 docstring guidelines.
 """
 
 import logging
-import traceback
+from traceback import format_exception
 from typing import Callable, Union
 
 from crawjud.bot.common import StartError
@@ -49,10 +49,11 @@ class Caixa:
             self.bot_call.initialize(*args, **kwargs).execution()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
-            err = traceback.format_exc()
+            err = "\n".join(format_exception(e))
+            self.logger.exception(err)
+
             logger.exception(err)
-            raise StartError(traceback.format_exc()) from e
+            raise StartError(message=err) from e
 
     @property
     def bot_call(self) -> ClassBots:
