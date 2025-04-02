@@ -183,7 +183,7 @@ async def logs_bot(pid: str) -> Response:
 
     resp.set_cookie(
         "socket_bot",
-        environ.get("URL_WEB"),
+        environ.get("URL_WEB", ""),
         max_age=60 * 60 * 24,
         httponly=True,
         secure=True,

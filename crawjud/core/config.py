@@ -242,7 +242,7 @@ class ProductionConfig(Config):
 
     BROKER_DATABASE = int(env["BROKER_DATABASE"])
     RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
-    WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
+    # WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
     CELERY: dict[str, str | bool] = {
         "broker_url": f"{REDIS_URL}/{BROKER_DATABASE}",
@@ -297,7 +297,7 @@ class DevelopmentConfig(Config):
 
     BROKER_DATABASE = int(env["BROKER_DATABASE"])
     RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
-    WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
+    # WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
     CELERY: dict[str, str | bool] = {
         "broker_url": f"{REDIS_URL}/{BROKER_DATABASE}",
@@ -353,7 +353,7 @@ class TestingConfig(Config):
 
     BROKER_DATABASE = int(env["BROKER_DATABASE"])
     RESULT_BACKEND_DATABASE = int(env["RESULT_BACKEND_DATABASE"])
-    WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
+    # WEBHOOK_SECRET = env["WEBHOOK_SECRET"]
 
     CELERY: dict[str, str | bool] = {
         "broker_url": f"{REDIS_URL}/{BROKER_DATABASE}",
