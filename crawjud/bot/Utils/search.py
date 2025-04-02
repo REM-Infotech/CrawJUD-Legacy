@@ -206,7 +206,11 @@ class SearchBot(CrawJUD):
         Redirects to appropriate search routines for each process type.
 
         """
-        self.driver.get(self.elements.url_busca)
+        url_search = self.elements.url_busca
+        if self.bot_data.get("GRAU") == 2:
+            url_search = self.driver.find_element(By.CSS_SELECTOR, 'a[id="Stm0p7i1eHR"]').get_attribute("href")
+
+        self.driver.get(url_search)
 
         if self.typebot != "proc_parte":
             returns = self.search_proc()
@@ -274,6 +278,12 @@ class SearchBot(CrawJUD):
             inputproc: WebElement = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
             )
+
+        if not inputproc and self.bot_data.get("GRAU") == 2:
+            with suppress(TimeoutException):
+                inputproc = WebDriverWait(self.driver, 5).until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroRecurso")),
+                )
 
         if inputproc:
             inputproc.send_keys(self.bot_data.get("NUMERO_PROCESSO"))

@@ -23,6 +23,7 @@ def check_allowed_origin(origin: str = "https://google.com") -> bool:
         r"https:\/\/.*\.robotz\.dev",
         r"https:\/\/.*\.rhsolutions\.info",
         r"https:\/\/.*\.rhsolut\.com\.br",
+        r"https:\/\/.*\.reminfotech\.net\.br",
     ]
     if not origin:
         origin = f"https://{environ.get('HOSTNAME')}"

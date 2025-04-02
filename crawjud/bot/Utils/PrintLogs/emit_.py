@@ -124,5 +124,5 @@ class SendMessage(CrawJUD):
             url (str): The server URL.
 
         """
-        url = "https://homolog.reminfotech.net.br"
+        url = "https://oldcrawjud.reminfotech.net.br"
         self.sio.connect(url, namespaces=["/log"], headers={"pid": self.pid})
