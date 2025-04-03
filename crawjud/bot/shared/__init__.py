@@ -65,7 +65,7 @@ class PropertiesCrawJUD:
     """
 
     load_dotenv()
-
+    url_segunda_instancia_: str = None
     row_: int = 0
     pid_: str = None
     vara_: str = None
@@ -223,6 +223,22 @@ class PropertiesCrawJUD:
             self.print_bot = _PrintBot_()
             PropertiesCrawJUD.PrintBot_ = self.print_bot
         self.print_bot.print_msg(status)
+
+    @property
+    def url_segunda_instancia(self) -> str:
+        """Return the URL for second instance."""
+        return PropertiesCrawJUD.url_segunda_instancia_
+
+    @url_segunda_instancia.setter
+    def url_segunda_instancia(self, url: str) -> None:
+        """
+        Set the URL for second instance.
+
+        Args:
+            url (str): The new URL.
+
+        """
+        PropertiesCrawJUD.url_segunda_instancia_ = url
 
     @property
     def module_bot(self) -> str:

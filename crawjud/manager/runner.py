@@ -7,7 +7,7 @@ from pathlib import Path
 from platform import node
 from queue import Queue  # noqa: F401
 from threading import Condition, Thread, current_thread  # noqa: F401
-from time import sleep
+from time import sleep as time_sleep
 from typing import Any, TypeVar  # noqa: F401
 
 from billiard.context import Process
@@ -32,6 +32,11 @@ from crawjud.types import app_name
 from crawjud.utils.gen_seed import worker_name_generator
 
 printf = Console().print
+
+
+def sleep(numero: int = None) -> None:  # noqa: D103
+    if environ.get("DEBUG", "False").lower() == "true":
+        time_sleep(numero)
 
 
 def start_worker() -> None:

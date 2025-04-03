@@ -208,7 +208,12 @@ class SearchBot(CrawJUD):
         """
         url_search = self.elements.url_busca
         if self.bot_data.get("GRAU") == 2:
-            url_search = self.driver.find_element(By.CSS_SELECTOR, 'a[id="Stm0p7i1eHR"]').get_attribute("href")
+            if not self.url_segunda_instancia:
+                self.url_segunda_instancia = self.driver.find_element(
+                    By.CSS_SELECTOR, 'a[id="Stm0p7i1eHR"]'
+                ).get_attribute("href")
+
+            url_search = self.url_segunda_instancia
 
         self.driver.get(url_search)
 
@@ -232,7 +237,8 @@ class SearchBot(CrawJUD):
         inputproc = None
         enterproc = None
         allowacess = None
-
+        not_found = None
+        to_grau2 = None
         grau = self.bot_data.get("GRAU", 1)
 
         if grau is None:
@@ -246,6 +252,22 @@ class SearchBot(CrawJUD):
         def detect_intimacao() -> None:
             if "intimacaoAdvogado.do" in self.driver.current_url:
                 raise ExecutionError(message="Processo com Intimação pendente de leitura!")
+
+        def allow_access() -> None:
+            with suppress(TimeoutException, NoSuchElementException):
+                nonlocal allowacess
+                allowacess = self.driver.find_element(By.CSS_SELECTOR, "#habilitacaoProvisoriaButton")
+
+            if allowacess:
+                allowacess.click()
+                sleep(1)
+
+                confirmterms = self.driver.find_element(By.CSS_SELECTOR, "#termoAceito")
+                confirmterms.click()
+                sleep(1)
+
+                save = self.driver.find_element(By.CSS_SELECTOR, "#saveButton")
+                save.click()
 
         def get_link_grau2() -> str | None:
             """Retrieve the link to access the resources related to the process for the second grade.
@@ -274,12 +296,13 @@ class SearchBot(CrawJUD):
 
             return None
 
-        with suppress(TimeoutException):
-            inputproc: WebElement = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
-            )
+        if grau == 1:
+            with suppress(TimeoutException):
+                inputproc: WebElement = self.wait.until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
+                )
 
-        if not inputproc and self.bot_data.get("GRAU") == 2:
+        elif grau == 2:
             with suppress(TimeoutException):
                 inputproc = WebDriverWait(self.driver, 5).until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroRecurso")),
@@ -290,36 +313,37 @@ class SearchBot(CrawJUD):
             consultar = self.driver.find_element(By.CSS_SELECTOR, "#pesquisar")
             consultar.click()
 
+            with suppress(TimeoutException, NoSuchElementException, Exception):
+                not_found = WebDriverWait(self.driver, 5).until(
+                    ec.presence_of_element_located((
+                        By.XPATH,
+                        '//*[@id="buscaProcessosQualquerInstanciaForm"]/table[2]/tbody/tr/td',
+                    ))
+                )
+
+            if not_found and not_found.text == "Nenhum registro encontrado":
+                return False
+
             with suppress(TimeoutException):
-                enterproc: WebElement = self.wait.until(ec.presence_of_element_located((By.CLASS_NAME, "link")))
-
-            if enterproc:
-                enterproc.click()
-                to_grau2 = get_link_grau2()
-
-                detect_intimacao()
-
-                with suppress(TimeoutException, NoSuchElementException):
-                    allowacess = self.driver.find_element(By.CSS_SELECTOR, "#habilitacaoProvisoriaButton")
-
-                if allowacess:
-                    allowacess.click()
-                    sleep(1)
-
-                    confirmterms = self.driver.find_element(By.CSS_SELECTOR, "#termoAceito")
-                    confirmterms.click()
-                    sleep(1)
-
-                    save = self.driver.find_element(By.CSS_SELECTOR, "#saveButton")
-                    save.click()
-
-                if grau == 2 and to_grau2:
-                    self.driver.get(to_grau2)
-
-                return True
+                enterproc: WebElement = WebDriverWait(self.driver, 5).until(
+                    ec.presence_of_element_located((By.CLASS_NAME, "link"))
+                )
 
             if not enterproc:
                 return False
+
+            enterproc.click()
+
+            if grau == 1:
+                to_grau2 = get_link_grau2()
+
+            detect_intimacao()
+            allow_access()
+
+            if grau == 2 and to_grau2:
+                self.driver.get(to_grau2)
+
+            return True
 
         return False
 

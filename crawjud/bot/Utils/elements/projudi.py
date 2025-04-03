@@ -72,9 +72,9 @@ class PROJUDI_AM(Configuracao):  # noqa: N801
     table_moves = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none")]'
 
     primeira_instform1 = "#informacoesProcessuais"
-    primeira_instform2 = "#tabprefix0 > #container > #includeContent > fieldset > .form"
+    primeira_instform2 = "#tabprefix0 > #container > #includeContent > fieldset"
 
-    segunda_instform = "#recursoForm > fieldset > .form"
+    segunda_instform = "#recursoForm > fieldset"
 
     exception_arrow = './/a[@class="arrowNextOn"]'
 
