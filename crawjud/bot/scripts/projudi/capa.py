@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Self
 
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -363,61 +364,62 @@ class Capa(CrawJUD):
                 element_content2 = element_content
 
             includecontent.append(self.driver.find_element(By.CSS_SELECTOR, element_content))
-            includecontent.append(self.driver.find_element(By.CSS_SELECTOR, element_content2))
+            includecontent.append(self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_content2))))
 
             for incl in includecontent:
-                itens = list(
-                    filter(
-                        lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
-                        incl.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr"),
-                    ),
-                )
-
-                for item in itens:
-                    labels = list(
+                with suppress(StaleElementReferenceException):
+                    itens = list(
                         filter(
-                            lambda x: x.text.strip() != "",
-                            item.find_elements(By.CSS_SELECTOR, "td.label, td.labelRadio > label"),
-                        ),
-                    )
-                    # para teste
-                    # for value in item.find_elements(By.CSS_SELECTOR, "td"):
-                    #     print(value.text.strip())
-
-                    values = list(
-                        filter(
-                            lambda x: x.text.strip() != "" and not x.get_attribute("class"),
-                            item.find_elements(By.TAG_NAME, "td"),
+                            lambda x: len(x.find_elements(By.TAG_NAME, "td")) > 1,
+                            incl.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, "tr"),
                         ),
                     )
 
-                    for _, label in enumerate(labels):
-                        if len(labels) != len(values):
-                            continue
+                    for item in itens:
+                        labels = list(
+                            filter(
+                                lambda x: x.text.strip() != "",
+                                item.find_elements(By.CSS_SELECTOR, "td.label, td.labelRadio > label"),
+                            ),
+                        )
+                        # para teste
+                        # for value in item.find_elements(By.CSS_SELECTOR, "td"):
+                        #     print(value.text.strip())
 
-                        not_formated_label = label.text
-                        label_text = self.format_string(label.text).upper().replace(" ", "_")
+                        values = list(
+                            filter(
+                                lambda x: x.text.strip() != "" and not x.get_attribute("class"),
+                                item.find_elements(By.TAG_NAME, "td"),
+                            ),
+                        )
 
-                        indice = labels.index(label)
-                        value_text = values[indice].text
+                        for _, label in enumerate(labels):
+                            if len(labels) != len(values):
+                                continue
 
-                        if label_text == "VALOR_DA_CAUSA":
-                            value_text = format_vl_causa(value_text)
+                            not_formated_label = label.text
+                            label_text = self.format_string(label.text).upper().replace(" ", "_")
 
-                        elif "DATA" in label_text or "DISTRIBUICAO" in label_text or "AUTUACAO" in label_text:
-                            if " às " in value_text:
-                                value_text = value_text.split(" às ")[0]
+                            indice = labels.index(label)
+                            value_text = values[indice].text
 
-                            if self.text_is_a_date(value_text) is True:
-                                value_text = datetime.strptime(value_text, "%d/%m/%Y")
+                            if label_text == "VALOR_DA_CAUSA":
+                                value_text = format_vl_causa(value_text)
 
-                        elif not_formated_label != value_text:
-                            value_text = " ".join(value_text.split(" ")).upper()
+                            elif "DATA" in label_text or "DISTRIBUICAO" in label_text or "AUTUACAO" in label_text:
+                                if " às " in value_text:
+                                    value_text = value_text.split(" às ")[0]
 
-                        else:
-                            continue
+                                if self.text_is_a_date(value_text) is True:
+                                    value_text = datetime.strptime(value_text, "%d/%m/%Y")
 
-                        process_info.update({label_text: value_text})
+                            elif not_formated_label != value_text:
+                                value_text = " ".join(value_text.split(" ")).upper()
+
+                            else:
+                                continue
+
+                            process_info.update({label_text: value_text})
 
             btn_partes = self.elements.btn_partes
             if grau == 2:

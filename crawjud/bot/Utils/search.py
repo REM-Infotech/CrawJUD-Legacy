@@ -207,7 +207,10 @@ class SearchBot(CrawJUD):
 
         """
         url_search = self.elements.url_busca
-        if self.bot_data.get("GRAU") == 2:
+
+        grau = self.bot_data.get("GRAU", 1) or 1
+
+        if grau == 2:
             if not self.url_segunda_instancia:
                 self.url_segunda_instancia = self.driver.find_element(
                     By.CSS_SELECTOR, 'a[id="Stm0p7i1eHR"]'
@@ -239,10 +242,7 @@ class SearchBot(CrawJUD):
         allowacess = None
         not_found = None
         to_grau2 = None
-        grau = self.bot_data.get("GRAU", 1)
-
-        if grau is None:
-            grau = 1
+        grau = self.bot_data.get("GRAU", 1) or 1
 
         if isinstance(grau, str):
             grau = grau.strip()
@@ -304,7 +304,7 @@ class SearchBot(CrawJUD):
 
         elif grau == 2:
             with suppress(TimeoutException):
-                inputproc = WebDriverWait(self.driver, 5).until(
+                inputproc = WebDriverWait(self.driver, 10).until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroRecurso")),
                 )
 
@@ -334,8 +334,8 @@ class SearchBot(CrawJUD):
 
             enterproc.click()
 
-            if grau == 1:
-                to_grau2 = get_link_grau2()
+            # if grau == 1:
+            #     to_grau2 = get_link_grau2()
 
             detect_intimacao()
             allow_access()

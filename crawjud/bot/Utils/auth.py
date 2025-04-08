@@ -15,6 +15,7 @@ from time import sleep
 from typing import Callable
 
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -51,6 +52,13 @@ class AuthBot(CrawJUD):
             RuntimeError: When a system-specific auth method cannot be found.
 
         """
+        alert = None
+        with suppress(TimeoutException):
+            alert: type[Alert] = WebDriverWait(self.driver, 5).until(ec.alert_is_present())
+
+        if alert:
+            alert.accept()
+
         to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth", None)
         if to_call:
             return to_call(self)
