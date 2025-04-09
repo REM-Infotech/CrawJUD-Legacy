@@ -52,13 +52,6 @@ class AuthBot(CrawJUD):
             RuntimeError: When a system-specific auth method cannot be found.
 
         """
-        alert = None
-        with suppress(TimeoutException):
-            alert: type[Alert] = WebDriverWait(self.driver, 5).until(ec.alert_is_present())
-
-        if alert:
-            alert.accept()
-
         to_call: Callable[[], bool] = getattr(AuthBot, f"{self.system.lower()}_auth", None)
         if to_call:
             return to_call(self)
@@ -183,6 +176,13 @@ class AuthBot(CrawJUD):
                 check_login = WebDriverWait(self.driver, 10).until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.chk_login)),
                 )
+
+            alert = None
+            with suppress(TimeoutException):
+                alert: type[Alert] = WebDriverWait(self.driver, 5).until(ec.alert_is_present())
+
+            if alert:
+                alert.accept()
 
             return check_login is not None
 

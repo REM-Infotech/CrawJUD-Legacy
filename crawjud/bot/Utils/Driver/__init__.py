@@ -129,8 +129,10 @@ class DriverBot(CrawJUD):
             "profile.default_content_settings.popups": 0,
             "printing.print_preview_sticky_settings.appState": json.dumps(self.settings),
             "download.default_directory": f"{self.pid_path}",
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
         }
-
+        chrome_options.add_argument("--incognito")
         chrome_options.add_experimental_option("prefs", chrome_prefs)
 
     def driver_launch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:

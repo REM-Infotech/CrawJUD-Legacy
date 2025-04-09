@@ -309,7 +309,9 @@ class SearchBot(CrawJUD):
                 )
 
         if inputproc:
-            inputproc.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
+            proc = self.bot_data.get("NUMERO_PROCESSO")
+            self.interact.send_key(inputproc, proc)
+            sleep(1)
             consultar = self.driver.find_element(By.CSS_SELECTOR, "#pesquisar")
             consultar.click()
 
