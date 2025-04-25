@@ -15,7 +15,7 @@ from typing import Self
 import dotenv
 from PIL import Image
 from selenium.common.exceptions import (
-    JavascriptException,
+    JavascriptException,  # noqa: F401
     NoSuchElementException,
     StaleElementReferenceException,
     TimeoutException,
@@ -144,8 +144,8 @@ class Protocolo(CrawJUD):
 
             self.add_new_move()
 
-            if self.set_parte() is not True:
-                raise ExecutionError(message="Não foi possível selecionar parte")
+            # if self.set_parte() is not True:
+            #     raise ExecutionError(message="Não foi possível selecionar parte")
 
             self.add_new_file()
             if self.bot_data.get("ANEXOS", None) is not None:
@@ -514,16 +514,16 @@ class Protocolo(CrawJUD):
         self.message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
         self.type_log = "log"
         self.prt()
-        return_cmd = False
+        # return_cmd = False
 
-        id_parte = self.id_part
+        # id_parte = self.id_part
 
-        if id_parte:
-            with suppress(JavascriptException):
-                cmd2 = f"return document.getElementById('{self.id_part}').checked"
-                return_cmd = self.driver.execute_script(cmd2)
-            if return_cmd is False:
-                self.driver.find_element(By.ID, self.id_part).click()
+        # if id_parte:
+        #     with suppress(JavascriptException):
+        #         cmd2 = f"return document.getElementById('{self.id_part}').checked"
+        #         return_cmd = self.driver.execute_script(cmd2)
+        #     if return_cmd is False:
+        #         self.driver.find_element(By.ID, self.id_part).click()
 
         finish_button = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_concluir)
         finish_button.click()
