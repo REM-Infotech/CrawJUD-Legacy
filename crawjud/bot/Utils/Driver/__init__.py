@@ -132,7 +132,9 @@ class DriverBot(CrawJUD):
             "credentials_enable_service": False,
             "profile.password_manager_enabled": False,
         }
-        chrome_options.add_argument("--incognito")
+
+        if self.system == "projudi":
+            chrome_options.add_argument("--incognito")
         chrome_options.add_experimental_option("prefs", chrome_prefs)
 
     def driver_launch(self, message: str = "Inicializando WebDriver") -> tuple[WebDriver, WebDriverWait]:

@@ -296,8 +296,8 @@ class Provisao(CrawJUD):
             )
 
             valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
-            if valor_informar == 0:
-                raise ExecutionError(message="Valor de atualização inválido")
+            # if valor_informar == 0:
+            #     raise ExecutionError(message="Valor de atualização inválido")
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)

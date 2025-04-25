@@ -151,16 +151,20 @@ class Emissor(CrawJUD):
         self.prt()
 
         self.driver.get("https://depositojudicial.caixa.gov.br/sigsj_internet/depositos-judiciais/justica-estadual/")
+        sleep(0.5)
         list_opt: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, 'select[id="j_id5:filtroView:j_id6:tpDeposito"]')),
         )
+        sleep(0.5)
         list_options = list_opt.find_elements(By.TAG_NAME, "option")
 
         for option in list_options:
             if option.text == "Depósitos Judiciais da Justiça Estadual":
+                sleep(0.5)
                 option.click()
                 break
 
+        sleep(0.5)
         captchainput: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, 'input[id="autoCaptcha"')),
         )
@@ -449,12 +453,12 @@ class Emissor(CrawJUD):
 
         numproc = self.bot_data.get("NUMERO_PROCESSO")
         pdf_name = f"{pgto_name} - {numproc} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
-        sleep(3)
+        sleep(10)
 
         caminho_old_pdf = os.path.join(self.output_dir_path, "guia_boleto.pdf")
         renamepdf = os.path.join(self.output_dir_path, pdf_name)
 
-        sleep(1)
+        sleep(5)
         shutil.move(caminho_old_pdf, renamepdf)
 
         return pdf_name

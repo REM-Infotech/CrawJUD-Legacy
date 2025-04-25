@@ -445,7 +445,7 @@ class OtherUtils(CrawJUD):
         if not typed:
             data2 = dict.fromkeys(self.name_colunas, "")
             for item in data:
-                data2_itens = list(filter(lambda x: x[1] is None or x[1].strip() == "", list(data2.items())))
+                data2_itens = list(filter(lambda x: x[1] is None or str(x[1]).strip() == "", list(data2.items())))
                 for key, _ in data2_itens:
                     data2.update({key: item})
                     break
