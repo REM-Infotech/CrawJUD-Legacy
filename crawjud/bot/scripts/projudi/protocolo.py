@@ -161,8 +161,8 @@ class Protocolo(CrawJUD):
             if debug is False:
                 confirm_protocol = self.confirm_protocol()
                 if not confirm_protocol:
-                    if self.set_parte() is not True:
-                        raise ExecutionError(message="Nao foi possivel confirmar protocolo")
+                    # if self.set_parte() is not True:
+                    #     raise ExecutionError(message="Nao foi possivel confirmar protocolo")
 
                     self.finish_move()
                     confirm_protocol = self.confirm_protocol()
