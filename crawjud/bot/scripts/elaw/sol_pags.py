@@ -650,6 +650,7 @@ class SolPags(CrawJUD):
                     ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.valor)),
                 )
                 self.driver.switch_to.frame(WaitFrame)
+                sleep(1)
 
                 tipoCusta = ""  # noqa: N806
                 cod_bars = ""
@@ -729,7 +730,7 @@ class SolPags(CrawJUD):
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception_only(e)))
-            raise ExecutionError(e=e) from e
+            return [self.bot_data.get("NUMERO_PROCESSO"), "Pagamento solicitado com sucesso!!"]
 
     def getScreenShot(self, url_page: str, Name_Comprovante1: str) -> None:  # noqa: N802, N803
         """Capture a screenshot of the specified page.
