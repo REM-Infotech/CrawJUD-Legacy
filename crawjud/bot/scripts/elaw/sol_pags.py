@@ -568,12 +568,14 @@ class SolPags(CrawJUD):
 
             # self.driver.execute_script(f"document.querySelector('{self.elements.css_centro_custas}').blur()")
 
-            # sleep(1)
+            self.message = "Informando conta débito"
+            self.type_log = "log"
+            self.prt()
 
-            # div_conta_debito: WebElement = self.wait.until(
-            #     ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito)),
-            # )
-            # div_conta_debito.click()
+            div_conta_debito: WebElement = self.wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito)),
+            )
+            div_conta_debito.click()
             # sleep(1)
 
             if solicitante == "jec":
