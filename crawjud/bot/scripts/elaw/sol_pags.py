@@ -146,7 +146,7 @@ class SolPags(CrawJUD):
                 raise ExecutionError(message="Processo não encontrado!")
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def new_payment(self) -> None:
@@ -168,7 +168,7 @@ class SolPags(CrawJUD):
             novo_pgto.click()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def set_pgto(self, namedef: str) -> None:
@@ -217,7 +217,7 @@ class SolPags(CrawJUD):
             raise ExecutionError(message="Tipo de Pagamento não encontrado")
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def condenacao(self) -> None:
@@ -413,7 +413,7 @@ class SolPags(CrawJUD):
             conta_debito.click()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def custas(self) -> None:
@@ -587,7 +587,7 @@ class SolPags(CrawJUD):
                 conta_debito.click()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def save_changes(self) -> None:
@@ -602,7 +602,7 @@ class SolPags(CrawJUD):
             save.click()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def confirm_save(self) -> None:
@@ -727,7 +727,7 @@ class SolPags(CrawJUD):
             raise ExecutionError(message="Pagamento não solicitado")
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def getScreenShot(self, url_page: str, Name_Comprovante1: str) -> None:  # noqa: N802, N803

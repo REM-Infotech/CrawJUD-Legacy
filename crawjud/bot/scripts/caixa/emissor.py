@@ -137,7 +137,7 @@ class Emissor(CrawJUD):
             self.append_success(data)
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def get_site(self) -> None:

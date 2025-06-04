@@ -52,7 +52,7 @@ class Calculadoras:
             self.bot_call.initialize(*args, **kwargs).execution()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             err = traceback.format_exc()
             logger.exception(err)
             raise StartError(traceback.format_exc()) from e

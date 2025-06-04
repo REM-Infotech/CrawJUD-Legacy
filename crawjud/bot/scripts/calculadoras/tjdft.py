@@ -141,7 +141,7 @@ class Tjdft(CrawJUD):
             self.finalizar_execucao()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def get_calcular(self) -> None:
@@ -176,7 +176,7 @@ class Tjdft(CrawJUD):
                 self.driver.switch_to.default_content()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def info_numproc(self) -> None:
@@ -205,7 +205,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(message="Erro ao informar número do processo", e=e) from e
 
     def info_requerente(self) -> None:
@@ -234,7 +234,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def info_requerido(self) -> None:
@@ -263,7 +263,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def info_jurosapartir(self) -> None:
@@ -310,7 +310,7 @@ class Tjdft(CrawJUD):
                 )
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def valores_devidos(self) -> None:
@@ -352,7 +352,7 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def acessorios(self) -> None:
@@ -395,7 +395,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                self.logger.exception("".join(traceback.format_exception(e)))
+                self.logger.exception("".join(traceback.format_exception_only(e)))
                 raise ExecutionError(e=e) from e
 
         def honorario_sucumb() -> None | Exception:
@@ -444,7 +444,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                self.logger.exception("".join(traceback.format_exception(e)))
+                self.logger.exception("".join(traceback.format_exception_only(e)))
                 raise ExecutionError(e=e) from e
 
         def percent_multa_475J() -> None:  # noqa: N802
@@ -453,7 +453,7 @@ class Tjdft(CrawJUD):
                 self.interact.send_key(percent_multa_, self.bot_data.get("PERCENT_MULTA_475J"))
 
             except Exception as e:
-                self.logger.exception("".join(traceback.format_exception(e)))
+                self.logger.exception("".join(traceback.format_exception_only(e)))
                 raise ExecutionError(e=e) from e
 
         def honorario_cumprimento() -> None | Exception:
@@ -499,7 +499,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                self.logger.exception("".join(traceback.format_exception(e)))
+                self.logger.exception("".join(traceback.format_exception_only(e)))
                 raise ExecutionError(e=e) from e
 
         def custas() -> None | Exception:
@@ -529,7 +529,7 @@ class Tjdft(CrawJUD):
                 self.prt()
 
             except Exception as e:
-                self.logger.exception("".join(traceback.format_exception(e)))
+                self.logger.exception("".join(traceback.format_exception_only(e)))
                 raise ExecutionError(e=e) from e
 
         local_functions = list(locals().items())
@@ -584,5 +584,5 @@ class Tjdft(CrawJUD):
             self.append_success(data)
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e

@@ -145,7 +145,7 @@ class Download(CrawJUD):
                 self.append_error([self.bot_data.get("NUMERO_PROCESSO"), self.message])
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception(e)))
+            self.logger.exception("".join(traceback.format_exception_only(e)))
             raise ExecutionError(e=e) from e
 
     def buscar_doc(self) -> None:
