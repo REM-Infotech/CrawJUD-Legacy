@@ -81,7 +81,7 @@ class SolPags(CrawJUD):
         """Execute the main processing loop for page solutions."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
-
+        self.driver.maximize_window()
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = self.elawFormats(value)
