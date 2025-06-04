@@ -631,6 +631,7 @@ class SolPags(CrawJUD):
                 if item.text == "Nenhum registro encontrado!":
                     raise ExecutionError(message="Pagamento não solicitado")
 
+                sleep(2)
                 open_details = item.find_element(By.CSS_SELECTOR, self.elements.botao_ver)
                 open_details.click()
 
