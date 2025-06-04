@@ -566,15 +566,15 @@ class SolPags(CrawJUD):
             centro_custas.click()
             centro_custas.send_keys("A906030100")
 
-            self.driver.execute_script(f"document.querySelector('{self.elements.css_centro_custas}').blur()")
+            # self.driver.execute_script(f"document.querySelector('{self.elements.css_centro_custas}').blur()")
 
-            sleep(1)
+            # sleep(1)
 
-            div_conta_debito: WebElement = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito)),
-            )
-            div_conta_debito.click()
-            sleep(1)
+            # div_conta_debito: WebElement = self.wait.until(
+            #     ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito)),
+            # )
+            # div_conta_debito.click()
+            # sleep(1)
 
             if solicitante == "jec":
                 conta_debito = self.driver.find_element(By.CSS_SELECTOR, self.elements.custas_civis)
