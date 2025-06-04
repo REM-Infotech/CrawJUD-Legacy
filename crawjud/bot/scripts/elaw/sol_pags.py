@@ -576,7 +576,7 @@ class SolPags(CrawJUD):
                 ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_conta_debito)),
             )
             div_conta_debito.click()
-            # sleep(1)
+            sleep(1)
 
             if solicitante == "jec":
                 conta_debito = self.driver.find_element(By.CSS_SELECTOR, self.elements.custas_civis)
