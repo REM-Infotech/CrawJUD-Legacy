@@ -205,7 +205,7 @@ class AuthBot(CrawJUD):
             username: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "username")))
             username.send_keys(self.username)
 
-            password: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#password")))
+            password: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#authKey")))
             password.send_keys(self.password)
 
             entrar: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "j_id_c_1_5_f")))
