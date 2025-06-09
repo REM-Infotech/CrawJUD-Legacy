@@ -260,12 +260,12 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_adicionar = 'button[id="adicionarObjetoBtn"]'
     botao_editar = 'button[id*="editarFasePedidoBtn"]'
     css_val_inpt = 'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
-    css_risk = 'div[id*="processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1"]'
-    processo_objt = 'ul[id*="processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_items"]'
-    botao_salvar_id = 'button[id*="salvarBtn"]'
-    daata_correcaoCss = 'input[id*="processoAmountObjetoDt:0:amountDataCorrecao_input"]'  # noqa: N815
-    data_jurosCss = 'input[id*="processoAmountObjetoDt:0:amountDataJuros_input"]'  # noqa: N815
-    texto_motivo = 'textarea[id*="j_id_2m:j_id_2p_2e:j_id_2p_2i_8:j_id_2p_2i_j"]'
+    css_risk = 'div[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_5_k_2_2_1"]'
+    processo_objt = 'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_5_k_2_2_1_items"]'
+    botao_salvar_id = 'button[id="salvarBtn"]'
+    data_correcaoCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'  # noqa: N815
+    data_jurosCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'  # noqa: N815
+    texto_motivo = 'textarea[id="j_id_2z:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
 
     type_risk_label = 'label[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
     type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'

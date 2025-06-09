@@ -375,7 +375,7 @@ class Provisao(CrawJUD):
             self.prt()
 
             def set_data_correcao(data_base_correcao: str) -> None:
-                data_correcao = self.driver.find_element(By.CSS_SELECTOR, self.elements.daata_correcaoCss)
+                data_correcao = self.driver.find_element(By.CSS_SELECTOR, self.elements.data_correcaoCss)
                 css_daata_correcao = data_correcao.get_attribute("id")
                 self.interact.clear(data_correcao)
                 self.interact.send_key(data_correcao, data_base_correcao)
