@@ -26,7 +26,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     btn_busca = ""
 
     # ANDAMENTOS
-    botao_andamento = 'button[id="tabViewProcesso:j_id_i3_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
+    botao_andamento = 'button[id="tabViewProcesso:j_id_i1_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
     input_data = 'input[id="j_id_2n:j_id_2r_2_9_input"]'
     inpt_ocorrencia = 'textarea[id="j_id_2n:txtOcorrenciaAndamento"]'
     inpt_obs = 'textarea[id="j_id_2n:txtObsAndamento"]'
@@ -38,7 +38,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     selectortipoaudiencia = 'select[id="j_id_2l:comboTipoAudiencia_input"]'
     DataAudiencia = 'input[id="j_id_2l:j_id_2p_2_8_8:dataAudienciaField_input"]'
     btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
-    tableprazos = 'tbody[id="tabViewProcesso:j_id_i3_4_1_3_d:dtAgendamentoResults_data"]'
+    tableprazos = 'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
 
     tipo_polo = "".join((
         'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_9_44_3_1_',
@@ -248,30 +248,27 @@ class ELAW_AME(Configuracao):  # noqa: N801
     visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"  # noqa: N815
 
     # PROVISIONAMENTO
-    css_btn_edit = 'button[id="tabViewProcesso:j_id_i3_c_1_5_2:processoValoresEditarBtn"]'
+    css_btn_edit = 'button[id="tabViewProcesso:j_id_i1_c_1_6_2:processoValoresEditarBtn"]'
     ver_valores = 'a[href="#tabViewProcesso:valores"]'
-    table_valores_css = 'tbody[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70:viewValoresCustomeDt_data"]'
-    value_provcss = "".join(
-        (
-            'div[id="tabViewProcesso:j_id_i3_c_1_5_2:j_id_i3_c_1_5_70',
-            ':viewValoresCustomeDt:0:j_id_i3_c_1_5_7e:0:j_id_i3_c_1_5_7m"]',
-        ),
-    )
+
+    # table_valores_css = 'tbody[id="tabViewProcesso:j_id_i1_c_1_5_2:j_id_i1_c_1_5_70:viewValoresCustomeDt_data"]'
+    table_valores_css = 'tbody[id="tabViewProcesso:j_id_i1_c_1_6_2:j_id_i1_c_1_6_4x:viewValoresCustomeDt_data"]'
+    value_provcss = 'div[id*="viewValoresCustomeDt:0"]'
     div_tipo_obj_css = 'div[id="selectManyObjetoAdicionarList"]'
     itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
     checkbox = 'div[class="ui-chkbox ui-widget"]'
     botao_adicionar = 'button[id="adicionarObjetoBtn"]'
-    botao_editar = 'button[id="j_id_4w:editarFasePedidoBtn"]'
-    css_val_inpt = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountValor_input"][type="text"]'
-    css_risk = 'div[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1"]'
-    processo_objt = 'ul[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_items"]'
-    botao_salvar_id = 'button[id="salvarBtn"]'
-    daata_correcaoCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataCorrecao_input"]'  # noqa: N815
-    data_jurosCss = 'input[id="j_id_2m:j_id_2p_2e:processoAmountObjetoDt:0:amountDataJuros_input"]'  # noqa: N815
-    texto_motivo = 'textarea[id="j_id_2m:j_id_2p_2e:j_id_2p_2i_8:j_id_2p_2i_j"]'
+    botao_editar = 'button[id*="editarFasePedidoBtn"]'
+    css_val_inpt = 'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
+    css_risk = 'div[id*="processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1"]'
+    processo_objt = 'ul[id*="processoAmountObjetoDt:0:j_id_2p_2i_5_1_6_5_k_2_2_1_items"]'
+    botao_salvar_id = 'button[id*="salvarBtn"]'
+    daata_correcaoCss = 'input[id*="processoAmountObjetoDt:0:amountDataCorrecao_input"]'  # noqa: N815
+    data_jurosCss = 'input[id*="processoAmountObjetoDt:0:amountDataJuros_input"]'  # noqa: N815
+    texto_motivo = 'textarea[id*="j_id_2m:j_id_2p_2e:j_id_2p_2i_8:j_id_2p_2i_j"]'
 
-    type_risk_label = 'label[id="j_id_2m:provisaoTipoPedidoCombo_label"]'
-    type_risk_select = 'select[id="j_id_2m:provisaoTipoPedidoCombo_input"]'
+    type_risk_label = 'label[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
+    type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
 
     tb_advs_resp = 'tbody[id="j_id_3k_1:lawyerOwnersDataTable_data"]'
     tr_not_adv = "tr.ui-datatable-empty-message"

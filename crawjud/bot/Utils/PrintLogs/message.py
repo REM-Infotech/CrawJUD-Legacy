@@ -14,6 +14,7 @@ from typing import Self
 import pytz
 import socketio
 import socketio.exceptions  # noqa: F401
+import tqdm
 from dotenv_vault import load_dotenv
 
 from crawjud.bot.core import CrawJUD
@@ -61,6 +62,7 @@ class PrintBot(CrawJUD):
 
         self.sendmsg.setup_message(status_bot=status_bot)
         mensagens.append(self.prompt)
+        tqdm.tqdm.write(self.prompt)  # noqa: T201
 
     @classmethod
     def file_log(cls, self: Self) -> None:

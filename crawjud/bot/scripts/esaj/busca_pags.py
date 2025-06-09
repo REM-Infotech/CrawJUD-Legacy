@@ -137,7 +137,7 @@ class BuscaPags(CrawJUD):
             self.page_custas()
 
         except Exception as e:
-            self.logger.exception("".join(traceback.format_exception_only(e)))
+            self.logger.exception("".join(traceback.format_exception(e)))
             raise ExecutionError(e=e) from e
 
     def get_page_custas_pagas(self) -> None:

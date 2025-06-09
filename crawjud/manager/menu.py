@@ -61,6 +61,11 @@ class MenuManager:
             if server_answer is None:
                 server_answer = {"server_options": "Close Server"}
             yield server_answer
+        except KeyboardInterrupt:
+            self.returns_message_ = ["KeyboardInterrupt: Exiting the menu.", "ERROR", "red"]
+            self.current_menu_name = "Main Menu"
+            self.current_menu = self.main_menu
+
         finally:
             pass
 
