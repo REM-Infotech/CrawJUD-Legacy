@@ -267,7 +267,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     data_jurosCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'  # noqa: N815
     texto_motivo = 'textarea[id="j_id_2z:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
 
-    type_risk_label = 'label[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
+    type_risk_label = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
     type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
 
     tb_advs_resp = 'tbody[id="j_id_3k_1:lawyerOwnersDataTable_data"]'

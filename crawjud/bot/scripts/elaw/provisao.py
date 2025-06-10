@@ -266,7 +266,7 @@ class Provisao(CrawJUD):
             add_objeto = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_adicionar)
             add_objeto.click()
 
-            self.interact.sleep_load('div[id="j_id_7t"]')
+            self.interact.sleep_load('div[id="j_id_8c"]')
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))
