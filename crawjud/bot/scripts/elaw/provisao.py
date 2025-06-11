@@ -79,7 +79,7 @@ class Provisao(CrawJUD):
         """Execute the main processing loop for provisions."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
-        self.driver.maximize_window(())
+        self.driver.maximize_window()
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
