@@ -331,32 +331,37 @@ class Provisao(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            expand_filter_risk = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_risk)),
+            row_valores = self.wait.until(
+                ec.presence_of_element_located((By.ID, "j_id_2z:j_id_32_2e:processoAmountObjetoDt_data"))
+            ).find_elements(By.TAG_NAME, "tr")
+
+            selector_filter_risk = (
+                list(
+                    filter(
+                        lambda x: x.find_elements(By.TAG_NAME, "td")[5]
+                        .find_element(By.CSS_SELECTOR, 'input[id*="_input"]')
+                        .get_attribute("value"),
+                        row_valores,
+                    )
+                )[0]
+                .find_elements(By.TAG_NAME, "td")[6]
+                .find_element(By.TAG_NAME, "div")
+                .find_element(By.TAG_NAME, "select")
             )
-            expand_filter_risk.click()
 
-            div_filter_risk = self.driver.find_element(By.CSS_SELECTOR, self.elements.processo_objt)
-            filter_risk = div_filter_risk.find_elements(By.TAG_NAME, "li")
+            id_selector = selector_filter_risk.get_attribute("id")
+            css_selector_filter_risk = f'select[id="{id_selector}"]'
 
-            for item in filter_risk:
-                provisao_from_xlsx = (
-                    str(self.bot_data.get("PROVISAO"))
-                    .lower()
-                    .replace("possivel", "possível")
-                    .replace("provavel", "provável")
-                )
+            provisao_from_xlsx = (
+                str(self.bot_data.get("PROVISAO"))
+                .lower()
+                .replace("possivel", "possível")
+                .replace("provavel", "provável")
+            )
 
-                provisao = item.text.lower()
-                if provisao == provisao_from_xlsx:
-                    sleep(1)
-                    item.click()
-                    break
+            self.interact.select2_elaw(css_selector_filter_risk, provisao_from_xlsx)
 
-            id_expand_filter = expand_filter_risk.get_attribute("id")
-            self.driver.execute_script(f"document.getElementById('{id_expand_filter}').blur()")
-
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.interact.sleep_load('div[id="j_id_3c"]')
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))
