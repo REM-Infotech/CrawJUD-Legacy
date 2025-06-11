@@ -260,8 +260,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_adicionar = 'button[id="adicionarObjetoBtn"]'
     botao_editar = 'button[id*="editarFasePedidoBtn"]'
     css_val_inpt = 'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
-    css_risk = 'div[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_5_k_2_2_1"]'
-    processo_objt = 'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_5_k_2_2_1_items"]'
+    css_risk = 'div[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1"]'
+    processo_objt = 'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
     botao_salvar_id = 'button[id="salvarBtn"]'
     data_correcaoCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'  # noqa: N815
     data_jurosCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'  # noqa: N815
