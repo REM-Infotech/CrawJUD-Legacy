@@ -114,8 +114,8 @@ class Config:
 
     TEMP_PATH: Path = workdir.joinpath("bot", "temp").resolve()
     ARCHIVES: Path = workdir.joinpath("bot", "Archives").resolve()
-    TEMP_PATH.mkdir(exist_ok=True)
-    ARCHIVES.mkdir(exist_ok=True)
+    TEMP_PATH.mkdir(exist_ok=True, parents=True)
+    ARCHIVES.mkdir(exist_ok=True, parents=True)
 
     WEBHOOK_SECRET: type[str] = ""
 
@@ -138,7 +138,7 @@ class Config:
     PDF_TEMP_DIR = str(resolved_archives.joinpath(TEMP_DIR, "pdf"))
     SRC_IMG_PATH = str(workdir.joinpath("web", "src", "assets", "img"))
 
-    Path(ARCHIVES_PATH).mkdir(exist_ok=True)
+    Path(ARCHIVES_PATH).mkdir(exist_ok=True, parents=True)
 
     for paths in [
         DOCS_PATH,
