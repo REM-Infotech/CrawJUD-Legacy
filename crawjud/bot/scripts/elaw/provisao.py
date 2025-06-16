@@ -336,19 +336,35 @@ class Provisao(CrawJUD):
             self.prt()
 
             row_valores = self.wait.until(
-                ec.presence_of_element_located((By.ID, "j_id_2z:j_id_32_2e:processoAmountObjetoDt_data"))
-            ).find_elements(By.TAG_NAME, "tr")
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']",
+                ))
+            ).find_elements(
+                By.XPATH,
+                './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]',
+            )
+
+            def filter_risk(x: WebElement) -> bool:
+                td_values = x.find_elements(By.TAG_NAME, "td")
+                input_values = td_values[9].find_element(By.CSS_SELECTOR, 'input[id*="_input"]')
+                value_attribute = input_values.get_attribute("value")
+
+                return value_attribute is not None and value_attribute != ""
+
+            selector_filter_risk = list(
+                filter(
+                    filter_risk,
+                    row_valores,
+                )
+            )
+
+            if not len(selector_filter_risk):
+                raise ExecutionError(message="Erro ao Atualizar Provisão")
 
             selector_filter_risk = (
-                list(
-                    filter(
-                        lambda x: x.find_elements(By.TAG_NAME, "td")[5]
-                        .find_element(By.CSS_SELECTOR, 'input[id*="_input"]')
-                        .get_attribute("value"),
-                        row_valores,
-                    )
-                )[0]
-                .find_elements(By.TAG_NAME, "td")[6]
+                selector_filter_risk[0]
+                .find_elements(By.TAG_NAME, "td")[10]
                 .find_element(By.TAG_NAME, "div")
                 .find_element(By.TAG_NAME, "select")
             )
