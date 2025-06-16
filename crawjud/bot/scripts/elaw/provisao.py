@@ -327,6 +327,9 @@ class Provisao(CrawJUD):
             None
 
         """
+        self.driver.execute_script(
+            'document.getElementById("j_id_2z:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" '
+        )
         try:
             self.message = "Alterando risco"
             self.type_log = "log"
