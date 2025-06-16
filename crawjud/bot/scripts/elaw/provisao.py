@@ -304,7 +304,9 @@ class Provisao(CrawJUD):
             )
 
             for row_valor in row_valores:
-                campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[9]
+                campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[9].find_element(
+                    By.CSS_SELECTOR, 'input[id*="_input"]'
+                )
 
                 valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
                 # if valor_informar == 0:
