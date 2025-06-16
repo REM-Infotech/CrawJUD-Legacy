@@ -80,6 +80,7 @@ class Provisao(CrawJUD):
         frame = self.dataFrame()
         self.max_rows = len(frame)
         self.driver.maximize_window()
+        self.driver.execute_script("document.body.style.zoom = '0.5'")
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value

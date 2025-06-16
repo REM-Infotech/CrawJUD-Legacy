@@ -84,7 +84,7 @@ class SearchBot(CrawJUD):
         with suppress(Exception):
             open_proc = search_result.find_element(By.ID, "dtProcessoResults:0:btnProcesso")
 
-        sleep(1.5)
+        sleep(2.5)
 
         diff_cad = str(self.typebot.upper()) != "CADASTRO"
         diff_complement = str(self.typebot.upper()) != "COMPLEMENT"
