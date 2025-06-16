@@ -292,29 +292,39 @@ class Provisao(CrawJUD):
             self.message = "Informando valores"
             self.type_log = "log"
             self.prt()
-            campo_valor_dml = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_val_inpt)),
+
+            row_valores = self.wait.until(
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']",
+                ))
+            ).find_elements(
+                By.XPATH,
+                './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]',
             )
 
-            valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
-            # if valor_informar == 0:
-            #     raise ExecutionError(message="Valor de atualização inválido")
+            for row_valor in row_valores:
+                campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[9]
 
-            campo_valor_dml.send_keys(Keys.CONTROL + "a")
-            campo_valor_dml.send_keys(Keys.BACKSPACE)
-            self.interact.sleep_load('div[id="j_id_2z"]')
+                valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
+                # if valor_informar == 0:
+                #     raise ExecutionError(message="Valor de atualização inválido")
 
-            if isinstance(valor_informar, int):
-                valor_informar = str(valor_informar) + ",00"
+                campo_valor_dml.send_keys(Keys.CONTROL + "a")
+                campo_valor_dml.send_keys(Keys.BACKSPACE)
+                self.interact.sleep_load('div[id="j_id_2z"]')
 
-            elif isinstance(valor_informar, float):
-                valor_informar = f"{valor_informar:.2f}".replace(".", ",")
+                if isinstance(valor_informar, int):
+                    valor_informar = str(valor_informar) + ",00"
 
-            campo_valor_dml.send_keys(valor_informar)
+                elif isinstance(valor_informar, float):
+                    valor_informar = f"{valor_informar:.2f}".replace(".", ",")
 
-            id_campo_valor_dml = campo_valor_dml.get_attribute("id")
-            self.driver.execute_script(f"document.getElementById('{id_campo_valor_dml}').blur()")
-            self.interact.sleep_load('div[id="j_id_2z"]')
+                campo_valor_dml.send_keys(valor_informar)
+
+                id_campo_valor_dml = campo_valor_dml.get_attribute("id")
+                self.driver.execute_script(f"document.getElementById('{id_campo_valor_dml}').blur()")
+                self.interact.sleep_load('div[id="j_id_2z"]')
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))
@@ -345,43 +355,40 @@ class Provisao(CrawJUD):
                 './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]',
             )
 
-            def filter_risk(x: WebElement) -> bool:
-                td_values = x.find_elements(By.TAG_NAME, "td")
-                input_values = td_values[9].find_element(By.CSS_SELECTOR, 'input[id*="_input"]')
-                value_attribute = input_values.get_attribute("value")
+            # def filter_risk(x: WebElement) -> bool:
+            #     td_values = x.find_elements(By.TAG_NAME, "td")
+            #     input_values = td_values[9].find_element(By.CSS_SELECTOR, 'input[id*="_input"]')
+            #     value_attribute = input_values.get_attribute("value")
 
-                return value_attribute is not None and value_attribute != ""
+            #     return value_attribute is not None and value_attribute != ""
 
-            selector_filter_risk = list(
-                filter(
-                    filter_risk,
-                    row_valores,
+            # selector_filter_risk = list(
+            #     filter(
+            #         filter_risk,
+            #         row_valores,
+            #     )
+            # )
+
+            for row_risk in row_valores:
+                selector_filter_risk = (
+                    row_risk.find_elements(By.TAG_NAME, "td")[10]
+                    .find_element(By.TAG_NAME, "div")
+                    .find_element(By.TAG_NAME, "select")
                 )
-            )
 
-            if not len(selector_filter_risk):
-                raise ExecutionError(message="Erro ao Atualizar Provisão")
+                id_selector = selector_filter_risk.get_attribute("id")
+                css_selector_filter_risk = f'select[id="{id_selector}"]'
 
-            selector_filter_risk = (
-                selector_filter_risk[0]
-                .find_elements(By.TAG_NAME, "td")[10]
-                .find_element(By.TAG_NAME, "div")
-                .find_element(By.TAG_NAME, "select")
-            )
+                provisao_from_xlsx = (
+                    str(self.bot_data.get("PROVISAO"))
+                    .lower()
+                    .replace("possivel", "possível")
+                    .replace("provavel", "provável")
+                )
 
-            id_selector = selector_filter_risk.get_attribute("id")
-            css_selector_filter_risk = f'select[id="{id_selector}"]'
+                self.interact.select2_elaw(css_selector_filter_risk, provisao_from_xlsx)
 
-            provisao_from_xlsx = (
-                str(self.bot_data.get("PROVISAO"))
-                .lower()
-                .replace("possivel", "possível")
-                .replace("provavel", "provável")
-            )
-
-            self.interact.select2_elaw(css_selector_filter_risk, provisao_from_xlsx)
-
-            self.interact.sleep_load('div[id="j_id_3c"]')
+                self.interact.sleep_load('div[id="j_id_3c"]')
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))

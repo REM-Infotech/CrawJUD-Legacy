@@ -132,7 +132,7 @@ async def botlaunch(id_: int, system: str, typebot: str) -> Response:
 
         await handle_form_errors(form)
 
-        url = request.base_url.replace("http://", "https://")
+        url = request.base_url
         return await make_response(
             await render_template(
                 "index.html",
