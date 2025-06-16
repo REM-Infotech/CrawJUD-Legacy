@@ -81,7 +81,7 @@ class SearchBot(CrawJUD):
         search_result: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "dtProcessoResults_data")))
 
         open_proc = None
-        with suppress(NoSuchElementException):
+        with suppress(Exception):
             open_proc = search_result.find_element(By.ID, "dtProcessoResults:0:btnProcesso")
 
         sleep(1.5)
@@ -96,18 +96,20 @@ class SearchBot(CrawJUD):
                     open_proc.click()
                     clicked = True
 
-                if not clicked:
-                    self.wait.until(
-                        ec.presence_of_element_located((
+                with suppress(Exception):
+                    if not clicked:
+                        self.wait.until(
+                            ec.presence_of_element_located((
+                                By.ID,
+                                "dtProcessoResults_data",
+                            ))
+                        ).find_element(
                             By.ID,
-                            "dtProcessoResults_data",
-                        ))
-                    ).find_element(
-                        By.ID,
-                        "dtProcessoResults:0:btnProcesso",
-                    ).click()
+                            "dtProcessoResults:0:btnProcesso",
+                        ).click()
+                    return True
 
-            return True
+            return False
 
         return False
 
