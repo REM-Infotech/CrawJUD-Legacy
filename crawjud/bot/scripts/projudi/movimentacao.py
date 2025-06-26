@@ -554,11 +554,15 @@ class Movimentacao(CrawJUD):
         rows_reverse = rows[::-1]
         max_rows = len(rows) - 1
         for pos, docs in enumerate(rows_reverse):
+            numproc = self.bot_data.get("NUMERO_PROCESSO")
             nomearquivo = (
-                f"{self.bot_data.get('NUMERO_PROCESSO')}",
+                f"{numproc}",
                 f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
             )
-            path_pdf = os.path.join(self.output_dir_path, "".join(nomearquivo))
+
+            path_pdfs = Path(self.output_dir_path).resolve().joinpath(numproc)
+            path_pdfs.mkdir(exist_ok=True, parents=True)
+            path_pdf = os.path.join(path_pdfs, "".join(nomearquivo))
 
             if os.path.exists(path_pdf):
                 continue
@@ -603,9 +607,9 @@ class Movimentacao(CrawJUD):
 
             text_mov = self.openfile(path_pdf)
 
-            if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO" or pos < max_rows:
-                sleep(1)
-                Path(path_pdf).unlink(missing_ok=True)
+            # if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO" or pos < max_rows:
+            #     sleep(1)
+            #     Path(path_pdf).unlink(missing_ok=True)
 
             data = {
                 "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
