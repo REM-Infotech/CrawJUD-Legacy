@@ -40,7 +40,11 @@ app = Quart(__name__, static_folder=src_path, template_folder=template_path)
 
 app.config.update({
     "SESSION_TYPE": "redis",
-    "SESSION_REDIS": Redis(host=getenv("REDIS_HOST"), port=6379),
+    "SESSION_REDIS": Redis(
+        host=getenv("REDIS_HOST"),
+        port=6379,
+        db=2,
+    ),
 })
 
 Session(app)
