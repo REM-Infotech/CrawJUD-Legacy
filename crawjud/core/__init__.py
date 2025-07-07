@@ -5,16 +5,18 @@ AsyncServer, Quart-Mail, SQLAlchemy, and Talisman.
 """
 
 import warnings
-from os import environ
+from os import environ, getenv
 from pathlib import Path
 
 import quart_flask_patch  # noqa: F401
 from celery import Celery
 from dotenv import load_dotenv
 from flask_mail import Mail
+from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman
 from quart import Quart as Quart
+from redis import Redis
 from socketio import ASGIApp
 
 from crawjud.custom import QuartLoginManager as LoginManager
@@ -36,7 +38,12 @@ template_path = str(Path(__file__).parent.resolve().joinpath("templates"))
 src_path = str(Path(__file__).parent.resolve().joinpath("static"))
 app = Quart(__name__, static_folder=src_path, template_folder=template_path)
 
+app.config.update({
+    "SESSION_TYPE": "redis",
+    "SESSION_REDIS": Redis(host=getenv("REDIS_HOST"), port=6379),
+})
 
+Session(app)
 load_dotenv()
 
 values = environ.get
