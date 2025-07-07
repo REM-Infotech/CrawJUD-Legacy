@@ -10,7 +10,7 @@ from pathlib import Path
 
 import quart_flask_patch  # noqa: F401
 from celery import Celery
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_talisman import Talisman

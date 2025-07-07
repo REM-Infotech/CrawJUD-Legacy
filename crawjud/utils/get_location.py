@@ -7,7 +7,7 @@ for given IP addresses. It includes error handling and data validation.
 from os import environ
 
 import FindMyIP as Ip
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 from httpx import Client as HTTPClient
 
 TOKEN = environ.get("TOKEN_Ip2")

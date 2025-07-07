@@ -6,7 +6,7 @@ import string
 from os import environ
 from typing import Any
 
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 from google.cloud.storage import Bucket, Client
 from google.oauth2.service_account import Credentials
 from itsdangerous import URLSafeTimedSerializer

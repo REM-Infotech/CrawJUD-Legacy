@@ -15,7 +15,7 @@ import pytz
 import socketio
 import socketio.exceptions  # noqa: F401
 import tqdm
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 
 from crawjud.bot.core import CrawJUD
 

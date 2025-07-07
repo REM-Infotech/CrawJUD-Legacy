@@ -17,7 +17,7 @@ from typing import (
     Union,
 )
 
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 from openai import OpenAI
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait

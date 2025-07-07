@@ -3,7 +3,7 @@
 # Função para atualizar para a tag da nova release
 from os import environ
 
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 from github import Github
 
 load_dotenv()

@@ -1,6 +1,6 @@
 """Miscellaneous utilities and helpers for the CrawJUD-Bots application."""
 
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 
 from .check_cors import check_allowed_origin
 from .gcs_mgmt import get_file
