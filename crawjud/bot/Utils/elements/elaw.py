@@ -68,12 +68,12 @@ class ELAW_AME(Configuracao):  # noqa: N801
     select_tipo_doc = 'select[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:tipoDocumentoInput_input"]'
     css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
     css_search_button = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
-    css_div_select_opt = "".join(
-        (
-            'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4',
-            '_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]',
-        ),
-    )
+
+    id_select_uf_proc = "".join((
+        "j_id_3y_1:j_id_3y_4_2_2_9_9_46_2:j_id_3y_4_2_2_9_9_46_3_1_2_2",
+        "_2_1:fieldid_9240pgTypeSelectField1CombosCombo_input",
+    ))
+    select_uf_proc = f"select[id='{id_select_uf_proc}']"
     select_field = "".join(
         (
             'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4_2_2_9_9_44',
@@ -82,9 +82,9 @@ class ELAW_AME(Configuracao):  # noqa: N801
     )
     css_other_location = "".join(
         (
-            'input[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4_2_2_9_9_44_3_1_2_2_2_1:',
-            "j_id_3y_4_2_2_9_9_44_3_1_2_2_2_2_1_c:j_id_3y_4_2_2_9_9_44_3_1_2_2_2_2_1_f:0:j",
-            '_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]',
+            'input[id="j_id_3y_1:j_id_3y_4_2_2_9_9_46_2:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_1:',
+            "j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_c:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_f:0:j",
+            '_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_1g:fieldText"]',
         ),
     )
     comboProcessoTipo = 'div[id="j_id_3y_1:comboProcessoTipo"]'  # noqa: N815

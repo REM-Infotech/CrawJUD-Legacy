@@ -542,15 +542,14 @@ class Cadastro(CrawJUD):
 
 
         """
-        get_div_select_locale: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_opt)),
-            message="Erro ao encontrar elemento",
-        )
-        get_div_select_locale.click()
-        sleep(0.5)
+        self.message = "Preenchendo UF Processo..."
+        self.type_log = "log"
+        self.prt()
 
         text = str(self.bot_data.get("CAPITAL_INTERIOR"))
-        self.interact.select_item(self.elements.select_field, text)
+        self.select2_elaw(self.elements.select_uf_proc, text)
+        sleep(0.5)
+
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
