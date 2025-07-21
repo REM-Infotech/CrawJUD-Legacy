@@ -14,6 +14,9 @@ from pathlib import Path
 
 import requests
 from selenium.webdriver.remote.webdriver import WebDriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.driver_cache import DriverCacheManager
+from webdriver_manager.core.os_manager import OperationSystemManager
 
 from crawjud.bot.core import (
     BarColumn,
@@ -165,19 +168,10 @@ class DriverBot(CrawJUD):
             self.create_path_accepted()
             self.add_options(chrome_options)
 
-            getdriver = SetupDriver(destination=self.pid_path)
-            path_chrome = None
-            if message != "Inicializando WebDriver":
-                version = getdriver.code_ver
-                chrome_name = f"chromedriver{version}"
-                if platform.system() == "Windows":
-                    chrome_name += ".exe"
-
-                existspath_ = self.pid_path.joinpath(chrome_name)
-                path_chrome = existspath_ if existspath_.exists() else None
-
-            if path_chrome is None:
-                path_chrome = self.pid_path.joinpath(getdriver()).resolve()
+            path_chrome = ChromeDriverManager(
+                os_system_manager=OperationSystemManager(),
+                cache_manager=DriverCacheManager(Path(__file__).cwd().joinpath("crawjud", "bot", "temp")),
+            ).install()
 
             serve = Service(path_chrome)
             driver = Chrome(service=serve, options=chrome_options)
