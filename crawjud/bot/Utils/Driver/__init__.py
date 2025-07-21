@@ -170,7 +170,7 @@ class DriverBot(CrawJUD):
 
             path_chrome = ChromeDriverManager(
                 os_system_manager=OperationSystemManager(),
-                cache_manager=DriverCacheManager(Path(__file__).cwd().joinpath("crawjud", "bot", "temp")),
+                cache_manager=DriverCacheManager(Path(__file__).cwd().joinpath("crawjud", "bot", "temp").resolve()),
             ).install()
 
             serve = Service(path_chrome)
