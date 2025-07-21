@@ -951,7 +951,7 @@ class Cadastro(CrawJUD):
             )
 
             self.driver.switch_to.frame(iframe)
-
+            sleep(0.5)
             with suppress(TimeoutException, NoSuchElementException):
                 set_infomar_cpf: WebElement = (
                     self.wait.until(
@@ -966,15 +966,13 @@ class Cadastro(CrawJUD):
 
             tipo_doc = type_doc.get(len("".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA")))))
             select_tipo_doc = self.elements.tipo_cpf_cnpj
-            self.select2_elaw(select_tipo_doc, tipo_doc)
+            self.select2_elaw(select_tipo_doc, tipo_doc.upper())
 
             sleep(0.5)
             self.interact.sleep_load('div[id="j_id_3x"]')
 
-            if tipo_doc == "cpf":
-                css_input_doc = self.elements.tipo_cpf
-
-            elif tipo_doc == "cnpj":
+            css_input_doc = self.elements.tipo_cpf
+            if tipo_doc == "cnpj":
                 css_input_doc = self.elements.tipo_cnpj
 
             input_doc: WebElement = self.wait.until(
