@@ -494,22 +494,9 @@ class Cadastro(CrawJUD):
         element_select = self.elements.tipo_parte_contraria_input
         self.select2_elaw(element_select, text)
 
-        table_tipo_doc: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_table_tipo_doc)),
-            message="Erro ao encontrar elemento",
-        )
-        table_tipo_doc = table_tipo_doc.find_elements(By.TAG_NAME, "td")
-        self.interact.sleep_load('div[id="j_id_3x"]')
-
-        for item in table_tipo_doc:
-            item: WebElement = item
-            get_label = str(item.find_element(By.TAG_NAME, "label").text).lower()
-            tipo_doc = type_doc.get(len("".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA")))))
-
-            if get_label == tipo_doc:
-                select_button = item.find_element(By.CSS_SELECTOR, 'div[class="ui-radiobutton ui-widget"]')
-                select_button.click()
-                break
+        tipo_doc = type_doc.get(len("".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA")))))
+        select_tipo_doc = self.elements.select_tipo_doc
+        self.select2_elaw(select_tipo_doc, tipo_doc)
 
         self.interact.sleep_load('div[id="j_id_3x"]')
         campo_doc: WebElement = self.wait.until(
@@ -977,31 +964,11 @@ class Cadastro(CrawJUD):
 
                 set_infomar_cpf.click()
 
-            table_tipo_doc: WebElement = WebDriverWait(self.driver, 10).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.tipo_cpf_cnpj)),
-                message="Erro ao encontrar elemento",
-            )
-            itensintotable = table_tipo_doc.find_elements(By.TAG_NAME, "td")
+            tipo_doc = type_doc.get(len("".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA")))))
+            select_tipo_doc = self.elements.tipo_cpf_cnpj
+            self.select2_elaw(select_tipo_doc, tipo_doc)
 
             sleep(0.5)
-
-            for item in itensintotable:
-                check_tipo = item.find_element(By.TAG_NAME, "label").text
-
-                numero = "".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA")))
-
-                if len(numero) == 11:
-                    tipo_doc = "cpf"
-
-                elif len(numero) == 14:
-                    tipo_doc = "cnpj"
-
-                if check_tipo.lower() == tipo_doc:
-                    select_tipo = item.find_element(By.CSS_SELECTOR, self.elements.botao_radio_widget)
-                    sleep(0.5)
-                    select_tipo.click()
-                    break
-
             self.interact.sleep_load('div[id="j_id_3x"]')
 
             if tipo_doc == "cpf":

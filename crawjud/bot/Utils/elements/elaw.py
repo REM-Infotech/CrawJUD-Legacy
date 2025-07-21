@@ -65,7 +65,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     empresa_input = "select[id='j_id_3y_1:comboClientProcessoParte_input']"
     tipo_empresa_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_4_9_2_5_input']"
     tipo_parte_contraria_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_m_input']"
-    css_table_tipo_doc = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:tipoDocumentoInput"]'
+    select_tipo_doc = 'select[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:tipoDocumentoInput_input"]'
     css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
     css_search_button = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
     css_div_select_opt = "".join(
@@ -120,14 +120,14 @@ class ELAW_AME(Configuracao):  # noqa: N801
     xpath_iframe = '//*[@id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"]/div[2]/iframe'
     cpf_cnpj = 'table[id="registrationCpfCnpjChooseGrid-"]'
     botao_radio_widget = 'div[class="ui-radiobutton ui-widget"]'
-    tipo_cpf_cnpj = 'table[id="cpfCnpjTipoNoGrid-"]'
-    tipo_cpf = 'input[id="j_id_19"]'
-    tipo_cnpj = 'input[id="j_id_1a"]'
-    botao_parte_contraria = 'button[id="j_id_1d"]'
+    tipo_cpf_cnpj = 'select[id="cpfCnpjTipoNoGrid-_input"]'
+    tipo_cpf = 'input[id="j_id_1c"]'
+    tipo_cnpj = 'input[id="j_id_1b"]'
+    botao_parte_contraria = 'button[id="j_id_1e"]'
     css_name_parte = 'input[id="j_id_1k"]'
     css_save_button = 'button[id="parteContrariaButtom"]'
     css_salvar_proc = 'button[id="btnSalvarOpen"]'
-    css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
+    css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchGrid"]'
     div_messageerro_css = 'div[id="messages"]'
 
     # COMPLEMENTAR
