@@ -964,7 +964,7 @@ class Cadastro(CrawJUD):
 
                 set_infomar_cpf.click()
 
-            tipo_doc = type_doc.get("".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA"))))
+            tipo_doc = type_doc.get(str(len("".join(filter(str.isdigit, self.bot_data.get("DOC_PARTE_CONTRARIA"))))))
             select_tipo_doc = self.elements.tipo_cpf_cnpj
             self.select2_elaw(select_tipo_doc, tipo_doc.upper())
 
