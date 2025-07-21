@@ -52,7 +52,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     comboareasub_css = 'div[id="comboAreaSub"]'
     elemento_comboareasub = 'div[id="comboAreaSub_panel"]'
     css_button = 'button[id="btnContinuar"]'
-
+    xpath_checkadvinterno = "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
     label_esfera = 'label[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
 
     css_esfera_judge = 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_input"]'

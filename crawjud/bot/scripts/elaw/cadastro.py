@@ -645,13 +645,11 @@ class Cadastro(CrawJUD):
         input_adv_responsavel.click()
         self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
 
-        css_wait_adv = r"#j_id_3k_1\:autoCompleteLawyer_panel > ul > li"
-
         wait_adv = None
 
         with suppress(TimeoutException):
             wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
+                ec.presence_of_element_located((By.XPATH, self.elements.xpath_checkadvinterno)),
             )
 
         if wait_adv:
