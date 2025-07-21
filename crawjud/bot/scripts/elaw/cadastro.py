@@ -975,6 +975,10 @@ class Cadastro(CrawJUD):
             if tipo_doc == "cnpj":
                 css_input_doc = self.elements.tipo_cnpj
 
+            self.message = css_input_doc
+            self.type_log = "log"
+            self.prt()
+
             input_doc: WebElement = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, css_input_doc)),
                 message="Erro ao encontrar elemento",
