@@ -968,7 +968,7 @@ class Cadastro(CrawJUD):
             select_tipo_doc = self.elements.tipo_cpf_cnpj
             self.select2_elaw(select_tipo_doc, tipo_doc.upper())
 
-            sleep(0.5)
+            sleep(2)
             self.interact.sleep_load('div[id="j_id_3x"]')
 
             css_input_doc = self.elements.tipo_cpf

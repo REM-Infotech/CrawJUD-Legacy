@@ -127,7 +127,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_name_parte = 'input[id="j_id_1k"]'
     css_save_button = 'button[id="parteContrariaButtom"]'
     css_salvar_proc = 'button[id="btnSalvarOpen"]'
-    css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchGrid"]'
+    css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
     div_messageerro_css = 'div[id="messages"]'
 
     # COMPLEMENTAR
