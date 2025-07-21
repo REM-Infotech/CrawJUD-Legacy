@@ -29,7 +29,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.bot.common import ExecutionError
 from crawjud.bot.core import CrawJUD
 
-type_doc = {11: "cpf", 14: "cnpj"}
+type_doc = {"11": "cpf", "14": "cnpj"}
 
 
 class Cadastro(CrawJUD):
