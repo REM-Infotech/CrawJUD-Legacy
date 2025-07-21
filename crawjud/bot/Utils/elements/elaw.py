@@ -106,7 +106,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
     contingencia = "select[id='j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_input']"
     contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
-    xpath = '//*[@id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"]/div[2]/iframe'
+    iframe_cad_parte = "".join((
+        'div[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"]',
+        ' > div > iframe[title="Parte Contrária"]',
+    ))
     css_naoinfomadoc = "".join(
         (
             "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >",

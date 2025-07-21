@@ -859,7 +859,7 @@ class Cadastro(CrawJUD):
             sleep(0.5)
 
             iframe: WebElement = WebDriverWait(self.driver, 10).until(
-                ec.presence_of_element_located((By.XPATH, self.elements.xpath)),
+                ec.presence_of_element_located((By.XPATH, self.elements.iframe_cad_parte)),
                 message="Erro ao encontrar elemento",
             )
 
