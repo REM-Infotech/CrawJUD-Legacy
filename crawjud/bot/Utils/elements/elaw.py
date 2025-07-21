@@ -94,22 +94,14 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_div_select_Adv = 'div[id="j_id_3y_1:comboAdvogadoResponsavelProcesso"]'  # noqa: N815
     css_input_select_Adv = 'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'  # noqa: N815
     css_input_adv = 'input[id="j_id_3y_1:autoCompleteLawyerOutraParte_input"]'
-    css_check_adv = "".join(
-        (
-            r"#j_id_3y_1\:autoCompleteLawyerOutraParte_panel > ul > li.ui-autocomplete-item.",
-            "ui-autocomplete-list-item.ui-corner-all.ui-state-highlight",
-        ),
-    )
+    css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
     css_valor_causa = 'input[id="j_id_3y_1:amountCase_input"]'
     escritrorio_externo = 'div[id="j_id_3y_1:comboEscritorio"]'
     combo_escritorio = 'div[id="j_id_3y_1:comboEscritorio_panel"]'
     contingencia = "select[id='j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_input']"
     contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
-    iframe_cad_parte = "".join((
-        'div[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"]',
-        ' > div > iframe[title="Parte Contrária"]',
-    ))
+    iframe_cad_parte = 'div[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"] > div > iframe'
     css_naoinfomadoc = "".join(
         (
             "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >",
@@ -120,7 +112,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
     salvarcss = 'button[id="lawyerOutraParteButtom"]'
     parte_contraria = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo"]'
-    xpath_iframe = '//*[@id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"]/div[2]/iframe'
+    iframe_cad_advogado = 'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > iframe'
     cpf_cnpj = 'table[id="registrationCpfCnpjChooseGrid-"]'
     botao_radio_widget = 'div[class="ui-radiobutton ui-widget"]'
     tipo_cpf_cnpj = 'select[id="cpfCnpjTipoNoGrid-_input"]'

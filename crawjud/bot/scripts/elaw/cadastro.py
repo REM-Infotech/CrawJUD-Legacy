@@ -722,7 +722,7 @@ class Cadastro(CrawJUD):
             check_adv: WebElement = (
                 WebDriverWait(self.driver, 15)
                 .until(
-                    ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_check_adv)),
+                    ec.presence_of_element_located((By.XPATH, self.elements.css_check_adv)),
                     message="Erro ao encontrar elemento",
                 )
                 .text
@@ -858,7 +858,10 @@ class Cadastro(CrawJUD):
             sleep(0.5)
 
             iframe: WebElement = WebDriverWait(self.driver, 10).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.iframe_cad_parte)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    self.elements.iframe_cad_advogado,
+                )),
                 message="Erro ao encontrar elemento",
             )
 
