@@ -41,7 +41,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     tableprazos = 'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
 
     tipo_polo = "".join((
-        'select[id="j_id_3k_1:j_id_3k_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_9_44_3_1_',
+        'select[id="j_id_3y_1:j_id_3y_4_2_2_t_9_44_2:j_id_3k_4_2_2_t_9_44_3_1_',
         '2_2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
     ))
 
@@ -53,36 +53,36 @@ class ELAW_AME(Configuracao):  # noqa: N801
     elemento_comboareasub = 'div[id="comboAreaSub_panel"]'
     css_button = 'button[id="btnContinuar"]'
 
-    label_esfera = 'label[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_label"]'
+    label_esfera = 'label[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
 
-    css_esfera_judge = 'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_input"]'
-    combo_rito = 'div[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboRito_panel"]'
-    estado_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboEstadoVara_input']"
-    comarca_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboComarcaVara_input']"
-    foro_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboForoTribunal_input']"
-    vara_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboVara_input']"
-    numero_processo = "input[id='j_id_3k_1:j_id_3k_4_2_2_2_9_f_2:txtNumeroMask']"
+    css_esfera_judge = 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_input"]'
+    combo_rito = 'div[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_panel"]'
+    estado_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboEstadoVara_input']"
+    comarca_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboComarcaVara_input']"
+    foro_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboForoTribunal_input']"
+    vara_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboVara_input']"
+    numero_processo = "input[id='j_id_3y_1:j_id_3y_4_2_2_2_9_f_2:txtNumeroMask']"
     empresa_input = "select[id='j_id_3k_1:comboClientProcessoParte_input']"
-    tipo_empresa_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_4_9_2_5_input']"
-    tipo_parte_contraria_input = "select[id='j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_m_input']"
-    css_table_tipo_doc = 'table[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:tipoDocumentoInput"]'
-    css_campo_doc = 'input[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:cpfCnpjInput"]'
-    css_search_button = 'button[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_f"]'
+    tipo_empresa_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_4_9_2_5_input']"
+    tipo_parte_contraria_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_m_input']"
+    css_table_tipo_doc = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:tipoDocumentoInput"]'
+    css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
+    css_search_button = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3k_4_2_2_5_9_9_4_2_f"]'
     css_div_select_opt = "".join(
         (
-            'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4',
+            'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3k_4',
             '_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo"]',
         ),
     )
     select_field = "".join(
         (
-            'div[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44',
+            'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44',
             '_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]',
         ),
     )
     css_other_location = "".join(
         (
-            'input[id="j_id_3k_1:j_id_3k_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:',
+            'input[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_1:',
             "j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_c:j_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_f:0:j",
             '_id_3k_4_2_2_9_9_44_3_1_2_2_2_2_1_1f:fieldText"]',
         ),
@@ -103,8 +103,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_valor_causa = 'input[id="j_id_3k_1:amountCase_input"]'
     escritrorio_externo = 'div[id="j_id_3k_1:comboEscritorio"]'
     combo_escritorio = 'div[id="j_id_3k_1:comboEscritorio_panel"]'
-    contingencia = "select[id='j_id_3k_1:j_id_3k_4_2_2_s_9_n_1:processoContingenciaTipoCombo_input']"
-    contigencia_panel = 'div[id="j_id_3k_1:j_id_3k_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
+    contingencia = "select[id='j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_input']"
+    contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     css_add_adv = 'button[id="j_id_3k_1:lawyerOutraParteNovoButtom"]'
     xpath = '//*[@id="j_id_3k_1:lawyerOutraParteNovoButtom_dlg"]/div[2]/iframe'
     css_naoinfomadoc = "".join(
@@ -116,8 +116,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_continuar = 'button[id="j_id_1e"]'
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
     salvarcss = 'button[id="lawyerOutraParteButtom"]'
-    parte_contraria = 'button[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo"]'
-    xpath_iframe = '//*[@id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"]/div[2]/iframe'
+    parte_contraria = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo"]'
+    xpath_iframe = '//*[@id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo_dlg"]/div[2]/iframe'
     cpf_cnpj = 'table[id="registrationCpfCnpjChooseGrid-"]'
     botao_radio_widget = 'div[class="ui-radiobutton ui-widget"]'
     tipo_cpf_cnpj = 'table[id="cpfCnpjTipoNoGrid-"]'
@@ -127,20 +127,20 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_name_parte = 'input[id="j_id_1k"]'
     css_save_button = 'button[id="parteContrariaButtom"]'
     css_salvar_proc = 'button[id="btnSalvarOpen"]'
-    css_t_found = 'table[id="j_id_3k_1:j_id_3k_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
+    css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
     div_messageerro_css = 'div[id="messages"]'
 
     # COMPLEMENTAR
     botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
     css_input_uc = "".join(
         (
-            'textarea[id="j_id_3k_1:j_id_3k_4_2_2_6_9_44_2:j_id_3k_4_2_2_6_9_4',
+            'textarea[id="j_id_3y_1:j_id_3y_4_2_2_6_9_44_2:j_id_3k_4_2_2_6_9_4',
             '4_3_1_2_2_1_1:j_id_3k_4_2_2_6_9_44_3_1_2_2_1_13"]',
         ),
     )
     element_select = "".join(
         (
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3',
+            'select[id="j_id_3y_1:j_id_3y_4_2_2_a_9_44_2:j_id_3k_4_2_2_a_9_44_3',
             '_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]',
         ),
     )
@@ -148,25 +148,25 @@ class ELAW_AME(Configuracao):  # noqa: N801
     fase_input = 'select[id="j_id_3k_1:processoFaseCombo_input"]'
     provimento_input = "".join(
         (
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2',
+            'select[id="j_id_3y_1:j_id_3y_4_2_2_g_9_44_2:j_id_3k_4_2_2',
             '_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]',
         ),
     )
     fato_gerador_input = "".join(
         (
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_',
+            'select[id="j_id_3y_1:j_id_3y_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_',
             '9_44_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]',
         ),
     )
     input_descobjeto_css = "".join(
         (
-            'textarea[id="j_id_3k_1:j_id_3k_4_2_2_l_9_44_2:j_id_3k_4_2_2_',
+            'textarea[id="j_id_3y_1:j_id_3y_4_2_2_l_9_44_2:j_id_3k_4_2_2_',
             'l_9_44_3_1_2_2_1_1:j_id_3k_4_2_2_l_9_44_3_1_2_2_1_13"]',
         ),
     )
     objeto_input = "".join(
         (
-            'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44',
+            'select[id="j_id_3y_1:j_id_3y_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44',
             '_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"]',
         ),
     )
@@ -260,7 +260,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_adicionar = 'button[id="adicionarObjetoBtn"]'
     botao_editar = 'button[id*="editarFasePedidoBtn"]'
     css_val_inpt = 'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
-    css_risk = "/html/body/div[1]/div[4]/div[1]/div/div[2]/form[2]/table/tbody/tr[2]/td/div/div/table[2]/tbody/tr[2]/td/span/div/div/div/div[1]/div/table/tbody/tr[1]/td[7]/div"
+    css_risk = "".join((
+        "/html/body/div[1]/div[4]/div[1]/div/div[2]/form[2]/table/tbody/tr[2]/td/div/div/table[2]",
+        "/tbody/tr[2]/td/span/div/div/div/div[1]/div/table/tbody/tr[1]/td[7]/div",
+    ))
     processo_objt = 'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
     botao_salvar_id = 'button[id="salvarBtn"]'
     data_correcaoCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'  # noqa: N815
@@ -274,70 +277,70 @@ class ELAW_AME(Configuracao):  # noqa: N801
     tr_not_adv = "tr.ui-datatable-empty-message"
 
     dict_campos_validar = {
-        "estado": 'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboEstadoVara_input"] > option:selected',
-        "comarca": 'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboComarcaVara_input"] > option:selected',
-        "foro": 'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboForoTribunal_input"] > option:selected',
-        "vara": 'select[id="j_id_3k_1:j_id_3k_4_2_2_1_9_u_1:comboVara_input"] > option:selected',
+        "estado": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboEstadoVara_input"] > option:selected',
+        "comarca": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboComarcaVara_input"] > option:selected',
+        "foro": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboForoTribunal_input"] > option:selected',
+        "vara": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboVara_input"] > option:selected',
         "fase": 'select[id="j_id_3k_1:processoFaseCombo_input"] > option:selected',
-        "tipo_empresa": 'select[id="j_id_3k_1:j_id_3k_4_2_2_4_9_2_5_input"] > option:selected',
+        "tipo_empresa": 'select[id="j_id_3y_1:j_id_3y_4_2_2_4_9_2_5_input"] > option:selected',
         "escritorio": 'select[id="j_id_3k_1:comboEscritorio_input"] > option:selected',
         "advogado_interno": "".join(
             ['select[id="j_id_3k_1:comboAdvoga', 'doResponsavelProcesso_input"] > option:selected'],
         ),
         "divisao": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_a_9_44_2:j_id_3k_4_2_2_',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_a_9_44_2:j_id_3k_4_2_2_',
                 'a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "classificacao": "".join(
-            ['select[id="j_id_3k_1:j_id_3k_4_2_2_p_9_16_1:', 'processoClassificacaoCombo_input"] > option:selected'],
+            ['select[id="j_id_3y_1:j_id_3y_4_2_2_p_9_16_1:', 'processoClassificacaoCombo_input"] > option:selected'],
         ),
         "toi_criado": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_v_9_44_2:j_id_3k_4_2_2_v_',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_v_9_44_2:j_id_3k_4_2_2_v_',
                 '9_44_3_1_2_2_2_1:fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "nota_tecnica": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_w_9_44_2:j_id_3k_4_2_2_w_9_44_3_1_2',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_w_9_44_2:j_id_3k_4_2_2_w_9_44_3_1_2',
                 '_2_1_1:fieldid_9244typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "liminar": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_y_9_44_2:j_id_3k_4_2_2_y_9',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_y_9_44_2:j_id_3k_4_2_2_y_9',
                 '_44_3_1_2_2_1_1:fieldid_9830typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "provimento": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_g_9_44_2:j_id_3k_4_2_2_g_9_',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_g_9_44_2:j_id_3k_4_2_2_g_9_',
                 '44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "fato_gerador": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_9_44_3_1_2',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_m_9_44_2:j_id_3k_4_2_2_m_9_44_3_1_2',
                 '_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "acao": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1',
                 '_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "tipo_entrada": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_e_9_44_2:j_id_3k_4_2_2_e_',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_e_9_44_2:j_id_3k_4_2_2_e_',
                 '9_44_3_1_2_2_1_1:fieldid_9242typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
         "objeto": "".join(
             [
-                'select[id="j_id_3k_1:j_id_3k_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1',
+                'select[id="j_id_3y_1:j_id_3y_4_2_2_n_9_44_2:j_id_3k_4_2_2_n_9_44_3_1',
                 '_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
             ],
         ),
