@@ -6,34 +6,19 @@ import json
 import platform
 import shutil
 import traceback
-import zipfile
-from concurrent.futures import ThreadPoolExecutor
-from functools import partial
 from os import getcwd, path
 from pathlib import Path
 
-import requests
 from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.driver_cache import DriverCacheManager
 from webdriver_manager.core.os_manager import OperationSystemManager
 
 from crawjud.bot.core import (
-    BarColumn,
     Chrome,
     CrawJUD,
-    DownloadColumn,
-    Group,
-    Live,
     Options,
-    Panel,
-    Progress,
     Service,
-    TaskID,
-    TextColumn,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-    TransferSpeedColumn,
     WebDriverWait,
 )
 
@@ -189,247 +174,247 @@ class DriverBot(CrawJUD):
             raise e
 
 
-class SetupDriver:
-    """Utility to download and configure the appropriate WebDriver binary."""
+# class SetupDriver:
+#     """Utility to download and configure the appropriate WebDriver binary."""
 
-    another_ver = False
-    current_version = ""
-    try:
-        current_version = chrome_ver()
-        chrome_v = ".".join(current_version.split(".")[:-1])
+#     another_ver = False
+#     current_version = ""
+#     try:
+#         current_version = chrome_ver()
+#         chrome_v = ".".join(current_version.split(".")[:-1])
 
-    except Exception:
-        another_ver = True
-        chrome_v = another_chrome_ver()
+#     except Exception:
+#         another_ver = True
+#         chrome_v = another_chrome_ver()
 
-    # another_ver = True
-    # chrome_v = another_chrome_ver()
-    # _url_driver: str = None
+#     # another_ver = True
+#     # chrome_v = another_chrome_ver()
+#     # _url_driver: str = None
 
-    @property
-    def url_driver(self) -> str:
-        """Retrieve the URL for downloading the WebDriver.
+#     @property
+#     def url_driver(self) -> str:
+#         """Retrieve the URL for downloading the WebDriver.
 
-        Returns:
-            str: The URL for downloading the WebDriver.
+#         Returns:
+#             str: The URL for downloading the WebDriver.
 
-        """
-        return SetupDriver._url_driver
+#         """
+#         return SetupDriver._url_driver
 
-    @url_driver.setter
-    def url_driver(self, url: str) -> None:
-        """Set the URL for downloading the WebDriver.
+#     @url_driver.setter
+#     def url_driver(self, url: str) -> None:
+#         """Set the URL for downloading the WebDriver.
 
-        Args:
-            url (str): The URL for downloading the WebDriver.
+#         Args:
+#             url (str): The URL for downloading the WebDriver.
 
-        """
-        SetupDriver._url_driver = url
+#         """
+#         SetupDriver._url_driver = url
 
-    @property
-    def code_ver(self) -> str:
-        """Retrieve the major version of the installed Chrome browser.
+#     @property
+#     def code_ver(self) -> str:
+#         """Retrieve the major version of the installed Chrome browser.
 
-        Returns:
-            str: The major version of the installed Chrome browser.
+#         Returns:
+#             str: The major version of the installed Chrome browser.
 
-        """
-        return SetupDriver.chrome_v
+#         """
+#         return SetupDriver.chrome_v
 
-    @code_ver.setter
-    def code_ver(self, version: str) -> None:
-        """Set the major version of the installed Chrome browser.
+#     @code_ver.setter
+#     def code_ver(self, version: str) -> None:
+#         """Set the major version of the installed Chrome browser.
 
-        Args:
-            version (str): The major version of the installed Chrome browser.
+#         Args:
+#             version (str): The major version of the installed Chrome browser.
 
-        """
-        SetupDriver.chrome_v = version
+#         """
+#         SetupDriver.chrome_v = version
 
-    progress = Progress(
-        TimeElapsedColumn(),
-        TextColumn("[bold blue]{task.fields[filename]}", justify="right"),
-        BarColumn(bar_width=None),
-        "[progress.percentage]{task.percentage:>3.1f}%",
-        "•",
-        DownloadColumn(),
-        "•",
-        TransferSpeedColumn(),
-        "•",
-        TimeRemainingColumn(),
-    )
+#     progress = Progress(
+#         TimeElapsedColumn(),
+#         TextColumn("[bold blue]{task.fields[filename]}", justify="right"),
+#         BarColumn(bar_width=None),
+#         "[progress.percentage]{task.percentage:>3.1f}%",
+#         "•",
+#         DownloadColumn(),
+#         "•",
+#         TransferSpeedColumn(),
+#         "•",
+#         TimeRemainingColumn(),
+#     )
 
-    current_app_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
+#     current_app_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
 
-    grp = Group(current_app_progress, progress)
-    painel = Panel(grp)
+#     grp = Group(current_app_progress, progress)
+#     painel = Panel(grp)
 
-    progress_group = Group(painel)
+#     progress_group = Group(painel)
 
-    def __init__(self, destination: Path = None, **kwargs: dict[str, any]) -> None:
-        """
-        Initialize SetupDriver to download and configure the appropriate WebDriver binary aptly.
+#     def __init__(self, destination: Path = None, **kwargs: dict[str, any]) -> None:
+#         """
+#         Initialize SetupDriver to download and configure the appropriate WebDriver binary aptly.
 
-        Args:
-            destination (Path, optional): Destination directory for WebDriver.
-            **kwargs: Additional configuration parameters.
+#         Args:
+#             destination (Path, optional): Destination directory for WebDriver.
+#             **kwargs: Additional configuration parameters.
 
-        """
-        if destination is None:
-            destination = Path(__file__).parent.resolve().joinpath("webdriver")
-            destination.mkdir(exist_ok=True, parents=True)
+#         """
+#         if destination is None:
+#             destination = Path(__file__).parent.resolve().joinpath("webdriver")
+#             destination.mkdir(exist_ok=True, parents=True)
 
-        self.url_driver = self.get_url()
-        new_stem = f"chromedriver{self.code_ver}.zip"
-        root_dir = Path(__file__).parent.cwd()
-        without_stem = root_dir.joinpath("crawjud", "bot", "webdriver", "chromedriver")
-        self.file_path = without_stem.with_stem(new_stem).resolve()
+#         self.url_driver = self.get_url()
+#         new_stem = f"chromedriver{self.code_ver}.zip"
+#         root_dir = Path(__file__).parent.cwd()
+#         without_stem = root_dir.joinpath("crawjud", "bot", "webdriver", "chromedriver")
+#         self.file_path = without_stem.with_stem(new_stem).resolve()
 
-        if platform.system() == "Linux":
-            self.file_path = self.file_path.with_suffix("")
-            self.fileN = self.file_path.name
+#         if platform.system() == "Linux":
+#             self.file_path = self.file_path.with_suffix("")
+#             self.fileN = self.file_path.name
 
-        elif platform.system() == "Windows":
-            self.file_path = self.file_path.with_suffix(".exe")
-            self.fileN = self.file_path.name
+#         elif platform.system() == "Windows":
+#             self.file_path = self.file_path.with_suffix(".exe")
+#             self.fileN = self.file_path.name
 
-        for key, value in list(kwargs.items()):
-            setattr(self, key, value)
+#         for key, value in list(kwargs.items()):
+#             setattr(self, key, value)
 
-        self.destination = destination
+#         self.destination = destination
 
-    def __call__(self) -> str:
-        """
-        Execute driver setup process, download and extract WebDriver, then copy to destination.
+#     def __call__(self) -> str:
+#         """
+#         Execute driver setup process, download and extract WebDriver, then copy to destination.
 
-        Args:
-            None.
+#         Args:
+#             None.
 
-        Returns:
-            str: Name of the downloaded WebDriver file.
+#         Returns:
+#             str: Name of the downloaded WebDriver file.
 
-        """
-        with Live(self.progress_group):
-            with ThreadPoolExecutor() as pool:
-                self.configure_bar(pool)
+#         """
+#         with Live(self.progress_group):
+#             with ThreadPoolExecutor() as pool:
+#                 self.configure_bar(pool)
 
-        shutil.copy(self.file_path, self.destination)
-        return self.destination.name
+#         shutil.copy(self.file_path, self.destination)
+#         return self.destination.name
 
-    def configure_bar(self, pool: ThreadPoolExecutor) -> None:
-        """
-        Configure download progress bar for obtaining the WebDriver with ThreadPoolExecutor.
+#     def configure_bar(self, pool: ThreadPoolExecutor) -> None:
+#         """
+#         Configure download progress bar for obtaining the WebDriver with ThreadPoolExecutor.
 
-        Args:
-            pool (ThreadPoolExecutor): Executor for handling parallel downloads.
+#         Args:
+#             pool (ThreadPoolExecutor): Executor for handling parallel downloads.
 
-        """
-        self.current_task_id = self.current_app_progress.add_task("[bold blue] Baixando Chromedriver")
-        task_id = self.progress.add_task("download", filename=self.fileN.upper(), start=False)
+#         """
+#         self.current_task_id = self.current_app_progress.add_task("[bold blue] Baixando Chromedriver")
+#         task_id = self.progress.add_task("download", filename=self.fileN.upper(), start=False)
 
-        self.destination = self.destination.joinpath(self.fileN).resolve()
-        root_path = Path(self.file_path).parent.resolve()
-        if not self.file_path.exists():
-            if not root_path.exists():
-                root_path.mkdir(exist_ok=True, parents=True)
+#         self.destination = self.destination.joinpath(self.fileN).resolve()
+#         root_path = Path(self.file_path).parent.resolve()
+#         if not self.file_path.exists():
+#             if not root_path.exists():
+#                 root_path.mkdir(exist_ok=True, parents=True)
 
-            pool.submit(self.copy_url, task_id, self.file_path)
+#             pool.submit(self.copy_url, task_id, self.file_path)
 
-        elif root_path.exists():
-            if self.file_path.exists():
-                self.current_app_progress.update(
-                    self.current_task_id,
-                    description="[bold green] Carregado webdriver salvo em cache!",
-                )
-                shutil.copy(self.file_path, self.destination)
+#         elif root_path.exists():
+#             if self.file_path.exists():
+#                 self.current_app_progress.update(
+#                     self.current_task_id,
+#                     description="[bold green] Carregado webdriver salvo em cache!",
+#                 )
+#                 shutil.copy(self.file_path, self.destination)
 
-    def get_url(self) -> str:
-        """
-        Construct download URL for WebDriver based on Chrome version and system architecture.
+#     def get_url(self) -> str:
+#         """
+#         Construct download URL for WebDriver based on Chrome version and system architecture.
 
-        Args:
-            None.
+#         Args:
+#             None.
 
-        Returns:
-            str: Constructed URL for downloading WebDriver.
+#         Returns:
+#             str: Constructed URL for downloading WebDriver.
 
-        """
-        # Verifica no endpoint qual a versão disponivel do WebDriver
-        if self.another_ver is True:
-            l_old_v = self.code_ver.split(".")
-            l_old_v.pop(-1)
+#         """
+#         # Verifica no endpoint qual a versão disponivel do WebDriver
+#         if self.another_ver is True:
+#             l_old_v = self.code_ver.split(".")
+#             l_old_v.pop(-1)
 
-            self.code_ver = ".".join(l_old_v)
+#             self.code_ver = ".".join(l_old_v)
 
-        url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
-        results = requests.get(url_chromegit, timeout=60)
-        self.code_ver = results.text
+#         url_chromegit = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{self.code_ver}"
+#         results = requests.get(url_chromegit, timeout=60)
+#         self.code_ver = results.text
 
-        system = platform.system().replace("dows", "").lower()
-        arch = platform.architecture()
-        if type(arch) is tuple:
-            arch = arch[0].replace("bit", "")
+#         system = platform.system().replace("dows", "").lower()
+#         arch = platform.architecture()
+#         if type(arch) is tuple:
+#             arch = arch[0].replace("bit", "")
 
-        os_sys = f"{system}{arch}"
-        # Baixa o WebDriver conforme disponivel no repositório
-        url_driver = "storage.googleapis.com/chrome-for-testing-public/"
+#         os_sys = f"{system}{arch}"
+#         # Baixa o WebDriver conforme disponivel no repositório
+#         url_driver = "storage.googleapis.com/chrome-for-testing-public/"
 
-        set_url = [self.code_ver, os_sys, os_sys]
-        for pos, item in enumerate(set_url):
-            if pos == len(set_url) - 1:
-                url_driver += f"chromedriver-{item}.zip"
-                continue
+#         set_url = [self.code_ver, os_sys, os_sys]
+#         for pos, item in enumerate(set_url):
+#             if pos == len(set_url) - 1:
+#                 url_driver += f"chromedriver-{item}.zip"
+#                 continue
 
-            url_driver += f"{item}/"
+#             url_driver += f"{item}/"
 
-        return url_driver
+#         return url_driver
 
-    def copy_url(self, task_id: TaskID, path: Path) -> None:
-        """
-        Download, extract, and move WebDriver from URL zip file to specified path ready now.
+#     def copy_url(self, task_id: TaskID, path: Path) -> None:
+#         """
+#         Download, extract, and move WebDriver from URL zip file to specified path ready now.
 
-        Args:
-            task_id (TaskID): ID for progress tracking.
-            url (str): URL to download from.
-            path (Path): File path to save and extract WebDriver.
+#         Args:
+#             task_id (TaskID): ID for progress tracking.
+#             url (str): URL to download from.
+#             path (Path): File path to save and extract WebDriver.
 
-        """
-        zip_name = path.with_name(f"{path.name}.zip")
-        response = requests.get(f"https://{self.url_driver}", stream=True, timeout=60)
-        # input("teste")
-        # This will break if the response doesn't contain content length
-        self.progress.update(task_id, total=int(response.headers["Content-length"]))
+#         """
+#         zip_name = path.with_name(f"{path.name}.zip")
+#         response = requests.get(f"https://{self.url_driver}", stream=True, timeout=60)
+#         # input("teste")
+#         # This will break if the response doesn't contain content length
+#         self.progress.update(task_id, total=int(response.headers["Content-length"]))
 
-        with zip_name.open("wb") as dest_file:
-            self.progress.start_task(task_id)
-            for data in iter(partial(response.raw.read, 32768), b""):
-                dest_file.write(data)
-                self.progress.update(task_id, advance=len(data))
+#         with zip_name.open("wb") as dest_file:
+#             self.progress.start_task(task_id)
+#             for data in iter(partial(response.raw.read, 32768), b""):
+#                 dest_file.write(data)
+#                 self.progress.update(task_id, advance=len(data))
 
-        # input(str("member"))
-        # Extract the zip file
+#         # input(str("member"))
+#         # Extract the zip file
 
-        with zipfile.ZipFile(zip_name, "r") as zip_ref:
-            # Extract each file directly into the subfolder
-            for member in zip_ref.namelist():
-                # input(str(member))
-                self.progress.print(member)
-                self.progress.update(task_id)
+#         with zipfile.ZipFile(zip_name, "r") as zip_ref:
+#             # Extract each file directly into the subfolder
+#             for member in zip_ref.namelist():
+#                 # input(str(member))
+#                 self.progress.print(member)
+#                 self.progress.update(task_id)
 
-                not_chrome1 = member.split("/")[-1].lower() == "chromedriver.exe"
-                not_chrome2 = member.split("/")[-1].lower() == "chromedriver"
+#                 not_chrome1 = member.split("/")[-1].lower() == "chromedriver.exe"
+#                 not_chrome2 = member.split("/")[-1].lower() == "chromedriver"
 
-                if not_chrome1 or not_chrome2:
-                    # Get the original file name without any directory structure
-                    dir_name = path.name
-                    extracted_path = Path(zip_ref.extract(member, dir_name))
-                    base_name = extracted_path.name
-                    # If the extracted path has directories, move the file directly into the subfolder
-                    chk = base_name and extracted_path.is_dir()
-                    if chk:
-                        continue
+#                 if not_chrome1 or not_chrome2:
+#                     # Get the original file name without any directory structure
+#                     dir_name = path.name
+#                     extracted_path = Path(zip_ref.extract(member, dir_name))
+#                     base_name = extracted_path.name
+#                     # If the extracted path has directories, move the file directly into the subfolder
+#                     chk = base_name and extracted_path.is_dir()
+#                     if chk:
+#                         continue
 
-                    shutil.move(extracted_path, path)
+#                     shutil.move(extracted_path, path)
 
-        zip_name.unlink()
-        self.current_app_progress.update(self.current_task_id, description="[bold green] ChromeDriver Baixado!")
+#         zip_name.unlink()
+#         self.current_app_progress.update(self.current_task_id, description="[bold green] ChromeDriver Baixado!")

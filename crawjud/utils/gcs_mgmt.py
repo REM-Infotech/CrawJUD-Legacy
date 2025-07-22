@@ -1,11 +1,14 @@
 """Module to manage Google Cloud Storage (GCS) operations."""
 
 import json
-from os import environ
+from pathlib import Path
 
+from dotenv import dotenv_values
 from google.cloud.storage import Bucket, Client
 from google.cloud.storage.blob import Blob
 from google.oauth2.service_account import Credentials
+
+environ = dotenv_values()
 
 
 def storage_client() -> Client:
@@ -29,9 +32,16 @@ def credentials_gcs() -> Credentials:
         Credentials: GCS service account credentials.
 
     """
-    return Credentials.from_service_account_info(json.loads(environ.get("CREDENTIALS_DICT"))).with_scopes(
-        ["https://www.googleapis.com/auth/cloud-platform"],
-    )
+    path_cred = Path(__file__).cwd().joinpath("crawjud", "bot", "temp", "cred_json.json")
+    with path_cred.open("w") as f:
+        f.write(environ.get("CREDENTIALS_DICT"))
+
+    with path_cred.open("r") as f:
+        credential = json.loads(f.read())
+
+        return Credentials.from_service_account_info(credential).with_scopes(
+            ["https://www.googleapis.com/auth/cloud-platform"],
+        )
 
     # Configure a autenticação para a conta de serviço do GCS
 

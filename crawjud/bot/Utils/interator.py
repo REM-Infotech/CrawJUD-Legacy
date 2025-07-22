@@ -129,20 +129,20 @@ class Interact(CrawJUD):
         element.clear()
         sleep(1)
 
-    def sleep_load(self, element: str = 'div[id="j_id_3x"]') -> None:
+    def sleep_load(self, element: str = 'div[id="j_id_48"]') -> None:
         """Wait until the loading indicator for a specific element is hidden.
 
         Args:
-            element (str, optional): A CSS selector for the loading element. Defaults to 'div[id="j_id_3x"]'.
+            element (str, optional): A CSS selector for the loading element. Defaults to 'div[id="j_id_48"]'.
 
         """
         while True:
-            sleep(0.5)
+            sleep(2)
             load = None
             aria_value = None
             with suppress(TimeoutException):
                 load: WebElement = WebDriverWait(self.driver, 5).until(
-                    ec.presence_of_element_located((By.CSS_SELECTOR, element)),
+                    ec.presence_of_element_located((By.CSS_SELECTOR, f"{element} > div > i")),
                 )
 
             if load:
