@@ -4,6 +4,8 @@ This module aggregates several utility classes and functions used across the app
 It includes authentication, browser control, file handling, and data processing routines.
 """
 
+from __future__ import annotations
+
 import logging
 import os
 import re
@@ -15,7 +17,7 @@ import unicodedata
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Union
+from typing import Generic, TypeVar, Union
 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -32,6 +34,8 @@ from crawjud.bot.Utils.MakeTemplate import MakeXlsx
 from crawjud.bot.Utils.PrintLogs import PrintBot, SendMessage
 from crawjud.bot.Utils.search import SearchBot
 from crawjud.types import Numbers
+
+T = TypeVar("AnyValue", bound=str)
 
 __all__ = [
     "ELAW_AME",
@@ -318,22 +322,27 @@ class OtherUtils(CrawJUD):
         df = pd.read_excel(input_file)
         df.columns = df.columns.str.upper()
 
+        def format_data(x: Generic[T]) -> str:
+            if str(x) == "NaT" or str(x) == "nan":
+                return ""
+
+            if isinstance(x, (datetime, Timestamp)):
+                return x.strftime("%d/%m/%Y")
+
+            return x
+
+        def format_float(x: Generic[T]) -> str:
+            return f"{x:.2f}".replace(".", ",")
+
         for col in df.columns:
-            df[col] = df[col].apply(lambda x: (x.strftime("%d/%m/%Y") if isinstance(x, (datetime, Timestamp)) else x))
+            df[col] = df[col].apply(format_data)
 
         for col in df.select_dtypes(include=["float"]).columns:
-            df[col] = df[col].apply(lambda x: f"{x:.2f}".replace(".", ","))
+            df[col] = df[col].apply(format_float)
 
-        vars_df = []
+        to_list = [dict(list(item.items())) for item in df.to_dict(orient="records")]
 
-        df_dicted = df.to_dict(orient="records")
-        for item in df_dicted:
-            for key, value in item.items():
-                if str(value) == "nan":
-                    item[key] = None
-            vars_df.append(item)
-
-        return vars_df
+        return to_list
 
     def elawFormats(self, data: dict[str, str]) -> dict[str, str]:  # noqa: N802
         """Format a legal case dictionary according to pre-defined rules.

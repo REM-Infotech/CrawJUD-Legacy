@@ -1,7 +1,7 @@
 """Celery configuration for Quart application."""
 
 import logging  # noqa: F401
-from os import getcwd, getenv  # noqa: F401
+from os import environ, getcwd, getenv  # noqa: F401
 from pathlib import Path  # noqa: F401
 
 from celery import Celery
@@ -33,25 +33,23 @@ def config_loggers(
 
     from crawjud.logs import log_cfg
 
-    logger_name = f"{getenv('APPLICATION_APP')}_celery"
-    log_file = Path(getcwd()).resolve().joinpath("crawjud", "logs", f"{logger_name}.log")
-    log_file.touch(exist_ok=True)
+    logger.handlers.clear()
 
-    log_level = logging.INFO
-    if getenv("DEBUG", "False").lower() == "true":
-        log_level = logging.INFO
+    worker_name = environ.get("WORKER_NAME")
+    log_level = int(environ.get("LOG_LEVEL", 20))
+    workdir_path = Path(__file__).cwd()
+    log_file = workdir_path.joinpath("crawjud", "logs", f"{worker_name}.log")
+    log_file.parent.mkdir(exist_ok=True, parents=True)
 
     cfg, _ = log_cfg(
-        str(log_file),
-        log_level,
-        logger_name=logger_name.replace("_", "."),
+        log_file=str(log_file),
+        log_level=log_level,
+        logger_name=worker_name,
     )
-    logger.handlers.clear()
-    dictConfig(cfg)
-    logger.setLevel(log_level)
 
-    configured_logger = logging.getLogger(logger_name.replace("_", "."))
-    for handler in configured_logger.handlers:
+    dictConfig(cfg)
+    handlers = logging.getLogger(worker_name).handlers
+    for handler in handlers:
         logger.addHandler(handler)
 
 

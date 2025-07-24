@@ -44,17 +44,16 @@ def start_worker() -> None:
     from crawjud.core import create_app
 
     app, _, celery = asyncio.run(create_app())
-    environ.update({"APPLICATION_APP": "worker"})
+    worker_name = f"{worker_name_generator()}@{node()}"
+    environ.update({"APPLICATION_APP": "worker", "WORKER_NAME": worker_name})
 
     async def start_worker() -> None:
         async with app.app_context():
-            worker_name = f"{worker_name_generator()}@{node()}"
             worker = Worker(
                 app=celery,
                 hostname=worker_name,
                 task_events=True,
-                loglevel="INFO",
-                concurrency=50.0,
+                concurrency=16,
                 pool="threads",
             )
             worker = worker
@@ -80,15 +79,16 @@ def start_beat() -> None:
 
     async def beat_start() -> None:
         async with app.app_context():
-            beat = Beat(
-                app=celery,
-                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
-                max_interval=5,
-                loglevel="INFO",
-                logfile=Path(getcwd()).joinpath("crawjud", "logs", "beat_celery.log"),
-                no_color=False,
-            )
-            beat.run()
+            # beat = Beat(
+            #     app=celery,
+            #     scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+            #     max_interval=5,
+            #     loglevel="INFO",
+            #     logfile=Path(getcwd()).joinpath("crawjud", "logs", "beat_celery.log"),
+            #     no_color=False,
+            # )
+            # beat.run()
+            ...
 
     app, _, celery = asyncio.run(create_app())
     asyncio.run(beat_start())

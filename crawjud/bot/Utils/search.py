@@ -11,7 +11,7 @@ from datetime import datetime
 from time import sleep
 
 import pytz
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -69,49 +69,30 @@ class SearchBot(CrawJUD):
         Navigates to the appropriate ELAW page, interacts with elements, and clicks to open the process.
 
         """
-        if self.driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
-            self.driver.get("https://amazonas.elaw.com.br/processoList.elaw")
+        driver = self.drivier
+        if driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
+            driver.get("https://amazonas.elaw.com.br/processoList.elaw")
 
         campo_numproc: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
         campo_numproc.clear()
         sleep(0.15)
         self.interact.send_key(campo_numproc, self.bot_data.get("NUMERO_PROCESSO"))
+        driver.find_element(By.ID, "btnPesquisar").click()
 
-        self.driver.find_element(By.ID, "btnPesquisar").click()
-        search_result: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "dtProcessoResults_data")))
+        try:
+            open_proc = WebDriverWait(driver, 10).until(
+                ec.presence_of_element_located((By.ID, "dtProcessoResults:0:btnProcesso"))
+            )
+            if self.type_bot.upper() != "CADASTRO":
+                open_proc.click()
 
-        open_proc = None
-        with suppress(Exception):
-            open_proc = search_result.find_element(By.ID, "dtProcessoResults:0:btnProcesso")
+            return True
 
-        sleep(2.5)
-
-        diff_cad = str(self.typebot.upper()) != "CADASTRO"
-        diff_complement = str(self.typebot.upper()) != "COMPLEMENT"
-        if open_proc:
-            chkTypeBot = diff_cad and diff_complement  # noqa: N806
-            if chkTypeBot:
-                clicked = False
-                with suppress(StaleElementReferenceException):
-                    open_proc.click()
-                    clicked = True
-
-                with suppress(Exception):
-                    if not clicked:
-                        self.wait.until(
-                            ec.presence_of_element_located((
-                                By.ID,
-                                "dtProcessoResults_data",
-                            ))
-                        ).find_element(
-                            By.ID,
-                            "dtProcessoResults:0:btnProcesso",
-                        ).click()
-                    return True
-
+        except TimeoutException:
             return False
 
-        return False
+        except Exception as e:
+            raise e
 
     def esaj_search(self) -> bool:
         """Perform an ESAJ system search for a legal process.

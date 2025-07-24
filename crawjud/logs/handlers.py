@@ -14,6 +14,7 @@ class RedisHandler(logging.Handler):
     uri = "redis://localhost:6379"
     db = 0
     list_name = "logs"
+    level: int = 10
 
     def __init__(
         self,
@@ -72,13 +73,14 @@ class CustomFileHandler(logging.handlers.RotatingFileHandler):
     filename = "app.logs"
     max_bytes = 1024
     backup_count = 1
+    level: int = 10
 
     def format(self, record: logging.LogRecord) -> str:
         """Format the log record to JSON."""
         log_data = {
             "level": record.levelname,
             "message": record.getMessage(),
-            "time": self.formatTime(record, "%Y-%m-%d %H:%M:%S"),
+            "time": self.formatter.formatTime(record, "%Y-%m-%d %H:%M:%S"),
             "module": record.module,
         }
         return json.dumps(log_data)

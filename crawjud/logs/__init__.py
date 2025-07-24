@@ -25,7 +25,7 @@ def log_cfg(
 
     logger.setLevel(logging.INFO)
 
-    logger_name = kwargs.get("logger_name", __name__)
+    logger_name = kwargs.get("logger_name", __name__).replace(".", "_")
     log_path_file = str(log_file)
 
     if log_file == "app/logs":
@@ -49,7 +49,7 @@ def log_cfg(
         },
         "handlers": {
             "file_handler": {
-                "class": "logging.handlers.RotatingFileHandler",
+                "class": "crawjud.logs.handlers.CustomFileHandler",
                 "level": log_level,
                 "formatter": "json",
                 "filename": log_path_file,

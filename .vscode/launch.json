@@ -16,7 +16,7 @@
       "name": "Debug Web app",
       "type": "debugpy",
       "request": "launch",
-      "module": "crawjud.",
+      "module": "crawjud"
     },
     {
       "name": "Debug Quart ASGI",
