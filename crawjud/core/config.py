@@ -258,7 +258,7 @@ class DevelopmentConfig(Config):
     """Configuration settings for development environment."""
 
     env = environ
-    LOG_LEVEL = logging.DEBUG
+    LOG_LEVEL = logging.INFO
     # Flask-mail config
 
     if env.get("MAIL_SERVER"):
@@ -314,7 +314,7 @@ class TestingConfig(Config):
 
     TESTTING = True
     env = environ
-    LOG_LEVEL = logging.DEBUG
+    LOG_LEVEL = logging.INFO
     # Flask-mail config
 
     if env.get("MAIL_SERVER"):

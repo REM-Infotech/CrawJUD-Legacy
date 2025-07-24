@@ -90,7 +90,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_data_distribuicao = 'input[id="j_id_3y_1:dataDistribuicao_input"]'
     css_adv_responsavel = 'input[id="j_id_3y_1:autoCompleteLawyer_input"]'
     select_advogado_responsavel = 'select[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_input"]'  # noqa: N815
-    css_input_select_Adv = 'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'  # noqa: N815
+    css_input_select_adv = 'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'  # noqa: N815
     css_input_adv = 'input[id="j_id_3y_1:autoCompleteLawyerOutraParte_input"]'
     css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
     css_valor_causa = 'input[id="j_id_3y_1:amountCase_input"]'

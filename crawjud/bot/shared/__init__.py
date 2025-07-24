@@ -124,7 +124,7 @@ class PropertiesCrawJUD:
 
         log_level = logging.INFO
         if getenv("DEBUG", "False").lower() == "True":
-            log_level = logging.DEBUG
+            log_level = logging.INFO
 
         logger_name = self.module_bot if self.module_bot else __name__
         cfg, name = log_cfg(

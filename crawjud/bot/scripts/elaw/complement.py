@@ -504,7 +504,7 @@ class Complement(CrawJUD):
         self.interact.sleep_load('div[id="j_id_3x"]')
 
         input_select_adv: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_Adv)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_adv)),
         )
         input_select_adv.click()
 

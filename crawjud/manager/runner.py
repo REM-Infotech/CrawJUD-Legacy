@@ -122,7 +122,7 @@ class RunnerServices:
 
         log_level = logging.INFO
         if getenv("DEBUG", "False").lower() == "true":
-            log_level = logging.DEBUG
+            log_level = logging.INFO
         cfg = Config(
             self.asgi,
             host=hostname,

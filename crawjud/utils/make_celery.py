@@ -39,18 +39,17 @@ def config_loggers(
 
     log_level = logging.INFO
     if getenv("DEBUG", "False").lower() == "true":
-        log_level = logging.DEBUG
+        log_level = logging.INFO
 
     cfg, _ = log_cfg(
         str(log_file),
         log_level,
         logger_name=logger_name.replace("_", "."),
     )
-    dictConfig(cfg)
-    # Alter the Celery logger using the provided logger from kwargs if available.
-    logger.setLevel(log_level)
-    # Clear existing handlers and add the ones from the new configuration.
     logger.handlers.clear()
+    dictConfig(cfg)
+    logger.setLevel(log_level)
+
     configured_logger = logging.getLogger(logger_name.replace("_", "."))
     for handler in configured_logger.handlers:
         logger.addHandler(handler)
