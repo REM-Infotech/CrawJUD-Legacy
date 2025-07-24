@@ -11,7 +11,7 @@ from datetime import datetime
 from time import sleep
 
 import pytz
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -69,22 +69,8 @@ class SearchBot(CrawJUD):
         Navigates to the appropriate ELAW page, interacts with elements, and clicks to open the process.
 
         """
-        driver = self.driver
-        type_bot = self.type_bot
-        interact = self.interact
-        wait = self.wait
-        bot_data = self.bot_data
 
-        if driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
-            driver.get("https://amazonas.elaw.com.br/processoList.elaw")
-
-        campo_numproc: WebElement = wait.until(ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
-        campo_numproc.clear()
-        sleep(0.15)
-        interact.send_key(campo_numproc, bot_data.get("NUMERO_PROCESSO"))
-        driver.find_element(By.ID, "btnPesquisar").click()
-
-        try:
+        def open_proc() -> bool:
             open_proc = WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((By.ID, "dtProcessoResults:0:btnProcesso"))
             )
@@ -96,8 +82,32 @@ class SearchBot(CrawJUD):
 
             return True
 
+        driver = self.driver
+        type_bot = self.type_bot
+        interact = self.interact
+        wait = self.wait
+        bot_data = self.bot_data
+
+        driver.implicitly_wait(5)
+
+        if driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
+            driver.get("https://amazonas.elaw.com.br/processoList.elaw")
+
+        campo_numproc: WebElement = wait.until(ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
+        campo_numproc.clear()
+        sleep(0.15)
+        interact.send_key(campo_numproc, bot_data.get("NUMERO_PROCESSO"))
+        driver.find_element(By.ID, "btnPesquisar").click()
+
+        try:
+            return open_proc()
+
         except TimeoutException:
             return False
+
+        except StaleElementReferenceException:
+            sleep(5)
+            return open_proc()
 
         except Exception as e:
             raise e
