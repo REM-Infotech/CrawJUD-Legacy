@@ -40,10 +40,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
     tableprazos = 'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
 
-    tipo_polo = "".join((
-        'select[id="j_id_3y_1:j_id_3y_4_2_2_t_9_46_2:j_id_3y_4_2_2_t_9_46_3_1_2_',
-        '2_1_1:fieldid_13755typeSelectField1CombosCombo_input"]',
-    ))
+    tipo_polo = "//*[contains(@id, 'fieldid_13755typeSelectField1CombosCombo_input')]"
 
     # CADASTRO
     botao_novo = 'button[id="btnNovo"]'
@@ -89,15 +86,15 @@ class ELAW_AME(Configuracao):  # noqa: N801
     comboProcessoTipo = 'div[id="j_id_3y_1:comboProcessoTipo"]'  # noqa: N815
     filtro_processo = 'input[id="j_id_3y_1:comboProcessoTipo_filter"]'
     css_data_distribuicao = 'input[id="j_id_3y_1:dataDistribuicao_input"]'
-    css_adv_responsavel = 'input[id="j_id_3y_1:autoCompleteLawyer_input"]'
-    select_advogado_responsavel = 'select[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_input"]'  # noqa: N815
+    adv_responsavel = "//input[contains(@id, 'autoCompleteLawyer_input')]"
+    select_advogado_responsavel = "//select[contains(@id, 'comboAdvogadoResponsavelProcesso_input')]"  # noqa: N815
     css_input_select_adv = 'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'  # noqa: N815
     css_input_adv = 'input[id="j_id_3y_1:autoCompleteLawyerOutraParte_input"]'
     css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
-    css_valor_causa = 'input[id="j_id_3y_1:amountCase_input"]'
+    valor_causa = "//input[contains(@id, 'amountCase_input')]"
     escritrorio_externo = 'div[id="j_id_3y_1:comboEscritorio"]'
     combo_escritorio = 'div[id="j_id_3y_1:comboEscritorio_panel"]'
-    contingencia = "select[id='j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_input']"
+    contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
     contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
     iframe_cadastro_parte_contraria = (
@@ -128,16 +125,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
 
     # COMPLEMENTAR
     botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
-    css_input_uc = (
-        'textarea[id="j_id_3y_1:j_id_3y_4_2_2_6_9_46_2:j_id_3y_4_2_2_6_9_46_3_1_2_2_1_1:fieldid_9236fieldTextarea"]'
-    )
-    element_select = "".join(
-        (
-            'select[id="j_id_3y_1:j_id_3y_4_2_2_a_9_44_2:j_id_3y_4_2_2_a_9_44_3',
-            '_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"]',
-        ),
-    )
-    css_data_citacao = 'input[id="j_id_3y_1:dataRecebimento_input"]'
+    css_input_uc = "//textarea[contains(@id, 'fieldid_9236fieldTextarea')]"
+    divisao_select = "//*[contains(@id, 'fieldid_9241typeSelectField1CombosCombo_input')]"
+    data_citacao = "//input[contains(@id, 'dataRecebimento_input')]"
+    bairro_input = "//input[contains(@id, 'fieldid_9237fieldText')]"
     fase_input = 'select[id="j_id_3y_1:processoFaseCombo_input"]'
     provimento_input = "".join(
         (
@@ -147,7 +138,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     )
     fato_gerador_input = '//select[contains(@id, "fieldid_9239typeSelectField1CombosCombo_input")]'
 
-    input_descobjeto_css = "//textarea[contains(@id, 'fieldid_9844fieldTextarea')]"
+    input_descobjeto = "//*[contains(@id, 'fieldid_9844fieldTextarea')]"
     objeto_input = "//select[contains(@id, 'fieldid_8405typeSelectField1CombosCombo_input')]"
 
     # DOWNLOAD

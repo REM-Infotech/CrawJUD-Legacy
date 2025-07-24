@@ -20,7 +20,7 @@ from time import sleep
 from typing import Callable, Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver import Keys
+from selenium.webdriver import Keys  # noqa: F401
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
@@ -467,12 +467,12 @@ class Complement(CrawJUD):
         self.prt()
 
         input_adv_responsavel: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_adv_responsavel)),
+            ec.presence_of_element_located((By.XPATH, self.elements.adv_responsavel)),
         )
         input_adv_responsavel.click()
         self.interact.send_key(input_adv_responsavel, self.bot_data.get("ADVOGADO_INTERNO"))
 
-        css_wait_adv = r"#j_id_3k_1\:autoCompleteLawyer_panel > ul > li"
+        css_wait_adv = f"{input_adv_responsavel.get_attribute('id')} > ul > li"
 
         wait_adv = None
 
@@ -488,22 +488,13 @@ class Complement(CrawJUD):
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
-        div_select_Adv: WebElement = self.wait.until(  # noqa: N806
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)),
-        )
-        div_select_Adv.click()
-
         self.interact.sleep_load('div[id="j_id_48"]')
-
-        input_select_adv: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_adv)),
+        element_select = self.wait.until(
+            ec.presence_of_element_located((By.XPATH, self.elements.select_advogado_responsavel))
         )
-        input_select_adv.click()
-
-        self.interact.send_key(input_select_adv, self.bot_data.get("ADVOGADO_INTERNO"))
-        input_select_adv.send_keys(Keys.ENTER)
-
-        self.driver.execute_script(f"document.querySelector('{self.elements.css_div_select_Adv}').blur()")
+        self.select2_elaw(element_select, self.bot_data.get("ADVOGADO_INTERNO"))
+        id_campo_advogado_responsavel = element_select.get_attribute("id")
+        self.driver.execute_script(f"document.querySelector('#{id_campo_advogado_responsavel}').blur()")
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -536,7 +527,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Esfera Informada!"
@@ -566,7 +557,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Estado do processo informado!"
@@ -595,7 +586,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Comarca do processo informado!"
@@ -624,7 +615,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Foro do processo informado!"
@@ -652,7 +643,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Vara do processo informado!"
@@ -683,7 +674,7 @@ class Complement(CrawJUD):
         self.prt()
 
         input_uc: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_uc)),
+            ec.presence_of_element_located((By.XPATH, self.elements.css_input_uc)),
         )
         input_uc.click()
 
@@ -750,13 +741,9 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        css_input_bairro = (
-            'input[id="j_id_3k_1:j_id_3k_4_2_2_8_9_44_2:j_id_3k_4_2_2_8_9_44_3_1_2_2_1_1:fieldid_9237fieldText"]'
-        )
-
         bairro_ = self.bot_data.get("BAIRRO")
 
-        input_bairro = self.driver.find_element(By.CSS_SELECTOR, css_input_bairro)
+        input_bairro = self.driver.find_element(By.XPATH, self.elements.bairro_input)
         input_bairro.click()
         self.interact.clear(input_bairro)
         self.interact.send_key(input_bairro, bairro_)
@@ -789,8 +776,8 @@ class Complement(CrawJUD):
 
         sleep(0.5)
         text = str(self.bot_data.get("DIVISAO"))
-
-        self.select2_elaw(self.elements.element_select, text)
+        element_select = self.elements.divisao_select
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -816,13 +803,14 @@ class Complement(CrawJUD):
         self.prt()
 
         data_citacao: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao)),
+            ec.presence_of_element_located((By.XPATH, self.elements.data_citacao)),
         )
         self.interact.clear(data_citacao)
         self.interact.sleep_load('div[id="j_id_48"]')
         self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
         sleep(2)
-        self.driver.execute_script(f"document.querySelector('{self.elements.css_data_citacao}').blur()")
+        id_data_citacao = data_citacao.get_attribute("id")
+        self.driver.execute_script(f"document.querySelector('#{id_data_citacao}').blur()")
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Data de citação informada!"
@@ -850,7 +838,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Fase informada!"
@@ -878,7 +866,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Provimento antecipatório informado!"
@@ -904,7 +892,7 @@ class Complement(CrawJUD):
         self.prt()
 
         valor_causa: WebElement = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_valor_causa)),
+            ec.element_to_be_clickable((By.XPATH, self.elements.valor_causa)),
             message="Erro ao encontrar elemento",
         )
 
@@ -913,7 +901,7 @@ class Complement(CrawJUD):
         valor_causa.clear()
 
         self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
-        self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
+        self.driver.execute_script(f"document.querySelector('#{valor_causa.get_attribute('id')}').blur()")
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -943,7 +931,7 @@ class Complement(CrawJUD):
 
         text = self.bot_data.get("FATO_GERADOR")
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Fato gerador informado!"
@@ -965,7 +953,7 @@ class Complement(CrawJUD):
 
         """
         input_descobjeto = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, self.elements.xpath_descobjeto)),
+            ec.presence_of_element_located((By.XPATH, self.elements.input_descobjeto)),
         )
         self.interact.click(input_descobjeto)
 
@@ -999,7 +987,7 @@ class Complement(CrawJUD):
         element_select = self.elements.objeto_input
         text = self.bot_data.get("OBJETO")
 
-        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Objeto do processo informado!"
@@ -1025,7 +1013,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        element_select = self.elements.contingencia
+        element_select = self.wait.until(ec.presence_of_element_located((By.XPATH, self.elements.contingencia)))
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -1034,7 +1022,7 @@ class Complement(CrawJUD):
         self.select2_elaw(element_select, text[0])
         self.interact.sleep_load('div[id="j_id_48"]')
 
-        element_select = self.elements.tipo_polo
+        element_select = self.wait.until(ec.presence_of_element_located((By.XPATH, self.elements.tipo_polo)))
 
         text = ["Passiva", "Passivo"]
         if str(self.bot_data.get("TIPO_EMPRESA")).lower() == "autor":
