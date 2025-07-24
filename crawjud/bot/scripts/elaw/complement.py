@@ -493,8 +493,11 @@ class Complement(CrawJUD):
             ec.presence_of_element_located((By.XPATH, self.elements.select_advogado_responsavel))
         )
         self.select2_elaw(element_select, self.bot_data.get("ADVOGADO_INTERNO"))
-        id_campo_advogado_responsavel = element_select.get_attribute("id")
-        self.driver.execute_script(f"document.querySelector('#{id_campo_advogado_responsavel}').blur()")
+
+        id_element = element_select.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        self.driver.execute_script(comando)
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -704,18 +707,17 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        css_input_bairro = (
-            'input[id="j_id_3k_1:j_id_3k_4_2_2_7_9_44_2:j_id_3k_4_2_2_7_9_44_3_1_2_2_1_1:fieldid_13351fieldText"]'
-        )
+        localidade = self.bot_data.get("LOCALIDADE")
 
-        bairro_ = self.bot_data.get("LOCALIDADE")
+        input_localidade = self.driver.find_element(By.XPATH, self.elements.localidade)
+        input_localidade.click()
+        self.interact.clear(input_localidade)
+        self.interact.send_key(input_localidade, localidade)
 
-        input_bairro = self.driver.find_element(By.CSS_SELECTOR, css_input_bairro)
-        input_bairro.click()
-        self.interact.clear(input_bairro)
-        self.interact.send_key(input_bairro, bairro_)
-
-        self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
+        id_element = input_localidade.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        self.driver.execute_script(comando)
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -748,7 +750,10 @@ class Complement(CrawJUD):
         self.interact.clear(input_bairro)
         self.interact.send_key(input_bairro, bairro_)
 
-        self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
+        id_element = input_bairro.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        self.driver.execute_script(comando)
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -809,8 +814,10 @@ class Complement(CrawJUD):
         self.interact.sleep_load('div[id="j_id_48"]')
         self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
         sleep(2)
-        id_data_citacao = data_citacao.get_attribute("id")
-        self.driver.execute_script(f"document.querySelector('#{id_data_citacao}').blur()")
+        id_element = data_citacao.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        self.driver.execute_script(comando)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Data de citação informada!"
@@ -901,7 +908,11 @@ class Complement(CrawJUD):
         valor_causa.clear()
 
         self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
-        self.driver.execute_script(f"document.querySelector('#{valor_causa.get_attribute('id')}').blur()")
+
+        id_element = valor_causa.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        self.driver.execute_script(comando)
 
         self.interact.sleep_load('div[id="j_id_48"]')
 
@@ -959,12 +970,13 @@ class Complement(CrawJUD):
 
         text = self.bot_data.get("DESC_OBJETO")
 
-        id_objeto = input_descobjeto.get_attribute("id")
-
         self.interact.clear(input_descobjeto)
         self.interact.send_key(input_descobjeto, text)
-        self.driver.execute_script(f"document.querySelector('#{id_objeto}').blur()")
-        self.interact.sleep_load('div[id="j_id_48"]')
+
+        id_element = input_descobjeto.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        self.driver.execute_script(comando)
 
     @classmethod
     def objeto(cls, self: Self) -> None:

@@ -43,6 +43,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     tipo_polo = "//*[contains(@id, 'fieldid_13755typeSelectField1CombosCombo_input')]"
 
     # CADASTRO
+    input_localidade = "//input[contains(@id, 'fieldid_13351fieldText')]"
     botao_novo = 'button[id="btnNovo"]'
     css_label_area = 'select[id="comboArea_input"]'
     comboareasub_css = 'select[id="comboAreaSub_input"]'
