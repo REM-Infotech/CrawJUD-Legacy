@@ -215,6 +215,7 @@ class Interact(CrawJUD):
             selector = element_select
             tag = selector.tag_name
             elementsSelecting = f'{tag}[id="{selector.get_attribute("id")}"]'  # noqa: N806
+            element_select = elementsSelecting
 
         elif isinstance(element_select, str):
             with suppress(Exception):
@@ -224,10 +225,6 @@ class Interact(CrawJUD):
 
             if not selector:
                 selector: WebElement = self.wait.until(ec.presence_of_element_located((By.XPATH, element_select)))
-
-            elementsSelecting = element_select.replace("'", "'")  # noqa: N806
-            if '"' in elementsSelecting:
-                elementsSelecting = element_select.replace('"', "'")  # noqa: N806
 
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}
