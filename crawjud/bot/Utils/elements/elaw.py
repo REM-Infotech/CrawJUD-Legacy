@@ -127,11 +127,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
 
     # COMPLEMENTAR
     botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
-    css_input_uc = "".join(
-        (
-            'textarea[id="j_id_3y_1:j_id_3y_4_2_2_6_9_44_2:j_id_3y_4_2_2_6_9_4',
-            '4_3_1_2_2_1_1:j_id_3y_4_2_2_6_9_44_3_1_2_2_1_13"]',
-        ),
+    css_input_uc = (
+        'textarea[id="j_id_3y_1:j_id_3y_4_2_2_6_9_46_2:j_id_3y_4_2_2_6_9_46_3_1_2_2_1_1:fieldid_9236fieldTextarea"]'
     )
     element_select = "".join(
         (
@@ -147,24 +144,12 @@ class ELAW_AME(Configuracao):  # noqa: N801
             '_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]',
         ),
     )
-    fato_gerador_input = "".join(
-        (
-            'select[id="j_id_3y_1:j_id_3y_4_2_2_m_9_44_2:j_id_3y_4_2_2_m_',
-            '9_44_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]',
-        ),
-    )
-    input_descobjeto_css = "".join(
-        (
-            'textarea[id="j_id_3y_1:j_id_3y_4_2_2_l_9_44_2:j_id_3y_4_2_2_',
-            'l_9_44_3_1_2_2_1_1:j_id_3y_4_2_2_l_9_44_3_1_2_2_1_13"]',
-        ),
-    )
-    objeto_input = "".join(
-        (
-            'select[id="j_id_3y_1:j_id_3y_4_2_2_n_9_44_2:j_id_3y_4_2_2_n_9_44',
-            '_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"]',
-        ),
-    )
+    fato_gerador_input = 'select[id="j_id_3y_1:j_id_3y_4_2_2_m_9_46_2:j_id_3y_4_2_2_m_9_46_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]'
+
+    id_descricao_obj = "j_id_3y_1:j_id_3y_4_2_2_l_9_46_2:j_id_3y_4_2_2_l_9_46_3_1_2_2_1_1:fieldid_9844fieldTextarea"
+    input_descobjeto_css = f'textarea[id="{id_descricao_obj}"]'
+    id_acao = "j_id_3y_1:j_id_3y_4_2_2_n_9_46_2:j_id_3y_4_2_2_n_9_46_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"
+    objeto_input = "//select[contains(@id, 'fieldid_8405typeSelectField1CombosCombo_input')]"
 
     # DOWNLOAD
     anexosbutton_css = 'a[href="#tabViewProcesso:files"]'

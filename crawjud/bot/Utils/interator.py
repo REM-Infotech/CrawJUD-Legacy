@@ -229,7 +229,12 @@ class Interact(CrawJUD):
             to_search_elaw (str): The option text to search and select.
 
         """
-        selector: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_select)))
+        selector = None
+        with suppress(Exception):
+            selector: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_select)))
+
+        if not selector:
+            selector: WebElement = self.wait.until(ec.presence_of_element_located((By.XPATH, element_select)))
 
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}
