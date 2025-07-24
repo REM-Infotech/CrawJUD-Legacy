@@ -213,13 +213,9 @@ class Interact(CrawJUD):
 
         """
         selector = None
-        elementsSelecting = ""  # noqa: N806
         driver = self.driver
         if isinstance(element_select, WebElement):
             selector = element_select
-            tag = selector.tag_name
-            elementsSelecting = f'{tag}[id="{selector.get_attribute("id")}"]'  # noqa: N806
-            element_select = elementsSelecting
 
         elif isinstance(element_select, str):
             with suppress(Exception):
@@ -230,25 +226,21 @@ class Interact(CrawJUD):
             if not selector:
                 selector: WebElement = self.wait.until(ec.presence_of_element_located((By.XPATH, element_select)))
 
+        element_select = "[id='{_id}']".format(_id=selector.get_attribute("id"))  # noqa: N806
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}
 
         for item in items:
             value_item = item.get_attribute("value")
-            cms = f"{elementsSelecting} > option[value='{value_item}']"
-            text_item = self.driver.execute_script(f'return $("{cms}").text();')
+            option_css = "option[value='{value_item}']".format(value_item)
+            css = "{element} > {option_css}".format(element_select, option_css)
+
+            text_item = self.driver.execute_script("return $(arguments[0]).text();", css)
 
             opt_itens.update({text_item.upper(): value_item})
 
         value_opt = opt_itens.get(to_search_elaw.upper())
 
         if value_opt:
-            command = f"$('{element_select}').val(['{value_opt}']);"
-            command2 = f"$('{element_select}').trigger('change');"
-
-            if "'" in element_select:
-                command = f"$(\"{element_select}\").val(['{value_opt}']);"
-                command2 = f"$(\"{element_select}\").trigger('change');"
-
-            self.driver.execute_script(command)
-            self.driver.execute_script(command2)
+            self.driver.execute_script("$(arguments[0]).val([arguments[1]]);", element_select, value_opt)
+            self.driver.execute_script("$(arguments[0]).trigger('change');", element_select)
