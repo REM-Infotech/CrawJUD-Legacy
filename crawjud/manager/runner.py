@@ -178,25 +178,19 @@ class RunnerServices:
                     ),
                     refresh_per_second=4,
                 ) as live:
-                    sleep(1)
                     running_servers.update({k: store})
 
                     if k == "Quart":
                         Thread(target=self.watch_shutdown, daemon=True).start()
 
                     store.start()
-                    sleep(2)
                     live.update(
                         Text(
                             text=f"✅ {k} application started successfully!",
                             style="bold green",
                         )
                     )
-                    sleep(2)
-        clear()
         printf(Text("✅ All Application server started successfully", style="bold green"))
-        sleep(2)
-        clear()
 
     def status(self, app_name: app_name) -> None:
         """Log the status of the server."""

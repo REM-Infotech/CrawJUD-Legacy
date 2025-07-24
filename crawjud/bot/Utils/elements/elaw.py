@@ -51,7 +51,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     comboareasub_css = 'select[id="comboAreaSub_input"]'
     css_button = 'button[id="btnContinuar"]'
     xpath_checkadvinterno = "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
-    label_esfera = 'label[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
+    label_esfera = 'span[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
 
     css_esfera_judge = 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_input"]'
     combo_rito = 'div[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_panel"]'
@@ -268,7 +268,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     type_risk_label = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
     type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
 
-    tb_advs_resp = 'tbody[id="j_id_3y_1:lawyerOwnersDataTable_data"]'
+    tabela_advogados_resp = 'tbody[id="j_id_3y_1:lawyerOwnersDataTable_data"]'
     tr_not_adv = "tr.ui-datatable-empty-message"
 
     dict_campos_validar = {

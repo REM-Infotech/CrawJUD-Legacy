@@ -112,7 +112,7 @@ class Complement(CrawJUD):
 
 
         """
-        frame = self.dataFrame()
+        frame = [self.elawFormats(item) for item in self.dataFrame()]
         self.max_rows = len(frame)
 
         for pos, value in enumerate(frame):
@@ -183,25 +183,17 @@ class Complement(CrawJUD):
         """
         try:
             search = self.search_bot()
-            self.bot_data = self.elawFormats(self.bot_data)
 
             if search is True:
+                start_time = time.perf_counter()
                 self.message = "Inicializando complemento de cadastro"
                 self.type_log = "log"
                 self.prt()
-                edit_proc_button = self.wait.until(
-                    ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.botao_editar_complementar)),
-                )
-                edit_proc_button.click()
 
                 lista1 = list(self.bot_data.keys())
-
-                start_time = time.perf_counter()
-
                 check_esfera = self.wait.until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.label_esfera)),
                 )
-
                 esfera_xls = self.bot_data.get("ESFERA")
 
                 if esfera_xls:
@@ -255,7 +247,7 @@ class Complement(CrawJUD):
 
 
         """
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
         salvartudo: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_salvar_proc)),
         )
@@ -370,17 +362,17 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        tb_Advs = self.driver.find_element(By.CSS_SELECTOR, self.elements.tb_advs_resp)  # noqa: N806
+        tabela_advogados = self.driver.find_element(By.CSS_SELECTOR, self.elements.tabela_advogados_resp)  # noqa: N806
 
         not_adv = None
         with suppress(NoSuchElementException):
             tr_not_adv = self.elements.tr_not_adv
-            not_adv = tb_Advs.find_element(By.CSS_SELECTOR, tr_not_adv)
+            not_adv = tabela_advogados.find_element(By.CSS_SELECTOR, tr_not_adv)
 
         if not_adv is not None:
             raise ExecutionError(message="Sem advogados participantes!")
 
-        advs = tb_Advs.find_elements(By.TAG_NAME, "tr")
+        advs = tabela_advogados.find_elements(By.TAG_NAME, "tr")
 
         for adv in advs:
             advogado = adv.find_element(By.TAG_NAME, "td").text
@@ -420,9 +412,9 @@ class Complement(CrawJUD):
             return True
 
         if not wait_confirm_save:
-            ErroElaw: WebElement | str = None  # noqa: N806
+            erro_elaw: str | None = None
             with suppress(TimeoutException, NoSuchElementException):
-                ErroElaw = (  # noqa: N806
+                erro_elaw = (
                     self.wait.until(
                         ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.div_messageerro_css)),
                         message="Erro ao encontrar elemento",
@@ -431,10 +423,10 @@ class Complement(CrawJUD):
                     .text
                 )
 
-            if not ErroElaw:
-                ErroElaw = "Cadastro do processo nao finalizado, verificar manualmente"  # noqa: N806
+            if not erro_elaw:
+                erro_elaw = "Cadastro do processo nao finalizado, verificar manualmente"
 
-            raise ExecutionError(ErroElaw)
+            raise ExecutionError(erro_elaw)
 
     def print_comprovante(self) -> str:
         """Print the comprovante (receipt) of the registration.
@@ -494,14 +486,14 @@ class Complement(CrawJUD):
         elif not wait_adv:
             raise ExecutionError(message="Advogado interno não encontrado")
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         div_select_Adv: WebElement = self.wait.until(  # noqa: N806
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_div_select_Adv)),
         )
         div_select_Adv.click()
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         input_select_adv: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_input_select_adv)),
@@ -513,7 +505,7 @@ class Complement(CrawJUD):
 
         self.driver.execute_script(f"document.querySelector('{self.elements.css_div_select_Adv}').blur()")
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Advogado interno informado!"
         self.type_log = "info"
@@ -545,7 +537,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Esfera Informada!"
         self.type_log = "info"
@@ -575,7 +567,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Estado do processo informado!"
         self.type_log = "log"
@@ -604,7 +596,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Comarca do processo informado!"
         self.type_log = "log"
@@ -633,7 +625,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Foro do processo informado!"
         self.type_log = "log"
@@ -661,7 +653,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Vara do processo informado!"
         self.type_log = "log"
@@ -734,7 +726,7 @@ class Complement(CrawJUD):
 
         self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Localidade informada!"
         self.type_log = "info"
@@ -771,7 +763,7 @@ class Complement(CrawJUD):
 
         self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Bairro informado!"
         self.type_log = "info"
@@ -800,7 +792,7 @@ class Complement(CrawJUD):
 
         self.select2_elaw(self.elements.element_select, text)
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Divisão informada!"
         self.type_log = "log"
@@ -827,11 +819,11 @@ class Complement(CrawJUD):
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_data_citacao)),
         )
         self.interact.clear(data_citacao)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
         self.interact.send_key(data_citacao, self.bot_data.get("DATA_CITACAO"))
         sleep(2)
         self.driver.execute_script(f"document.querySelector('{self.elements.css_data_citacao}').blur()")
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Data de citação informada!"
         self.type_log = "log"
@@ -859,7 +851,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Fase informada!"
         self.type_log = "log"
@@ -887,7 +879,7 @@ class Complement(CrawJUD):
         self.prt()
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Provimento antecipatório informado!"
         self.type_log = "log"
@@ -923,7 +915,7 @@ class Complement(CrawJUD):
         self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
         self.driver.execute_script(f"document.querySelector('{self.elements.css_valor_causa}').blur()")
 
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Valor da causa informado!"
         self.type_log = "info"
@@ -951,7 +943,7 @@ class Complement(CrawJUD):
         text = self.bot_data.get("FATO_GERADOR")
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Fato gerador informado!"
         self.type_log = "log"
@@ -981,7 +973,7 @@ class Complement(CrawJUD):
         self.interact.clear(input_descobjeto)
         self.interact.send_key(input_descobjeto, text)
         self.driver.execute_script(f"document.querySelector('{self.elements.input_descobjeto_css}').blur()")
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
     @classmethod
     def objeto(cls, self: Self) -> None:
@@ -1005,7 +997,7 @@ class Complement(CrawJUD):
         text = self.bot_data.get("OBJETO")
 
         self.select2_elaw(element_select, text)
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Objeto do processo informado!"
         self.type_log = "log"
@@ -1037,7 +1029,7 @@ class Complement(CrawJUD):
             text = ["Ativa", "Ativo"]
 
         self.select2_elaw(element_select, text[0])
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         element_select = self.elements.tipo_polo
 
@@ -1046,7 +1038,7 @@ class Complement(CrawJUD):
             text = ["Ativa", "Ativo"]
 
         self.select2_elaw(element_select, text[1])
-        self.interact.sleep_load('div[id="j_id_3x"]')
+        self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Contingenciamento informado!"
         self.type_log = "info"

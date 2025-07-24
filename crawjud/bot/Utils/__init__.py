@@ -363,12 +363,9 @@ class OtherUtils(CrawJUD):
         """  # noqa: E501
         data_listed = list(data.items())
         for key, value in data_listed:
-            if isinstance(value, str):
-                if not value.strip():
-                    data.pop(key)
-
-            elif value is None:
+            if value is None or not value.strip().replace(" ", ""):
                 data.pop(key)
+                continue
 
             if key.upper() == "TIPO_EMPRESA":
                 data["TIPO_PARTE_CONTRARIA"] = "Autor"

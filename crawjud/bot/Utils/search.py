@@ -69,21 +69,29 @@ class SearchBot(CrawJUD):
         Navigates to the appropriate ELAW page, interacts with elements, and clicks to open the process.
 
         """
-        driver = self.drivier
+        driver = self.driver
+        type_bot = self.type_bot
+        interact = self.interact
+        wait = self.wait
+        bot_data = self.bot_data
+
         if driver.current_url != "https://amazonas.elaw.com.br/processoList.elaw":
             driver.get("https://amazonas.elaw.com.br/processoList.elaw")
 
-        campo_numproc: WebElement = self.wait.until(ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
+        campo_numproc: WebElement = wait.until(ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")))
         campo_numproc.clear()
         sleep(0.15)
-        self.interact.send_key(campo_numproc, self.bot_data.get("NUMERO_PROCESSO"))
+        interact.send_key(campo_numproc, bot_data.get("NUMERO_PROCESSO"))
         driver.find_element(By.ID, "btnPesquisar").click()
 
         try:
             open_proc = WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((By.ID, "dtProcessoResults:0:btnProcesso"))
             )
-            if self.type_bot.upper() != "CADASTRO":
+            if type_bot.upper() != "CADASTRO":
+                if type_bot.upper() == "COMPLEMENT":
+                    open_proc = driver.find_element(By.ID, "dtProcessoResults:0:btnEditar")
+
                 open_proc.click()
 
             return True
