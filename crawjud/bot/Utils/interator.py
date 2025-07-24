@@ -4,6 +4,7 @@ This module provides the Interact class containing helper functions for interact
 web elements, including clicking, sending keys, and waiting for visual changes.
 """
 
+import re
 from contextlib import suppress
 from time import sleep
 
@@ -91,8 +92,12 @@ class Interact(CrawJUD):
             bool: True if the selection is successful; otherwise, raises NotFoundError.
 
         """
-        element: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
-        element_id = element.get_attribute("id").replace("_panel", "_input").replace("_items", "_input")
+        element_id = re.search(r"^[^\[]+\[id=['\"]([^'\"]+)['\"]\]$", elemento).group()
+        if not element_id:
+            element: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
+            element_id = element.get_attribute("id")
+
+        element_id = element_id.replace("_panel", "_input").replace("_items", "_input")
         return self.select2_elaw(self.driver.find_element(By.XPATH, f"//select[contains(@id, '{element_id}')]"), text)
 
     def clear(self, element: WebElement) -> None:
