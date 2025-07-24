@@ -130,13 +130,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     divisao_select = "//*[contains(@id, 'fieldid_9241typeSelectField1CombosCombo_input')]"
     data_citacao = "//input[contains(@id, 'dataRecebimento_input')]"
     bairro_input = "//input[contains(@id, 'fieldid_9237fieldText')]"
-    fase_input = 'select[id="j_id_3y_1:processoFaseCombo_input"]'
-    provimento_input = "".join(
-        (
-            'select[id="j_id_3y_1:j_id_3y_4_2_2_g_9_44_2:j_id_3y_4_2_2',
-            '_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]',
-        ),
-    )
+    fase_input = '//select[contains(@id, "processoFaseCombo_input")]'
+    provimento_input = '//select[contains(@id, "fieldid_8401typeSelectField1CombosCombo_input")]'
     fato_gerador_input = '//select[contains(@id, "fieldid_9239typeSelectField1CombosCombo_input")]'
 
     input_descobjeto = "//*[contains(@id, 'fieldid_9844fieldTextarea')]"
@@ -244,75 +239,26 @@ class ELAW_AME(Configuracao):  # noqa: N801
     type_risk_label = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
     type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
 
-    tabela_advogados_resp = 'tbody[id="j_id_3y_1:lawyerOwnersDataTable_data"]'
+    tabela_advogados_resp = 'tbody[id*="lawyerOwnersDataTable_data"]'
     tr_not_adv = "tr.ui-datatable-empty-message"
 
     dict_campos_validar = {
-        "estado": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboEstadoVara_input"] > option:selected',
-        "comarca": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboComarcaVara_input"] > option:selected',
-        "foro": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboForoTribunal_input"] > option:selected',
-        "vara": 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboVara_input"] > option:selected',
-        "fase": 'select[id="j_id_3y_1:processoFaseCombo_input"] > option:selected',
-        "tipo_empresa": 'select[id="j_id_3y_1:j_id_3y_4_2_2_4_9_2_5_input"] > option:selected',
-        "escritorio": 'select[id="j_id_3y_1:comboEscritorio_input"] > option:selected',
-        "advogado_interno": "".join(
-            ['select[id="j_id_3y_1:comboAdvoga', 'doResponsavelProcesso_input"] > option:selected'],
-        ),
-        "divisao": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_a_9_44_2:j_id_3y_4_2_2_',
-                'a_9_44_3_1_2_2_1_1:fieldid_9241typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "classificacao": "".join(
-            ['select[id="j_id_3y_1:j_id_3y_4_2_2_p_9_16_1:', 'processoClassificacaoCombo_input"] > option:selected'],
-        ),
-        "toi_criado": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_v_9_44_2:j_id_3y_4_2_2_v_',
-                '9_44_3_1_2_2_2_1:fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "nota_tecnica": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_w_9_44_2:j_id_3y_4_2_2_w_9_44_3_1_2',
-                '_2_1_1:fieldid_9244typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "liminar": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_y_9_44_2:j_id_3y_4_2_2_y_9',
-                '_44_3_1_2_2_1_1:fieldid_9830typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "provimento": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_g_9_44_2:j_id_3y_4_2_2_g_9_',
-                '44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "fato_gerador": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_m_9_44_2:j_id_3y_4_2_2_m_9_44_3_1_2',
-                '_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "acao": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_n_9_44_2:j_id_3y_4_2_2_n_9_44_3_1',
-                '_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "tipo_entrada": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_e_9_44_2:j_id_3y_4_2_2_e_',
-                '9_44_3_1_2_2_1_1:fieldid_9242typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
-        "objeto": "".join(
-            [
-                'select[id="j_id_3y_1:j_id_3y_4_2_2_n_9_44_2:j_id_3y_4_2_2_n_9_44_3_1',
-                '_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
-            ],
-        ),
+        "estado": 'select[id*="comboEstadoVara_input"] > option:selected',
+        "comarca": 'select[id*="comboComarcaVara_input"] > option:selected',
+        "foro": 'select[id*="comboForoTribunal_input"] > option:selected',
+        "vara": 'select[id*="comboVara_input"] > option:selected',
+        "fase": 'select[id*="processoFaseCombo_input"] > option:selected',
+        "tipo_empresa": 'select[id*="j_id_3y_4_2_2_4_9_2_5_input"] > option:selected',
+        "escritorio": 'select[id*="comboEscritorio_input"] > option:selected',
+        "advogado_interno": 'select[id*="comboAdvogadoResponsavelProcesso_input"] > option:selected',
+        "divisao": 'select[id*="fieldid_9241typeSelectField1CombosCombo_input"] > option:selected',
+        "classificacao": 'select[id*="processoClassificacaoCombo_input"] > option:selected',
+        "toi_criado": 'select[id=*"fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected',
+        "nota_tecnica": 'select[id=*"fieldid_9244typeSelectField1CombosCombo_input"] > option:selected',
+        "liminar": 'select[id=*"fieldid_9830typeSelectField1CombosCombo_input"] > option:selected',
+        "provimento": 'select[id=*"fieldid_8401typeSelectField1CombosCombo_input"] > option:selected',
+        "fato_gerador": 'select[id*="fieldid_9239typeSelectField1CombosCombo_input"] > option:selected',
+        "acao": 'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
+        "tipo_entrada": 'select[id*="fieldid_9242typeSelectField1CombosCombo_input"] > option:selected',
+        "objeto": 'select[id=*"fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
     }
