@@ -363,7 +363,7 @@ class OtherUtils(CrawJUD):
         """  # noqa: E501
         data_listed = list(data.items())
         for key, value in data_listed:
-            if value is None or not value.strip().replace(" ", ""):
+            if not value or not str(value).strip():
                 data.pop(key)
                 continue
 

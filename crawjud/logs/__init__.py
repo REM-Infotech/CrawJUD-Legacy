@@ -16,7 +16,9 @@ def log_cfg(
     **kwargs: str | int,
 ) -> tuple[dict[str, Any], str]:
     """Initialize and configure logging for the application with Socket.IO handler."""
-    log_file: str = log_file or str(kwargs.pop("log_file", "app/logs"))
+    log_file: str = log_file or kwargs.pop("log_file") or __name__.replace(".", "_")
+    logger_name = kwargs.get("logger_name", __name__.replace(".", "_")) or __name__.replace(".", "_")
+
     log_level: int = log_level or int(kwargs.pop("log_level", logging.INFO))
     mx_bt: int = mx_bt or int(kwargs.pop("mx_bt", 10240))
     bkp_ct: int = bkp_ct or int(kwargs.pop("bkp_ct", 5))
@@ -25,7 +27,6 @@ def log_cfg(
 
     logger.setLevel(logging.INFO)
 
-    logger_name = kwargs.get("logger_name", __name__).replace(".", "_")
     log_path_file = str(log_file)
 
     if log_file == "app/logs":
