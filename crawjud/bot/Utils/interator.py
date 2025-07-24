@@ -232,8 +232,8 @@ class Interact(CrawJUD):
 
         for item in items:
             value_item = item.get_attribute("value")
-            option_css = "option[value='{value_item}']".format(value_item)
-            css = "{element} > {option_css}".format(element_select, option_css)
+            option_css = "option[value='{value_item}']".format(value_item=value_item)
+            css = "{element} > {option_css}".format(element=element_select, option_css=option_css)
 
             text_item = self.driver.execute_script("return $(arguments[0]).text();", css)
 
