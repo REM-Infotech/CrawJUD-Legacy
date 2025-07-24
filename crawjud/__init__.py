@@ -145,16 +145,14 @@ class MasterApp(HeadCrawjudManager):
                     if application_name == "Quart":
                         self.event_stop.set()
 
-                    sleep(5)
                     application.stop()
-                    sleep(5)
                     live.update(
                         Text(
                             text=f"✅ {application_name} application stopped successfully!",
                             style="bold green",
                         )
                     )
-                    sleep(2)
+                    sleep(1)
 
         self.return_main_menu()
 

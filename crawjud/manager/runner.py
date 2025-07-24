@@ -79,16 +79,15 @@ def start_beat() -> None:
 
     async def beat_start() -> None:
         async with app.app_context():
-            # beat = Beat(
-            #     app=celery,
-            #     scheduler="crawjud.utils.scheduler:DatabaseScheduler",
-            #     max_interval=5,
-            #     loglevel="INFO",
-            #     logfile=Path(getcwd()).joinpath("crawjud", "logs", "beat_celery.log"),
-            #     no_color=False,
-            # )
-            # beat.run()
-            ...
+            beat = Beat(
+                app=celery,
+                scheduler="crawjud.utils.scheduler:DatabaseScheduler",
+                max_interval=5,
+                loglevel="INFO",
+                logfile=Path(getcwd()).joinpath("crawjud", "logs", "beat_celery.log"),
+                no_color=False,
+            )
+            beat.run()
 
     app, _, celery = asyncio.run(create_app())
     asyncio.run(beat_start())
