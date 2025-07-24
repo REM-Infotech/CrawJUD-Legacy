@@ -15,7 +15,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.bot.common.exceptions import NotFoundError
+from crawjud.bot.common.exceptions import NotFoundError  # noqa: F401
 from crawjud.bot.core import CrawJUD
 
 
@@ -91,31 +91,10 @@ class Interact(CrawJUD):
             bool: True if the selection is successful; otherwise, raises NotFoundError.
 
         """
-        itens: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
+        element: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
+        element_id = element.get_attribute("id").replace("_panel", "_input").replace("_items", "_input")
 
-        self.display_none(itens)
-        sleep(0.5)
-
-        if not text.isupper():
-            itens = list(
-                filter(
-                    lambda item: not item.text.isupper(),
-                    itens.find_element(By.CSS_SELECTOR, "ul").find_elements(By.TAG_NAME, "li"),
-                ),
-            )
-
-        elif text.isupper():
-            itens = itens.find_element(By.TAG_NAME, "ul").find_elements(By.TAG_NAME, "li")
-
-        item = next(filter(lambda item: text == item.text, itens), None)
-
-        if not item:
-            raise NotFoundError(message=f'Item "{text}" não encontrado!')
-
-        action = ActionChains(self.driver)
-        action.double_click(item).perform()
-
-        return True
+        return self.select2_elaw(self.driver.find_element(By.XPATH, f"//select[contains(@id, '{element_id}')]"), text)
 
     def clear(self, element: WebElement) -> None:
         """Clear the text content of the specified web element.
@@ -221,7 +200,7 @@ class Interact(CrawJUD):
         action.scroll_to_element(element)
         sleep(0.5)
 
-    def select2_elaw(self, element_select: str, to_search_elaw: str) -> None:
+    def select2_elaw(self, element_select: str | WebElement, to_search_elaw: str) -> None:
         """Select an option from a Select2 dropdown based on a search text.
 
         Args:
@@ -230,18 +209,28 @@ class Interact(CrawJUD):
 
         """
         selector = None
-        with suppress(Exception):
-            selector: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_select)))
+        elementsSelecting = ""  # noqa: N806
+        driver = self.driver
+        if isinstance(element_select, WebElement):
+            selector = element_select
+            tag = selector.tag_name
+            elementsSelecting = f'{tag}[id="{selector.get_attribute("id")}"]'  # noqa: N806
 
-        if not selector:
-            selector: WebElement = self.wait.until(ec.presence_of_element_located((By.XPATH, element_select)))
+        elif isinstance(element_select, str):
+            with suppress(Exception):
+                selector: WebElement = WebDriverWait(driver, 5).until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, element_select))
+                )
+
+            if not selector:
+                selector: WebElement = self.wait.until(ec.presence_of_element_located((By.XPATH, element_select)))
+
+            elementsSelecting = element_select.replace("'", "'")  # noqa: N806
+            if '"' in elementsSelecting:
+                elementsSelecting = element_select.replace('"', "'")  # noqa: N806
 
         items = selector.find_elements(By.TAG_NAME, "option")
         opt_itens: dict[str, str] = {}
-
-        elementsSelecting = element_select.replace("'", "'")  # noqa: N806
-        if '"' in elementsSelecting:
-            elementsSelecting = element_select.replace('"', "'")  # noqa: N806
 
         for item in items:
             value_item = item.get_attribute("value")

@@ -269,7 +269,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Esfera Informada!"
@@ -293,7 +293,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Estado do processo informado!"
@@ -322,7 +322,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Comarca do processo informado!"
@@ -350,7 +350,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Foro do processo informado!"
@@ -380,7 +380,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Vara do processo informado!"
@@ -432,7 +432,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Empresa informada!"
@@ -458,7 +458,7 @@ class Cadastro(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Classificação da Empresa informada"
@@ -482,7 +482,7 @@ class Cadastro(CrawJUD):
 
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
         element_select = self.elements.tipo_parte_contraria_input
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
 
         doc_to_list = list(
             filter(lambda x: str.isdigit(x), ",".join(self.bot_data.get("DOC_PARTE_CONTRARIA")).split(","))
@@ -538,9 +538,9 @@ class Cadastro(CrawJUD):
         self.message = "Preenchendo UF Processo..."
         self.type_log = "log"
         self.prt()
-
+        element_select = self.elements.select_uf_proc
         text = str(self.bot_data.get("CAPITAL_INTERIOR"))
-        self.select2_elaw(self.elements.select_uf_proc, text)
+        self.select2_elaw(self.driver.find_element(By.XPATH, element_select), text)
         sleep(0.5)
 
         self.interact.sleep_load('div[id="j_id_48"]')
@@ -993,7 +993,7 @@ class Cadastro(CrawJUD):
             )
             tipo_doc = type_doc.get(str(len(doc_to_list)), "cpf")
             select_tipo_doc = elements.tipo_cpf_cnpj
-            select2_elaw(select_tipo_doc, tipo_doc.upper())
+            select2_elaw(driver.find_element(By.XPATH, select_tipo_doc), tipo_doc.upper())
 
             sleep(2)
             interact.sleep_load('div[id="j_id_1o"]')

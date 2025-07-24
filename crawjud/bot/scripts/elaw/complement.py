@@ -536,7 +536,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Esfera Informada!"
@@ -566,7 +566,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Estado do processo informado!"
@@ -595,7 +595,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Comarca do processo informado!"
@@ -624,7 +624,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Foro do processo informado!"
@@ -652,7 +652,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Vara do processo informado!"
@@ -850,7 +850,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Fase informada!"
@@ -878,7 +878,7 @@ class Complement(CrawJUD):
         self.type_log = "log"
         self.prt()
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Provimento antecipatório informado!"
@@ -940,9 +940,10 @@ class Complement(CrawJUD):
         self.prt()
 
         element_select = self.elements.fato_gerador_input
+
         text = self.bot_data.get("FATO_GERADOR")
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Fato gerador informado!"
@@ -964,15 +965,17 @@ class Complement(CrawJUD):
 
         """
         input_descobjeto = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.input_descobjeto_css)),
+            ec.presence_of_element_located((By.XPATH, self.elements.xpath_descobjeto)),
         )
         self.interact.click(input_descobjeto)
 
         text = self.bot_data.get("DESC_OBJETO")
 
+        id_objeto = input_descobjeto.get_attribute("id")
+
         self.interact.clear(input_descobjeto)
         self.interact.send_key(input_descobjeto, text)
-        self.driver.execute_script(f"document.querySelector('{self.elements.input_descobjeto_css}').blur()")
+        self.driver.execute_script(f"document.querySelector('#{id_objeto}').blur()")
         self.interact.sleep_load('div[id="j_id_48"]')
 
     @classmethod
@@ -996,7 +999,7 @@ class Complement(CrawJUD):
         element_select = self.elements.objeto_input
         text = self.bot_data.get("OBJETO")
 
-        self.select2_elaw(element_select, text)
+        self.select2_elaw(self.wait.until(ec.presence_of_element_located(By.XPATH, element_select)), text)
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Objeto do processo informado!"

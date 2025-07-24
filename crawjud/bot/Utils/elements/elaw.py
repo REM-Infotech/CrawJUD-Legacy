@@ -53,17 +53,18 @@ class ELAW_AME(Configuracao):  # noqa: N801
     xpath_checkadvinterno = "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
     label_esfera = 'span[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
 
-    css_esfera_judge = 'select[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_input"]'
-    combo_rito = 'div[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_panel"]'
-    estado_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboEstadoVara_input']"
-    comarca_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboComarcaVara_input']"
-    foro_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboForoTribunal_input']"
-    vara_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboVara_input']"
+    css_esfera_judge = '//select[contains(@id, "comboRito_input")]'
+    estado_input = "//select[contains(@id, 'comboEstadoVara_input')]"
+    comarca_input = "//select[contains(@id, 'comboComarcaVara_input')]"
+    foro_input = "//select[contains(@id, 'comboForoTribunal_input')]"
+    vara_input = "//select[contains(@id, 'comboVara_input')]"
+    empresa_input = "//select[contains(@id, 'comboClientProcessoParte_input')]"
+    tipo_empresa_input = '//select[contains(@id, "j_id_3y_4_2_2_4_9_2_5_input")]'
+    tipo_parte_contraria_input = "//select[contains(@id, 'j_id_3y_4_2_2_5_9_9_4_2_m_input')]"
+    select_tipo_doc = "//select[contains(@id, 'tipoDocumentoInput_input')]"
+    combo_rito = '//select[contains(@id, "comboRito_input")]'
+
     numero_processo = "input[id='j_id_3y_1:j_id_3y_4_2_2_2_9_f_2:txtNumeroMask']"
-    empresa_input = "select[id='j_id_3y_1:comboClientProcessoParte_input']"
-    tipo_empresa_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_4_9_2_5_input']"
-    tipo_parte_contraria_input = "select[id='j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_m_input']"
-    select_tipo_doc = 'select[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:tipoDocumentoInput_input"]'
     css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
     css_search_button = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
 
@@ -144,11 +145,9 @@ class ELAW_AME(Configuracao):  # noqa: N801
             '_g_9_44_3_1_2_2_1_1:fieldid_8401typeSelectField1CombosCombo_input"]',
         ),
     )
-    fato_gerador_input = 'select[id="j_id_3y_1:j_id_3y_4_2_2_m_9_46_2:j_id_3y_4_2_2_m_9_46_3_1_2_2_1_1:fieldid_9239typeSelectField1CombosCombo_input"]'
+    fato_gerador_input = '//select[contains(@id, "fieldid_9239typeSelectField1CombosCombo_input")]'
 
-    id_descricao_obj = "j_id_3y_1:j_id_3y_4_2_2_l_9_46_2:j_id_3y_4_2_2_l_9_46_3_1_2_2_1_1:fieldid_9844fieldTextarea"
-    input_descobjeto_css = f'textarea[id="{id_descricao_obj}"]'
-    id_acao = "j_id_3y_1:j_id_3y_4_2_2_n_9_46_2:j_id_3y_4_2_2_n_9_46_3_1_2_2_1_1:fieldid_8405typeSelectField1CombosCombo_input"
+    input_descobjeto_css = "//textarea[contains(@id, 'fieldid_9844fieldTextarea')]"
     objeto_input = "//select[contains(@id, 'fieldid_8405typeSelectField1CombosCombo_input')]"
 
     # DOWNLOAD
