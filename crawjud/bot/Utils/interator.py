@@ -93,7 +93,6 @@ class Interact(CrawJUD):
         """
         element: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elemento)))
         element_id = element.get_attribute("id").replace("_panel", "_input").replace("_items", "_input")
-
         return self.select2_elaw(self.driver.find_element(By.XPATH, f"//select[contains(@id, '{element_id}')]"), text)
 
     def clear(self, element: WebElement) -> None:
