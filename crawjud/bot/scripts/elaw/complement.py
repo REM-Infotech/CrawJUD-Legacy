@@ -44,7 +44,7 @@ campos_validar: list[str] = [
     "tipo_empresa",
     "tipo_entrada",
     "acao",
-    "escritorio",
+    "escritorio_externo",
     "classificacao",
     "toi_criado",
     "nota_tecnica",
@@ -1044,5 +1044,34 @@ class Complement(CrawJUD):
         self.interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Contingenciamento informado!"
+        self.type_log = "info"
+        self.prt()
+
+    @classmethod
+    def escritorio_externo(cls, self: Self) -> None:
+        """Inform the external office involved in the process.
+
+        This method retrieves the external office information from the bot data,
+        inputs it into the designated field, and logs the action performed.
+
+        """
+        self.message = "Informando Escritório Externo"
+        self.type_log = "log"
+        self.prt()
+
+        driver = self.driver
+        _wait = self.wait
+        elements = self.elements
+
+        sleep(1)
+
+        text = self.bot_data.get("ESCRITORIO_EXTERNO")
+
+        element_select = driver.find_element(By.XPATH, elements.select_escritorio)
+
+        self.interact.select2_elaw(element_select, text)
+        self.interact.sleep_load('div[id="j_id_48"]')
+
+        self.message = "Escritório externo informado!"
         self.type_log = "info"
         self.prt()

@@ -94,7 +94,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
     valor_causa = "//input[contains(@id, 'amountCase_input')]"
     escritrorio_externo = 'div[id="j_id_3y_1:comboEscritorio"]'
-    combo_escritorio = 'div[id="j_id_3y_1:comboEscritorio_panel"]'
+    select_escritorio = "//select[contains(@id, 'comboEscritorio_input')]"
     contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
     contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
