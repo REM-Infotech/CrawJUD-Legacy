@@ -172,7 +172,7 @@ class Cadastro(CrawJUD):
                 self.parte_contraria()
                 self.uf_proc()
                 self.acao_proc()
-                self.advogado_responsavel()
+                self.advogado_interno()
                 self.adv_parte_contraria()
                 self.data_distribuicao()
                 self.info_valor_causa()
