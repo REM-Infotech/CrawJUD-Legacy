@@ -618,53 +618,61 @@ class Cadastro(CrawJUD):
         self.type_log = "info"
         self.prt()
 
-    def advogado_responsavel(self) -> None:
-        """Inform the responsible lawyer for the process.
+    def advogado_interno(self) -> None:
+        """Inform the internal lawyer.
 
-        This method retrieves the lawyer's information from the bot data, inputs it
-        into the designated field, and logs the action performed.
-
-        Raises:
-            ExecutionError: If the lawyer is not found.
+        This method inputs the internal lawyer information into the system
+        and ensures it is properly selected.
 
         """
-        self.message = "informando advogado interno"
-        self.type_log = "log"
-        self.prt()
-
+        interact = self.interact
         wait = self.wait
         driver = self.driver
         elements = self.elements
-        select2_elaw = self.select2_elaw
-        interact = self.interact
         bot_data = self.bot_data
+        select2_elaw = self.select2_elaw
+        prt = self.prt
+
+        self.message = "informando advogado interno"
+        self.type_log = "log"
+        prt()
+
         input_adv_responsavel: WebElement = wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_adv_responsavel)),
+            ec.presence_of_element_located((By.XPATH, elements.adv_responsavel)),
         )
         input_adv_responsavel.click()
-        self.interact.send_key(input_adv_responsavel, bot_data.get("ADVOGADO_INTERNO"))
+        interact.send_key(input_adv_responsavel, bot_data.get("ADVOGADO_INTERNO"))
+
+        css_wait_adv = f"{input_adv_responsavel.get_attribute('id')} > ul > li"
 
         wait_adv = None
 
         with suppress(TimeoutException):
             wait_adv: WebElement = WebDriverWait(driver, 25).until(
-                ec.presence_of_element_located((By.XPATH, elements.xpath_checkadvinterno)),
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
             )
 
-        if not wait_adv:
+        if wait_adv:
+            wait_adv.click()
+        elif not wait_adv:
             raise ExecutionError(message="Advogado interno não encontrado")
 
-        with suppress(Exception):
-            wait_adv.click()
+        interact.sleep_load('div[id="j_id_48"]')
 
         interact.sleep_load('div[id="j_id_48"]')
         element_select = wait.until(ec.presence_of_element_located((By.XPATH, elements.select_advogado_responsavel)))
         select2_elaw(element_select, bot_data.get("ADVOGADO_INTERNO"))
+
+        id_element = element_select.get_attribute("id")
+        id_input_css = f'[id="{id_element}"]'
+        comando = f"document.querySelector('{id_input_css}').blur()"
+        driver.execute_script(comando)
+
         interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Advogado interno informado!"
         self.type_log = "info"
-        self.prt()
+        prt()
 
     def adv_parte_contraria(self) -> None:
         """Inform the lawyer for the opposing party.
