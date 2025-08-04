@@ -994,7 +994,8 @@ class Cadastro(CrawJUD):
             )
             tipo_doc = type_doc.get(str(len(doc_to_list)), "cpf")
             select_tipo_doc = elements.tipo_cpf_cnpj
-            select2_elaw(driver.find_element(By.XPATH, select_tipo_doc), tipo_doc.upper())
+            element_select = wait.until(ec.presence_of_element_located((By.XPATH, select_tipo_doc)))
+            select2_elaw(element_select, tipo_doc.upper())
 
             sleep(2)
             interact.sleep_load('div[id="j_id_1o"]')
@@ -1037,12 +1038,8 @@ class Cadastro(CrawJUD):
 
             driver.switch_to.window(main_window)
 
-            wait.until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    f"{elements.iframe_cadastro_parte_contraria} > div > a",
-                ))
-            ).click()
+            element_close = elements.iframe_cadastro_parte_contraria
+            wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_close))).click()
 
         except Exception as e:
             logger.exception("".join(traceback.format_exception(e)))
