@@ -792,27 +792,30 @@ class Cadastro(CrawJUD):
 
 
         """
+        prt = self.prt
         wait = self.wait
+        bot_data = self.bot_data
+        interact = self.interact
         elements = self.elements
         self.message = "Informando Escritório Externo"
         self.type_log = "log"
-        self.prt()
+        prt()
 
-        div_escritrorioexterno: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, self.elements.escritrorio_externo)),
+        div_escritrorioexterno: WebElement = wait.until(
+            ec.presence_of_element_located((By.XPATH, elements.escritrorio_externo)),
             message="Erro ao encontrar elemento",
         )
         div_escritrorioexterno.click()
         sleep(1)
 
-        text = self.bot_data.get("ESCRITORIO_EXTERNO")
+        text = bot_data.get("ESCRITORIO_EXTERNO")
         select_escritorio = wait.until(ec.presence_of_element_located((By.XPATH, elements.select_escritorio)))
-        self.interact.select_item(select_escritorio, text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        interact.select2_elaw(select_escritorio, text)
+        interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Escritório externo informado!"
         self.type_log = "info"
-        self.prt()
+        prt()
 
     def tipo_contingencia(self) -> None:
         """Inform the type of contingency for the process.
