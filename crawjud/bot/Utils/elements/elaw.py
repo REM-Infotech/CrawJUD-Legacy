@@ -94,7 +94,12 @@ class ELAW_AME(Configuracao):  # noqa: N801
     contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
     contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
     css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
-    iframe_cadastro_parte_contraria = 'div[id*=":parteContrariaMainGridBtnNovo_dlg"] > div > a'
+    iframe_cadastro_parte_contraria = 'div[id*=":parteContrariaMainGridBtnNovo_dlg"] > div > iframe'
+    iframe_cadastro_parte_close_dnv = 'div[id*=":parteContrariaMainGridBtnNovo_dlg"] > div > a'
+
+    iframe_cadastro_advogado_close_dnv = 'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > a'
+    iframe_cadastro_advogado_contra = 'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > iframe'
+    btn_novo_advogado_contra = '//button[contains(@id, "lawyerOutraParteNovoButtom")]'
     css_naoinfomadoc = "".join(
         (
             "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >",
@@ -105,7 +110,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
     salvarcss = 'button[id="lawyerOutraParteButtom"]'
     parte_contraria = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo"]'
-    iframe_cadastro_advogado_contra = 'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div'
+
     cpf_cnpj = 'table[id="registrationCpfCnpjChooseGrid-"]'
     botao_radio_widget = 'div[class="ui-radiobutton ui-widget"]'
     tipo_cpf_cnpj = "//select[contains(@id, 'cpfCnpjTipoNoGrid-_input')]"

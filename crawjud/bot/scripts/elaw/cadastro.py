@@ -850,7 +850,7 @@ class Cadastro(CrawJUD):
             prt()
 
             add_parte: WebElement = wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, elements.parte_contraria)),
+                ec.presence_of_element_located((By.XPATH, elements.btn_novo_advogado_contra)),
                 message="Erro ao encontrar elemento",
             )
             add_parte.click()
@@ -860,10 +860,7 @@ class Cadastro(CrawJUD):
             main_window = driver.current_window_handle
 
             iframe: WebElement = WebDriverWait(driver, 10).until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    f"{elements.iframe_cadastro_advogado_contra} > iframe",
-                )),
+                ec.presence_of_element_located((By.CSS_SELECTOR, elements.iframe_cadastro_advogado_contra)),
                 message="Erro ao encontrar elemento",
             )
             link_iframe = iframe.get_attribute("src")
@@ -924,12 +921,7 @@ class Cadastro(CrawJUD):
             driver.close()
             driver.switch_to.window(main_window)
 
-            wait.until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    f"{elements.iframe_cadastro_advogado_contra} > div > a",
-                ))
-            )
+            wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elements.iframe_cadastro_advogado_close_dnv)))
 
             interact.sleep_load('div[id="j_id_48"]')
 
@@ -1046,7 +1038,7 @@ class Cadastro(CrawJUD):
 
             driver.switch_to.window(main_window)
 
-            element_close = elements.iframe_cadastro_parte_contraria
+            element_close = elements.iframe_cadastro_parte_close_dnv
             wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, element_close))).click()
 
         except Exception as e:
