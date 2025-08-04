@@ -748,28 +748,36 @@ class Cadastro(CrawJUD):
 
 
         """
+        prt = self.prt
+        wait = self.wait
+        driver = self.driver
+        interact = self.interact
+        bot_data = self.bot_data
+        elements = self.elements
+
         self.message = "Informando valor da causa"
         self.type_log = "log"
-        self.prt()
+        prt()
 
-        valor_causa: WebElement = self.wait.until(
-            ec.element_to_be_clickable((By.XPATH, self.elements.valor_causa)),
+        valor_causa: WebElement = wait.until(
+            ec.presence_of_element_located((By.XPATH, elements.valor_causa)),
             message="Erro ao encontrar elemento",
         )
 
         valor_causa.click()
         sleep(0.5)
         valor_causa.clear()
-
         id_valor_causa = valor_causa.get_attribute("id")
-        self.interact.send_key(valor_causa, self.bot_data.get("VALOR_CAUSA"))
-        self.driver.execute_script(f"document.querySelector('{id_valor_causa}').blur()")
+        input_valor_causa = f'input[id="{id_valor_causa}"]'
+        interact.send_key(valor_causa, bot_data.get("VALOR_CAUSA"))
 
-        self.interact.sleep_load('div[id="j_id_48"]')
+        driver.execute_script(f"document.querySelector('{input_valor_causa}').blur()")
+
+        interact.sleep_load('div[id="j_id_48"]')
 
         self.message = "Valor da causa informado!"
         self.type_log = "info"
-        self.prt()
+        prt()
 
     def escritorio_externo(self) -> None:
         """Inform the external office involved in the process.
