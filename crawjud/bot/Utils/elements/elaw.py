@@ -89,7 +89,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_input_adv = 'input[id="j_id_3y_1:autoCompleteLawyerOutraParte_input"]'
     css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
     valor_causa = "//input[contains(@id, 'amountCase_input')]"
-    escritrorio_externo = 'div[id="j_id_3y_1:comboEscritorio"]'
+    escritrorio_externo = '//div[contains(@id, "comboEscritorio")]'
     select_escritorio = "//select[contains(@id, 'comboEscritorio_input')]"
     contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
     contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
@@ -109,7 +109,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_continuar = 'button[id="j_id_1e"]'
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
     salvarcss = 'button[id="lawyerOutraParteButtom"]'
-    parte_contraria = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaMainGridBtnNovo"]'
+    parte_contraria = "//button[contains(@id, 'parteContrariaMainGridBtnNovo')]"
 
     cpf_cnpj = 'table[id="registrationCpfCnpjChooseGrid-"]'
     botao_radio_widget = 'div[class="ui-radiobutton ui-widget"]'

@@ -643,7 +643,8 @@ class Cadastro(CrawJUD):
         input_adv_responsavel.click()
         interact.send_key(input_adv_responsavel, bot_data.get("ADVOGADO_INTERNO"))
 
-        css_wait_adv = f"{input_adv_responsavel.get_attribute('id')} > ul > li"
+        id_input_adv = input_adv_responsavel.get_attribute("id").replace("_input", "_panel")
+        css_wait_adv = f"{id_input_adv} > ul > li"
 
         wait_adv = None
 
@@ -778,7 +779,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         div_escritrorioexterno: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.escritrorio_externo)),
+            ec.presence_of_element_located((By.XPATH, self.elements.escritrorio_externo)),
             message="Erro ao encontrar elemento",
         )
         div_escritrorioexterno.click()
@@ -954,7 +955,7 @@ class Cadastro(CrawJUD):
             select2_elaw = self.select2_elaw
 
             add_parte: WebElement = wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, elements.parte_contraria)),
+                ec.presence_of_element_located((By.XPATH, elements.parte_contraria)),
                 message="Erro ao encontrar elemento",
             )
             add_parte.click()
@@ -966,10 +967,7 @@ class Cadastro(CrawJUD):
             main_window = driver.current_window_handle
 
             iframe: WebElement = WebDriverWait(driver, 10).until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    f"{elements.iframe_cadastro_parte_contraria} > iframe",
-                )),
+                ec.presence_of_element_located((By.CSS_SELECTOR, elements.iframe_cadastro_parte_contraria)),
                 message="Erro ao encontrar elemento",
             )
             link_iframe = iframe.get_attribute("src")
