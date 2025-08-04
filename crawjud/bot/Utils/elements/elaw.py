@@ -45,8 +45,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     # CADASTRO
     input_localidade = "//input[contains(@id, 'fieldid_13351fieldText')]"
     botao_novo = 'button[id="btnNovo"]'
-    css_label_area = 'select[id="comboArea_input"]'
-    comboareasub_css = 'select[id="comboAreaSub_input"]'
+    css_label_area = '//select[contains(@id, "comboArea_input")]'
+    comboareasub_css = '//select[contains(@id, "comboAreaSub_input")]'
     css_button = 'button[id="btnContinuar"]'
     xpath_checkadvinterno = "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
     label_esfera = 'span[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'

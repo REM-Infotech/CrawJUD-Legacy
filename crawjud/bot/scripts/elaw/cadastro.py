@@ -213,13 +213,15 @@ class Cadastro(CrawJUD):
 
 
         """
+        wait = self.wait
         self.message = "Informando área do direito"
         self.type_log = "log"
         self.prt()
         text = str(self.bot_data.get("AREA_DIREITO"))
         sleep(0.5)
 
-        self.select2_elaw(self.elements.css_label_area, text)
+        element_area_direito = wait.until(ec.presence_of_element_located((By.XPATH, self.elements.css_label_area)))
+        self.select2_elaw(element_area_direito, text)
         self.interact.sleep_load('div[id="j_id_47"]')
 
         self.message = "Área do direito selecionada!"
@@ -233,6 +235,7 @@ class Cadastro(CrawJUD):
         in the bot data. It logs the process and handles any necessary waits and
         interactions with the web elements.
         """
+        wait = self.wait
         self.message = "Informando sub-área do direito"
         self.type_log = "log"
         self.prt()
@@ -240,7 +243,8 @@ class Cadastro(CrawJUD):
         text = str(self.bot_data.get("SUBAREA_DIREITO"))
         sleep(0.5)
 
-        self.select2_elaw(self.elements.comboareasub_css, text)
+        element_subarea = wait.until(ec.presence_of_element_located((By.XPATH, self.elements.comboareasub_css)))
+        self.select2_elaw(element_subarea, text)
 
         self.interact.sleep_load('div[id="j_id_48"]')
         self.message = "Sub-Área do direito selecionada!"
