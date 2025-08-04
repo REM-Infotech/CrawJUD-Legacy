@@ -66,11 +66,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
     css_search_button = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
 
-    id_select_uf_proc = "".join((
-        "j_id_3y_1:j_id_3y_4_2_2_9_9_46_2:j_id_3y_4_2_2_9_9_46_3_1_2_2",
-        "_2_1:fieldid_9240pgTypeSelectField1CombosCombo_input",
-    ))
-    select_uf_proc = f"select[id='{id_select_uf_proc}']"
+    select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
     select_field = "".join(
         (
             'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4_2_2_9_9_44',
