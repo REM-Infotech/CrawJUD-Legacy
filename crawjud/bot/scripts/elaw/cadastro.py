@@ -246,7 +246,7 @@ class Cadastro(CrawJUD):
         element_subarea = wait.until(ec.presence_of_element_located((By.XPATH, self.elements.comboareasub_css)))
         self.select2_elaw(element_subarea, text)
 
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
         self.message = "Sub-Área do direito selecionada!"
         self.type_log = "info"
         self.prt()
@@ -279,7 +279,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Esfera Informada!"
         self.type_log = "info"
@@ -303,7 +303,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Estado do processo informado!"
         self.type_log = "log"
@@ -332,7 +332,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Comarca do processo informado!"
         self.type_log = "log"
@@ -360,7 +360,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Foro do processo informado!"
         self.type_log = "log"
@@ -390,7 +390,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Vara do processo informado!"
         self.type_log = "log"
@@ -419,7 +419,7 @@ class Cadastro(CrawJUD):
         self.interact.send_key(campo_processo, self.bot_data.get(key))
 
         self.driver.execute_script(f'document.querySelector("{css_campo_processo}").blur()')
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Número do processo informado!"
         self.type_log = "info"
@@ -442,7 +442,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Empresa informada!"
         self.type_log = "info"
@@ -468,7 +468,7 @@ class Cadastro(CrawJUD):
         self.prt()
 
         self.select2_elaw(self.wait.until(ec.presence_of_element_located((By.XPATH, element_select))), text)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Classificação da Empresa informada"
         self.type_log = "info"
@@ -500,7 +500,7 @@ class Cadastro(CrawJUD):
         select_tipo_doc = self.elements.select_tipo_doc
         self.select2_elaw(select_tipo_doc, tipo_doc)
 
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
         campo_doc: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_campo_doc)),
             message="Erro ao encontrar elemento",
@@ -510,14 +510,14 @@ class Cadastro(CrawJUD):
         campo_doc.clear()
         sleep(0.05)
         self.interact.send_key(campo_doc, self.bot_data.get("DOC_PARTE_CONTRARIA"))
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         search_button_parte: WebElement = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_search_button)),
             message="Erro ao encontrar elemento",
         )
         search_button_parte.click()
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         check_parte = self.check_part_found()
 
@@ -525,7 +525,7 @@ class Cadastro(CrawJUD):
             try:
                 self.cadastro_parte_contraria()
                 self.driver.switch_to.default_content()
-                self.interact.sleep_load('div[id="j_id_48"]')
+                self.interact.sleep_load('div[id="j_id_4b"]')
 
             except Exception as e:
                 self.logger.exception("".join(traceback.format_exception(e)))
@@ -552,7 +552,7 @@ class Cadastro(CrawJUD):
         self.select2_elaw(self.driver.find_element(By.XPATH, element_select), text)
         sleep(0.5)
 
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
             other_location: WebElement = self.wait.until(
@@ -591,7 +591,7 @@ class Cadastro(CrawJUD):
         self.interact.click(elemento)
         self.interact.send_key(elemento, text)
         self.interact.send_key(elemento, Keys.ENTER)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Ação informada!"
         self.type_log = "info"
@@ -606,12 +606,12 @@ class Cadastro(CrawJUD):
 
 
         """
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
         self.message = "Informando data de distribuição"
         self.type_log = "log"
         self.prt()
 
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
         data_distribuicao: WebElement = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, self.elements.css_data_distribuicao)),
             message="Erro ao encontrar elemento",
@@ -621,7 +621,7 @@ class Cadastro(CrawJUD):
 
         self.interact.send_key(data_distribuicao, self.bot_data.get("DATA_DISTRIBUICAO"))
         self.interact.send_key(data_distribuicao, Keys.TAB)
-        self.interact.sleep_load('div[id="j_id_48"]')
+        self.interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Data de distribuição informada!"
         self.type_log = "info"
@@ -667,9 +667,9 @@ class Cadastro(CrawJUD):
         elif not wait_adv:
             raise ExecutionError(message="Advogado interno não encontrado")
 
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
         element_select = wait.until(ec.presence_of_element_located((By.XPATH, elements.select_advogado_responsavel)))
         select2_elaw(element_select, bot_data.get("ADVOGADO_INTERNO"))
 
@@ -678,7 +678,7 @@ class Cadastro(CrawJUD):
         comando = f"document.querySelector('{id_input_css}').blur()"
         driver.execute_script(comando)
 
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Advogado interno informado!"
         self.type_log = "info"
@@ -719,10 +719,10 @@ class Cadastro(CrawJUD):
 
         check_adv = None
 
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         with suppress(TimeoutException):
-            check_adv: WebElement = (
+            check_adv = (
                 WebDriverWait(driver, 15)
                 .until(
                     ec.presence_of_element_located((By.XPATH, elements.css_check_adv)),
@@ -737,7 +737,7 @@ class Cadastro(CrawJUD):
             self.cadastro_advogado_contra()
             driver.switch_to.default_content()
 
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Adv. parte contrária informado!"
         self.type_log = "info"
@@ -777,7 +777,7 @@ class Cadastro(CrawJUD):
 
         driver.execute_script(f"document.querySelector('{input_valor_causa}').blur()")
 
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Valor da causa informado!"
         self.type_log = "info"
@@ -811,7 +811,7 @@ class Cadastro(CrawJUD):
         text = bot_data.get("ESCRITORIO_EXTERNO")
         select_escritorio = wait.until(ec.presence_of_element_located((By.XPATH, elements.select_escritorio)))
         interact.select2_elaw(select_escritorio, text)
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Escritório externo informado!"
         self.type_log = "info"
@@ -845,10 +845,10 @@ class Cadastro(CrawJUD):
         select_polo = wait.until(ec.presence_of_element_located((By.XPATH, elements.tipo_polo)))
 
         select2_elaw(select_contigencia, text[0])
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         select2_elaw(select_polo, text[1])
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
 
         self.message = "Contingenciamento informado!"
         self.type_log = "info"
@@ -882,7 +882,7 @@ class Cadastro(CrawJUD):
             )
             add_parte.click()
 
-            interact.sleep_load('div[id="j_id_48"]')
+            interact.sleep_load('div[id="j_id_4b"]')
 
             main_window = driver.current_window_handle
 
@@ -901,19 +901,6 @@ class Cadastro(CrawJUD):
                 message="Erro ao encontrar elemento",
             )
             naoinfomadoc.click()
-
-            """ CORRIGIR """
-            # sleep(0.5)
-            # continuebutton: WebElement = self.wait.until(
-            #     ec.presence_of_element_located(
-            #         (By.CSS_SELECTOR, self.elements.bota_continuar)
-            #     ),
-            #     message="Erro ao encontrar elemento",
-            # )
-            # continuebutton.click()
-
-            # sleep(0.5)
-            """ CORRIGIR """
 
             sleep(0.5)
             continuebutton: WebElement = wait.until(
@@ -950,7 +937,7 @@ class Cadastro(CrawJUD):
 
             wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, elements.iframe_cadastro_advogado_close_dnv)))
 
-            interact.sleep_load('div[id="j_id_48"]')
+            interact.sleep_load('div[id="j_id_4b"]')
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))
@@ -986,7 +973,7 @@ class Cadastro(CrawJUD):
             )
             add_parte.click()
 
-            interact.sleep_load('div[id="j_id_48"]')
+            interact.sleep_load('div[id="j_id_4b"]')
 
             iframe = None
 
@@ -1081,7 +1068,7 @@ class Cadastro(CrawJUD):
         wait = self.wait
         elements = self.elements
         interact = self.interact
-        interact.sleep_load('div[id="j_id_48"]')
+        interact.sleep_load('div[id="j_id_4b"]')
         salvartudo: WebElement = wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_salvar_proc)),
             message="Erro ao encontrar elemento",

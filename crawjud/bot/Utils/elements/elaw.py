@@ -86,8 +86,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     adv_responsavel = "//input[contains(@id, 'autoCompleteLawyer_input')]"
     select_advogado_responsavel = "//select[contains(@id, 'comboAdvogadoResponsavelProcesso_input')]"  # noqa: N815
     css_input_select_adv = 'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'  # noqa: N815
-    css_input_adv = 'input[id="j_id_3y_1:autoCompleteLawyerOutraParte_input"]'
-    css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
+    css_input_adv = 'input[id*="autoCompleteLawyerOutraParte_input"]'
+    css_check_adv = '//*[contains(@id, "autoCompleteLawyerOutraParte_item")]'
     valor_causa = "//input[contains(@id, 'amountCase_input')]"
     escritrorio_externo = '//div[contains(@id, "comboEscritorio")]'
     select_escritorio = "//select[contains(@id, 'comboEscritorio_input')]"
@@ -100,12 +100,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     iframe_cadastro_advogado_close_dnv = 'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > a'
     iframe_cadastro_advogado_contra = 'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > iframe'
     btn_novo_advogado_contra = '//button[contains(@id, "lawyerOutraParteNovoButtom")]'
-    css_naoinfomadoc = "".join(
-        (
-            "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >",
-            " div.ui-radiobutton-box.ui-widget.ui-corner-all.ui-state-default",
-        ),
-    )
+    css_naoinfomadoc = 'input[id="cpfCnpjNoGrid-lawyerOutraParte:0"]'
     botao_continuar = 'button[id="j_id_1e"]'
     css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
     salvarcss = 'button[id="lawyerOutraParteButtom"]'
