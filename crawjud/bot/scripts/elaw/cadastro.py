@@ -731,7 +731,18 @@ class Cadastro(CrawJUD):
                 .text
             )
             interact.send_key(campo_adv, Keys.ENTER)
-            driver.execute_script(f"document.querySelector('{elements.css_input_adv}').blur()")
+
+            element_campo_adv_outraparte = f'input[id="{campo_adv.get_attribute("id")}"]'
+
+            driver.execute_script(f"document.querySelector('{element_campo_adv_outraparte}').blur()")
+
+            interact.sleep_load('div[id="j_id_4b"]')
+
+            self.message = "Adv. parte contrária informado!"
+            self.type_log = "info"
+            prt()
+
+            return
 
         if not check_adv:
             self.cadastro_advogado_contra()
