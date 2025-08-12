@@ -1,40 +1,68 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
+  // "compounds": [
+  //   {
+  //     "configurations": [
+  //       "Debug API CrawJUD",
+  //       "Debug SocketIO CrawJUD",
+  //       "Debug Celery-Beat CrawJUD",
+  //       "Debug Celery-Worker CrawJUD"
+  //     ],
+  //     "name": "Test Backend",
+  //     "presentation": {
+  //       "group": "Test Backend",
+  //       "hidden": false,
+  //       "order": 1
+  //     },
+  //     "stopAll": true
+  //   }
+  // ],
   "configurations": [
+    // {
+    //   "name": "Python Debugger: Remote Attach",
+    //   "type": "debugpy",
+    //   "request": "attach",
+    //   "connect": { "host": "localhost", "port": 5115 },
+    //   "pathMappings": [
+    //     { "localRoot": "${workspaceFolder}", "remoteRoot": "." }
+    //   ],
+    //   "justMyCode": false
+    // },
     {
-      "name": "Application Manager",
+      "name": "Debug CrawJUD Bot",
       "type": "debugpy",
       "request": "launch",
       "module": "crawjud",
-      "justMyCode": true
-      //   "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/adapter",
+      "args": "${command:pickArgs}"
     },
     {
-      "name": "Debug Web app",
+      "name": "Debug API CrawJUD",
       "type": "debugpy",
       "request": "launch",
-      "module": "crawjud"
+      "module": "api"
     },
     {
-      "name": "Debug Quart ASGI",
+      "name": "Debug SocketIO CrawJUD",
       "type": "debugpy",
       "request": "launch",
-      "module": "crawjud.api.asgi"
+      "module": "socketio_server"
     },
     {
-      "name": "Debug Celery Worker",
+      "name": "Debug Celery-Worker CrawJUD",
       "type": "debugpy",
       "request": "launch",
-      "module": "crawjud.api.worker"
+      "module": "crawjud_app",
+      "args": ["--type", "worker"]
     },
     {
-      "name": "Debug Celery Beat",
+      "name": "Debug Celery-Beat CrawJUD",
       "type": "debugpy",
       "request": "launch",
-      "module": "crawjud.api.beat"
+      "module": "crawjud_app",
+      "args": ["--type", "beat"]
     }
-  ]
+  ],
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0"
 }

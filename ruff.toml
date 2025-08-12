@@ -1,5 +1,6 @@
 preview = true
 exclude = [
+    "examples",
     ".bzr",
     ".direnv",
     ".eggs",
@@ -32,7 +33,7 @@ exclude = [
 
 extend-exclude = ["hooks"]
 extend-include = ["*.ipynb"]
-line-length = 120
+line-length = 86
 indent-width = 4
 
 [lint]
@@ -62,7 +63,7 @@ extend-select = [
     "RET",
     "BLE",
     "FBT",
-    "CPY",
+    # "CPY",
     "DTZ",
     "EM",
     "FA",
@@ -73,7 +74,7 @@ extend-select = [
     "PTH",
     "ERA",
     "PD",
-    "PL",
+    # "PL",
     "TRY",
     "FLY",
     "AIR",
@@ -83,42 +84,48 @@ extend-select = [
     "RUF",
 ]
 
-ignore = [
-    "COM812",
-    "D203",
-    "D211",
-    "D212",
-    "D213",
-    "S603",
-    "S607",
-    "S404",
-    "C901",
-    "ANN401",
-    "INP",
-    "UP",
-    "RET",
-    "BLE",
-    "FBT",
-    "CPY",
-    "DTZ",
-    "EM",
-    "FA",
-    "SIM",
-    "TID",
-    "TC",
-    "ARG",
-    "PTH",
-    "ERA",
-    "PD",
-    "PL",
-    "TRY",
-    "FLY",
-    "AIR",
-    "PERF",
-    "FURB",
-    "DOC",
-    "RUF",
-]
+ignore = ["ARG002"]
+
+# ignore = [
+#     "A005",
+#     "E501",
+#     "T201",
+#     "S104",
+#     "COM812",
+#     "D203",
+#     "D211",
+#     "D212",
+#     "D213",
+#     "S603",
+#     "S607",
+#     "S404",
+#     "C901",
+#     "ANN401",
+#     "INP",
+#     "UP",
+#     "RET",
+#     "BLE",
+#     "FBT",
+#     "CPY",
+#     "DTZ",
+#     "EM",
+#     "FA",
+#     "SIM",
+#     "TID",
+#     "TC",
+#     "ARG",
+#     "PTH",
+#     "ERA",
+#     "PD",
+#     "PL",
+#     "TRY",
+#     "FLY",
+#     "AIR",
+#     "PERF",
+#     "FURB",
+#     "DOC",
+#     "RUF",
+# ]
 
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

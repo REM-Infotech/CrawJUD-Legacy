@@ -1,62 +1,60 @@
 {
-  "python.testing.pytestArgs": ["."],
-  "[python]": {
-    "editor.formatOnType": true,
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "diffEditor.ignoreTrimWhitespace": true
-  },
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "material-icon-theme.folders.customClones": [
-    {
-      "name": "superAdmin",
-      "base": "admin",
-      "color": "orange",
-      "lightColor": "orange",
-      "folderNames": ["supersu", "superuser", "superSu"]
-    },
-    {
-      "name": "user",
-      "base": "admin",
-      "color": "brown",
-      "lightColor": "brown",
-      "folderNames": ["user", "usr", "User", "usr"]
-    },
-    {
-      "name": "forms-flask",
-      "base": "resource",
-      "color": "#1ABC9C",
-      "lightColor": "#1ABC9C",
-      "folderNames": ["Forms", "forms", "wtforms"]
-    },
-    {
-      "name": "sqlite-instance",
-      "base": "database",
-      "color": "#880ff1",
-      "lightColor": "#880ff1",
-      "folderNames": ["instance", "Instance"]
-    },
-    {
-      "name": "git_folder",
-      "base": "git",
-      "color": "orange",
-      "folderNames": ["git_funcs"]
-    },
-    {
-      "name": "system",
-      "base": "controller",
-      "color": "#d6d309",
-      "lightColor": "#f5f259",
-      "folderNames": ["sys", "System"]
+  "remote.autoForwardPorts": false,
+  "remote.restoreForwardedPorts": false,
+  "remote.portsAttributes": {
+    "1-65000": {
+      "label": "Application",
+      "onAutoForward": "ignore"
     }
-  ],
-  "liveServer.settings.port": 5501,
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc][typescript][javascript][vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cmake.ignoreCMakeListsMissing": true,
+  "css.lint.unknownProperties": "ignore",
+  "debug.javascript.terminalOptions": {
+    "resolveSourceMapLocations": [
+      "${workspaceFolder}/**",
+      "!**/node_modules/**",
+      "**/node_modules/.vite-temp/**"
+    ]
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig",
+    "pyproject.toml": "poetry.lock, poetry.*, ruff.*, bandit.*, requirements.txt, .pre-commit-config.yaml",
+    "tsconfig.json": "tsconfig.*.json, env.d.ts, forge.config.ts, components.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*, vite.config.main.*, vite.config.preload.*, vite.config.renderer.*"
+  },
+  "python.analysis.typeCheckingMode": "off",
   "github.copilot.chat.commitMessageGeneration.instructions": [
     {
-      "file": ".github/.copilot-commit-message-instructions.md"
+      "file": ".github/copilot-commit-message-instructions.md"
     }
   ],
-  "ruff.configuration": "${workspaceFolder}/pyproject.toml",
-  "ruff.lint.enable": true
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "https-sonar-robotz-dev-",
+    "projectKey": "REM-Infotech_CrawJUD-Reestruturado_e3fe9c30-c5d7-41d7-b7bd-66b10317a92f"
+  },
+  "sonarlint.analyzerProperties": {
+    "sonar.exclusions": "**/bin/**, **/.venv/**, **/__pycache__/**, **/tests/**, **/.vscode/**, **/Lib/**, **/lib/**"
+  }
 }

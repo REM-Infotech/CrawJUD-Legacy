@@ -2,54 +2,49 @@
 __pycache__/
 *.py[cod]
 *$py.class
-Temp/
+bandit.html
 # C extensions
 *.so
-Browser/
-Archives/
+results.db
+is_init.txt
 # Distribution / packaging
 .Python
-chrome-win64
 build/
 develop-eggs/
 dist/
 downloads/
 eggs/
-*copy.py
 .eggs/
 lib/
 lib64/
+*.pfx
+*.p7s
+*.p12
+*.xlsx
+.graalvenv/*
+_teste.py
+process_dbg.png
 parts/
 sdist/
-node_modules/
-.version
+signer4j/*
 var/
 wheels/
-cache_logs.py
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
-bot/meta/*
-pybind11/
-/*.json
-MODIFIED.MOD
-result_pre_commit.html
+temp/
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-.debug
-is_init.txt
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-results_pre-commit.md
-redis_flask/
-bandit_results.html
-bandit.html
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -64,13 +59,11 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-celerybeat-schedule-shm
-celerybeat-schedule-wal
+
 # Translations
 *.mo
-url_driver.txt
 *.pot
-*.log.*
+
 # Django stuff:
 *.log
 local_settings.py
@@ -83,7 +76,6 @@ instance/
 
 # Scrapy stuff:
 .scrapy
-.version
 
 # Sphinx documentation
 docs/_build/
@@ -111,12 +103,18 @@ ipython_config.py
 #   install all needed dependencies.
 #Pipfile.lock
 
+# UV
+#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#uv.lock
+
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
 #   commonly ignored for libraries.
 #   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-# poetry.lock
+#poetry.lock
 
 # pdm
 #   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
@@ -130,7 +128,7 @@ ipython_config.py
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
-exec/
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
@@ -140,7 +138,6 @@ celerybeat.pid
 
 # Environments
 .env
-.testing
 .venv
 env/
 venv/
@@ -165,13 +162,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-clear_cache.py
+
 # pytype static type analyzer
 .pytype/
 
 # Cython debug symbols
 cython_debug/
-*.whl
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
@@ -179,12 +176,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-webdriver/
-*.exe
-.env.me
-.env*
-.flaskenv*
-!.env.project
-!.env.vault
+# Ruff stuff:
+.ruff_cache/
 
-compose_spec.json
+# PyPI configuration file
+.pypirc

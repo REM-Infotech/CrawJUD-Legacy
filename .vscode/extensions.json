@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "EditorConfig.EditorConfig",
     "charliermarsh.ruff"
   ]
 }
