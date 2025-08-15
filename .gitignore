@@ -7,6 +7,7 @@ bandit.html
 *.so
 results.db
 is_init.txt
+.scannerwork
 # Distribution / packaging
 .Python
 build/
@@ -53,7 +54,6 @@ htmlcov/
 .coverage.*
 .cache
 nosetests.xml
-coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
@@ -144,7 +144,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+*.pkl
 # Spyder project settings
 .spyderproject
 .spyproject
