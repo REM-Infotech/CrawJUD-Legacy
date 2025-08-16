@@ -5,7 +5,6 @@ from importlib import import_module
 from pathlib import Path
 
 import quart_flask_patch as quart_patch
-import socketio
 from dotenv import dotenv_values
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +12,6 @@ from quart import Quart
 from quart_cors import cors
 from quart_jwt_extended import JWTManager
 from quart_socketio import SocketIO
-from quart_socketio.config.python_socketio import AsyncSocketIOConfig
 from tqdm import tqdm
 
 from crawjud.celery_app import make_celery
@@ -32,18 +30,11 @@ app = Quart(__name__)
 jwt = JWTManager()
 db = SQLAlchemy()
 
-config = AsyncSocketIOConfig(
-    client_manager=socketio.RedisManager(
-        url=environ.get("SOCKETIO_REDIS", "redis://localhost:6379/0"),
-    ),
-)
-
 
 io = SocketIO(
     async_mode="asgi",
     launch_mode="uvicorn",
     cookie="access",
-    socket_config=config,
 )
 
 

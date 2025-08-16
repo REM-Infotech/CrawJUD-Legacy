@@ -113,11 +113,13 @@ class Capa[T](PjeBot):  # noqa: D101
 
         """
         semaforo_bot = Semaphore(4)
+        semaforo_arquivo = Semaphore(2)
 
         def threaded_func(
             item: BotData,
             client: Client,
             semaforo: Semaphore,
+            semaforo_arquivo: Semaphore,
         ) -> None:
             with semaforo:
                 sleep_time = secrets.randbelow(7) + 2
@@ -143,6 +145,7 @@ class Capa[T](PjeBot):  # noqa: D101
                             thread_file_ = Thread(
                                 target=self.copia_integral,
                                 kwargs={
+                                    "semaforo_arquivo": semaforo_arquivo,
                                     "row": row,
                                     "data": item,
                                     "client": client,
@@ -199,6 +202,7 @@ class Capa[T](PjeBot):  # noqa: D101
                     item=item,
                     client=client,
                     semaforo=semaforo_bot,
+                    semaforo_arquivo=semaforo_arquivo,
                 )
                 threads_processos.append(thread_proc)
 
@@ -218,6 +222,7 @@ class Capa[T](PjeBot):  # noqa: D101
         client: Client,
         id_processo: str,
         captchatoken: str,
+        semaforo_arquivo: Semaphore,
     ) -> None:
         """Realiza o download da cópia integral do processo e salva no storage.
 
@@ -235,40 +240,41 @@ class Capa[T](PjeBot):  # noqa: D101
 
 
         """
-        file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
+        with semaforo_arquivo:
+            file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
 
-        proc = data["NUMERO_PROCESSO"]
-        id_proc = id_processo
-        captcha = captchatoken
+            proc = data["NUMERO_PROCESSO"]
+            id_proc = id_processo
+            captcha = captchatoken
 
-        link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
-        try:
-            message = f"Baixando arquivo do processo n.{proc}"
-            self.print_msg(
-                message=message,
-                row=row,
-                type_log="log",
-            )
-
-            response = client.get(url=link)
-            pdf_content = list(
-                filter(
-                    lambda x: x[0].lower() == "content-type"
-                    and x[1].lower() == "application/pdf",
-                    list(response.headers.items()),
-                ),
-            )
-            if len(pdf_content) > 0:
-                self.save_file_downloaded(
-                    file_name=file_name,
-                    response_data=response,
-                    data_bot=data,
+            link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
+            try:
+                message = f"Baixando arquivo do processo n.{proc}"
+                self.print_msg(
+                    message=message,
                     row=row,
+                    type_log="log",
                 )
 
-        except ExecutionError as e:
-            tqdm.write("\n".join(traceback.format_exception(e)))
+                response = client.get(url=link)
+                pdf_content = list(
+                    filter(
+                        lambda x: x[0].lower() == "content-type"
+                        and x[1].lower() == "application/pdf",
+                        list(response.headers.items()),
+                    ),
+                )
+                if len(pdf_content) > 0:
+                    self.save_file_downloaded(
+                        file_name=file_name,
+                        response_data=response,
+                        data_bot=data,
+                        row=row,
+                    )
 
-            msg = "Erro ao baixar arquivo"
+            except ExecutionError as e:
+                tqdm.write("\n".join(traceback.format_exception(e)))
 
-            self.print_msg(message=msg, row=row, type_log="info")
+                msg = "Erro ao baixar arquivo"
+
+                self.print_msg(message=msg, row=row, type_log="warning")

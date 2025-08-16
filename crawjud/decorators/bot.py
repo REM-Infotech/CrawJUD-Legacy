@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from contextlib import suppress
 from functools import wraps
+from threading import Thread
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -111,10 +112,13 @@ def wrap_cls[T](cls: type[CrawJUD]) -> type[T]:
                 wait_timeout=300,
             )
             cls = original_cls()
-            sio.emit(
-                "join_room",
-                data={"data": {"room": kwargs.get("pid", uuid4().hex)}},
-            )
+            Thread(
+                target=sio.emit,
+                kwargs={
+                    "event": "join_room",
+                    "data": {"data": {"room": kwargs.get("pid", uuid4().hex)}},
+                },
+            ).start()
 
             def stop_bot[T](*args: T, **kwargs: T) -> None:
                 tqdm.write(str(args))

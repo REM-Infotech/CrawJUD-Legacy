@@ -40,7 +40,7 @@ extend-select = [
     "ARG",
     "PTH",
     "ERA",
-    "PD",
+    # "PD",
     # "PL",
     "TRY",
     "FLY",

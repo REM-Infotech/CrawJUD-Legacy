@@ -4,12 +4,15 @@ from __future__ import annotations
 
 from datetime import datetime
 from io import BytesIO
-from threading import Semaphore
+from pathlib import Path
+from threading import Semaphore, Thread
+from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 from zoneinfo import ZoneInfo
 
 import base91
 from pandas import Timestamp, read_excel
+from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
@@ -32,6 +35,8 @@ func_dict_check = {
     "bot": ["execution"],
     "search": ["buscar_processo"],
 }
+
+work_dir = Path(__file__).cwd()
 
 
 class AbstractCrawJUD:
@@ -249,7 +254,32 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             ),
         }
 
-        self.sio.emit(
-            event="log_execution",
-            data=data,
-        )
+        sleep(2)
+
+        Thread(
+            target=self.sio.emit,
+            kwargs={
+                "event": "log_execution",
+                "data": data,
+            },
+        ).start()
+
+        file_log = work_dir.joinpath("temp", self.pid, f"{self.pid}.log")
+        file_log.parent.mkdir(parents=True, exist_ok=True)
+        file_log.touch(exist_ok=True)
+
+        with file_log.open("a") as f:
+            # Cria objeto de log da mensagem
+            tqdm.write(
+                file=f,
+                s=colored(
+                    prompt,
+                    color={
+                        "info": "cyan",
+                        "log": "white",
+                        "error": "red",
+                        "warning": "magenta",
+                        "success": "green",
+                    }.get(type_log, "white"),
+                ),
+            )
