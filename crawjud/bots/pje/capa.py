@@ -40,6 +40,7 @@ class Capa[T](PjeBot):  # noqa: D101
 
     def execution(
         self,
+        current_task: ContextTask = None,
         storage_folder_name: str | None = None,
     ) -> None:
         """Executa o fluxo principal de processamento da capa dos processos PJE.
@@ -53,10 +54,11 @@ class Capa[T](PjeBot):  # noqa: D101
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        start_time: datetime = formata_tempo(str(self.request.eta))
+        start_time: datetime = formata_tempo(str(current_task.request.eta))
         self.folder_storage = storage_folder_name
+        self.current_task = current_task
         self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
-        self.pid = str(self.request.id)
+        self.pid = str(current_task.request.id)
 
         self.queue()
 
@@ -65,7 +67,7 @@ class Capa[T](PjeBot):  # noqa: D101
 
         generator_regioes = self.regioes()
         for regiao, data_regiao in generator_regioes:
-            with suppress(ExecutionError):
+            with suppress(Exception):
                 self.print_msg(message=f"Autenticando no TRT {regiao}")
                 if self.autenticar():
                     self.print_msg(
@@ -78,8 +80,6 @@ class Capa[T](PjeBot):  # noqa: D101
                         headers=self.headers,
                         cookies=self.cookies,
                     )
-
-                    continue
 
             self.print_msg(
                 message="Erro de execução",

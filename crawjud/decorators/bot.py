@@ -126,10 +126,8 @@ def wrap_cls[T](cls: type[CrawJUD]) -> type[T]:
             cls.sio = sio
 
             if self:
-                for k, v in self.__dict__.copy().items():
-                    if not cls.__dict__.get(k):
-                        cls.__dict__.update({k: v})
+                return cls.execution(current_task=self, *args, **kwargs)
 
-            return cls.execution(*args, **kwargs)
+            return cls.execution(self, *args, **kwargs)
 
     return novo_init
