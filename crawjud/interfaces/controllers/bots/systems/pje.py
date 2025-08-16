@@ -9,10 +9,9 @@ from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
+from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, cast
-
-from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError, FileUploadError
 from crawjud.common.exceptions.validacao import ValidacaoStringError
@@ -48,6 +47,7 @@ class PjeBot[T](CrawJUD):
 
     pje_classes: ClassVar[dict[str, type[PjeBot]]] = {}
     subclasses_search: ClassVar[dict[str, type[PjeBot]]] = {}
+    lock = Lock()
 
     @property
     def list_posicao_processo(self) -> dict[str, int]:
@@ -137,35 +137,28 @@ class PjeBot[T](CrawJUD):
 
         path_temp.mkdir(parents=True, exist_ok=True)
 
+        sleep_time = secrets.randbelow(7) + 2
+        sleep(sleep_time)
+
         try:
-            chunk = 8 * 1024
+            chunk = 8 * 1024 * 1024
             file_path = path_temp.joinpath(file_name)
             # Salva arquivo em chunks no storage
             dest_name = str(Path(self.pid.upper()).joinpath(file_name).as_posix())
-            upload_file = False
 
-            with file_path.open("wb") as f:
-                f.write(b"")
-
-            try:
-                self.storage.put_object(object_name=dest_name, data=BytesIO(b""))
-
-            except (FileUploadError, Exception) as e:
-                upload_file = False
-                tqdm.write("\n".join(traceback.format_exception(e)))
-
+            bytes_file = b""
             with file_path.open("wb") as f:
                 for _bytes in response_data.iter_bytes(chunk):
+                    sleep(0.5)
                     f.write(_bytes)
+                    bytes_file += _bytes
 
-            if not upload_file:
-                file_size = file_path.stat().st_size
-                with file_path.open("rb") as file:
-                    self.storage.put_object(
-                        object_name=dest_name,
-                        data=file,
-                        length=file_size,
-                    )
+            file_size = file_path.stat().st_size
+            self.storage.put_object(
+                object_name=dest_name,
+                data=BytesIO(bytes_file),
+                length=file_size,
+            )
 
             with suppress(Exception):
                 file_path.unlink()

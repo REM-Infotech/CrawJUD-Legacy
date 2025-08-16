@@ -12,6 +12,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
 from threading import Semaphore, Thread
+from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
@@ -118,6 +119,7 @@ class Capa[T](PjeBot):  # noqa: D101
             semaforo: Semaphore,
         ) -> None:
             with semaforo:
+                sleep(4)
                 try:
                     # Atualiza dados do item para processamento
                     row = self.list_posicao_processo[item["NUMERO_PROCESSO"]]
