@@ -210,14 +210,12 @@ class Capa[T](PjeBot):  # noqa: D101
 
 
         """
-        file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
-
-        proc = data["NUMERO_PROCESSO"]
-        id_proc = id_processo
-        captcha = captchatoken
-
-        link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
         try:
+            file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
+            proc = data["NUMERO_PROCESSO"]
+            id_proc = id_processo
+            captcha = captchatoken
+            link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
             message = f"Baixando arquivo do processo n.{proc}"
             self.print_msg(
                 message=message,
@@ -246,4 +244,4 @@ class Capa[T](PjeBot):  # noqa: D101
 
             msg = "Erro ao baixar arquivo"
 
-            self.print_msg(message=msg, row=row, type_log="warning")
+            self.print_msg(message=msg, row=row, type_log="info")

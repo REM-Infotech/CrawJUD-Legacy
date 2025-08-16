@@ -133,14 +133,14 @@ class PjeBot[T](CrawJUD):
             row (int): row do loop.
 
         """
-        path_temp = workdir.joinpath("temp", self.pid.upper())
-
-        path_temp.mkdir(parents=True, exist_ok=True)
-
-        sleep_time = secrets.randbelow(7) + 2
-        sleep(sleep_time)
-
         try:
+            path_temp = workdir.joinpath("temp", self.pid.upper())
+
+            path_temp.mkdir(parents=True, exist_ok=True)
+
+            sleep_time = secrets.randbelow(7) + 2
+            sleep(sleep_time)
+
             chunk = 8 * 1024 * 1024
             file_path = path_temp.joinpath(file_name)
             # Salva arquivo em chunks no storage
@@ -169,7 +169,7 @@ class PjeBot[T](CrawJUD):
             self.print_msg(
                 row=row,
                 message=message,
-                type_log="warning",
+                type_log="info",
             )
 
         finally:
