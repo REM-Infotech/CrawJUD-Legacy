@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import secrets
 import traceback
-from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
 from threading import Semaphore, Thread
 from time import sleep
@@ -112,16 +111,18 @@ class Capa[T](PjeBot):  # noqa: D101
 
 
         """
-        semaforo_bot = Semaphore(4)
-        semaforo_arquivo = Semaphore(2)
+        cl = Client(
+            base_url=base_url,
+            timeout=30,
+            headers=headers,
+            cookies=cookies,
+            follow_redirects=True,
+        )
 
-        def threaded_func(
-            item: BotData,
-            client: Client,
-            semaforo: Semaphore,
-            semaforo_arquivo: Semaphore,
-        ) -> None:
-            with semaforo:
+        thread_download_file: list[Thread] = []
+
+        with cl as client:
+            for item in data:
                 sleep_time = secrets.randbelow(7) + 2
                 sleep(sleep_time)
                 try:
@@ -145,7 +146,6 @@ class Capa[T](PjeBot):  # noqa: D101
                             thread_file_ = Thread(
                                 target=self.copia_integral,
                                 kwargs={
-                                    "semaforo_arquivo": semaforo_arquivo,
                                     "row": row,
                                     "data": item,
                                     "client": client,
@@ -182,39 +182,6 @@ class Capa[T](PjeBot):  # noqa: D101
                         type_log="error",
                     )
 
-        cl = Client(
-            base_url=base_url,
-            timeout=30,
-            headers=headers,
-            cookies=cookies,
-            follow_redirects=True,
-        )
-
-        thread_download_file: list[Thread] = []
-        threads_processos: list[Future] = []
-
-        executor = ThreadPoolExecutor(6)
-
-        with cl as client, executor as pool:
-            for item in data:
-                thread_proc = pool.submit(
-                    threaded_func,
-                    item=item,
-                    client=client,
-                    semaforo=semaforo_bot,
-                    semaforo_arquivo=semaforo_arquivo,
-                )
-                threads_processos.append(thread_proc)
-
-            for th in threads_processos:
-                with suppress(Exception):
-                    th.result()
-                    tqdm.write("ok")
-
-            for th in thread_download_file:
-                with suppress(Exception):
-                    th.join()
-
     def copia_integral(  # noqa: D417
         self,
         row: int,
@@ -240,41 +207,40 @@ class Capa[T](PjeBot):  # noqa: D101
 
 
         """
-        with semaforo_arquivo:
-            file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
+        file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
 
-            proc = data["NUMERO_PROCESSO"]
-            id_proc = id_processo
-            captcha = captchatoken
+        proc = data["NUMERO_PROCESSO"]
+        id_proc = id_processo
+        captcha = captchatoken
 
-            link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
-            try:
-                message = f"Baixando arquivo do processo n.{proc}"
-                self.print_msg(
-                    message=message,
+        link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
+        try:
+            message = f"Baixando arquivo do processo n.{proc}"
+            self.print_msg(
+                message=message,
+                row=row,
+                type_log="log",
+            )
+
+            response = client.get(url=link)
+            pdf_content = list(
+                filter(
+                    lambda x: x[0].lower() == "content-type"
+                    and x[1].lower() == "application/pdf",
+                    list(response.headers.items()),
+                ),
+            )
+            if len(pdf_content) > 0:
+                self.save_file_downloaded(
+                    file_name=file_name,
+                    response_data=response,
+                    data_bot=data,
                     row=row,
-                    type_log="log",
                 )
 
-                response = client.get(url=link)
-                pdf_content = list(
-                    filter(
-                        lambda x: x[0].lower() == "content-type"
-                        and x[1].lower() == "application/pdf",
-                        list(response.headers.items()),
-                    ),
-                )
-                if len(pdf_content) > 0:
-                    self.save_file_downloaded(
-                        file_name=file_name,
-                        response_data=response,
-                        data_bot=data,
-                        row=row,
-                    )
+        except ExecutionError as e:
+            tqdm.write("\n".join(traceback.format_exception(e)))
 
-            except ExecutionError as e:
-                tqdm.write("\n".join(traceback.format_exception(e)))
+            msg = "Erro ao baixar arquivo"
 
-                msg = "Erro ao baixar arquivo"
-
-                self.print_msg(message=msg, row=row, type_log="warning")
+            self.print_msg(message=msg, row=row, type_log="warning")
