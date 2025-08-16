@@ -61,7 +61,7 @@ class PJeSearch[T](PjeBot):
         response = client.get(url=link)
         id_processo: str
 
-        if response.status_code == 403:
+        if response.status_code == 403 or response.status_code == 404:
             return None
 
         try:

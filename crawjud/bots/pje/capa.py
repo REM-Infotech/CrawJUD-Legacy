@@ -8,6 +8,7 @@ dos processos e salvar os resultados no storage.
 
 from __future__ import annotations
 
+import secrets
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
@@ -119,10 +120,11 @@ class Capa[T](PjeBot):  # noqa: D101
             semaforo: Semaphore,
         ) -> None:
             with semaforo:
-                sleep(4)
+                sleep_time = secrets.randbelow(7) + 2
+                sleep(sleep_time)
                 try:
                     # Atualiza dados do item para processamento
-                    row = self.list_posicao_processo[item["NUMERO_PROCESSO"]]
+                    row = self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
                     resultado: DictResults = self.buscar_processo(
                         data=item,
                         row=row,
@@ -164,6 +166,12 @@ class Capa[T](PjeBot):  # noqa: D101
                                 type_log="success",
                             )
 
+                    else:
+                        self.print_msg(
+                            message="Processo não encontrado!",
+                            row=row,
+                            type_log="error",
+                        )
                 except ExecutionError:
                     self.print_msg(
                         message="Erro ao buscar processo",
