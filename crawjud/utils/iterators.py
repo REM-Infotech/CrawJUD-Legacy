@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from crawjud.interfaces.controllers.bots.master import CrawJUD
     from crawjud.interfaces.types.pje import DictSeparaRegiao
 
 
@@ -22,7 +23,7 @@ class RegioesIterator:
 
     """
 
-    def __init__(self, bot: ClassBot) -> None:
+    def __init__(self, bot: CrawJUD) -> None:
         """Inicialize o iterador de regiões com dados do bot e processos separados.
 
         Args:

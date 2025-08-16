@@ -40,9 +40,6 @@ class Capa[T](PjeBot):  # noqa: D101
 
     def execution(
         self,
-        name: str | None = None,
-        system: str | None = None,
-        current_task: ContextTask = None,
         storage_folder_name: str | None = None,
     ) -> None:
         """Executa o fluxo principal de processamento da capa dos processos PJE.
@@ -56,11 +53,10 @@ class Capa[T](PjeBot):  # noqa: D101
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
+        start_time: datetime = formata_tempo(str(self.request.eta))
         self.folder_storage = storage_folder_name
-        self.current_task = current_task
         self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
-        self.pid = str(current_task.request.id)
+        self.pid = str(self.request.id)
 
         self.queue()
 
@@ -69,7 +65,7 @@ class Capa[T](PjeBot):  # noqa: D101
 
         generator_regioes = self.regioes()
         for regiao, data_regiao in generator_regioes:
-            try:
+            with suppress(ExecutionError):
                 self.print_msg(message=f"Autenticando no TRT {regiao}")
                 if self.autenticar():
                     self.print_msg(
@@ -83,11 +79,12 @@ class Capa[T](PjeBot):  # noqa: D101
                         cookies=self.cookies,
                     )
 
-            except ExecutionError as e:
-                self.print_msg(
-                    message="\n".join(traceback.format_exception(e)),
-                    type_log="error",
-                )
+                    continue
+
+            self.print_msg(
+                message="Erro de execução",
+                type_log="error",
+            )
 
     def queue_processo(
         self,

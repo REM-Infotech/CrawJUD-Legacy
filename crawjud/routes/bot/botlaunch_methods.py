@@ -112,8 +112,6 @@ class LoadForm:  # noqa: D101
             crawjud_app: Celery = current_app.extensions["celery"]
 
             args_task = {
-                "name": self.bot.type.lower(),
-                "system": self.bot.system.lower(),
                 "storage_folder_name": name_file_config,
             }
 

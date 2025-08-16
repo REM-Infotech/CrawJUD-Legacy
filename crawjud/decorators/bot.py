@@ -5,13 +5,19 @@ Este módulo fornece:
 - wrap_cls: decora classes bot para execução sob controle de conexão Socket.IO.
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
 from functools import wraps
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from dotenv import dotenv_values
 from socketio import SimpleClient
 from tqdm import tqdm
+
+if TYPE_CHECKING:
+    from crawjud.interfaces.controllers.bots.master import CrawJUD
 
 environ = dotenv_values()
 
@@ -49,11 +55,11 @@ class _CustomSimpleClass[T](SimpleClient):
             )
 
 
-def wrap_init[T](cls: type[ClassBot]) -> type[T]:
+def wrap_init[T](cls: type[CrawJUD]) -> type[T]:
     """Decora o método __init__ de uma classe para exibir informações de instancia.
 
     Args:
-        cls (type[ClassBot]): Classe do bot a ser decorada.
+        cls (type[CrawJUD]): Classe do bot a ser decorada.
 
     Returns:
         type[T]: Classe decorada com __init__ modificado.
@@ -73,7 +79,7 @@ def wrap_init[T](cls: type[ClassBot]) -> type[T]:
     return cls
 
 
-def wrap_cls[T](cls: type[ClassBot]) -> type[T]:
+def wrap_cls[T](cls: type[CrawJUD]) -> type[T]:
     """Decora uma classe bot para executar métodos sob controle de conexão Socket.IO.
 
     Args:
@@ -120,8 +126,10 @@ def wrap_cls[T](cls: type[ClassBot]) -> type[T]:
             cls.sio = sio
 
             if self:
-                return cls.execution(current_task=self, *args, **kwargs)
+                for k, v in self.__dict__.copy().items():
+                    if not cls.__dict__.get(k):
+                        cls.__dict__.update({k: v})
 
-            return cls.execution(self, *args, **kwargs)
+            return cls.execution(*args, **kwargs)
 
     return novo_init
