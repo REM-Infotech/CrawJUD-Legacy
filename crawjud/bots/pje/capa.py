@@ -11,7 +11,7 @@ from __future__ import annotations
 import secrets
 import traceback
 from contextlib import suppress
-from threading import Semaphore, Thread
+from threading import Thread
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
@@ -193,7 +193,6 @@ class Capa[T](PjeBot):  # noqa: D101
         client: Client,
         id_processo: str,
         captchatoken: str,
-        semaforo_arquivo: Semaphore,
     ) -> None:
         """Realiza o download da cópia integral do processo e salva no storage.
 
