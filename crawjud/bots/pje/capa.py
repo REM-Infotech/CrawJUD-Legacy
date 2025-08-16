@@ -182,6 +182,10 @@ class Capa[T](PjeBot):  # noqa: D101
                         type_log="error",
                     )
 
+        for th in thread_download_file:
+            with suppress(Exception):
+                th.join()
+
     def copia_integral(  # noqa: D417
         self,
         row: int,
