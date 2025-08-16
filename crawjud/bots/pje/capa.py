@@ -224,24 +224,12 @@ class Capa[T](PjeBot):  # noqa: D101
             )
 
             with client.stream("get", url=link) as response:
-                pdf_content = list(
-                    filter(
-                        lambda x: x[0].lower() == "content-type"
-                        and x[1].lower() == "application/pdf",
-                        list(response.headers.items()),
-                    ),
+                self.save_file_downloaded(
+                    file_name=file_name,
+                    response_data=response,
+                    data_bot=data,
+                    row=row,
                 )
-                if len(pdf_content) > 0:
-                    self.save_file_downloaded(
-                        file_name=file_name,
-                        response_data=response,
-                        data_bot=data,
-                        row=row,
-                    )
-                    return
-
-                msg = "Erro ao baixar arquivo " + response.content.decode()
-                self.print_msg(message=msg, row=row, type_log="warning")
 
         except ExecutionError as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
