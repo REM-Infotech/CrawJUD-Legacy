@@ -3,18 +3,27 @@
 This module manages movement operations on the Esaj system using the CrawJUD framework.
 """
 
+from __future__ import annotations
+
 import re
 import time
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
-from typing import Self
+from typing import TYPE_CHECKING, Self
+from zoneinfo import ZoneInfo
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.esaj.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
+
+if TYPE_CHECKING:
+    from crawjud.utils.webdriver.web_element import WebElementBot
 
 
 class Movimentacao(ESajBot):
@@ -74,11 +83,6 @@ class Movimentacao(ESajBot):
         """Execute movement processing.
 
         Iterates over each process row, handling session renewal and error logging.
-
-        Raises:
-            ExecutionError: If any movement processing error occurs.
-
-        # Inline: Loop through dataFrame and execute queued movement tasks.
 
         """
         frame = self.dataFrame()
@@ -148,7 +152,7 @@ class Movimentacao(ESajBot):
             search = self.search_bot()
 
             if search is not True:
-                raise ExecutionError(message="Processo não encontrado!")
+                _raise_execution_error(message="Processo não encontrado!")
 
             self.message = "Buscando movimentações"
             self.type_log = "log"
@@ -209,173 +213,154 @@ class Movimentacao(ESajBot):
         if encontrado is False:
             raise ExecutionError(message="Nenhuma movimentação encontrada")
 
-    def filter_moves(self, move) -> bool:
-        """Filter a movement element based on given date and keyword criteria.
+    def filter_moves(self, move: WebElementBot) -> bool:
+        """Filtra um elemento de movimentação com base em critérios de data e palavra-chave.
 
         Args:
-            move (WebElement): A movement element to be filtered.
+            move (WebElementBot): Elemento de movimentação a ser filtrado.
 
         Returns:
-            bool: True if the movement meets all criteria; otherwise, False.
+            bool: Retorna True se a movimentação atender a todos os critérios, caso contrário, False.
 
         """
+        # Obtém a palavra-chave e os itens da movimentação
         keyword = self.kword
         itensmove = move.find_elements(By.TAG_NAME, "td")
 
+        # Verifica se há itens suficientes para análise
         if len(itensmove) < 5:
             return False
 
         text_mov = str(itensmove[2].text)
         data_mov = str(itensmove[0].text.strip())
 
-        def data_check(data_mov: str) -> bool:
-            """Validate the given date string against multiple date formats and checks if it falls within a specified date range.
+        # Aplica os filtros de data, texto e intimado
+        if not self._data_check(data_mov):
+            return False
+        if not self._text_check(text_mov, keyword):
+            return False
+        return self._check_intimado(text_mov)
 
-            Args:
-                data_mov (str): The date string to be validated.
-
-            Returns:
-                bool: True if the date string is valid and falls within the specified date range, False otherwise.
-            The function performs the following steps:
-            1. Tries to match the given date string against multiple date formats.
-            2. Converts the matched date string to a datetime object.
-            3. Retrieves the start and end dates from the bot's data.
-            4. Validates and converts the start and end dates if they are not already datetime objects.
-            5. Checks if the given date falls within the start and end dates.
-            The supported date formats are:
-            - "%d/%m/%Y"
-            - "%m/%d/%Y"
-            - "%Y/%m/%d"
-            - "%Y/%d/%m"
-
-            """
-            patterns = [
-                ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
-                ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
-                ("%Y/%m/%d", r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b"),
-                ("%Y/%d/%m", r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b"),
-            ]
-
-            for format_d, pattern in patterns:
-                match_ = re.match(pattern, data_mov)
-                match_: re.Match | None = match_
-                if match_ is not None:
-                    data_mov = datetime.strptime(data_mov, format_d)
-                    break
-
-            data_inicio = self.bot_data.get("DATA_INICIO", data_mov)
-            data_fim = self.bot_data.get("DATA_FIM", data_mov)
-            chk_datafim = type(data_fim) is datetime
-            chk_datainicio = type(data_inicio) is datetime
-
-            if chk_datainicio is False:
-                for format_d, pattern in patterns:
-                    data_inicio.replace(" ", "")
-                    match_ = re.match(pattern, data_mov)
-                    match_: re.Match | None = match_
-                    if match_ is not None:
-                        data_inicio = datetime.strptime(data_inicio, format_d)
-                        break
-
-            if chk_datafim is False:
-                for format_d, pattern in patterns:
-                    data_fim.replace(" ", "")
-
-                    match_ = re.match(pattern, data_mov)
-                    match_: re.Match | None = match_
-                    if match_ is not None:
-                        data_fim = datetime.strptime(data_fim, format_d)
-                        break
-
-            return all([data_mov >= data_inicio, data_mov <= data_fim])
-
-        def text_check(text_mov: str) -> bool:
-            """Check if the given text matches certain criteria.
-
-            This function evaluates whether the provided text (`text_mov`) meets any of the following conditions:
-            - Contains a keyword that is an asterisk ("*").
-            - The first line of the text matches a keyword (case-insensitive).
-            - The entire text matches a keyword (case-insensitive).
-            - The keyword is a substring of the text (case-insensitive).
-            - The similarity between the keyword and the first line of the text is greater than 0.8.
-
-            Args:
-                text_mov (str): The text to be checked.
-
-            Returns:
-                bool: True if any of the conditions are met, False otherwise.
-
-            """
-            check_palavra = any(
-                chk is True
-                for chk in [
-                    keyword == "*",
-                    keyword.lower() == text_mov.split("\n")[0].lower(),
-                    keyword.lower() == text_mov.lower(),
-                    keyword.lower() in text_mov.lower(),
-                    self.similaridade(
-                        keyword.lower(),
-                        text_mov.split("\n")[0].lower(),
-                    )
-                    > 0.8,
-                ]
-            )
-
-            return check_palavra
-
-        def check_intimado() -> bool:
-            """Check if the bot is intimated based on the bot data.
-
-            This function checks if the bot has been intimated by looking for the
-            "INTIMADO" key in the bot data. If the key is present, it verifies if
-            the value associated with the key is present in the text_mov string
-            (case insensitive).
-
-            Returns:
-                bool: True if the bot is intimated or if the "INTIMADO" key is not
-                present in the bot data, False otherwise.
-
-            """
-            intimado_chk = True
-            intimado = self.bot_data.get("INTIMADO", None)
-
-            if intimado is not None:
-                intimado_chk = str(intimado).lower() in text_mov.lower()
-
-            return intimado_chk
-
-        resultados = all([
-            data_check(data_mov),
-            text_check(text_mov),
-            check_intimado(),
-        ])
-
-        return resultados
-
-    def scrap_moves(self, keyword: str) -> None:
-        """Scrape movements that contain the specified keyword.
+    def _data_check(self, data_mov: str) -> bool:
+        """Valida a string de data fornecida contra múltiplos formatos e verifica se está dentro do intervalo especificado.
 
         Args:
-            keyword (str): The keyword to filter movements by.
-
-        Raises:
-            ExecutionError: If an error is encountered during scraping.
+            data_mov (str): String de data a ser validada.
 
         Returns:
-            bool: True if movements are found, otherwise False.
+            bool: True se a data for válida e estiver dentro do intervalo, False caso contrário.
+
+        """
+        patterns = [
+            ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
+            ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
+            ("%Y/%m/%d", r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b"),
+            ("%Y/%d/%m", r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b"),
+        ]
+
+        for format_d, pattern in patterns:
+            match_ = re.match(pattern, data_mov)
+            if match_ is not None:
+                data_mov_dt = datetime.strptime(data_mov, format_d).replace(
+                    tzinfo=ZoneInfo("America/Manaus"),
+                )
+                break
+        else:
+            data_mov_dt = None
+
+        if data_mov_dt is None:
+            return False
+
+        data_inicio = self.bot_data.get("DATA_INICIO", data_mov_dt)
+        data_fim = self.bot_data.get("DATA_FIM", data_mov_dt)
+
+        if not isinstance(data_inicio, datetime):
+            for format_d, pattern in patterns:
+                if re.match(pattern, str(data_inicio)):
+                    data_inicio = datetime.strptime(
+                        str(data_inicio).replace(" ", ""),
+                        format_d,
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
+                    break
+
+        if not isinstance(data_fim, datetime):
+            for format_d, pattern in patterns:
+                if re.match(pattern, str(data_fim)):
+                    data_fim = datetime.strptime(
+                        str(data_fim).replace(" ", ""),
+                        format_d,
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
+                    break
+
+        return all([data_mov_dt >= data_inicio, data_mov_dt <= data_fim])
+
+    def _text_check(self, text_mov: str, keyword: str) -> bool:
+        """Verifica se o texto da movimentação atende aos critérios de palavra-chave.
+
+        Args:
+            text_mov (str): Texto da movimentação.
+            keyword (str): Palavra-chave para filtragem.
+
+        Returns:
+            bool: True se algum critério for atendido, False caso contrário.
+
+        """
+        return any(
+            chk is True
+            for chk in [
+                keyword == "*",
+                keyword.lower() == text_mov.split("\n")[0].lower(),
+                keyword.lower() == text_mov.lower(),
+                keyword.lower() in text_mov.lower(),
+                self.similaridade(
+                    keyword.lower(),
+                    text_mov.split("\n")[0].lower(),
+                )
+                > 0.8,
+            ]
+        )
+
+    def _check_intimado(self, text_mov: str) -> bool:
+        """Verifica se o bot foi intimado com base nos dados do bot.
+
+        Args:
+            text_mov (str): Texto da movimentação.
+
+        Returns:
+            bool: True se o bot foi intimado ou se a chave não está presente, False caso contrário.
+
+        """
+        intimado = self.bot_data.get("INTIMADO", None)
+        if intimado is not None:
+            return str(intimado).lower() in text_mov.lower()
+        return True
+
+    def scrap_moves(self, keyword: str) -> None:
+        """Realize scraping das movimentações que contenham a palavra-chave informada.
+
+        Args:
+            keyword (str): Palavra-chave para filtrar as movimentações.
 
         """
         self.kword = keyword
         move_filter = list(filter(self.filter_moves, self.table_moves))
+        self._log_scrap_moves_header(keyword)
+        for move in move_filter:
+            self._process_single_move(move, keyword)
 
+    def _log_scrap_moves_header(self, keyword: str) -> None:
+        """Gera e exibe o cabeçalho de log para a busca de movimentações.
+
+        Args:
+            keyword (str): Palavra-chave utilizada na busca.
+
+        """
         message_ = [
             "\n====================================================\n",
             "Buscando movimentações que contenham os argumentos: ",
         ]
-
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
-
         message_.append(f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>')
         if data_inicio:
             message_.append(
@@ -383,119 +368,106 @@ class Movimentacao(ESajBot):
             )
         if data_fim:
             message_.append(f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>')
-
         args = list(self.bot_data.items())
-        pos = 0
-        for _, row in enumerate(args):
-            key, value = row
-
-            _add_msg = f"   - {key}: {value} "
-            _msg_ = _add_msg
-
+        for idx, (key, value) in enumerate(args):
+            add_msg_ = f"   - {key}: {value} "
+            _msg_ = add_msg_
             if "\n\nArgumentos Adicionais: \n" not in message_:
                 message_.append("\n\nArgumentos Adicionais: \n")
-
             if key not in ["TRAZER_PDF", "TRAZER_TEOR", "USE_GPT", "DOC_SEPARADO"]:
                 continue
-
             if key not in message_:
                 message_.append(f"{_msg_}\n")
-
-        if pos + 1 == len(args):
-            _msg_ += "\n====================================================\n"
-            message_.append(_msg_)
-
+            if idx + 1 == len(args):
+                _msg_ += "\n====================================================\n"
+                message_.append(_msg_)
         self.message = "".join(message_)
-
         self.type_log = "info"
         self.prt()
 
-        """ Checagens dentro do Loop de movimentações """
+    def _check_others(self, text_mov: str) -> tuple[bool, bool, str, bool, bool]:
+        """Realiza verificações adicionais para a movimentação.
 
-        def check_others(text_mov: str) -> tuple[bool, bool, str, bool, bool]:
-            save_another_file = (
-                str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
-            )
+        Args:
+            text_mov (str): Texto da movimentação.
 
-            mov = ""
-            mov_chk = False
-            trazer_teor = (
-                str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
-            )
+        Returns:
+            tuple: Flags e informações auxiliares para processamento.
 
-            patterns = [
-                r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
-                r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
-            ]
-            for pattern in patterns:
-                match = re.match(pattern, text_mov)
+        """
+        save_another_file = (
+            str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
+        )
+        mov = ""
+        mov_chk = False
+        trazer_teor = str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+        patterns = [
+            r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
+            r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
+        ]
+        for pattern in patterns:
+            match = re.match(pattern, text_mov)
+            if match is not None:
+                mov = str(match)
+                mov_chk = True
+        use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
+        return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
 
-                if match is not None:
-                    mov = str(match)
-                    mov_chk = True
+    def _process_single_move(self, move: WebElementBot, keyword: str) -> None:
+        """Processa uma única movimentação filtrada.
 
-            use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
+        Args:
+            move: Elemento de movimentação.
+            keyword (str): Palavra-chave utilizada na busca.
 
-            return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
-
-        """ Iteração dentro das movimentações filtradas """
-        for move in move_filter:
-            mov_texdoc = ""
-            itensmove = move.find_elements(By.TAG_NAME, "td")
-
-            text_mov = str(itensmove[3].text)
-            data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
-
-            """ Outros Checks """
-            mov_chk, trazerteor, mov_name, use_gpt, save_another_file = check_others(
+        """
+        mov_texdoc = ""
+        itensmove = move.find_elements(By.TAG_NAME, "td")
+        text_mov = str(itensmove[3].text)
+        data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
+        mov_chk, trazerteor, mov_name, use_gpt, save_another_file = (
+            self._check_others(
                 text_mov,
             )
-
-            nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
-            movimentador = itensmove[4].text
-
-            """ Formatação Nome Movimentador """
-            if "SISTEMA PROJUDI" in movimentador:
-                movimentador = movimentador.replace("  ", "")
-                qualificacao_movimentador = movimentador
-
-            elif "\n" in movimentador:
-                info_movimentador = movimentador.split("\n ")
-                movimentador = info_movimentador[0].replace("  ", "")
-                qualificacao_movimentador = info_movimentador[1]
-
-            """ Verifica se o usuario optou por trazer o texto do documento caso seja mencionado um no andamento """
-            if trazerteor:
-                if mov_chk:
-                    move_doct = self.get_another_move(mov_name)
-                    for sub_mov in move_doct:
-                        mov_texdoc = self.getdocmove(sub_mov, save_another_file)
-
-                elif self.movecontainsdoc(move):
-                    mov_texdoc = self.getdocmove(move, save_another_file)
-
-                if mov_texdoc is not None and mov_texdoc != "":
-                    if use_gpt is True:
-                        mov_texdoc = self.gpt_chat(mov_texdoc)
-
-            data = {
-                "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
-                "Data movimentação": data_mov,
-                "Nome Movimentação": nome_mov,
-                "Texto da movimentação": text_mov,
-                "Nome peticionante": movimentador,
-                "Classiicação Peticionante": qualificacao_movimentador,
-                "Texto documento Mencionado (Caso Tenha)": mov_texdoc,
-            }
-            ms_ = [f'Movimentação "{nome_mov}" salva na planilha!']
-            if keyword != "*":
-                ms_.append(f" Parâmetro: {keyword}")
-            self.message = "".join(ms_)
-
-            self.type_log = "info"
-            self.prt()
-
-            self.appends.append(data)
+        )
+        nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
+        movimentador = itensmove[4].text
+        # Formatação Nome Movimentador
+        if "SISTEMA PROJUDI" in movimentador:
+            movimentador = movimentador.replace("  ", "")
+            qualificacao_movimentador = movimentador
+        elif "\n" in movimentador:
+            info_movimentador = movimentador.split("\n ")
+            movimentador = info_movimentador[0].replace("  ", "")
+            qualificacao_movimentador = info_movimentador[1]
+        else:
+            qualificacao_movimentador = ""
+        # Verifica se o usuario optou por trazer o texto do documento caso seja mencionado um no andamento
+        if trazerteor:
+            if mov_chk:
+                move_doct = self.get_another_move(mov_name)
+                for sub_mov in move_doct:
+                    mov_texdoc = self.getdocmove(sub_mov, save_another_file)
+            elif self.movecontainsdoc(move):
+                mov_texdoc = self.getdocmove(move, save_another_file)
+            if mov_texdoc is not None and mov_texdoc != "" and use_gpt is True:
+                mov_texdoc = self.gpt_chat(mov_texdoc)
+        data = {
+            "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
+            "Data movimentação": data_mov,
+            "Nome Movimentação": nome_mov,
+            "Texto da movimentação": text_mov,
+            "Nome peticionante": movimentador,
+            "Classiicação Peticionante": qualificacao_movimentador,
+            "Texto documento Mencionado (Caso Tenha)": mov_texdoc,
+        }
+        ms_ = [f'Movimentação "{nome_mov}" salva na planilha!']
+        if keyword != "*":
+            ms_.append(f" Parâmetro: {keyword}")
+        self.message = "".join(ms_)
+        self.type_log = "info"
+        self.prt()
+        self.appends.append(data)
 
     def set_page_size(self) -> None:
         """Set the page size for movement scraping."""
@@ -504,27 +476,29 @@ class Movimentacao(ESajBot):
                 'document.querySelector("#tabelaTodasMovimentacoes").style.display = "block"',
             )
 
-        except Exception:
+        except AttributeError:
             self.driver.execute_script(
                 'document.querySelector("#tabelaUltimasMovimentacoes").style.display = "block"',
             )
 
     def set_tablemoves(self) -> None:
         """Set the table moves element."""
+        from selenium.common.exceptions import NoSuchElementException
+
         try:
             table_moves = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.movimentacoes,
+                el.movimentacoes,
             )
-        except Exception:
+        except NoSuchElementException:
             table_moves = self.driver.find_element(
                 By.ID,
-                self.elements.ultimas_movimentacoes,
+                el.ultimas_movimentacoes,
             )
 
         self.table_moves = table_moves.find_elements(
             By.XPATH,
-            self.elements.table_moves,
+            el.table_moves,
         )
 
     def get_moves(self) -> None:
@@ -554,16 +528,16 @@ class Movimentacao(ESajBot):
         try:
             table_moves = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.movimentacoes,
+                el.movimentacoes,
             )
             self.driver.execute_script(
                 'document.querySelector("#tabelaTodasMovimentacoes").style.display = "block"',
             )
 
-        except Exception:
+        except NoSuchElementException:
             table_moves = self.driver.find_element(
                 By.ID,
-                self.elements.ultimas_movimentacoes,
+                el.ultimas_movimentacoes,
             )
             self.driver.execute_script(
                 'document.querySelector("#tabelaUltimasMovimentacoes").style.display = "block"',
@@ -593,7 +567,7 @@ class Movimentacao(ESajBot):
                             data_mov = datetime.strptime(
                                 data_mov.replace("/", "-"),
                                 "%d-%m-%Y",
-                            )
+                            ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                     name_mov = mov.split("\n")[0]
                     text_mov = td_tr[2].find_element(By.TAG_NAME, "span").text
