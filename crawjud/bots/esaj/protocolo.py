@@ -3,7 +3,8 @@
 This module manages protocol operations in the ESaj system using the CrawJUD framework.
 """
 
-import os
+from __future__ import annotations
+
 import shutil
 import time
 import unicodedata
@@ -18,6 +19,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.esaj.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
@@ -94,11 +97,6 @@ class Protocolo(ESajBot):
 
         Iterates over protocol rows and handles session renewals and errors.
 
-        Raises:
-            ExecutionError: If an error occurs during protocol processing.
-
-        # Inline: Loop through dataFrame and process protocols.
-
         """
         frame = self.dataFrame()
         self.max_rows = len(frame)
@@ -155,8 +153,6 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If any protocol step fails.
 
-        # Inline: Wrap steps in try/except to handle ExecutionError.
-
         """
         try:
             self.search_bot()
@@ -183,8 +179,6 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If unable to initialize petitioning.
 
-        # Inline: Attempt primary button click; fallback to alternative.
-
         """
         try:
             try:
@@ -202,7 +196,7 @@ class Protocolo(ESajBot):
                 self.driver.execute_script(f"return window.location.href = '{link}';")
                 sleep(5)
 
-            except Exception:
+            except TimeoutException:
                 button_enterproc = WebDriverWait(self.driver, 5).until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
@@ -227,10 +221,11 @@ class Protocolo(ESajBot):
                 link = button_peticionamento.get_attribute("onclick").split("'")[1]
                 self.driver.execute_script(f"return window.location.href = '{link}';")
 
-        except Exception:
+        except Exception as e:
             raise ExecutionError(
                 message="Erro ao inicializar peticionamento",
-            ) from None
+                exc=e,
+            ) from e
 
     def set_tipo_protocolo(self) -> None:
         """Set protocol type.
@@ -240,8 +235,6 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If there is an error while setting the protocol type.
 
-        # Inline: Wait for element load and simulate typing.
-
         """
         try:
             self.interact.sleep_load('div[id="loadFeedback"]')
@@ -249,7 +242,7 @@ class Protocolo(ESajBot):
             button_classification = self.wait.until(
                 ec.presence_of_element_located((
                     By.ID,
-                    self.elements.editar_classificacao,
+                    el.editar_classificacao,
                 )),
             )
             self.interact.click(button_classification)
@@ -257,19 +250,19 @@ class Protocolo(ESajBot):
             select_tipo_peticao = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.selecionar_classe,
+                    el.selecionar_classe,
                 )),
             )
             select_tipo_peticao = select_tipo_peticao.find_element(
                 By.CSS_SELECTOR,
-                self.elements.toggle,
+                el.toggle,
             )
             self.interact.click(select_tipo_peticao)
 
             input_tipo_peticao = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.input_classe,
+                    el.input_classe,
                 )),
             )
             self.interact.send_key(
@@ -279,10 +272,11 @@ class Protocolo(ESajBot):
             sleep(1.5)
             self.interact.send_key(input_tipo_peticao, Keys.ENTER)
 
-        except Exception:
+        except Exception as e:
             raise ExecutionError(
                 message="Erro ao informar tipo de protocolo",
-            ) from None
+                exc=e,
+            ) from e
 
     def set_subtipo_protocolo(self) -> None:
         """Set protocol subtype.
@@ -292,27 +286,25 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If failing to set the protocol subtype.
 
-        # Inline: Click toggle and select subgroup.
-
         """
         try:
             self.prt.print_log("log", "Informando subtipo de peticionamento")
             select_categoria_peticao = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.select_categoria,
+                    el.select_categoria,
                 )),
             )
             select_categoria_peticao = select_categoria_peticao.find_element(
                 By.CSS_SELECTOR,
-                self.elements.toggle,
+                el.toggle,
             )
             self.interact.click(select_categoria_peticao)
 
             input_categoria_peticao = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.input_categoria,
+                    el.input_categoria,
                 )),
             )
             self.interact.send_key(
@@ -323,16 +315,17 @@ class Protocolo(ESajBot):
             input_categoria_peticao_option = self.wait.until(
                 ec.presence_of_element_located((
                     By.XPATH,
-                    self.elements.selecionar_grupo,
+                    el.selecionar_grupo,
                 )),
             )
             input_categoria_peticao_option.click()
             sleep(1)
 
-        except Exception:
+        except Exception as e:
             raise ExecutionError(
                 message="Erro ao informar subtipo de protocolo",
-            ) from None
+                exc=e,
+            ) from e
 
     def set_petition_file(self) -> None:
         """Attach petition file.
@@ -342,21 +335,21 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If the petition file fails to upload.
 
-        # Inline: Normalize file path and send file key.
-
         """
         try:
             self.prt.print_log("log", "Anexando petição")
             input_file = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.input_documento,
+                    el.input_documento,
                 )),
             )
             sleep(2)
 
             path_file = Path(self.path_args).parent.resolve().__str__()
-            file = os.path.join(path_file, self.bot_data.get("PETICAO_PRINCIPAL"))
+            file = str(
+                Path(path_file).joinpath(self.bot_data.get("PETICAO_PRINCIPAL")),
+            )
 
             file = file.replace(" ", "")
             if "_" in file:
@@ -372,17 +365,17 @@ class Protocolo(ESajBot):
                 file_uploaded = WebDriverWait(self.driver, 25).until(
                     ec.presence_of_element_located((
                         By.XPATH,
-                        self.elements.documento,
+                        el.documento,
                     )),
                 )
 
             if file_uploaded == "":
-                raise ExecutionError(message="Erro ao enviar petição")
+                _raise_execution_error(message="Erro ao enviar petição")
 
             self.prt.print_log("log", "Petição do processo anexada com sucesso")
 
-        except Exception:
-            raise ExecutionError(message="Erro ao enviar petição") from None
+        except Exception as e:
+            raise ExecutionError(message="Erro ao enviar petição", exc=e) from e
 
     def vincular_parte(self) -> None:
         """Link party to petition.
@@ -392,8 +385,6 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If the party cannot be linked.
 
-        # Inline: Compare party names and click the inclusion button.
-
         """
         try:
             parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
@@ -401,7 +392,7 @@ class Protocolo(ESajBot):
             partes = self.wait.until(
                 ec.presence_of_all_elements_located((
                     By.CSS_SELECTOR,
-                    self.elements.processo_view,
+                    el.processo_view,
                 )),
             )
             if partes:
@@ -409,7 +400,7 @@ class Protocolo(ESajBot):
                     parte = parte
                     parte_name = parte.find_element(
                         By.CSS_SELECTOR,
-                        self.elements.nome,
+                        el.nome,
                     ).text.lower()
                     if parte_name == parte_peticao:
                         sleep(3)
@@ -418,14 +409,14 @@ class Protocolo(ESajBot):
                         with suppress(NoSuchElementException):
                             incluir_button = parte.find_element(
                                 By.CSS_SELECTOR,
-                                self.elements.botao_incluir_peticao,
+                                el.botao_incluir_peticao,
                             )
 
                         if not incluir_button:
                             with suppress(NoSuchElementException):
                                 incluir_button = parte.find_element(
                                     By.CSS_SELECTOR,
-                                    self.elements.botao_incluir_partecontraria,
+                                    el.botao_incluir_partecontraria,
                                 )
 
                         incluir_button.click()
@@ -437,12 +428,12 @@ class Protocolo(ESajBot):
                     if parte_name != parte_peticao:
                         partes = self.driver.find_elements(
                             By.CSS_SELECTOR,
-                            self.elements.parte_view,
+                            el.parte_view,
                         )
                         for parte in partes:
                             parte_name = parte.find_element(
                                 By.CSS_SELECTOR,
-                                self.elements.nome,
+                                el.nome,
                             ).text.lower()
                             if parte_name == parte_peticao.lower():
                                 self.prt.print_log(
@@ -453,14 +444,15 @@ class Protocolo(ESajBot):
                                 break
 
             elif not partes:
-                raise ExecutionError(
+                _raise_execution_error(
                     message="Não foi possivel vincular parte a petição",
                 )
 
-        except Exception:
+        except Exception as e:
             raise ExecutionError(
                 message="Não foi possivel vincular parte a petição",
-            ) from None
+                exc=e,
+            ) from e
 
     def finish_petition(self) -> None:
         """Finalize petition process.
@@ -473,7 +465,7 @@ class Protocolo(ESajBot):
 
         finish_button = self.driver.find_element(
             By.XPATH,
-            self.elements.botao_protocolar,
+            el.botao_protocolar,
         )
         sleep(1)
         finish_button.click()
@@ -482,7 +474,7 @@ class Protocolo(ESajBot):
         confirm_button = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.botao_confirmar,
+                el.botao_confirmar,
             )),
         )
         confirm_button.click()
@@ -498,14 +490,12 @@ class Protocolo(ESajBot):
         Raises:
             ExecutionError: If unable to confirm protocol.
 
-        # Inline: Use WebDriverWait to ensure receipt element is present.
-
         """
         try:
             getlinkrecibo = WebDriverWait(self.driver, 60).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.botao_recibo,
+                    el.botao_recibo,
                 )),
             )
 
@@ -518,14 +508,13 @@ class Protocolo(ESajBot):
 
             getlinkrecibo.click()
 
-            path = os.path.join(self.output_dir_path, name_recibo)
-            pathpdf = os.path.join(
-                Path(self.path_args).parent.resolve(),
+            path = Path(self.output_dir_path).joinpath(name_recibo)
+            pathpdf = Path(self.path_args).parent.joinpath(
                 "recibo.pdf",
             )
 
             while True:
-                if os.path.exists(pathpdf):
+                if pathpdf.exists(pathpdf):
                     sleep(0.5)
                     break
 
