@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from time import sleep
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bots.controllers.master import CrawJUD
 
@@ -18,6 +22,31 @@ COUNT_TRYS = 15
 
 class ElawBot[T](CrawJUD):
     """Classe de controle para robôs do Elaw."""
+
+    def auth(self) -> bool:
+        self.driver.get("https://amazonas.elaw.com.br/login")
+
+        # wait until page load
+        username = self.wait.until(
+            ec.presence_of_element_located((By.ID, "username")),
+        )
+        username.send_keys(self.username)
+
+        password = self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "#password")),
+        )
+        password.send_keys(self.password)
+
+        entrar = self.wait.until(
+            ec.presence_of_element_located((By.ID, "j_id_a_1_5_f")),
+        )
+        entrar.click()
+
+        sleep(7)
+
+        url = self.driver.current_url
+
+        return url != "https://amazonas.elaw.com.br/login"
 
     def elaw_formats(
         self,
