@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
@@ -72,6 +73,10 @@ class AbstractCrawJUD[T]:
 
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
+
+    @abstractmethod
+    def execution(self, *args: T, **kwargs: T) -> None:
+        """Função de execução do bot."""
 
     @classmethod
     def __subclasshook__(cls, subclass: type) -> bool:
