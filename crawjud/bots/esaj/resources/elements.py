@@ -7,6 +7,7 @@ Este módulo contém:
 
 """
 
+url_custas_ini = "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"
 css_val_doc_custas_ini = (
     "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10)"
     " > tbody > tr:nth-child(5) > td:nth-child(3) > strong"

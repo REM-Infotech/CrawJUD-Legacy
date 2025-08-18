@@ -4,10 +4,13 @@ This module executes the emission workflow by generating PDF documents,
 navigating forms, and extracting barcodes following the ESaj requirements.
 """
 
+from __future__ import annotations
+
 import platform
 import re
 import time
 from contextlib import suppress
+from pathlib import Path
 from time import sleep
 from typing import Self
 
@@ -18,6 +21,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.esaj.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
@@ -164,6 +169,10 @@ class Emissao(ESajBot):
 
         Executes the emission process by calling the appropriate method based on
         the guide type and then downloading the PDF.
+
+        Raises:
+            ExecutionError: Erro de execução
+
         """
         try:
             custa = str(self.bot_data.get("TIPO_GUIA"))
@@ -190,37 +199,30 @@ class Emissao(ESajBot):
 
         Fills necessary fields for calculating initial costs using data from the bot.
         """
-        url_custas_ini = "".join(
-            (
-                "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?",
-                "cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003",
-            ),
-        )
-
-        self.driver.get(url_custas_ini)
+        self.driver.get(el.url_custas_ini)
 
         self.message = "Informando foro"
         self.type_log = "log"
         self.prt()
 
         set_foro = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.ome_foro)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, el.ome_foro)),
         )
         set_foro.send_keys(self.bot_data.get("FORO"))
 
         set_classe = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.tree_selection,
+            el.tree_selection,
         )
         set_classe.send_keys(self.bot_data.get("CLASSE"))
 
         semprecível = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.civil_selector,
+            el.civil_selector,
         )
         semprecível.click()
 
-        val_acao = self.driver.find_element(By.CSS_SELECTOR, self.elements.valor_acao)
+        val_acao = self.driver.find_element(By.CSS_SELECTOR, el.valor_acao)
         val_acao.send_keys(self.bot_data.get("VALOR_CAUSA"))
 
         nameinteressado = self.driver.find_element(
@@ -244,13 +246,13 @@ class Emissao(ESajBot):
 
         avançar = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.botao_avancar,
+            el.botao_avancar,
         )
         avançar.click()
 
         self.valor_doc = ""
         with suppress(TimeoutException):
-            css_val_doc = self.elements.css_val_doc_custas_ini
+            css_val_doc = el.css_val_doc_custas_ini
             self.valor_doc = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
             ).text
@@ -262,28 +264,28 @@ class Emissao(ESajBot):
         """
         portal = self.bot_data.get("PORTAL", "não informado")
         if str(portal).lower() == "esaj":
-            self.driver.get(self.elements.url_preparo_esaj)
+            self.driver.get(el.url_preparo_esaj)
 
         elif str(portal).lower() == "projudi":
-            self.driver.get(self.elements.url_preparo_projudi)
+            self.driver.get(el.url_preparo_projudi)
 
             set_foro = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.nome_foro,
+                    el.nome_foro,
                 )),
             )
             set_foro.send_keys(self.bot_data.get("FORO"))
 
             val_acao = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.valor_acao,
+                el.valor_acao,
             )
             val_acao.send_keys(self.bot_data.get("VALOR_CAUSA"))
 
             nameinteressado = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.interessado,
+                el.interessado,
             )
             nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
@@ -306,7 +308,7 @@ class Emissao(ESajBot):
 
             avançar = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.botao_avancar,
+                el.botao_avancar,
             )
             avançar.click()
 
@@ -314,7 +316,7 @@ class Emissao(ESajBot):
             set_recurso_inominado = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.check,
+                    el.check,
                 )),
             )
             set_recurso_inominado.click()
@@ -322,7 +324,7 @@ class Emissao(ESajBot):
             sleep(1)
             last_avançar = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.botao_avancar_dois,
+                el.botao_avancar_dois,
             )
             last_avançar.click()
 
@@ -333,7 +335,7 @@ class Emissao(ESajBot):
             ).text
 
         elif portal == "não informado":
-            raise ExecutionError(
+            _raise_execution_error(
                 message="Informar portal do processo na planilha (PROJUDI ou ESAJ)",
             )
 
@@ -367,13 +369,10 @@ class Emissao(ESajBot):
         Returns:
             str: The validated URL for the generated PDF document.
 
-        Raises:
-            ExecutionError: If the generated PDF contains an error message.
-
         """
         self.original_window = original_window = self.driver.current_window_handle
         generatepdf = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.boleto)),
+            ec.presence_of_element_located((By.CSS_SELECTOR, el.boleto)),
         )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1
@@ -392,7 +391,7 @@ class Emissao(ESajBot):
                 .until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
-                        self.elements.mensagem_retorno,
+                        el.mensagem_retorno,
                     )),
                 )
                 .text
@@ -402,10 +401,9 @@ class Emissao(ESajBot):
             self.driver.close()
             sleep(0.7)
             self.driver.switch_to.window(original_window)
-            raise ExecutionError(message="Esaj não gerou a guia")
+            _raise_execution_error(message="Esaj não gerou a guia")
 
-        if not check:
-            return f"https://consultasaj.tjam.jus.br{url}"
+        return f"https://consultasaj.tjam.jus.br{url}"
 
     def downloadpdf(self, link_pdf: str) -> None:
         """Download and store the PDF file from the provided URL to a local directory.
@@ -427,7 +425,7 @@ class Emissao(ESajBot):
         elif platform.system() == "Linux":
             self.path_pdf = path_pdf = f"{self.output_dir_path}/{self.nomearquivo}"
 
-        with open(path_pdf, "wb") as file:
+        with Path(path_pdf).open("wb") as file:
             file.write(response.content)
 
         self.driver.close()
