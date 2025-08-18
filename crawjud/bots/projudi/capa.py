@@ -19,17 +19,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bots.projudi.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
 if TYPE_CHECKING:
-    from typing import NoReturn
-
     from selenium.webdriver.remote.webelement import WebElement
-
-
-def _raise_execution_error(message: str) -> NoReturn:
-    raise ExecutionError(message=message)
 
 
 class Capa(ProjudiBot):

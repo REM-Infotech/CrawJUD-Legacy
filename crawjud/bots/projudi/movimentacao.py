@@ -3,7 +3,8 @@
 Handle movement-related operations in the Projudi system with data scraping and reporting.
 """
 
-import os
+from __future__ import annotations
+
 import re
 import shutil
 import time
@@ -11,18 +12,22 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Self
+from typing import TYPE_CHECKING, Self
+from zoneinfo import ZoneInfo
 
 import requests
 from pypdf import PdfReader
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webelement import WebElement
 
 
 class Movimentacao(ProjudiBot):
@@ -86,15 +91,6 @@ class Movimentacao(ProjudiBot):
                 # TODO(Nicholas Silva): Criação de Exceptions
                 # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
                 old_message = None
-                # windows = self.driver.window_handles
-
-                # if len(windows) == 0:
-                #     with suppress(Exception):
-                #         self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
-
-                #     old_message = self.message
-
-                #     self.auth_bot()
 
                 if old_message is None:
                     old_message = self.message
@@ -133,7 +129,7 @@ class Movimentacao(ProjudiBot):
             search = self.search_bot()
 
             if search is not True:
-                raise ExecutionError(message="Processo não encontrado!")
+                _raise_execution_error(message="Processo não encontrado!")
 
             self.message = "Buscando movimentações"
             self.type_log = "log"
@@ -206,173 +202,152 @@ class Movimentacao(ProjudiBot):
         if encontrado is False:
             raise ExecutionError(message="Nenhuma movimentação encontrada")
 
-    def filter_moves(self, move) -> bool:
-        """Filter a movement element based on given date and keyword criteria.
+    def filter_moves(self, move: WebElement) -> bool:
+        """Filtre elementos de movimentação conforme critérios de data e palavra-chave.
 
         Args:
-            move (WebElement): A movement element to be filtered.
+            move (WebElement): Elemento de movimentação a ser filtrado.
 
         Returns:
-            bool: True if the movement meets all criteria; otherwise, False.
+            bool: Retorne True se a movimentação atender a todos os critérios, senão False.
 
         """
+        # Obtenha a palavra-chave e os itens da movimentação
         keyword = self.kword
         itensmove = move.find_elements(By.TAG_NAME, "td")
 
+        # Retorne False se não houver itens suficientes
         if len(itensmove) < 5:
             return False
 
+        # Extraia texto e data da movimentação
         text_mov = str(itensmove[3].text)
         data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
 
-        def data_check(data_mov: str) -> bool:
-            """Validate the given date string against multiple date formats and checks if it falls within a specified date range.
-
-            Args:
-                data_mov (str): The date string to be validated.
-
-            Returns:
-                bool: True if the date string is valid and falls within the specified date range, False otherwise.
-            The function performs the following steps:
-            1. Tries to match the given date string against multiple date formats.
-            2. Converts the matched date string to a datetime object.
-            3. Retrieves the start and end dates from the bot's data.
-            4. Validates and converts the start and end dates if they are not already datetime objects.
-            5. Checks if the given date falls within the start and end dates.
-            The supported date formats are:
-            - "%d/%m/%Y"
-            - "%m/%d/%Y"
-            - "%Y/%m/%d"
-            - "%Y/%d/%m"
-
-            """
-            patterns = [
-                ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
-                ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
-                ("%Y/%m/%d", r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b"),
-                ("%Y/%d/%m", r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b"),
-            ]
-
-            for format_d, pattern in patterns:
-                match_ = re.match(pattern, data_mov)
-                match_: re.Match | None = match_
-                if match_ is not None:
-                    data_mov = datetime.strptime(data_mov, format_d)
-                    break
-
-            data_inicio = self.bot_data.get("DATA_INICIO", data_mov)
-            data_fim = self.bot_data.get("DATA_FIM", data_mov)
-            chk_datafim = type(data_fim) is datetime
-            chk_datainicio = type(data_inicio) is datetime
-
-            if chk_datainicio is False:
-                for format_d, pattern in patterns:
-                    data_inicio.replace(" ", "")
-                    match_ = re.match(pattern, data_mov)
-                    match_: re.Match | None = match_
-                    if match_ is not None:
-                        data_inicio = datetime.strptime(data_inicio, format_d)
-                        break
-
-            if chk_datafim is False:
-                for format_d, pattern in patterns:
-                    data_fim.replace(" ", "")
-
-                    match_ = re.match(pattern, data_mov)
-                    match_: re.Match | None = match_
-                    if match_ is not None:
-                        data_fim = datetime.strptime(data_fim, format_d)
-                        break
-
-            return all([data_mov >= data_inicio, data_mov <= data_fim])
-
-        def text_check(text_mov: str) -> bool:
-            """Check if the given text matches certain criteria.
-
-            This function evaluates whether the provided text (`text_mov`) meets any of the following conditions:
-            - Contains a keyword that is an asterisk ("*").
-            - The first line of the text matches a keyword (case-insensitive).
-            - The entire text matches a keyword (case-insensitive).
-            - The keyword is a substring of the text (case-insensitive).
-            - The similarity between the keyword and the first line of the text is greater than 0.8.
-
-            Args:
-                text_mov (str): The text to be checked.
-
-            Returns:
-                bool: True if any of the conditions are met, False otherwise.
-
-            """
-            check_palavra = any(
-                chk is True
-                for chk in [
-                    keyword == "*",
-                    keyword.lower() == text_mov.split("\n")[0].lower(),
-                    keyword.lower() == text_mov.lower(),
-                    keyword.lower() in text_mov.lower(),
-                    self.similaridade(
-                        keyword.lower(),
-                        text_mov.split("\n")[0].lower(),
-                    )
-                    > 0.8,
-                ]
-            )
-
-            return check_palavra
-
-        def check_intimado() -> bool:
-            """Check if the bot is intimated based on the bot data.
-
-            This function checks if the bot has been intimated by looking for the
-            "INTIMADO" key in the bot data. If the key is present, it verifies if
-            the value associated with the key is present in the text_mov string
-            (case insensitive).
-
-            Returns:
-                bool: True if the bot is intimated or if the "INTIMADO" key is not
-                present in the bot data, False otherwise.
-
-            """
-            intimado_chk = True
-            intimado = self.bot_data.get("INTIMADO", None)
-
-            if intimado is not None:
-                intimado_chk = str(intimado).lower() in text_mov.lower()
-
-            return intimado_chk
-
-        resultados = all([
-            data_check(data_mov),
-            text_check(text_mov),
-            check_intimado(),
+        # Verifique os critérios de data, texto e intimado usando métodos auxiliares
+        return all([
+            self._data_check(data_mov),
+            self._text_check(text_mov, keyword),
+            self._check_intimado(text_mov),
         ])
 
-        return resultados
-
-    def scrap_moves(self, keyword: str) -> None:
-        """Scrape movements that contain the specified keyword.
+    def _data_check(self, data_mov: str) -> bool:
+        """Valida a data informada conforme formatos e intervalo definidos.
 
         Args:
-            keyword (str): The keyword to filter movements by.
-
-        Raises:
-            ExecutionError: If an error is encountered during scraping.
+            data_mov (str): Data da movimentação em string.
 
         Returns:
-            bool: True if movements are found, otherwise False.
+            bool: True se a data estiver no intervalo, senão False.
+
+        """
+        patterns = [
+            ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
+            ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
+            ("%Y/%m/%d", r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b"),
+            ("%Y/%d/%m", r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b"),
+        ]
+
+        for format_d, pattern in patterns:
+            match_ = re.match(pattern, data_mov)
+            if match_ is not None:
+                data_mov_dt = datetime.strptime(data_mov, format_d).replace(
+                    tzinfo=ZoneInfo("America/Manaus"),
+                )
+                break
+        else:
+            return False
+
+        data_inicio = self.bot_data.get("DATA_INICIO", data_mov_dt)
+        data_fim = self.bot_data.get("DATA_FIM", data_mov_dt)
+
+        if not isinstance(data_inicio, datetime):
+            for format_d, pattern in patterns:
+                if re.match(pattern, str(data_inicio).replace(" ", "")):
+                    data_inicio = datetime.strptime(
+                        str(data_inicio).replace(" ", ""),
+                        format_d,
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
+                    break
+
+        if not isinstance(data_fim, datetime):
+            for format_d, pattern in patterns:
+                if re.match(pattern, str(data_fim).replace(" ", "")):
+                    data_fim = datetime.strptime(
+                        str(data_fim).replace(" ", ""),
+                        format_d,
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
+                    break
+
+        return data_inicio <= data_mov_dt <= data_fim
+
+    def _text_check(self, text_mov: str, keyword: str) -> bool:
+        """Verifique se o texto da movimentação atende aos critérios da palavra-chave.
+
+        Args:
+            text_mov (str): Texto da movimentação.
+            keyword (str): Palavra-chave para filtragem.
+
+        Returns:
+            bool: True se atender aos critérios, senão False.
+
+        """
+        return any(
+            chk is True
+            for chk in [
+                keyword == "*",
+                keyword.lower() == text_mov.split("\n")[0].lower(),
+                keyword.lower() == text_mov.lower(),
+                keyword.lower() in text_mov.lower(),
+                self.similaridade(
+                    keyword.lower(),
+                    text_mov.split("\n")[0].lower(),
+                )
+                > 0.8,
+            ]
+        )
+
+    def _check_intimado(self, text_mov: str) -> bool:
+        """Verifique se o bot foi intimado conforme dados da movimentação.
+
+        Args:
+            text_mov (str): Texto da movimentação.
+
+        Returns:
+            bool: True se intimado ou não aplicável, senão False.
+
+        """
+        intimado = self.bot_data.get("INTIMADO", None)
+        if intimado is not None:
+            return str(intimado).lower() in text_mov.lower()
+        return True
+
+    def scrap_moves(self, keyword: str) -> None:
+        """Busque e processe movimentações que contenham a palavra-chave informada.
+
+        Args:
+            keyword (str): Palavra-chave para filtrar as movimentações.
 
         """
         self.kword = keyword
         move_filter = list(filter(self.filter_moves, self.table_moves))
+        self._log_search_arguments(keyword)
+        for move in move_filter:
+            self._process_move(move, keyword)
 
+    def _log_search_arguments(self, keyword: str) -> None:
+        """Registre os argumentos utilizados na busca de movimentações.
+
+        Args:
+            keyword (str): Palavra-chave utilizada na busca.
+
+        """
         message_ = [
             "\n====================================================\n",
             "Buscando movimentações que contenham os argumentos: ",
         ]
-
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
-
         message_.append(f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>')
         if data_inicio:
             message_.append(
@@ -380,119 +355,144 @@ class Movimentacao(ProjudiBot):
             )
         if data_fim:
             message_.append(f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>')
-
         args = list(self.bot_data.items())
-        pos = 0
-        for _, row in enumerate(args):
-            key, value = row
-
-            _add_msg = f"   - {key}: {value} "
-            _msg_ = _add_msg
-
+        for pos, (key, value) in enumerate(args):
+            add_msg_ = f"   - {key}: {value} "
+            _msg_ = add_msg_
             if "\n\nArgumentos Adicionais: \n" not in message_:
                 message_.append("\n\nArgumentos Adicionais: \n")
-
             if key not in ["TRAZER_PDF", "TRAZER_TEOR", "USE_GPT", "DOC_SEPARADO"]:
                 continue
-
             if key not in message_:
                 message_.append(f"{_msg_}\n")
-
-        if pos + 1 == len(args):
-            _msg_ += "\n====================================================\n"
-            message_.append(_msg_)
-
+            if pos + 1 == len(args):
+                _msg_ += "\n====================================================\n"
+                message_.append(_msg_)
         self.message = "".join(message_)
-
         self.type_log = "info"
         self.prt()
 
-        """ Checagens dentro do Loop de movimentações """
+    def _process_move(self, move: WebElement, keyword: str) -> None:
+        """Processa uma movimentação filtrada, extraindo e salvando informações.
 
-        def check_others(text_mov: str) -> tuple[bool, bool, str, bool, bool]:
-            save_another_file = (
-                str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
+        Args:
+            move (WebElement): Elemento de movimentação filtrado.
+            keyword (str): Palavra-chave utilizada na busca.
+
+        """
+        mov_texdoc = ""
+        itensmove = move.find_elements(By.TAG_NAME, "td")
+        text_mov = str(itensmove[3].text)
+        data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
+        mov_chk, trazerteor, mov_name, use_gpt, save_another_file = (
+            self._check_others(text_mov)
+        )
+        nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
+        movimentador, qualificacao_movimentador = self._format_movimentador(
+            itensmove[4].text,
+        )
+        if trazerteor:
+            mov_texdoc = self._get_mov_texdoc(
+                mov_chk,
+                mov_name,
+                move,
+                save_another_file,
             )
+            if mov_texdoc and use_gpt:
+                mov_texdoc = self.gpt_chat(mov_texdoc)
+        data = {
+            "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
+            "Data movimentação": data_mov,
+            "Nome Movimentação": nome_mov,
+            "Texto da movimentação": text_mov,
+            "Nome peticionante": movimentador,
+            "Classiicação Peticionante": qualificacao_movimentador,
+            "Texto documento Mencionado (Caso Tenha)": mov_texdoc,
+        }
+        ms_ = [f'Movimentação "{nome_mov}" salva na planilha!']
+        if keyword != "*":
+            ms_.append(f" Parâmetro: {keyword}")
+        self.message = "".join(ms_)
+        self.type_log = "info"
+        self.prt()
+        self.appends.append(data)
 
-            mov = ""
-            mov_chk = False
-            trazer_teor = (
-                str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
-            )
+    def _check_others(self, text_mov: str) -> tuple[bool, bool, str, bool, bool]:
+        """Verifique opções adicionais para processamento da movimentação.
 
-            patterns = [
-                r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
-                r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
-            ]
-            for pattern in patterns:
-                match = re.match(pattern, text_mov)
+        Args:
+            text_mov (str): Texto da movimentação.
 
-                if match is not None:
-                    mov = str(match)
-                    mov_chk = True
+        Returns:
+            tuple: (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
 
-            use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
+        """
+        save_another_file = (
+            str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
+        )
+        mov = ""
+        mov_chk = False
+        trazer_teor = str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+        patterns = [
+            r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
+            r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
+        ]
+        for pattern in patterns:
+            match = re.match(pattern, text_mov)
+            if match is not None:
+                mov = str(match)
+                mov_chk = True
+        use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
+        return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
 
-            return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
+    def _format_movimentador(self, movimentador: str) -> tuple[str, str]:
+        """Formata o nome e a qualificação do movimentador.
 
-        """ Iteração dentro das movimentações filtradas """
-        for move in move_filter:
-            mov_texdoc = ""
-            itensmove = move.find_elements(By.TAG_NAME, "td")
+        Args:
+            movimentador (str): Texto do movimentador.
 
-            text_mov = str(itensmove[3].text)
-            data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
+        Returns:
+            tuple: (movimentador, qualificacao_movimentador)
 
-            """ Outros Checks """
-            mov_chk, trazerteor, mov_name, use_gpt, save_another_file = check_others(
-                text_mov,
-            )
+        """
+        if "SISTEMA PROJUDI" in movimentador:
+            movimentador = movimentador.replace("  ", "")
+            qualificacao_movimentador = movimentador
+        elif "\n" in movimentador:
+            info_movimentador = movimentador.split("\n ")
+            movimentador = info_movimentador[0].replace("  ", "")
+            qualificacao_movimentador = info_movimentador[1]
+        else:
+            qualificacao_movimentador = ""
+        return movimentador, qualificacao_movimentador
 
-            nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
-            movimentador = itensmove[4].text
+    def _get_mov_texdoc(
+        self,
+        mov_name: str,
+        move: WebElement,
+        *mov_chk: bool,
+        save_another_file: bool,
+    ) -> str:
+        """Obtenha o texto do documento da movimentação, se aplicável.
 
-            """ Formatação Nome Movimentador """
-            if "SISTEMA PROJUDI" in movimentador:
-                movimentador = movimentador.replace("  ", "")
-                qualificacao_movimentador = movimentador
+        Args:
+            mov_chk (bool): Indica se há correspondência de movimento.
+            mov_name (str): Nome do movimento.
+            move (WebElement): Elemento da movimentação.
+            save_another_file (bool): Salvar em arquivo separado.
 
-            elif "\n" in movimentador:
-                info_movimentador = movimentador.split("\n ")
-                movimentador = info_movimentador[0].replace("  ", "")
-                qualificacao_movimentador = info_movimentador[1]
+        Returns:
+            str: Texto do documento, se houver.
 
-            """ Verifica se o usuario optou por trazer o texto do documento caso seja mencionado um no andamento """
-            if trazerteor:
-                if mov_chk:
-                    move_doct = self.get_another_move(mov_name)
-                    for sub_mov in move_doct:
-                        mov_texdoc = self.getdocmove(sub_mov, save_another_file)
-
-                elif self.movecontainsdoc(move):
-                    mov_texdoc = self.getdocmove(move, save_another_file)
-
-                if mov_texdoc is not None and mov_texdoc != "":
-                    if use_gpt is True:
-                        mov_texdoc = self.gpt_chat(mov_texdoc)
-
-            data = {
-                "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
-                "Data movimentação": data_mov,
-                "Nome Movimentação": nome_mov,
-                "Texto da movimentação": text_mov,
-                "Nome peticionante": movimentador,
-                "Classiicação Peticionante": qualificacao_movimentador,
-                "Texto documento Mencionado (Caso Tenha)": mov_texdoc,
-            }
-            ms_ = [f'Movimentação "{nome_mov}" salva na planilha!']
-            if keyword != "*":
-                ms_.append(f" Parâmetro: {keyword}")
-            self.message = "".join(ms_)
-
-            self.type_log = "info"
-            self.prt()
-
-            self.appends.append(data)
+        """
+        mov_texdoc = ""
+        if mov_chk:
+            move_doct = self.get_another_move(mov_name)
+            for sub_mov in move_doct:
+                mov_texdoc = self.getdocmove(sub_mov, save_another_file)
+        elif self.movecontainsdoc(move):
+            mov_texdoc = self.getdocmove(move, save_another_file)
+        return mov_texdoc
 
     def get_another_move(self, keyword: str) -> list[WebElement]:
         """Retrieve movement entries that contain a document matching the keyword.
@@ -505,8 +505,8 @@ class Movimentacao(ProjudiBot):
 
         """
 
-        def getmovewithdoc(move) -> bool:
-            def check_namemov(move) -> bool:
+        def getmovewithdoc(move: WebElement) -> bool:
+            def check_namemov(move: WebElement) -> bool:
                 itensmove = move.find_elements(By.TAG_NAME, "td")
                 text_mov = itensmove[3].find_element(By.TAG_NAME, "b").text
                 return keyword.upper() == text_mov.upper()
@@ -515,7 +515,7 @@ class Movimentacao(ProjudiBot):
 
         return list(filter(getmovewithdoc, self.table_moves))
 
-    def movecontainsdoc(self, move) -> bool:
+    def movecontainsdoc(self, move: WebElement) -> bool:
         """Determine if a movement element includes an associated document.
 
         Args:
@@ -536,126 +536,100 @@ class Movimentacao(ProjudiBot):
 
         return expand is not None
 
-    def getdocmove(self, move, save_in_anotherfile: bool = None) -> str:
-        """Extract the document text from the movement element.
+    def getdocmove(
+        self,
+        move: WebElement,
+        *,
+        save_in_anotherfile: bool = False,
+    ) -> str:
+        """Extraia o texto do documento da movimentação, reduzindo a complexidade.
 
         Args:
-            move (WebElement): Movement element to process.
-            save_in_anotherfile (bool, optional): If True, save the doc info in a separate file.
+            move (WebElement): Elemento da movimentação a ser processado.
+            save_in_anotherfile (bool, optional): Se True, salva info em arquivo separado.
 
         Returns:
-            str: The extracted document text.
+            str: Texto extraído do documento.
 
         """
         itensmove = move.find_elements(By.TAG_NAME, "td")
-
-        text_mov = str(itensmove[3].text)
+        _text_mov = str(itensmove[3].text)
         data_mov = str(itensmove[2].text.split(" ")[0]).replace(" ", "")
-
         nome_mov = str(itensmove[3].find_element(By.TAG_NAME, "b").text)
-        movimentador = itensmove[4].text
+        movimentador, qualificacao_movimentador = self._format_movimentador(
+            itensmove[4].text,
+        )
 
-        """ Formatação Nome Movimentador """
-        if "SISTEMA PROJUDI" in movimentador:
-            movimentador = movimentador.replace("  ", "")
-            qualificacao_movimentador = movimentador
+        expand, css_tr = self._get_expand_and_css()
+        table_docs = self._wait_and_expand_table(css_tr, expand)
+        rows = table_docs.find_elements(By.TAG_NAME, "tr")[::-1]
+        return self._process_doc_rows(
+            rows,
+            nome_mov,
+            data_mov,
+            movimentador,
+            qualificacao_movimentador,
+            save_in_anotherfile,
+        )
 
-        elif "\n" in movimentador:
-            info_movimentador = movimentador.split("\n ")
-            movimentador = info_movimentador[0].replace("  ", "")
-            qualificacao_movimentador = info_movimentador[1]
+    def _get_expand_and_css(self) -> tuple:
+        """Obtenha o botão expandir e o seletor CSS da tabela de documentos.
 
-        """ Botão para ver os documentos da movimentação """
+        Returns:
+            Tuple[WebElement, str]
+
+        """
         expand = self.expand_btn
         expandattrib = expand.get_attribute("class")
         id_tr = expandattrib.replace("linkArquivos", "row")
         css_tr = f'tr[id="{id_tr}"]'
+        return expand, css_tr
 
+    def _wait_and_expand_table(self, css_tr: str, expand: WebElement) -> WebElement:
+        """Aguarde e expanda a tabela de documentos se necessário.
+
+        Returns:
+            WebElement
+
+        """
         table_docs = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)),
         )
         style_expand = table_docs.get_attribute("style")
-
         if style_expand == "display: none;":
             expand.click()
             while table_docs.get_attribute("style") == "display: none;":
                 sleep(0.25)
-
-        text_doc_1 = ""
-
         sleep(2)
-        table_docs = self.wait.until(
+
+        return self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, css_tr)),
         )
-        rows = table_docs.find_elements(By.TAG_NAME, "tr")
-        rows_reverse = rows[::-1]
+
+    def _process_doc_rows(
+        self,
+        rows: list,
+        nome_mov: str,
+        data_mov: str,
+        movimentador: str,
+        qualificacao_movimentador: str,
+        *,
+        save_in_anotherfile: bool,
+    ) -> str:
+        """Processa as linhas de documentos, baixa e extrai texto do PDF.
+
+        Returns:
+            str
+
+        """
+        text_doc_1 = ""
         max_rows = len(rows) - 1
-        for pos, docs in enumerate(rows_reverse):
-            numproc = self.bot_data.get("NUMERO_PROCESSO")
-            nomearquivo = (
-                f"{numproc}",
-                f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
-            )
-
-            path_pdfs = Path(self.output_dir_path).resolve().joinpath(numproc)
-            path_pdfs.mkdir(exist_ok=True, parents=True)
-            path_pdf = os.path.join(path_pdfs, "".join(nomearquivo))
-
-            if os.path.exists(path_pdf):
+        for pos, docs in enumerate(rows):
+            path_pdf, nomearquivo = self._prepare_pdf_path(nome_mov, pos)
+            if Path(path_pdf).exists():
                 continue
-
-            doc = docs.find_elements(By.TAG_NAME, "td")[4]
-            link_doc = doc.find_element(By.TAG_NAME, "a")
-            name_pdf = self.format_string(str(link_doc.text))
-            old_pdf = Path(os.path.join(self.output_dir_path), name_pdf)
-            url = link_doc.get_attribute("href")
-
-            # Get cookies from ChromeDriver session
-            cookies = {
-                cookie["name"]: cookie["value"]
-                for cookie in self.driver.get_cookies()
-            }
-
-            # Download using requests
-            response = requests.get(
-                url,
-                cookies=cookies,
-                allow_redirects=True,
-                timeout=60,
-            )
-
-            if response.status_code == 200:
-                with open(path_pdf, "wb") as f:
-                    f.write(response.content)
-            elif response.status_code != 200:
-                # Fallback to ChromeDriver download if requests fails
-                self.driver.get(url)
-
-                sleep(2)
-                while True:
-                    for root, _, files in self.output_dir_path.walk():
-                        for f in files:
-                            grau_similaridade = self.similaridade(name_pdf, f)
-                            if grau_similaridade > 0.8:
-                                old_pdf = Path(root).joinpath(f)
-                                file_found = True
-                                break
-
-                        if file_found:
-                            break
-
-                    if file_found:
-                        break
-                    sleep(0.5)
-
-                shutil.move(old_pdf, path_pdf)
-
+            self._download_or_move_pdf(docs, path_pdf)
             text_mov = self.openfile(path_pdf)
-
-            # if str(self.bot_data.get("TRAZER_PDF", "NÃO")).upper() == "NÃO" or pos < max_rows:
-            #     sleep(1)
-            #     Path(path_pdf).unlink(missing_ok=True)
-
             data = {
                 "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
                 "Data movimentação": data_mov,
@@ -665,22 +639,77 @@ class Movimentacao(ProjudiBot):
                 "Classiicação Peticionante": qualificacao_movimentador,
                 "Nome Arquivo (Caso Tenha)": "".join(nomearquivo),
             }
-            if save_in_anotherfile is True:
+            if save_in_anotherfile:
                 msg = (
                     f"Informações da movimentação '{nome_mov}'(Proc Nº{self.bot_data.get('NUMERO_PROCESSO')})",
                     " foram salvos em uma planilha separada",
                 )
-
                 self.another_append.append((
                     data,
                     "".join(msg),
                     f"{self.pid} - Info_Mov_Docs.xlsx",
                 ))
-
             if pos == max_rows:
                 text_doc_1 = text_mov
-
         return text_doc_1
+
+    def _prepare_pdf_path(self, nome_mov: str, pos: int) -> tuple:
+        """Prepara o caminho do PDF e o nome do arquivo.
+
+        Returns:
+            tuple
+
+        """
+        numproc = self.bot_data.get("NUMERO_PROCESSO")
+        nomearquivo = (
+            f"{numproc}",
+            f" - {nome_mov.upper()} - {self.pid} - DOC{pos}.pdf",
+        )
+        path_pdfs = Path(self.output_dir_path).resolve().joinpath(numproc)
+        path_pdfs.mkdir(exist_ok=True, parents=True)
+        path_pdf = Path(path_pdfs).joinpath("".join(nomearquivo))
+        return path_pdf, nomearquivo
+
+    def _download_or_move_pdf(self, docs: WebElement, path_pdf: Path) -> None:
+        """Realiza o download do PDF ou move o arquivo baixado pelo navegador."""
+        doc = docs.find_elements(By.TAG_NAME, "td")[4]
+        link_doc = doc.find_element(By.TAG_NAME, "a")
+        name_pdf = self.format_string(str(link_doc.text))
+        _old_pdf = Path(self.output_dir_path).joinpath(name_pdf)
+        url = link_doc.get_attribute("href")
+        cookies = {
+            cookie["name"]: cookie["value"] for cookie in self.driver.get_cookies()
+        }
+        response = requests.get(
+            url,
+            cookies=cookies,
+            allow_redirects=True,
+            timeout=60,
+        )
+        if response.status_code == 200:
+            with Path(path_pdf).open("wb") as f:
+                f.write(response.content)
+        else:
+            self._fallback_download(url, name_pdf, path_pdf)
+
+    def _fallback_download(self, url: str, name_pdf: str, path_pdf: Path) -> None:
+        """Fallback para download do PDF via navegador caso requests falhe."""
+        self.driver.get(url)
+        sleep(2)
+        file_found = False
+        while not file_found:
+            for root, _, files in self.output_dir_path.walk():
+                for f in files:
+                    grau_similaridade = self.similaridade(name_pdf, f)
+                    if grau_similaridade > 0.8:
+                        old_pdf = Path(root).joinpath(f)
+                        shutil.move(old_pdf, path_pdf)
+                        file_found = True
+                        break
+                if file_found:
+                    break
+            if not file_found:
+                sleep(0.5)
 
     def openfile(self, path_pdf: str) -> str:
         """Open a PDF file and extract its text content.
@@ -692,7 +721,7 @@ class Movimentacao(ProjudiBot):
             str: The extracted text from the PDF.
 
         """
-        with open(path_pdf, "rb") as pdf:
+        with Path(path_pdf).open("rb") as pdf:
             read = PdfReader(pdf)
             # Read PDF
             pagescontent = ""
