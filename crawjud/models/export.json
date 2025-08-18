@@ -185,5 +185,16 @@
     "form_cfg": "file_auth",
     "classification": "ADMINISTRATIVO",
     "text": "Atualiza a fase processual em processos do ELAW"
+  },
+  {
+    "id": "18",
+    "display_name": "CSI - CHAMADOS",
+    "system": "CSI",
+    "state": "EVERYONE",
+    "client": "INFRAERO",
+    "type": "CHAMADOS",
+    "form_cfg": "file_auth",
+    "classification": "ADMINISTRATIVO",
+    "text": "Abertura de chamados CSI."
   }
 ]

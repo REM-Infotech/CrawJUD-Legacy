@@ -6,15 +6,13 @@ Provides structures for bot configurations, credentials, and execution logging.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from crawjud.api import db
 
 if TYPE_CHECKING:
     from collections.abc import Buffer
-
-    from sqlalchemy.orm.relationships import RelationshipProperty
 
 
 class BotsCrawJUD(db.Model):
@@ -117,7 +115,7 @@ class Executions(db.Model):
     arquivo_xlsx: str = db.Column(db.String(length=64))
 
     bot_id: int = db.Column(db.Integer, db.ForeignKey("bots.id"))
-    bot: ClassVar[RelationshipProperty[BotsCrawJUD]] = db.relationship(
+    bot = db.relationship(
         BotsCrawJUD,
         backref=db.backref("executions", lazy=True),
     )
