@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
@@ -16,6 +17,7 @@ from pandas import Timestamp, read_excel
 from termcolor import colored
 from tqdm import tqdm
 
+from crawjud.common import name_colunas
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.custom.canvas import subtask
 from crawjud.custom.task import ContextTask
@@ -297,41 +299,56 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self,
         data: BotData,
         message: str | None = None,
-        fileN: str | None = None,  # noqa: N803
+        file_name_success: str | None = None,
         type_log: str = "success",
     ) -> None:
-        """Append successful execution data to the success spreadsheet.
+        """Registre dados de sucesso em planilha de execuções bem-sucedidas.
 
         Args:
-            data (TypeData): The data to be appended.
-            message (str, optional): A success message to log.
-            fileN (str, optional): Filename override for saving data.
-            type_log(str): log
+            data (BotData): Dados a serem registrados.
+            message (str, opcional): Mensagem de sucesso para log.
+            file_name_success (str, opcional): Nome do arquivo para salvar os dados.
+            type_log (str): Tipo de log (default: "success").
 
         """
+        # Define mensagem padrão caso não seja fornecida
         if not message:
             message = "Execução do processo efetuada com sucesso!"
 
-        def save_info(data: list[dict[str, str]]) -> None:
-            output_success = self.path
-
-            if fileN or not output_success:
-                output_success = self.output_dir_path.joinpath(fileN)
-
-            if not output_success.exists():
+        # Função auxiliar para salvar informações em Excel
+        def save_info(
+            data: list[dict[str, str]],
+            file_name_success: str | None,
+        ) -> None:
+            output_success = self.output_dir_path.joinpath(file_name_success)
+            excel_writer = pd.ExcelWriter(
+                path=str(output_success),
+                engine="openpyxl",
+                mode="w",
+            )
+            with excel_writer as writer:
                 df = pd.DataFrame(data)
-            else:
-                df_existing = pd.read_excel(output_success)
-                df = df_existing.to_dict(orient="records")
-                df.extend(data)
+                # Caso a planilha já exista, calcula a próxima linha
+                row_start = 0
 
-            new_data = pd.DataFrame(df)
-            new_data.to_excel(output_success, index=False)
+                with suppress(Exception):
+                    row_start = int(writer.book["Sucessos"].max_row) + 1
 
-        typed = type(data) is list and all(isinstance(item, dict) for item in data)
+                df.to_excel(
+                    excel_writer=writer,
+                    sheet_name="Sucessos",
+                    startrow=row_start,
+                    index=False,
+                )
 
-        if not typed:
-            data2 = dict.fromkeys(self.name_colunas, "")
+        # Função auxiliar para normalizar os dados
+        def normalize_data(data: BotData) -> list[dict[str, str]]:
+            if isinstance(data, list) and all(
+                isinstance(item, dict) for item in data
+            ):
+                return data
+
+            data2 = dict.fromkeys(name_colunas, "")
             for item in data:
                 data2_itens = list(
                     filter(
@@ -342,10 +359,13 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 for key, _ in data2_itens:
                     data2.update({key: item})
                     break
+            return [data2]
 
-            data.clear()
-            data.append(data2)
+        # Normaliza os dados para garantir formato correto
+        data_to_save = normalize_data(data)
 
-        save_info(data)
+        # Salva informações na planilha de sucesso
+        save_info(data_to_save, file_name_success)
 
+        # Registra mensagem de log
         self.print_msg(message=message, type_log=type_log)
