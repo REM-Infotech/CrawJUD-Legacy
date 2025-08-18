@@ -21,13 +21,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.bots.controllers.master import CrawJUD
 from crawjud.common.exceptions.bot import (
     ExecutionError,
     FileUploadError,
     LoginSystemError,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
+from crawjud.controllers.master import CrawJUD
 from crawjud.interfaces.types import BotData
 from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.interfaces.types.pje import (

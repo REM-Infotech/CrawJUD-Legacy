@@ -17,9 +17,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.bots.controllers.elaw import ElawBot
-from crawjud.bots.resources.elements import elaw as el
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.controllers.elaw import ElawBot
+from crawjud.resources.elements import elaw as el
 
 
 class Andamentos(ElawBot):

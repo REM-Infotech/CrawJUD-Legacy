@@ -12,9 +12,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.bots.controllers.master import CrawJUD
-from crawjud.bots.resources.elements import esaj as el
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.controllers.master import CrawJUD
+from crawjud.resources.elements import esaj as el
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

@@ -11,9 +11,9 @@ from selenium.webdriver.common.by import By
 
 from crawjud.bots.elaw.cadastro.cadastro import PreCadastro
 from crawjud.bots.elaw.cadastro.complement import CadastroComplementar
-from crawjud.bots.resources.elements import elaw as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.resources.elements import elaw as el
 
 campos_validar: list[str] = [
     "estado",

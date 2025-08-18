@@ -20,12 +20,12 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from crawjud.bots.controllers.pje import PjeBot
-from crawjud.bots.resources._varas_dict import varas as varas_pje
-from crawjud.bots.resources.elements import pje as el
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
+from crawjud.resources._varas_dict import varas as varas_pje
+from crawjud.resources.elements import pje as el
 
 
 @shared_task(name="pje.pauta", bind=True, base=ContextTask)

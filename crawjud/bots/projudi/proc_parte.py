@@ -14,12 +14,12 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 
-from crawjud.bots.controllers.projudi import ProjudiBot
-from crawjud.bots.resources.elements import projudi as el
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.controllers.projudi import ProjudiBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
+from crawjud.resources.elements import projudi as el
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement

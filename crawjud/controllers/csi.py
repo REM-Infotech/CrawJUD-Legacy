@@ -16,12 +16,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait  # noqa: F401
 
-from crawjud.bots.controllers.master import CrawJUD
-from crawjud.bots.resources.elements import csi as el
 from crawjud.common.exceptions.bot import (  # noqa: F401
     ExecutionError,
     LoginSystemError,
 )
+from crawjud.controllers.master import CrawJUD
+from crawjud.resources.elements import csi as el
 
 if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert  # noqa: F401

@@ -21,12 +21,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
 
-from crawjud.bots.controllers.csi import CsiBot
-from crawjud.bots.controllers.pje import PjeBot  # noqa: F401
-from crawjud.bots.resources.elements import csi as el
 from crawjud.common.exceptions.bot import ExecutionError  # noqa: F401
+from crawjud.controllers.csi import CsiBot
+from crawjud.controllers.pje import PjeBot  # noqa: F401
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
+from crawjud.resources.elements import csi as el
 from crawjud.utils.formatadores import formata_tempo  # noqa: F401
 
 if TYPE_CHECKING:

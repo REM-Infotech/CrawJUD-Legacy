@@ -13,8 +13,8 @@ from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from crawjud.bots.controllers.master import CrawJUD
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.controllers.master import CrawJUD
 
 
 class OtherUtils: ...  # noqa: D101
