@@ -14,9 +14,9 @@ from zoneinfo import ZoneInfo
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.controllers.esaj import ESajBot
 from crawjud.bots.esaj.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement

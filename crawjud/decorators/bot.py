@@ -18,7 +18,7 @@ from socketio import SimpleClient
 from tqdm import tqdm
 
 if TYPE_CHECKING:
-    from crawjud.interfaces.controllers.bots.master import CrawJUD
+    from crawjud.bots.controllers.master import CrawJUD
 
 environ = dotenv_values()
 

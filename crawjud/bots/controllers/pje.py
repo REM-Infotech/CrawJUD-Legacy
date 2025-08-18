@@ -13,9 +13,9 @@ from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, cast
 
+from crawjud.bots.controllers.master import CrawJUD
 from crawjud.common.exceptions.bot import ExecutionError, FileUploadError
 from crawjud.common.exceptions.validacao import ValidacaoStringError
-from crawjud.interfaces.controllers.bots.master import CrawJUD
 from crawjud.interfaces.dict.bot import BotData
 from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.interfaces.types.pje import (
@@ -27,7 +27,6 @@ from crawjud.interfaces.types.pje import (
 from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.recaptcha import captcha_to_image
-from crawjud.utils.webdriver import DriverBot
 
 if TYPE_CHECKING:
     from httpx import Client, Response
@@ -47,20 +46,7 @@ class PjeBot[T](CrawJUD):
     """Classe de controle para robôs do PJe."""
 
     def __init__(self) -> None:
-        """Initialize PropertiesCrawJUD.
-
-        Set up references to utility classes and bot components.
-
-        Comments:
-            Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
-
-        """
-        self._driver = DriverBot(
-            selected_browser="chrome",
-            with_proxy=False,
-        )
-
-        self._wait = self._driver.wait
+        """Empty."""
 
     pje_classes: ClassVar[dict[str, type[PjeBot]]] = {}
     subclasses_search: ClassVar[dict[str, type[PjeBot]]] = {}

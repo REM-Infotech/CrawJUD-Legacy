@@ -9,7 +9,7 @@ from __future__ import annotations
 import json.decoder
 from typing import TYPE_CHECKING, Literal
 
-from crawjud.interfaces.controllers.bots.systems.pje import PjeBot
+from crawjud.bots.controllers.pje import PjeBot
 from crawjud.interfaces.types import BotData
 
 if TYPE_CHECKING:

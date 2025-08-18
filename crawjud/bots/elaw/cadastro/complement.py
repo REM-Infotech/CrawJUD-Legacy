@@ -19,8 +19,8 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.controllers.elaw import ElawBot
 from crawjud.bots.elaw.resources import elements as el
-from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
 
 type_doc = {11: "cpf", 14: "cnpj"}
 

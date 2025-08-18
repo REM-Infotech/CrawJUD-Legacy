@@ -25,6 +25,7 @@ from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData
 from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
+from crawjud.utils.webdriver import DriverBot
 
 if TYPE_CHECKING:
     from typing import ClassVar
@@ -165,6 +166,15 @@ class AbstractCrawJUD[T]:
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
+
+    def __init__(self) -> None:
+        """Empty."""
+        self._driver = DriverBot(
+            selected_browser="chrome",
+            with_proxy=False,
+        )
+
+        self._wait = self._driver.wait
 
     def buscar_processo(self, *args: T, **kwargs: T) -> T:
         """Busca o processo no PJe.

@@ -12,8 +12,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.controllers.pje import PjeBot
 from crawjud.common.exceptions.bot import LoginSystemError
-from crawjud.interfaces.controllers.bots.systems.pje import PjeBot
 from crawjud.utils.webdriver import DriverBot
 
 

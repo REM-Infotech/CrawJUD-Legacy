@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from crawjud.interfaces.controllers.bots.master import CrawJUD
+    from crawjud.bots.controllers.master import CrawJUD
     from crawjud.interfaces.types.pje import DictSeparaRegiao
 
 

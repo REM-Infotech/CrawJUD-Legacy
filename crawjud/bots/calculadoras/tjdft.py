@@ -17,8 +17,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.controllers.master import CrawJUD
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.interfaces.controllers.bots.master import CrawJUD
 
 cookieaceito = []
 

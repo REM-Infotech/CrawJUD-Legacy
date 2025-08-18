@@ -10,9 +10,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.controllers.esaj import ESajBot
 from crawjud.bots.esaj.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
 
 class EsajSearch(ESajBot):
