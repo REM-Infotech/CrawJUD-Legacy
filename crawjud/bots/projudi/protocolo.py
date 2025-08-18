@@ -21,6 +21,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.bots.projudi.resources import elements as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
 if TYPE_CHECKING:
@@ -30,6 +33,8 @@ if TYPE_CHECKING:
 dotenv.load_dotenv()
 
 
+@shared_task(name="projudi.protocolo", bind=True, base=ContextTask)
+@wrap_cls
 class Protocolo(ProjudiBot):
     """Empty."""
 

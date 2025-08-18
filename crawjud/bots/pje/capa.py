@@ -36,7 +36,7 @@ load_dotenv()
 
 @shared_task(name="pje.capa", bind=True, base=ContextTask)
 @wrap_cls
-class Capa[T](PjeBot):  # noqa: D101
+class Capa(PjeBot):  # noqa: D101
     tasks_queue_processos: ClassVar[list[Future]] = []
 
     def execution(

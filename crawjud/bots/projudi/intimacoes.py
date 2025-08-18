@@ -15,12 +15,17 @@ from selenium.webdriver.support.ui import Select
 
 from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
+@shared_task(name="projudi.intimacoes", bind=True, base=ContextTask)
+@wrap_cls
 class Intimacoes(ProjudiBot):
     """Extract and process intimations in Projudi by navigating pages and extracting data.
 

@@ -21,12 +21,17 @@ from selenium.webdriver.support import expected_conditions as ec
 from crawjud.bots.projudi.resources import elements as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
+@shared_task(name="projudi.capa", bind=True, base=ContextTask)
+@wrap_cls
 class Capa(ProjudiBot):
     """Extract process information from Projudi and populate structured data.
 

@@ -14,9 +14,14 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
 
+@shared_task(name="projudi.busca_parte", bind=True, base=ContextTask)
+@wrap_cls
 class ProcParte(ProjudiBot):
     """Handle participant processing in Projudi with detailed queue management and error handling.
 
