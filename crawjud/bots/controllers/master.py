@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import shutil
 from abc import abstractmethod
 from contextlib import suppress
 from datetime import datetime
@@ -18,12 +20,12 @@ from pandas import Timestamp, read_excel
 from selenium.webdriver.remote.webdriver import WebDriver
 from termcolor import colored
 from tqdm import tqdm
+from werkzeug.utils import secure_filename
 
 from crawjud.common import name_colunas
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.custom.canvas import subtask
 from crawjud.custom.task import ContextTask
-from crawjud.interfaces.dict.bot import BotData
+from crawjud.interfaces.dict.bot import BotData, DictFiles
 from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
@@ -35,7 +37,6 @@ if TYPE_CHECKING:
     from selenium.webdriver.support.wait import WebDriverWait
     from socketio import SimpleClient
 
-    from crawjud.interfaces.dict.bot import DictFiles
 
 func_dict_check = {
     "bot": ["execution"],
@@ -73,6 +74,16 @@ class AbstractCrawJUD[T]:
 
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
+
+    _row: ClassVar[int] = 0
+
+    @property
+    def row(self) -> int:
+        return self._row
+
+    @row.setter
+    def row(self, row: int) -> None:
+        self._row = row
 
     @abstractmethod
     def execution(self, *args: T, **kwargs: T) -> None:
@@ -177,7 +188,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
     def load_data(
         self,
-        base91_planilha: str,
     ) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
 
@@ -192,7 +202,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             list[BotData]: A record list from the processed Excel file.
 
         """
-        buffer_planilha = BytesIO(base91.decode(base91_planilha))
+        buffer_planilha = BytesIO(base91.decode(self._xlsx_data["file_base91str"]))
         df = read_excel(buffer_planilha)
         df.columns = df.columns.str.upper()
 
@@ -228,17 +238,67 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 Exception genérico de execução
 
         """
-        files_b64: list[DictFiles] = (
-            subtask("crawjud.download_files")
-            .apply_async(kwargs={"storage_folder_name": self.folder_storage})
-            .wait_ready()
-        )
-        xlsx_key = list(filter(lambda x: x["file_suffix"] == ".xlsx", files_b64))
+        storage = Storage("minio")
+        path_files = work_dir.joinpath("temp")
+        list_files: list[DictFiles] = []
+
+        folder_temp_ = self.folder_storage.upper()
+        json_name_ = f"{self.folder_storage}.json"
+
+        object_name_ = Path(folder_temp_).joinpath(json_name_).as_posix()
+        config_file = storage.bucket.get_object(object_name_)
+
+        path_files.joinpath(object_name_).parent.mkdir(exist_ok=True, parents=True)
+
+        data_json_: dict[str, str] = json.loads(config_file.data)
+
+        for k, v in data_json_.items():
+            setattr(self, k, v)
+
+        if data_json_.get("xlsx"):
+            xlsx_name_ = secure_filename(data_json_.get("xlsx"))
+
+            path_minio_ = Path(folder_temp_).joinpath(xlsx_name_).as_posix()
+            file_xlsx = storage.bucket.get_object(path_minio_)
+            file_base91str = base91.encode(file_xlsx.data)
+
+            suffix_ = Path(xlsx_name_).suffix
+
+            list_files.append(
+                DictFiles(
+                    file_name=xlsx_name_,
+                    file_base91str=file_base91str,
+                    file_suffix=suffix_,
+                ),
+            )
+
+        if data_json_.get("otherfiles"):
+            files_list: list[str] = data_json_.get("otherfiles")
+            for file in files_list:
+                file = secure_filename(file)
+                path_minio_ = Path(folder_temp_).joinpath(file).as_posix()
+                file_ = storage.bucket.get_object(path_minio_)
+                suffix_ = Path(file).suffix
+
+                file_base91str = base91.encode(file_.data)
+                list_files.append(
+                    DictFiles(
+                        file_name=file,
+                        file_base91str=file_base91str,
+                        file_suffix=suffix_,
+                    ),
+                )
+
+        shutil.rmtree(path_files.joinpath(self.folder_storage))
+
+        xlsx_key = list(filter(lambda x: x["file_suffix"] == ".xlsx", list_files))
         if not xlsx_key:
             raise ExecutionError(message="Nenhum arquivo Excel encontrado.")
 
+        _json_key = list(filter(lambda x: x["file_suffix"] == ".json", list_files))
+
         self._xlsx_data = xlsx_key[-1]
-        self._downloaded_files = files_b64
+        self._downloaded_files = list_files
 
     def data_frame(self) -> None:
         bot_data: list[BotData] = self.load_data(

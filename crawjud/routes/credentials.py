@@ -123,7 +123,7 @@ async def systems() -> Response:
     )
 
 
-@cred.post("/credentials")
+@cred.get("/credentials")
 @jwt_required
 async def credentials() -> Response:
     """Retorna lista de credenciais associadas ao usuário autenticado.

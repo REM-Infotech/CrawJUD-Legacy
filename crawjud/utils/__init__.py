@@ -7,10 +7,6 @@ from contextlib import suppress
 import psutil
 from tqdm import tqdm
 
-from . import manage_files
-
-__all__ = ["manage_files"]
-
 
 def _kill_browsermob() -> None:
     """Finaliza processos relacionados ao BrowserMob Proxy."""

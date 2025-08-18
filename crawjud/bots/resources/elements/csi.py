@@ -19,3 +19,7 @@ btn_entrar: str = 'button[id="btnEntrar"]'
 url_logado: str = (
     "https://csi.infraero.gov.br/citsmart/pages/smartPortal/smartPortal.load"
 )
+
+# Subsidios
+url_solicitacao_subsidios = "https://csi.infraero.gov.br/citsmart/pages/smartPortal/smartPortal.load#/atividade/251/7232/7233"
+campo_nome_reclamante_subsidios = "input[id='campoDyn_7287']"

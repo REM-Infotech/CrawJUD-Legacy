@@ -44,11 +44,19 @@ CSS_INPUT_PROCESSO = {
 class CsiBot[T](CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
-    def __init__(self) -> None:
+    def __init__(self, *args: T, **kwargs: T) -> None:
         """Instancia a classe."""
         super().__init__()
 
+        self.folder_storage = kwargs.pop("storage_folder_name")
+
+        for k, v in kwargs.copy().items():
+            setattr(self, k, v)
+
+        self.download_files()
+
         self.auth()
+        self._frame = self.load_data()
 
     def search(self) -> bool:
         _url_search = el.url_busca
