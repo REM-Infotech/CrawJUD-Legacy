@@ -1,6 +1,7 @@
 """Empty."""
 
-import os
+from __future__ import annotations
+
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
@@ -17,20 +18,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.projudi.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
-
-from .resources import elements as el
 
 if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
     from selenium.webdriver.remote.webelement import WebElement
 
 dotenv.load_dotenv()
-
-
-def _raise_execution_error(message: str) -> os.NoReturn:
-    raise ExecutionError(message=message)
 
 
 class Protocolo(ProjudiBot):
@@ -189,7 +186,7 @@ class Protocolo(ProjudiBot):
 
         return False
 
-    def _advogado_ja_representa(self, td_partes: "WebElement") -> bool:
+    def _advogado_ja_representa(self, td_partes: WebElement) -> bool:
         """Verifica se o advogado já representa a parte.
 
         Returns:
@@ -200,9 +197,9 @@ class Protocolo(ProjudiBot):
 
     def _seleciona_parte_por_linha(
         self,
-        td_partes: "WebElement",
+        td_partes: WebElement,
         parte_peticao: str,
-        item: "WebElement",
+        item: WebElement,
     ) -> bool:
         """Seleciona a parte caso haja múltiplas linhas no texto.
 
@@ -246,9 +243,9 @@ class Protocolo(ProjudiBot):
 
     def _seleciona_parte_por_texto(
         self,
-        td_partes: "WebElement",
+        td_partes: WebElement,
         parte_peticao: str,
-        item: "WebElement",
+        item: WebElement,
     ) -> bool:
         """Seleciona a parte caso o texto corresponda diretamente.
 
@@ -266,7 +263,7 @@ class Protocolo(ProjudiBot):
             return False
         radio_item = item.find_element(
             By.CSS_SELECTOR,
-            self.elements.input_radio,
+            el.input_radio,
         )
         radio_item.click()
         set_parte = td_partes.find_element(By.TAG_NAME, "input")
@@ -281,7 +278,7 @@ class Protocolo(ProjudiBot):
 
     def _confirma_selecao_parte(
         self,
-        set_parte: "WebElement",
+        set_parte: WebElement,
         id_part: str,
         *,
         return_cmd: bool,
@@ -378,7 +375,7 @@ class Protocolo(ProjudiBot):
             sleep(2.5)
 
             self.driver.switch_to.frame(
-                self.driver.find_element(By.CSS_SELECTOR, self.elements.border),
+                self.driver.find_element(By.CSS_SELECTOR, el.border),
             )
             self.message = f"Enviando arquivo '{file}'"
             self.type_log = "log"
@@ -437,7 +434,7 @@ class Protocolo(ProjudiBot):
             )[0]
             radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(
                 By.CSS_SELECTOR,
-                self.elements.input_radio,
+                el.input_radio,
             )
             radiobutton.click()
 
@@ -470,7 +467,7 @@ class Protocolo(ProjudiBot):
                 input_file_element = WebDriverWait(self.driver, 10).until(
                     ec.presence_of_element_located((
                         By.XPATH,
-                        self.elements.conteudo,
+                        el.conteudo,
                     )),
                 )
 
@@ -531,7 +528,7 @@ class Protocolo(ProjudiBot):
 
             sign_button = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.botao_assinar,
+                el.botao_assinar,
             )
             sign_button.click()
 
@@ -577,7 +574,7 @@ class Protocolo(ProjudiBot):
 
         finish_button = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.botao_concluir,
+            el.botao_concluir,
         )
         finish_button.click()
 
@@ -606,7 +603,7 @@ class Protocolo(ProjudiBot):
 
             expand = table_moves[0].find_element(
                 By.CSS_SELECTOR,
-                self.elements.expand_btn_projudi,
+                el.expand_btn_projudi,
             )
             expand.click()
 
@@ -678,13 +675,13 @@ class Protocolo(ProjudiBot):
                         0
                     ].find_element(
                         By.CSS_SELECTOR,
-                        self.elements.input_radio,
+                        el.input_radio,
                     )
                     radiobutton.click()
 
                     delete_file = self.driver.find_element(
                         By.CSS_SELECTOR,
-                        self.elements.botao_deletar,
+                        el.botao_deletar,
                     )
                     delete_file.click()
 
@@ -706,12 +703,12 @@ class Protocolo(ProjudiBot):
                 divprogressbar = self.wait.until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
-                        self.elements.css_containerprogressbar,
+                        el.css_containerprogressbar,
                     )),
                 )
                 divprogressbar = divprogressbar.find_element(
                     By.CSS_SELECTOR,
-                    self.elements.css_divprogressbar,
+                    el.css_divprogressbar,
                 )
                 sleep(1)
                 with suppress(Exception):

@@ -21,6 +21,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
+from crawjud.bots.projudi.resources import elements as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
@@ -136,7 +137,7 @@ class Movimentacao(ProjudiBot):
             self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.select_page_size,
+                    el.select_page_size,
                 )),
             ),
         )
@@ -499,7 +500,7 @@ class Movimentacao(ProjudiBot):
         with suppress(NoSuchElementException):
             self.expand_btn = move.find_element(
                 By.CSS_SELECTOR,
-                self.elements.expand_btn_projudi,
+                el.expand_btn_projudi,
             )
 
             expand = self.expand_btn
@@ -708,5 +709,5 @@ class Movimentacao(ProjudiBot):
         table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
         self.table_moves = table_moves.find_elements(
             By.XPATH,
-            self.elements.table_moves,
+            el.table_moves,
         )

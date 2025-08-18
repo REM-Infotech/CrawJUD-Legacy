@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
+from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
@@ -69,7 +70,7 @@ class Intimacoes(ProjudiBot):
 
         Iterates through intimation pages and queues extraction of process data.
         """
-        self.driver.get(self.elements.url_mesa_adv)
+        self.driver.get(el.url_mesa_adv)
         self.enter_intimacoes()
         self.set_page_size()
         pages_count = self.calculate_pages(self.aba_initmacoes())
@@ -116,10 +117,10 @@ class Intimacoes(ProjudiBot):
         self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.btn_aba_intimacoes,
+                el.btn_aba_intimacoes,
             )),
         )
-        self.driver.execute_script(self.elements.tab_intimacoes_script)
+        self.driver.execute_script(el.tab_intimacoes_script)
         time.sleep(1)
 
     def aba_initmacoes(self) -> WebElement:
@@ -138,7 +139,7 @@ class Intimacoes(ProjudiBot):
         select = Select(
             self.wait.until(
                 ec.presence_of_element_located(
-                    (By.CSS_SELECTOR, self.elements.select_page_size_intimacoes),
+                    (By.CSS_SELECTOR, el.select_page_size_intimacoes),
                 ),
             ),
         )

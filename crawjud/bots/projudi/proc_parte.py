@@ -12,6 +12,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
+from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
@@ -119,7 +120,7 @@ class ProcParte(ProjudiBot):
                         "navRight",
                     ).find_element(
                         By.XPATH,
-                        self.elements.exception_arrow,
+                        el.exception_arrow,
                     )
 
                 self.type_log = "info"
