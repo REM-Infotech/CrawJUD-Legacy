@@ -3,21 +3,33 @@
 Extract and manage process details from Projudi by scraping and formatting data.
 """
 
+from __future__ import annotations
+
 import re
 import shutil
 import time
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from typing import Self
+from typing import TYPE_CHECKING
+from zoneinfo import ZoneInfo
 
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
+
+if TYPE_CHECKING:
+    from typing import NoReturn
+
+    from selenium.webdriver.remote.webelement import WebElement
+
+
+def _raise_execution_error(message: str) -> NoReturn:
+    raise ExecutionError(message=message)
 
 
 class Capa(ProjudiBot):
@@ -26,43 +38,6 @@ class Capa(ProjudiBot):
     This class extends CrawJUD to click through information panels,
     extract process data and participant details, and format them accordingly.
     """
-
-    @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize a Capa instance with provided arguments.
-
-        Args:
-            *args (tuple[str | int]): Variable length positional arguments.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
-
-        Returns:
-            Self: The initialized Capa instance.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the Capa instance and start authentication.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
         """Execute the main processing loop to extract process information.
@@ -88,7 +63,7 @@ class Capa(ProjudiBot):
             except ExecutionError as e:
                 # TODO(Nicholas Silva): Criação de Exceptions
                 # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-                self.logger.exception(str(e))
+
                 old_message = None
 
                 if old_message is None:
@@ -118,7 +93,7 @@ class Capa(ProjudiBot):
             search = self.search_bot()
             trazer_copia = self.bot_data.get("TRAZER_COPIA", "não")
             if search is not True:
-                raise ExecutionError(message="Processo não encontrado!")
+                _raise_execution_error("Processo não encontrado")
 
             self.driver.refresh()
             data = self.get_process_informations()
@@ -135,14 +110,18 @@ class Capa(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            self.logger.exception(str(e))
             raise ExecutionError(e=e) from e
 
     def copia_pdf(
         self,
         data: dict[str, str | int | datetime],
     ) -> dict[str, str | int | datetime]:
-        """Extract the movements of the legal proceedings and saves a PDF copy."""
+        """Extract the movements of the legal proceedings and saves a PDF copy.
+
+        Returns:
+             dict[str, str | int | datetime]: Data return
+
+        """
         id_proc = self.driver.find_element(
             By.CSS_SELECTOR,
             'input[name="id"]',
@@ -231,10 +210,8 @@ class Capa(ProjudiBot):
         Returns:
             dict[str, str | int | datetime]: Dicionário com informações formatadas do processo.
 
-        Raises:
-            Exception: Se ocorrer erro na extração.
-
         """
+        process_info: dict[str, str | int | datetime] = None
         try:
             grau = self._get_grau()
             process_info: dict[str, str | int | datetime] = {
@@ -246,13 +223,13 @@ class Capa(ProjudiBot):
             self._extrai_info_geral(process_info, grau)
             self._extrai_partes(process_info, grau)
 
-            return process_info
-
-        except ExecutionError as e:
+        except ExecutionError:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise e
+            _raise_execution_error("Erro ao executar operação")
+
+        return process_info
 
     def _get_grau(self) -> int:
         """Obtém e formata o grau do processo.
@@ -288,14 +265,14 @@ class Capa(ProjudiBot):
         """
         btn_infogeral = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.btn_infogeral,
+            el.btn_infogeral,
         )
         btn_infogeral.click()
 
-        element_content = self.elements.primeira_instform1
-        element_content2 = self.elements.primeira_instform2
+        element_content = el.primeira_instform1
+        element_content2 = el.primeira_instform2
         if grau == 2:
-            element_content = self.elements.segunda_instform
+            element_content = el.segunda_instform
             element_content2 = element_content
 
         includecontent = [
@@ -313,7 +290,7 @@ class Capa(ProjudiBot):
 
     def _extrai_tabela_info_geral(
         self,
-        incl,
+        incl: WebElement,
         process_info: dict[str, str | int | datetime],
     ) -> None:
         """Extrai dados das tabelas de informações gerais.
@@ -389,7 +366,9 @@ class Capa(ProjudiBot):
             if " às " in value_text:
                 value_text = value_text.split(" às ")[0]
             if self.text_is_a_date(value_text):
-                return datetime.strptime(value_text, "%d/%m/%Y")
+                return datetime.strptime(value_text, "%d/%m/%Y").replace(
+                    tzinfo=ZoneInfo("America/Manaus"),
+                )
         elif not_formated_label != value_text:
             return " ".join(value_text.split(" ")).upper()
         return None
@@ -447,7 +426,7 @@ class Capa(ProjudiBot):
             grau (int): Grau do processo.
 
         """
-        btn_partes = self.elements.btn_partes
+        btn_partes = el.btn_partes
         if grau == 2:
             btn_partes = btn_partes.replace("2", "1")
         btn_partes = self.driver.find_element(By.CSS_SELECTOR, btn_partes)
@@ -456,7 +435,7 @@ class Capa(ProjudiBot):
         includecontent = self._get_includecontent_capa()
         result_table = includecontent.find_elements(
             By.CLASS_NAME,
-            self.elements.resulttable,
+            el.resulttable,
         )
         h4_names = [
             x
@@ -489,16 +468,16 @@ class Capa(ProjudiBot):
 
         """
         try:
-            return self.driver.find_element(By.ID, self.elements.includecontent_capa)
-        except Exception:
+            return self.driver.find_element(By.ID, el.includecontent_capa)
+        except ExecutionError:
             time.sleep(3)
             self.driver.refresh()
             time.sleep(1)
-            return self.driver.find_element(By.ID, self.elements.includecontent_capa)
+            return self.driver.find_element(By.ID, el.includecontent_capa)
 
     def _extrai_tabela_partes(
         self,
-        parte_info,
+        parte_info: WebElement,
         nome_colunas: list[str],
         tipo_parte: str,
         process_info: dict[str, str | int | datetime],
@@ -514,7 +493,7 @@ class Capa(ProjudiBot):
         """
         linhas = parte_info.find_element(By.TAG_NAME, "tbody").find_elements(
             By.XPATH,
-            self.elements.table_moves,
+            el.table_moves,
         )
         for parte in linhas:
             tds = parte.find_elements(By.TAG_NAME, "td")

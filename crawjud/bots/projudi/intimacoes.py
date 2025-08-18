@@ -3,17 +3,21 @@
 Extract and manage process intimation information from the Projudi system.
 """
 
+from __future__ import annotations
+
 import time
 from contextlib import suppress
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webelement import WebElement
 
 
 class Intimacoes(ProjudiBot):
@@ -89,18 +93,8 @@ class Intimacoes(ProjudiBot):
             except ExecutionError as e:
                 # TODO(Nicholas Silva): Criação de Exceptions
                 # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-                self.logger.exception(str(e))
+
                 old_message = None
-                # windows = self.driver.window_handles
-
-                # if len(windows) == 0:
-                #     with suppress(Exception):
-                #         self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
-
-                #     old_message = self.message
-
-                #     self.auth_bot()
-
                 if old_message is None:
                     old_message = self.message
 
@@ -150,7 +144,7 @@ class Intimacoes(ProjudiBot):
         )
         select.select_by_value("100")
 
-    def calculate_pages(self, aba_intimacoes) -> int:
+    def calculate_pages(self, aba_intimacoes: WebElement) -> int:
         """Calculate the total number of intimation pages using table info.
 
         Args:
@@ -200,7 +194,6 @@ class Intimacoes(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            self.logger.exception(str(e))
             raise ExecutionError(e=e) from e
 
     def get_intimacao_information(
@@ -231,7 +224,7 @@ class Intimacoes(ProjudiBot):
                 item.find_elements(By.TAG_NAME, "td")[2].text.split("\n"),
             )
 
-            self.message = "Intimação do processo %s encontrada!" % itens[0]
+            self.message = f"Intimação do processo {itens[0]} encontrada!"
             self.type_log = "log"
             self.prt()
 
@@ -254,7 +247,7 @@ class Intimacoes(ProjudiBot):
 
     def get_intimacoes(
         self,
-        aba_intimacoes,
+        aba_intimacoes: WebElement,
     ) -> tuple[list[WebElement], list[WebElement]]:
         """Retrieve the header and row elements from the intimações table.
 
