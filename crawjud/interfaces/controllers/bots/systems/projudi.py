@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from crawjud.interfaces.controllers.bots.master import CrawJUD
+from crawjud.utils.webdriver import DriverBot
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -28,3 +29,9 @@ class ProjudiBot[T](CrawJUD):
             Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
 
         """
+        self._driver = DriverBot(
+            selected_browser="chrome",
+            with_proxy=False,
+        )
+
+        self._wait = self._driver.wait

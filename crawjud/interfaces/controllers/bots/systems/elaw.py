@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from crawjud.interfaces.controllers.bots.master import CrawJUD
+from crawjud.utils.webdriver import DriverBot
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -18,6 +19,22 @@ COUNT_TRYS = 15
 
 class ElawBot[T](CrawJUD):
     """Classe de controle para robôs do Elaw."""
+
+    def __init__(self) -> None:
+        """Initialize PropertiesCrawJUD.
+
+        Set up references to utility classes and bot components.
+
+        Comments:
+            Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
+
+        """
+        self._driver = DriverBot(
+            selected_browser="chrome",
+            with_proxy=False,
+        )
+
+        self._wait = self._driver.wait
 
     def elaw_formats(
         self,
