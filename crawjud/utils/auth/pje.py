@@ -1,5 +1,7 @@
 """Módulo de controle de autenticação Pje."""
 
+from __future__ import annotations
+
 from time import sleep
 
 from selenium.common.exceptions import (

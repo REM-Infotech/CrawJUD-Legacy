@@ -1,5 +1,7 @@
 """Módulo de gerenciamento de logs da api."""
 
+from __future__ import annotations
+
 import logging
 from typing import Any
 

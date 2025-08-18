@@ -6,6 +6,8 @@ Este módulo inclui:
 - Configuração automática do caminho do Tesseract via variáveis de ambiente.
 """
 
+from __future__ import annotations
+
 import base64
 import io
 import re

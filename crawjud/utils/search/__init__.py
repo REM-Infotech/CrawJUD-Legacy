@@ -1,4 +1,6 @@
-# noqa: D104
+"""Módulo utilitário de busca."""
+
+from __future__ import annotations
 
 from .elaw import ElawSearch
 from .esaj import EsajSearch

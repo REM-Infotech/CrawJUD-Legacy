@@ -1,5 +1,7 @@
 """Módulo de controle de autenticação Elaw."""
 
+from __future__ import annotations
+
 from time import sleep
 
 from selenium.webdriver.common.by import By

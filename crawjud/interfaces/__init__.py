@@ -1,7 +1,13 @@
 """Módulo de interfaces para o CrawJUD."""
 
-import engineio
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import socketio
+
+if TYPE_CHECKING:
+    import engineio
 
 
 class ASyncServerType(socketio.AsyncServer):

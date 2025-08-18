@@ -1,15 +1,19 @@
 """Socket.IO namespace for bot file operations and session management."""
 
+from __future__ import annotations
+
 import shutil
 from pathlib import Path
-from typing import AnyStr
+from typing import TYPE_CHECKING, AnyStr
 
 from quart import session
 from quart_socketio import Namespace, SocketIO
 from tqdm import tqdm
 
-from crawjud.interfaces import ASyncServerType
 from crawjud.interfaces.controllers.file_service import FileService
+
+if TYPE_CHECKING:
+    from crawjud.interfaces import ASyncServerType
 
 
 class FileNamespaces(Namespace):

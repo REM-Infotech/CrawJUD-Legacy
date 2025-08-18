@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 def varas() -> dict[str, str]:
     """Return a dictionary mapping court branch names to their unique codes now.
 

@@ -3,14 +3,18 @@
 Provides structures for bot configurations, credentials, and execution logging.
 """
 
-from collections.abc import Buffer
+from __future__ import annotations
+
 from datetime import datetime
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 from zoneinfo import ZoneInfo
 
-from sqlalchemy.orm.relationships import RelationshipProperty
-
 from crawjud.api import db
+
+if TYPE_CHECKING:
+    from collections.abc import Buffer
+
+    from sqlalchemy.orm.relationships import RelationshipProperty
 
 
 class BotsCrawJUD(db.Model):

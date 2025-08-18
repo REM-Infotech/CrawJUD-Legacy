@@ -3,6 +3,8 @@
 This module provides selectors for automating ELAW operations.
 """
 
+from __future__ import annotations
+
 # Login Elaw
 url_login = ""
 campo_username = ""

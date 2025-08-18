@@ -4,14 +4,18 @@ Este módulo contém decoradores tipados para facilitar o uso do Celery
 em funções e métodos de classe, garantindo integração com type annotations.
 """
 
-from collections.abc import Callable
-from typing import ParamSpec
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, ParamSpec
 
 from celery import shared_task as share
 
-from crawjud.interfaces.types.celery.task import Task
-
 from .bot import wrap_cls, wrap_init
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from crawjud.interfaces.types.celery.task import Task
 
 P = ParamSpec("P")
 

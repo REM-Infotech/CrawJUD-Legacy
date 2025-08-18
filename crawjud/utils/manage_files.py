@@ -4,6 +4,8 @@ Este módulo fornece funções para baixar arquivos de um storage, organizar e
 remover diretórios temporários utilizados durante o processamento dos dados.
 """
 
+from __future__ import annotations
+
 import json
 import shutil
 from pathlib import Path

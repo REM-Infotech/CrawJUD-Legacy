@@ -8,13 +8,14 @@ Este módulo implementa:
 Retorna respostas JSON para operações de consulta e manipulação de credenciais.
 """
 
+from __future__ import annotations
+
 from asyncio import iscoroutinefunction
 from pathlib import Path
 from traceback import format_exception
 from typing import TYPE_CHECKING, TypedDict
 
 import aiofiles
-from flask_sqlalchemy import SQLAlchemy
 from quart import (
     Blueprint,
     Response,
@@ -27,7 +28,6 @@ from quart import (
     session,
 )
 from quart import current_app as app
-from quart.datastructures import FileStorage
 from quart_jwt_extended import get_jwt_identity, jwt_required
 from werkzeug.utils import secure_filename
 
@@ -36,10 +36,12 @@ from crawjud.interfaces.credentials import CredendialsDict
 from crawjud.interfaces.session import SessionDict
 from crawjud.models import BotsCrawJUD, Credentials, LicensesUsers, Users
 
-cred = Blueprint("creds", __name__)
-
 if TYPE_CHECKING:
+    from flask_sqlalchemy import SQLAlchemy
+    from quart.datastructures import FileStorage
     from werkzeug.datastructures import MultiDict
+
+cred = Blueprint("creds", __name__)
 
 
 class CredentialsForm(TypedDict):

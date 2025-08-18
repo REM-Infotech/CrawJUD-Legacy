@@ -1,4 +1,7 @@
-# noqa: D104
+"""Módulo utiliário de autenticação nos sistemas."""
+
+from __future__ import annotations
+
 from .elaw import ElawAuth
 from .esaj import EsajAuth
 from .pje import PjeAuth

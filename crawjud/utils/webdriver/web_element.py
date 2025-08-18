@@ -54,30 +54,35 @@ class WebElementBot(WebElement):  # noqa: D101
                 super().send_keys(c)
 
     def double_click(self) -> None:
-        """Double-click on the given webelement."""
-        # action = ActionChains(self.driver)
-        # action.double_click(element).perform()
+        """Double-click on the given WebElement.
+
+        >>> action = ActionChains(self.driver)
+        >>> action.double_click(element).perform()
+
+        """
 
     def select_item(self, text: str) -> None:
-        """Select an item from a dropdown list based on exact text matching."""
-        # element_id = re.search(
-        #     r"^[^\[]+\[id=['\"]([^'\"]+)['\"]\]$", elemento
-        # ).group()
-        # if not element_id:
-        #      = self.wait.until(
-        #         ec.presence_of_element_located((By.CSS_SELECTOR, elemento))
-        #     )
-        #     element_id = element.get_attribute("id")
+        r"""Select an item from a dropdown list based on exact text matching.
 
-        # element_id = element_id.replace("_panel", "_input").replace(
-        #     "_items", "_input"
-        # )
-        # return self.select2_elaw(
-        #     self.driver.find_element(
-        #         By.XPATH, f"//select[contains(@id, '{element_id}')]"
-        #     ),
-        #     text,
-        # )
+        >>> element_id = re.search(
+        >>>     r"^[^\[]+\[id=['\"]([^'\"]+)['\"]\]$", elemento
+        >>> ).group()
+        >>> if not element_id:
+        >>>      = self.wait.until(
+        >>>         ec.presence_of_element_located((By.CSS_SELECTOR, elemento))
+        >>>     )
+        >>>     element_id = element.get_attribute("id")
+
+        >>> element_id = element_id.replace("_panel", "_input").replace(
+        >>>     "_items", "_input"
+        >>> )
+        >>> return self.select2_elaw(
+        >>>     self.driver.find_element(
+        >>>         By.XPATH, f"//select[contains(@id, '{element_id}')]"
+        >>>     ),
+        >>>     text,
+        >>> )
+        """
 
     def clear(self) -> None:
         self.click()
@@ -85,38 +90,40 @@ class WebElementBot(WebElement):  # noqa: D101
         super().clear()
         sleep(1)
 
-    # def sleep_load(self, *args: str, **kwargs: str) -> None:
-    #     """Wait until the loading indicator for a specific element is hidden."""
-    #     while True:
-    #         sleep(0.5)
-    #         load = None
-    #         aria_value = None
-    #         with suppress(TimeoutException):
-    #             load = WebDriverWait(self.driver, 5).until(
-    #                 ec.presence_of_element_located((By.CSS_SELECTOR, element)),
-    #             )
+    def sleep_load(self, *args: str, **kwargs: str) -> None:
+        """Wait until the loading indicator for a specific element is hidden.
 
-    #         if load:
-    #             for attributes in ["aria-live", "aria-hidden", "class"]:
-    #                 aria_value = load.get_attribute(attributes)
+        >>> while True:
+        >>>     sleep(0.5)
+        >>>     load = None
+        >>>     aria_value = None
+        >>>     with suppress(TimeoutException):
+        >>>         load = WebDriverWait(self.driver, 5).until(
+        >>>             ec.presence_of_element_located((By.CSS_SELECTOR, element)),
+        >>>         )
 
-    #                 if not aria_value:
-    #                     continue
+        >>>     if load:
+        >>>         for attributes in ["aria-live", "aria-hidden", "class"]:
+        >>>             aria_value = load.get_attribute(attributes)
 
-    #                 break
+        >>>             if not aria_value:
+        >>>                 continue
 
-    #             if aria_value is None or any(
-    #                 value == aria_value
-    #                 for value in [
-    #                     "off",
-    #                     "true",
-    #                     "spinner--fullpage spinner--fullpage--show",
-    #                 ]
-    #             ):
-    #                 break
+        >>>             break
 
-    #         if not load:
-    #             break
+        >>>         if aria_value is None or any(
+        >>>             value == aria_value
+        >>>             for value in [
+        >>>                 "off",
+        >>>                 "true",
+        >>>                 "spinner--fullpage spinner--fullpage--show",
+        >>>             ]
+        >>>         ):
+        >>>             break
+
+        >>>     if not load:
+        >>>         break
+        """
 
     def display_none(self) -> None:
         """Wait for an element's display style to change to 'none'.
@@ -145,25 +152,27 @@ class WebElementBot(WebElement):  # noqa: D101
                 break
 
     def wait_fileupload(self) -> None:
-        """Wait until the file upload progress completes.
+        r"""Wait until the file upload progress completes.
 
         Checks repeatedly until no progress bar is present.
+
+        >>> while True:
+        >>>    sleep(0.05)
+        >>>    div1 = 'div[class="ui-fileupload-files"]'
+        >>>    div2 = 'div[class="ui-fileupload-row"]'
+        >>>    div0 = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile"]'
+        >>>    progress_bar = None
+
+        >>>    div0progress_bar = super().find_element(By.CSS_SELECTOR, div0)
+        >>>    div1progress_bar = div0progress_bar.find_element(By.CSS_SELECTOR, div1)
+
+        >>>    with suppress(NoSuchElementException):
+        >>>        progress_bar = div1progress_bar.find_element(By.CSS_SELECTOR, div2)
+
+        >>>    if progress_bar is None:
+        >>>        break
+
         """
-        while True:
-            sleep(0.05)
-            div1 = 'div[class="ui-fileupload-files"]'
-            div2 = 'div[class="ui-fileupload-row"]'
-            div0 = 'div[id="processoValorPagamentoEditForm:pvp:j_id_2m_1_i_2_1_9_g_1:uploadGedEFile"]'
-            progress_bar = None
-
-            div0progress_bar = super().find_element(By.CSS_SELECTOR, div0)
-            div1progress_bar = div0progress_bar.find_element(By.CSS_SELECTOR, div1)
-
-            with suppress(NoSuchElementException):
-                progress_bar = div1progress_bar.find_element(By.CSS_SELECTOR, div2)
-
-            if progress_bar is None:
-                break
 
     def scroll_to(self) -> None:
         """Scroll the view to the specified web element."""
@@ -172,39 +181,41 @@ class WebElementBot(WebElement):  # noqa: D101
         sleep(0.5)
 
     def select2_elaw(self, to_search: str) -> None:
-        """Select an option from a Select2 dropdown based on a search text.
+        r"""Select an option from a Select2 dropdown based on a search text.
 
         Args:
             to_search (str): The option text to search and select.
 
+
+        >>> selector = self.wait.until(
+        >>>     ec.presence_of_element_located((By.CSS_SELECTOR, element_select))
+        >>> )
+
+        >>> items = selector.find_elements(By.TAG_NAME, "option")
+        >>> opt_itens: dict[str, str] = {}
+
+        >>> elementsSelecting = element_select.replace("'", "'")
+        >>> if '"' in elementsSelecting:
+        >>>     elementsSelecting = element_select.replace('"', "'")
+
+        >>> for item in items:
+        >>>     value_item = item.get_attribute("value")
+        >>>     cms = f"{elementsSelecting} > option[value='{value_item}']"
+        >>>     text_item = self.driver.execute_script(f'return $("{cms}").text();')
+
+        >>>     opt_itens.update({text_item.upper(): value_item})
+
+        >>> value_opt = opt_itens.get(to_search_elaw.upper())
+
+        >>> if value_opt:
+        >>>     command = f"$('{element_select}').val(['{value_opt}']);"
+        >>>     command2 = f"$('{element_select}').trigger('change');"
+
+        >>>     if "'" in element_select:
+        >>>         command = f"$(\"{element_select}\").val(['{value_opt}']);"
+        >>>         command2 = f"$(\"{element_select}\").trigger('change');"
+
+        >>>     self.driver.execute_script(command)
+        >>>     self.driver.execute_script(command2)
+
         """
-        # selector = self.wait.until(
-        #     ec.presence_of_element_located((By.CSS_SELECTOR, element_select))
-        # )
-
-        # items = selector.find_elements(By.TAG_NAME, "option")
-        # opt_itens: dict[str, str] = {}
-
-        # elementsSelecting = element_select.replace("'", "'")
-        # if '"' in elementsSelecting:
-        #     elementsSelecting = element_select.replace('"', "'")
-
-        # for item in items:
-        #     value_item = item.get_attribute("value")
-        #     cms = f"{elementsSelecting} > option[value='{value_item}']"
-        #     text_item = self.driver.execute_script(f'return $("{cms}").text();')
-
-        #     opt_itens.update({text_item.upper(): value_item})
-
-        # value_opt = opt_itens.get(to_search_elaw.upper())
-
-        # if value_opt:
-        #     command = f"$('{element_select}').val(['{value_opt}']);"
-        #     command2 = f"$('{element_select}').trigger('change');"
-
-        #     if "'" in element_select:
-        #         command = f"$(\"{element_select}\").val(['{value_opt}']);"
-        #         command2 = f"$(\"{element_select}\").trigger('change');"
-
-        #     self.driver.execute_script(command)
-        #     self.driver.execute_script(command2)

@@ -86,8 +86,6 @@ class Intimacoes(ProjudiBot):
             self.bot_data.update({"PID": self.pid, "ROW": i})
 
             self.row = i + 1
-            if self.isStoped:
-                break
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":

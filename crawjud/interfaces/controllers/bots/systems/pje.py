@@ -101,29 +101,6 @@ class PjeBot[T](CrawJUD):
     def regiao(self, _regiao: str) -> None:
         self._regiao = _regiao
 
-    def buscar_processo(self, data: BotData, row: int, client: Client) -> DictResults:
-        """Busca o processo no PJe.
-
-        Returns:
-            DictResults: dicionário com os resultados da busca.
-
-        """
-        return self.pje_classes["pjesearch"].search(
-            self,
-            data=data,
-            row=row,
-            client=client,
-        )
-
-    def autenticar(self) -> bool:
-        """Autenticação do PJE.
-
-        Returns:
-            bool: Booleano para identificar se autenicação foi realizada.
-
-        """
-        return self.pje_classes["pjeauth"].auth(self)
-
     def regioes(self) -> RegioesIterator:
         """Listagem das regiões do PJe.
 
@@ -369,10 +346,6 @@ class PjeBot[T](CrawJUD):
         }
 
         return formats[_format]
-
-    def __init_subclass__(cls) -> None:
-        """Empty."""
-        cls.pje_classes[cls.__name__.lower()] = cls
 
 
 importlib.import_module("crawjud.utils.auth.pje")

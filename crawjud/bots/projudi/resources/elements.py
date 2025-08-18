@@ -6,6 +6,8 @@ de documentos no Projudi.
 
 """
 
+from __future__ import annotations
+
 command_select_parte_protocolo = (
     'document.getElementById("{id_radio}").removeAttribute("disabled");'
 )

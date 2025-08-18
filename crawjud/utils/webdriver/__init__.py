@@ -191,9 +191,10 @@ class DriverBot[T](WebDriver):  # noqa: D101
         options: T = None,
         title: T = None,
     ) -> None:
-        if options is None:
-            options = {"captureHeaders": True, "captureContent": True}
-        self.client.new_har(ref, options, title)
+        if self.client:
+            if options is None:
+                options = {"captureHeaders": True, "captureContent": True}
+            self.client.new_har(ref, options, title)
 
     @property
     def client(self) -> Client:

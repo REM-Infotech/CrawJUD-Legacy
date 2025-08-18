@@ -4,7 +4,6 @@ Provide a set of methods to handle site navigation, form filling, document creat
 and PDF processing in compliance with Google/PEP 257 docstring standards.
 """
 
-import os
 import re
 import shutil
 from contextlib import suppress
@@ -42,8 +41,6 @@ class Emissor(CrawJUD):
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
-            if self.isStoped:
-                break
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
@@ -88,6 +85,10 @@ class Emissor(CrawJUD):
 
         Execute steps like site navigation, deposit data input, PDF creation,
         and data extraction in a single call.
+
+        Raises:
+            ExecutionError: Erro de execução
+
         """
         try:
             nameboleto = None
@@ -476,8 +477,8 @@ class Emissor(CrawJUD):
         )
         sleep(10)
 
-        caminho_old_pdf = os.path.join(self.output_dir_path, "guia_boleto.pdf")
-        renamepdf = os.path.join(self.output_dir_path, pdf_name)
+        caminho_old_pdf = self.output_dir_path.joinpath("guia_boleto.pdf")
+        renamepdf = self.output_dir_path.joinpath(pdf_name)
 
         sleep(5)
         shutil.move(caminho_old_pdf, renamepdf)
@@ -499,7 +500,7 @@ class Emissor(CrawJUD):
         """
         sleep(0.5)
 
-        path_pdf = os.path.join(self.output_dir_path, pdf_name)
+        path_pdf = self.output_dir_path.joinpath(pdf_name)
         # Inicialize uma lista para armazenar os números encontrados
         bar_code = ""
         numeros_encontrados = []

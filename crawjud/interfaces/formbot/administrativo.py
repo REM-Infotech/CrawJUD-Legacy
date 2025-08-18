@@ -1,7 +1,10 @@
 # noqa: D100
-from typing import TypedDict
+from __future__ import annotations
 
-from werkzeug.datastructures import FileMultiDict
+from typing import TYPE_CHECKING, TypedDict
+
+if TYPE_CHECKING:
+    from werkzeug.datastructures import FileMultiDict
 
 
 class AdministrativoFormFileAuth(TypedDict):  # noqa: D101

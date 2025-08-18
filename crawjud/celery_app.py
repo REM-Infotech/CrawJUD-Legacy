@@ -1,9 +1,10 @@
 """Módulo Celery App do CrawJUD Automatização."""
 
+from __future__ import annotations
+
 import argparse
 import importlib
 import platform
-from collections.abc import Callable
 from contextlib import suppress
 from multiprocessing import Process
 from os import environ
@@ -11,6 +12,7 @@ from pathlib import Path
 from platform import node
 from sys import argv
 from time import sleep
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from celery.apps.beat import Beat
@@ -23,6 +25,9 @@ from tqdm import tqdm
 
 from crawjud.custom import AsyncCelery as Celery
 from crawjud.utils.load_config import Config
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 app = Celery(__name__)
 

@@ -1,5 +1,7 @@
 """Serviço de domínio para manipulação de arquivos e sessões."""
 
+from __future__ import annotations
+
 import io
 import shutil
 import traceback

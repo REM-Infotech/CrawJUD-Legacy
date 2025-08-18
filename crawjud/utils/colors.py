@@ -1,5 +1,7 @@
 """Módulo de funcionalidade de cores."""
 
+from __future__ import annotations
+
 import secrets
 
 

@@ -4,10 +4,14 @@ Inclui estruturas para autenticação, upload de arquivos,
 pautas, partes de processo e PJE.
 """
 
-from datetime import datetime
-from typing import TypedDict
+from __future__ import annotations
 
-from werkzeug.datastructures import FileMultiDict
+from typing import TYPE_CHECKING, TypedDict
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from werkzeug.datastructures import FileMultiDict
 
 
 class JuridicoFormFileAuth(TypedDict):

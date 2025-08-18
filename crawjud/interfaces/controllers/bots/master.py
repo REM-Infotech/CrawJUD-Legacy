@@ -14,6 +14,7 @@ from zoneinfo import ZoneInfo
 import base91
 import pandas as pd
 from pandas import Timestamp, read_excel
+from selenium.webdriver.remote.webdriver import WebDriver
 from termcolor import colored
 from tqdm import tqdm
 
@@ -42,7 +43,7 @@ func_dict_check = {
 work_dir = Path(__file__).cwd()
 
 
-class AbstractCrawJUD:
+class AbstractCrawJUD[T]:
     """Classe base para todos os bots."""
 
     _driver: WebDriver = None
@@ -71,6 +72,8 @@ class AbstractCrawJUD:
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
 
+    all_subclasses: ClassVar[dict[str, type[AbstractCrawJUD]]] = {}
+
     @classmethod
     def __subclasshook__(cls, subclass: type) -> bool:
         """Verifica se a subclasse implementa todos os métodos obrigatórios."""
@@ -78,11 +81,15 @@ class AbstractCrawJUD:
 
     def __init_subclass__(cls) -> None:
         """Empty."""
-        cls.tasks_cls[cls.__name__] = cls
+        cls.all_subclasses[cls.__name__] = cls
 
     @property
     def bot_data(self) -> BotData:
         return self._bot_data
+
+    @bot_data.setter
+    def bot_data(self, bot_data: BotData) -> None:
+        self._bot_data = bot_data
 
     @property
     def frame(self) -> list[BotData]:
@@ -141,9 +148,45 @@ class AbstractCrawJUD:
 
         return out_dir
 
+    @property
+    def driver(self) -> WebDriver:
+        return self._driver
+
+    @property
+    def wait(self) -> WebDriverWait:
+        return self._wait
+
+    def search(self, *args: T, **kwargs: T) -> T:
+        return NotImplementedError("Necessário implementar função!")
+
+    def auth(self, *args: T, **kwargs: T) -> T:
+        return NotImplementedError("Necessário implementar função!")
+
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
+
+    def buscar_processo(self, *args: T, **kwargs: T) -> T:
+        """Busca o processo no PJe.
+
+        Returns:
+            DictResults: dicionário com os resultados da busca.
+
+        """
+        search_ = self.all_subclasses[f"{self.system}search"]()
+
+        return search_.search(*args, **kwargs)
+
+    def autenticar(self) -> bool:
+        """Autenticação do PJE.
+
+        Returns:
+            bool: Booleano para identificar se autenicação foi realizada.
+
+        """
+        auth_ = self.all_subclasses[f"{self.system}auth"]()
+
+        return auth_.auth()
 
     def load_data(
         self,

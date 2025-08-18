@@ -1,7 +1,8 @@
 """Empty."""
 
+from __future__ import annotations
+
 import time
-import traceback
 from contextlib import suppress
 from time import sleep
 
@@ -10,8 +11,8 @@ from selenium.webdriver.common.by import By
 
 from crawjud.bots.elaw.cadastro.cadastro import PreCadastro
 from crawjud.bots.elaw.cadastro.complement import CadastroComplementar
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.common.exceptions.raises import raise_execution_error
 
 campos_validar: list[str] = [
     "estado",
@@ -73,8 +74,6 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
-            if self.isStoped:
-                break
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
@@ -186,7 +185,6 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-            self.logger.exception("".join(traceback.format_exception(exc=e)))
             raise ExecutionError(e=e) from e
 
     def validar_campos(self) -> None:
@@ -212,7 +210,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
 
             if not element or element.lower() == "selecione":
                 message = f'Campo "{campo}" não preenchido'
-                raise_execution_error(message)
+                _raise_execution_error(message=message)
 
             message_campo.append(
                 f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>',

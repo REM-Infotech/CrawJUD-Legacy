@@ -6,11 +6,9 @@ This module handles calculations related to the TJD-Federal Tribunal within the 
 from __future__ import annotations
 
 import base64
-import os
-import time
 from contextlib import suppress
+from pathlib import Path
 from time import sleep
-from typing import Self
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -34,40 +32,6 @@ class Tjdft(CrawJUD):
 
     """
 
-    @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize bot instance.
-
-        Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the Tjdft instance.
-
-        Args:
-            *args (tuple[str | int]): Variable length argument list.
-            **kwargs (dict[str, str | int]): Arbitrary keyword arguments.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
-
     def execution(self) -> None:
         """Execute the main processing loop for calculations.
 
@@ -81,8 +45,6 @@ class Tjdft(CrawJUD):
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
-            if self.isStoped:
-                break
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
@@ -349,7 +311,7 @@ class Tjdft(CrawJUD):
                     percent,
                 )
 
-            if not juros_partir == "VENCIMENTO":
+            if juros_partir != "VENCIMENTO":
                 css_data_incide = 'input[name="juros_data"][id="juros_data"]'
                 self.interact.send_key(
                     self.driver.find_element(By.CSS_SELECTOR, css_data_incide),
@@ -415,266 +377,19 @@ class Tjdft(CrawJUD):
         This method handles the input of accessory financial details in the calculation form.
 
         """
-
-        def multa_percentual() -> None | Exception:
-            try:
-                sleep(1)
-                css_multa_percentual = (
-                    'input[name="multa_percent"][id="multa_percent"]'
-                )
-                self.message = "Informando multa percentual"
-                self.type_log = "log"
-                self.prt()
-
-                if self.bot_data.get("MULTA_PERCENTUAL", None):
-                    multa_percentual = self.wait.until(
-                        ec.presence_of_element_located((
-                            By.CSS_SELECTOR,
-                            css_multa_percentual,
-                        )),
-                    )
-                    multa_percentual.click()
-
-                    percent = str(self.bot_data.get("MULTA_PERCENTUAL"))
-                    percent = f"{percent},00" if "," not in percent else percent
-                    multa_percentual.send_keys(percent)
-
-                if self.bot_data.get("MULTA_DATA", None):
-                    multa_data = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="multa_data"]',
-                    )
-                    multa_valor = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="multa_valor"]',
-                    )
-
-                    valor = str(self.bot_data.get("MULTA_VALOR"))
-                    valor = f"{valor},00" if "," not in valor else valor
-
-                    self.interact.send_key(
-                        multa_data,
-                        self.bot_data.get("MULTA_DATA"),
-                    )
-                    self.interact.send_key(multa_valor, valor)
-
-                self.message = "Multa informada"
-                self.type_log = "log"
-                self.prt()
-
-            except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-                raise ExecutionError(e=e) from e
-
-        def honorario_sucumb() -> None | Exception:
-            try:
-                css_honorario_sucumb = (
-                    'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
-                )
-                self.message = "Informando Honorários de Sucumbência"
-                self.type_log = "log"
-                self.prt()
-
-                disabled_state = ""
-
-                if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
-                    honorario_sucumb = self.wait.until(
-                        ec.presence_of_element_located((
-                            By.CSS_SELECTOR,
-                            css_honorario_sucumb,
-                        )),
-                    )
-                    honorario_sucumb.click()
-                    percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
-                    percent = f"{percent},00" if "," not in percent else percent
-
-                    honorario_sucumb.send_keys(percent)
-                    self.driver.execute_script(
-                        f"document.querySelector('{css_honorario_sucumb}').blur()",
-                    )
-                    sleep(0.5)
-
-                    disabled_state = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_sucumb_data"]',
-                    ).get_attribute("disabled")
-
-                elif (
-                    self.bot_data.get("HONORARIO_SUCUMB_DATA", None)
-                    and disabled_state == ""
-                ):
-                    honor_sucumb_data = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_sucumb_data"]',
-                    )
-                    honor_sucumb_valor = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_sucumb_valor"]',
-                    )
-                    sucumb_juros_partir = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_sucumb_juros_partir"]',
-                    )
-
-                    valor = str(self.bot_data.get("HONORARIO_SUCUMB_VALOR"))
-                    valor = f"{valor},00" if "," not in valor else valor
-
-                    self.interact.send_key(
-                        honor_sucumb_data,
-                        self.bot_data.get("HONORARIO_SUCUMB_DATA"),
-                    )
-                    self.interact.send_key(honor_sucumb_valor, valor)
-                    self.interact.send_key(
-                        sucumb_juros_partir,
-                        self.bot_data.get("HONORARIO_SUCUMB_PARTIR"),
-                    )
-
-                self.message = "Percentual Honorários de Sucumbência informado"
-                self.type_log = "log"
-                self.prt()
-
-            except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-                raise ExecutionError(e=e) from e
-
-        def percent_multa_475J() -> None:  # noqa: N802
-            try:
-                percent_multa_ = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    'input[id="multa475_exec_percent"]',
-                )
-                self.interact.send_key(
-                    percent_multa_,
-                    self.bot_data.get("PERCENT_MULTA_475J"),
-                )
-
-            except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-                raise ExecutionError(e=e) from e
-
-        def honorario_cumprimento() -> None | Exception:
-            try:
-                css_honorario_exec = 'input[id="honor_exec_percent"]'
-                self.message = "Informando Honorários de Cumprimento"
-                self.type_log = "log"
-                self.prt()
-
-                disabled_state = ""
-
-                if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
-                    honorario_exec = self.wait.until(
-                        ec.presence_of_element_located((
-                            By.CSS_SELECTOR,
-                            css_honorario_exec,
-                        )),
-                    )
-                    honorario_exec.click()
-                    percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
-                    percent = f"{percent},00" if "," not in percent else percent
-
-                    honorario_exec.send_keys(percent)
-                    self.driver.execute_script(
-                        f"document.querySelector('{css_honorario_exec}').blur()",
-                    )
-                    sleep(0.5)
-
-                    disabled_state = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_exec_data"]',
-                    ).get_attribute("disabled")
-
-                elif (
-                    self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None)
-                    and disabled_state == ""
-                ):
-                    honor_exec_data = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_exec_data"]',
-                    )
-                    honor_exec_valor = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_exec_valor"]',
-                    )
-                    exec_juros_partir = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[id="honor_exec_juros_partir"]',
-                    )
-
-                    valor = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_VALOR"))
-                    valor = f"{valor},00" if "," not in valor else valor
-
-                    self.interact.send_key(
-                        honor_exec_data,
-                        self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA"),
-                    )
-                    self.interact.send_key(honor_exec_valor, valor)
-                    self.interact.send_key(
-                        exec_juros_partir,
-                        self.bot_data.get("HONORARIO_CUMPRIMENTO_PARTIR"),
-                    )
-
-                self.message = "Informado Honorários de Cumprimento"
-                self.type_log = "log"
-                self.prt()
-
-            except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-                raise ExecutionError(e=e) from e
-
-        def custas() -> None | Exception:
-            try:
-                css_data_custas = 'input[id="custas-data-0"]'
-                self.message = "Informando valor custas"
-                self.type_log = "log"
-                self.prt()
-                data_custas = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    css_data_custas,
-                )
-                data_custas.click()
-                data_custas.send_keys(self.bot_data.get("CUSTAS_DATA"))
-
-                sleep(2)
-                css_custas_valor = 'input[id="custas-valor-0"]'
-                self.message = "Informando valor devido"
-                self.type_log = "log"
-                self.prt()
-                custas_valor = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    css_custas_valor,
-                )
-                custas_valor.click()
-
-                valor = str(self.bot_data.get("CUSTAS_VALOR"))
-                valor = f"{valor},00" if "," not in valor else valor
-                custas_valor.send_keys(valor)
-
-                self.message = "Valor custas informado"
-                self.type_log = "log"
-                self.prt()
-
-            except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-                raise ExecutionError(e=e) from e
-
-        local_functions = list(locals().items())
-        for name, func in local_functions:
-            if not name == "self":
-                for info in self.bot_data:
-                    info = str(info)
-                    if name.lower() in info.lower():
-                        func()
-                        break
+        # Lista de métodos de acessórios e seus nomes associados
+        acessorios_methods = [
+            ("multa_percentual", self.multa_percentual),
+            ("honorario_sucumb", self.honorario_sucumb),
+            ("percent_multa_475j", self.percent_multa_475j),
+            ("honorario_cumprimento", self.honorario_cumprimento),
+            ("custas", self.custas),
+        ]
+        for name, func in acessorios_methods:
+            for info in self.bot_data:
+                if name.lower() in str(info).lower():
+                    func()
+                    break
 
     def finalizar_execucao(self) -> None:
         """Finalize the execution of the calculation.
@@ -716,13 +431,302 @@ class Tjdft(CrawJUD):
 
             pdf_name = f"CALCULO - {self.bot_data.get('NUMERO_PROCESSO')} - {self.bot_data.get('REQUERENTE')} - {self.pid}.pdf"
 
-            path_pdf = os.path.join(self.output_dir_path, pdf_name)
-            with open(path_pdf, "wb") as file:  # noqa: FURB103
+            path_pdf = Path(self.output_dir_path).joinpath(pdf_name)
+            with path_pdf.open("wb") as file:
                 file.write(pdf_bytes)
 
             data = [self.bot_data.get("NUMERO_PROCESSO"), pdf_name, valor_doc]
 
             self.append_success(data)
+
+        except ExecutionError as e:
+            # TODO(Nicholas Silva): Criação de Exceptions
+            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
+
+            raise ExecutionError(e=e) from e
+
+    def multa_percentual(self) -> None:
+        """Informe multa percentual e valores relacionados.
+
+        Preencha os campos de multa percentual e valores associados no formulário.
+
+        Raises:
+            ExecutionError: Se ocorrer erro ao informar multa percentual.
+
+        """
+        try:
+            sleep(1)
+            css_multa_percentual = 'input[name="multa_percent"][id="multa_percent"]'
+            self.message = "Informando multa percentual"
+            self.type_log = "log"
+            self.prt()
+
+            if self.bot_data.get("MULTA_PERCENTUAL", None):
+                multa_percentual = self.wait.until(
+                    ec.presence_of_element_located((
+                        By.CSS_SELECTOR,
+                        css_multa_percentual,
+                    )),
+                )
+                multa_percentual.click()
+
+                percent = str(self.bot_data.get("MULTA_PERCENTUAL"))
+                percent = f"{percent},00" if "," not in percent else percent
+                multa_percentual.send_keys(percent)
+
+            if self.bot_data.get("MULTA_DATA", None):
+                multa_data = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="multa_data"]',
+                )
+                multa_valor = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="multa_valor"]',
+                )
+
+                valor = str(self.bot_data.get("MULTA_VALOR"))
+                valor = f"{valor},00" if "," not in valor else valor
+
+                self.interact.send_key(
+                    multa_data,
+                    self.bot_data.get("MULTA_DATA"),
+                )
+                self.interact.send_key(multa_valor, valor)
+
+            self.message = "Multa informada"
+            self.type_log = "log"
+            self.prt()
+
+        except ExecutionError as e:
+            # TODO(Nicholas Silva): Criação de Exceptions
+            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
+
+            raise ExecutionError(e=e) from e
+
+    def honorario_sucumb(self) -> None:
+        """Informe honorários de sucumbência.
+
+        Preencha os campos de honorários de sucumbência no formulário.
+
+        Raises:
+            ExecutionError: Se ocorrer erro ao informar honorários de sucumbência.
+
+        """
+        try:
+            css_honorario_sucumb = (
+                'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
+            )
+            self.message = "Informando Honorários de Sucumbência"
+            self.type_log = "log"
+            self.prt()
+
+            disabled_state = ""
+
+            if self.bot_data.get("HONORARIO_SUCUMB_PERCENT", None):
+                honorario_sucumb = self.wait.until(
+                    ec.presence_of_element_located((
+                        By.CSS_SELECTOR,
+                        css_honorario_sucumb,
+                    )),
+                )
+                honorario_sucumb.click()
+                percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
+                percent = f"{percent},00" if "," not in percent else percent
+
+                honorario_sucumb.send_keys(percent)
+                self.driver.execute_script(
+                    f"document.querySelector('{css_honorario_sucumb}').blur()",
+                )
+                sleep(0.5)
+
+                disabled_state = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_sucumb_data"]',
+                ).get_attribute("disabled")
+
+            elif (
+                self.bot_data.get("HONORARIO_SUCUMB_DATA", None)
+                and disabled_state == ""
+            ):
+                honor_sucumb_data = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_sucumb_data"]',
+                )
+                honor_sucumb_valor = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_sucumb_valor"]',
+                )
+                sucumb_juros_partir = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_sucumb_juros_partir"]',
+                )
+
+                valor = str(self.bot_data.get("HONORARIO_SUCUMB_VALOR"))
+                valor = f"{valor},00" if "," not in valor else valor
+
+                self.interact.send_key(
+                    honor_sucumb_data,
+                    self.bot_data.get("HONORARIO_SUCUMB_DATA"),
+                )
+                self.interact.send_key(honor_sucumb_valor, valor)
+                self.interact.send_key(
+                    sucumb_juros_partir,
+                    self.bot_data.get("HONORARIO_SUCUMB_PARTIR"),
+                )
+
+            self.message = "Percentual Honorários de Sucumbência informado"
+            self.type_log = "log"
+            self.prt()
+
+        except ExecutionError as e:
+            # TODO(Nicholas Silva): Criação de Exceptions
+            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
+
+            raise ExecutionError(e=e) from e
+
+    def percent_multa_475j(self) -> None:
+        """Informe percentual da multa 475J.
+
+        Preencha o campo de percentual da multa 475J no formulário.
+
+        Raises:
+            ExecutionError: Se ocorrer erro ao informar percentual da multa 475J.
+
+        """
+        try:
+            percent_multa_ = self.driver.find_element(
+                By.CSS_SELECTOR,
+                'input[id="multa475_exec_percent"]',
+            )
+            self.interact.send_key(
+                percent_multa_,
+                self.bot_data.get("PERCENT_MULTA_475J"),
+            )
+
+        except ExecutionError as e:
+            # TODO(Nicholas Silva): Criação de Exceptions
+            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
+
+            raise ExecutionError(e=e) from e
+
+    def honorario_cumprimento(self) -> None:
+        """Informe honorários de cumprimento.
+
+        Preencha os campos de honorários de cumprimento no formulário.
+
+        Raises:
+            ExecutionError: Se ocorrer erro ao informar honorários de cumprimento.
+
+        """
+        try:
+            css_honorario_exec = 'input[id="honor_exec_percent"]'
+            self.message = "Informando Honorários de Cumprimento"
+            self.type_log = "log"
+            self.prt()
+
+            disabled_state = ""
+
+            if self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT", None):
+                honorario_exec = self.wait.until(
+                    ec.presence_of_element_located((
+                        By.CSS_SELECTOR,
+                        css_honorario_exec,
+                    )),
+                )
+                honorario_exec.click()
+                percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
+                percent = f"{percent},00" if "," not in percent else percent
+
+                honorario_exec.send_keys(percent)
+                self.driver.execute_script(
+                    f"document.querySelector('{css_honorario_exec}').blur()",
+                )
+                sleep(0.5)
+
+                disabled_state = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_exec_data"]',
+                ).get_attribute("disabled")
+
+            elif (
+                self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA", None)
+                and disabled_state == ""
+            ):
+                honor_exec_data = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_exec_data"]',
+                )
+                honor_exec_valor = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_exec_valor"]',
+                )
+                exec_juros_partir = self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'input[id="honor_exec_juros_partir"]',
+                )
+
+                valor = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_VALOR"))
+                valor = f"{valor},00" if "," not in valor else valor
+
+                self.interact.send_key(
+                    honor_exec_data,
+                    self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA"),
+                )
+                self.interact.send_key(honor_exec_valor, valor)
+                self.interact.send_key(
+                    exec_juros_partir,
+                    self.bot_data.get("HONORARIO_CUMPRIMENTO_PARTIR"),
+                )
+
+            self.message = "Informado Honorários de Cumprimento"
+            self.type_log = "log"
+            self.prt()
+
+        except ExecutionError as e:
+            # TODO(Nicholas Silva): Criação de Exceptions
+            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
+
+            raise ExecutionError(e=e) from e
+
+    def custas(self) -> None:
+        """Informe valores de custas processuais.
+
+        Preencha os campos de custas processuais no formulário.
+
+        Raises:
+            ExecutionError: Se ocorrer erro ao informar custas processuais.
+
+        """
+        try:
+            css_data_custas = 'input[id="custas-data-0"]'
+            self.message = "Informando valor custas"
+            self.type_log = "log"
+            self.prt()
+            data_custas = self.driver.find_element(
+                By.CSS_SELECTOR,
+                css_data_custas,
+            )
+            data_custas.click()
+            data_custas.send_keys(self.bot_data.get("CUSTAS_DATA"))
+
+            sleep(2)
+            css_custas_valor = 'input[id="custas-valor-0"]'
+            self.message = "Informando valor devido"
+            self.type_log = "log"
+            self.prt()
+            custas_valor = self.driver.find_element(
+                By.CSS_SELECTOR,
+                css_custas_valor,
+            )
+            custas_valor.click()
+
+            valor = str(self.bot_data.get("CUSTAS_VALOR"))
+            valor = f"{valor},00" if "," not in valor else valor
+            custas_valor.send_keys(valor)
+
+            self.message = "Valor custas informado"
+            self.type_log = "log"
+            self.prt()
 
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions

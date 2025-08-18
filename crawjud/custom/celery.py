@@ -5,6 +5,8 @@ Este módulo define:
   com configuração da aplicação.
 """
 
+from __future__ import annotations
+
 from typing import AnyStr
 
 from celery import Celery

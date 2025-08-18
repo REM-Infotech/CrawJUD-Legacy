@@ -1,14 +1,20 @@
 """Socket.IO namespace for notification events and management."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from quart_socketio import Namespace
 
 from crawjud.api import db
 from crawjud.decorators.api import verify_jwt_websocket
-from crawjud.interfaces import ASyncServerType
 from crawjud.interfaces.credentials import (
     CredendialDictSelect,
 )
 from crawjud.models.bots import BotsCrawJUD, Credentials
+
+if TYPE_CHECKING:
+    from crawjud.interfaces import ASyncServerType
 
 
 class BotsNamespace(Namespace):

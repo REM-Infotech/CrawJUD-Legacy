@@ -1,5 +1,7 @@
 """Módulo de gestão de Models do banco de dados."""
 
+from __future__ import annotations
+
 import pathlib
 from typing import TypedDict
 from uuid import uuid4

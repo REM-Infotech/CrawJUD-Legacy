@@ -1,5 +1,7 @@
 """Módulo de controle de exceptions dos bots."""
 
+from __future__ import annotations
+
 import traceback
 
 from crawjud.common.exceptions import BaseCrawJUDError

@@ -3,6 +3,8 @@
 Provides functionality to load configuration from an object.
 """
 
+from __future__ import annotations
+
 from os import environ
 from typing import AnyStr, Self, TypedDict
 

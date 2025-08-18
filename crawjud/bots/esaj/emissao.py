@@ -123,8 +123,6 @@ class Emissao(ESajBot):
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
-            if self.isStoped:
-                break
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":

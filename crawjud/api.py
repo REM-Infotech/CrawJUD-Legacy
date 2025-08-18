@@ -1,5 +1,7 @@
 """Quart application package."""
 
+from __future__ import annotations
+
 import re
 from importlib import import_module
 from pathlib import Path

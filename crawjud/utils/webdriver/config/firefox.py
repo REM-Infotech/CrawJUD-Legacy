@@ -1,14 +1,19 @@
 # noqa: D100
+from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 
-from browsermobproxy import Client, Server
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Options
 
-from crawjud.utils.webdriver._types import FirefoxPreferences
 from crawjud.utils.webdriver.config.proxy import configure_proxy
+
+if TYPE_CHECKING:
+    from browsermobproxy import Client, Server
+
+    from crawjud.utils.webdriver._types import FirefoxPreferences
+
 
 work_dir = Path(__file__).cwd()
 
@@ -22,16 +27,16 @@ firefox_preferences = {
 }
 
 
-class FirefoxOptions(Options):  # noqa: D101
+class FirefoxOptions[T](Options):  # noqa: D101
     _proxy_client: Client = None
 
     def __init__(  # noqa: D107
         self,
         extensions_path: Path | str = work_dir,
         preferences: FirefoxPreferences = firefox_preferences,
+        *args: T,
         with_proxy: bool = False,
-        *args: Any,
-        **kwargs: Any,
+        **kwargs: T,
     ) -> None:
         super().__init__()
 
@@ -59,9 +64,9 @@ class FirefoxOptions(Options):  # noqa: D101
         return self._server
 
 
-def configure_gecko(
-    *args: Any,
-    **kwargs: Any,
+def configure_gecko[T](
+    *args: T,
+    **kwargs: T,
 ) -> FirefoxOptions:
     """Configurações do Options do Chrome.
 

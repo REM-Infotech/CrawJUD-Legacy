@@ -1,4 +1,12 @@
-# noqa: D104
+"""Configura e define estruturas para manipulação de proxy e geração de HAR.
+
+Este módulo provê:
+- Função para configurar proxy com BrowserMob Proxy;
+- Estruturas de dados para HAR, requests, responses, cookies e headers;
+- Tipos fortemente tipados para facilitar integração e análise de tráfego HTTP.
+
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

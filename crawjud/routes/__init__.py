@@ -3,7 +3,10 @@
 This module defines global routes, context processors, and custom error handling.
 """
 
+from __future__ import annotations
+
 import json
+from typing import TYPE_CHECKING
 
 from quart import (
     Response,
@@ -14,7 +17,9 @@ from quart import (
 )
 from quart import current_app as app
 from quart_jwt_extended import jwt_required, unset_jwt_cookies
-from werkzeug.exceptions import HTTPException
+
+if TYPE_CHECKING:
+    from werkzeug.exceptions import HTTPException
 
 
 @app.route("/", methods=["GET"], websocket=True)

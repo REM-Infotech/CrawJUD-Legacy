@@ -4,7 +4,9 @@ Define tipos de formulários, mapeamento de configurações e u
 tilitários para construção dinâmica de dicionários de formulário.
 """
 
-from typing import Any, AnyStr, Self
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, AnyStr, Self
 
 from crawjud.interfaces.formbot.administrativo import (
     AdministrativoFormFileAuth,
@@ -19,7 +21,10 @@ from crawjud.interfaces.formbot.juridico import (
     JuridicoFormPJE,
     JuridicoFormProcParte,
 )
-from crawjud.models.bots import BotsCrawJUD
+
+if TYPE_CHECKING:
+    from crawjud.models.bots import BotsCrawJUD
+
 
 type ClassFormDict = (
     JuridicoFormFileAuth

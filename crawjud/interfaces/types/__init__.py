@@ -5,6 +5,8 @@ de dados, parâmetros e retornos em funções e classes do projeto.
 
 """
 
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 from os import PathLike
 

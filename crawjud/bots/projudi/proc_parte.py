@@ -3,14 +3,16 @@
 Manage participant processing in the Projudi system by interacting with process lists and varas.
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import (
     NoSuchElementException,
 )
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 
 from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
@@ -18,6 +20,9 @@ from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webelement import WebElement
 
 
 @shared_task(name="projudi.busca_parte", bind=True, base=ContextTask)

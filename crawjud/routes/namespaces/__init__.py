@@ -3,6 +3,8 @@
 This module exposes all available namespaces for direct import.
 """
 
+from __future__ import annotations
+
 from quart import request, websocket
 from quart_socketio import Namespace, SocketIO
 

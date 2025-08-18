@@ -1,5 +1,7 @@
 """Agrupamento de Literais."""
 
+from __future__ import annotations
+
 from typing import Literal
 
 type MessageNadaEncontrado = Literal["Nenhum processo encontrado"]

@@ -1,5 +1,7 @@
 """Módulo de tipos personalizados para o CrawJUD."""
 
+from __future__ import annotations
+
 import re
 from collections import UserString
 from contextlib import suppress
