@@ -26,10 +26,6 @@ from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
-
-class OtherUtils: ...  # noqa: D101
-
-
 type_docscss = {
     "custas_iniciais": {
         "cnpj": [
@@ -68,8 +64,6 @@ class Emissao(ESajBot):
         count_doc (callable): Utility function to count document type.
 
     """
-
-    count_doc = OtherUtils.count_doc
 
     @classmethod
     def initialize(

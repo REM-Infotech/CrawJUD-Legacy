@@ -75,13 +75,8 @@ class Config:
             if k.lower() in CeleryConfig.__annotations__
         })
 
-        call_convert = {bool: self.convert_bool}
-
         for k, v in self.celery_config.items():
-            type_key = CeleryConfig.__annotations__.get(k)
-            if not isinstance(v, type_key):
-                call_ = call_convert.get(type_key)
-                if call_:
-                    v = call_(v)
+            if v.lower() == "true":
+                v = True
 
             setattr(self, k, v)
