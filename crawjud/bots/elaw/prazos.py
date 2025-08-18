@@ -9,15 +9,20 @@ Classes:
 
 from __future__ import annotations
 
-import os
 from contextlib import suppress
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.elaw.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webelement import WebElement
 
 
 class Prazos(ElawBot):
@@ -89,7 +94,7 @@ class Prazos(ElawBot):
             search = self.search_bot()
             if not search:
                 self.message = "Buscando Processo"
-                raise ExecutionError(message="Não Encontrado!")
+                _raise_execution_error(message="Não Encontrado!")
 
             comprovante = ""
             self.data_Concat = (
@@ -116,7 +121,7 @@ class Prazos(ElawBot):
                 self.save_Prazo()
                 comprovante = self.CheckLancamento()
                 if not comprovante:
-                    raise ExecutionError(
+                    _raise_execution_error(
                         message="Não foi possível comprovar lançamento, verificar manualmente",
                     )
 
@@ -140,7 +145,7 @@ class Prazos(ElawBot):
         try:
             switch_pautaandamento = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.switch_pautaandamento,
+                el.switch_pautaandamento,
             )
 
             switch_pautaandamento.click()
@@ -172,7 +177,7 @@ class Prazos(ElawBot):
             btn_novaaudiencia = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.btn_novaaudiencia,
+                    el.btn_novaaudiencia,
                 )),
             )
 
@@ -186,7 +191,7 @@ class Prazos(ElawBot):
             selectortipoaudiencia = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.selectortipoaudiencia,
+                    el.selectortipoaudiencia,
                 )),
             )
 
@@ -202,12 +207,10 @@ class Prazos(ElawBot):
 
             value_opt = opt_itens.get(self.bot_data["TIPO_AUDIENCIA"].upper())
             if value_opt:
-                command = f"$('{self.elements.selectortipoaudiencia}').val(['{value_opt}']);"
+                command = f"$('{el.selectortipoaudiencia}').val(['{value_opt}']);"
                 self.driver.execute_script(command)
 
-                command2 = (
-                    f"$('{self.elements.selectortipoaudiencia}').trigger('change');"
-                )
+                command2 = f"$('{el.selectortipoaudiencia}').trigger('change');"
                 self.driver.execute_script(command2)
 
             # Info Data Audiencia
@@ -218,7 +221,7 @@ class Prazos(ElawBot):
             DataAudiencia = self.wait.until(  # noqa: N806
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.DataAudiencia,
+                    el.DataAudiencia,
                 )),
             )
 
@@ -244,7 +247,7 @@ class Prazos(ElawBot):
 
             btn_salvar = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.btn_salvar,
+                el.btn_salvar,
             )
 
             btn_salvar.click()
@@ -265,11 +268,12 @@ class Prazos(ElawBot):
             ExecutionError: If unable to verify the deadline record.
 
         """
+        data = None
         try:
             tableprazos = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.tableprazos,
+                    el.tableprazos,
                 )),
             )
 
@@ -278,7 +282,6 @@ class Prazos(ElawBot):
                 "tr",
             )
 
-            data = None
             for item in tableprazos:
                 if item.text == "Nenhum registro encontrado!":
                     return None
@@ -297,7 +300,7 @@ class Prazos(ElawBot):
                     idPrazo = str(item.find_elements(By.TAG_NAME, "td")[2].text)  # noqa: N806
 
                     item.screenshot(
-                        os.path.join(self.output_dir_path, nameComprovante),
+                        str(Path(self.output_dir_path).joinpath(nameComprovante)),
                     )
 
                     data = {
@@ -307,10 +310,10 @@ class Prazos(ElawBot):
                         "NOME_COMPROVANTE": nameComprovante,
                     }
 
-            return data
-
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
             raise ExecutionError(e=e) from e
+
+        return data

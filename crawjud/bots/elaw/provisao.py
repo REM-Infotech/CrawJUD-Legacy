@@ -11,6 +11,8 @@ Attributes:
 
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -21,6 +23,8 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.elaw.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
 
@@ -87,34 +91,22 @@ class Provisao(ElawBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Handle the provision queue processing.
+        """Handle the provision queue processing."""
+        search = self.search_bot()
+        if search is True:
+            self.type_log = "log"
+            self.message = "Processo encontrado! Informando valores..."
+            self.prt()
 
-        Raises:
-            ExecutionError: If an error occurs during execution.
+            calls = self.setup_calls()
 
-        """
-        try:
-            search = self.search_bot()
-            if search is True:
-                self.type_log = "log"
-                self.message = "Processo encontrado! Informando valores..."
-                self.prt()
+            for call in calls:
+                call()
 
-                calls = self.setup_calls()
+            self.save_changes()
 
-                for call in calls:
-                    call()
-
-                self.save_changes()
-
-            if search is False:
-                raise ExecutionError(message="Processo não encontrado!")
-
-        except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-            raise e
+        if search is False:
+            _raise_execution_error(message="Processo não encontrado!")
 
     def chk_risk(self) -> None:
         """Check and select the appropriate risk type based on the provision label.
@@ -126,12 +118,12 @@ class Provisao(ElawBot):
         label_risk = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.type_risk_label,
+                el.type_risk_label,
             )),
         )
 
         if label_risk.text == "Risco Quebrado":
-            self.select2_elaw(self.elements.type_risk_select, "Risco")
+            self.select2_elaw(el.type_risk_select, "Risco")
 
     def setup_calls(self) -> list:
         """Configure sequence of method calls based on the provision data.
@@ -162,28 +154,27 @@ class Provisao(ElawBot):
         edit_button = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.css_btn_edit,
+                el.css_btn_edit,
             )),
         )
         edit_button.click()
 
         if get_valores == "Nenhum registro encontrado!":
-            calls.append(self.add_new_valor)
-            calls.append(self.edit_valor)
-            calls.append(self.chk_risk)
-            calls.append(self.set_valores)
-            calls.append(self.informar_datas)
+            calls.extend([
+                self.add_new_valor,
+                self.edit_valor,
+                self.chk_risk,
+                self.set_valores,
+                self.informar_datas,
+            ])
 
         elif get_valores == "Contém valores" or get_valores == "-":
-            calls.append(self.edit_valor)
-            calls.append(self.chk_risk)
-            calls.append(self.set_valores)
+            calls.extend([self.edit_valor, self.chk_risk, self.set_valores])
 
             if provisao == "provável" or provisao == "possível":
                 calls.append(self.informar_datas)
 
-        calls.append(self.set_risk)
-        calls.append(self.informar_motivo)
+        calls.extend([self.set_risk, self.informar_motivo])
 
         return calls
 
@@ -197,7 +188,7 @@ class Provisao(ElawBot):
         get_valores = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.ver_valores,
+                el.ver_valores,
             )),
         )
         get_valores.click()
@@ -205,7 +196,7 @@ class Provisao(ElawBot):
         check_exists_provisao = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.table_valores_css,
+                el.table_valores_css,
             )),
         )
         check_exists_provisao = check_exists_provisao.find_elements(By.TAG_NAME, "tr")
@@ -217,7 +208,7 @@ class Provisao(ElawBot):
             with suppress(NoSuchElementException):
                 valueprovisao = item.find_element(
                     By.CSS_SELECTOR,
-                    self.elements.value_provcss,
+                    el.value_provcss,
                 ).text
 
             if "-" in valueprovisao or valueprovisao == "Nenhum registro encontrado!":
@@ -236,7 +227,7 @@ class Provisao(ElawBot):
             div_tipo_obj = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.div_tipo_obj_css,
+                    el.div_tipo_obj_css,
                 )),
             )
 
@@ -246,19 +237,19 @@ class Provisao(ElawBot):
                 self.wait.until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
-                        self.elements.itens_obj_div_css,
+                        el.itens_obj_div_css,
                     )),
                 )
                 .find_element(By.TAG_NAME, "ul")
                 .find_elements(By.TAG_NAME, "li")[0]
-                .find_element(By.CSS_SELECTOR, self.elements.checkbox)
+                .find_element(By.CSS_SELECTOR, el.checkbox)
             )
 
             item_obj_div.click()
 
             add_objeto = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.botao_adicionar,
+                el.botao_adicionar,
             )
             add_objeto.click()
 
@@ -278,7 +269,7 @@ class Provisao(ElawBot):
         editar_pedido = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.botao_editar,
+                el.botao_editar,
             )),
         )
         editar_pedido.click()
@@ -385,57 +376,50 @@ class Provisao(ElawBot):
             None
 
         """
-        try:
-            self.message = "Alterando datas de correção base e juros"
-            self.type_log = "log"
-            self.prt()
+        self.message = "Alterando datas de correção base e juros"
+        self.type_log = "log"
+        self.prt()
 
-            def set_data_correcao(data_base_correcao: str) -> None:
-                data_correcao = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    self.elements.data_correcaoCss,
-                )
-                css_daata_correcao = data_correcao.get_attribute("id")
-                self.interact.clear(data_correcao)
-                self.interact.send_key(data_correcao, data_base_correcao)
+        def set_data_correcao(data_base_correcao: str) -> None:
+            data_correcao = self.driver.find_element(
+                By.CSS_SELECTOR,
+                el.data_correcaoCss,
+            )
+            css_daata_correcao = data_correcao.get_attribute("id")
+            self.interact.clear(data_correcao)
+            self.interact.send_key(data_correcao, data_base_correcao)
 
-                self.driver.execute_script(
-                    f"document.getElementById('{css_daata_correcao}').blur()",
-                )
-                self.interact.sleep_load('div[id="j_id_2z"]')
+            self.driver.execute_script(
+                f"document.getElementById('{css_daata_correcao}').blur()",
+            )
+            self.interact.sleep_load('div[id="j_id_2z"]')
 
-            def set_data_juros(data_base_juros: str) -> None:
-                data_juros = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    self.elements.data_jurosCss,
-                )
-                css_data = data_juros.get_attribute("id")
-                self.interact.clear(data_juros)
-                self.interact.send_key(data_juros, data_base_juros)
-                self.driver.execute_script(
-                    f"document.getElementById('{css_data}').blur()",
-                )
-                self.interact.sleep_load('div[id="j_id_2z"]')
+        def set_data_juros(data_base_juros: str) -> None:
+            data_juros = self.driver.find_element(
+                By.CSS_SELECTOR,
+                el.data_jurosCss,
+            )
+            css_data = data_juros.get_attribute("id")
+            self.interact.clear(data_juros)
+            self.interact.send_key(data_juros, data_base_juros)
+            self.driver.execute_script(
+                f"document.getElementById('{css_data}').blur()",
+            )
+            self.interact.sleep_load('div[id="j_id_2z"]')
 
-            data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
-            data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
-            if data_base_correcao is not None:
-                if isinstance(data_base_correcao, datetime):
-                    data_base_correcao = data_base_correcao.strftime("%d/%m/%Y")
+        data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
+        data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
+        if data_base_correcao is not None:
+            if isinstance(data_base_correcao, datetime):
+                data_base_correcao = data_base_correcao.strftime("%d/%m/%Y")
 
-                set_data_correcao(data_base_correcao)
+            set_data_correcao(data_base_correcao)
 
-            if data_base_juros is not None:
-                if isinstance(data_base_juros, datetime):
-                    data_base_juros = data_base_juros.strftime("%d/%m/%Y")
+        if data_base_juros is not None:
+            if isinstance(data_base_juros, datetime):
+                data_base_juros = data_base_juros.strftime("%d/%m/%Y")
 
-                set_data_juros(data_base_juros)
-
-        except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-            raise e
+            set_data_juros(data_base_juros)
 
     def informar_motivo(self) -> None:
         """Inform the justification for the provision.
@@ -444,39 +428,32 @@ class Provisao(ElawBot):
             None
 
         """
-        try:
-            try_salvar = self.driver.find_element(
+        try_salvar = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.botao_salvar_id,
+        )
+
+        sleep(1)
+        try_salvar.click()
+
+        self.interact.sleep_load('div[id="j_id_2z"]')
+
+        self.message = "Informando justificativa"
+        self.type_log = "log"
+        self.prt()
+        informar_motivo = self.wait.until(
+            ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.botao_salvar_id,
-            )
-
-            sleep(1)
-            try_salvar.click()
-
-            self.interact.sleep_load('div[id="j_id_2z"]')
-
-            self.message = "Informando justificativa"
-            self.type_log = "log"
-            self.prt()
-            informar_motivo = self.wait.until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    self.elements.texto_motivo,
-                )),
-            )
-            informar_motivo.send_keys(
-                self.bot_data.get("OBSERVACAO", "Atualização de provisão"),
-            )
-            id_informar_motivo = informar_motivo.get_attribute("id")
-            self.driver.execute_script(
-                f"document.getElementById('{id_informar_motivo}').blur()",
-            )
-
-        except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-            raise e
+                el.texto_motivo,
+            )),
+        )
+        informar_motivo.send_keys(
+            self.bot_data.get("OBSERVACAO", "Atualização de provisão"),
+        )
+        id_informar_motivo = informar_motivo.get_attribute("id")
+        self.driver.execute_script(
+            f"document.getElementById('{id_informar_motivo}').blur()",
+        )
 
     def save_changes(self) -> None:
         """Save all changes made during the provision process.
@@ -488,7 +465,7 @@ class Provisao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2z"]')
         salvar = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.botao_salvar_id,
+            el.botao_salvar_id,
         )
         salvar.click()
 

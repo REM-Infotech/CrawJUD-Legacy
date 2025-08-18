@@ -7,14 +7,18 @@ Classes:
     Download: Manages document downloads by extending the CrawJUD base class
 """
 
+from __future__ import annotations
+
 import os
 import shutil
 from contextlib import suppress
+from pathlib import Path
 from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.elaw.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
 
@@ -29,12 +33,7 @@ class Download(ElawBot):
     """
 
     def execution(self) -> None:
-        """Execute the download process.
-
-        Raises:
-            DownloadError: If an error occurs during execution.
-
-        """
+        """Execute the download process."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -86,7 +85,7 @@ class Download(ElawBot):
         """Handle the download queue processing.
 
         Raises:
-            DownloadQueueError: If an error occurs during queue processing.
+            ExecutionError: If an error occurs during queue processing.
 
         """
         try:
@@ -123,19 +122,14 @@ class Download(ElawBot):
             raise ExecutionError(e=e) from e
 
     def buscar_doc(self) -> None:
-        """Access the attachments page.
-
-        Raises:
-            DocumentSearchError: If an error occurs while accessing the page.
-
-        """
+        """Access the attachments page."""
         self.message = "Acessando página de anexos"
         self.type_log = "log"
         self.prt()
         anexosbutton = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.anexosbutton_css,
+                el.anexosbutton_css,
             )),
         )
         anexosbutton.click()
@@ -145,16 +139,11 @@ class Download(ElawBot):
         self.prt()
 
     def download_docs(self) -> None:
-        """Download the documents.
-
-        Raises:
-            DocumentDownloadError: If an error occurs during downloading.
-
-        """
+        """Download the documents."""
         table_doc = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.css_table_doc,
+                el.css_table_doc,
             )),
         )
         table_doc = table_doc.find_elements(By.TAG_NAME, "tr")
@@ -192,7 +181,7 @@ class Download(ElawBot):
 
                     baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
                         By.CSS_SELECTOR,
-                        self.elements.botao_baixar,
+                        el.botao_baixar,
                     )
                     baixar.click()
 
@@ -207,13 +196,10 @@ class Download(ElawBot):
         Args:
             namefile (str): The new name for the file.
 
-        Raises:
-            DocumentRenameError: If an error occurs during renaming.
-
         """
         filedownloaded = False
         while True:
-            for _, __, files in os.walk(os.path.join(self.output_dir_path)):
+            for _, __, files in Path(self.output_dir_path).walk():
                 for file in files:
                     if file.replace(" ", "") == namefile.replace(" ", ""):
                         filedownloaded = True
@@ -223,15 +209,15 @@ class Download(ElawBot):
                 if filedownloaded is True:
                     break
 
-            old_file = os.path.join(self.output_dir_path, namefile)
-            if os.path.exists(old_file):
+            old_file = Path(self.output_dir_path).joinpath(namefile)
+            if old_file.exists():
                 sleep(0.5)
                 break
 
             sleep(0.01)
 
         filename_replaced = f"{self.pid} - {namefile.replace(' ', '')}"
-        path_renamed = os.path.join(self.output_dir_path, filename_replaced)
+        path_renamed = os.path.joinpath(filename_replaced)
         shutil.move(old_file, path_renamed)
 
         if not self.list_docs:

@@ -17,6 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.elaw.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
 
@@ -90,7 +91,7 @@ class Andamentos(ElawBot):
         try:
             search = self.search_bot()
             if search is True:
-                btn_newmove = self.elements.botao_andamento
+                btn_newmove = el.botao_andamento
                 new_move = self.wait.until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, btn_newmove)),
                 )
@@ -133,7 +134,7 @@ class Andamentos(ElawBot):
             self.message = "Informando data"
             self.type_log = "log"
             self.prt()
-            css_Data = self.elements.input_data  # noqa: N806
+            css_Data = el.input_data  # noqa: N806
             campo_data = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, css_Data)),
             )
@@ -168,7 +169,7 @@ class Andamentos(ElawBot):
 
             ocorrencia = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.inpt_ocorrencia,
+                el.inpt_ocorrencia,
             )
             text_andamento = (
                 str(self.bot_data.get("OCORRENCIA"))
@@ -200,7 +201,7 @@ class Andamentos(ElawBot):
 
             observacao = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.inpt_obs,
+                el.inpt_obs,
             )
             text_andamento = (
                 str(self.bot_data.get("OBSERVACAO"))
@@ -243,7 +244,7 @@ class Andamentos(ElawBot):
             self.link = self.driver.current_url
             save_button = self.driver.find_element(
                 By.ID,
-                self.elements.botao_salvar_andamento,
+                el.botao_salvar_andamento,
             )
             save_button.click()
 

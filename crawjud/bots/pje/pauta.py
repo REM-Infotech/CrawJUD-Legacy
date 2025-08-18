@@ -5,6 +5,8 @@ pautas de audiências judiciais utilizando Selenium, além de tratar erros e ger
 durante a execução automatizada das tarefas.
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -18,6 +20,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.pje.resources import elements as el
 from crawjud.bots.pje.resources._varas_dict import varas as varas_pje
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.custom.task import ContextTask
@@ -116,7 +119,7 @@ class Pauta(PjeBot):
                 date = self.current_date.strftime("%Y-%m-%d")
                 self.data_append.update({vara: {date: []}})
 
-                url_ = f"{self.elements.url_pautas}/{vara}-{date}"
+                url_ = f"{el.url_pautas}/{vara}-{date}"
                 self.driver.get(url_)
                 self.get_pautas(date, vara)
 
