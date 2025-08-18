@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import json.decoder
 import secrets
 import traceback
 from contextlib import suppress
@@ -11,7 +12,7 @@ from io import BytesIO
 from pathlib import Path
 from threading import Lock
 from time import sleep
-from typing import TYPE_CHECKING, ClassVar, cast
+from typing import TYPE_CHECKING, ClassVar, Literal, cast
 
 from selenium.common.exceptions import (
     TimeoutException,
@@ -28,7 +29,7 @@ from crawjud.common.exceptions.bot import (
     LoginSystemError,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
-from crawjud.interfaces.dict.bot import BotData
+from crawjud.interfaces.types import BotData
 from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.interfaces.types.pje import (
     DictDesafio,
@@ -60,6 +61,62 @@ class PjeBot[T](CrawJUD):
 
     def __init__(self) -> None:
         """Empty."""
+
+    def search(  # noqa: D417
+        self,
+        data: BotData,
+        row: int,
+        client: Client,
+    ) -> DictResults | Literal["Nenhum processo encontrado"]:
+        """Realize a busca de um processo no sistema PJe.
+
+        Args:
+            headers (dict[str, str]): Cabeçalhos HTTP para a requisição.
+            cookies (dict[str, str]): Cookies HTTP para a requisição.
+            data (BotData): Dados do processo a serem consultados.
+            *args: Argumentos adicionais.
+            **kwargs: Argumentos nomeados adicionais
+
+        Returns:
+            DictResults | Literal["Nenhum processo encontrado"]: Resultado da busca do
+            processo ou mensagem indicando que nenhum processo foi encontrado.
+
+        """
+        # Envia mensagem de log para task assíncrona
+        message = "Buscando processo {proc}".format(proc=data["NUMERO_PROCESSO"])
+        self.print_msg(
+            message=message,
+            row=row,
+            type_log="log",
+        )
+        link = f"/processos/dadosbasicos/{data['NUMERO_PROCESSO']}"
+        response = client.get(url=link)
+        id_processo: str
+
+        if response.status_code != 200:
+            return None
+
+        try:
+            data_request = response.json()
+
+        except json.decoder.JSONDecodeError:
+            return None
+
+        # Caso a resposta seja uma lista, pega o primeiro item
+        if isinstance(data_request, list):
+            data_request: dict[str, T] = data_request[0]
+
+        try:
+            id_processo = data_request["id"]
+        except KeyError:
+            return None
+
+        return self.desafio_captcha(
+            data=data,
+            row=row,
+            id_processo=id_processo,
+            client=client,
+        )
 
     def auth(self) -> bool:
         try:

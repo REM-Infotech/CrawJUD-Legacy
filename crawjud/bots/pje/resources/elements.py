@@ -14,3 +14,8 @@ btn_entrar: str = 'button[id="btnEntrar"]'
 url_pautas: str = "https://pje.trt11.jus.br/consultaprocessual/pautas"
 url_busca: str = "url_de_busca_AC"
 btn_busca: str = "btn_busca_AC"
+
+pattern_url = (
+    r"^https:\/\/pje\.trt\d{1,2}\.jus\.br\/consultaprocessual\/detalhe-processo\/"
+    r"\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}\/\d+(#[a-zA-Z0-9]+)?$"
+)
