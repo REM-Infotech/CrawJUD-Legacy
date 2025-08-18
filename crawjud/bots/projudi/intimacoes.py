@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from crawjud.bots.controllers.projudi import ProjudiBot
-from crawjud.bots.projudi.resources import elements as el
+from crawjud.bots.resources.elements import projudi as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task

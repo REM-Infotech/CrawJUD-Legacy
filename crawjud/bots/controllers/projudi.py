@@ -15,7 +15,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from crawjud.bots.controllers.master import CrawJUD
-from crawjud.bots.projudi.resources import elements as el
+from crawjud.bots.resources.elements import projudi as el
 from crawjud.common.exceptions.bot import ExecutionError, LoginSystemError
 
 if TYPE_CHECKING:

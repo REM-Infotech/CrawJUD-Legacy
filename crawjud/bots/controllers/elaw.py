@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bots.controllers.master import CrawJUD
-from crawjud.bots.esaj.resources import elements as el
+from crawjud.bots.resources.elements import esaj as el
 from crawjud.common.exceptions.bot import ExecutionError
 
 DictData = dict[str, str | datetime]

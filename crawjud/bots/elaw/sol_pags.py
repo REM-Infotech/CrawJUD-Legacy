@@ -26,7 +26,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bots.controllers.elaw import ElawBot
-from crawjud.bots.elaw.resources import elements as el
+from crawjud.bots.resources.elements import elaw as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 

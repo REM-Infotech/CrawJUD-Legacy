@@ -19,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bots.controllers.projudi import ProjudiBot
-from crawjud.bots.projudi.resources import elements as el
+from crawjud.bots.resources.elements import projudi as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.custom.task import ContextTask

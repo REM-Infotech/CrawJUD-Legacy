@@ -20,7 +20,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bots.controllers.elaw import ElawBot
-from crawjud.bots.elaw.resources import elements as el
+from crawjud.bots.resources.elements import elaw as el
 
 type_doc = {11: "cpf", 14: "cnpj"}
 

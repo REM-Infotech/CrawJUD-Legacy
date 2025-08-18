@@ -15,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.bots.controllers.esaj import ESajBot
-from crawjud.bots.esaj.resources import elements as el
+from crawjud.bots.resources.elements import esaj as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 

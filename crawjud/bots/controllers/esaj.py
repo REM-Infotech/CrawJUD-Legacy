@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from crawjud.bots.controllers.master import CrawJUD
-from crawjud.bots.esaj.resources import elements as el
+from crawjud.bots.resources.elements import esaj as el
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

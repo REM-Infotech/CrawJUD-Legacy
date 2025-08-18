@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 
 from crawjud.bots.elaw.cadastro.cadastro import PreCadastro
 from crawjud.bots.elaw.cadastro.complement import CadastroComplementar
-from crawjud.bots.elaw.resources import elements as el
+from crawjud.bots.resources.elements import elaw as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 
