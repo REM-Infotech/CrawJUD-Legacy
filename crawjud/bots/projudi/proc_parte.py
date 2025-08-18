@@ -49,8 +49,6 @@ class ProcParte(ProjudiBot):
                 self.queue()
 
             except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
                 old = self.message
                 message_error = str(e)
 

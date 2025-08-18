@@ -95,9 +95,6 @@ class Intimacoes(ProjudiBot):
                 self.queue()
 
             except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
                 old_message = None
                 if old_message is None:
                     old_message = self.message

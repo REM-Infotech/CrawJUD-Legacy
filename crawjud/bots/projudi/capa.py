@@ -74,8 +74,6 @@ class Capa(ProjudiBot):
                 self.queue()
 
             except ExecutionError as e:
-                # TODO(Nicholas Silva): Criação de Exceptions
-                # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
                 message_error = str(e)
 
                 self.print_msg(
