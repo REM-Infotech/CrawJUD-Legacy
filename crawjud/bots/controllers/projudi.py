@@ -39,7 +39,7 @@ CSS_INPUT_PROCESSO = {
 class ProjudiBot[T](CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
-    def search(self, bot_data: dict[str, str]) -> bool:
+    def search(self) -> bool:
         """Procura processos no PROJUDI.
 
         Returns:
@@ -47,10 +47,9 @@ class ProjudiBot[T](CrawJUD):
         redireciona pra cada rota apropriada
 
         """
-        self.bot_data = bot_data
         url_search = el.url_busca
 
-        grau = self.bot_data.get("GRAU", 1) or 1
+        grau = int(self.bot_data.get("GRAU", 1) or 1)
 
         if grau == 2:
             if not self.url_segunda_instancia:

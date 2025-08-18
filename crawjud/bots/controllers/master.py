@@ -78,10 +78,6 @@ class AbstractCrawJUD[T]:
         """Verifica se a subclasse implementa todos os métodos obrigatórios."""
         tqdm.write("ok")
 
-    def __init_subclass__(cls) -> None:
-        """Empty."""
-        cls.all_subclasses[cls.__name__] = cls
-
     @property
     def bot_data(self) -> BotData:
         return self._bot_data
