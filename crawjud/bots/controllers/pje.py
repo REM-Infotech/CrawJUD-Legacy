@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
 import json.decoder
 import secrets
 import traceback
@@ -483,7 +482,3 @@ class PjeBot[T](CrawJUD):
         }
 
         return formats[_format]
-
-
-importlib.import_module("crawjud.utils.auth.pje")
-importlib.import_module("crawjud.utils.search.pje")
