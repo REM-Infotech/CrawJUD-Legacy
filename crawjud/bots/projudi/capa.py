@@ -96,7 +96,7 @@ class Capa(ProjudiBot):
 
         """
         try:
-            search = self.buscar_processo()
+            search = self.search()
             trazer_copia = self.bot_data.get("TRAZER_COPIA", "não")
             if search is not True:
                 _raise_execution_error("Processo não encontrado")

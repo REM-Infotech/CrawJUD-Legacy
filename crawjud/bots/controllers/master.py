@@ -73,8 +73,6 @@ class AbstractCrawJUD[T]:
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
 
-    all_subclasses: ClassVar[dict[str, type[AbstractCrawJUD]]] = {}
-
     @classmethod
     def __subclasshook__(cls, subclass: type) -> bool:
         """Verifica se a subclasse implementa todos os métodos obrigatórios."""
@@ -175,28 +173,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         )
 
         self._wait = self._driver.wait
-
-    def buscar_processo(self, *args: T, **kwargs: T) -> T:
-        """Busca o processo no PJe.
-
-        Returns:
-            DictResults: dicionário com os resultados da busca.
-
-        """
-        search_ = self.all_subclasses[f"{self.system}search"]()
-
-        return search_.search(*args, **kwargs)
-
-    def autenticar(self) -> bool:
-        """Autenticação do PJE.
-
-        Returns:
-            bool: Booleano para identificar se autenicação foi realizada.
-
-        """
-        auth_ = self.all_subclasses[f"{self.system}auth"]()
-
-        return auth_.auth()
 
     def load_data(
         self,

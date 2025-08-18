@@ -70,7 +70,7 @@ class Capa(PjeBot):  # noqa: D101
         for regiao, data_regiao in generator_regioes:
             with suppress(Exception):
                 self.print_msg(message=f"Autenticando no TRT {regiao}")
-                if self.autenticar():
+                if self.auth():
                     self.print_msg(
                         message="Autenticado com sucesso!",
                         type_log="info",
@@ -128,7 +128,7 @@ class Capa(PjeBot):  # noqa: D101
                 try:
                     # Atualiza dados do item para processamento
                     row = self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
-                    resultado: DictResults = self.buscar_processo(
+                    resultado: DictResults = self.search(
                         data=item,
                         row=row,
                         client=client,
