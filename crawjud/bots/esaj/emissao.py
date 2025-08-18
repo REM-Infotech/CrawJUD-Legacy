@@ -196,7 +196,7 @@ class Emissao(ESajBot):
         )
         nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-        elements: list = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+        elements = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
             self.count_doc(self.bot_data.get("CPF_CNPJ")),
         )
         set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
@@ -254,7 +254,7 @@ class Emissao(ESajBot):
             )
             nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-            elements: list = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+            elements = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
                 self.count_doc(self.bot_data.get("CPF_CNPJ")),
             )
 
