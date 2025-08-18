@@ -125,6 +125,14 @@ class AbstractCrawJUD:
     def folder_storage(self, _folder_storage: str) -> None:
         self._folder_storage = _folder_storage
 
+    @property
+    def output_dir_path(self) -> Path:
+        out_dir = work_dir.joinpath("temp", self.pid)
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        return out_dir
+
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""

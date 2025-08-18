@@ -76,19 +76,14 @@ class Capa(ProjudiBot):
             except ExecutionError as e:
                 # TODO(Nicholas Silva): Criação de Exceptions
                 # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
-                old_message = None
-
-                if old_message is None:
-                    old_message = self.message
-
                 message_error = str(e)
 
-                self.type_log = "error"
-                self.message_error = f"{message_error}. | Operação: {old_message}"
-                self.prt()
+                self.print_msg(
+                    message=f"{message_error}.",
+                    type_log="error",
+                )
 
-                self.bot_data.update({"MOTIVO_ERRO": self.message_error})
+                self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(self.bot_data)
 
                 self.message_error = None
@@ -176,9 +171,11 @@ class Capa(ProjudiBot):
             ).click()
 
         def export() -> None:
-            self.message = "Baixando cópia integral do processo..."
-            self.type_log = "log"
-            self.prt()
+            self.print_msg(
+                message="Baixando cópia integral do processo...",
+                type_log="log",
+            )
+
             time.sleep(5)
 
             n_processo = self.bot_data.get("NUMERO_PROCESSO")
@@ -260,9 +257,10 @@ class Capa(ProjudiBot):
 
     def _log_obtendo_informacoes(self) -> None:
         """Exibe log de obtenção de informações do processo."""
-        self.message = f"Obtendo informações do processo {self.bot_data.get('NUMERO_PROCESSO')}..."
-        self.type_log = "log"
-        self.prt()
+        self.print_msg(
+            message=f"Obtendo informações do processo {self.bot_data.get('NUMERO_PROCESSO')}...",
+            type_log="log",
+        )
 
     def _extrai_info_geral(
         self,
