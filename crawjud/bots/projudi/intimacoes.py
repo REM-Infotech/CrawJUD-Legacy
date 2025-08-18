@@ -95,15 +95,9 @@ class Intimacoes(ProjudiBot):
                 self.queue()
 
             except ExecutionError as e:
-                old_message = None
-                if old_message is None:
-                    old_message = self.message
-
                 message_error = str(e)
 
-                self.type_log = "error"
-                self.message_error = f"{message_error}. | Operação: {old_message}"
-                self.prt()
+                self.print_msg(message=f"{message_error}.", type_log="error")
 
                 self.bot_data.update({"MOTIVO_ERRO": self.message_error})
                 self.append_error(self.bot_data)
