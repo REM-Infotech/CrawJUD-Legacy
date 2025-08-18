@@ -18,3 +18,13 @@ COUNT_TRYS = 15
 
 class ProjudiBot[T](CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
+
+    def __init__(self) -> None:
+        """Initialize PropertiesCrawJUD.
+
+        Set up references to utility classes and bot components.
+
+        Comments:
+            Imports and assigns default values for AuthBot, DriverBot, ElementsBot, and others.
+
+        """
