@@ -9,6 +9,34 @@ Este módulo contém:
 
 from __future__ import annotations
 
+type_docscss = {
+    "custas_iniciais": {
+        "cnpj": [
+            'input[name="entity.flTipoPessoa"][value="J"]',
+            'tr[id="campoNuCnpj"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
+        ],
+        "cpf": [
+            'input[name="entity.flTipoPessoa"][value="F"]',
+            'tr[id="campoNuCpf"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
+        ],
+    },
+    "preparo ri": {
+        "cnpj": [
+            'input[name="entity.flTipoPessoa"][value="J"]',
+            'tr[id="campoNuCnpj"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
+        ],
+        "cpf": [
+            'input[name="entity.flTipoPessoa"][value="F"]',
+            'tr[id="campoNuCpf"]',
+            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
+        ],
+    },
+}
+
+
 url_custas_ini = "https://consultasaj.tjam.jus.br/ccpweb/iniciarCalculoDeCustas.do?cdTipoCusta=7&flTipoCusta=0&&cdServicoCalculoCusta=690003"
 css_val_doc_custas_ini = (
     "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10)"

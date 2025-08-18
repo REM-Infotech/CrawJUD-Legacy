@@ -26,33 +26,6 @@ from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
-type_docscss = {
-    "custas_iniciais": {
-        "cnpj": [
-            'input[name="entity.flTipoPessoa"][value="J"]',
-            'tr[id="campoNuCnpj"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
-        ],
-        "cpf": [
-            'input[name="entity.flTipoPessoa"][value="F"]',
-            'tr[id="campoNuCpf"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
-        ],
-    },
-    "preparo ri": {
-        "cnpj": [
-            'input[name="entity.flTipoPessoa"][value="J"]',
-            'tr[id="campoNuCnpj"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CNPJ"]',
-        ],
-        "cpf": [
-            'input[name="entity.flTipoPessoa"][value="F"]',
-            'tr[id="campoNuCpf"]',
-            'input[name="entity.nuCpfCnpj"][rotulo="CPF"]',
-        ],
-    },
-}
-
 
 class Emissao(ESajBot):
     """Perform emission tasks by generating docs and extracting PDF barcodes.
@@ -223,7 +196,7 @@ class Emissao(ESajBot):
         )
         nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-        elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+        elements: list = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
             self.count_doc(self.bot_data.get("CPF_CNPJ")),
         )
         set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
@@ -281,7 +254,7 @@ class Emissao(ESajBot):
             )
             nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-            elements: list = type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+            elements: list = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
                 self.count_doc(self.bot_data.get("CPF_CNPJ")),
             )
 
