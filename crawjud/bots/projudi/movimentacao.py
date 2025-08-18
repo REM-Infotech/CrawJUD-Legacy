@@ -7,12 +7,11 @@ from __future__ import annotations
 
 import re
 import shutil
-import time
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 import requests
@@ -36,35 +35,6 @@ class Movimentacao(ProjudiBot):
     This class extends CrawJUD to handle operations including movement search,
     keyword filtering, and report generation for movement activities.
     """
-
-    @classmethod
-    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
-        """Initialize a Movimentacao instance with provided arguments.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        Returns:
-            Self: An initialized Movimentacao instance.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
-        """Initialize the Movimentacao instance and execute authentication.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
         """Loop through data rows and process each movement with error management.

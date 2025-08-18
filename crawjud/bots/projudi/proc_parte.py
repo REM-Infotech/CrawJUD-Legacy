@@ -3,10 +3,8 @@
 Manage participant processing in the Projudi system by interacting with process lists and varas.
 """
 
-import os
-import time
 from contextlib import suppress
-from typing import Self
+from pathlib import Path
 
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -24,44 +22,6 @@ class ProcParte(ProjudiBot):
     This class extends CrawJUD to retrieve process lists, store participant information,
     and manage queue execution for the Projudi system.
     """
-
-    @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize a ProcParte instance with the specified parameters.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        Returns:
-            Self: The initialized ProcParte instance.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the ProcParte instance and start authentication.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
-        self.data_append = []
 
     def execution(self) -> None:
         """Execute the main loop for participant processing continuously.
@@ -95,12 +55,7 @@ class ProcParte(ProjudiBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage the participant processing queue and handle varas search.
-
-        Raises:
-            ExecutionError: If process retrieval and queue execution fail.
-
-        """
+        """Manage the participant processing queue and handle varas search."""
         try:
             for vara in self.varas:
                 self.vara: str = vara
@@ -117,15 +72,6 @@ class ProcParte(ProjudiBot):
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
             old_message = None
-
-            # check_window = any([isinstance(e, NoSuchWindowException), isinstance(e, MaxRetryError)])
-            # if check_window:
-            #     with suppress(Exception):
-            #         self.driver_launch(message="Webdriver encerrado inesperadamente, reinicializando...")
-
-            #         old_message = self.message
-
-            #         self.auth_bot()
 
             if old_message is None:
                 old_message = self.message
@@ -145,6 +91,10 @@ class ProcParte(ProjudiBot):
         """Retrieve and process the list of processes from the web interface.
 
         Extracts process data, manages pagination, and stores the retrieved information.
+
+        Raises:
+            ExecutionError: Erro de execução
+
         """
         try:
             table_processos = self.driver.find_element(
@@ -176,7 +126,7 @@ class ProcParte(ProjudiBot):
                 self.append_success(
                     self.data_append,
                     "Processos salvos na planilha!",
-                    fileN=os.path.basename(self.path),
+                    fileN=Path(self.path).name,
                 )
                 if next_page:
                     next_page.click()
@@ -203,30 +153,27 @@ class ProcParte(ProjudiBot):
         for processo in list_processos:
             numero_processo = processo.find_elements(By.TAG_NAME, "td")[1].text
 
+            polo_ativo = "Não consta ou processo em sigilo"
+            polo_passivo = "Não consta ou processo em sigilo"
+            juizo = "Não consta ou processo em sigilo"
+
             numero = "".join(filter(str.isdigit, numero_processo))
             anoref = ""
             if numero:
                 anoref = numero_processo.split(".")[1]
 
-            try:
+            with suppress(Exception):
                 polo_ativo = (
                     processo.find_elements(By.TAG_NAME, "td")[2]
                     .find_elements(By.TAG_NAME, "td")[1]
                     .text
                 )
-            except Exception:
-                polo_ativo = "Não consta ou processo em sigilo"
 
-            try:
+            with suppress(Exception):
                 polo_passivo = processo.find_elements(By.TAG_NAME, "td")[7].text
 
-            except Exception:
-                polo_passivo = "Não consta ou processo em sigilo"
-
-            try:
+            with suppress(Exception):
                 juizo = processo.find_elements(By.TAG_NAME, "td")[9].text
-            except Exception:
-                juizo = "Não consta ou processo em sigilo"
 
             self.data_append.append(
                 {
