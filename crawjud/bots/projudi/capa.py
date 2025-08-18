@@ -44,6 +44,8 @@ class Capa(ProjudiBot):
         self,
         current_task: ContextTask = None,
         storage_folder_name: str | None = None,
+        name: str | None = None,
+        system: str | None = None,
     ) -> None:
         """Execute the main processing loop to extract process information.
 

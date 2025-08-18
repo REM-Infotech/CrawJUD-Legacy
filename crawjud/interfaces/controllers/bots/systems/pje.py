@@ -310,7 +310,7 @@ class PjeBot[T](CrawJUD):
         regioes_dict: dict[str, list[BotData]] = {}
         position_process: dict[str, int] = {}
 
-        for item in self.bot_data:
+        for item in self._frame:
             try:
                 numero_processo = StrProcessoCNJ(item["NUMERO_PROCESSO"])
 

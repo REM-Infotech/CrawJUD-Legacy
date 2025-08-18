@@ -66,6 +66,7 @@ class AbstractCrawJUD:
     _cookies: dict[str, str] | None = None
     _headers: dict[str, str] | None = None
     _base_url: str | None = None
+    _frame: ClassVar[list[BotData]] = []
 
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
@@ -80,8 +81,12 @@ class AbstractCrawJUD:
         cls.tasks_cls[cls.__name__] = cls
 
     @property
-    def bot_data(self) -> list[BotData]:
+    def bot_data(self) -> BotData:
         return self._bot_data
+
+    @property
+    def frame(self) -> list[BotData]:
+        return self._frame
 
     @property
     def storage(self) -> Storage:
@@ -209,7 +214,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         bot_data: list[BotData] = self.load_data(
             base91_planilha=self.xlsx_data["file_base91str"],
         )
-
+        self._frame = bot_data
         self._bot_data = bot_data
 
     def carregar_arquivos(self) -> None:
