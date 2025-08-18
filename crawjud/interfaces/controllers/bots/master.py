@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, ClassVar
 from zoneinfo import ZoneInfo
 
 import base91
+import pandas as pd
 from pandas import Timestamp, read_excel
 from termcolor import colored
 from tqdm import tqdm
@@ -291,3 +292,60 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                     }.get(type_log, "white"),
                 ),
             )
+
+    def append_success(
+        self,
+        data: BotData,
+        message: str | None = None,
+        fileN: str | None = None,  # noqa: N803
+        type_log: str = "success",
+    ) -> None:
+        """Append successful execution data to the success spreadsheet.
+
+        Args:
+            data (TypeData): The data to be appended.
+            message (str, optional): A success message to log.
+            fileN (str, optional): Filename override for saving data.
+            type_log(str): log
+
+        """
+        if not message:
+            message = "Execução do processo efetuada com sucesso!"
+
+        def save_info(data: list[dict[str, str]]) -> None:
+            output_success = self.path
+
+            if fileN or not output_success:
+                output_success = self.output_dir_path.joinpath(fileN)
+
+            if not output_success.exists():
+                df = pd.DataFrame(data)
+            else:
+                df_existing = pd.read_excel(output_success)
+                df = df_existing.to_dict(orient="records")
+                df.extend(data)
+
+            new_data = pd.DataFrame(df)
+            new_data.to_excel(output_success, index=False)
+
+        typed = type(data) is list and all(isinstance(item, dict) for item in data)
+
+        if not typed:
+            data2 = dict.fromkeys(self.name_colunas, "")
+            for item in data:
+                data2_itens = list(
+                    filter(
+                        lambda x: x[1] is None or str(x[1]).strip() == "",
+                        list(data2.items()),
+                    ),
+                )
+                for key, _ in data2_itens:
+                    data2.update({key: item})
+                    break
+
+            data.clear()
+            data.append(data2)
+
+        save_info(data)
+
+        self.print_msg(message=message, type_log=type_log)
