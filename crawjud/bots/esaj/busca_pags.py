@@ -3,6 +3,8 @@
 This module manages page search operations for paid costs in the CrawJUD-Bots app.
 """
 
+from __future__ import annotations
+
 import time
 from contextlib import suppress
 from datetime import datetime
@@ -135,8 +137,6 @@ class BuscaPags(ESajBot):
         Raises:
             ExecutionError: Propagates errors encountered during page search.
 
-        # Inline: Call helper methods in sequence.
-
         """
         try:
             self.get_page_custas_pagas()
@@ -202,7 +202,7 @@ class BuscaPags(ESajBot):
                 self.roleta = 0
 
                 for rows in tr_rows:
-                    try:
+                    with suppress(Exception):
                         checkifclass = rows.get_attribute("class")
                         if checkifclass == "":
                             tipo_custa = rows.find_elements(By.TAG_NAME, "td")[0].text
@@ -211,7 +211,10 @@ class BuscaPags(ESajBot):
                                 rows.find_elements(By.TAG_NAME, "td")[2].text,
                             )
 
-                            data_calculo = datetime.strptime(data_calculo, "%d/%m/%Y")
+                            data_calculo = datetime.strptime(
+                                data_calculo,
+                                "%d/%m/%Y",
+                            ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                             valor_custa = (
                                 str(rows.find_elements(By.TAG_NAME, "td")[3].text)
@@ -235,7 +238,7 @@ class BuscaPags(ESajBot):
                             data_pagamento = datetime.strptime(
                                 data_pagamento,
                                 "%d/%m/%Y",
-                            )
+                            ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                             total += valor_custa
 
@@ -251,45 +254,52 @@ class BuscaPags(ESajBot):
                                 data_pagamento,
                             ]
                             self.append_success()
-                        elif not checkifclass == "":
+                        elif checkifclass != "":
                             continue
 
-                    except Exception:
-                        tipo_custa = rows.find_elements(By.TAG_NAME, "td")[0].text
-                        emissor = rows.find_elements(By.TAG_NAME, "td")[1].text
-                        data_calculo = str(
-                            rows.find_elements(By.TAG_NAME, "td")[2].text,
-                        )
+                        continue
 
-                        data_calculo = datetime.strptime(data_calculo, "%d/%m/%Y")
+                    tipo_custa = rows.find_elements(By.TAG_NAME, "td")[0].text
+                    emissor = rows.find_elements(By.TAG_NAME, "td")[1].text
+                    data_calculo = str(
+                        rows.find_elements(By.TAG_NAME, "td")[2].text,
+                    )
 
-                        valor_custa = str(
-                            rows.find_elements(By.TAG_NAME, "td")[3].text,
-                        )
+                    data_calculo = datetime.strptime(
+                        data_calculo,
+                        "%d/%m/%Y",
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
-                        valor_custa = float(valor_custa)
+                    valor_custa = str(
+                        rows.find_elements(By.TAG_NAME, "td")[3].text,
+                    )
 
-                        cód_guia = str(rows.find_elemens(By.TAG_NAME, "td")[4].text)
-                        parcelaguia = rows.find_elements(By.TAG_NAME, "td")[5].text
-                        data_pagamento = datetime.strptime(
-                            str(rows.find_elements(By.TAG_NAME, "td")[6].text),
-                        )
+                    valor_custa = float(valor_custa)
 
-                        data_pagamento = datetime.strptime(data_pagamento, "%d/%m/%Y")
-                        self.roleta = self.roleta + 1
-                        total += valor_custa
+                    cód_guia = str(rows.find_elemens(By.TAG_NAME, "td")[4].text)
+                    parcelaguia = rows.find_elements(By.TAG_NAME, "td")[5].text
+                    data_pagamento = datetime.strptime(
+                        str(rows.find_elements(By.TAG_NAME, "td")[6].text),
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
-                        data = [
-                            self.bot_data.get("NUMERO_PROCESSO"),
-                            tipo_custa,
-                            emissor,
-                            data_calculo,
-                            valor_custa,
-                            cód_guia,
-                            parcelaguia,
-                            data_pagamento,
-                        ]
-                        self.append_success(data)
+                    data_pagamento = datetime.strptime(
+                        data_pagamento,
+                        "%d/%m/%Y",
+                    ).replace(tzinfo=ZoneInfo("America/Manaus"))
+                    self.roleta = self.roleta + 1
+                    total += valor_custa
+
+                    data = [
+                        self.bot_data.get("NUMERO_PROCESSO"),
+                        tipo_custa,
+                        emissor,
+                        data_calculo,
+                        valor_custa,
+                        cód_guia,
+                        parcelaguia,
+                        data_pagamento,
+                    ]
+                    self.append_success(data)
 
             elif "Lista de custas pagas" not in nomediv:
                 continue

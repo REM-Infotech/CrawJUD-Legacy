@@ -4,16 +4,23 @@ This module executes the workflow to search and process process details,
 ensuring detailed extraction and logging of information.
 """
 
+from __future__ import annotations
+
 import time
 from contextlib import suppress
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.esaj.resources import elements as el
+from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
+
+if TYPE_CHECKING:
+    from crawjud.utils.webdriver.web_element import WebElementBot
 
 
 class Capa(ESajBot):
@@ -111,12 +118,16 @@ class Capa(ESajBot):
         """Queue capa tasks by searching for process data and appending details to logs.
 
         Calls the search method and retrieves detailed process information.
+
+        Raises:
+            ExecutionError: Erro de execução
+
         """
         try:
             search = self.search_bot()
 
             if search is False:
-                raise ExecutionError(message="Processo não encontrado.")
+                _raise_execution_error(message="Processo não encontrado.")
 
             self.append_success(self.get_process_informations())
 
@@ -127,157 +138,184 @@ class Capa(ESajBot):
             raise ExecutionError(e=e) from e
 
     def get_process_informations(self) -> list:
-        """Extract and return detailed process information from the web elements.
+        """Extraia informações detalhadas do processo a partir dos elementos web.
+
+        Args:
+            Nenhum.
 
         Returns:
-            list: A structured list containing process details such as area, forum, and value.
+            list: Lista estruturada contendo detalhes do processo como área, fórum e valor.
 
-        Note:
-            Extraction varies by process degree.
+        Raises:
+            Nenhuma exceção específica.
 
         """
-        # chk_advs = ["Advogada", "Advogado"]
-        # adv_polo_ativo = "Não consta"
-        # adv_polo_passivo = "Não consta"
-
+        # Log de início da extração
         self.message = f"Extraindo informações do processo nº{self.bot_data.get('NUMERO_PROCESSO')}"
         self.type_log = "log"
         self.prt()
 
-        grau = self.bot_data.get("GRAU", 1)
-
-        if not grau:
-            grau = 1
-
-        elif isinstance(grau, str):
-            if "º" in grau:
-                grau = grau.replace("º", "")
-
-            grau = int(grau)
-
+        _grau = self._parse_grau(self.bot_data.get("GRAU", 1))
         self.driver.execute_script("$('div#maisDetalhes').show()")
 
         data = {"NUMERO_PROCESSO": ""}
+        self._extract_sumary_information(data)
+        self._extract_partes_information(data)
 
+        return [data]
+
+    def _parse_grau(self, grau: int | str) -> int:
+        """Parse o grau do processo para inteiro.
+
+        Args:
+            grau (int|str): Grau do processo.
+
+        Returns:
+            int: Grau convertido para inteiro.
+
+        """
+        if not grau:
+            return 1
+        if isinstance(grau, str):
+            if "º" in grau:
+                grau = grau.replace("º", "")
+            return int(grau)
+        return grau
+
+    def _extract_sumary_information(self, data: dict) -> None:
+        """Extraia informações do sumário e atualize o dicionário de dados.
+
+        Args:
+            data (dict): Dicionário a ser atualizado com informações do sumário.
+
+        """
         sumary_1_esaj = self.wait.until(
-            ec.presence_of_all_elements_located((
-                By.CSS_SELECTOR,
-                self.elements.sumary_header_1,
-            )),
+            ec.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, el.sumary_header_1),
+            ),
         )
-
         sumary_2_esaj = self.wait.until(
-            ec.presence_of_all_elements_located((
-                By.CSS_SELECTOR,
-                self.elements.sumary_header_2,
-            )),
+            ec.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, el.sumary_header_2),
+            ),
         )
-
         list_sumary = [sumary_1_esaj, sumary_2_esaj]
 
         for pos_, sumary in enumerate(list_sumary):
             for pos, rows in enumerate(sumary):
                 subitems_sumary = rows.find_elements(
                     By.CSS_SELECTOR,
-                    self.elements.rows_sumary_,
+                    el.rows_sumary_,
                 )
-
                 for item in subitems_sumary:
-                    if pos == 0 and pos_ == 0:
-                        num_proc = item.find_element(
-                            By.CLASS_NAME,
-                            self.elements.numproc,
-                        ).text
-                        status_proc = "Em Andamento"
-                        with suppress(NoSuchElementException):
-                            status_proc = item.find_element(
-                                By.CLASS_NAME,
-                                self.elements.statusproc,
-                            ).text
+                    self._process_sumary_item(item, pos, pos_, data)
 
-                        data.update({
-                            "NUMERO_PROCESSO": num_proc,
-                            "STATUS": status_proc.upper(),
-                        })
-                        continue
+    def _process_sumary_item(
+        self,
+        item: WebElementBot,
+        pos: int,
+        pos_: int,
+        data: dict,
+    ) -> None:
+        """Processa um item do sumário e atualiza o dicionário de dados.
 
-                    value = None
-                    title = item.find_element(
-                        By.CLASS_NAME,
-                        self.elements.nameitemsumary,
-                    ).text
+        Args:
+            item: Elemento do sumário.
+            pos (int): Posição do item.
+            pos_ (int): Posição do grupo de sumário.
+            data (dict): Dicionário de dados a ser atualizado.
 
-                    if title:
-                        title = title.upper()
-
-                    if " " in title:
-                        title = "_".join([ttl for ttl in title.split(" ") if ttl])
-
-                    with suppress(NoSuchElementException):
-                        value = item.find_element(
-                            By.CSS_SELECTOR,
-                            self.elements.valueitemsumary,
-                        ).text
-
-                    if not value:
-                        with suppress(NoSuchElementException):
-                            element_search = self.elements.value2_itemsumary.get(
-                                title,
-                            )
-
-                            if element_search:
-                                value = item.find_element(
-                                    By.CSS_SELECTOR,
-                                    element_search,
-                                ).text
-
-                                if title == "OUTROS_ASSUNTOS":
-                                    value = " ".join([
-                                        val for val in value.split(" ") if val
-                                    ])
-
-                    if value:
-                        data.update({title: value.upper()})
-
-        table_partes = self.driver.find_element(By.ID, self.elements.area_selecao)
-        for group_parte in table_partes.find_elements(By.TAG_NAME, "tr"):
-            pos_repr = 0
-            type_parte = self.format_string(
-                group_parte.find_elements(By.TAG_NAME, "td")[0].text.upper(),
+        """
+        if pos == 0 and pos_ == 0:
+            num_proc = item.find_element(By.CLASS_NAME, el.numproc).text
+            status_proc = "Em Andamento"
+            with suppress(NoSuchElementException):
+                status_proc = item.find_element(By.CLASS_NAME, el.statusproc).text
+            data.update(
+                {
+                    "NUMERO_PROCESSO": num_proc,
+                    "STATUS": status_proc.upper(),
+                },
             )
+            return
 
-            info_parte = group_parte.find_elements(By.TAG_NAME, "td")[1]
-            info_parte_text = info_parte.text.split("\n")
-            if "\n" in info_parte.text:
-                for attr_parte in info_parte_text:
-                    if ":" in attr_parte:
-                        representante = attr_parte.replace("  ", "").split(":")
-                        tipo_representante = representante[0].upper()
-                        nome_representante = representante[1].upper()
-                        key = {
-                            f"{tipo_representante}_{type_parte}": nome_representante,
-                        }
+        value = None
+        title = item.find_element(By.CLASS_NAME, el.nameitemsumary).text
+        if title:
+            title = title.upper()
+        if " " in title:
+            title = "_".join([ttl for ttl in title.split(" ") if ttl])
 
-                        doc_ = "Não consta"
-                        with suppress(NoSuchElementException, IndexError):
-                            doc_ = info_parte.find_elements(By.TAG_NAME, "input")[
-                                pos_repr
-                            ]
-                            doc_ = doc_.get_attribute("value")
+        with suppress(NoSuchElementException):
+            value = item.find_element(By.CSS_SELECTOR, el.valueitemsumary).text
 
-                        key_doc = {f"DOC_{tipo_representante}_{type_parte}": doc_}
+        if not value:
+            with suppress(NoSuchElementException):
+                element_search = el.value2_itemsumary.get(title)
+                if element_search:
+                    value = item.find_element(
+                        By.CSS_SELECTOR,
+                        element_search,
+                    ).text
+                    if title == "OUTROS_ASSUNTOS":
+                        value = " ".join([val for val in value.split(" ") if val])
 
-                        pos_repr += 1
+        if value:
+            data.update({title: value.upper()})
 
-                        data.update(key)
-                        data.update(key_doc)
+    def _extract_partes_information(self, data: dict) -> None:
+        """Extraia informações das partes e atualize o dicionário de dados.
 
-                    elif ":" not in attr_parte:
-                        key = {type_parte: attr_parte}
-                        data.update(key)
+        Args:
+            data (dict): Dicionário a ser atualizado com informações das partes.
 
-            elif "\n" not in info_parte_text:
-                key = {type_parte: info_parte.text}
-                data.update(key)
+        """
+        table_partes = self.driver.find_element(By.ID, el.area_selecao)
+        for group_parte in table_partes.find_elements(By.TAG_NAME, "tr"):
+            self._process_group_parte(group_parte, data)
 
-        return [data]
+    def _process_group_parte(self, group_parte: WebElementBot, data: dict) -> None:
+        """Processa um grupo de parte e atualiza o dicionário de dados.
+
+        Args:
+            group_parte: Elemento do grupo de parte.
+            data (dict): Dicionário de dados a ser atualizado.
+
+        """
+        pos_repr = 0
+        type_parte = self.format_string(
+            group_parte.find_elements(By.TAG_NAME, "td")[0].text.upper(),
+        )
+        info_parte = group_parte.find_elements(By.TAG_NAME, "td")[1]
+        info_parte_text = info_parte.text.split("\n")
+        if "\n" in info_parte.text:
+            for attr_parte in info_parte_text:
+                if ":" in attr_parte:
+                    representante = attr_parte.replace("  ", "").split(":")
+                    tipo_representante = representante[0].upper()
+                    nome_representante = representante[1].upper()
+                    key = {
+                        f"{tipo_representante}_{type_parte}": nome_representante,
+                    }
+
+                    doc_ = "Não consta"
+                    with suppress(NoSuchElementException, IndexError):
+                        doc_ = info_parte.find_elements(By.TAG_NAME, "input")[
+                            pos_repr
+                        ]
+                        doc_ = doc_.get_attribute("value")
+
+                    key_doc = {f"DOC_{tipo_representante}_{type_parte}": doc_}
+
+                    pos_repr += 1
+
+                    data.update(key)
+                    data.update(key_doc)
+
+                elif ":" not in attr_parte:
+                    key = {type_parte: attr_parte}
+                    data.update(key)
+
+        elif "\n" not in info_parte_text:
+            key = {type_parte: info_parte.text}
+            data.update(key)
