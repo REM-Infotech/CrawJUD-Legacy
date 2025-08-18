@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
+from crawjud.bots.esaj.resources import elements as el
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
 
@@ -24,7 +25,7 @@ class EsajAuth(ESajBot):
         )
         passuser = self.password
         if self.login_method == "cert":
-            self.driver.get(self.elements.url_login_cert)
+            self.driver.get(el.url_login_cert)
             sleep(3)
             loginopt = self.wait.until(
                 ec.presence_of_element_located((
@@ -80,25 +81,25 @@ class EsajAuth(ESajBot):
 
             return checkloged is not None
 
-        self.driver.get(self.elements.url_login)
+        self.driver.get(el.url_login)
         sleep(3)
 
         userlogin = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.campo_username,
+            el.campo_username,
         )
         userlogin.click()
         userlogin.send_keys(loginuser)
 
         userpass = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.campo_2_login,
+            el.campo_2_login,
         )
         userpass.click()
         userpass.send_keys(passuser)
         entrar = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.btn_entrar,
+            el.btn_entrar,
         )
         entrar.click()
         sleep(2)
@@ -109,7 +110,7 @@ class EsajAuth(ESajBot):
             checkloged = WebDriverWait(self.driver, 15).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.chk_login,
+                    el.chk_login,
                 )),
             )
         except TimeoutException:

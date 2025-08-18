@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
@@ -49,7 +50,7 @@ class ProjudiSearch(ProjudiBot):
 
         """
         self.bot_data = bot_data
-        url_search = self.elements.url_busca
+        url_search = el.url_busca
 
         grau = self.bot_data.get("GRAU", 1) or 1
 

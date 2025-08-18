@@ -19,6 +19,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.elaw.resources import elements as el
 from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
 
 type_doc = {11: "cpf", 14: "cnpj"}
@@ -49,7 +50,7 @@ class CadastroComplementar(ElawBot):
             The text to set for the judicial sphere, by default "Judicial".
 
         """
-        element_select = self.elements.css_esfera_judge
+        element_select = el.css_esfera_judge
         self.message = "Informando esfera do processo"
         self.type_log = "log"
         self.prt()
@@ -89,7 +90,7 @@ class CadastroComplementar(ElawBot):
         self.prt()
 
         input_uc = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, self.elements.css_input_uc)),
+            ec.presence_of_element_located((By.XPATH, el.css_input_uc)),
         )
         input_uc.click()
 
@@ -122,7 +123,7 @@ class CadastroComplementar(ElawBot):
 
         input_localidade = self.driver.find_element(
             By.XPATH,
-            self.elements.localidade,
+            el.localidade,
         )
         input_localidade.click()
         self.interact.clear(input_localidade)
@@ -158,7 +159,7 @@ class CadastroComplementar(ElawBot):
 
         bairro_ = self.bot_data.get("BAIRRO")
 
-        input_bairro = self.driver.find_element(By.XPATH, self.elements.bairro_input)
+        input_bairro = self.driver.find_element(By.XPATH, el.bairro_input)
         input_bairro.click()
         self.interact.clear(input_bairro)
         self.interact.send_key(input_bairro, bairro_)
@@ -193,7 +194,7 @@ class CadastroComplementar(ElawBot):
 
         sleep(0.5)
         text = str(self.bot_data.get("DIVISAO"))
-        element_select = self.elements.divisao_select
+        element_select = el.divisao_select
         self.select2_elaw(
             self.wait.until(
                 ec.presence_of_element_located((By.XPATH, element_select)),
@@ -224,7 +225,7 @@ class CadastroComplementar(ElawBot):
         self.prt()
 
         data_citacao = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, self.elements.data_citacao)),
+            ec.presence_of_element_located((By.XPATH, el.data_citacao)),
         )
         self.interact.clear(data_citacao)
         self.interact.sleep_load(ELEMENT_LOAD)

@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
+from crawjud.bots.projudi.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError, LoginSystemError
 from crawjud.interfaces.controllers.bots.systems.projudi import ProjudiBot
 
@@ -24,7 +25,7 @@ class ProjudiAuth(ProjudiBot):
     def auth(self) -> bool:
         check_login = None
         try:
-            self.driver.get(self.elements.url_login)
+            self.driver.get(el.url_login)
 
             sleep(1.5)
 
@@ -33,20 +34,20 @@ class ProjudiAuth(ProjudiBot):
             username = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.campo_username,
+                    el.campo_username,
                 )),
             )
             username.send_keys(self.username)
 
             password = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.campo_2_login,
+                el.campo_2_login,
             )
             password.send_keys(self.password)
 
             entrar = self.driver.find_element(
                 By.CSS_SELECTOR,
-                self.elements.btn_entrar,
+                el.btn_entrar,
             )
             entrar.click()
 
@@ -54,7 +55,7 @@ class ProjudiAuth(ProjudiBot):
                 check_login = WebDriverWait(self.driver, 10).until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
-                        self.elements.chk_login,
+                        el.chk_login,
                     )),
                 )
 

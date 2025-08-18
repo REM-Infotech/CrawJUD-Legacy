@@ -14,6 +14,7 @@ from zoneinfo import ZoneInfo
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.bots.esaj.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
@@ -156,7 +157,7 @@ class BuscaPags(ESajBot):
         generatepdf = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.get_page_custas_pagas,
+                el.get_page_custas_pagas,
             )),
         )
         onclick_value = generatepdf.get_attribute("onclick")

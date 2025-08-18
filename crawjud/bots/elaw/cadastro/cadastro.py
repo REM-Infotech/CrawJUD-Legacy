@@ -23,6 +23,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.elaw.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.elaw import ElawBot
 
@@ -43,7 +44,7 @@ class PreCadastro(ElawBot):
         sleep(0.5)
 
         element_area_direito = wait.until(
-            ec.presence_of_element_located((By.XPATH, self.elements.css_label_area)),
+            ec.presence_of_element_located((By.XPATH, el.css_label_area)),
         )
         self.select2_elaw(element_area_direito, text)
         self.interact.sleep_load('div[id="j_id_47"]')
@@ -64,7 +65,7 @@ class PreCadastro(ElawBot):
         element_subarea = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
-                self.elements.comboareasub_css,
+                el.comboareasub_css,
             )),
         )
         self.select2_elaw(element_subarea, text)
@@ -78,14 +79,14 @@ class PreCadastro(ElawBot):
         next_page = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.css_button,
+                el.css_button,
             )),
             message="Erro ao encontrar elemento",
         )
         next_page.click()
 
     def info_localizacao(self) -> None:
-        element_select = self.elements.css_esfera_judge
+        element_select = el.css_esfera_judge
         text = "Judicial"
 
         self.message = "Informando esfera do processo"
@@ -114,7 +115,7 @@ class PreCadastro(ElawBot):
 
         """
         key = "ESTADO"
-        element_select = self.elements.estado_input
+        element_select = el.estado_input
         text = str(self.bot_data.get(key, None))
 
         self.message = "Informando estado do processo"
@@ -149,7 +150,7 @@ class PreCadastro(ElawBot):
 
         """
         text = str(self.bot_data.get("COMARCA"))
-        element_select = self.elements.comarca_input
+        element_select = el.comarca_input
 
         self.message = "Informando comarca do processo"
         self.type_log = "log"
@@ -181,7 +182,7 @@ class PreCadastro(ElawBot):
 
 
         """
-        element_select = self.elements.foro_input
+        element_select = el.foro_input
         text = str(self.bot_data.get("FORO"))
 
         self.message = "Informando foro do processo"
@@ -217,7 +218,7 @@ class PreCadastro(ElawBot):
 
         """
         text = self.bot_data.get("VARA")
-        element_select = self.elements.vara_input
+        element_select = el.vara_input
 
         self.message = "Informando vara do processo"
         self.type_log = "log"
@@ -243,7 +244,7 @@ class PreCadastro(ElawBot):
 
         """
         key = "NUMERO_PROCESSO"
-        css_campo_processo = self.elements.numero_processo
+        css_campo_processo = el.numero_processo
 
         self.message = "Informando número do processo"
         self.type_log = "log"
@@ -276,7 +277,7 @@ class PreCadastro(ElawBot):
 
         """
         text = self.bot_data.get("EMPRESA")
-        element_select = self.elements.empresa_input
+        element_select = el.empresa_input
 
         self.message = "Informando Empresa"
         self.type_log = "log"
@@ -306,7 +307,7 @@ class PreCadastro(ElawBot):
 
         """
         key = "TIPO_EMPRESA"
-        element_select = self.elements.tipo_empresa_input
+        element_select = el.tipo_empresa_input
         text = self.bot_data.get(key).__str__().capitalize()
 
         self.message = "Informando classificação da Empresa"
@@ -341,7 +342,7 @@ class PreCadastro(ElawBot):
         self.prt()
 
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
-        element_select = self.elements.tipo_parte_contraria_input
+        element_select = el.tipo_parte_contraria_input
         self.select2_elaw(
             self.wait.until(
                 ec.presence_of_element_located((By.XPATH, element_select)),
@@ -356,14 +357,14 @@ class PreCadastro(ElawBot):
             ),
         )
         tipo_doc = type_doc.get(str(len(doc_to_list)))
-        select_tipo_doc = self.elements.select_tipo_doc
+        select_tipo_doc = el.select_tipo_doc
         self.select2_elaw(select_tipo_doc, tipo_doc)
 
         self.interact.sleep_load(ELEMENT_LOAD)
         campo_doc = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.css_campo_doc,
+                el.css_campo_doc,
             )),
             message="Erro ao encontrar elemento",
         )
@@ -377,7 +378,7 @@ class PreCadastro(ElawBot):
         search_button_parte = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.css_search_button,
+                el.css_search_button,
             )),
             message="Erro ao encontrar elemento",
         )
@@ -417,7 +418,7 @@ class PreCadastro(ElawBot):
         self.message = "Preenchendo UF Processo..."
         self.type_log = "log"
         self.prt()
-        element_select = self.elements.select_uf_proc
+        element_select = el.select_uf_proc
         text = str(self.bot_data.get("CAPITAL_INTERIOR"))
         self.select2_elaw(self.driver.find_element(By.XPATH, element_select), text)
         sleep(0.5)
@@ -428,7 +429,7 @@ class PreCadastro(ElawBot):
             other_location = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    self.elements.css_other_location,
+                    el.css_other_location,
                 )),
                 message="Erro ao encontrar elemento",
             )
@@ -452,7 +453,7 @@ class PreCadastro(ElawBot):
         div_comboProcessoTipo = self.wait.until(  # noqa: N806
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.comboProcessoTipo,
+                el.comboProcessoTipo,
             )),
             message="Erro ao encontrar elemento",
         )
@@ -461,7 +462,7 @@ class PreCadastro(ElawBot):
         elemento = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                self.elements.filtro_processo,
+                el.filtro_processo,
             )),
             message="Erro ao encontrar elemento",
         )
@@ -494,7 +495,7 @@ class PreCadastro(ElawBot):
         data_distribuicao = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
-                self.elements.css_data_distribuicao,
+                el.css_data_distribuicao,
             )),
             message="Erro ao encontrar elemento",
         )
@@ -516,7 +517,7 @@ class PreCadastro(ElawBot):
         interact = self.interact
         wait = self.wait
         driver = self.driver
-        elements = self.elements
+        elements = el
         bot_data = self.bot_data
         select2_elaw = self.select2_elaw
         prt = self.prt
@@ -580,7 +581,7 @@ class PreCadastro(ElawBot):
         """
         driver = self.driver
         wait = self.wait
-        elements = self.elements
+        elements = el
         interact = self.interact
         prt = self.prt
         bot_data = self.bot_data
@@ -649,7 +650,7 @@ class PreCadastro(ElawBot):
         driver = self.driver
         interact = self.interact
         bot_data = self.bot_data
-        elements = self.elements
+        elements = el
 
         self.message = "Informando valor da causa"
         self.type_log = "log"
@@ -688,7 +689,7 @@ class PreCadastro(ElawBot):
         wait = self.wait
         bot_data = self.bot_data
         interact = self.interact
-        elements = self.elements
+        elements = el
         self.message = "Informando Escritório Externo"
         self.type_log = "log"
         prt()
@@ -724,7 +725,7 @@ class PreCadastro(ElawBot):
         wait = self.wait
         bot_data = self.bot_data
         interact = self.interact
-        elements = self.elements
+        elements = el
         select2_elaw = self.select2_elaw
 
         self.message = "Informando contingenciamento"
@@ -765,7 +766,7 @@ class PreCadastro(ElawBot):
         try:
             wait = self.wait
             driver = self.driver
-            elements = self.elements
+            elements = el
             interact = self.interact
             bot_data = self.bot_data
 
@@ -886,7 +887,7 @@ class PreCadastro(ElawBot):
 
             wait = self.wait
             driver = self.driver
-            elements = self.elements
+            elements = el
             interact = self.interact
             bot_data = self.bot_data
             select2_elaw = self.select2_elaw
@@ -1018,7 +1019,7 @@ class PreCadastro(ElawBot):
 
         """
         wait = self.wait
-        elements = self.elements
+        elements = el
         interact = self.interact
         interact.sleep_load(ELEMENT_LOAD)
         salvartudo = wait.until(
@@ -1073,7 +1074,7 @@ class PreCadastro(ElawBot):
         tries: int = 0
 
         driver = self.driver
-        elements = self.elements
+        elements = el
         while tries < 4:
             with suppress(NoSuchElementException):
                 name_parte = (
@@ -1110,7 +1111,7 @@ class PreCadastro(ElawBot):
         prt = self.prt
         wait = self.wait
         driver = self.driver
-        elements = self.elements
+        elements = el
         wait_confirm_save = None
 
         with suppress(TimeoutException):

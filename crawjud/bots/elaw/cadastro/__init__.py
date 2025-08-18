@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 
 from crawjud.bots.elaw.cadastro.cadastro import PreCadastro
 from crawjud.bots.elaw.cadastro.complement import CadastroComplementar
+from crawjud.bots.elaw.resources import elements as el
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 
@@ -119,7 +120,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
             pid = self.pid
             prt = self.prt
             driver = self.driver
-            elements = self.elements
+            elements = el
             bot_data = self.bot_data
             search = self.search_bot()
 
@@ -204,7 +205,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         message_campo: list[str] = []
 
         for campo in campos_validar:
-            campo_validar: str = self.elements.dict_campos_validar.get(campo)
+            campo_validar: str = el.dict_campos_validar.get(campo)
             command = f"return $('{campo_validar}').text()"
             element = self.driver.execute_script(command)
 
@@ -243,7 +244,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         self.type_log = "log"
         self.prt()
 
-        campo_validar = self.elements.dict_campos_validar.get("advogado_interno")
+        campo_validar = el.dict_campos_validar.get("advogado_interno")
         command = f"return $('{campo_validar}').text()"
         element = self.driver.execute_script(command)
 
@@ -286,12 +287,12 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
 
         tabela_advogados = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.tabela_advogados_resp,
+            el.tabela_advogados_resp,
         )
 
         not_adv = None
         with suppress(NoSuchElementException):
-            tr_not_adv = self.elements.tr_not_adv
+            tr_not_adv = el.tr_not_adv
             not_adv = tabela_advogados.find_element(By.CSS_SELECTOR, tr_not_adv)
 
         if not_adv is not None:

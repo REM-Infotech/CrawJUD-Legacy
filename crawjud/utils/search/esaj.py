@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.esaj.resources import elements as el
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.interfaces.controllers.bots.systems.esaj import ESajBot
 
@@ -33,7 +34,7 @@ class EsajSearch(ESajBot):
         grau = self.bot_data.get("GRAU", 1)
         id_consultar = "botaoConsultarProcessos"
         if grau == 2:
-            self.driver.get(self.elements.consultaproc_grau2)
+            self.driver.get(el.consultaproc_grau2)
             id_consultar = "pbConsultar"
 
         elif not grau or grau != 1 or grau != 2:
