@@ -85,7 +85,7 @@ class DriverBot[T](WebDriver):
     _log: ClassVar[dict[str, DictHARProxy]] = {}
     _count: int = 0
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         selected_browser: BrowserOptions,
         execution_path: str | Path | None = None,
@@ -93,6 +93,16 @@ class DriverBot[T](WebDriver):
         with_proxy: bool = False,
         **kwargs: T,
     ) -> None:
+        """Inicialize o WebDriver com as opções e configurações fornecidas.
+
+        Args:
+            self: Instância do objeto.
+            selected_browser (BrowserOptions): Navegador selecionado.
+            execution_path (str | Path | None): Caminho de execução.
+            with_proxy (bool): Indica se deve usar proxy.
+            **kwargs (T): Argumentos nomeados adicionais.
+
+        """
         driver_config = config[selected_browser]
         tqdm.write(with_proxy)
         kwargs.update({"with_proxy": with_proxy})

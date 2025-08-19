@@ -63,7 +63,14 @@ class Storage[T](Client):
 
     """
 
-    def __init__(self, storage: storages) -> None:  # noqa: D107
+    def __init__(self, storage: storages) -> None:
+        """Inicialize o provedor de storage conforme o tipo especificado.
+
+        Args:
+            self: Instância do objeto.
+            storage (storages): Tipo de storage a ser utilizado.
+
+        """
         server_url = environ["MINIO_URL_SERVER"]
         if storage == "google":
             credentials = GoogleStorageCredentialsProvider()

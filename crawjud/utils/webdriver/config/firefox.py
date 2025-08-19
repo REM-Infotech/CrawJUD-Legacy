@@ -54,7 +54,7 @@ class FirefoxOptions[T](Options):
     # Cliente de proxy utilizado para manipulação de tráfego HTTP.
     _proxy_client: Client = None
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         extensions_path: Path | str = work_dir,
         preferences: FirefoxPreferences = firefox_preferences,
@@ -62,6 +62,17 @@ class FirefoxOptions[T](Options):
         with_proxy: bool = False,
         **kwargs: T,
     ) -> None:
+        """Inicialize as configurações do FirefoxDriver com preferências e argumentos.
+
+        Args:
+            self: Instância do objeto.
+            extensions_path (Path | str): Caminho das extensões.
+            preferences (FirefoxPreferences): Preferências do Firefox.
+            *args (T): Argumentos posicionais adicionais.
+            with_proxy (bool): Indica se deve usar proxy.
+            **kwargs (T): Argumentos adicionais.
+
+        """
         super().__init__()
 
         self.profile = FirefoxProfile()

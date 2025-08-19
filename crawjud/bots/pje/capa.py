@@ -198,7 +198,7 @@ class Capa(PjeBot):
             with suppress(Exception):
                 th.join()
 
-    def copia_integral(  # noqa: D417
+    def copia_integral(
         self,
         row: int,
         data: BotData,
@@ -209,6 +209,9 @@ class Capa(PjeBot):
         """Realiza o download da cópia integral do processo e salva no storage.
 
         Args:
+            client (Client): httx client.
+            data (BotData): bot data.
+            row (int): current row.
             pid: str: Identificador do processo.
             url_base (str): URL base do serviço.
             headers (dict[str, str]): Cabeçalhos HTTP.

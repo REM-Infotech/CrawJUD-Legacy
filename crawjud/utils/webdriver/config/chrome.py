@@ -83,7 +83,7 @@ class ChromeOptions[T](Options):
 
     _proxy_client: Client = None
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         extensions_path: Path | str = work_dir,
         preferences: ChromePreferences = chrome_preferences,
@@ -92,6 +92,17 @@ class ChromeOptions[T](Options):
         with_proxy: bool = False,
         **kwargs: T,
     ) -> None:
+        """Inicialize as configurações do ChromeDriver com preferências e argumentos.
+
+        Args:
+            self: Instância do objeto.
+            extensions_path (Path | str): Caminho das extensões.
+            preferences (ChromePreferences): Preferências do Chrome.
+            arguments (list[str]): Argumentos do Chrome.
+            with_proxy (bool): Indica se deve usar proxy.
+            **kwargs (T): Argumentos nomeados adicionais.
+
+        """
         super().__init__()
 
         for argument in arguments:

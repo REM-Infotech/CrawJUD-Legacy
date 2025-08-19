@@ -27,7 +27,7 @@ class PrintMessage[T](ContextTask):
     permitindo a comunicação em tempo real com o sistema de monitoramento.
     """
 
-    def __init__(  # noqa: D107
+    def __init__(
         self,
         event: str = "log_execution",
         data: dict[str, str] | str | None = None,
@@ -35,6 +35,17 @@ class PrintMessage[T](ContextTask):
         *args: T,
         **kwargs: T,
     ) -> None:
+        """Inicialize a mensagem de evento para o sistema de logging.
+
+        Args:
+            self: Instância do objeto.
+            event (str): Nome do evento.
+            data (dict[str, str] | str | None): Dados do evento.
+            room (str | None): Sala de destino.
+            *args (T): Argumentos posicionais adicionais.
+            **kwargs (T): Argumentos nomeados adicionais.
+
+        """
         self.print_msg(event=event, data=data, room=room, *args, **kwargs)
 
     def print_msg(

@@ -100,7 +100,13 @@ class LoadForm:
     pid: str
     sess: SessionDict
 
-    def __init__(self) -> None:  # noqa: D107
+    def __init__(self) -> None:
+        """Inicialize a instância da classe com a sessão do usuário.
+
+        Args:
+            self: Instância do objeto.
+
+        """
         sess = SessionDict(**dict(list(session.items())))
 
         self.db = current_app.extensions["sqlalchemy"]
