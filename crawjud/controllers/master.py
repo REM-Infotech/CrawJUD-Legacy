@@ -191,9 +191,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         self._wait = self._driver.wait
 
-    def load_data(
-        self,
-    ) -> list[BotData]:
+    def load_data(self) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
 
         Reads an Excel file, processes the data by formatting dates and floats,
@@ -207,9 +205,10 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             list[BotData]: A record list from the processed Excel file.
 
         """
-        buffer_planilha = BytesIO(
-            base91.decode(self._xlsx_data["file_base91str"]),
-        )
+        xlsx_b91 = self._xlsx_data["file_base91str"]
+        decoded_b91 = base91.decode(xlsx_b91)
+        buffer_planilha = BytesIO(decoded_b91)
+
         df = read_excel(buffer_planilha)
         df.columns = df.columns.str.upper()
 
@@ -318,9 +317,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self._downloaded_files = list_files
 
     def data_frame(self) -> None:
-        bot_data: list[BotData] = self.load_data(
-            base91_planilha=self.xlsx_data["file_base91str"],
-        )
+        bot_data: list[BotData] = self.load_data()
         self._frame = bot_data
         self._bot_data = bot_data
 
