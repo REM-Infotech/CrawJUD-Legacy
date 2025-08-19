@@ -3,19 +3,13 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from datetime import datetime
 from pathlib import Path
 from threading import Semaphore
 from typing import TYPE_CHECKING, ClassVar
-from zoneinfo import ZoneInfo
 
-from dotenv import dotenv_values
 from selenium.webdriver.remote.webdriver import WebDriver
-from socketio import Client
-from termcolor import colored
 from tqdm import tqdm
 
-from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
 
 if TYPE_CHECKING:
@@ -28,108 +22,12 @@ if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData, DictFiles
 
-environ = dotenv_values()
+
 func_dict_check = {
     "bot": ["execution"],
     "search": ["buscar_processo"],
 }
-
 work_dir = Path(__file__).cwd()
-
-server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
-namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
-
-transports = ["websocket"]
-headers = {"Content-Type": "application/json"}
-
-
-def print_in_thread(
-    start_time: str,
-    message: str,
-    total_rows: int = 0,
-    row: int = 0,
-    errors: int = 0,
-    type_log: str = "log",
-    pid: str | None = None,
-) -> None:
-    """Envie mensagem de log para o sistema de tarefas assíncronas via SocketIO.
-
-    Args:
-        start_time (str): Horário de início do processamento.
-        message (str): Mensagem a ser registrada.
-        total_rows (int): Total de linhas a serem processadas.
-        row (int): Linha atual do processamento.
-        errors (int): Quantidade de erros.
-        type_log (str): Tipo de log (info, error, etc).
-        pid (str | None): Identificador do processo.
-
-    """
-    sio = Client(
-        reconnection_attempts=15,
-        reconnection_delay=5,
-        reconnection_delay_max=10,
-    )
-    sio.connect(
-        url=server,
-        namespaces=[namespace],
-        wait=True,
-        wait_timeout=30,
-        retry=True,
-    )
-
-    sio.emit(
-        event="join_room",
-        data={"data": {"room": pid}},
-        namespace=namespace,
-    )
-
-    # Obtém o horário atual formatado
-    time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
-        "%H:%M:%S",
-    )
-    # Monta o prompt da mensagem
-    prompt = (
-        f"[({pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
-    )
-
-    # Cria objeto de log da mensagem
-    data = {
-        "data": MessageLogDict(
-            message=str(prompt),
-            pid=str(pid),
-            row=int(row),
-            type=type_log,
-            status="Em Execução",
-            total=int(total_rows),
-            success=0,
-            errors=errors,
-            remaining=int(total_rows),
-            start_time=start_time,
-        ),
-    }
-    sio.emit(event="log_execution", data=data, namespace=namespace)
-
-    file_log = work_dir.joinpath("temp", pid, f"{pid}.log")
-    file_log.parent.mkdir(parents=True, exist_ok=True)
-    file_log.touch(exist_ok=True)
-
-    with file_log.open("a") as f:
-        # Cria objeto de log da mensagem
-        tqdm.write(
-            file=f,
-            s=colored(
-                prompt,
-                color={
-                    "info": "cyan",
-                    "log": "white",
-                    "error": "red",
-                    "warning": "magenta",
-                    "success": "green",
-                }.get(type_log, "white"),
-            ),
-        )
-
-    sio.wait()
 
 
 class AbstractCrawJUD[T]:

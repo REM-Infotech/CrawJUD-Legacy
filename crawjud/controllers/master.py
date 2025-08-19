@@ -4,22 +4,24 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
+import sys
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from threading import Thread
 from typing import Literal
 from zoneinfo import ZoneInfo
 
 import base91
 import pandas as pd
 from pandas import Timestamp, read_excel
+from tqdm import tqdm
 from werkzeug.utils import secure_filename
 
 from crawjud.common import name_colunas
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.abstract import AbstractCrawJUD, print_in_thread
+from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
 from crawjud.utils.storage import Storage
@@ -220,24 +222,30 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
 
         """
-
-        self._total_rows = len(self.frame)
-        proc = Thread(
-            name="Print Message",
-            target=print_in_thread,
-            kwargs={
-                "start_time": self.start_time,
-                "message": message,
-                "total_rows": self._total_rows,
-                "row": row,
-                "errors": 0,
-                "type_log": type_log,
-                "pid": self.pid,
-            },
-            daemon=False,
+        time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
+            "%H:%M:%S",
         )
+        message = f"[({self.pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
 
-        proc.start()
+        subprocess.run([
+            sys.executable,
+            str(work_dir.joinpath("print_message.py")),
+            "--start_time",
+            str(self.start_time),
+            "--message",
+            str(message),
+            "--total_rows",
+            str(self._total_rows),
+            "--row",
+            str(row),
+            "--errors",
+            str(0),
+            "--type_log",
+            str(type_log),
+            "--pid",
+            str(self.pid),
+        ])
+        tqdm.write(message)
 
     def append_success(
         self,

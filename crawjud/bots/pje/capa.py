@@ -72,6 +72,8 @@ class Capa(PjeBot):
                         cookies=self.cookies,
                     )
 
+                continue
+
             self.print_msg(
                 message="Erro de execução",
                 type_log="error",
@@ -211,7 +213,7 @@ class Capa(PjeBot):
 
             client = Client(
                 base_url=base_url,
-                timeout=30,
+                timeout=600,
                 headers=headers,
                 cookies=cookies,
             )
