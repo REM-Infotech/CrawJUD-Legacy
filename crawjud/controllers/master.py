@@ -7,13 +7,13 @@ import shutil
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
+from multiprocessing import Process
 from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo
 
 import base91
 import pandas as pd
-from billiard.process import Process
 from pandas import Timestamp, read_excel
 from werkzeug.utils import secure_filename
 

@@ -129,6 +129,8 @@ def print_in_thread(
             ),
         )
 
+    sio.wait()
+
 
 class AbstractCrawJUD[T]:
     """Classe base para todos os bots."""
