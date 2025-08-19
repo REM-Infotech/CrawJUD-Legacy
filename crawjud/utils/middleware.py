@@ -1,4 +1,12 @@
-from __future__ import annotations  # noqa: D100
+"""Implemente middlewares utilitários para manipulação de cabeçalhos ASGI proxy.
+
+Este módulo fornece:
+- ProxyHeadersMiddleware: Middleware para ajustar cabeçalhos de proxy em aplicações ASGI.
+- Funções auxiliares para extração e substituição de valores confiáveis de cabeçalhos.
+
+"""
+
+from __future__ import annotations
 
 from copy import deepcopy
 from typing import TYPE_CHECKING, Literal

@@ -154,9 +154,9 @@ class Movimentacao(ESajBot):
                 self.append_success(self.appends)
 
             if len(self.another_append) > 0:
-                for data, msg, fileN in self.another_append:
+                for data, msg, file_name_save in self.another_append:
                     self.type_log = "info"
-                    self.append_success([data], msg, fileN)
+                    self.append_success([data], msg, file_name_save)
 
             elif len(self.appends) == 0 and len(self.another_append) == 0:
                 self.message = "Nenhuma movimentação encontrada"

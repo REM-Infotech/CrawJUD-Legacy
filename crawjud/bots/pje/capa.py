@@ -36,7 +36,15 @@ load_dotenv()
 
 @shared_task(name="pje.capa", bind=True, base=ContextTask)
 @wrap_cls
-class Capa(PjeBot):  # noqa: D101
+class Capa(PjeBot):
+    """Gerencia autenticação, enfileiramento e processamento de processos PJE.
+
+    Esta classe executa autenticação, enfileiramento, processamento e download
+    da cópia integral dos processos judiciais no sistema PJE, salvando os
+    resultados no armazenamento definido.
+
+    """
+
     tasks_queue_processos: ClassVar[list[Future]] = []
 
     def execution(

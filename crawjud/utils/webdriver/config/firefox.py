@@ -1,4 +1,12 @@
-# noqa: D100
+"""Configura opções e preferências avançadas para o Firefox com suporte a proxy.
+
+Este módulo fornece:
+- Classe FirefoxOptions para configuração detalhada do navegador Firefox;
+- Função configure_gecko para inicialização padronizada das opções;
+- Definições de preferências e diretórios de trabalho para downloads automatizados.
+
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -27,7 +35,23 @@ firefox_preferences = {
 }
 
 
-class FirefoxOptions[T](Options):  # noqa: D101
+class FirefoxOptions[T](Options):
+    """Configure opções avançadas para o navegador Firefox com suporte a proxy.
+
+    Args:
+        extensions_path (Path | str): Caminho para extensões do Firefox.
+        preferences (FirefoxPreferences): Preferências do navegador.
+        with_proxy (bool): Ativa configuração de proxy.
+
+    Returns:
+        FirefoxOptions: Instância configurada de opções do Firefox.
+
+    Raises:
+        Nenhuma exceção específica é levantada.
+
+    """
+
+    # Cliente de proxy utilizado para manipulação de tráfego HTTP.
     _proxy_client: Client = None
 
     def __init__(  # noqa: D107

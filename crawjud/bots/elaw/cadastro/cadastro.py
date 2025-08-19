@@ -459,14 +459,14 @@ class PreCadastro(ElawBot):
         self.type_log = "log"
         self.prt()
 
-        div_comboProcessoTipo = self.wait.until(
+        div_combo_tipo_processo = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.comboProcessoTipo,
             )),
             message="Erro ao encontrar elemento",
         )
-        div_comboProcessoTipo.click()
+        div_combo_tipo_processo.click()
 
         elemento = self.wait.until(
             ec.presence_of_element_located((

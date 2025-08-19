@@ -1,4 +1,5 @@
-# noqa: D104
+"""Pacote público para funcionalidades do PJeBot."""
+
 from __future__ import annotations
 
 import importlib

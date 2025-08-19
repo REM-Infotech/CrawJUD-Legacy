@@ -305,8 +305,8 @@ class BuscaPags(ESajBot):
             elif "Lista de custas pagas" not in nomediv:
                 continue
 
-            fileN = f"Total - {self.pid} - {self.datetimeNOW}.xlsx"
+            file_name_save = f"Total - {self.pid} - {self.datetimeNOW}.xlsx"
             self.append_success(
                 [self.bot_data.get("NUMERO_PROCESSO"), total],
-                fileN=fileN,
+                file_name_save=file_name_save,
             )

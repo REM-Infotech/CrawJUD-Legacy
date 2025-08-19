@@ -252,7 +252,7 @@ editar_pagamentofile = (
     'div[id="processoValorPagamentoEditForm:pvp:'
     'j_id_30_1_i_2_1_9_g_1:gedEFileDataTable"]'
 )
-css_tipocusta = (
+css_tipo_custa = (
     'div[id="processoValorPagamentoEditForm:pvp:'
     'j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
 )

@@ -17,17 +17,12 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.master import CrawJUD
 
 
-class OtherUtils: ...  # noqa: D101
-
-
 class Emissor(CrawJUD):
     """Manage creation and processing of judicial deposit documents using the Emissor bot fully.
 
     Offer a range of functionalities to access deposit pages, handle login flows,
     generate PDFs, and extract relevant data for deposit operations.
     """
-
-    count_doc = OtherUtils.count_doc
 
     def execution(self) -> None:
         """Run the main operation loop and handle each DataFrame row comprehensively.
@@ -457,10 +452,10 @@ class Emissor(CrawJUD):
         """Rename and relocate the downloaded PDF with a standardized file name.
 
         Use bot_data for constructing the new name and move the file to its
-        final output directory, then return the new filename.
+        final output directory, then return the new File Name .
 
         Returns:
-            str: New PDF filename after relocation.
+            str: New PDF File Name after relocation.
 
         """
         pgto_name = self.bot_data.get("NOME_CUSTOM", "Guia De Depósito")

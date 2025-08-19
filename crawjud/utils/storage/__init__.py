@@ -1,4 +1,7 @@
-# noqa: D104
+"""Pacote público para armazenamento utilitário do sistema.
+
+Gerencia operações de storage e persistência de dados.
+"""
 
 from __future__ import annotations
 
@@ -46,7 +49,20 @@ class ArquivoNaoEncontradoError(FileNotFoundError):
         return self.message
 
 
-class Storage[T](Client):  # noqa: D101
+class Storage[T](Client):
+    """Crie e gerencie operações de armazenamento para buckets compatíveis com MinIO.
+
+    Args:
+        storage (storages): Tipo de armazenamento a ser utilizado ("google" ou "minio").
+
+    Returns:
+        None: Não retorna valor.
+
+    Raises:
+        Nenhuma exceção específica é levantada nesta função.
+
+    """
+
     def __init__(self, storage: storages) -> None:  # noqa: D107
         server_url = environ["MINIO_URL_SERVER"]
         if storage == "google":

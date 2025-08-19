@@ -20,7 +20,7 @@ from pandas import Timestamp, read_excel
 from selenium.webdriver.remote.webdriver import WebDriver
 from termcolor import colored
 from tqdm import tqdm
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_fileName
 
 from crawjud.common import name_colunas
 from crawjud.common.exceptions.bot import ExecutionError
@@ -264,7 +264,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             setattr(self, k, v)
 
         if data_json_.get("xlsx"):
-            xlsx_name_ = secure_filename(data_json_.get("xlsx"))
+            xlsx_name_ = secure_fileName(data_json_.get("xlsx"))
 
             path_minio_ = Path(folder_temp_).joinpath(xlsx_name_).as_posix()
             file_xlsx = storage.bucket.get_object(path_minio_)
@@ -283,7 +283,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         if data_json_.get("otherfiles"):
             files_list: list[str] = data_json_.get("otherfiles")
             for file in files_list:
-                file = secure_filename(file)
+                file = secure_fileName(file)
                 path_minio_ = Path(folder_temp_).joinpath(file).as_posix()
                 file_ = storage.bucket.get_object(path_minio_)
                 suffix_ = Path(file).suffix

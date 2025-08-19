@@ -209,12 +209,12 @@ class Download(ElawBot):
 
             sleep(0.01)
 
-        filename_replaced = f"{self.pid} - {namefile.replace(' ', '')}"
-        path_renamed = os.path.joinpath(filename_replaced)
+        file_name_replaced = f"{self.pid} - {namefile.replace(' ', '')}"
+        path_renamed = os.path.joinpath(file_name_replaced)
         shutil.move(old_file, path_renamed)
 
         if not self.list_docs:
-            self.list_docs = filename_replaced
+            self.list_docs = file_name_replaced
 
         elif self.list_docs:
-            self.list_docs = self.list_docs + "," + filename_replaced
+            self.list_docs = self.list_docs + "," + file_name_replaced

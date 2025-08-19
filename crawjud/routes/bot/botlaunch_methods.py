@@ -18,7 +18,7 @@ from quart import (
     request,
     session,
 )
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_fileName
 
 from crawjud.common.exceptions._form import LoadFormError
 from crawjud.interfaces.formbot import FormDict
@@ -36,7 +36,20 @@ if TYPE_CHECKING:
 workdir = Path(__file__).cwd()
 
 
-class FormData(TypedDict):  # noqa: D101
+class FormData(TypedDict):
+    """Gerencie e construa dados de formulário recebidos em requisições HTTP.
+
+    Args:
+        Nenhum.
+
+    Returns:
+        MultiDict: Dicionário contendo dados do formulário processados.
+
+    Raises:
+        Nenhuma exceção específica.
+
+    """
+
     @classmethod
     async def _form_data(cls) -> MultiDict:
         data = await request.data or await request.form or await request.json
@@ -63,7 +76,20 @@ class FormData(TypedDict):  # noqa: D101
         return cls(**data_)
 
 
-class LoadForm:  # noqa: D101
+class LoadForm:
+    """Gerencie o carregamento e inicialização de bots para sessões de usuários.
+
+    Args:
+        Nenhum.
+
+    Returns:
+        Nenhum valor de retorno.
+
+    Raises:
+        HTTPException: Lança erro HTTP em caso de falha na sessão ou licença.
+
+    """
+
     db: SQLAlchemy
     credentials: list[Credentials]
     bots: list[BotsCrawJUD]
@@ -189,7 +215,7 @@ class LoadForm:  # noqa: D101
                     form_data.update(self._format_credential(credential))
                     continue
 
-                form_data.update({item: secure_filename(val)})
+                form_data.update({item: secure_fileName(val)})
 
         return form_data
 

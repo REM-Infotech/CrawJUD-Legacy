@@ -1,4 +1,8 @@
-# noqa: D104
+"""Pacote público para interfaces utilitárias do sistema.
+
+Define contratos e tipos para integração entre módulos.
+"""
+
 from __future__ import annotations
 
 from typing import TypedDict

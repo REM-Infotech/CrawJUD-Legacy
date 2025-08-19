@@ -665,9 +665,9 @@ class Protocolo(ProjudiBot):
                 str(out_dir_path.joinpath(comprovante1)),
             )
 
-            filename = f"Protocolo - {numproc} - PID{pid}.png"
+            file_name = f"Protocolo - {numproc} - PID{pid}.png"
             self.driver.get_screenshot_as_file(
-                str(out_dir_path.joinpath(filename)),
+                str(out_dir_path.joinpath(file_name)),
             )
 
             self.message = "Peticionamento concluído com sucesso!"

@@ -56,7 +56,31 @@ work_dir = Path(__file__).cwd()
 P = ParamSpec("P")
 
 
-class DriverBot[T](WebDriver):  # noqa: D101
+class DriverBot[T](WebDriver):
+    """Gerencie instâncias WebDriver e recursos de proxy para automação de navegação web.
+
+    Esta classe encapsula a configuração, inicialização e manipulação de instâncias do
+    WebDriver, incluindo integração com proxy, gerenciamento de HAR e controle de
+    serviços do navegador.
+
+    Atributos:
+        _har (DictHARProxy): Armazena o HAR atual da sessão.
+        _log (ClassVar[dict[str, DictHARProxy]]): Histórico de logs HAR por sessão.
+        _count (int): Contador de entradas processadas.
+
+    Métodos:
+        __init__: Inicializa o DriverBot com configurações específicas.
+        _configure_manager: Configura o gerenciador de driver.
+        _configure_service: Inicializa o serviço do navegador.
+        _configure_executor: Define o executor de comandos.
+        _configure_options: Aplica opções do navegador.
+        quit: Encerra o driver e o proxy.
+        find_element(s): Localiza elementos na página.
+        current_har: Retorna o HAR atual.
+        new_har: Inicia nova captura HAR.
+        client: Retorna o cliente proxy.
+    """
+
     _har: DictHARProxy = None
     _log: ClassVar[dict[str, DictHARProxy]] = {}
     _count: int = 0

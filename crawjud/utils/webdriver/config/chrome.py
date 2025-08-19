@@ -1,4 +1,10 @@
-# noqa: D100
+"""Configura opções avançadas para o Chrome com suporte a proxy e extensões.
+
+Este módulo define funções e classes utilitárias para configurar o navegador Chrome,
+incluindo argumentos de inicialização, preferências, extensões e suporte a proxy.
+
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -54,7 +60,27 @@ chrome_preferences: ChromePreferences = {
 }
 
 
-class ChromeOptions[T](Options):  # noqa: D101
+class ChromeOptions[T](Options):
+    """Configure opções avançadas para o navegador Chrome com suporte a proxy e extensões.
+
+    Esta classe permite configurar opções avançadas do navegador Chrome, incluindo
+    argumentos de inicialização, preferências, extensões e suporte a proxy.
+
+    Args:
+        extensions_path (Path | str): Caminho para extensões do Chrome.
+        preferences (ChromePreferences): Preferências do Chrome.
+        arguments (list[str]): Lista de argumentos para o Chrome.
+        with_proxy (bool): Indica se deve configurar proxy.
+        **kwargs (T): Argumentos adicionais.
+
+    Returns:
+        None: Não retorna valor.
+
+    Raises:
+        Nenhuma exceção específica é levantada.
+
+    """
+
     _proxy_client: Client = None
 
     def __init__(  # noqa: D107

@@ -16,14 +16,14 @@ if TYPE_CHECKING:
     from crawjud.interfaces import ASyncServerType
 
 
-class FileNamespaces(Namespace):
+class FilesNamespace(Namespace):
     """Socket.IO namespace for handling file uploads."""
 
     namespace: str
     server: ASyncServerType
 
     def __init__(self, namespace: str, io: SocketIO) -> None:
-        """Initialize FileNamespaces with namespace and server."""
+        """Initialize FilesNamespace with namespace and server."""
         super().__init__(namespace, io)
         self.namespace = namespace
         self.file_service = FileService()

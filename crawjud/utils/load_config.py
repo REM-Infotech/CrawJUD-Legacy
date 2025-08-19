@@ -22,7 +22,22 @@ config_dict_model = {
 }
 
 
-class CeleryConfig(TypedDict):  # noqa: D101
+class CeleryConfig(TypedDict):
+    """Defina o modelo de configuração para o celery com campos obrigatórios.
+
+    Args:
+        broker_url (str): URL do broker para o celery.
+        result_backend (str): Backend de resultados do celery.
+        task_ignore_result (bool): Ignora o resultado das tarefas.
+        broker_connection_retry_on_startup (bool): Tenta reconectar ao broker na inicialização.
+        timezone (str): Fuso horário utilizado pelo celery.
+        task_create_missing_queues (bool): Cria filas ausentes automaticamente.
+
+    Returns:
+        TypedDict: Dicionário tipado representando a configuração do celery.
+
+    """
+
     broker_url: str
     result_backend: str
     task_ignore_result: bool

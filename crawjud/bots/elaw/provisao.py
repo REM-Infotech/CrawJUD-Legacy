@@ -195,7 +195,7 @@ class Provisao(ElawBot):
 
         for item in check_exists_provisao:
             item = item
-            item_text = str(item.text).split("\n")  # noqa: F841
+            _item_text = str(item.text).split("\n")
             valueprovisao = item.find_elements(By.TAG_NAME, "td")[0].text
             with suppress(NoSuchElementException):
                 valueprovisao = item.find_element(

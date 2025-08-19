@@ -6,7 +6,7 @@ from os import environ
 from pathlib import Path
 
 import pandas as pd
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_fileName
 
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
@@ -29,7 +29,7 @@ class SaveSuccessTask(ContextTask):
 
     Args:
         pid (str): Identificador do processo de execução.
-        filename (str): Nome do arquivo a ser salvo.
+        fileName (str): Nome do arquivo a ser salvo.
 
     Returns:
         None: Não retorna valor.
@@ -42,13 +42,13 @@ class SaveSuccessTask(ContextTask):
     def __init__(
         self,
         pid: str,
-        filename: str,
+        file_name: str,
     ) -> None:
         """Inicializa a tarefa SaveSuccessTask com o PID e nome do arquivo.
 
         Args:
             pid (str): Identificador do processo de execução.
-            filename (str): Nome do arquivo a ser salvo.
+            file_name (str): Nome do arquivo a ser salvo.
 
         """
         data_query_ = CachedExecution.find(CachedExecution.pid == pid).all()
@@ -58,7 +58,7 @@ class SaveSuccessTask(ContextTask):
             list_data.extend(item.data)
 
         storage = Storage("minio")
-        path_planilha = workdir_path.joinpath("temp", pid, filename)
+        path_planilha = workdir_path.joinpath("temp", pid, file_name)
 
         path_planilha.parent.mkdir(exist_ok=True, parents=True)
         df = pd.DataFrame(list_data)
@@ -70,5 +70,5 @@ class SaveSuccessTask(ContextTask):
                 sheet_name="Resultados",
             )
 
-        file_name = secure_filename(path_planilha.name)
+        file_name = secure_fileName(path_planilha.name)
         storage.upload_file(f"{pid}/{file_name}", path_planilha)

@@ -109,13 +109,32 @@ def start_beat() -> None:
     beat.run()
 
 
-def start_service(call: Callable) -> Process:  # noqa: D103
+def start_service(call: Callable) -> Process:
+    """Crie e inicie um novo processo para executar a função fornecida como serviço.
+
+    Args:
+    call (Callable): Função a ser executada em um novo processo.
+
+    Returns:
+    Process: Instância do processo iniciado para o serviço.
+
+    """
     proc = Process(target=call, daemon=True)
     proc.start()
     return proc
 
 
-def restart_service(call: Callable, proc: Process) -> Process:  # noqa: D103
+def restart_service(call: Callable, proc: Process) -> Process:
+    """Reinicie o serviço encerrando o processo atual e iniciando um novo processo.
+
+    Args:
+        call (Callable): Função a ser executada no novo processo.
+        proc (Process): Processo atual a ser encerrado.
+
+    Returns:
+        Process: Novo processo iniciado para o serviço.
+
+    """
     stop_service(proc)
     sleep(5)
 

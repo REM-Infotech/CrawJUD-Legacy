@@ -107,7 +107,7 @@ class RedisHandler[T](logging.Handler):
 class FileHandler(logging.handlers.RotatingFileHandler):
     """Custom logging handler to send logs to a file."""
 
-    filename = "app.logs"
+    fileName = "app.logs"
     maxBytes = 1024
     backupCount = 1
 

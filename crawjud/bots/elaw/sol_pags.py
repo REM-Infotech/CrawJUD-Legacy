@@ -548,7 +548,7 @@ class SolPags(ElawBot):
 
             div_tipo_custa = self.driver.find_element(
                 By.CSS_SELECTOR,
-                el.css_tipocusta,
+                el.css_tipo_custa,
             )
             div_tipo_custa.click()
             sleep(1)
@@ -753,7 +753,7 @@ class SolPags(ElawBot):
 
                 sleep(1)
                 id_task = item.find_elements(By.TAG_NAME, "td")[2].text
-                closeContext = self.wait.until(
+                close_context = self.wait.until(
                     ec.presence_of_element_located(
                         (
                             By.CSS_SELECTOR,
@@ -762,22 +762,22 @@ class SolPags(ElawBot):
                     ),
                 ).find_element(By.TAG_NAME, "a")
 
-                WaitFrame = WebDriverWait(self.driver, 5).until(
+                wait_frame = WebDriverWait(self.driver, 5).until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
                         el.valor,
                     )),
                 )
-                self.driver.switch_to.frame(WaitFrame)
+                self.driver.switch_to.frame(wait_frame)
                 sleep(1)
 
-                tipoCusta = ""
+                tipo_custa = ""
                 cod_bars = ""
-                tipoCondenacao = ""
+                tipo_condenacao = ""
                 now = datetime.now(ZoneInfo("America/Manaus")).strftime(
                     "%d-%m-%Y %H.%M.%S",
                 )
-                Name_Comprovante1 = f"COMPROVANTE 1 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
+                nome_comprovante = f"COMPROVANTE 1 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
                 cod_bars_xls = str(
                     self.bot_data.get("COD_BARRAS")
                     .replace(".", "")
@@ -785,7 +785,7 @@ class SolPags(ElawBot):
                 )
 
                 with suppress(TimeoutException):
-                    tipoCusta = str(
+                    tipo_custa = str(
                         self.wait.until(
                             ec.presence_of_element_located((
                                 By.CSS_SELECTOR,
@@ -809,11 +809,11 @@ class SolPags(ElawBot):
                     )
 
                 with suppress(TimeoutException):
-                    tipoCondenacao = (
+                    tipo_condenacao = (
                         self.wait.until(
                             ec.presence_of_element_located((
                                 By.CSS_SELECTOR,
-                                el.visualizar_tipoCondenacao,
+                                el.visualizar_tipo_condenacao,
                             )),
                         )
                         .text.split(":")[-1]
@@ -831,37 +831,37 @@ class SolPags(ElawBot):
                         self.bot_data.get("TIPO_CONDENACAO", ""),
                     )
                     match_condenacao = (
-                        tipo_condenacao_xls.lower() == tipoCondenacao.lower()
+                        tipo_condenacao_xls.lower() == tipo_condenacao.lower()
                     )
                     matchs = all([match_condenacao, chk_bars])
 
                 elif namedef == "custas":
                     tipo_custa_xls = str(self.bot_data.get("TIPO_GUIA", ""))
-                    match_custa = tipo_custa_xls.lower() == tipoCusta.lower()
+                    match_custa = tipo_custa_xls.lower() == tipo_custa.lower()
                     matchs = all([match_custa, chk_bars])
 
                 if matchs:
                     self.driver.switch_to.default_content()
-                    url_page = WaitFrame.get_attribute("src")
-                    self.getScreenShot(url_page, Name_Comprovante1)
+                    url_page = wait_frame.get_attribute("src")
+                    self.screenshot_pagina(url_page, nome_comprovante)
                     self.driver.switch_to.window(current_handle)
 
-                    closeContext.click()
-                    Name_Comprovante2 = f"COMPROVANTE 2 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
+                    close_context.click()
+                    nome_comprovante2 = f"COMPROVANTE 2 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"
                     item.screenshot(
-                        Path(self.output_dir_path).joinpath(Name_Comprovante2),
+                        Path(self.output_dir_path).joinpath(nome_comprovante2),
                     )
 
                     info_sucesso.extend([
-                        tipoCondenacao,
-                        Name_Comprovante1,
+                        tipo_condenacao,
+                        nome_comprovante,
                         id_task,
-                        Name_Comprovante2,
+                        nome_comprovante2,
                     ])
                     return info_sucesso
 
                 self.driver.switch_to.default_content()
-                closeContext.click()
+                close_context.click()
                 sleep(0.25)
 
             _raise_execution_error(message="Pagamento não solicitado")
@@ -871,17 +871,17 @@ class SolPags(ElawBot):
             "Pagamento solicitado com sucesso!!",
         ]
 
-    def getScreenShot(self, url_page: str, Name_Comprovante1: str) -> None:  , N803
+    def screenshot_pagina(self, url_page: str, nome_comprovante: str) -> None:
         """Capture a screenshot of the specified page.
 
         Args:
             url_page (str): The URL of the page to capture.
-            Name_Comprovante1 (str): The name for the screenshot file.
+            nome_comprovante (str): The name for the screenshot file.
 
         """
         self.driver.switch_to.new_window("tab")
         self.driver.get(url_page)
         self.driver.save_screenshot(
-            str(Path(self.output_dir_path).joinpath(Name_Comprovante1)),
+            str(Path(self.output_dir_path).joinpath(nome_comprovante)),
         )
         self.driver.close()

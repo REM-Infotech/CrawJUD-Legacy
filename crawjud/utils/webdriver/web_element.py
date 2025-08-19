@@ -18,7 +18,15 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
 
 
-class WebElementBot(WebElement):  # noqa: D101
+class WebElementBot(WebElement):
+    """Gerencie e estenda funcionalidades de elementos WebDriver para automação web.
+
+    Esta classe fornece métodos utilitários para interação avançada com elementos
+    web, como cliques, preenchimento de campos, seleção em listas e manipulação
+    de carregamentos dinâmicos, facilitando a automação de testes e rotinas web.
+
+    """
+
     _cuurent_driver: WebDriver = None
 
     @classmethod

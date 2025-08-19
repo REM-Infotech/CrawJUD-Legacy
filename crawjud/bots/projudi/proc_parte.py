@@ -129,7 +129,7 @@ class ProcParte(ProjudiBot):
                 self.append_success(
                     self.data_append,
                     "Processos salvos na planilha!",
-                    fileN=Path(self.path).name,
+                    file_name_save=Path(self.path).name,
                 )
                 if next_page:
                     next_page.click()

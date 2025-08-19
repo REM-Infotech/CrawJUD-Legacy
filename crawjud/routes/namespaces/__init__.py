@@ -11,12 +11,12 @@ from quart_socketio import Namespace, SocketIO
 from crawjud.routes.namespaces.bots import BotsNamespace
 from crawjud.routes.namespaces.system import SystemNamespace
 
-from .files import FileNamespaces
+from .files import FilesNamespace
 from .logs import LogsNamespace
 from .notifications import NotificationNamespace
 
 __all__ = [
-    "FileNamespaces",
+    "FilesNamespace",
     "LogsNamespace",
     "NotificationNamespace",
 ]
@@ -60,7 +60,7 @@ async def register_namespaces(io: SocketIO) -> None:
     namespaces = [
         SystemNamespace("/system", io),
         MasterNamespace("/master", io),
-        FileNamespaces("/files", io),
+        FilesNamespace("/files", io),
         LogsNamespace("/logsbot", io),
         BotsNamespace("/bots", io),
         NotificationNamespace("/notifications", io),
