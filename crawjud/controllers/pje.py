@@ -36,6 +36,7 @@ from crawjud.interfaces.types.pje import (
     DictSeparaRegiao,
     Processo,
 )
+from crawjud.utils.formatadores import formata_tempo
 from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.recaptcha import captcha_to_image
@@ -44,6 +45,7 @@ from crawjud.utils.webdriver import DriverBot
 if TYPE_CHECKING:
     from httpx import Client, Response
 
+    from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData
 
 DictData = dict[str, str | datetime]
@@ -58,8 +60,22 @@ COUNT_TRYS = 15
 class PjeBot[T](CrawJUD):
     """Classe de controle para robôs do PJe."""
 
-    def __init__(self) -> None:
-        """Instanciamento PjeBot."""
+    def __init__(
+        self,
+        current_task: ContextTask = None,
+        storage_folder_name: str | None = None,
+        name: str | None = None,
+        system: str | None = None,
+        *args: T,
+        **kwargs: T,
+    ) -> None:
+        """Instancia a classe."""
+        start_time: datetime = formata_tempo(str(current_task.request.eta))
+
+        self.folder_storage = storage_folder_name
+        self.current_task = current_task
+        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.pid = str(current_task.request.id)
 
     def search(
         self,

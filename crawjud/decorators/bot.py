@@ -111,7 +111,7 @@ def wrap_cls[T](cls: type[CrawJUD]) -> type[T]:
                 transports=transports,
                 wait_timeout=300,
             )
-            cls = original_cls(*args, **kwargs)
+            cls = original_cls(current_task=self, *args, **kwargs)
             Thread(
                 target=sio.emit,
                 kwargs={
@@ -130,7 +130,7 @@ def wrap_cls[T](cls: type[CrawJUD]) -> type[T]:
             cls.sio = sio
 
             if self:
-                return cls.execution(current_task=self, *args, **kwargs)
+                return cls.execution()
 
             return cls.execution(self, *args, **kwargs)
 

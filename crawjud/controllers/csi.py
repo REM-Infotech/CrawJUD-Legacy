@@ -2,17 +2,21 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import csi as el
+from crawjud.utils.formatadores import formata_tempo
 
-DictData = dict[str, str | datetime]
-ListData = list[DictData]
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from crawjud.custom.task import ContextTask
+
 
 workdir = Path(__file__).cwd()
 
@@ -27,11 +31,24 @@ CSS_INPUT_PROCESSO = {
 class CsiBot[T](CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
-    def __init__(self, *args: T, **kwargs: T) -> None:
+    def __init__(
+        self,
+        current_task: ContextTask = None,
+        storage_folder_name: str | None = None,
+        name: str | None = None,
+        system: str | None = None,
+        *args: T,
+        **kwargs: T,
+    ) -> None:
         """Instancia a classe."""
-        super().__init__()
+        start_time: datetime = formata_tempo(str(current_task.request.eta))
 
-        self.folder_storage = kwargs.pop("storage_folder_name")
+        self.folder_storage = storage_folder_name
+        self.current_task = current_task
+        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.pid = str(current_task.request.id)
+
+        super().__init__()
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)

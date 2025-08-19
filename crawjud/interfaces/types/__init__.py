@@ -14,7 +14,8 @@ from crawjud.interfaces.dict.bot import BotData
 
 # Tipos de retorno das funções
 
-
+type DictData = dict[str, str | datetime]
+type ListData = list[DictData]
 # Tipos primitivos do Python
 type PyNumbers = int | float | complex | datetime | timedelta
 type PyStrings = str | bytes

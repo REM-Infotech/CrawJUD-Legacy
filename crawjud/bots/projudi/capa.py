@@ -25,7 +25,6 @@ from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import projudi as el
-from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
@@ -40,28 +39,12 @@ class Capa(ProjudiBot):
     extract process data and participant details, and format them accordingly.
     """
 
-    def execution(
-        self,
-        current_task: ContextTask = None,
-        storage_folder_name: str | None = None,
-        name: str | None = None,
-        system: str | None = None,
-    ) -> None:
+    def execution(self) -> None:
         """Execute the main processing loop to extract process information.
 
         Iterates over each data row and queues process data extraction.
         """
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
-        self.folder_storage = storage_folder_name
-        self.current_task = current_task
-        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
-        self.pid = str(current_task.request.id)
-
-        self.carregar_arquivos()
-
-        frame = self.bot_data
-        self.max_rows = len(frame)
-
+        frame = self.frame
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value

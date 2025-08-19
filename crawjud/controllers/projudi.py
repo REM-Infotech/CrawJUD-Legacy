@@ -17,11 +17,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from crawjud.common.exceptions.bot import ExecutionError, LoginSystemError
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import projudi as el
+from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
     from selenium.webdriver.remote.webdriver import WebDriver
 
+    from crawjud.custom.task import ContextTask
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -38,6 +40,35 @@ CSS_INPUT_PROCESSO = {
 
 class ProjudiBot[T](CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
+
+    def __init__(
+        self,
+        current_task: ContextTask = None,
+        storage_folder_name: str | None = None,
+        name: str | None = None,
+        system: str | None = None,
+        *args: T,
+        **kwargs: T,
+    ) -> None:
+        """Instancia a classe."""
+        start_time: datetime = formata_tempo(str(current_task.request.eta))
+
+        self.folder_storage = storage_folder_name
+        self.current_task = current_task
+        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.pid = str(current_task.request.id)
+
+        super().__init__()
+
+        self.folder_storage = kwargs.pop("storage_folder_name")
+
+        for k, v in kwargs.copy().items():
+            setattr(self, k, v)
+
+        self.download_files()
+
+        self.auth()
+        self._frame = self.load_data()
 
     def search(self) -> bool:
         """Procura processos no PROJUDI.

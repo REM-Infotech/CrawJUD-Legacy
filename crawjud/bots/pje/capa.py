@@ -23,11 +23,9 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
-from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from concurrent.futures import Future
-    from datetime import datetime
 
     from crawjud.interfaces.types import BotData
     from crawjud.interfaces.types.pje import DictResults
@@ -47,11 +45,7 @@ class Capa(PjeBot):
 
     tasks_queue_processos: ClassVar[list[Future]] = []
 
-    def execution(
-        self,
-        current_task: ContextTask = None,
-        storage_folder_name: str | None = None,
-    ) -> None:
+    def execution(self) -> None:
         """Executa o fluxo principal de processamento da capa dos processos PJE.
 
         Args:
@@ -63,17 +57,6 @@ class Capa(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
-        self.folder_storage = storage_folder_name
-        self.current_task = current_task
-        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
-        self.pid = str(current_task.request.id)
-
-        self.queue()
-
-    def queue(self) -> None:
-        # Autentica e processa cada região
-
         generator_regioes = self.regioes()
         for regiao, data_regiao in generator_regioes:
             with suppress(Exception):

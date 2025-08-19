@@ -7,6 +7,7 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -15,6 +16,10 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import esaj as el
+from crawjud.utils.formatadores import formata_tempo
+
+if TYPE_CHECKING:
+    from crawjud.custom.task import ContextTask
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -27,6 +32,35 @@ COUNT_TRYS = 15
 
 class ESajBot[T](CrawJUD):
     """Classe de controle para robôs do ESaj."""
+
+    def __init__(
+        self,
+        current_task: ContextTask = None,
+        storage_folder_name: str | None = None,
+        name: str | None = None,
+        system: str | None = None,
+        *args: T,
+        **kwargs: T,
+    ) -> None:
+        """Instancia a classe."""
+        start_time: datetime = formata_tempo(str(current_task.request.eta))
+
+        self.folder_storage = storage_folder_name
+        self.current_task = current_task
+        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.pid = str(current_task.request.id)
+
+        super().__init__()
+
+        self.folder_storage = kwargs.pop("storage_folder_name")
+
+        for k, v in kwargs.copy().items():
+            setattr(self, k, v)
+
+        self.download_files()
+
+        self.auth()
+        self._frame = self.load_data()
 
     def auth(self) -> bool:
         loginuser = "".join(

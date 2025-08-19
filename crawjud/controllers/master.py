@@ -86,7 +86,7 @@ class AbstractCrawJUD[T]:
         self._row = row
 
     @abstractmethod
-    def execution(self, *args: T, **kwargs: T) -> None:
+    def execution(self) -> None:
         """Função de execução do bot."""
 
     @classmethod
