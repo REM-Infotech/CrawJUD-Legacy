@@ -11,7 +11,7 @@ from io import BytesIO
 from pathlib import Path
 from threading import Semaphore, Thread
 from time import sleep
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, Literal
 from zoneinfo import ZoneInfo
 
 import base91
@@ -464,3 +464,15 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         # Registra mensagem de log
         self.print_msg(message=message, type_log=type_log)
+
+    def saudacao(self) -> Literal["Bom dia", "Boa tarde", "Boa noite"]:
+        hora = datetime.now(tz=ZoneInfo("America/Manaus")).hour
+
+        saudacao = "Boa noite"
+
+        if 5 <= hora < 12:
+            saudacao = "Bom dia"
+        elif 12 <= hora < 18:
+            saudacao = "Boa tarde"
+
+        return saudacao

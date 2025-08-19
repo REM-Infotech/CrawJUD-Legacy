@@ -22,4 +22,29 @@ url_logado: str = (
 
 # Subsidios
 url_solicitacao_subsidios = "https://csi.infraero.gov.br/citsmart/pages/smartPortal/smartPortal.load#/atividade/251/7232/7233"
+
+
+iframe_questionario = 'iframe[id="questionario"]'
 campo_nome_reclamante_subsidios = "input[id='campoDyn_7287']"
+
+campo_desc_subsidios = 'textarea[id="solicitacaoObservacao"]'
+
+desc_subsidios = """
+PROCESSO {ATO} {NUMERO_PROCESSO}
+{COMARCA_VARA}
+
+ASSUNTO(S):
+{ASSUNTOS}
+
+RECLAMANTE: {NOME_RECLAMANTE} CPF: {CPF_RECLAMANTE}
+RECLAMADO: {RECLAMADO}
+
+
+Prezados, {TIMESET}!
+Solicito os seguintes documentos para subsidiar a contestação:
+{DOCUMENTOS}
+
+Atenciosamente,
+{NOME_SOLICITANTE}
+
+"""
