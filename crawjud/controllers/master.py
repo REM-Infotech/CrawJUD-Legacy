@@ -16,8 +16,10 @@ from zoneinfo import ZoneInfo
 
 import base91
 import pandas as pd
+from dotenv import dotenv_values
 from pandas import Timestamp, read_excel
 from selenium.webdriver.remote.webdriver import WebDriver
+from socketio import Client
 from termcolor import colored
 from tqdm import tqdm
 from werkzeug.utils import secure_filename
@@ -37,13 +39,19 @@ if TYPE_CHECKING:
     from selenium.webdriver.support.wait import WebDriverWait
     from socketio import SimpleClient
 
-
+environ = dotenv_values()
 func_dict_check = {
     "bot": ["execution"],
     "search": ["buscar_processo"],
 }
 
 work_dir = Path(__file__).cwd()
+
+server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
+namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
+
+transports = ["websocket"]
+headers = {"Content-Type": "application/json"}
 
 
 class AbstractCrawJUD[T]:
@@ -361,58 +369,89 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
 
         """
-        # Obtém o horário atual formatado
-        time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
-            "%H:%M:%S",
-        )
-        # Monta o prompt da mensagem
-        prompt = f"[({self._pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
 
-        # Cria objeto de log da mensagem
-        data = {
-            "data": MessageLogDict(
-                message=str(prompt),
-                pid=str(self._pid),
-                row=int(row),
-                type=type_log,
-                status="Em Execução",
-                total=int(self._total_rows),
-                success=0,
-                errors=errors,
-                remaining=int(self._total_rows),
-                start_time=self._start_time,
-            ),
-        }
+        def print_in_thread(
+            message: str,
+            row: int = 0,
+            errors: int = 0,
+            type_log: str = "log",
+        ) -> None:
+            sio = Client(
+                reconnection_attempts=15,
+                reconnection_delay=5,
+                reconnection_delay_max=10,
+            )
+            sio.connect(
+                url=server,
+                namespaces=[namespace],
+                wait=True,
+                wait_timeout=30,
+                retry=True,
+            )
 
-        sleep(2)
+            sio.emit(
+                event="join_room",
+                data={"data": {"room": self.pid}},
+            )
+
+            # Obtém o horário atual formatado
+            time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
+                "%H:%M:%S",
+            )
+            # Monta o prompt da mensagem
+            prompt = f"[({self._pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
+
+            # Cria objeto de log da mensagem
+            data = {
+                "data": MessageLogDict(
+                    message=str(prompt),
+                    pid=str(self._pid),
+                    row=int(row),
+                    type=type_log,
+                    status="Em Execução",
+                    total=int(self._total_rows),
+                    success=0,
+                    errors=errors,
+                    remaining=int(self._total_rows),
+                    start_time=self._start_time,
+                ),
+            }
+
+            sleep(2)
+
+            Thread(
+                target=self.sio.emit,
+                kwargs={
+                    "event": "log_execution",
+                    "data": data,
+                },
+            ).start()
+
+            file_log = work_dir.joinpath("temp", self.pid, f"{self.pid}.log")
+            file_log.parent.mkdir(parents=True, exist_ok=True)
+            file_log.touch(exist_ok=True)
+
+            with file_log.open("a") as f:
+                # Cria objeto de log da mensagem
+                tqdm.write(
+                    file=f,
+                    s=colored(
+                        prompt,
+                        color={
+                            "info": "cyan",
+                            "log": "white",
+                            "error": "red",
+                            "warning": "magenta",
+                            "success": "green",
+                        }.get(type_log, "white"),
+                    ),
+                )
 
         Thread(
-            target=self.sio.emit,
-            kwargs={
-                "event": "log_execution",
-                "data": data,
-            },
+            name="Print Message",
+            target=print_in_thread(),
+            args=(message, row, errors, type_log),
         ).start()
-
-        file_log = work_dir.joinpath("temp", self.pid, f"{self.pid}.log")
-        file_log.parent.mkdir(parents=True, exist_ok=True)
-        file_log.touch(exist_ok=True)
-
-        with file_log.open("a") as f:
-            # Cria objeto de log da mensagem
-            tqdm.write(
-                file=f,
-                s=colored(
-                    prompt,
-                    color={
-                        "info": "cyan",
-                        "log": "white",
-                        "error": "red",
-                        "warning": "magenta",
-                        "success": "green",
-                    }.get(type_log, "white"),
-                ),
-            )
 
     def append_success(
         self,

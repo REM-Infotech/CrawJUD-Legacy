@@ -10,18 +10,8 @@ from __future__ import annotations
 from functools import wraps
 from typing import TYPE_CHECKING
 
-from dotenv import dotenv_values
-
 if TYPE_CHECKING:
     from crawjud.controllers.master import CrawJUD
-
-environ = dotenv_values()
-
-server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
-namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
-
-transports = ["websocket"]
-headers = {"Content-Type": "application/json"}
 
 
 def wrap_init[T](cls: type[CrawJUD]) -> type[T]:
