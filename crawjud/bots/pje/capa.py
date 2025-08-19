@@ -24,8 +24,6 @@ from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
 
 if TYPE_CHECKING:
-    from concurrent.futures import Future
-
     from crawjud.interfaces.types import BotData
     from crawjud.interfaces.types.pje import DictResults
 load_dotenv()
@@ -42,7 +40,8 @@ class Capa(PjeBot):
 
     """
 
-    tasks_queue_processos: ClassVar[list[Future]] = []
+    tasks_queue_processos: ClassVar[list[Thread]] = []
+    thread_download_file: ClassVar[list[Thread]] = []
 
     def execution(self) -> None:
         """Executa o fluxo principal de processamento da capa dos processos PJE.
@@ -103,20 +102,22 @@ class Capa(PjeBot):
 
 
         """
-        client = Client(
-            base_url=base_url,
-            timeout=30,
-            headers=headers,
-            cookies=cookies,
-            follow_redirects=True,
-        )
 
-        thread_download_file: list[Thread] = []
-
-        for item in data:
-            sleep_time = secrets.randbelow(7) + 2
-            sleep(sleep_time)
+        def thread_search_proc(
+            base_url: str,
+            headers: dict,
+            cookies: dict,
+            item: BotData,
+        ) -> None:
             try:
+                client = Client(
+                    base_url=base_url,
+                    timeout=30,
+                    headers=headers,
+                    cookies=cookies,
+                    follow_redirects=True,
+                )
+
                 # Atualiza dados do item para processamento
                 row = self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
                 resultado: DictResults = self.search(
@@ -146,7 +147,7 @@ class Capa(PjeBot):
                         )
 
                         thread_file_.start()
-                        thread_download_file.append(thread_file_)
+                        self.thread_download_file.append(thread_file_)
 
                         part_1_msg = (
                             "Informações do processo {numproc} ".format(
@@ -175,7 +176,26 @@ class Capa(PjeBot):
                     type_log="error",
                 )
 
-        for th in thread_download_file:
+        for item in data:
+            thread_proc = Thread(
+                target=thread_search_proc,
+                kwargs={
+                    "base_url": base_url,
+                    "headers": headers,
+                    "cookies": cookies,
+                    "item": item,
+                },
+            )
+
+            self.tasks_queue_processos.append(thread_proc)
+
+        for th in self.tasks_queue_processos:
+            with suppress(Exception):
+                th.join()
+                sleep_time = secrets.randbelow(7) + 2
+                sleep(sleep_time)
+
+        for th in self.thread_download_file:
             with suppress(Exception):
                 th.join()
 
