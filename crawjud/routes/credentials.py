@@ -29,7 +29,7 @@ from quart import (
 )
 from quart import current_app as app
 from quart_jwt_extended import get_jwt_identity, jwt_required
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_fileName
 
 from crawjud.api import db
 from crawjud.interfaces.credentials import CredendialsDict
@@ -246,7 +246,7 @@ async def cadastro() -> Response:
             cer_path = str(
                 Path(temporarypath)
                 .resolve()
-                .joinpath(secure_filename(filecert.filename)),
+                .joinpath(secure_fileName(filecert.fileName)),
             )
 
             await filecert.save(cer_path)
@@ -260,8 +260,8 @@ async def cadastro() -> Response:
                     login_method=form["auth_method"],
                     login=form["doc_cert"],
                     key=form["key"],
-                    certficate=secure_filename(
-                        filecert.filename,
+                    certficate=secure_fileName(
+                        filecert.fileName,
                     ),
                     certficate_blob=await certficate_blob,
                 )

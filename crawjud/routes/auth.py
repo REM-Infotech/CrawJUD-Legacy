@@ -118,16 +118,17 @@ async def login() -> Response:
         if usr and usr.check_password(form.password):
             is_admin = bool(usr.admin or usr.supersu)
 
-            session["license_object"] = LicenseUserDict(**{
-                k: v
-                for k, v in usr.licenseusr.__dict__.items()
-                if not k.startswith("_") and not isinstance(v, list)
-            })
-
-            session["current_user"] = CurrentUser(**{
-                k: v
-                for k, v in usr.__dict__.items()
-                if k.lower() in CurrentUser.__annotations__
+            session.update({
+                "license_object": LicenseUserDict(**{
+                    k: v
+                    for k, v in usr.licenseusr.__dict__.items()
+                    if not k.startswith("_") and not isinstance(v, list)
+                }),
+                "current_user": CurrentUser(**{
+                    k: v
+                    for k, v in usr.__dict__.items()
+                    if k.lower() in CurrentUser.__annotations__
+                }),
             })
 
             resp = await make_response(

@@ -19,7 +19,7 @@ from quart import (
 from quart import current_app as app
 from quart_jwt_extended import (
     get_jwt_identity,
-    jwt_required,
+    login_required,
 )
 
 from crawjud.api import db
@@ -34,7 +34,7 @@ exe = Blueprint("exe", __name__)
 
 
 @exe.get("/executions")
-@jwt_required
+@login_required
 def executions() -> Response:
     """Display a list of executions filtered by search criteria.
 
@@ -84,7 +84,7 @@ def executions() -> Response:
 
 
 @exe.post("/clear_executions")
-@jwt_required
+@login_required
 async def clear_executions() -> Response:
     """Clear all executions from the database.
 
