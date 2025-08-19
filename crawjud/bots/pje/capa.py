@@ -101,7 +101,7 @@ class Capa(PjeBot):
 
 
         """
-        cl = Client(
+        client = Client(
             base_url=base_url,
             timeout=30,
             headers=headers,
@@ -111,70 +111,67 @@ class Capa(PjeBot):
 
         thread_download_file: list[Thread] = []
 
-        with cl as client:
-            for item in data:
-                sleep_time = secrets.randbelow(7) + 2
-                sleep(sleep_time)
-                try:
-                    # Atualiza dados do item para processamento
-                    row = (
-                        self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
-                    )
-                    resultado: DictResults = self.search(
-                        data=item,
-                        row=row,
-                        client=client,
-                    )
+        for item in data:
+            sleep_time = secrets.randbelow(7) + 2
+            sleep(sleep_time)
+            try:
+                # Atualiza dados do item para processamento
+                row = self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
+                resultado: DictResults = self.search(
+                    data=item,
+                    row=row,
+                    client=client,
+                )
 
-                    if resultado:
-                        data_request = resultado.get("data_request")
-                        if data_request:
-                            # Salva dados em cache
-                            self.save_success_cache(
-                                data=data_request,
-                                processo=item["NUMERO_PROCESSO"],
-                            )
-
-                            thread_file_ = Thread(
-                                target=self.copia_integral,
-                                kwargs={
-                                    "row": row,
-                                    "data": item,
-                                    "client": client,
-                                    "id_processo": resultado["id_processo"],
-                                    "captchatoken": resultado["captchatoken"],
-                                },
-                            )
-
-                            thread_file_.start()
-                            thread_download_file.append(thread_file_)
-
-                            part_1_msg = (
-                                "Informações do processo {numproc} ".format(
-                                    numproc=item["NUMERO_PROCESSO"],
-                                )
-                            )
-
-                            part_2_msg = "salvas com sucesso!"
-                            message = f"{part_1_msg}{part_2_msg}"
-                            self.print_msg(
-                                message=message,
-                                row=row,
-                                type_log="success",
-                            )
-
-                    else:
-                        self.print_msg(
-                            message="Processo não encontrado!",
-                            row=row,
-                            type_log="error",
+                if resultado:
+                    data_request = resultado.get("data_request")
+                    if data_request:
+                        # Salva dados em cache
+                        self.save_success_cache(
+                            data=data_request,
+                            processo=item["NUMERO_PROCESSO"],
                         )
-                except ExecutionError:
+
+                        thread_file_ = Thread(
+                            target=self.copia_integral,
+                            kwargs={
+                                "row": row,
+                                "data": item,
+                                "client": client,
+                                "id_processo": resultado["id_processo"],
+                                "captchatoken": resultado["captchatoken"],
+                            },
+                        )
+
+                        thread_file_.start()
+                        thread_download_file.append(thread_file_)
+
+                        part_1_msg = (
+                            "Informações do processo {numproc} ".format(
+                                numproc=item["NUMERO_PROCESSO"],
+                            )
+                        )
+
+                        part_2_msg = "salvas com sucesso!"
+                        message = f"{part_1_msg}{part_2_msg}"
+                        self.print_msg(
+                            message=message,
+                            row=row,
+                            type_log="success",
+                        )
+
+                else:
                     self.print_msg(
-                        message="Erro ao buscar processo",
+                        message="Processo não encontrado!",
                         row=row,
                         type_log="error",
                     )
+            except ExecutionError:
+                self.print_msg(
+                    message="Erro ao buscar processo",
+                    row=row,
+                    type_log="error",
+                )
 
         for th in thread_download_file:
             with suppress(Exception):
@@ -208,6 +205,16 @@ class Capa(PjeBot):
 
         """
         try:
+            base_url = client.base_url
+            headers = client.headers
+            cookies = client.cookies
+
+            client = Client(
+                base_url=base_url,
+                timeout=30,
+                headers=headers,
+                cookies=cookies,
+            )
             file_name = (
                 f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
             )
