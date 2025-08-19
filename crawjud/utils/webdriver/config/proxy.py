@@ -43,12 +43,12 @@ class HARProxy:  # noqa: D101
 @dataclass(frozen=True)
 class EntryRequest:  # noqa: D101
     pageref: str = "default"
-    startedDateTime: str = "2025-07-29T12:15:00.626-04:00"  # noqa: N815
+    startedDateTime: str = "2025-07-29T12:15:00.626-04:00"
     request: RequestData = field(default_factory=dict)
     response: ResponseData = field(default_factory=dict)
     cache: dict[str, str] = field(default_factory=dict)
     timings: dict[str, str | int] = field(default_factory=dict)
-    serverIPAddress: str = ""  # noqa: N815
+    serverIPAddress: str = ""
     comment: str = ""
     time: int = 0
 
@@ -56,25 +56,25 @@ class EntryRequest:  # noqa: D101
 @dataclass(frozen=True)
 class RequestData:  # noqa: D101
     method: str
-    httpVersion: str  # noqa: N815
+    httpVersion: str
     url: str
-    headersSize: int  # noqa: N815
-    bodySize: int  # noqa: N815
+    headersSize: int
+    bodySize: int
     comment: str
     cookies: list[Cookie] = field(default_factory=list)
     headers: list[Header] = field(default_factory=list)
-    queryString: list[str] = field(default_factory=list)  # noqa: N815
+    queryString: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
 class ResponseData:  # noqa: D101
     status: int
-    statusText: str  # noqa: N815
-    httpVersion: str  # noqa: N815
+    statusText: str
+    httpVersion: str
     content: ContentData
-    redirectURL: str  # noqa: N815
-    headersSize: int  # noqa: N815
-    bodySize: int  # noqa: N815
+    redirectURL: str
+    headersSize: int
+    bodySize: int
     comment: str
     cookies: list[Cookie] = field(default_factory=list)
     headers: list[Header] = field(default_factory=list)

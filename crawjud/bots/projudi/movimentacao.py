@@ -108,7 +108,7 @@ class Movimentacao(ProjudiBot):
                 self.append_success(self.appends)
 
             if len(self.another_append) > 0:
-                for data, msg, fileN in self.another_append:  # noqa: N806
+                for data, msg, fileN in self.another_append:
                     self.type_log = "info"
                     self.append_success([data], msg, fileN)
 

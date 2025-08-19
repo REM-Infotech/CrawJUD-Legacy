@@ -179,7 +179,7 @@ class DriverBot[T](WebDriver):  # noqa: D101
         return super().find_elements(*args, **kwargs)
 
     @property
-    def current_HAR(self) -> HARProxy:  # noqa: N802
+    def current_har(self) -> HARProxy:
         if not self._har:
             self._log = self.client.har
             self._har = self._log.get("log")

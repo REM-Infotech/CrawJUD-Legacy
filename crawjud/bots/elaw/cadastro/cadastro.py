@@ -459,7 +459,7 @@ class PreCadastro(ElawBot):
         self.type_log = "log"
         self.prt()
 
-        div_comboProcessoTipo = self.wait.until(  # noqa: N806
+        div_comboProcessoTipo = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.comboProcessoTipo,

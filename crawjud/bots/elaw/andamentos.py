@@ -126,9 +126,12 @@ class Andamentos(ElawBot):
             self.message = "Informando data"
             self.type_log = "log"
             self.prt()
-            css_Data = el.input_data  # noqa: N806
+            css_campo_data = el.input_data
             campo_data = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_Data)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_campo_data,
+                )),
             )
             campo_data.click()
             campo_data.send_keys(Keys.CONTROL, "a")

@@ -129,9 +129,9 @@ class Protocolo(ProjudiBot):
             str | None: The extracted protocol number if available; otherwise, None.
 
         """
-        successMessage = None  # noqa: N806
+        sucesso_message = None
         with suppress(TimeoutException):
-            successMessage = (  # noqa: N806
+            sucesso_message = (
                 self.wait.until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
@@ -142,7 +142,7 @@ class Protocolo(ProjudiBot):
                 .replace(" ", "")
             )
 
-        return successMessage
+        return sucesso_message
 
     def set_parte(self) -> bool:
         """Selecione a parte apropriada conforme especificado nos dados do bot.

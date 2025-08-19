@@ -77,10 +77,10 @@ class ElawBot[T](CrawJUD):
 
         sleep(1)
         # Coloca o campo em formato "Outros" para inserir o número do processo
-        ratioNumberOld = self.wait.until(  # noqa: N806
+        radio_numero_antigo = self.wait.until(
             ec.presence_of_element_located((By.ID, "radioNumeroAntigo")),
         )
-        ratioNumberOld.click()
+        radio_numero_antigo.click()
 
         # Insere o processo no Campo
         lineprocess = self.wait.until(
@@ -143,11 +143,11 @@ class ElawBot[T](CrawJUD):
 
                 if check_process:
                     check_process.click()
-                    btEnviarIncidente = self.driver.find_element(  # noqa: N806
+                    button_enviar_incidente = self.driver.find_element(
                         By.CSS_SELECTOR,
                         'input[name="btEnviarIncidente"]',
                     )
-                    btEnviarIncidente.click()
+                    button_enviar_incidente.click()
 
         return check_process is not None
 

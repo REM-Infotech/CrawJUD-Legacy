@@ -91,8 +91,8 @@ class Prazos(ElawBot):
             self.type_log = "log"
             self.prt()
 
-            self.TablePautas()
-            chk_lancamento = self.CheckLancamento()
+            self.tabela_pautas()
+            chk_lancamento = self.checar_lancamento()
 
             if chk_lancamento:
                 self.message = "Já existe lançamento para esta pauta"
@@ -104,9 +104,9 @@ class Prazos(ElawBot):
                 comprovante = chk_lancamento
 
             if not comprovante:
-                self.NovaPauta()
-                self.save_Prazo()
-                comprovante = self.CheckLancamento()
+                self.nova_pauta()
+                self.salvar_prazo()
+                comprovante = self.checar_lancamento()
                 if not comprovante:
                     _raise_execution_error(
                         message="Não foi possível comprovar lançamento, verificar manualmente",
@@ -122,7 +122,7 @@ class Prazos(ElawBot):
 
             raise ExecutionError(e=e) from e
 
-    def TablePautas(self) -> None:  # noqa: N802
+    def tabela_pautas(self) -> None:
         """Verify if there are existing schedules for the specified day.
 
         Raises:
@@ -149,7 +149,7 @@ class Prazos(ElawBot):
 
             raise ExecutionError(e=e) from e
 
-    def NovaPauta(self) -> None:  # noqa: N802
+    def nova_pauta(self) -> None:
         """Launch a new audience schedule.
 
         Raises:
@@ -209,14 +209,14 @@ class Prazos(ElawBot):
             self.type_log = "log"
             self.prt()
 
-            DataAudiencia = self.wait.until(  # noqa: N806
+            data_audiencia = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    el.DataAudiencia,
+                    el.data_audiencia,
                 )),
             )
 
-            DataAudiencia.send_keys(self.data_Concat)
+            data_audiencia.send_keys(self.data_Concat)
 
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
@@ -224,7 +224,7 @@ class Prazos(ElawBot):
 
             raise ExecutionError(e=e) from e
 
-    def save_Prazo(self) -> None:  # noqa: N802
+    def salvar_prazo(self) -> None:
         """Save the newly created deadline.
 
         Raises:
@@ -249,7 +249,7 @@ class Prazos(ElawBot):
 
             raise ExecutionError(e=e) from e
 
-    def CheckLancamento(self) -> dict[str, str] | None:  # noqa: N802
+    def checar_lancamento(self) -> dict[str, str] | None:
         """Check if the deadline has been successfully recorded.
 
         Returns:

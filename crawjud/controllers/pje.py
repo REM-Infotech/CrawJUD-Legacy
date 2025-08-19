@@ -168,7 +168,7 @@ class PjeBot[T](CrawJUD):
                 driver.refresh()
 
             cookies_driver = driver.get_cookies()
-            har_data_ = driver.current_HAR
+            har_data_ = driver.current_har
             entries = list(har_data_.entries)
             entry_proxy = [
                 item
