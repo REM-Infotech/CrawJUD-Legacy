@@ -24,7 +24,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.common.exceptions.bot import (
     ExecutionError,
     FileUploadError,
-    LoginSystemError,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
 from crawjud.controllers.master import CrawJUD
@@ -209,7 +208,7 @@ class PjeBot[T](CrawJUD):
                 f"https://pje.trt{self.regiao}.jus.br/pje-consulta-api/api"
             )
 
-        except LoginSystemError:
+        except Exception:
             self.print_msg("Erro ao realizar autenticação", type_log="error")
             return False
 

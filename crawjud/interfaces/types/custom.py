@@ -122,11 +122,11 @@ class StrProcessoCNJ[T](UserString):
 
         """
         to_return = None
-        tj_id: re.Match[str] = re.search(r"(?<=\d\.)\d{2}", self.data)
-        if not tj_id:
+        match_ = re.search(r"\.(\d)\.(\d{1,2})\.", self.data)
+        if not match_:
             _raise_value_error()
 
-        to_return = tj_id.group()
+        to_return: str = match_.group(2)
         if to_return.startswith("0"):
             to_return = to_return.replace("0", "")
 
