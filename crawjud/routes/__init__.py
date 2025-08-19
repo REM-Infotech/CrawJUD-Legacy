@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
+from flask_login import login_required, unset_jwt_cookies
 from quart import (
     Response,
     current_app,
@@ -16,14 +17,13 @@ from quart import (
     request,
 )
 from quart import current_app as app
-from quart_jwt_extended import jwt_required, unset_jwt_cookies
 
 if TYPE_CHECKING:
     from werkzeug.exceptions import HTTPException
 
 
 @app.route("/", methods=["GET"], websocket=True)
-@jwt_required
+@login_required
 async def index() -> Response:
     """Redirect to the authentication login page.
 

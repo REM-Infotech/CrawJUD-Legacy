@@ -5,9 +5,9 @@ from __future__ import annotations
 from traceback import format_exception
 from typing import TYPE_CHECKING
 
+from flask_login import login_required
 from quart import Response, abort, make_response, render_template, session
 from quart import current_app as app
-from quart_jwt_extended import jwt_required
 from sqlalchemy.orm import aliased
 
 from crawjud.models import ScheduleModel, SuperUser, Users, admins
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 @exe.get("/schedules")
-@jwt_required
+@login_required
 async def schedules() -> Response:
     """Display a list of executions filtered by search criteria.
 
@@ -86,7 +86,7 @@ async def schedules() -> Response:
 
 
 @exe.post("/delete_schedule/<int:id_>")
-@jwt_required
+@login_required
 async def delete_schedule(id_: int) -> Response:
     """Delete a schedule from the database.
 
