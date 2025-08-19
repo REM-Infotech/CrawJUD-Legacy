@@ -5,6 +5,7 @@ from __future__ import annotations
 from traceback import format_exception
 from typing import TYPE_CHECKING
 
+from flask_login import login_required
 from quart import (
     Response,
     abort,
@@ -13,7 +14,7 @@ from quart import (
     request,
 )
 from quart import current_app as app
-from quart_jwt_extended import get_jwt_identity, jwt_required
+from quart_jwt_extended import get_jwt_identity
 
 from crawjud.models import LicensesUsers, Users
 from crawjud.models import SuperUser as SuperUser
@@ -146,7 +147,7 @@ action = {
 
 
 @admin.get("/users")
-@jwt_required
+@login_required
 async def users() -> Response:
     """Render the users list template.
 

@@ -9,6 +9,7 @@ from __future__ import annotations
 from traceback import format_exception
 from typing import TYPE_CHECKING
 
+from flask_login import login_required
 from quart import (
     Blueprint,
     Response,
@@ -17,7 +18,6 @@ from quart import (
     jsonify,
     make_response,
 )
-from quart_jwt_extended import jwt_required
 
 from crawjud.api import db
 from crawjud.models import Executions
@@ -61,7 +61,7 @@ MONTHS_EXECUTED = {
 
 
 @dash.get("/linechart_system")
-@jwt_required
+@login_required
 async def linechart_system() -> Response:
     """Render the line chart page.
 
@@ -158,7 +158,7 @@ async def linechart_system() -> Response:
 
 
 @dash.get("/linechart_bot")
-@jwt_required
+@login_required
 async def linechart_bot() -> Response:
     """Renderiza o gráfico de linha dos bots.
 

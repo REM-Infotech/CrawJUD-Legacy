@@ -27,6 +27,7 @@ from dataclasses import dataclass
 from traceback import format_exception
 from typing import TYPE_CHECKING
 
+from flask_login import login_user
 from quart import (
     Blueprint,
     Response,
@@ -41,7 +42,6 @@ from quart_jwt_extended import (
     create_refresh_token,
     get_jwt_identity,
     jwt_refresh_token_required,
-    set_access_cookies,
     unset_jwt_cookies,
 )
 
@@ -117,33 +117,29 @@ async def login() -> Response:
         )
         if usr and usr.check_password(form.password):
             is_admin = bool(usr.admin or usr.supersu)
-
-            session["license_object"] = LicenseUserDict(**{
-                k: v
-                for k, v in usr.licenseusr.__dict__.items()
-                if not k.startswith("_") and not isinstance(v, list)
+            login_user(usr, remember=form.remember_me)
+            session.update({
+                "license_object": LicenseUserDict(**{
+                    k: v
+                    for k, v in usr.licenseusr.__dict__.items()
+                    if not k.startswith("_") and not isinstance(v, list)
+                }),
+                "current_user": CurrentUser(**{
+                    k: v
+                    for k, v in usr.__dict__.items()
+                    if k.lower() in CurrentUser.__annotations__
+                }),
             })
 
-            session["current_user"] = CurrentUser(**{
-                k: v
-                for k, v in usr.__dict__.items()
-                if k.lower() in CurrentUser.__annotations__
-            })
+            session.permanent = remember
 
-            resp = await make_response(
+            return await make_response(
                 jsonify({
                     "message": "Login Efetuado com sucesso!",
                     "isAdmin": is_admin,
                 }),
                 200,
             )
-
-            access_token = create_access_token(identity=usr)
-            set_access_cookies(resp, access_token)
-
-            session.permanent = remember
-
-            return resp
 
         if not usr or not usr.check_password(form.password):
             resp = jsonify({"message": "Usuário ou senha incorretos!"})

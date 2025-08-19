@@ -8,6 +8,7 @@ from __future__ import annotations
 from traceback import format_exception
 from typing import TYPE_CHECKING
 
+from flask_login import login_required
 from quart import (
     Blueprint,
     Response,
@@ -15,14 +16,12 @@ from quart import (
     jsonify,
     make_response,
     render_template,
+    session,
 )
 from quart import current_app as app
-from quart_jwt_extended import (
-    get_jwt_identity,
-    jwt_required,
-)
 
 from crawjud.api import db
+from crawjud.interfaces.session import SessionDict
 from crawjud.models import Executions, Users
 from crawjud.models import SuperUser as SuperUser
 from crawjud.models import admins as admins
@@ -34,7 +33,7 @@ exe = Blueprint("exe", __name__)
 
 
 @exe.get("/executions")
-@jwt_required
+@login_required
 def executions() -> Response:
     """Display a list of executions filtered by search criteria.
 
@@ -43,8 +42,8 @@ def executions() -> Response:
 
     """
     try:
-        current_user = get_jwt_identity()
-
+        _sess = session
+        current_user = SessionDict()
         executions = db.session.query(Executions).all()
         user = db.session.query(Users).filter(Users.id == current_user).first()
 
@@ -84,7 +83,7 @@ def executions() -> Response:
 
 
 @exe.post("/clear_executions")
-@jwt_required
+@login_required
 async def clear_executions() -> Response:
     """Clear all executions from the database.
 

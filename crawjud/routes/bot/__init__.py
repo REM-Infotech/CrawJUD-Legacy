@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import traceback
 
+from flask_login import login_required
 from quart import (
     Blueprint,
     Response,
@@ -11,7 +12,6 @@ from quart import (
     jsonify,
     make_response,
 )
-from quart_jwt_extended import jwt_required
 from werkzeug.exceptions import HTTPException
 
 from crawjud.decorators.api import crossdomain
@@ -23,7 +23,7 @@ bot = Blueprint("bot", __name__, url_prefix="/bot")
 
 @bot.route("/start_bot", methods=["get", "post", "options"])
 @crossdomain(origin="*", methods=["get", "post", "options"])
-@jwt_required
+@login_required
 async def start_bot() -> None:
     """Inicie o bot de operações judiciais e retorne o PID da execução iniciada.
 

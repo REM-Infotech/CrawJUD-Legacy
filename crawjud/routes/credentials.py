@@ -28,7 +28,7 @@ from quart import (
     session,
 )
 from quart import current_app as app
-from quart_jwt_extended import get_jwt_identity, jwt_required
+from quart_jwt_extended import get_jwt_identity, login_required
 from werkzeug.utils import secure_filename
 
 from crawjud.api import db
@@ -94,7 +94,7 @@ def license_user(usr: int, db: SQLAlchemy) -> str:
 
 
 @cred.get("/systems")
-@jwt_required
+@login_required
 async def systems() -> Response:
     """Retorna lista de sistemas disponíveis para autenticação.
 
@@ -124,7 +124,7 @@ async def systems() -> Response:
 
 
 @cred.get("/credentials")
-@jwt_required
+@login_required
 async def credentials() -> Response:
     """Retorna lista de credenciais associadas ao usuário autenticado.
 
@@ -172,7 +172,7 @@ async def credentials() -> Response:
 
 
 @cred.route("/peform_credencial", methods=["POST", "DELETE"])
-@jwt_required
+@login_required
 async def cadastro() -> Response:
     """Realiza cadastro ou exclusão de credenciais conforme ação informada.
 
