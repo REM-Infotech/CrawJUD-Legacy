@@ -112,7 +112,7 @@ class Capa(PjeBot):
                     "item": item,
                 },
             )
-
+            thread_proc.start()
             self.tasks_queue_processos.append(thread_proc)
 
         for th in self.tasks_queue_processos:
