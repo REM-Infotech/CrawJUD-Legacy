@@ -7,8 +7,8 @@ import shutil
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
-from multiprocessing import Process
 from pathlib import Path
+from threading import Thread
 from typing import Literal
 from zoneinfo import ZoneInfo
 
@@ -222,10 +222,10 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         """
 
         self._total_rows = len(self.frame)
-        proc = Process(
+        proc = Thread(
             name="Print Message",
             target=print_in_thread,
-            kargs={
+            kwargs={
                 "start_time": self.start_time,
                 "message": message,
                 "total_rows": self._total_rows,
@@ -234,6 +234,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 "type_log": type_log,
                 "pid": self.pid,
             },
+            daemon=False,
         )
 
         proc.start()
