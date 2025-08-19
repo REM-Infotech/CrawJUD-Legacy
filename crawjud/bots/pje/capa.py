@@ -16,7 +16,7 @@ from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
-from httpx import Client
+from httpx import Client, ReadError
 from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
@@ -223,13 +223,20 @@ class Capa(PjeBot):
                 type_log="log",
             )
 
-            with client.stream("get", url=link) as response:
-                self.save_file_downloaded(
-                    file_name=file_name,
-                    response_data=response,
-                    data_bot=data,
-                    row=row,
-                )
+            def call_stream() -> None:
+                with client.stream("get", url=link) as response:
+                    self.save_file_downloaded(
+                        file_name=file_name,
+                        response_data=response,
+                        data_bot=data,
+                        row=row,
+                    )
+
+            try:
+                call_stream()
+
+            except ReadError:
+                call_stream()
 
         except ExecutionError as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
