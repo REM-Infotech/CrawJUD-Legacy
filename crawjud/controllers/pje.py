@@ -308,9 +308,6 @@ class PjeBot[T](CrawJUD):
                 length=file_size,
             )
 
-            with suppress(Exception):
-                file_path.unlink()
-
         except (FileUploadError, Exception) as e:
             str_exc = "\n".join(traceback.format_exception_only(e))
             message = "Não foi possível baixar o arquivo. " + str_exc
