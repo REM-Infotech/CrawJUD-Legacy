@@ -495,7 +495,7 @@ class Protocolo(ESajBot):
         Waits for confirmation, captures a screenshot, and moves the receipt file.
 
         Returns:
-            list: Contains process number, success message, and receipt fileName.
+            list: Contains process number, success message, and receipt filename.
 
         Raises:
             ExecutionError: If unable to confirm protocol.

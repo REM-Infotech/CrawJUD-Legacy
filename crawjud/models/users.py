@@ -108,7 +108,7 @@ class Users(db.Model):
         nullable=False,
         default=str(uuid4()),
     )
-    fileName: str = db.Column(db.String(length=128))
+    filename: str = db.Column(db.String(length=128))
     blob_doc = db.Column(db.LargeBinary(length=(2**32) - 1))
 
     licenseus_id: int = db.Column(

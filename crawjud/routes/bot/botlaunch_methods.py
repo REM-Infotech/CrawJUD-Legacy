@@ -18,7 +18,7 @@ from quart import (
     request,
     session,
 )
-from werkzeug.utils import secure_fileName
+from werkzeug.utils import secure_filename
 
 from crawjud.common.exceptions._form import LoadFormError
 from crawjud.interfaces.formbot import FormDict
@@ -221,7 +221,7 @@ class LoadForm:
                     form_data.update(self._format_credential(credential))
                     continue
 
-                form_data.update({item: secure_fileName(val)})
+                form_data.update({item: secure_filename(val)})
 
         return form_data
 

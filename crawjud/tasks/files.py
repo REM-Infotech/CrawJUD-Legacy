@@ -6,7 +6,7 @@ from os import environ
 from pathlib import Path
 
 import pandas as pd
-from werkzeug.utils import secure_fileName
+from werkzeug.utils import secure_filename
 
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
@@ -29,7 +29,7 @@ class SaveSuccessTask(ContextTask):
 
     Args:
         pid (str): Identificador do processo de execução.
-        fileName (str): Nome do arquivo a ser salvo.
+        filename (str): Nome do arquivo a ser salvo.
 
     Returns:
         None: Não retorna valor.
@@ -70,5 +70,5 @@ class SaveSuccessTask(ContextTask):
                 sheet_name="Resultados",
             )
 
-        file_name = secure_fileName(path_planilha.name)
+        file_name = secure_filename(path_planilha.name)
         storage.upload_file(f"{pid}/{file_name}", path_planilha)
