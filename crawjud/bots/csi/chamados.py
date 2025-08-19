@@ -27,10 +27,12 @@ load_dotenv()
 @shared_task(name="csi.chamados", bind=True, base=ContextTask)
 @wrap_cls
 class Chamados[T](CsiBot):
-    """Empty."""
+    """Gerencia chamados CSI para execução de tarefas automatizadas.
+
+    Herda de CsiBot e implementa métodos de execução de chamados.
+    """
 
     def execution(self, *args: T, **kwargs: T) -> None:
-        """Empty."""
         tqdm.write("OK")
 
         frame = self.frame

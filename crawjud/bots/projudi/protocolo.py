@@ -1,4 +1,7 @@
-"""Empty."""
+"""Módulo de protocolo do bot Projudi.
+
+Automatiza o protocolo de processos no sistema Projudi.
+"""
 
 from __future__ import annotations
 
@@ -36,10 +39,12 @@ dotenv.load_dotenv()
 @shared_task(name="projudi.protocolo", bind=True, base=ContextTask)
 @wrap_cls
 class Protocolo(ProjudiBot):
-    """Empty."""
+    """Executa o protocolo de processos no Projudi.
+
+    Herda de ProjudiBot e implementa a lógica de protocolo.
+    """
 
     def execution(self) -> None:
-        """Empty."""
         frame = self.dataFrame()
         self.max_rows = len(frame)
 
@@ -592,7 +597,6 @@ class Protocolo(ProjudiBot):
             raise ExecutionError(e=e) from e
 
     def finish_move(self) -> None:
-        """Empty."""
         self.message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
         self.type_log = "log"
         self.prt()

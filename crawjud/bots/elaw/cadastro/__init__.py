@@ -1,4 +1,7 @@
-"""Empty."""
+"""Pacote de cadastro do bot Elaw.
+
+Contém classes e funções para automação de cadastros no Elaw.
+"""
 
 from __future__ import annotations
 
@@ -37,7 +40,10 @@ campos_validar: list[str] = [
 
 
 class ElawCadadastro(CadastroComplementar, PreCadastro):
-    """Empty."""
+    """Classe para automação de cadastros complementares e pré-cadastros no Elaw.
+
+    Herda funcionalidades de CadastroComplementar e PreCadastro.
+    """
 
     def __init__(
         self,

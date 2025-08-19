@@ -29,7 +29,10 @@ ELEMENT_LOAD = 'div[id="j_id_48"]'
 
 
 class CadastroComplementar(ElawBot):
-    """Empty."""
+    """Executa etapas complementares do cadastro no Elaw.
+
+    Responsável por etapas adicionais e validações do processo.
+    """
 
     def esfera(self, text: str = "Judicial") -> None:
         """Handle the selection of the judicial sphere in the process.

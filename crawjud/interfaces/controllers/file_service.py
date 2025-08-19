@@ -21,12 +21,22 @@ workdir_path = Path(__file__).cwd()
 
 
 class ChunkIncompletoError(ValueError):
-    """Empty."""
+    """Exceção para chunks de arquivo incompletos durante upload.
+
+    Utilizada para sinalizar falhas em uploads parciais.
+    """
 
     message: str
 
     def __init__(self, message: str, *args) -> None:
-        """Empty."""
+        """Inicialize a exceção de chunk incompleto.
+
+        Args:
+            self: Instância do objeto.
+            message (str): Mensagem de erro.
+            *args: Argumentos adicionais.
+
+        """
         self.message = message
         super().__init__(*args)
 
@@ -41,12 +51,22 @@ class ChunkIncompletoError(ValueError):
 
 
 class UploadFileError(Exception):
-    """Empty."""
+    """Exceção para falhas no upload de arquivos.
+
+    Utilizada para sinalizar erros durante o upload.
+    """
 
     message: str
 
     def __init__(self, message: str, *args) -> None:
-        """Empty."""
+        """Inicialize a exceção de erro de upload de arquivo.
+
+        Args:
+            self: Instância do objeto.
+            message (str): Mensagem de erro.
+            *args: Argumentos adicionais.
+
+        """
         self.message = message
         super().__init__(*args)
 

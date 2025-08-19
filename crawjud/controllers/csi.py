@@ -4,29 +4,12 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from time import sleep  # noqa: F401
-from typing import TYPE_CHECKING
-from zoneinfo import ZoneInfo  # noqa: F401
 
-from selenium.common.exceptions import (  # noqa: F401
-    NoSuchElementException,
-    TimeoutException,
-)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait  # noqa: F401
 
-from crawjud.common.exceptions.bot import (  # noqa: F401
-    ExecutionError,
-    LoginSystemError,
-)
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import csi as el
-
-if TYPE_CHECKING:
-    from selenium.webdriver.common.alert import Alert  # noqa: F401
-    from selenium.webdriver.remote.webdriver import WebDriver  # noqa: F401
-
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

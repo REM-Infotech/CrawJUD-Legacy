@@ -178,7 +178,12 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
 
     def __init__(self) -> None:
-        """Empty."""
+        """Inicialize a instância principal do controller CrawJUD.
+
+        Args:
+            self: Instância do objeto.
+
+        """
         self._driver = DriverBot(
             selected_browser="chrome",
             with_proxy=False,
@@ -328,13 +333,23 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             type_log="info",
         )
 
-    def print_msg(  # noqa: D417
+    def print_msg(
         self,
         message: str,
         row: int = 0,
         errors: int = 0,
         type_log: str = "log",
     ) -> None:
+        """Imprime mensagem de log do processo.
+
+        Args:
+            self: Instância do objeto.
+            message (str): Mensagem a ser exibida.
+            row (int): Linha do processo.
+            errors (int): Quantidade de erros.
+            type_log (str): Tipo de log.
+
+        """
         """Envia mensagem de log para o sistema de tarefas assíncronas.
 
         Args:

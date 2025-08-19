@@ -105,7 +105,7 @@ class LogsNamespace[T](Namespace):
                 f"Erro ao processar log: {'\n'.join(traceback.format_exception(e))}",
             )
 
-    async def _calc_success_errors(  # noqa: D417
+    async def _calc_success_errors(
         self,
         message: MessageLogDict,
         log: MessageLog = None,
@@ -113,6 +113,9 @@ class LogsNamespace[T](Namespace):
         """Calcula e atualiza os valores de sucesso, erro e restante no log.
 
         Args:
+            self: Instância do objeto.
+            message (MessageLogDict): Mensagem de log.
+            log (MessageLog, opcional): Log de execução.
             message (MessageLogDict): Dicionário com informações do log.
             log
 

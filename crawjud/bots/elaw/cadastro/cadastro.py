@@ -33,7 +33,10 @@ ELEMENT_LOAD = 'div[id="j_id_48"]'
 
 
 class PreCadastro(ElawBot):
-    """Empty."""
+    """Gerencia o pré-cadastro de processos no Elaw.
+
+    Implementa métodos para preenchimento de informações jurídicas.
+    """
 
     def area_direito(self) -> None:
         wait = self.wait

@@ -59,9 +59,9 @@ class PjeBot[T](CrawJUD):
     """Classe de controle para robôs do PJe."""
 
     def __init__(self) -> None:
-        """Empty."""
+        """Instanciamento PjeBot."""
 
-    def search(  # noqa: D417
+    def search(
         self,
         data: BotData,
         row: int,
@@ -70,11 +70,9 @@ class PjeBot[T](CrawJUD):
         """Realize a busca de um processo no sistema PJe.
 
         Args:
-            headers (dict[str, str]): Cabeçalhos HTTP para a requisição.
-            cookies (dict[str, str]): Cookies HTTP para a requisição.
             data (BotData): Dados do processo a serem consultados.
-            *args: Argumentos adicionais.
-            **kwargs: Argumentos nomeados adicionais
+            row (int): Índice da linha do processo na planilha de entrada.
+            client (Client): Instância do cliente HTTP para requisições ao sistema PJe.
 
         Returns:
             DictResults | Literal["Nenhum processo encontrado"]: Resultado da busca do

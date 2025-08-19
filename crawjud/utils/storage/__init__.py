@@ -30,12 +30,22 @@ storages = Literal["google", "minio"]
 
 
 class ArquivoNaoEncontradoError(FileNotFoundError):
-    """Empty."""
+    """Exceção para arquivo não encontrado no storage.
+
+    Utilizada para sinalizar ausência de arquivos em operações de storage.
+    """
 
     message: str
 
     def __init__(self, message: str, *args) -> None:
-        """Empty."""
+        """Inicialize a exceção de arquivo não encontrado.
+
+        Args:
+            self: Instância do objeto.
+            message (str): Mensagem de erro.
+            *args: Argumentos adicionais.
+
+        """
         self.message = message
         super().__init__(*args)
 
