@@ -48,7 +48,10 @@ async def handle_http_exception(error: HTTPException) -> Response:
     name = error.name
     desc = error.description
 
-    return await make_response(jsonify(name=name, description=desc), error.code)
+    return await make_response(
+        jsonify(name=name, description=desc),
+        error.code,
+    )
 
 
 @app.after_request
@@ -78,6 +81,8 @@ async def after_request(response: Response) -> Response:
                 f"Erro 401: {error_json.get('description', error_json)}",
             )
         except (KeyError, Exception) as exc:
-            current_app.logger.exception(f"Erro 401 sem mensagem detalhada: {exc}")
+            current_app.logger.exception(
+                f"Erro 401 sem mensagem detalhada: {exc}",
+            )
 
     return response  # Retorna resposta modificada

@@ -80,7 +80,9 @@ class MakeTemplates:
             itens_append_file = dir_file.joinpath(f"{self.model_name}.json")
             if not itens_append_file.exists():
                 self.model_name = "without_model.json"
-                itens_append_file = dir_file.joinpath(f"{self.model_name}.json")
+                itens_append_file = dir_file.joinpath(
+                    f"{self.model_name}.json",
+                )
 
         with itens_append_file.open("r") as f:
             itens_append = json.loads(f.read())

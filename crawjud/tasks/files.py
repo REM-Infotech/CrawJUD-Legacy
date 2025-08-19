@@ -64,7 +64,11 @@ class SaveSuccessTask(ContextTask):
         df = pd.DataFrame(list_data)
 
         with pd.ExcelWriter(path_planilha, engine="openpyxl") as writter:
-            df.to_excel(excel_writer=writter, index=False, sheet_name="Resultados")
+            df.to_excel(
+                excel_writer=writter,
+                index=False,
+                sheet_name="Resultados",
+            )
 
         file_name = secure_filename(path_planilha.name)
         storage.upload_file(f"{pid}/{file_name}", path_planilha)

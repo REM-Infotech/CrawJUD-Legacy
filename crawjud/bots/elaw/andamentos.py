@@ -82,7 +82,10 @@ class Andamentos(ElawBot):
             if search is True:
                 btn_newmove = el.botao_andamento
                 new_move = self.wait.until(
-                    ec.presence_of_element_located((By.CSS_SELECTOR, btn_newmove)),
+                    ec.presence_of_element_located((
+                        By.CSS_SELECTOR,
+                        btn_newmove,
+                    )),
                 )
                 new_move.click()
 

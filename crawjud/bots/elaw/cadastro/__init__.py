@@ -123,7 +123,9 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
                 ])
 
             elif search is not True:
-                self.message = "Processo não encontrado, inicializando cadastro..."
+                self.message = (
+                    "Processo não encontrado, inicializando cadastro..."
+                )
                 self.type_log = "log"
                 prt()
 
@@ -163,9 +165,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
                 minutes = int(splitcalc[0])
                 seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
-                self.message = (
-                    f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-                )
+                self.message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
                 self.type_log = "log"
                 prt()
 
@@ -284,7 +284,10 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         not_adv = None
         with suppress(NoSuchElementException):
             tr_not_adv = el.tr_not_adv
-            not_adv = tabela_advogados.find_element(By.CSS_SELECTOR, tr_not_adv)
+            not_adv = tabela_advogados.find_element(
+                By.CSS_SELECTOR,
+                tr_not_adv,
+            )
 
         if not_adv is not None:
             raise ExecutionError(message="Sem advogados participantes!")

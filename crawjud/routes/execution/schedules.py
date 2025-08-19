@@ -63,7 +63,10 @@ async def schedules() -> Response:
             )
 
             if not chk_admin:
-                executions = executions.join(alias, ScheduleModel.user_id == alias.id)
+                executions = executions.join(
+                    alias,
+                    ScheduleModel.user_id == alias.id,
+                )
 
         database = executions.all()
         title = "Execuções"
@@ -96,7 +99,9 @@ async def delete_schedule(id_: int) -> Response:
     """
     try:
         db: SQLAlchemy = app.extensions["sqlalchemy"]
-        db.session.query(ScheduleModel).filter(ScheduleModel.id == id_).delete()
+        db.session.query(ScheduleModel).filter(
+            ScheduleModel.id == id_,
+        ).delete()
         db.session.commit()
     except ValueError:
         abort(500)

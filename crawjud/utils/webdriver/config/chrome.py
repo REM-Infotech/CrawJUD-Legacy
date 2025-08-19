@@ -36,7 +36,9 @@ arguments_list: list[str] = [
 
 
 settings: dict[str, str | list[dict[str, str]] | int] = {
-    "recentDestinations": [{"id": "Save as PDF", "origin": "local", "account": ""}],
+    "recentDestinations": [
+        {"id": "Save as PDF", "origin": "local", "account": ""},
+    ],
     "selectedDestinationId": "Save as PDF",
     "version": 2,
 }

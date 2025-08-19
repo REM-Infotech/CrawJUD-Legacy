@@ -326,7 +326,9 @@ class Emissao(ESajBot):
             str: The validated URL for the generated PDF document.
 
         """
-        self.original_window = original_window = self.driver.current_window_handle
+        self.original_window = original_window = (
+            self.driver.current_window_handle
+        )
         generatepdf = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, el.boleto)),
         )
@@ -376,10 +378,14 @@ class Emissao(ESajBot):
         self.nomearquivo = f"{self.tipodoc} - {self.bot_data.get('NUMERO_PROCESSO')} - {self.nomeparte} - {self.pid}.pdf"
 
         if platform.system() == "Windows":
-            self.path_pdf = path_pdf = f"{self.output_dir_path}\\{self.nomearquivo}"
+            self.path_pdf = path_pdf = (
+                f"{self.output_dir_path}\\{self.nomearquivo}"
+            )
 
         elif platform.system() == "Linux":
-            self.path_pdf = path_pdf = f"{self.output_dir_path}/{self.nomearquivo}"
+            self.path_pdf = path_pdf = (
+                f"{self.output_dir_path}/{self.nomearquivo}"
+            )
 
         with Path(path_pdf).open("wb") as file:
             file.write(response.content)
@@ -387,9 +393,7 @@ class Emissao(ESajBot):
         self.driver.close()
         sleep(0.7)
         self.driver.switch_to.window(self.original_window)
-        self.message = (
-            f"Boleto Nº{self.bot_data.get('NUMERO_PROCESSO')} emitido com sucesso!"
-        )
+        self.message = f"Boleto Nº{self.bot_data.get('NUMERO_PROCESSO')} emitido com sucesso!"
         self.type_log = "log"
         self.prt()
 
@@ -414,7 +418,9 @@ class Emissao(ESajBot):
             numeros_encontrados = []
 
             # Expressão regular para encontrar números nesse formato
-            pattern = r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+            pattern = (
+                r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+            )
 
             pdf_file = self.path_pdf
             read = PdfReader(pdf_file)

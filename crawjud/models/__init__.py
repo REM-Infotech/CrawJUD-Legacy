@@ -11,7 +11,12 @@ from dotenv import dotenv_values
 from tqdm import tqdm
 
 from crawjud.api import app, db
-from crawjud.models.bots import BotsCrawJUD, Credentials, Executions, ThreadBots
+from crawjud.models.bots import (
+    BotsCrawJUD,
+    Credentials,
+    Executions,
+    ThreadBots,
+)
 from crawjud.models.schedule import CrontabModel, ScheduleModel
 from crawjud.models.secondaries import admins, execution_bots
 from crawjud.models.users import LicensesUsers, SuperUser, Users
@@ -50,7 +55,9 @@ async def init_database() -> None:
 
         with db.session.no_autoflush:
             bot_toadd = []
-            user = Users.query.filter(Users.login == env["ROOT_USERNAME"]).first()
+            user = Users.query.filter(
+                Users.login == env["ROOT_USERNAME"],
+            ).first()
             if not user:
                 user = Users(
                     login=env["ROOT_USERNAME"],

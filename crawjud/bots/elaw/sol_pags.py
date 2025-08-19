@@ -91,7 +91,9 @@ class SolPags(ElawBot):
             search = self.search_bot()
 
             if search is True:
-                namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO"))
+                namedef = self.format_string(
+                    self.bot_data.get("TIPO_PAGAMENTO"),
+                )
                 self.new_payment()
                 self.set_pgto(namedef)
                 pgto = getattr(self, namedef.lower())
@@ -401,7 +403,9 @@ class SolPags(ElawBot):
         campo_cod_barras.click()
         sleep(0.5)
         cod_barras = str(self.bot_data.get("COD_BARRAS"))
-        campo_cod_barras.send_keys(cod_barras.replace("\t", "").replace("\n", ""))
+        campo_cod_barras.send_keys(
+            cod_barras.replace("\t", "").replace("\n", ""),
+        )
         self.driver.execute_script(
             f"document.querySelector('{el.css_cod_bars}').blur()",
         )
@@ -523,7 +527,10 @@ class SolPags(ElawBot):
                     break
 
             solicitante = str(self.bot_data.get("SOLICITANTE")).lower()
-            if solicitante == "monitoria" or solicitante.lower() == "monitória":
+            if (
+                solicitante == "monitoria"
+                or solicitante.lower() == "monitória"
+            ):
                 desc_pgto = self.wait.until(
                     ec.presence_of_element_located((
                         By.CSS_SELECTOR,
@@ -772,7 +779,9 @@ class SolPags(ElawBot):
                 )
                 Name_Comprovante1 = f"COMPROVANTE 1 {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid} - {now}.png"  # noqa: N806
                 cod_bars_xls = str(
-                    self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", ""),
+                    self.bot_data.get("COD_BARRAS")
+                    .replace(".", "")
+                    .replace(" ", ""),
                 )
 
                 with suppress(TimeoutException):

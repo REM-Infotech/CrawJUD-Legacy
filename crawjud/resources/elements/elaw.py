@@ -31,9 +31,13 @@ btn_novaaudiencia = 'button[id="tabViewProcesso:novaAudienciaBtn"]'
 selectortipoaudiencia = 'select[id="j_id_2l:comboTipoAudiencia_input"]'
 DataAudiencia = 'input[id="j_id_2l:j_id_2p_2_8_8:dataAudienciaField_input"]'
 btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
-tableprazos = 'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
+tableprazos = (
+    'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
+)
 
-tipo_polo = "//*[contains(@id, 'fieldid_13755typeSelectField1CombosCombo_input')]"
+tipo_polo = (
+    "//*[contains(@id, 'fieldid_13755typeSelectField1CombosCombo_input')]"
+)
 
 # CADASTRO
 input_localidade = "//input[contains(@id, 'fieldid_13351fieldText')]"
@@ -41,7 +45,9 @@ botao_novo = 'button[id="btnNovo"]'
 css_label_area = '//select[contains(@id, "comboArea_input")]'
 comboareasub_css = '//select[contains(@id, "comboAreaSub_input")]'
 css_button = 'button[id="btnContinuar"]'
-xpath_checkadvinterno = "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
+xpath_checkadvinterno = (
+    "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
+)
 label_esfera = 'span[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
 
 css_esfera_judge = '//select[contains(@id, "comboRito_input")]'
@@ -63,9 +69,7 @@ css_search_button = (
     'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
 )
 
-select_uf_proc = (
-    "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
-)
+select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
 select_field = (
     'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4_2_2_9_9_44'
     '_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
@@ -82,16 +86,18 @@ adv_responsavel = "//input[contains(@id, 'autoCompleteLawyer_input')]"
 select_advogado_responsavel = (
     "//select[contains(@id, 'comboAdvogadoResponsavelProcesso_input')]"
 )
-css_input_select_adv = 'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'
+css_input_select_adv = (
+    'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'
+)
 css_input_adv = 'input[id="j_id_3y_1:autoCompleteLawyerOutraParte_input"]'
-css_check_adv = '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
+css_check_adv = (
+    '//*[contains(@id, "j_id_3y_1:autoCompleteLawyerOutraParte_item")]'
+)
 valor_causa = "//input[contains(@id, 'amountCase_input')]"
 escritrorio_externo = '//div[contains(@id, "comboEscritorio")]'
 select_escritorio = "//select[contains(@id, 'comboEscritorio_input')]"
 contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
-contigencia_panel = (
-    'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
-)
+contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
 css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
 iframe_cadastro_parte_contraria = (
     'div[id*=":parteContrariaMainGridBtnNovo_dlg"] > div > iframe'
@@ -106,7 +112,9 @@ iframe_cadastro_advogado_close_dnv = (
 iframe_cadastro_advogado_contra = (
     'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > iframe'
 )
-btn_novo_advogado_contra = '//button[contains(@id, "lawyerOutraParteNovoButtom")]'
+btn_novo_advogado_contra = (
+    '//button[contains(@id, "lawyerOutraParteNovoButtom")]'
+)
 css_naoinfomadoc = (
     "#cpfCnpjNoGrid-lawyerOutraParte > tbody > tr > td:nth-child(1) > div >"
     " div.ui-radiobutton-box.ui-widget.ui-corner-all.ui-state-default"
@@ -125,15 +133,15 @@ botao_parte_contraria = 'button[id="j_id_1e"]'
 css_name_parte = 'input[id="j_id_1k"]'
 css_save_button = 'button[id="parteContrariaButtom"]'
 css_salvar_proc = 'button[id="btnSalvarOpen"]'
-css_t_found = (
-    'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
-)
+css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
 div_messageerro_css = 'div[id="messages"]'
 
 # COMPLEMENTAR
 botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
 css_input_uc = "//textarea[contains(@id, 'fieldid_9236fieldTextarea')]"
-divisao_select = "//*[contains(@id, 'fieldid_9241typeSelectField1CombosCombo_input')]"
+divisao_select = (
+    "//*[contains(@id, 'fieldid_9241typeSelectField1CombosCombo_input')]"
+)
 data_citacao = "//input[contains(@id, 'dataRecebimento_input')]"
 bairro_input = "//input[contains(@id, 'fieldid_9237fieldText')]"
 fase_input = '//select[contains(@id, "processoFaseCombo_input")]'
@@ -151,7 +159,9 @@ objeto_input = (
 
 # DOWNLOAD
 anexosbutton_css = 'a[href="#tabViewProcesso:files"]'
-css_table_doc = 'tbody[id="tabViewProcesso:gedEFileDataTable:GedEFileViewDt_data"]'
+css_table_doc = (
+    'tbody[id="tabViewProcesso:gedEFileDataTable:GedEFileViewDt_data"]'
+)
 botao_baixar = 'button[title="Baixar"]'
 
 # PAGAMENTOS
@@ -159,9 +169,7 @@ valor_pagamento = 'a[href="#tabViewProcesso:processoValorPagamento"]'
 botao_novo_pagamento = (
     'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]'
 )
-css_typeitens = (
-    'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
-)
+css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
 listitens_css = (
     'ul[id="processoValorPagamentoEditForm:pvp:'
     'processoValorPagamentoTipoCombo_items"]'
@@ -206,9 +214,7 @@ css_data = (
     'input[id="processoValorPagamentoEditForm:pvp:'
     'processoValorPagamentoVencData_input"]'
 )
-css_inputfavorecido = (
-    'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
-)
+css_inputfavorecido = 'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
 resultado_favorecido = (
     'li[class="ui-autocomplete-item ui-autocomplete-list-item '
     'ui-corner-all ui-state-highlight"]'
@@ -256,28 +262,24 @@ css_listcusta = (
 )
 custas_civis = 'li[data-label="CUSTAS JUDICIAIS CIVEIS"]'
 custas_monitorias = 'li[data-label="CUSTAS JUDICIAIS - MONITORIAS"]'
-botao_salvar_pagamento = (
-    'button[id="processoValorPagamentoEditForm:btnSalvarProcessoValorPagamento"]'
-)
+botao_salvar_pagamento = 'button[id="processoValorPagamentoEditForm:btnSalvarProcessoValorPagamento"]'
 
 # Validar resultados Solicitação de Pagamento
 valor_resultado = 'div[id="tabViewProcesso:pvp-dtProcessoValorResults"]'
 botao_ver = 'button[title="Ver"]'
 valor = 'iframe[title="Valor"]'
-visualizar_tipo_custas = (
-    "#processoValorPagamentoView\\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(5)"
-)
+visualizar_tipo_custas = "#processoValorPagamentoView\\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(5)"
 visualizar_cod_barras = (
     "#processoValorPagamentoView\\:j_id_p_1_2_1_2_7_8_4_23_1\\:j_id_p_1_2_1_"
     "2_7_8_4_23_2_1_2_1\\:j_id_p_1_2_1_2_7_8_4_23_2_1_2_2_1_3 > table > tbody > "
     "tr:nth-child(3)"
 )
-visualizar_tipo_condenacao = (
-    "#processoValorPagamentoView\\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"
-)
+visualizar_tipo_condenacao = "#processoValorPagamentoView\\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"
 
 # PROVISIONAMENTO
-css_btn_edit = 'button[id="tabViewProcesso:j_id_i1_c_1_6_2:processoValoresEditarBtn"]'
+css_btn_edit = (
+    'button[id="tabViewProcesso:j_id_i1_c_1_6_2:processoValoresEditarBtn"]'
+)
 ver_valores = 'a[href="#tabViewProcesso:valores"]'
 
 table_valores_css = (
@@ -290,7 +292,9 @@ itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
 checkbox = 'div[class="ui-chkbox ui-widget"]'
 botao_adicionar = 'button[id="adicionarObjetoBtn"]'
 botao_editar = 'button[id*="editarFasePedidoBtn"]'
-css_val_inpt = 'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
+css_val_inpt = (
+    'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
+)
 css_risk = (
     "/html/body/div[1]/div[4]/div[1]/div/div[2]/form[2]/table/tbody/tr[2]/td/"
     "div/div/table[2]/tbody/tr[2]/td/span/div/div/div/div[1]/div/table/tbody/"

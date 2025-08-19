@@ -159,7 +159,10 @@ class Protocolo(ProjudiBot):
             By.CSS_SELECTOR,
             "#juntarDocumentoForm > table:nth-child(28)",
         )
-        table_partes = table_partes.find_element(By.TAG_NAME, "tbody").find_elements(
+        table_partes = table_partes.find_element(
+            By.TAG_NAME,
+            "tbody",
+        ).find_elements(
             By.TAG_NAME,
             "tr",
         )
@@ -228,7 +231,11 @@ class Protocolo(ProjudiBot):
                         id_part=id_part,
                     ),
                 )
-                if not self._confirma_selecao_parte(set_parte, id_part, return_cmd):
+                if not self._confirma_selecao_parte(
+                    set_parte,
+                    id_part,
+                    return_cmd,
+                ):
                     raise ExecutionError(
                         message="Não é possivel selecionar parte",
                     )
@@ -264,7 +271,11 @@ class Protocolo(ProjudiBot):
         self.id_part = set_parte.get_attribute("id")
         cmd2 = f"return document.getElementById('{self.id_part}').checked"
         return_cmd = self.driver.execute_script(cmd2)
-        if not self._confirma_selecao_parte(set_parte, self.id_part, return_cmd):
+        if not self._confirma_selecao_parte(
+            set_parte,
+            self.id_part,
+            return_cmd,
+        ):
             raise ExecutionError(
                 message="Não é possivel selecionar parte",
             )
@@ -303,7 +314,10 @@ class Protocolo(ProjudiBot):
             self.message = "Inicializando peticionamento..."
             self.type_log = "log"
             self.prt()
-            button_add_move = self.driver.find_element(By.ID, "peticionarButton")
+            button_add_move = self.driver.find_element(
+                By.ID,
+                "peticionarButton",
+            )
             button_add_move.click()
 
             alert = None
@@ -378,7 +392,10 @@ class Protocolo(ProjudiBot):
             file_inpt = Path(self.path_args).parent.resolve()
             css_inptfile = 'input[id="conteudo"]'
             input_file_element = WebDriverWait(self.driver, 10).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_inptfile)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_inptfile,
+                )),
             )
 
             file_to_upload = self.format_string(file)
@@ -422,11 +439,16 @@ class Protocolo(ProjudiBot):
             tablefiles = self.wait.until(
                 ec.presence_of_element_located((By.CLASS_NAME, "resultTable")),
             )
-            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
+            checkfiles = tablefiles.find_element(
+                By.TAG_NAME,
+                "tbody",
+            ).find_elements(
                 By.TAG_NAME,
                 "tr",
             )[0]
-            radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[0].find_element(
+            radiobutton = checkfiles.find_elements(By.TAG_NAME, "td")[
+                0
+            ].find_element(
                 By.CSS_SELECTOR,
                 el.input_radio,
             )
@@ -477,7 +499,10 @@ class Protocolo(ProjudiBot):
             tablefiles = self.wait.until(
                 ec.presence_of_element_located((By.CLASS_NAME, "resultTable")),
             )
-            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
+            checkfiles = tablefiles.find_element(
+                By.TAG_NAME,
+                "tbody",
+            ).find_elements(
                 By.TAG_NAME,
                 "tr",
             )
@@ -487,7 +512,10 @@ class Protocolo(ProjudiBot):
                 sleep(0.75)
 
                 with suppress(Exception):
-                    type_file = self.driver.find_element(By.ID, f"tipo{numbertipo}")
+                    type_file = self.driver.find_element(
+                        By.ID,
+                        f"tipo{numbertipo}",
+                    )
                     type_file.click()
 
                 sleep(0.25)
@@ -515,7 +543,10 @@ class Protocolo(ProjudiBot):
             self.message = "Assinando arquivos..."
             self.type_log = "log"
             self.prt()
-            password_input = self.driver.find_element(By.ID, "senhaCertificado")
+            password_input = self.driver.find_element(
+                By.ID,
+                "senhaCertificado",
+            )
             password_input.click()
             senhatoken = f"{self.token}"
             password_input.send_keys(senhatoken)
@@ -587,7 +618,10 @@ class Protocolo(ProjudiBot):
         numproc = self.bot_data.get("NUMERO_PROCESSO")
 
         try:
-            table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
+            table_moves = self.driver.find_element(
+                By.CLASS_NAME,
+                "resultTable",
+            )
             table_moves = table_moves.find_elements(
                 By.XPATH,
                 './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]',
@@ -641,7 +675,11 @@ class Protocolo(ProjudiBot):
             self.type_log = "log"
             self.prt()
 
-            return [self.bot_data.get("NUMERO_PROCESSO"), self.message, comprovante1]
+            return [
+                self.bot_data.get("NUMERO_PROCESSO"),
+                self.message,
+                comprovante1,
+            ]
 
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
@@ -658,13 +696,19 @@ class Protocolo(ProjudiBot):
 
         if tablefiles:
             sleep(1)
-            checkfiles = tablefiles.find_element(By.TAG_NAME, "tbody").find_elements(
+            checkfiles = tablefiles.find_element(
+                By.TAG_NAME,
+                "tbody",
+            ).find_elements(
                 By.TAG_NAME,
                 "tr",
             )
 
             for file in checkfiles:
-                with suppress(NoSuchElementException, StaleElementReferenceException):
+                with suppress(
+                    NoSuchElementException,
+                    StaleElementReferenceException,
+                ):
                     radiobutton = file.find_elements(By.TAG_NAME, "td")[
                         0
                     ].find_element(
@@ -681,7 +725,10 @@ class Protocolo(ProjudiBot):
 
                     alert = None
                     with suppress(TimeoutException):
-                        alert: type[Alert] = WebDriverWait(self.driver, 5).until(
+                        alert: type[Alert] = WebDriverWait(
+                            self.driver,
+                            5,
+                        ).until(
                             ec.alert_is_present(),
                         )
 

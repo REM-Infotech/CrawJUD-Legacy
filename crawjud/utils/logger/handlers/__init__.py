@@ -98,7 +98,9 @@ class RedisHandler[T](logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
         """Emit the log record to Redis."""
         with suppress(Exception):
-            log_entry = self.format(record)  # Formata o log conforme configurado
+            log_entry = self.format(
+                record,
+            )  # Formata o log conforme configurado
             ModelRedisHandler(**dict(json.loads(log_entry))).save()
 
 

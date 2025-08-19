@@ -3,8 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+from selenium.webdriver.chromium.remote_connection import (
+    ChromiumRemoteConnection,
+)
+from selenium.webdriver.firefox.remote_connection import (
+    FirefoxRemoteConnection,
+)
 from selenium.webdriver.firefox.service import Service as GeckoService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager

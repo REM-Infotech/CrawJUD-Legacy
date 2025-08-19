@@ -132,7 +132,10 @@ class Pauta(PjeBot):
                     file_name_ = (
                         f"{vara} - {date.replace('-', '.')} - {self.pid}.xlsx"
                     )
-                    self.append_success(data=data_append, _file_name=file_name_)
+                    self.append_success(
+                        data=data_append,
+                        _file_name=file_name_,
+                    )
 
                 self.current_date += timedelta(days=1)
 

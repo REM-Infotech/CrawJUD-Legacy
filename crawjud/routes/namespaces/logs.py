@@ -69,7 +69,11 @@ class LogsNamespace[T](Namespace):
         sid = request.sid
         data = await request.form
         # Adiciona o cliente à sala informada
-        await self.enter_room(sid=sid, room=data["room"], namespace=self.namespace)
+        await self.enter_room(
+            sid=sid,
+            room=data["room"],
+            namespace=self.namespace,
+        )
 
     async def on_load_cache(self) -> MessageLogDict:
         """Carrega o cache de logs para um processo.

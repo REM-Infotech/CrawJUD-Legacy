@@ -55,7 +55,11 @@ class Storage[T](Client):  # noqa: D101
         elif storage == "minio":
             credentials = EnvMinioProvider()
 
-        super().__init__(endpoint=server_url, credentials=credentials, secure=False)
+        super().__init__(
+            endpoint=server_url,
+            credentials=credentials,
+            secure=False,
+        )
 
     @property
     def bucket(self) -> Bucket:
@@ -265,4 +269,8 @@ class Storage[T](Client):  # noqa: D101
             dest = Path(dest)
 
         for file in files:
-            self.fget_object(self.bucket.name, file.name, dest.joinpath(file.name))
+            self.fget_object(
+                self.bucket.name,
+                file.name,
+                dest.joinpath(file.name),
+            )

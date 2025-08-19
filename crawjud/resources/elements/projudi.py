@@ -11,9 +11,13 @@ from __future__ import annotations
 command_select_parte_protocolo = (
     'document.getElementById("{id_radio}").removeAttribute("disabled");'
 )
-command_sel_parte_protocolo2 = "return document.getElementById('{id_part}').checked"
+command_sel_parte_protocolo2 = (
+    "return document.getElementById('{id_part}').checked"
+)
 
-url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
+url_login = (
+    "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
+)
 campo_username = "#login"
 campo_2_login = "#senha"  # nosec: B105
 btn_entrar = "#btEntrar"
@@ -64,7 +68,9 @@ exception_arrow = './/a[@class="arrowNextOn"]'
 input_radio = "input[type='radio']"
 
 tipo_documento = 'input[name="descricaoTipoDocumento"]'
-descricao_documento = "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)"
+descricao_documento = (
+    "div#ajaxAuto_descricaoTipoDocumento > ul > li:nth-child(1)"
+)
 include_content = 'input#editButton[value="Adicionar"]'
 border = 'iframe[frameborder="0"][id]'
 conteudo = '//*[@id="conteudo"]'

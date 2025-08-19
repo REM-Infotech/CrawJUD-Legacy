@@ -53,7 +53,9 @@ url_preparo_projudi = (
     "cdTipoCusta=21&flTipoCusta=5&&cdServicoCalculoCusta=690007"
 )
 
-get_page_custas_pagas = 'button[class="btn btn-secondary btn-space linkConsultaSG"]'
+get_page_custas_pagas = (
+    'button[class="btn btn-secondary btn-space linkConsultaSG"]'
+)
 
 consultaproc_grau1 = "https://consultasaj.tjam.jus.br/cpopg/open.do"
 consultaproc_grau2 = "https://consultasaj.tjam.jus.br/cposgcr/open.do"
@@ -118,7 +120,9 @@ mensagem_retorno = 'td[id="mensagemRetorno"]'
 movimentacoes = 'tbody[id="tabelaTodasMovimentacoes"]'
 ultimas_movimentacoes = "tabelaUltimasMovimentacoes"
 editar_classificacao = "botaoEditarClassificacao"
-selecionar_classe = 'div.ui-select-container[input-id="selectClasseIntermediaria"]'
+selecionar_classe = (
+    'div.ui-select-container[input-id="selectClasseIntermediaria"]'
+)
 toggle = "span.btn.btn-default.form-control.ui-select-toggle"
 input_classe = "input#selectClasseIntermediaria"
 select_categoria = 'div.ui-select-container[input-id="selectCategoria"]'

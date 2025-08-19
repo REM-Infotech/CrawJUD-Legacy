@@ -276,7 +276,10 @@ class Emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
         for item in list_type_acao_process:
             item = item
-            if str(self.bot_data.get("TIPO_ACAO")).lower() in item.text.lower():
+            if (
+                str(self.bot_data.get("TIPO_ACAO")).lower()
+                in item.text.lower()
+            ):
                 item.click()
                 break
 
@@ -463,9 +466,7 @@ class Emissor(CrawJUD):
         pgto_name = self.bot_data.get("NOME_CUSTOM", "Guia De Depósito")
 
         numproc = self.bot_data.get("NUMERO_PROCESSO")
-        pdf_name = (
-            f"{pgto_name} - {numproc} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
-        )
+        pdf_name = f"{pgto_name} - {numproc} - {self.bot_data.get('AUTOR')} - {self.pid}.pdf"
         sleep(10)
 
         caminho_old_pdf = self.output_dir_path.joinpath("guia_boleto.pdf")
@@ -497,7 +498,9 @@ class Emissor(CrawJUD):
         numeros_encontrados = []
 
         # Expressão regular para encontrar números nesse formato
-        pattern = r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+        pattern = (
+            r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+        )
 
         pdf_file = path_pdf
         read = PdfReader(pdf_file)
@@ -515,7 +518,9 @@ class Emissor(CrawJUD):
         # Imprima os números encontrados
         for numero in numeros_encontrados:
             numero = str(numero)
-            bar_code = numero.replace("  ", "").replace(" ", "").replace(".", " ")
+            bar_code = (
+                numero.replace("  ", "").replace(" ", "").replace(".", " ")
+            )
 
         return [
             self.bot_data.get("NUMERO_PROCESSO"),

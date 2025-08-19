@@ -21,7 +21,9 @@ DEBUG = env.get("DEBUG", "false").lower() == "true"
 TESTING = env.get("TESTING", "false").lower() == "true"
 
 SECRET_KEY = env.get("APP_SECRET")
-TEMPLATES_AUTO_RELOAD = env.get("TEMPLATES_AUTO_RELOAD", "false").lower() == "true"
+TEMPLATES_AUTO_RELOAD = (
+    env.get("TEMPLATES_AUTO_RELOAD", "false").lower() == "true"
+)
 
 # FLASK-MAIL CONFIG
 MAIL_SERVER = env.get("MAIL_SERVER", "localhost")
@@ -51,12 +53,17 @@ SQLALCHEMY_POOL_PRE_PING = (
     env.get("SQLALCHEMY_POOL_PRE_PING", "true").lower() == "true"
 )
 
-SQLALCHEMY_DATABASE_URI = env.get("SQLALCHEMY_DATABASE_URI", "sqlite:///local.db")
+SQLALCHEMY_DATABASE_URI = env.get(
+    "SQLALCHEMY_DATABASE_URI",
+    "sqlite:///local.db",
+)
 
 SQLALCHEMY_ENGINE_OPTIONS = json.loads(
     str(env.get("SQLALCHEMY_ENGINE_OPTIONS", '{"pool_pre_ping": "True"}')),
 )
-SQLALCHEMY_TRACK_MODIFICATIONS = env.get("WITH_REDIS", "false").lower() == "true"
+SQLALCHEMY_TRACK_MODIFICATIONS = (
+    env.get("WITH_REDIS", "false").lower() == "true"
+)
 
 PERMANENT_SESSION_LIFETIME = timedelta(days=31).max.seconds
 

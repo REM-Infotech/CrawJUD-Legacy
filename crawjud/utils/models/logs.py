@@ -33,7 +33,10 @@ description_pid = "e.g. 'C3K7H5' (identificador do processo)"
 
 P = ParamSpec("RedisQuerySpecs")
 type IncEx = (
-    set[int] | set[str] | Mapping[int, IncEx | bool] | Mapping[str, IncEx | bool]
+    set[int]
+    | set[str]
+    | Mapping[int, IncEx | bool]
+    | Mapping[str, IncEx | bool]
 )
 
 
@@ -185,7 +188,11 @@ class MessageLog(JsonModel):
 
     messages: list[ItemMessageList] = Field(
         default=[
-            ItemMessageList(message="Mensagem não informada", id_log=0, type="info"),
+            ItemMessageList(
+                message="Mensagem não informada",
+                id_log=0,
+                type="info",
+            ),
         ],
         description=description_message,
     )
@@ -198,12 +205,16 @@ class MessageLog(JsonModel):
         description="e.g. '01/01/2023 - 19:37:15' (data/hora de início)",
     )
     row: int = Field(description="e.g. 15 (linha atual sendo processada)")
-    total: int = Field(description="e.g. 100 (total de linhas a serem processadas)")
+    total: int = Field(
+        description="e.g. 100 (total de linhas a serem processadas)",
+    )
     errors: int = Field(description="e.g. 2 (quantidade de erros encontrados)")
     success: int = Field(
         description="e.g. 98 (quantidade de operações bem-sucedidas)",
     )
-    remaining: int = Field(description="e.g. 85 (linhas restantes para processar)")
+    remaining: int = Field(
+        description="e.g. 85 (linhas restantes para processar)",
+    )
 
     @classmethod
     def query_logs(cls, pid: str) -> Self | None:

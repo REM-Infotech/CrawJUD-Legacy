@@ -14,9 +14,13 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as GeckoOptions
 
 if TYPE_CHECKING:
-    from selenium.webdriver.chrome.remote_connection import ChromeRemoteConnection
+    from selenium.webdriver.chrome.remote_connection import (
+        ChromeRemoteConnection,
+    )
     from selenium.webdriver.chrome.service import Service as ChromeService
-    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+    from selenium.webdriver.firefox.remote_connection import (
+        FirefoxRemoteConnection,
+    )
     from selenium.webdriver.firefox.service import Service as GeckoService
     from webdriver_manager.chrome import ChromeDriverManager
     from webdriver_manager.firefox import GeckoDriverManager

@@ -96,7 +96,10 @@ class Chamados[T](CsiBot):
                 NOME_SOLICITANTE=data["RESPONSAVEL_PROCESSO"],
             )
 
-            campo_desc = driver.find_element(By.CSS_SELECTOR, el.campo_desc_subsidios)
+            campo_desc = driver.find_element(
+                By.CSS_SELECTOR,
+                el.campo_desc_subsidios,
+            )
             campo_desc.send_keys(desc)
 
             sleep(10)

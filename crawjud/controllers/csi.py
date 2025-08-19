@@ -65,11 +65,17 @@ class CsiBot[T](CrawJUD):
         self.driver.get(el.url_login)
 
         campo_username = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.campo_username)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.campo_username,
+            )),
         )
         campo_username.send_keys(self.username)
 
-        campo_password = self.driver.find_element(By.CSS_SELECTOR, el.campo_passkey)
+        campo_password = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.campo_passkey,
+        )
         campo_password.send_keys(self.password)
 
         btn_entrar = self.driver.find_element(By.CSS_SELECTOR, el.btn_entrar)

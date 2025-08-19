@@ -181,8 +181,12 @@ class Protocolo(ESajBot):
                 ).until(
                     ec.element_to_be_clickable((By.ID, "pbPeticionar")),
                 )
-                link = button_peticionamento.get_attribute("onclick").split("'")[1]
-                self.driver.execute_script(f"return window.location.href = '{link}';")
+                link = button_peticionamento.get_attribute("onclick").split(
+                    "'",
+                )[1]
+                self.driver.execute_script(
+                    f"return window.location.href = '{link}';",
+                )
                 sleep(5)
 
             except TimeoutException:
@@ -207,8 +211,12 @@ class Protocolo(ESajBot):
                 ).until(
                     ec.element_to_be_clickable((By.ID, "pbPeticionar")),
                 )
-                link = button_peticionamento.get_attribute("onclick").split("'")[1]
-                self.driver.execute_script(f"return window.location.href = '{link}';")
+                link = button_peticionamento.get_attribute("onclick").split(
+                    "'",
+                )[1]
+                self.driver.execute_script(
+                    f"return window.location.href = '{link}';",
+                )
 
         except Exception as e:
             raise ExecutionError(
@@ -337,7 +345,9 @@ class Protocolo(ESajBot):
 
             path_file = Path(self.path_args).parent.resolve().__str__()
             file = str(
-                Path(path_file).joinpath(self.bot_data.get("PETICAO_PRINCIPAL")),
+                Path(path_file).joinpath(
+                    self.bot_data.get("PETICAO_PRINCIPAL"),
+                ),
             )
 
             file = file.replace(" ", "")
@@ -361,10 +371,16 @@ class Protocolo(ESajBot):
             if file_uploaded == "":
                 _raise_execution_error(message="Erro ao enviar petição")
 
-            self.prt.print_log("log", "Petição do processo anexada com sucesso")
+            self.prt.print_log(
+                "log",
+                "Petição do processo anexada com sucesso",
+            )
 
         except Exception as e:
-            raise ExecutionError(message="Erro ao enviar petição", exc=e) from e
+            raise ExecutionError(
+                message="Erro ao enviar petição",
+                exc=e,
+            ) from e
 
     def vincular_parte(self) -> None:
         """Link party to petition.
@@ -376,7 +392,9 @@ class Protocolo(ESajBot):
 
         """
         try:
-            parte_peticao = self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
+            parte_peticao = (
+                self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
+            )
             self.prt.print_log("log", "Vinculando parte a petição...")
             partes = self.wait.until(
                 ec.presence_of_all_elements_located((
@@ -410,7 +428,10 @@ class Protocolo(ESajBot):
 
                         incluir_button.click()
 
-                        self.prt.print_log("log", "Vinculando cliente à petição...")
+                        self.prt.print_log(
+                            "log",
+                            "Vinculando cliente à petição...",
+                        )
                         sleep(0.3)
                         break
 
@@ -518,4 +539,7 @@ class Protocolo(ESajBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(message="Erro ao confirmar protocolo", e=e) from e
+            raise ExecutionError(
+                message="Erro ao confirmar protocolo",
+                e=e,
+            ) from e

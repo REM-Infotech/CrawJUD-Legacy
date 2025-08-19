@@ -164,11 +164,15 @@ class Download(ElawBot):
                 if str(termo).lower() in get_name_file.lower():
                     sleep(1)
 
-                    self.message = f'Arquivo com termo de busca "{termo}" encontrado!'
+                    self.message = (
+                        f'Arquivo com termo de busca "{termo}" encontrado!'
+                    )
                     self.type_log = "log"
                     self.prt()
 
-                    baixar = item.find_elements(By.TAG_NAME, "td")[13].find_element(
+                    baixar = item.find_elements(By.TAG_NAME, "td")[
+                        13
+                    ].find_element(
                         By.CSS_SELECTOR,
                         el.botao_baixar,
                     )

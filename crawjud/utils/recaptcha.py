@@ -46,7 +46,12 @@ def load_img_blur_apply(im_b: bytes) -> np.ndarray:
     gray = cv2.cvtColor(img_np, color)
 
     # Aplicar binarização com Otsu
-    _, thresh = cv2.threshold(gray, 5, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, thresh = cv2.threshold(
+        gray,
+        5,
+        255,
+        cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+    )
 
     # Suavizar ruído com mediana (sem borrar letras)
     return thresh
@@ -70,7 +75,12 @@ def reabre_imagem[T](f: T) -> np.ndarray:
     img_np2 = cv2.imdecode(image_np2, cv2.IMREAD_COLOR)
     color2 = cv2.COLOR_RGB2GRAY
     gray2 = cv2.cvtColor(img_np2, color2)
-    _, threshold = cv2.threshold(gray2, 2, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, threshold = cv2.threshold(
+        gray2,
+        2,
+        255,
+        cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+    )
     return threshold
 
 
@@ -122,7 +132,9 @@ def captcha_to_image(im_b: str) -> str:
     thresh = cv2.erode(thresh, kernel2, iterations=1)
 
     # Aplica OCR usando pytesseract
-    text_pytesseract = str(pytesseract.image_to_string(thresh, config=custom_config))
+    text_pytesseract = str(
+        pytesseract.image_to_string(thresh, config=custom_config),
+    )
     text = re.sub(
         r"[^a-z0-9]",
         "",

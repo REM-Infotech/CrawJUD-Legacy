@@ -28,7 +28,12 @@ def rgb_to_hex(r: int, g: int, b: int) -> str:
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
-def escurecer_cor(r: int, g: int, b: int, fator: int = 0.85) -> tuple[int, int, int]:
+def escurecer_cor(
+    r: int,
+    g: int,
+    b: int,
+    fator: int = 0.85,
+) -> tuple[int, int, int]:
     """Escurece a cor.
 
     Returns:

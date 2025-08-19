@@ -251,7 +251,10 @@ class PreCadastro(ElawBot):
         self.prt()
 
         campo_processo = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, css_campo_processo)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                css_campo_processo,
+            )),
             message="Erro ao encontrar elemento",
         )
         campo_processo.click()
@@ -372,7 +375,10 @@ class PreCadastro(ElawBot):
         sleep(0.05)
         campo_doc.clear()
         sleep(0.05)
-        self.interact.send_key(campo_doc, self.bot_data.get("DOC_PARTE_CONTRARIA"))
+        self.interact.send_key(
+            campo_doc,
+            self.bot_data.get("DOC_PARTE_CONTRARIA"),
+        )
         self.interact.sleep_load(ELEMENT_LOAD)
 
         search_button_parte = self.wait.until(
@@ -417,12 +423,18 @@ class PreCadastro(ElawBot):
         self.prt()
         element_select = el.select_uf_proc
         text = str(self.bot_data.get("CAPITAL_INTERIOR"))
-        self.select2_elaw(self.driver.find_element(By.XPATH, element_select), text)
+        self.select2_elaw(
+            self.driver.find_element(By.XPATH, element_select),
+            text,
+        )
         sleep(0.5)
 
         self.interact.sleep_load(ELEMENT_LOAD)
 
-        if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
+        if (
+            str(self.bot_data.get("CAPITAL_INTERIOR")).lower()
+            == "outro estado"
+        ):
             other_location = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
@@ -524,10 +536,16 @@ class PreCadastro(ElawBot):
         prt()
 
         input_adv_responsavel = wait.until(
-            ec.presence_of_element_located((By.XPATH, elements.adv_responsavel)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                elements.adv_responsavel,
+            )),
         )
         input_adv_responsavel.click()
-        interact.send_key(input_adv_responsavel, bot_data.get("ADVOGADO_INTERNO"))
+        interact.send_key(
+            input_adv_responsavel,
+            bot_data.get("ADVOGADO_INTERNO"),
+        )
 
         id_input_adv = input_adv_responsavel.get_attribute("id").replace(
             "_input",
@@ -539,7 +557,10 @@ class PreCadastro(ElawBot):
 
         with suppress(TimeoutException):
             wait_adv = WebDriverWait(driver, 25).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_wait_adv)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_wait_adv,
+                )),
             )
 
         if wait_adv:
@@ -586,7 +607,10 @@ class PreCadastro(ElawBot):
         self.type_log = "log"
 
         campo_adv = wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_input_adv)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                elements.css_input_adv,
+            )),
             message="Erro ao encontrar elemento",
         )
         campo_adv.click()
@@ -665,7 +689,9 @@ class PreCadastro(ElawBot):
         input_valor_causa = f'input[id="{id_valor_causa}"]'
         interact.send_key(valor_causa, bot_data.get("VALOR_CAUSA"))
 
-        driver.execute_script(f"document.querySelector('{input_valor_causa}').blur()")
+        driver.execute_script(
+            f"document.querySelector('{input_valor_causa}').blur()",
+        )
 
         interact.sleep_load(ELEMENT_LOAD)
 
@@ -692,7 +718,10 @@ class PreCadastro(ElawBot):
         prt()
 
         div_escritrorioexterno = wait.until(
-            ec.presence_of_element_located((By.XPATH, elements.escritrorio_externo)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                elements.escritrorio_externo,
+            )),
             message="Erro ao encontrar elemento",
         )
         div_escritrorioexterno.click()
@@ -700,7 +729,10 @@ class PreCadastro(ElawBot):
 
         text = bot_data.get("ESCRITORIO_EXTERNO")
         select_escritorio = wait.until(
-            ec.presence_of_element_located((By.XPATH, elements.select_escritorio)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                elements.select_escritorio,
+            )),
         )
         interact.select2_elaw(select_escritorio, text)
         interact.sleep_load(ELEMENT_LOAD)
@@ -828,7 +860,10 @@ class PreCadastro(ElawBot):
                 message="Erro ao encontrar elemento",
             )
             input_nomeadv.click()
-            interact.send_key(input_nomeadv, bot_data.get("ADV_PARTE_CONTRARIA"))
+            interact.send_key(
+                input_nomeadv,
+                bot_data.get("ADV_PARTE_CONTRARIA"),
+            )
 
             driver.execute_script(
                 f"document.querySelector('{elements.css_input_nomeadv}').blur()",
@@ -836,7 +871,10 @@ class PreCadastro(ElawBot):
 
             sleep(0.05)
             salvar = wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, elements.salvarcss)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    elements.salvarcss,
+                )),
                 message="Erro ao encontrar elemento",
             )
             salvar.click()
@@ -890,7 +928,10 @@ class PreCadastro(ElawBot):
             select2_elaw = self.select2_elaw
 
             add_parte = wait.until(
-                ec.presence_of_element_located((By.XPATH, elements.parte_contraria)),
+                ec.presence_of_element_located((
+                    By.XPATH,
+                    elements.parte_contraria,
+                )),
                 message="Erro ao encontrar elemento",
             )
             add_parte.click()
@@ -922,7 +963,10 @@ class PreCadastro(ElawBot):
                         message="Erro ao encontrar elemento",
                     )
                     .find_elements(By.TAG_NAME, "td")[1]
-                    .find_elements(By.CSS_SELECTOR, elements.botao_radio_widget)[1]
+                    .find_elements(
+                        By.CSS_SELECTOR,
+                        elements.botao_radio_widget,
+                    )[1]
                 )
 
                 set_infomar_cpf.click()
@@ -949,7 +993,10 @@ class PreCadastro(ElawBot):
                 css_input_doc = elements.tipo_cnpj
 
             input_doc = wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_input_doc)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_input_doc,
+                )),
                 message="Erro ao encontrar elemento",
             )
             input_doc.click()
@@ -998,7 +1045,10 @@ class PreCadastro(ElawBot):
 
             element_close = elements.iframe_cadastro_parte_close_dnv
             wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, element_close)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    element_close,
+                )),
             ).click()
 
         except ExecutionError as e:
@@ -1139,9 +1189,7 @@ class PreCadastro(ElawBot):
                 )
 
             if not mensagem_erro:
-                mensagem_erro = (
-                    "Cadastro do processo nao finalizado, verificar manualmente"
-                )
+                mensagem_erro = "Cadastro do processo nao finalizado, verificar manualmente"
 
             raise ExecutionError(mensagem_erro)
 

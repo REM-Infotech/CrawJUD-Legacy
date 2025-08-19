@@ -190,7 +190,9 @@ class Movimentacao(ESajBot):
         )
 
         if keyword != "*":
-            keywords.extend(keyword.split(",") if "," in keyword else [keyword])
+            keywords.extend(
+                keyword.split(",") if "," in keyword else [keyword],
+            )
 
         if len(keywords) > 0:
             for keyword in keywords:
@@ -241,10 +243,22 @@ class Movimentacao(ESajBot):
 
         """
         patterns = [
-            ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
-            ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
-            ("%Y/%m/%d", r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b"),
-            ("%Y/%d/%m", r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b"),
+            (
+                "%d/%m/%Y",
+                r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b",
+            ),
+            (
+                "%m/%d/%Y",
+                r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b",
+            ),
+            (
+                "%Y/%m/%d",
+                r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b",
+            ),
+            (
+                "%Y/%d/%m",
+                r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b",
+            ),
         ]
 
         for format_d, pattern in patterns:
@@ -350,31 +364,45 @@ class Movimentacao(ESajBot):
         ]
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
-        message_.append(f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>')
+        message_.append(
+            f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>',
+        )
         if data_inicio:
             message_.append(
                 f'\nDATA_INICIO: <span class="fw-bold">{data_inicio}</span>',
             )
         if data_fim:
-            message_.append(f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>')
+            message_.append(
+                f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>',
+            )
         args = list(self.bot_data.items())
         for idx, (key, value) in enumerate(args):
             add_msg_ = f"   - {key}: {value} "
             _msg_ = add_msg_
             if "\n\nArgumentos Adicionais: \n" not in message_:
                 message_.append("\n\nArgumentos Adicionais: \n")
-            if key not in ["TRAZER_PDF", "TRAZER_TEOR", "USE_GPT", "DOC_SEPARADO"]:
+            if key not in [
+                "TRAZER_PDF",
+                "TRAZER_TEOR",
+                "USE_GPT",
+                "DOC_SEPARADO",
+            ]:
                 continue
             if key not in message_:
                 message_.append(f"{_msg_}\n")
             if idx + 1 == len(args):
-                _msg_ += "\n====================================================\n"
+                _msg_ += (
+                    "\n====================================================\n"
+                )
                 message_.append(_msg_)
         self.message = "".join(message_)
         self.type_log = "info"
         self.prt()
 
-    def _check_others(self, text_mov: str) -> tuple[bool, bool, str, bool, bool]:
+    def _check_others(
+        self,
+        text_mov: str,
+    ) -> tuple[bool, bool, str, bool, bool]:
         """Realiza verificações adicionais para a movimentação.
 
         Args:
@@ -389,7 +417,9 @@ class Movimentacao(ESajBot):
         )
         mov = ""
         mov_chk = False
-        trazer_teor = str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+        trazer_teor = (
+            str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+        )
         patterns = [
             r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
             r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
@@ -507,7 +537,10 @@ class Movimentacao(ESajBot):
         self.interact.scroll_to(show_all)
 
         # Rolar até o elemento
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", show_all)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView(true);",
+            show_all,
+        )
 
         # Use JavaScript para clicar no elemento
         self.driver.execute_script("arguments[0].click();", show_all)

@@ -27,7 +27,10 @@ async def main_app() -> None:
         app = await create_app()
 
         async with app.app_context():
-            await io.init_app(app, cors_allowed_origins=check_cors_allowed_origins)
+            await io.init_app(
+                app,
+                cors_allowed_origins=check_cors_allowed_origins,
+            )
             from crawjud.routes.namespaces import register_namespaces
 
             await register_namespaces(io)

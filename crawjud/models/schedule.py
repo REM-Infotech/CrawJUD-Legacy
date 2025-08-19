@@ -49,7 +49,11 @@ class ScheduleModel(db.Model):
         default="[]",
     )  # JSON para argumentos
 
-    kwargs: str = db.Column(db.Text, nullable=True, default="{}")  # JSON para kwargs
+    kwargs: str = db.Column(
+        db.Text,
+        nullable=True,
+        default="{}",
+    )  # JSON para kwargs
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
 
     license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))

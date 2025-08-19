@@ -188,7 +188,10 @@ class Provisao(ElawBot):
                 el.table_valores_css,
             )),
         )
-        check_exists_provisao = check_exists_provisao.find_elements(By.TAG_NAME, "tr")
+        check_exists_provisao = check_exists_provisao.find_elements(
+            By.TAG_NAME,
+            "tr",
+        )
 
         for item in check_exists_provisao:
             item = item
@@ -200,7 +203,10 @@ class Provisao(ElawBot):
                     el.value_provcss,
                 ).text
 
-            if "-" in valueprovisao or valueprovisao == "Nenhum registro encontrado!":
+            if (
+                "-" in valueprovisao
+                or valueprovisao == "Nenhum registro encontrado!"
+            ):
                 return valueprovisao
 
         return "Contém valores"

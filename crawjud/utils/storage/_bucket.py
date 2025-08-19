@@ -48,7 +48,12 @@ class ListBuckets(ListAllMyBucketsResult):
 class Bucket[T](__Bucket):
     client: Storage
 
-    def __init__(self, name: str, creation_date: datetime, client: Storage) -> None:
+    def __init__(
+        self,
+        name: str,
+        creation_date: datetime,
+        client: Storage,
+    ) -> None:
         self.client = client
         super().__init__(name, creation_date)
 
@@ -67,7 +72,7 @@ class Bucket[T](__Bucket):
         extra_query_params: str | None = None,
     ) -> Generator[Blob, Any, None]:
         # Lista objetos do bucket conforme os parâmetros fornecidos.
-        for ob in self.client._list_objects(  # noqa: SLF001
+        for ob in self.client._list_objects(
             bucket_name=self.name,
             delimiter=None if recursive else "/",
             include_user_meta=include_user_meta,
@@ -141,7 +146,12 @@ class Blob(__Object):
     bucket: Bucket
 
     @classmethod
-    def from_object(cls, _object: __Object, client: Storage, bucket: Bucket) -> Blob:
+    def from_object(
+        cls,
+        _object: __Object,
+        client: Storage,
+        bucket: Bucket,
+    ) -> Blob:
         """Crie uma instância de Blob a partir de um Object existente.
 
         Args:

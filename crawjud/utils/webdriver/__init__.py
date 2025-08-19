@@ -132,7 +132,9 @@ class DriverBot[T](WebDriver):  # noqa: D101
         driver_config["args_executor"].update({
             "remote_server_addr": self._service.service_url,
         })
-        self._executor = driver_config["executor"](**driver_config["args_executor"])
+        self._executor = driver_config["executor"](
+            **driver_config["args_executor"],
+        )
 
     def _configure_options(
         self,
@@ -169,7 +171,11 @@ class DriverBot[T](WebDriver):  # noqa: D101
     def find_element(self, *args: P.args, **kwargs: P.kwargs) -> WebElementBot:
         return super().find_element(*args, **kwargs)
 
-    def find_elements(self, *args: P.args, **kwargs: P.kwargs) -> list[WebElementBot]:
+    def find_elements(
+        self,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> list[WebElementBot]:
         return super().find_elements(*args, **kwargs)
 
     @property

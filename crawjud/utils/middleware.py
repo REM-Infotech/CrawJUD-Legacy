@@ -46,7 +46,12 @@ class ProxyHeadersMiddleware:
         self.mode = mode
         self.trusted_hops = trusted_hops
 
-    async def __call__(self, scope: Scope, receive: Callable, send: Callable) -> None:
+    async def __call__(
+        self,
+        scope: Scope,
+        receive: Callable,
+        send: Callable,
+    ) -> None:
         """Processa o escopo ASGI, ajustando cabeçalhos e informações do cliente.
 
         Args:
@@ -161,7 +166,8 @@ def _get_trusted_value(
     for header_name, header_value in headers:
         if header_name.lower() == name:
             values.extend([
-                value.decode("latin1").strip() for value in header_value.split(b",")
+                value.decode("latin1").strip()
+                for value in header_value.split(b",")
             ])
 
     if len(values) >= trusted_hops:

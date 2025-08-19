@@ -125,7 +125,10 @@ class Intimacoes(ProjudiBot):
 
         """
         return self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, 'div[id="tabprefix1"]')),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'div[id="tabprefix1"]',
+            )),
         )
 
     def set_page_size(self) -> None:
@@ -175,7 +178,9 @@ class Intimacoes(ProjudiBot):
             self.message = "Buscando intimações..."
             self.type_log = "log"
             self.prt()
-            name_colunas, intimacoes = self.get_intimacoes(self.aba_initmacoes())
+            name_colunas, intimacoes = self.get_intimacoes(
+                self.aba_initmacoes(),
+            )
             data = self.get_intimacao_information(name_colunas, intimacoes)
             self.append_success(data, "Intimações extraídas com sucesso!")
 

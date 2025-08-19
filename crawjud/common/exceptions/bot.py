@@ -11,7 +11,9 @@ MessageError = "Erro ao executar operaçao: "
 
 def formata_msg(exc: Exception | None = None) -> str:  # noqa: D103
     if exc:
-        return "\n Exception: " + "\n".join(traceback.format_exception_only(exc))
+        return "\n Exception: " + "\n".join(
+            traceback.format_exception_only(exc),
+        )
 
     return ""
 

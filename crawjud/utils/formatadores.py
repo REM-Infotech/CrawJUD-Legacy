@@ -9,8 +9,14 @@ from zoneinfo import ZoneInfo
 
 def formata_tempo[T](item: T) -> T | datetime:  # noqa: D103
     if isinstance(item, str):
-        if re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$", item.split(".")[0]):
-            return datetime.strptime(item.split(".")[0], "%Y-%m-%dT%H:%M:%S").replace(
+        if re.match(
+            r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$",
+            item.split(".")[0],
+        ):
+            return datetime.strptime(
+                item.split(".")[0],
+                "%Y-%m-%dT%H:%M:%S",
+            ).replace(
                 tzinfo=ZoneInfo("America/Manaus"),
             )
 

@@ -9,7 +9,14 @@ from __future__ import annotations
 from traceback import format_exception
 from typing import TYPE_CHECKING
 
-from quart import Blueprint, Response, abort, current_app, jsonify, make_response
+from quart import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    jsonify,
+    make_response,
+)
 from quart_jwt_extended import jwt_required
 
 from crawjud.api import db
@@ -86,7 +93,15 @@ async def linechart_system() -> Response:
             },
         }
 
-        for system in ["PROJUDI", "PJE", "ESAJ", "ELAW", "CAIXA", "TJDF", "CAIXA"]:
+        for system in [
+            "PROJUDI",
+            "PJE",
+            "ESAJ",
+            "ELAW",
+            "CAIXA",
+            "TJDF",
+            "CAIXA",
+        ]:
             executions_mes = MONTHS_EXECUTED.copy()
             for item in executions:
                 exec_bot: BotsCrawJUD = item.bot

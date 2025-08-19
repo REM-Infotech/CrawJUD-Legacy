@@ -11,4 +11,11 @@ from crawjud.bots.esaj.movimentacao import Movimentacao
 from crawjud.bots.esaj.protocolo import Protocolo
 from crawjud.common.exceptions.bot import StartError
 
-__all__ = ["Busca_pags", "Capa", "Emissao", "Movimentacao", "Protocolo", "StartError"]
+__all__ = [
+    "Busca_pags",
+    "Capa",
+    "Emissao",
+    "Movimentacao",
+    "Protocolo",
+    "StartError",
+]

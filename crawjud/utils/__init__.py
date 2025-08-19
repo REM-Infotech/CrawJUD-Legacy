@@ -27,5 +27,7 @@ def _kill_browsermob() -> None:
     # Segunda fase: finalização dos processos encontrados
     for proc in matching_procs:
         with suppress(psutil.NoSuchProcess, psutil.AccessDenied, Exception):
-            tqdm.write(f"Matando PID {proc.pid} ({' '.join(proc.info['cmdline'])})")
+            tqdm.write(
+                f"Matando PID {proc.pid} ({' '.join(proc.info['cmdline'])})",
+            )
             proc.kill()

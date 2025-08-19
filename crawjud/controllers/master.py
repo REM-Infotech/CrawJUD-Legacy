@@ -202,7 +202,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             list[BotData]: A record list from the processed Excel file.
 
         """
-        buffer_planilha = BytesIO(base91.decode(self._xlsx_data["file_base91str"]))
+        buffer_planilha = BytesIO(
+            base91.decode(self._xlsx_data["file_base91str"]),
+        )
         df = read_excel(buffer_planilha)
         df.columns = df.columns.str.upper()
 
@@ -224,7 +226,10 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         for col in df.select_dtypes(include=["float"]).columns:
             df[col] = df[col].apply(format_float)
 
-        return [BotData(list(item.items())) for item in df.to_dict(orient="records")]
+        return [
+            BotData(list(item.items()))
+            for item in df.to_dict(orient="records")
+        ]
 
     def download_files(
         self,
@@ -248,7 +253,10 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         object_name_ = Path(folder_temp_).joinpath(json_name_).as_posix()
         config_file = storage.bucket.get_object(object_name_)
 
-        path_files.joinpath(object_name_).parent.mkdir(exist_ok=True, parents=True)
+        path_files.joinpath(object_name_).parent.mkdir(
+            exist_ok=True,
+            parents=True,
+        )
 
         data_json_: dict[str, str] = json.loads(config_file.data)
 
@@ -291,11 +299,15 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         shutil.rmtree(path_files.joinpath(self.folder_storage))
 
-        xlsx_key = list(filter(lambda x: x["file_suffix"] == ".xlsx", list_files))
+        xlsx_key = list(
+            filter(lambda x: x["file_suffix"] == ".xlsx", list_files),
+        )
         if not xlsx_key:
             raise ExecutionError(message="Nenhum arquivo Excel encontrado.")
 
-        _json_key = list(filter(lambda x: x["file_suffix"] == ".json", list_files))
+        _json_key = list(
+            filter(lambda x: x["file_suffix"] == ".json", list_files),
+        )
 
         self._xlsx_data = xlsx_key[-1]
         self._downloaded_files = list_files
@@ -338,11 +350,11 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         """
         # Obtém o horário atual formatado
-        time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime("%H:%M:%S")
-        # Monta o prompt da mensagem
-        prompt = (
-            f"[({self._pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
+        time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
+            "%H:%M:%S",
         )
+        # Monta o prompt da mensagem
+        prompt = f"[({self._pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
 
         # Cria objeto de log da mensagem
         data = {

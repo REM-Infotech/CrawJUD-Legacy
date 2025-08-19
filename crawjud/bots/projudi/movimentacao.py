@@ -156,7 +156,9 @@ class Movimentacao(ProjudiBot):
         )
 
         if keyword != "*":
-            keywords.extend(keyword.split(",") if "," in keyword else [keyword])
+            keywords.extend(
+                keyword.split(",") if "," in keyword else [keyword],
+            )
 
         if len(keywords) > 0:
             for keyword in keywords:
@@ -208,10 +210,22 @@ class Movimentacao(ProjudiBot):
 
         """
         patterns = [
-            ("%d/%m/%Y", r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b"),
-            ("%m/%d/%Y", r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b"),
-            ("%Y/%m/%d", r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b"),
-            ("%Y/%d/%m", r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b"),
+            (
+                "%d/%m/%Y",
+                r"\b(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}\b",
+            ),
+            (
+                "%m/%d/%Y",
+                r"\b(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}\b",
+            ),
+            (
+                "%Y/%m/%d",
+                r"\b\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])\b",
+            ),
+            (
+                "%Y/%d/%m",
+                r"\b\d{4}/(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])\b",
+            ),
         ]
 
         for format_d, pattern in patterns:
@@ -314,25 +328,36 @@ class Movimentacao(ProjudiBot):
         ]
         data_inicio = self.bot_data.get("DATA_INICIO")
         data_fim = self.bot_data.get("DATA_FIM")
-        message_.append(f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>')
+        message_.append(
+            f'\nPALAVRA_CHAVE: <span class="fw-bold">{keyword}</span>',
+        )
         if data_inicio:
             message_.append(
                 f'\nDATA_INICIO: <span class="fw-bold">{data_inicio}</span>',
             )
         if data_fim:
-            message_.append(f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>')
+            message_.append(
+                f'\nDATA_FIM: <span class="fw-bold">{data_fim}</span>',
+            )
         args = list(self.bot_data.items())
         for pos, (key, value) in enumerate(args):
             add_msg_ = f"   - {key}: {value} "
             _msg_ = add_msg_
             if "\n\nArgumentos Adicionais: \n" not in message_:
                 message_.append("\n\nArgumentos Adicionais: \n")
-            if key not in ["TRAZER_PDF", "TRAZER_TEOR", "USE_GPT", "DOC_SEPARADO"]:
+            if key not in [
+                "TRAZER_PDF",
+                "TRAZER_TEOR",
+                "USE_GPT",
+                "DOC_SEPARADO",
+            ]:
                 continue
             if key not in message_:
                 message_.append(f"{_msg_}\n")
             if pos + 1 == len(args):
-                _msg_ += "\n====================================================\n"
+                _msg_ += (
+                    "\n====================================================\n"
+                )
                 message_.append(_msg_)
         self.message = "".join(message_)
         self.type_log = "info"
@@ -383,7 +408,10 @@ class Movimentacao(ProjudiBot):
         self.prt()
         self.appends.append(data)
 
-    def _check_others(self, text_mov: str) -> tuple[bool, bool, str, bool, bool]:
+    def _check_others(
+        self,
+        text_mov: str,
+    ) -> tuple[bool, bool, str, bool, bool]:
         """Verifique opções adicionais para processamento da movimentação.
 
         Args:
@@ -398,7 +426,9 @@ class Movimentacao(ProjudiBot):
         )
         mov = ""
         mov_chk = False
-        trazer_teor = str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+        trazer_teor = (
+            str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+        )
         patterns = [
             r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
             r"\) ([A-Z\s]+) \((\d{2}/\d{2}/\d{4})\)",
@@ -551,7 +581,11 @@ class Movimentacao(ProjudiBot):
         css_tr = f'tr[id="{id_tr}"]'
         return expand, css_tr
 
-    def _wait_and_expand_table(self, css_tr: str, expand: WebElement) -> WebElement:
+    def _wait_and_expand_table(
+        self,
+        css_tr: str,
+        expand: WebElement,
+    ) -> WebElement:
         """Aguarde e expanda a tabela de documentos se necessário.
 
         Returns:
@@ -644,7 +678,8 @@ class Movimentacao(ProjudiBot):
         _old_pdf = Path(self.output_dir_path).joinpath(name_pdf)
         url = link_doc.get_attribute("href")
         cookies = {
-            cookie["name"]: cookie["value"] for cookie in self.driver.get_cookies()
+            cookie["name"]: cookie["value"]
+            for cookie in self.driver.get_cookies()
         }
         response = requests.get(
             url,
@@ -658,7 +693,12 @@ class Movimentacao(ProjudiBot):
         else:
             self._fallback_download(url, name_pdf, path_pdf)
 
-    def _fallback_download(self, url: str, name_pdf: str, path_pdf: Path) -> None:
+    def _fallback_download(
+        self,
+        url: str,
+        name_pdf: str,
+        path_pdf: Path,
+    ) -> None:
         """Fallback para download do PDF via navegador caso requests falhe."""
         self.driver.get(url)
         sleep(2)

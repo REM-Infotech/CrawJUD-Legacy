@@ -1,6 +1,6 @@
 preview = true
 extend-include = ["*.ipynb"]
-line-length = 86
+line-length = 79
 indent-width = 4
 
 [lint]
@@ -177,7 +177,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
     "RUF",
 ]
 
-"*" = ["B026", "FIX", "D102", "ANN002", "E501", "BLE001"]
+"*" = ["B026", "FIX", "D102", "ANN002", "E501", "BLE001", "SLF001"]
 "**/{tests,docs,tools}/*" = ["E402", "S", "D100", "D104", "ANN", "D417", "N818"]
 
 

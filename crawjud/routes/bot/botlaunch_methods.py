@@ -151,7 +151,9 @@ class LoadForm:  # noqa: D101
 
     async def _files_task_kwargs(self, data: FormDict) -> tuple[str, str]:
         name_file_config = self.sid.upper()
-        json_file = self.upload_folder.joinpath(name_file_config).with_suffix(".json")
+        json_file = self.upload_folder.joinpath(name_file_config).with_suffix(
+            ".json",
+        )
 
         self.upload_folder.mkdir(exist_ok=True, parents=True)
 

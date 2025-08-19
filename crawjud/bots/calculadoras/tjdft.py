@@ -163,7 +163,10 @@ class Tjdft(CrawJUD):
             self.prt()
             css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
             get_input_process = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_input_numproc)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_input_numproc,
+                )),
             )
             get_input_process.click()
             get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
@@ -231,7 +234,10 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             get_name_requerido = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_name_requerido)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_name_requerido,
+                )),
             )
             get_name_requerido.click()
             get_name_requerido.send_keys(self.bot_data.get("REQUERIDO"))
@@ -256,13 +262,17 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            self.message = "Informando incidencia de juros e data de incidencia"
+            self.message = (
+                "Informando incidencia de juros e data de incidencia"
+            )
             self.type_log = "log"
             self.prt()
 
             juros_partir = str(self.bot_data.get("JUROS_PARTIR")).upper()
 
-            css_select_juros = 'select[id="juros_partir"][class="select-consultas"]'
+            css_select_juros = (
+                'select[id="juros_partir"][class="select-consultas"]'
+            )
             select = Select(
                 self.wait.until(
                     ec.presence_of_element_located((
@@ -325,7 +335,9 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            css_data_valor_devido = 'input[id="data-0"][name="parcela_data:list"]'
+            css_data_valor_devido = (
+                'input[id="data-0"][name="parcela_data:list"]'
+            )
             self.message = "Informando data valor devido"
             self.type_log = "log"
             self.prt()
@@ -344,7 +356,10 @@ class Tjdft(CrawJUD):
             self.type_log = "log"
             self.prt()
             valor_devido = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_valor_devido)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_valor_devido,
+                )),
             )
             valor_devido.click()
 
@@ -392,7 +407,9 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            css_calcular = 'input[type="submit"][value="Calcular"][id="calcular"]'
+            css_calcular = (
+                'input[type="submit"][value="Calcular"][id="calcular"]'
+            )
             calcular = self.driver.find_element(By.CSS_SELECTOR, css_calcular)
             calcular.click()
 
@@ -447,7 +464,9 @@ class Tjdft(CrawJUD):
         """
         try:
             sleep(1)
-            css_multa_percentual = 'input[name="multa_percent"][id="multa_percent"]'
+            css_multa_percentual = (
+                'input[name="multa_percent"][id="multa_percent"]'
+            )
             self.message = "Informando multa percentual"
             self.type_log = "log"
             self.prt()
@@ -625,7 +644,9 @@ class Tjdft(CrawJUD):
                     )),
                 )
                 honorario_exec.click()
-                percent = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"))
+                percent = str(
+                    self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"),
+                )
                 percent = f"{percent},00" if "," not in percent else percent
 
                 honorario_exec.send_keys(percent)

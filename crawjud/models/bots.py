@@ -121,7 +121,10 @@ class Executions(db.Model):
     )
 
     user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
-    user = db.relationship("Users", backref=db.backref("executions", lazy=True))
+    user = db.relationship(
+        "Users",
+        backref=db.backref("executions", lazy=True),
+    )
 
     license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
     license_usr = db.relationship(

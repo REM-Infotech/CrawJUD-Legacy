@@ -15,7 +15,9 @@ load_dotenv()
 class GoogleStorageCredentialsProvider(Provider):  # noqa: D101
     def retrieve(self) -> Credentials:
         json_credentials = json.loads(environ["GCS_CREDENTIALS"])
-        credentials = GoogleCredentials.from_service_account_info(json_credentials)
+        credentials = GoogleCredentials.from_service_account_info(
+            json_credentials,
+        )
         credentials = GoogleCredentials.with_scopes(
             ["https://www.googleapis.com/auth/cloud-platform"],
         )

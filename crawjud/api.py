@@ -50,7 +50,9 @@ async def create_app() -> Quart:
         ASGIApp: The ASGI application instance with CORS and middleware applied.
 
     """
-    app.config.from_pyfile(Path(__file__).parent.resolve().joinpath("quartconf.py"))
+    app.config.from_pyfile(
+        Path(__file__).parent.resolve().joinpath("quartconf.py"),
+    )
 
     async with app.app_context():
         await init_extensions(app)

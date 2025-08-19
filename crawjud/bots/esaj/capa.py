@@ -219,7 +219,10 @@ class Capa(ESajBot):
             num_proc = item.find_element(By.CLASS_NAME, el.numproc).text
             status_proc = "Em Andamento"
             with suppress(NoSuchElementException):
-                status_proc = item.find_element(By.CLASS_NAME, el.statusproc).text
+                status_proc = item.find_element(
+                    By.CLASS_NAME,
+                    el.statusproc,
+                ).text
             data.update(
                 {
                     "NUMERO_PROCESSO": num_proc,
@@ -247,7 +250,9 @@ class Capa(ESajBot):
                         element_search,
                     ).text
                     if title == "OUTROS_ASSUNTOS":
-                        value = " ".join([val for val in value.split(" ") if val])
+                        value = " ".join([
+                            val for val in value.split(" ") if val
+                        ])
 
         if value:
             data.update({title: value.upper()})
@@ -263,7 +268,11 @@ class Capa(ESajBot):
         for group_parte in table_partes.find_elements(By.TAG_NAME, "tr"):
             self._process_group_parte(group_parte, data)
 
-    def _process_group_parte(self, group_parte: WebElementBot, data: dict) -> None:
+    def _process_group_parte(
+        self,
+        group_parte: WebElementBot,
+        data: dict,
+    ) -> None:
         """Processa um grupo de parte e atualiza o dicionário de dados.
 
         Args:

@@ -173,7 +173,9 @@ class ProcParte(ProjudiBot):
                 )
 
             with suppress(Exception):
-                polo_passivo = processo.find_elements(By.TAG_NAME, "td")[7].text
+                polo_passivo = processo.find_elements(By.TAG_NAME, "td")[
+                    7
+                ].text
 
             with suppress(Exception):
                 juizo = processo.find_elements(By.TAG_NAME, "td")[9].text

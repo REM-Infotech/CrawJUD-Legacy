@@ -119,7 +119,11 @@ def _normalize_max_age(max_age: int | timedelta) -> int:
         int: Tempo máximo de cache em segundos.
 
     """
-    return int(max_age.total_seconds()) if isinstance(max_age, timedelta) else max_age
+    return (
+        int(max_age.total_seconds())
+        if isinstance(max_age, timedelta)
+        else max_age
+    )
 
 
 def _get_methods(normalized_methods: str | None) -> str:
@@ -158,8 +162,12 @@ async def _handle_post[T](
     """
     name_ = f.__globals__.get("__name__")
     if name_ == "quart_jwt_extended.view_decorators":
-        cookie_xsrf_name = current_app.config.get("JWT_ACCESS_CSRF_COOKIE_NAME")
-        header_xsrf_name = current_app.config.get("JWT_ACCESS_CSRF_HEADER_NAME")
+        cookie_xsrf_name = current_app.config.get(
+            "JWT_ACCESS_CSRF_COOKIE_NAME",
+        )
+        header_xsrf_name = current_app.config.get(
+            "JWT_ACCESS_CSRF_HEADER_NAME",
+        )
         xsrf_token = request.cookies.get(cookie_xsrf_name, None)
         if not xsrf_token:
             abort(401, message="Missing XSRF Token")

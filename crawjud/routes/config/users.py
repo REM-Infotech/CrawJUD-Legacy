@@ -131,12 +131,18 @@ def delete_user(form: dict) -> None:
     usr = db.session.query(Users).filter(Users.id == form["id"]).first()
 
     if usr.id == get_jwt_identity():
-        raise DeleteError(message="Não é possível deletar seu próprio usuário.")
+        raise DeleteError(
+            message="Não é possível deletar seu próprio usuário.",
+        )
     db.session.delete(usr)
     db.session.commit()
 
 
-action = {"INSERT": cadastro_user, "UPDATE": update_user, "DELETE": delete_user}
+action = {
+    "INSERT": cadastro_user,
+    "UPDATE": update_user,
+    "DELETE": delete_user,
+}
 
 
 @admin.get("/users")
@@ -154,7 +160,9 @@ async def users() -> Response:
         if request.method == "POST":
             try:
                 form_data = (
-                    await request.json or await request.data or await request.form
+                    await request.json
+                    or await request.data
+                    or await request.form
                 )
 
                 form = {}

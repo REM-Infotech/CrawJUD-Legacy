@@ -84,7 +84,10 @@ class ElawBot[T](CrawJUD):
 
         # Insere o processo no Campo
         lineprocess = self.wait.until(
-            ec.presence_of_element_located((By.ID, "nuProcessoAntigoFormatado")),
+            ec.presence_of_element_located((
+                By.ID,
+                "nuProcessoAntigoFormatado",
+            )),
         )
         lineprocess.click()
         lineprocess.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
@@ -100,7 +103,10 @@ class ElawBot[T](CrawJUD):
         check_process = None
         with suppress(NoSuchElementException, TimeoutException):
             check_process = WebDriverWait(self.driver, 5).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, "#numeroProcesso")),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    "#numeroProcesso",
+                )),
             )
 
         # Retry 1

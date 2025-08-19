@@ -96,7 +96,10 @@ class CadastroComplementar(ElawBot):
 
         self.interact.clear(input_uc)
 
-        self.interact.send_key(input_uc, self.bot_data.get("UNIDADE_CONSUMIDORA"))
+        self.interact.send_key(
+            input_uc,
+            self.bot_data.get("UNIDADE_CONSUMIDORA"),
+        )
 
         self.message = "Unidade consumidora informada!"
         self.type_log = "log"

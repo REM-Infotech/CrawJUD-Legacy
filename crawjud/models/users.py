@@ -28,7 +28,11 @@ def user_identity_lookup[T](*args: T) -> int:
 
 
 @jwt.token_in_blacklist_loader
-def check_if_token_revoked(jwt_data: dict, *args: str, **kwargs: object) -> bool:
+def check_if_token_revoked(
+    jwt_data: dict,
+    *args: str,
+    **kwargs: object,
+) -> bool:
     """Check if the token is in the blocklist.
 
     Returns:
@@ -87,7 +91,11 @@ class Users(db.Model):
     __tablename__ = "users"
     id: int = db.Column(db.Integer, primary_key=True)
     login: str = db.Column(db.String(length=30), nullable=False, unique=True)
-    nome_usuario: str = db.Column(db.String(length=64), nullable=False, unique=True)
+    nome_usuario: str = db.Column(
+        db.String(length=64),
+        nullable=False,
+        unique=True,
+    )
     email: str = db.Column(db.String(length=50), nullable=False, unique=True)
     password: str = db.Column(db.String(length=60), nullable=False)
     login_time = db.Column(
@@ -103,7 +111,10 @@ class Users(db.Model):
     filename: str = db.Column(db.String(length=128))
     blob_doc = db.Column(db.LargeBinary(length=(2**32) - 1))
 
-    licenseus_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    licenseus_id: int = db.Column(
+        db.Integer,
+        db.ForeignKey("licenses_users.id"),
+    )
     licenseusr = db.relationship("LicensesUsers", backref="user")
 
     def __init__(
@@ -142,7 +153,9 @@ class Users(db.Model):
             senha_texto (str): Plain text password.
 
         """
-        self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
+        self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode(
+            "utf-8",
+        )
 
     def check_password(self, senha_texto_claro: str) -> bool:
         """Check if the provided password matches the stored encrypted password.
@@ -189,9 +202,21 @@ class LicensesUsers(db.Model):
 
     __tablename__ = "licenses_users"
     id: int = db.Column(db.Integer, primary_key=True)
-    name_client: str = db.Column(db.String(length=60), nullable=False, unique=True)
-    cpf_cnpj: str = db.Column(db.String(length=30), nullable=False, unique=True)
-    license_token: str = db.Column(db.String(length=512), nullable=False, unique=True)
+    name_client: str = db.Column(
+        db.String(length=60),
+        nullable=False,
+        unique=True,
+    )
+    cpf_cnpj: str = db.Column(
+        db.String(length=30),
+        nullable=False,
+        unique=True,
+    )
+    license_token: str = db.Column(
+        db.String(length=512),
+        nullable=False,
+        unique=True,
+    )
 
     # Relacionamento de muitos para muitos com users
     admins = db.relationship("Users", secondary="admins", backref="admin")

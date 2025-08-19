@@ -82,7 +82,9 @@ class PjeBot[T](CrawJUD):
 
         """
         # Envia mensagem de log para task assíncrona
-        message = "Buscando processo {proc}".format(proc=data["NUMERO_PROCESSO"])
+        message = "Buscando processo {proc}".format(
+            proc=data["NUMERO_PROCESSO"],
+        )
         self.print_msg(
             message=message,
             row=row,
@@ -176,7 +178,8 @@ class PjeBot[T](CrawJUD):
             ][-1]
 
             cookies_ = {
-                str(cookie["name"]): str(cookie["value"]) for cookie in cookies_driver
+                str(cookie["name"]): str(cookie["value"])
+                for cookie in cookies_driver
             }
 
             headers_ = {
@@ -274,7 +277,9 @@ class PjeBot[T](CrawJUD):
             chunk = 8 * 1024 * 1024
             file_path = path_temp.joinpath(file_name)
             # Salva arquivo em chunks no storage
-            dest_name = str(Path(self.pid.upper()).joinpath(file_name).as_posix())
+            dest_name = str(
+                Path(self.pid.upper()).joinpath(file_name).as_posix(),
+            )
 
             bytes_file = b""
             with file_path.open("wb") as f:
@@ -303,8 +308,10 @@ class PjeBot[T](CrawJUD):
             )
 
         finally:
-            message = "Arquivo do processo n.{proc} baixado com sucesso!".format(
-                proc=data_bot["NUMERO_PROCESSO"],
+            message = (
+                "Arquivo do processo n.{proc} baixado com sucesso!".format(
+                    proc=data_bot["NUMERO_PROCESSO"],
+                )
             )
             self.print_msg(
                 row=row,
@@ -326,7 +333,11 @@ class PjeBot[T](CrawJUD):
 
         """
         with suppress(Exception):
-            cache = CachedExecution(processo=processo.data, data=data, pid=self.pid)
+            cache = CachedExecution(
+                processo=processo.data,
+                data=data,
+                pid=self.pid,
+            )
             cache.save()
 
     def desafio_captcha(
@@ -410,7 +421,10 @@ class PjeBot[T](CrawJUD):
                     type_log="info",
                 )
 
-                captcha_token = response_desafio.headers.get("captchatoken", "")
+                captcha_token = response_desafio.headers.get(
+                    "captchatoken",
+                    "",
+                )
                 return DictResults(
                     id_processo=id_processo,
                     captchatoken=str(captcha_token),

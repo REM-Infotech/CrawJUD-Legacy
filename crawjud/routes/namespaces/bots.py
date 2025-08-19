@@ -114,7 +114,10 @@ class BotsNamespace(Namespace):
             sistema = item.system.lower()
             if sistema in credentials:
                 credentials[sistema].append(
-                    CredendialDictSelect(value=item.id, text=item.nome_credencial),
+                    CredendialDictSelect(
+                        value=item.id,
+                        text=item.nome_credencial,
+                    ),
                 )
 
         return credentials

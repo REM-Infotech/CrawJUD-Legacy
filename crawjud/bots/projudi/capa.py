@@ -189,7 +189,9 @@ class Capa(ProjudiBot):
 
             count = 0
             time.sleep(5)
-            path_copia = self.output_dir_path.joinpath(f"{id_proc}.pdf").resolve()
+            path_copia = self.output_dir_path.joinpath(
+                f"{id_proc}.pdf",
+            ).resolve()
 
             while count <= 300:
                 if path_copia.exists():
@@ -337,7 +339,9 @@ class Capa(ProjudiBot):
                 for idx, label in enumerate(labels):
                     not_formated_label = label.text
                     label_text = (
-                        self.format_string(label.text).upper().replace(" ", "_")
+                        self.format_string(label.text)
+                        .upper()
+                        .replace(" ", "_")
                     )
                     value_text = values[idx].text
                     value_text = self._format_value(
@@ -453,7 +457,9 @@ class Capa(ProjudiBot):
         ]
         for pos, parte_info in enumerate(result_table):
             tipo_parte = (
-                self.format_string(h4_names[pos].text).replace(" ", "_").upper()
+                self.format_string(h4_names[pos].text)
+                .replace(" ", "_")
+                .upper()
             )
             nome_colunas = [
                 column.text.upper()

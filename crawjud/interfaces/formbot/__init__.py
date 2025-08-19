@@ -70,7 +70,11 @@ class FormDict(
     """
 
     @classmethod
-    async def constructor(cls, bot: BotsCrawJUD, data: dict[str, AnyStr]) -> Self:
+    async def constructor(
+        cls,
+        bot: BotsCrawJUD,
+        data: dict[str, AnyStr],
+    ) -> Self:
         """Construa dinamicamente um formulário baseado na configuração do bot.
 
         Args:
@@ -86,7 +90,11 @@ class FormDict(
         return FORM_CONFIG[classification][config](**data)
 
     @classmethod
-    def get_annotations(cls, classification: str, config: str) -> dict[str, Any]:
+    def get_annotations(
+        cls,
+        classification: str,
+        config: str,
+    ) -> dict[str, Any]:
         """Recupere as anotações de tipo do formulário conforme configuração.
 
         Args:

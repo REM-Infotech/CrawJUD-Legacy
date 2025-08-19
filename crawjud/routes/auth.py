@@ -153,7 +153,9 @@ async def login() -> Response:
 
     except ValueError as e:
         current_app.logger.error("\n".join(format_exception(e)))
-        return await make_response(jsonify({"message": "Erro ao efetuar login!"}))
+        return await make_response(
+            jsonify({"message": "Erro ao efetuar login!"}),
+        )
 
 
 @auth.route("/logout", methods=["POST"])
@@ -189,6 +191,9 @@ async def refresh() -> Response:
     session.clear()
 
     return await make_response(
-        jsonify(access_token=new_access_token, refresh_token=new_refresh_token),
+        jsonify(
+            access_token=new_access_token,
+            refresh_token=new_refresh_token,
+        ),
         200,
     )

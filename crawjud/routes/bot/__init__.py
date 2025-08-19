@@ -28,7 +28,9 @@ async def start_bot() -> None:  # noqa: D103
     try:
         pid = await LoadForm().loadform()
 
-        return await make_response(jsonify(message="Execução iniciada!", pid=pid))
+        return await make_response(
+            jsonify(message="Execução iniciada!", pid=pid),
+        )
 
     except HTTPException as e:
         current_app.logger.error("\n".join(traceback.format_exception(e)))
@@ -49,4 +51,7 @@ async def handle_http_exception(error: HTTPException) -> Response:
     name = error.name
     desc = error.description
 
-    return await make_response(jsonify(name=name, description=desc), error.code)
+    return await make_response(
+        jsonify(name=name, description=desc),
+        error.code,
+    )

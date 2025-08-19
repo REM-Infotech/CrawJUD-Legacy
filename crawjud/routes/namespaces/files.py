@@ -75,4 +75,9 @@ class FileNamespaces(Namespace):
         namespace: str | None = None,
     ) -> None:
         """Delegate to FileService.save_session (deprecated)."""
-        await self.file_service.save_session(self.server, sid, session, namespace)
+        await self.file_service.save_session(
+            self.server,
+            sid,
+            session,
+            namespace,
+        )

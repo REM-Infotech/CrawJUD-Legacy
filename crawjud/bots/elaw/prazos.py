@@ -86,9 +86,7 @@ class Prazos(ElawBot):
                 _raise_execution_error(message="Não Encontrado!")
 
             comprovante = ""
-            self.data_Concat = (
-                f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
-            )
+            self.data_Concat = f"{self.bot_data['DATA_AUDIENCIA']} {self.bot_data['HORA_AUDIENCIA']}"
             self.message = "Processo Encontrado!"
             self.type_log = "log"
             self.prt()
@@ -196,10 +194,14 @@ class Prazos(ElawBot):
 
             value_opt = opt_itens.get(self.bot_data["TIPO_AUDIENCIA"].upper())
             if value_opt:
-                command = f"$('{el.selectortipoaudiencia}').val(['{value_opt}']);"
+                command = (
+                    f"$('{el.selectortipoaudiencia}').val(['{value_opt}']);"
+                )
                 self.driver.execute_script(command)
 
-                command2 = f"$('{el.selectortipoaudiencia}').trigger('change');"
+                command2 = (
+                    f"$('{el.selectortipoaudiencia}').trigger('change');"
+                )
                 self.driver.execute_script(command2)
 
             # Info Data Audiencia
@@ -275,28 +277,40 @@ class Prazos(ElawBot):
                 if item.text == "Nenhum registro encontrado!":
                     return None
 
-                data_Prazo = str(item.find_elements(By.TAG_NAME, "td")[4].text)  # noqa: N806
+                data_prazo = str(item.find_elements(By.TAG_NAME, "td")[4].text)
 
                 tipo = str(item.find_elements(By.TAG_NAME, "td")[5].text)
 
                 chk_tipo = tipo.upper() == "AUDIÊNCIA"
-                chk_dataAudiencia = data_Prazo == self.data_Concat  # noqa: N806
+                check_data_audiencia = data_prazo == self.data_Concat
 
-                if chk_tipo and chk_dataAudiencia:
-                    nProc_pid = f"{self.bot_data['NUMERO_PROCESSO']} - {self.pid}"  # noqa: N806
+                if chk_tipo and check_data_audiencia:
+                    numero_processo_pid = (
+                        f"{self.bot_data['NUMERO_PROCESSO']} - {self.pid}"
+                    )
 
-                    nameComprovante = f"Comprovante - {nProc_pid}.png"  # noqa: N806
-                    idPrazo = str(item.find_elements(By.TAG_NAME, "td")[2].text)  # noqa: N806
+                    nome_comprovante = (
+                        f"Comprovante - {numero_processo_pid}.png"
+                    )
+                    id_prazo = str(
+                        item.find_elements(By.TAG_NAME, "td")[2].text,
+                    )
 
                     item.screenshot(
-                        str(Path(self.output_dir_path).joinpath(nameComprovante)),
+                        str(
+                            Path(self.output_dir_path).joinpath(
+                                nome_comprovante,
+                            ),
+                        ),
                     )
 
                     data = {
-                        "NUMERO_PROCESSO": str(self.bot_data["NUMERO_PROCESSO"]),
+                        "NUMERO_PROCESSO": str(
+                            self.bot_data["NUMERO_PROCESSO"],
+                        ),
                         "MENSAGEM_COMCLUSAO": "PRAZO LANÇADO",
-                        "ID_PRAZO": idPrazo,
-                        "NOME_COMPROVANTE": nameComprovante,
+                        "ID_PRAZO": id_prazo,
+                        "NOME_COMPROVANTE": nome_comprovante,
                     }
 
         except ExecutionError as e:

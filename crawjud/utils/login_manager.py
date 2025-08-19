@@ -56,9 +56,7 @@ class QuartLoginManager(LoginManager):
             Any
 
         """
-        user_unauthorized.send(
-            current_app._get_current_object(),  # noqa: SLF001
-        )
+        user_unauthorized.send(current_app._get_current_object())
 
         if self.unauthorized_callback:
             return self.unauthorized_callback()
@@ -78,7 +76,10 @@ class QuartLoginManager(LoginManager):
                     category=self.login_message_category,
                 )
             else:
-                await flash(self.login_message, category=self.login_message_category)
+                await flash(
+                    self.login_message,
+                    category=self.login_message_category,
+                )
 
         config = current_app.config
         if config.get("USE_SESSION_FOR_NEXT", USE_SESSION_FOR_NEXT):

@@ -127,7 +127,9 @@ class Capa(PjeBot):  # noqa: D101
                 sleep(sleep_time)
                 try:
                     # Atualiza dados do item para processamento
-                    row = self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
+                    row = (
+                        self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
+                    )
                     resultado: DictResults = self.search(
                         data=item,
                         row=row,
@@ -157,8 +159,10 @@ class Capa(PjeBot):  # noqa: D101
                             thread_file_.start()
                             thread_download_file.append(thread_file_)
 
-                            part_1_msg = "Informações do processo {numproc} ".format(
-                                numproc=item["NUMERO_PROCESSO"],
+                            part_1_msg = (
+                                "Informações do processo {numproc} ".format(
+                                    numproc=item["NUMERO_PROCESSO"],
+                                )
                             )
 
                             part_2_msg = "salvas com sucesso!"
@@ -211,7 +215,9 @@ class Capa(PjeBot):  # noqa: D101
 
         """
         try:
-            file_name = f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
+            file_name = (
+                f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
+            )
             proc = data["NUMERO_PROCESSO"]
             id_proc = id_processo
             captcha = captchatoken

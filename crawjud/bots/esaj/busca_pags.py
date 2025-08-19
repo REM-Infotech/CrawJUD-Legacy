@@ -195,8 +195,12 @@ class BuscaPags(ESajBot):
                     with suppress(Exception):
                         checkifclass = rows.get_attribute("class")
                         if checkifclass == "":
-                            tipo_custa = rows.find_elements(By.TAG_NAME, "td")[0].text
-                            emissor = rows.find_elements(By.TAG_NAME, "td")[1].text
+                            tipo_custa = rows.find_elements(By.TAG_NAME, "td")[
+                                0
+                            ].text
+                            emissor = rows.find_elements(By.TAG_NAME, "td")[
+                                1
+                            ].text
                             data_calculo = str(
                                 rows.find_elements(By.TAG_NAME, "td")[2].text,
                             )
@@ -207,7 +211,11 @@ class BuscaPags(ESajBot):
                             ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                             valor_custa = (
-                                str(rows.find_elements(By.TAG_NAME, "td")[3].text)
+                                str(
+                                    rows.find_elements(By.TAG_NAME, "td")[
+                                        3
+                                    ].text,
+                                )
                                 .replace(".", "")
                                 .replace(",", ".")
                             )
@@ -217,9 +225,10 @@ class BuscaPags(ESajBot):
                             cód_guia = str(
                                 rows.find_elements(By.TAG_NAME, "td")[4].text,
                             )
-                            parcelaguia = rows.find_elements(By.TAG_NAME, "td")[
-                                5
-                            ].text
+                            parcelaguia = rows.find_elements(
+                                By.TAG_NAME,
+                                "td",
+                            )[5].text
 
                             data_pagamento = str(
                                 rows.find_elements(By.TAG_NAME, "td")[6].text,
@@ -266,7 +275,9 @@ class BuscaPags(ESajBot):
 
                     valor_custa = float(valor_custa)
 
-                    cód_guia = str(rows.find_elemens(By.TAG_NAME, "td")[4].text)
+                    cód_guia = str(
+                        rows.find_elemens(By.TAG_NAME, "td")[4].text,
+                    )
                     parcelaguia = rows.find_elements(By.TAG_NAME, "td")[5].text
                     data_pagamento = datetime.strptime(
                         str(rows.find_elements(By.TAG_NAME, "td")[6].text),

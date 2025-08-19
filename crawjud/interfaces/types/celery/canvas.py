@@ -314,9 +314,14 @@ class Signature[T](__Signature):
         """
         async_result = cast(
             "CeleryResult",
-            super().apply_async(args, kwargs, route_name=route_name, **options),
+            super().apply_async(
+                args,
+                kwargs,
+                route_name=route_name,
+                **options,
+            ),
         )
-        async_result._app = self._app  # noqa: SLF001
+        async_result._app = self._app
         async_result.wait_ready = CeleryResult.wait_ready.__get__(async_result)
         if async_result:
             return async_result

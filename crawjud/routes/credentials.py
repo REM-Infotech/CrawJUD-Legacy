@@ -199,7 +199,9 @@ async def cadastro() -> Response:
 
         if action_ and action_.upper() == "DELETE":
             cred_id = request_data.get("id")
-            db.session.query(Credentials).filter(Credentials.id == cred_id).delete()
+            db.session.query(Credentials).filter(
+                Credentials.id == cred_id,
+            ).delete()
             db.session.commit()
             return await make_response(
                 jsonify(message="Credencial deletada com sucesso!"),
@@ -223,7 +225,8 @@ async def cadastro() -> Response:
                 password=form["password"],
             )
             licenseusr = LicensesUsers.query.filter(
-                LicensesUsers.license_token == license_user(get_jwt_identity(), db),
+                LicensesUsers.license_token
+                == license_user(get_jwt_identity(), db),
             ).first()
 
             passwd.license_usr = licenseusr
@@ -279,7 +282,9 @@ async def cadastro() -> Response:
         else:
             call_method(form)
 
-        return await make_response(jsonify(message="Credencial salva com sucesso!"))
+        return await make_response(
+            jsonify(message="Credencial salva com sucesso!"),
+        )
 
     except ValueError as e:
         app.logger.error("\n".join(format_exception(e)))

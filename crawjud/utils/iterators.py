@@ -36,7 +36,9 @@ class RegioesIterator:
         dict_processo_separado: DictSeparaRegiao = bot.separar_regiao()
         self._bot = bot
         self._regioes = list(dict_processo_separado["regioes"].items())
-        self._posicoes_processos_planilha = dict_processo_separado["position_process"]
+        self._posicoes_processos_planilha = dict_processo_separado[
+            "position_process"
+        ]
         self._index = 0
 
         # Atualiza atributos do bot

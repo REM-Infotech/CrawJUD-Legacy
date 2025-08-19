@@ -141,7 +141,10 @@ class ProjudiBot[T](CrawJUD):
         data_fim_xls = self.data_fim
 
         if type(data_inicio_xls) is str:
-            data_inicio_xls = datetime.strptime(data_inicio_xls, "%Y-%m-%d").replace(
+            data_inicio_xls = datetime.strptime(
+                data_inicio_xls,
+                "%Y-%m-%d",
+            ).replace(
                 tzinfo=ZoneInfo("America/Manaus"),
             )
             data_inicio_xls = data_inicio_xls.strftime("%d/%m/%Y")
@@ -179,7 +182,10 @@ class ProjudiBot[T](CrawJUD):
         )
         input_parte.send_keys(self.parte_name)
 
-        cpfcnpj = self.driver.find_element(By.CSS_SELECTOR, 'input[name="cpfCnpj"]')
+        cpfcnpj = self.driver.find_element(
+            By.CSS_SELECTOR,
+            'input[name="cpfCnpj"]',
+        )
         cpfcnpj.send_keys(self.doc_parte)
 
         data_inicio = self.driver.find_element(
@@ -188,7 +194,10 @@ class ProjudiBot[T](CrawJUD):
         )
         data_inicio.send_keys(data_inicio_xls)
 
-        data_fim = self.driver.find_element(By.CSS_SELECTOR, 'input[name="dataFim"]')
+        data_fim = self.driver.find_element(
+            By.CSS_SELECTOR,
+            'input[name="dataFim"]',
+        )
         data_fim.send_keys(data_fim_xls)
 
         if self.polo_parte.lower() == "reu":
