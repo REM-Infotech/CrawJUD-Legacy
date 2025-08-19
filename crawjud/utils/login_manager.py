@@ -1,11 +1,32 @@
+"""Flask-Login for Quart."""
+
 from flask_login import LoginManager
-from quart import abort, current_app, flash, redirect, request, session
+from flask_login.config import (
+    USE_SESSION_FOR_NEXT,
+)
+from flask_login.signals import (
+    user_unauthorized,
+)
+from flask_login.utils import (
+    expand_login_view,
+    make_next_param,
+)
+from flask_login.utils import login_url as make_login_url
+from quart import (
+    Response,
+    abort,
+    current_app,
+    flash,
+    redirect,
+    request,
+    session,
+)
 
 
 class QuartLoginManager[T](LoginManager):
     """Flask-Login for Quart."""
 
-    async def unauthorized(self) -> T:
+    async def unauthorized(self) -> Response:
         """Redirect a user to the login page.
 
         This is called when the user is required to log in. If you register a
@@ -30,6 +51,10 @@ class QuartLoginManager[T](LoginManager):
 
         This should be returned from a view or before/after_request function,
         otherwise the redirect will have no effect.
+
+        Returns:
+            Any
+
         """
         user_unauthorized.send(
             current_app._get_current_object(),  # noqa: SLF001
