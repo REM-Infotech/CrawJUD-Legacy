@@ -23,7 +23,7 @@ from quart import (
 )
 
 
-class QuartLoginManager[T](LoginManager):
+class QuartLoginManager(LoginManager):
     """Flask-Login for Quart."""
 
     async def unauthorized(self) -> Response:
