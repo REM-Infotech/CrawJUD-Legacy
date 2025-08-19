@@ -7,15 +7,10 @@ Este módulo fornece:
 
 from __future__ import annotations
 
-from contextlib import suppress
 from functools import wraps
-from threading import Thread
 from typing import TYPE_CHECKING
-from uuid import uuid4
 
 from dotenv import dotenv_values
-from socketio import SimpleClient
-from tqdm import tqdm
 
 if TYPE_CHECKING:
     from crawjud.controllers.master import CrawJUD
@@ -27,33 +22,6 @@ namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
 
 transports = ["websocket"]
 headers = {"Content-Type": "application/json"}
-
-
-class _CustomSimpleClass[T](SimpleClient):
-    def emit(self, event: T, data: T = None) -> None:
-        with suppress(Exception):
-            return super().emit(event, data)
-
-    def connect(
-        self,
-        url: T,
-        headers: T = ...,
-        auth: T = None,
-        transports: T = None,
-        namespace: T = "/",
-        socketio_path: T = "socket.io",
-        wait_timeout: T = 5,
-    ) -> None:
-        with suppress(Exception):
-            return super().connect(
-                url,
-                headers,
-                auth,
-                transports,
-                namespace,
-                socketio_path,
-                wait_timeout,
-            )
 
 
 def wrap_init[T](cls: type[CrawJUD]) -> type[T]:
@@ -98,40 +66,7 @@ def wrap_cls[T](cls: type[CrawJUD]) -> type[T]:
         *args: T,
         **kwargs: T,
     ) -> None:
-        with _CustomSimpleClass(
-            reconnection_attempts=20,
-            reconnection_delay=5,
-        ) as sio:
-            # Conecta ao servidor Socket.IO com o URL,
-            # namespace e cabeçalhos especificados.
-            sio.connect(
-                url=server,
-                namespace=namespace,
-                headers=headers,
-                transports=transports,
-                wait_timeout=300,
-            )
-            cls = original_cls(current_task=self, *args, **kwargs)
-            Thread(
-                target=sio.emit,
-                kwargs={
-                    "event": "join_room",
-                    "data": {"data": {"room": kwargs.get("pid", uuid4().hex)}},
-                },
-            ).start()
-
-            def stop_bot[T](*args: T, **kwargs: T) -> None:
-                tqdm.write(str(args))
-                tqdm.write(str(kwargs))
-                cls.stop_bot = True
-
-            sio.client.on("stopbot", namespace=namespace, handler=stop_bot)
-
-            cls.sio = sio
-
-            if self:
-                return cls.execution()
-
-            return cls.execution(self, *args, **kwargs)
+        cls = original_cls(current_task=self, *args, **kwargs)
+        return cls.execution()
 
     return novo_init
