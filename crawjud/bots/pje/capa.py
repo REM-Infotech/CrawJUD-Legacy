@@ -17,7 +17,6 @@ from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
 from httpx import Client, ReadError
-from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.pje import PjeBot
@@ -239,7 +238,11 @@ class Capa(PjeBot):
                 call_stream()
 
         except ExecutionError as e:
-            tqdm.write("\n".join(traceback.format_exception(e)))
+            self.print_msg(
+                message="\n".join(traceback.format_exception(e)),
+                row=self.row,
+                type_log="info",
+            )
 
             msg = "Erro ao baixar arquivo"
 
