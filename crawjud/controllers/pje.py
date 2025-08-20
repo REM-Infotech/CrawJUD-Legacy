@@ -395,6 +395,7 @@ class PjeBot[T](CrawJUD):
             return img, token_desafio
 
         while count_try <= COUNT_TRYS:
+            sleep(0.5)
             with suppress(Exception):
                 img, token_desafio = args_desafio()
                 text = captcha_to_image(img)
