@@ -129,7 +129,7 @@ class Capa(PjeBot):
 
         """
         for item in data:
-            if len(self.tasks_queue_processos) == 5:
+            if len(self.tasks_queue_processos) == 10:
                 for th in self.tasks_queue_processos:
                     th.join()
                     sleep(0.50)
