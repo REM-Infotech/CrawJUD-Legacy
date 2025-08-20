@@ -241,7 +241,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 success=0,
                 errors=errors,
                 remaining=int(self.total_rows),
-                start_time=self.tart_time,
+                start_time=self.start_time,
             ),
             "room": self.pid,
         }
