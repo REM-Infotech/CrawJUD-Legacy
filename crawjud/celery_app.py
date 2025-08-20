@@ -173,7 +173,7 @@ def start_service(call: Callable) -> Process:
     Process: Instância do processo iniciado para o serviço.
 
     """
-    proc = Process(target=call, daemon=True)
+    proc = Process(target=call)
     proc.start()
     return proc
 

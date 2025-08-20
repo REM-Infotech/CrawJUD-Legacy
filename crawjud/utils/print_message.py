@@ -48,13 +48,7 @@ def print_in_thread(
         reconnection_delay=5,
         reconnection_delay_max=10,
     )
-    sio.connect(
-        url=server,
-        namespaces=[namespace],
-        wait=True,
-        wait_timeout=30,
-        retry=True,
-    )
+    sio.connect(url=server, namespaces=[namespace])
 
     sio.emit(
         event="join_room",

@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import json
 import shutil
-import subprocess
-import sys
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
+from multiprocessing import Process
 from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -24,6 +23,7 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
+from crawjud.utils.print_message import print_in_thread
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -227,24 +227,22 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         )
         message = f"[({self.pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
 
-        subprocess.run([
-            sys.executable,
-            str(work_dir.joinpath("print_message.py")),
-            "--start_time",
-            str(self.start_time),
-            "--message",
-            str(message),
-            "--total_rows",
-            str(self._total_rows),
-            "--row",
-            str(row),
-            "--errors",
-            str(0),
-            "--type_log",
-            str(type_log),
-            "--pid",
-            str(self.pid),
-        ])
+        proc = Process(
+            name="Print Message",
+            target=print_in_thread,
+            kwargs={
+                "start_time": str(self.start_time),
+                "message": str(message),
+                "total_rows": str(self._total_rows),
+                "row": row,
+                "errors": 0,
+                "type_log": type_log,
+                "pid": self.pid,
+            },
+        )
+
+        proc.start()
+
         tqdm.write(message)
 
     def append_success(
