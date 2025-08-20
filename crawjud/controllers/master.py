@@ -7,7 +7,7 @@ import shutil
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
-from multiprocessing import Process
+from multiprocessing import Lock, Process
 from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -33,6 +33,8 @@ func_dict_check = {
 }
 
 work_dir = Path(__file__).cwd()
+
+locker = Lock()
 
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
@@ -231,6 +233,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             name="Print Message",
             target=print_in_thread,
             kwargs={
+                "locker": locker,
                 "start_time": str(self.start_time),
                 "message": str(message),
                 "total_rows": str(self._total_rows),
