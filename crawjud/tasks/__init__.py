@@ -109,13 +109,14 @@ async def save_database(
                 user_admin.email for user_admin in iter_admins(license_.admins)
             ])
 
-        mail.send_email.apply_async(
-            kwargs={
-                "bot_name": bot.display_name,
-                "user_name": usr_.nome_usuario,
-                "email_target": usr_.email,
-                "email_type": signal,
-            },
+        mail.send_email(
+            bot_name=bot.display_name,
+            pid=pid,
+            nome_planilha=arquivo_xlsx,
+            user_name=usr_.nome_usuario,
+            email_target=usr_.email,
+            email_type=signal,
+            cc=cc,
         )
 
         db.session.commit()

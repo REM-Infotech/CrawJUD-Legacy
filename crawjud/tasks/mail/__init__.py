@@ -20,7 +20,7 @@ from crawjud.decorators import shared_task
 environ = dotenv_values()
 
 path_templates = str(Path(__file__).parent.joinpath("templates"))
-environment_ = Environment(
+environment = Environment(
     loader=FileSystemLoader(path_templates),
     autoescape=True,
 )
@@ -29,6 +29,8 @@ environment_ = Environment(
 @shared_task(name="send_email")
 def send_email(
     bot_name: str,
+    pid: str,
+    nome_planilha: str,
     user_name: str,
     email_target: str,
     email_type: str = "start",
@@ -43,6 +45,7 @@ def send_email(
     password = environ["MAIL_PASSWORD"]
     default_sender = environ["MAIL_DEFAULT_SENDER"]
 
+    url_web = environ["URL_WEB"]
     with SMTP(server, port) as smtp:
         smtp.ehlo()
         if use_tls:
@@ -55,7 +58,15 @@ def send_email(
         msg["Subject"] = email_type
         msg["cc"] = ", ".join(cc) if cc else ""
 
-        body = f"Hello {user_name},\n\nThis is a {email_type} email from {bot_name}."
+        template = environment.get_template(f"email_{email_type}.jinja")
+        body = template.render(
+            username=user_name,
+            display_name=bot_name,
+            url_web=url_web,
+            pid=pid,
+            xlsx=nome_planilha,
+        )
+
         msg.attach(MIMEText(body, "plain"))
 
         smtp.sendmail(
