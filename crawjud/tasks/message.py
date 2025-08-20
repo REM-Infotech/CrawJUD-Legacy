@@ -49,11 +49,15 @@ async def print_msg(
             # Se uma sala for especificada, o cliente se juntará a ela.
             # Em seguida, emite o evento com os dados fornecidos.
 
-            sio.connect(url=server, transports=transports, namespace=namespace)
+            await sio.connect(
+                url=server,
+                transports=transports,
+                namespace=namespace,
+            )
             # Se uma sala for especificada, o cliente se juntará a ela.
             if room:
                 join_data = {"data": {"room": room}}
-                sio.emit("join_room", data=join_data)
+                await sio.emit("join_room", data=join_data)
 
             # Emite o evento com os dados fornecidos.
-            sio.emit(event, data={"data": data})
+            await sio.emit(event, data={"data": data})
