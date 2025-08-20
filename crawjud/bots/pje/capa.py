@@ -114,6 +114,12 @@ class Capa(PjeBot):
 
         """
         for item in data:
+            if len(self.tasks_queue_processos) == 5:
+                for th in self.tasks_queue_processos:
+                    th.join()
+
+                self.tasks_queue_processos.clear()
+
             thread_proc = Thread(
                 target=self.thread_search_proc,
                 kwargs={
@@ -123,6 +129,8 @@ class Capa(PjeBot):
                     "item": item,
                 },
             )
+
+            sleep(3)
             thread_proc.start()
             self.tasks_queue_processos.append(thread_proc)
 
