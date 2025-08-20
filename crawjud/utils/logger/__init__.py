@@ -37,11 +37,6 @@ def dict_config(**kwargs: str | int) -> tuple[dict[str, Any], str]:
             "level": logging.INFO,
             "formatter": "color",  # Usa o novo formatter colorido
         },
-        "redis_handler": {
-            "class": "crawjud.utils.logger.handlers.RedisHandler",
-            "level": logging.INFO,
-            "formatter": "json",
-        },
     }
     handlers_config["file_handler"]["level"] = logging.INFO
     handlers_config["file_handler"]["maxBytes"] = 40960
