@@ -76,7 +76,7 @@ class Capa(PjeBot):
                     f"Resultados Busca - TRT{regiao} - {self.pid[:6]}.xlsx"
                 )
                 path_planilha = self.output_dir_path.joinpath(nome_planilha)
-                xlsx = SavePjeXlsx(path_planilha)
+                xlsx = SavePjeXlsx(path_planilha=path_planilha, pid=self.pid)
                 xlsx.save()
 
                 continue
