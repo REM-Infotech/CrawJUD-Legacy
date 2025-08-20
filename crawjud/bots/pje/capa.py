@@ -117,7 +117,7 @@ class Capa(PjeBot):
             if len(self.tasks_queue_processos) == 5:
                 for th in self.tasks_queue_processos:
                     th.join()
-                    sleep(1)
+                    sleep(0.50)
 
                 self.tasks_queue_processos.clear()
 
@@ -131,7 +131,7 @@ class Capa(PjeBot):
                 },
             )
 
-            sleep(3)
+            sleep(0.50)
             thread_proc.start()
             self.tasks_queue_processos.append(thread_proc)
 
@@ -163,19 +163,19 @@ class Capa(PjeBot):
 
             # Atualiza dados do item para processamento
             row = self.list_posicao_processo[item["NUMERO_PROCESSO"]] + 1
-            sleep(1)
+            sleep(0.50)
             resultado: DictResults = self.search(
                 data=item,
                 row=row,
                 client=client,
             )
-            sleep(1)
+            sleep(0.50)
             if resultado:
-                sleep(1)
+                sleep(0.50)
                 data_request = resultado.get("data_request")
                 if data_request:
                     # Salva dados em cache
-                    sleep(1)
+                    sleep(0.50)
                     self.save_success_cache(
                         data=data_request,
                         processo=item["NUMERO_PROCESSO"],
@@ -192,7 +192,7 @@ class Capa(PjeBot):
                             "captchatoken": resultado["captchatoken"],
                         },
                     )
-                    sleep(1)
+                    sleep(0.50)
                     thread_file_.start()
                     self.thread_download_file.append(thread_file_)
 
@@ -250,24 +250,24 @@ class Capa(PjeBot):
 
         """
         try:
-            sleep(1)
+            sleep(0.50)
             base_url = client.base_url
             headers = client.headers
             cookies = client.cookies
 
             client = Client(
                 base_url=base_url,
-                timeout=600,
+                timeout=900,
                 headers=headers,
                 cookies=cookies,
             )
-            sleep(1)
+            sleep(0.50)
             proc = data["NUMERO_PROCESSO"]
             id_proc = id_processo
             captcha = captchatoken
             link = f"/processos/{id_proc}/integra?tokenCaptcha={captcha}"
             message = f"Baixando arquivo do processo n.{proc}"
-            sleep(1)
+            sleep(0.50)
             self.print_msg(
                 message=message,
                 row=row,
@@ -283,7 +283,7 @@ class Capa(PjeBot):
                         row=row,
                     )
 
-            sleep(1)
+            sleep(0.50)
             try:
                 call_stream()
 

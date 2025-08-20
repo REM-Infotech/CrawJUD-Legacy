@@ -395,7 +395,7 @@ class PjeBot[T](CrawJUD):
             return img, token_desafio
 
         while count_try <= COUNT_TRYS:
-            sleep(0.5)
+            sleep(0.25)
             with suppress(Exception):
                 img, token_desafio = args_desafio()
                 text = captcha_to_image(img)
@@ -448,7 +448,7 @@ class PjeBot[T](CrawJUD):
             self.print_msg(
                 message="Erro ao obter informações do processo",
                 row=row,
-                type_log="error",
+                type_log="info",
             )
             return None
 
