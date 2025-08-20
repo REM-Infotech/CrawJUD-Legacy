@@ -72,19 +72,22 @@ class Capa(PjeBot):
                         cookies=self.cookies,
                     )
 
-                nome_planilha = (
-                    f"Resultados Busca - TRT{regiao} - {self.pid[:6]}.xlsx"
-                )
-                path_planilha = self.output_dir_path.joinpath(nome_planilha)
-                xlsx = SavePjeXlsx(path_planilha=path_planilha, pid=self.pid)
-                xlsx.save()
-
                 continue
 
             self.print_msg(
                 message="Erro de execução",
                 type_log="error",
             )
+
+        self.print_msg(
+            "Fim da execução! Salvando resultados na planilha...",
+            type_log="info",
+        )
+        nome_planilha = f"Resultados Busca - {self.pid[:6]}.xlsx"
+        path_planilha = self.output_dir_path.joinpath(nome_planilha)
+        xlsx = SavePjeXlsx(path_planilha=path_planilha, pid=self.pid)
+        xlsx.save()
+        self.print_msg("Resultados salvos com sucesso!", type_log="success")
 
     def queue_processo(
         self,
