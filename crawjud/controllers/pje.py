@@ -13,6 +13,7 @@ from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal, cast
 
+from dotenv import dotenv_values
 from selenium.common.exceptions import (
     TimeoutException,
     UnexpectedAlertPresentException,
@@ -51,7 +52,7 @@ DictData = dict[str, str | datetime]
 ListData = list[DictData]
 
 workdir = Path(__file__).cwd()
-
+environ = dotenv_values()
 HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15
 
@@ -307,6 +308,14 @@ class PjeBot[T](CrawJUD):
                 data=BytesIO(bytes_file),
                 length=file_size,
             )
+
+            with suppress(Exception):
+                other_path_ = Path(environ["PATH_SRV"])
+                with other_path_.joinpath(file_name).open("wb") as f:
+                    for _bytes in response_data.iter_bytes(chunk):
+                        sleep(0.5)
+                        f.write(_bytes)
+                        bytes_file += _bytes
 
         except (FileUploadError, Exception) as e:
             str_exc = "\n".join(traceback.format_exception_only(e))
