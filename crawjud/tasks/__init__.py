@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 from zoneinfo import ZoneInfo
 
 from crawjud import bots
-from crawjud.api import create_app
+from crawjud.api import app
 from crawjud.decorators import shared_task
 from crawjud.models.bots import BotsCrawJUD, Executions
 from crawjud.models.users import LicensesUsers, Users
@@ -64,7 +64,6 @@ async def save_database(
     total_rows: int | None = None,
 ) -> None:
     """Salva o estado atual do banco de dados."""
-    app = await create_app()
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     async with app.app_context():
         with db.session.no_autoflush:
@@ -118,7 +117,7 @@ async def save_database(
             mail.send_email.apply_async(
                 kwargs={
                     "bot_name": bot.display_name,
-                    "pid": pid,
+                    "pid": pid[:6].upper(),
                     "nome_planilha": arquivo_xlsx,
                     "user_name": usr_.nome_usuario,
                     "email_target": usr_.email,

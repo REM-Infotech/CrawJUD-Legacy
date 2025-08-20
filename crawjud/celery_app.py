@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import importlib
 import logging
 import platform
@@ -120,17 +121,19 @@ def make_celery() -> Celery:
 
 def start_worker() -> None:
     """Start the Celery Worker."""
+    from crawjud.api import create_app
+
     environ.update({"APPLICATION_APP": "worker"})
     worker_name = environ["WORKER_NAME"]
-
+    _app = asyncio.run(create_app())
     debug = envdot.get("DEBUG", "false").lower() == "true"
     pool_ = "prefork"
     if debug or platform.system() == "Windows":
         pool_ = "threads"
 
-    celery = make_celery()
+    app = make_celery()
     worker = Worker(
-        app=celery,
+        app=app,
         hostname=worker_name,
         task_events=True,
         loglevel="INFO",
