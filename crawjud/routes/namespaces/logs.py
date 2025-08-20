@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import traceback
+from asyncio import create_task
 from typing import TYPE_CHECKING
 
 from quart import request, session
@@ -14,6 +15,8 @@ from crawjud.utils.models.logs import MessageLog, MessageLogDict
 
 if TYPE_CHECKING:
     from crawjud.interfaces import ASyncServerType
+
+background_tasks = set()
 
 
 class LogsNamespace[T](Namespace):
@@ -91,16 +94,18 @@ class LogsNamespace[T](Namespace):
         return message, True
 
     async def on_log_execution(self) -> None:
-        """Otimize o recebimento e propagação de logs de execução em tempo real."""
+        """Recebe e propaga logs de execução em tempo real."""
         # Obtém os dados do formulário e atualiza o log no Redis
         data_ = dict(list((await request.form).items()))
 
         try:
-            # Evite operações desnecessárias de leitura/escrita em disco/banco
-            # Apenas atualize o necessário e em lote se possível
-            message = await self.log_redis(pid=data_["pid"], message=data_)
+            task = create_task(
+                self.log_redis(pid=data_["pid"], message=data_),
+            )
+
+            background_tasks.add(task)
+            task.add_done_callback(background_tasks.discard)
             # Emite o log atualizado para a sala do processo
-            await self.emit("log_execution", data=message, room=data_["pid"])
 
         except KeyError as e:
             tqdm.write(
@@ -112,23 +117,28 @@ class LogsNamespace[T](Namespace):
         message: MessageLogDict,
         log: MessageLog = None,
     ) -> MessageLogDict:
-        """Otimize o cálculo dos valores de sucesso, erro e restante no log.
+        """Calcula e atualiza os valores de sucesso, erro e restante no log.
 
         Args:
+            self: Instância do objeto.
             message (MessageLogDict): Mensagem de log.
             log (MessageLog, opcional): Log de execução.
+            message (MessageLogDict): Dicionário com informações do log.
+            log
 
         Returns:
             MessageLogDict: Dicionário atualizado com contadores de sucesso e erro.
 
         """
         # Inicializa os contadores se não existirem
+
         if log:
-            # Use sum em vez de filter+len para melhor performance
-            count_success = sum(
-                1 for x in log.messages if x["type"] == "success"
+            count_success = len(
+                list(filter(lambda x: x["type"] == "success", log.messages)),
             )
-            count_error = sum(1 for x in log.messages if x["type"] == "error")
+            count_error = len(
+                list(filter(lambda x: x["type"] == "error", log.messages)),
+            )
             remaining = count_success + count_error
 
             message["success"] = count_success
@@ -142,41 +152,70 @@ class LogsNamespace[T](Namespace):
         pid: str,
         message: MessageLogDict = None,
     ) -> MessageLogDict:
-        """Otimize a carga e atualização do log de um processo no Redis.
+        """Carrega ou atualiza o log de um processo no Redis.
 
         Args:
             pid (str): Identificador do processo.
             message (MessageLogDict, opcional): Dados do log a serem atualizados.
 
-        Returns:
-            MessageLogDict: Dicionário com o log atualizado.
-
         """
-        message_ = message or MessageLogDict(
-            message="CARREGANDO",
-            pid=pid,
-            status="Em Execução",
-            row=0,
-            total=0,
-            errors=0,
-            success=0,
-            remaining=0,
-            type="info",
-            start_time="01/01/2023 - 00:00:00",
+        # Consulta o log existente pelo pid
+        log = MessageLog.query_logs(pid)
+
+        message_ = (
+            message or log.model_dump()
+            if log
+            else MessageLogDict(
+                message="CARREGANDO",
+                pid=pid,
+                status="Em Execução",
+                row=0,
+                total=0,
+                errors=0,
+                success=0,
+                remaining=0,
+                type="info",
+                start_time="01/01/2023 - 00:00:00",
+            )
         )
 
         msg = message_.pop("message", "Mensagem não informada")
 
-        # Atualize apenas os campos necessários para evitar overhead
-        updated_msg = await self._calc_success_errors(message_)
+        # Atualiza os contadores de sucesso e erro
+        updated_msg = await self._calc_success_errors(message_, log)
         type_log = updated_msg.pop("type", "info")
-        updated_msg["messages"] = [
-            ItemMessageList(
-                id_log=int(updated_msg.pop("id_log", 0)) + 1,
-                message=msg,
-                type=type_log,
-            ),
-        ]
+        if not log:
+            # Cria novo log se não existir
+            updated_msg["messages"] = [
+                ItemMessageList(
+                    id_log=int(updated_msg.pop("id_log", 0)) + 1,
+                    message=msg,
+                    type=type_log,
+                ),
+            ]
+            log = MessageLog(**updated_msg)
+            log.save()
+
+        elif log:
+            if updated_msg.get("pk"):
+                updated_msg.pop("pk")
+
+            updated_msg["messages"] = log.messages or []
+            updated_msg["messages"].append(
+                ItemMessageList(
+                    id_log=int(updated_msg.pop("id_log", 0)) + 1,
+                    message=msg,
+                    type=type_log,
+                ),
+            )
+
+        # Atualiza o log no banco de dados
+        log.update(**updated_msg)
+
         updated_msg["message"] = msg
         updated_msg["type"] = type_log
-        return updated_msg
+        await self.emit(
+            "log_execution",
+            data=updated_msg,
+            room=updated_msg["pid"],
+        )

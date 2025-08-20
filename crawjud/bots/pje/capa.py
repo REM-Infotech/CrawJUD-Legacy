@@ -22,6 +22,7 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
+from crawjud.utils.pje_savexlsx import SavePjeXlsx
 
 if TYPE_CHECKING:
     from crawjud.interfaces.types import BotData
@@ -70,6 +71,13 @@ class Capa(PjeBot):
                         headers=self.headers,
                         cookies=self.cookies,
                     )
+
+                nome_planilha = (
+                    f"Resultados Busca - TRT{regiao} - {self.pid[:6]}.xlsx"
+                )
+                path_planilha = self.output_dir_path.joinpath(nome_planilha)
+                xlsx = SavePjeXlsx(path_planilha)
+                xlsx.save()
 
                 continue
 
@@ -157,10 +165,11 @@ class Capa(PjeBot):
                         data=data_request,
                         processo=item["NUMERO_PROCESSO"],
                     )
-
+                    file_name = f"COPIA INTEGRAL {item['NUMERO_PROCESSO']} {self.pid}.pdf"
                     thread_file_ = Thread(
                         target=self.copia_integral,
                         kwargs={
+                            "file_name": file_name,
                             "row": row,
                             "data": item,
                             "client": client,
@@ -199,6 +208,7 @@ class Capa(PjeBot):
 
     def copia_integral(
         self,
+        file_name: str,
         row: int,
         data: BotData,
         client: Client,
@@ -235,9 +245,7 @@ class Capa(PjeBot):
                 headers=headers,
                 cookies=cookies,
             )
-            file_name = (
-                f"COPIA INTEGRAL {data['NUMERO_PROCESSO']} {self.pid}.pdf"
-            )
+
             proc = data["NUMERO_PROCESSO"]
             id_proc = id_processo
             captcha = captchatoken
