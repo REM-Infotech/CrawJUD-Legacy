@@ -7,17 +7,20 @@ templates e variáveis de ambiente para configuração do servidor SMTP.
 
 from __future__ import annotations
 
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from pathlib import Path
-from smtplib import SMTP
+from typing import TYPE_CHECKING
 
 from dotenv import dotenv_values
+from flask_mail import Message
 from jinja2 import Environment, FileSystemLoader
 
+from crawjud.api import create_app
 from crawjud.decorators import shared_task
 
 environ = dotenv_values()
+
+if TYPE_CHECKING:
+    from flask_mail import Mail
 
 path_templates = str(Path(__file__).parent.joinpath("templates"))
 environment = Environment(
@@ -27,7 +30,7 @@ environment = Environment(
 
 
 @shared_task(name="send_email")
-def send_email(
+async def send_email(
     bot_name: str,
     pid: str,
     nome_planilha: str,
@@ -37,29 +40,21 @@ def send_email(
     cc: list[str] | None = None,
 ) -> None:
     """Envia um e-mail utilizando as configurações do servidor SMTP."""
-    server = environ["MAIL_SERVER"]
-    port = environ["MAIL_PORT"]
-    use_tls = environ["MAIL_USE_TLS"].lower() == "true"
-    _use_ssl = environ["MAIL_USE_SSL"].lower() == "true"
-    username = environ["MAIL_USERNAME"]
-    password = environ["MAIL_PASSWORD"]
-    default_sender = environ["MAIL_DEFAULT_SENDER"]
+    app = await create_app()
 
-    url_web = environ["URL_WEB"]
-    with SMTP(server, port) as smtp:
-        smtp.ehlo()
-        if use_tls:
-            smtp.starttls()
-        smtp.login(username, password)
+    async with app.app_context():
+        mail: Mail = app.extensions["mail"]
 
-        msg = MIMEMultipart()
-        msg["From"] = default_sender
-        msg["To"] = email_target
-        msg["Subject"] = email_type
-        msg["cc"] = ", ".join(cc) if cc else ""
+        message = Message()
+
+        url_web = environ["URL_WEB"]
+        default_sender = environ["MAIL_DEFAULT_SENDER"]
+        message.subject = f"Notificação Robô <{default_sender}>"
+        message.cc = cc
+        message.recipients = [email_target]
 
         template = environment.get_template(f"email_{email_type}.jinja")
-        body = template.render(
+        message.html = template.render(
             username=user_name,
             display_name=bot_name,
             url_web=url_web,
@@ -67,10 +62,4 @@ def send_email(
             xlsx=nome_planilha,
         )
 
-        msg.attach(MIMEText(body, "plain"))
-
-        smtp.sendmail(
-            from_addr=default_sender,
-            to_addrs=email_target,
-            msg=msg.as_string(),
-        )
+        mail.send(message=message)

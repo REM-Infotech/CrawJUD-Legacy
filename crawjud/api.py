@@ -8,6 +8,7 @@ from pathlib import Path
 
 import quart_flask_patch as quart_patch
 from dotenv import dotenv_values
+from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
@@ -31,7 +32,7 @@ sess = Session()
 app = Quart(__name__)
 jwt = JWTManager()
 db = SQLAlchemy()
-
+mail = Mail()
 
 io = SocketIO(
     async_mode="asgi",
@@ -139,7 +140,7 @@ async def init_extensions(app: Quart) -> None:
     db.init_app(app)
     jwt.init_app(app)
     sess.init_app(app)
-
+    mail.init_app(app)
     app.extensions["celery"] = make_celery()
 
     async with app.app_context():
