@@ -6,6 +6,7 @@ import argparse
 import sys
 from datetime import datetime
 from pathlib import Path
+from time import sleep
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
@@ -52,6 +53,7 @@ def print_in_thread(
 
     """
     with locker:
+        sleep(5)
         sio = Client(logger=True)
         sio.connect(
             url=server,
@@ -108,6 +110,7 @@ def print_in_thread(
                     }.get(type_log, "white"),
                 ),
             )
+        sleep(2)
 
 
 if __name__ == "__main__":
