@@ -20,9 +20,9 @@ from werkzeug.utils import secure_filename
 from crawjud.common import name_colunas
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
-from crawjud.custom.canvas import subtask
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
+from crawjud.tasks.message import print_msg as print_message
 from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
@@ -35,7 +35,6 @@ func_dict_check = {
 work_dir = Path(__file__).cwd()
 
 locker = Lock()
-print_message = subtask("print_message")
 
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
