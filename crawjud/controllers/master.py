@@ -7,8 +7,8 @@ import shutil
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
-from multiprocessing import Lock
 from pathlib import Path
+from threading import Lock, Thread
 from typing import Literal
 from zoneinfo import ZoneInfo
 
@@ -22,8 +22,7 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
-from crawjud.tasks.message import print_msg as print_message
-from crawjud.utils.models.logs import MessageLogDict
+from crawjud.utils.print_message import print_in_thread
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -224,29 +223,22 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
 
         """
-        time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
-            "%H:%M:%S",
+
+        th_msg = Thread(
+            target=print_in_thread,
+            kwargs={
+                "locker": locker,
+                "start_time": self.start_time,
+                "message": message,
+                "total_rows": self.total_rows,
+                "row": row,
+                "errors": 0,
+                "type_log": type_log,
+                "pid": self.pid,
+            },
         )
-        message = f"[({self.pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
 
-        data = {
-            "event": "log_execution",
-            "data": MessageLogDict(
-                message=str(message),
-                pid=str(self.pid),
-                row=int(row),
-                type=type_log,
-                status="Em Execução",
-                total=int(self.total_rows),
-                success=0,
-                errors=errors,
-                remaining=int(self.total_rows),
-                start_time=self.start_time,
-            ),
-            "room": self.pid,
-        }
-
-        print_message.apply_async(kwargs=data)
+        th_msg.start()
 
     def append_success(
         self,

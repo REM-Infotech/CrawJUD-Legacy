@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
+from zoneinfo import ZoneInfo
 
 from dotenv import dotenv_values
 from socketio import Client
@@ -63,7 +65,12 @@ def print_in_thread(
         )
 
         # Obtém o horário atual formatado
-
+        time_exec = datetime.now(tz=ZoneInfo("America/Manaus")).strftime(
+            "%H:%M:%S",
+        )
+        message = (
+            f"[({pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
+        )
         # Monta o prompt da mensagem
         # Cria objeto de log da mensagem
         data = {
