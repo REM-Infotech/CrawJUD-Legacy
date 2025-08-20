@@ -67,56 +67,64 @@ async def save_database(
     app = await create_app()
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     async with app.app_context():
-        bot, exc = _query_info(db, bot_execution_id=bot_execution_id, pid=pid)
-        now_ = datetime.now(tz=ZoneInfo("America/Manaus"))
+        with db.session.no_autoflush:
+            bot, exc = _query_info(
+                db,
+                bot_execution_id=bot_execution_id,
+                pid=pid,
+            )
+            now_ = datetime.now(tz=ZoneInfo("America/Manaus"))
 
-        def iter_admins(
-            usrs_admins: list[Users],
-        ) -> Generator[Users, Any, None]:
-            yield from usrs_admins
+            def iter_admins(
+                usrs_admins: list[Users],
+            ) -> Generator[Users, Any, None]:
+                yield from usrs_admins
 
-        if license_token and user_id and not exc:
-            usr_, license_ = _query_user_license(
-                db=db,
-                user_id=user_id,
-                license_token=license_token,
+            if license_token and user_id and not exc:
+                usr_, license_ = _query_user_license(
+                    db=db,
+                    user_id=user_id,
+                    license_token=license_token,
+                )
+
+                exc = Executions()
+                exc.pid = pid
+                exc.status = status
+                exc.arquivo_xlsx = arquivo_xlsx
+                exc.file_output = "Aguardando Arquivo"
+                exc.bot_id = bot.id
+                exc.user_id = usr_.id
+                exc.data_execucao = now_
+                exc.data_finalizacao = now_
+                exc.license_id = license_.id
+
+                db.session.add(exc)
+
+                if all([exc, file_output, total_rows]):
+                    exc.data_finalizacao = now_
+                    exc.file_output = file_output
+
+            else:
+                usr_: Users = exc.user
+                license_: LicensesUsers = exc.license_usr
+
+            cc: list[str] = []
+            if not usr_.admin:
+                cc.extend([
+                    user_admin.email
+                    for user_admin in iter_admins(license_.admins)
+                ])
+
+            mail.send_email.apply_async(
+                kwargs={
+                    "bot_name": bot.display_name,
+                    "pid": pid,
+                    "nome_planilha": arquivo_xlsx,
+                    "user_name": usr_.nome_usuario,
+                    "email_target": usr_.email,
+                    "email_type": signal,
+                    "cc": cc,
+                },
             )
 
-            exc = Executions()
-            exc.pid = pid
-            exc.status = status
-            exc.arquivo_xlsx = arquivo_xlsx
-            exc.file_output = "Aguardando Arquivo"
-            exc.bot_id = bot.id
-            exc.user_id = usr_.id
-            exc.data_execucao = now_
-            exc.data_finalizacao = now_
-            exc.license_id = license_.id
-
-            db.session.add(exc)
-
-            if all([exc, file_output, total_rows]):
-                exc.data_finalizacao = now_
-                exc.file_output = file_output
-
-        else:
-            usr_: Users = exc.user
-            license_: LicensesUsers = exc.license_usr
-
-        cc = []
-        if not usr_.admins:
-            cc.extend([
-                user_admin.email for user_admin in iter_admins(license_.admins)
-            ])
-
-        mail.send_email.apply_async(
-            bot_name=bot.display_name,
-            pid=pid,
-            nome_planilha=arquivo_xlsx,
-            user_name=usr_.nome_usuario,
-            email_target=usr_.email,
-            email_type=signal,
-            cc=cc,
-        )
-
-        db.session.commit()
+            db.session.commit()

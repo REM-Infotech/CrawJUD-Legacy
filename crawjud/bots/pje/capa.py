@@ -72,6 +72,26 @@ class Capa(PjeBot):
                         cookies=self.cookies,
                     )
 
+                try:
+                    nome_planilha = f"Resultados Busca - {self.pid[:6]}.xlsx"
+                    path_planilha = self.output_dir_path.joinpath(
+                        nome_planilha,
+                    )
+                    xlsx = SavePjeXlsx(
+                        path_planilha=path_planilha,
+                        pid=self.pid,
+                    )
+                    xlsx.save()
+                    self.print_msg(
+                        "Resultados salvos com sucesso!",
+                        type_log="success",
+                    )
+                except (ExecutionError, Exception) as e:
+                    exc = "\n".join(traceback.format_exception(e))
+                    self.print_msg(
+                        f"Erro ao salvar na planilha, {exc}",
+                        type_log="info",
+                    )
                 continue
 
             self.print_msg(
@@ -83,11 +103,6 @@ class Capa(PjeBot):
             "Fim da execução! Salvando resultados na planilha...",
             type_log="info",
         )
-        nome_planilha = f"Resultados Busca - {self.pid[:6]}.xlsx"
-        path_planilha = self.output_dir_path.joinpath(nome_planilha)
-        xlsx = SavePjeXlsx(path_planilha=path_planilha, pid=self.pid)
-        xlsx.save()
-        self.print_msg("Resultados salvos com sucesso!", type_log="success")
 
     def queue_processo(
         self,

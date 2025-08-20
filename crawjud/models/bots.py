@@ -101,7 +101,7 @@ class Executions(db.Model):
     """
 
     __tablename__ = "executions"
-    pid: str = db.Column(db.String(length=12), nullable=False)
+    pid: str = db.Column(db.String(length=64), nullable=False)
     id: int = db.Column(db.Integer, primary_key=True)
     status: str = db.Column(db.String(length=45), nullable=False)
     file_output: str = db.Column(db.String(length=512))

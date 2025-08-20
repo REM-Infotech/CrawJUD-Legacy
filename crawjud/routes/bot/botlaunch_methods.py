@@ -159,7 +159,8 @@ class LoadForm:
             crawjud_app.send_task(
                 "crawjud.save_database",
                 kwargs={
-                    "bot_execution_id": task_id,
+                    "bot_execution_id": self.bot.id,
+                    "pid": task_id,
                     "arquivo_xlsx": form.pop("xlsx", "Sem Arquivo"),
                     "signal": "start",
                     "status": "Em Execução",
