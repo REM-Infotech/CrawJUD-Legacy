@@ -14,6 +14,9 @@ from crawjud.api import db
 if TYPE_CHECKING:
     from collections.abc import Buffer
 
+backref_exc = db.backref("executions", lazy=True)
+now_ = datetime.now(ZoneInfo("America/Manaus"))
+
 
 class BotsCrawJUD(db.Model):
     """Represents a CrawJUD bot entity.
@@ -104,33 +107,18 @@ class Executions(db.Model):
     file_output: str = db.Column(db.String(length=512))
     total_rows: str = db.Column(db.String(length=45))
     url_socket: str = db.Column(db.String(length=64))
-    data_execucao: datetime = db.Column(
-        db.DateTime,
-        default=datetime.now(ZoneInfo("America/Manaus")),
-    )
-    data_finalizacao: datetime = db.Column(
-        db.DateTime,
-        default=datetime.now(ZoneInfo("America/Manaus")),
-    )
+    data_execucao: datetime = db.Column(db.DateTime, default=now_)
+    data_finalizacao: datetime = db.Column(db.DateTime, default=now_)
     arquivo_xlsx: str = db.Column(db.String(length=64))
 
     bot_id: int = db.Column(db.Integer, db.ForeignKey("bots.id"))
-    bot = db.relationship(
-        BotsCrawJUD,
-        backref=db.backref("executions", lazy=True),
-    )
+    bot = db.relationship(BotsCrawJUD, backref=backref_exc)
 
     user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
-    user = db.relationship(
-        "Users",
-        backref=db.backref("executions", lazy=True),
-    )
+    user = db.relationship("Users", backref=backref_exc)
 
     license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
-    license_usr = db.relationship(
-        "LicensesUsers",
-        backref=db.backref("executions", lazy=True),
-    )
+    license_usr = db.relationship("LicensesUsers", backref=backref_exc)
 
 
 class ThreadBots(db.Model):

@@ -26,7 +26,7 @@ environment_ = Environment(
 )
 
 
-@shared_task("send_email")
+@shared_task(name="send_email")
 def send_email(
     bot_name: str,
     user_name: str,
