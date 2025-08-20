@@ -15,6 +15,7 @@ from quart import (
     jsonify,
     make_response,
     render_template,
+    request,
 )
 from quart import current_app as app
 from quart_jwt_extended import (
@@ -35,7 +36,7 @@ exe = Blueprint("exe", __name__)
 
 @exe.get("/executions")
 @jwt_required
-def executions() -> Response:
+async def executions() -> Response:
     """Display a list of executions filtered by search criteria.
 
     Returns:
@@ -43,6 +44,7 @@ def executions() -> Response:
 
     """
     try:
+        _data = await request.data
         current_user = get_jwt_identity()
 
         executions = db.session.query(Executions).all()
