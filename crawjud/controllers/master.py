@@ -9,6 +9,7 @@ from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 from threading import Lock, Thread
+from time import sleep
 from typing import Literal
 from zoneinfo import ZoneInfo
 
@@ -223,7 +224,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
 
         """
-
+        sleep(3)
         th_msg = Thread(
             target=print_in_thread,
             kwargs={
