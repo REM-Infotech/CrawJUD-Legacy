@@ -13,8 +13,8 @@ from typing import TYPE_CHECKING
 from dotenv import dotenv_values
 from flask_mail import Message
 from jinja2 import Environment, FileSystemLoader
+from quart import current_app as app
 
-from crawjud.api import create_app
 from crawjud.decorators import shared_task
 
 environ = dotenv_values()
@@ -40,8 +40,6 @@ async def send_email(
     cc: list[str] | None = None,
 ) -> None:
     """Envia um e-mail utilizando as configurações do servidor SMTP."""
-    app = await create_app()
-
     async with app.app_context():
         mail: Mail = app.extensions["mail"]
 
