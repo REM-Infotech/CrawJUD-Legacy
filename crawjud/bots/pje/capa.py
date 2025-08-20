@@ -117,6 +117,7 @@ class Capa(PjeBot):
             if len(self.tasks_queue_processos) == 5:
                 for th in self.tasks_queue_processos:
                     th.join()
+                    sleep(1)
 
                 self.tasks_queue_processos.clear()
 
