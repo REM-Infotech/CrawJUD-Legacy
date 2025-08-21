@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from crawjud.controllers.master import CrawJUD
+    from crawjud.interfaces.dict.bot import BotData
     from crawjud.interfaces.types.pje import DictSeparaRegiao
 
 
@@ -54,7 +55,7 @@ class RegioesIterator:
         """
         return self
 
-    def __next__(self) -> tuple[str, str]:
+    def __next__(self) -> tuple[str, list[BotData]]:
         """Implementa a iteração retornando próxima região e dados associados.
 
         Returns:

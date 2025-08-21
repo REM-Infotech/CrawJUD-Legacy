@@ -8,7 +8,7 @@ from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from threading import Lock
+from threading import Thread
 from time import sleep
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -23,7 +23,7 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
-from crawjud.utils.print_message import queue_msg
+from crawjud.utils.print_message import print_in_thread, queue_msg
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -34,25 +34,30 @@ func_dict_check = {
 
 work_dir = Path(__file__).cwd()
 
-locker = Lock()
-
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
 
-    def __init__(self) -> None:
+    def __init__(self, system: str) -> None:
         """Inicialize a instância principal do controller CrawJUD.
 
         Args:
-            self: Instância do objeto.
+            self: Self@CrawJUD[T@CrawJUD]: Instância do objeto.
+            system (str): sistema do robô
 
         """
-        self._driver = DriverBot(
-            selected_browser="chrome",
-            with_proxy=False,
-        )
+        if system != "pje":
+            self._driver = DriverBot(
+                selected_browser="chrome",
+                with_proxy=False,
+            )
 
-        self._wait = self._driver.wait
+            self._wait = self._driver.wait
+        Thread(
+            target=print_in_thread,
+            daemon=True,
+            name="Worker Print Message",
+        ).start()
 
     def load_data(self) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
@@ -228,7 +233,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         with suppress(Exception):
             queue_msg.put({
-                "locker": locker,
                 "start_time": self.start_time,
                 "message": message,
                 "total_rows": self.total_rows,

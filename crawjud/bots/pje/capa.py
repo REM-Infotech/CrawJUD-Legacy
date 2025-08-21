@@ -12,12 +12,13 @@ import secrets  # noqa: F401
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import suppress
+from queue import Queue
 from threading import Semaphore, Thread
 from time import sleep
-from typing import TYPE_CHECKING, ClassVar, TypedDict
+from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
-from httpx import Client, ReadError
+from httpx import Client
 from pandas import DataFrame, ExcelWriter
 from tqdm import tqdm
 
@@ -25,48 +26,24 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
+from crawjud.interfaces.pje import DictSalvarPlanilha
+from crawjud.interfaces.types.pje import DictResults
 from crawjud.resources.elements import pje as el
 from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
-    from datetime import datetime
+    from pathlib import Path
 
     from crawjud.interfaces.pje import ProcessoJudicialDict
     from crawjud.interfaces.types import BotData
-    from crawjud.interfaces.types.pje import (
-        DictResults,  # noqa: F401
-    )
+
 load_dotenv()
 
 
-class DictSalvarPlanilha(TypedDict):
-    """Defina o dicionário para salvar dados da planilha de processos PJE.
-
-    Args:
-        ID_PJE (int): Identificador único do processo no PJE.
-        LINK_CONSULTA (str): URL para consulta do processo.
-        NUMERO_PROCESSO (str): Número do processo judicial.
-        CLASSE (str): Classe judicial do processo.
-        SIGLA_CLASSE (str): Sigla da classe judicial.
-        DATA_DISTRIBUICAO (datetime): Data de distribuição do processo.
-        STATUS_PROCESSO (str): Status atual do processo.
-        SEGREDO_JUSTIÇA (str): Indica se o processo está em segredo de justiça.
-
-    Returns:
-        DictSalvarPlanilha: Dicionário tipado com os dados do processo.
-
-    """
-
-    ID_PJE: int
-    LINK_CONSULTA: str
-    NUMERO_PROCESSO: str
-    CLASSE: str
-    SIGLA_CLASSE: str
-    ORGAO_JULGADOR: str
-    SIGLA_ORGAO_JULGADOR: str
-    DATA_DISTRIBUICAO: datetime
-    STATUS_PROCESSO: str
-    SEGREDO_JUSTIÇA: str
+queue_files = Queue()
+queue_save_xlsx = Queue()
+semaforo_arquivo: Semaphore = Semaphore(10)
+semaforo_processo: Semaphore = Semaphore(10)
 
 
 @shared_task(name="pje.capa", bind=True, base=ContextTask)
@@ -80,8 +57,6 @@ class Capa(PjeBot):
 
     """
 
-    semaforo_arquivo: Semaphore = Semaphore(10)
-    semaforo_processo: Semaphore = Semaphore(10)
     threads_processos: ClassVar[list[Thread]] = []
     threads_download_file: ClassVar[list[Thread]] = []
 
@@ -99,29 +74,40 @@ class Capa(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        nome_planilha = f"Planilha Resultados - {self.pid}.xlsx"
-        self.path_planilha = self.output_dir_path.joinpath(nome_planilha)
-        with ExcelWriter(
-            path=self.path_planilha,
-            mode="w",
-            engine="openpyxl",
-        ) as writer:
-            DataFrame().to_excel(
-                excel_writer=writer,
-                sheet_name="Resultados",
-                index=False,
-            )
-
+        Thread(target=copia_integral, daemon=True).start()
+        Thread(
+            target=save_file,
+            kwargs={"output_dir_path": self.output_dir_path, "pid": self.pid},
+            daemon=True,
+        ).start()
         generator_regioes = self.regioes()
-        for regiao, data_regiao in generator_regioes:
-            with suppress(Exception):
-                self.print_msg(message=f"Autenticando no TRT {regiao}")
-                if self.auth():
-                    self.print_msg(
-                        message="Autenticado com sucesso!",
-                        type_log="info",
-                    )
-                    self.queue_processo(data=data_regiao)
+
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            futures = [
+                executor.submit(self.queue, regiao, data_regiao)
+                for regiao, data_regiao in generator_regioes
+            ]
+
+            for future in futures:
+                with suppress(Exception):
+                    future.result()
+
+    def queue(self, regiao: str, data_regiao: list[BotData]) -> None:
+        try:
+            self.print_msg(message=f"Autenticando no TRT {regiao}")
+            autenticar = self.auth()
+            if autenticar:
+                self.print_msg(
+                    message="Autenticado com sucesso!",
+                    type_log="info",
+                )
+                self.queue_processo(data=data_regiao)
+
+        except Exception as e:
+            self.print_msg(
+                message="\n".join(traceback.format_exception(e)),
+                type_log="info",
+            )
 
     def queue_processo(self, data: list[BotData]) -> str:
         """Enfileira processos para processamento e salva resultados.
@@ -142,7 +128,7 @@ class Capa(PjeBot):
 
         """
         client_context = Client(cookies=self.cookies, headers=self.headers)
-        pool_exe = ThreadPoolExecutor(max_workers=6)
+        pool_exe = ThreadPoolExecutor(max_workers=8)
         with client_context as client, pool_exe as executor:
             futures = [
                 executor.submit(self.thread_processo, item=item, client=client)
@@ -152,47 +138,47 @@ class Capa(PjeBot):
                 with suppress(Exception):
                     future.result()
 
-            self.save_results()
-
-            for th in self.threads_download_file:
-                with suppress(Exception):
-                    th.join()
+            with suppress(Exception):
+                queue_files.join()
 
     def thread_processo(self, item: BotData, client: Client) -> None:
-        with self.semaforo_processo:
-            try:
-                sleep(0.5)
-                processo = item["NUMERO_PROCESSO"]
-                row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
-                resultados = self.search(data=item, row=row, client=client)
-                self.formatar_resultado(result=resultados["data_request"])
+        try:
+            sleep(0.5)
+            processo = item["NUMERO_PROCESSO"]
+            row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
+            resultados: DictResults = self.search(
+                data=item,
+                row=row,
+                client=client,
+            )
 
-                if item.get("TRAZER_COPIA", "N").lower() == "s":
-                    file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
-                    thread_download_file = Thread(
-                        target=self.copia_integral,
-                        kwargs={
-                            "file_name": file_name,
-                            "row": row,
-                            "client": client,
-                            "processo": processo,
-                            "id_processo": resultados["id_processo"],
-                        },
-                    )
-                    sleep(0.5)
-                    thread_download_file.start()
-                    self.threads_download_file.append(thread_download_file)
+            if not isinstance(resultados, DictResults):
+                return
 
-                self.print_msg(
-                    message="Execução Efetuada com sucesso!",
-                    row=row,
-                    type_log="success",
-                )
+            self.formatar_resultado(result=resultados["data_request"])
 
+            if item.get("TRAZER_COPIA", "N").lower() == "s":
+                file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
+                queue_files.put({
+                    "self": self,
+                    "file_name": file_name,
+                    "row": row,
+                    "client": client,
+                    "processo": processo,
+                    "id_processo": resultados["id_processo"],
+                })
                 sleep(0.5)
 
-            except Exception as e:
-                tqdm.write("\n".join(traceback.format_exception(e)))
+            self.print_msg(
+                message="Execução Efetuada com sucesso!",
+                row=row,
+                type_log="success",
+            )
+
+            sleep(0.5)
+
+        except Exception as e:
+            tqdm.write("\n".join(traceback.format_exception(e)))
 
     def formatar_resultado(self, result: ProcessoJudicialDict) -> None:
         """Formata o resultado da busca para armazenar na planilha."""
@@ -212,59 +198,78 @@ class Capa(PjeBot):
             VALOR_CAUSA=result["valorDaCausa"],
         )
 
-        self.to_save.append(dict_salvar_planilha)
+        queue_save_xlsx.put({"to_save": [dict_salvar_planilha]})
 
-    def save_results(self) -> None:
-        xlsx_writer = ExcelWriter(
-            path=self.path_planilha,
-            mode="a",
-            engine="openpyxl",
-            if_sheet_exists="overlay",
+
+def save_file(output_dir_path: Path, pid: str) -> None:
+    """Salve resultados em planilha Excel e atualize conforme dados enfileirados.
+
+    Args:
+        output_dir_path (Path): Caminho do diretório de saída para salvar a planilha.
+        pid (str): Identificador do processo para nomear o arquivo Excel.
+
+    """
+    nome_planilha = f"Planilha Resultados - {pid}.xlsx"
+    path_planilha = output_dir_path.joinpath(nome_planilha)
+    with ExcelWriter(
+        path=path_planilha,
+        mode="w",
+        engine="openpyxl",
+    ) as writer:
+        DataFrame().to_excel(
+            excel_writer=writer,
+            sheet_name="Resultados",
+            index=False,
         )
 
-        with xlsx_writer as writer:
-            dataframe = DataFrame(self.to_save)
+    while True:
+        data = queue_save_xlsx.get()
 
-            # Remove timezone dos campos datetime para evitar erro do Excel
-            for col in dataframe.select_dtypes(include=["datetimetz"]).columns:
-                dataframe[col] = dataframe[col].dt.tz_localize(None)
+        if data:
+            try:
+                data = dict(data)
+                to_save: list[DictSalvarPlanilha] = data.get("to_save")
 
-            dataframe.to_excel(
-                excel_writer=writer,
-                sheet_name="Resultados",
-                index=False,
-            )
+                xlsx_writer = ExcelWriter(
+                    path=path_planilha,
+                    mode="a",
+                    engine="openpyxl",
+                    if_sheet_exists="overlay",
+                )
 
-        self.to_save.clear()
+                with xlsx_writer as writer:
+                    dataframe = DataFrame(to_save)
 
-    def copia_integral(
-        self,
-        file_name: str,
-        row: int,
-        processo: str,
-        client: Client,
-        id_processo: str,
-    ) -> None:
-        """Realiza o download da cópia integral do processo e salva no storage.
+                    # Remove timezone dos campos datetime para evitar erro do Excel
+                    for col in dataframe.select_dtypes(
+                        include=["datetimetz"],
+                    ).columns:
+                        dataframe[col] = dataframe[col].dt.tz_localize(None)
 
-        Args:
-            client (Client): httx client.
-            processo (str): processo.
-            row (int): current row.
-            pid: str: Identificador do processo.
-            url_base (str): URL base do serviço.
-            headers (dict[str, str]): Cabeçalhos HTTP.
-            cookies (dict[str, str]): Cookies de autenticação.
-            id_processo (str): Identificador do processo.
-            captchatoken (str): Token do captcha.
-            file_name (str): Nome do arquivo para salvar.
-            *args (T): Argumentos variáveis.
-            **kwargs (T): Argumentos nomeados variáveis.
+                    dataframe.to_excel(
+                        excel_writer=writer,
+                        sheet_name="Resultados",
+                        index=False,
+                    )
+
+            except Exception as e:
+                tqdm.write("\n".join(traceback.format_exception(e)))
 
 
+def copia_integral() -> None:
+    """Realiza o download da cópia integral do processo e salva no storage."""
+    while True:
+        data = queue_files.get()
 
-        """
-        with self.semaforo_arquivo:
+        if data:
+            data = dict(data)
+            sel: Capa = data.get("self")
+            file_name: str = data.get("file_name")
+            row: int = data.get("row")
+            processo: str = data.get("processo")
+            client: Client = data.get("client")
+            id_processo: str = data.get("id_processo")
+
             try:
                 sleep(0.50)
                 headers = client.headers
@@ -277,40 +282,31 @@ class Capa(PjeBot):
                 )
                 sleep(0.50)
                 link = el.LINK_DOWNLOAD_INTEGRA.format(
-                    trt_id=self.regiao,
+                    trt_id=sel.regiao,
                     id_processo=id_processo,
                 )
                 message = f"Baixando arquivo do processo n.{processo}"
                 sleep(0.50)
-                self.print_msg(
+                sel.print_msg(
                     message=message,
                     row=row,
                     type_log="log",
                 )
 
-                def call_stream() -> None:
-                    with client.stream("get", url=link) as response:
-                        self.save_file_downloaded(
-                            file_name=file_name,
-                            response_data=response,
-                            processo=processo,
-                            row=row,
-                        )
-
-                sleep(0.50)
-                try:
-                    call_stream()
-
-                except ReadError:
-                    call_stream()
+                with client.stream("get", url=link) as response:
+                    sel.save_file_downloaded(
+                        file_name=file_name,
+                        response_data=response,
+                        processo=processo,
+                        row=row,
+                    )
 
             except ExecutionError as e:
-                self.print_msg(
+                sel.print_msg(
                     message="\n".join(traceback.format_exception(e)),
-                    row=self.row,
+                    row=sel.row,
                     type_log="info",
                 )
 
                 msg = "Erro ao baixar arquivo"
-
-                self.print_msg(message=msg, row=row, type_log="info")
+                sel.print_msg(message=msg, row=row, type_log="info")

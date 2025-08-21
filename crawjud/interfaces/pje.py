@@ -9,7 +9,40 @@ e processos JT, conforme o padrão de integração do sistema PJe.
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+
+class DictSalvarPlanilha(TypedDict):
+    """Defina o dicionário para salvar dados da planilha de processos PJE.
+
+    Args:
+        ID_PJE (int): Identificador único do processo no PJE.
+        LINK_CONSULTA (str): URL para consulta do processo.
+        NUMERO_PROCESSO (str): Número do processo judicial.
+        CLASSE (str): Classe judicial do processo.
+        SIGLA_CLASSE (str): Sigla da classe judicial.
+        DATA_DISTRIBUICAO (datetime): Data de distribuição do processo.
+        STATUS_PROCESSO (str): Status atual do processo.
+        SEGREDO_JUSTIÇA (str): Indica se o processo está em segredo de justiça.
+
+    Returns:
+        DictSalvarPlanilha: Dicionário tipado com os dados do processo.
+
+    """
+
+    ID_PJE: int
+    LINK_CONSULTA: str
+    NUMERO_PROCESSO: str
+    CLASSE: str
+    SIGLA_CLASSE: str
+    ORGAO_JULGADOR: str
+    SIGLA_ORGAO_JULGADOR: str
+    DATA_DISTRIBUICAO: datetime
+    STATUS_PROCESSO: str
+    SEGREDO_JUSTIÇA: str
 
 
 class ClasseJudicialDict(TypedDict):

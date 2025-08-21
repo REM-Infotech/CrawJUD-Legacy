@@ -8,24 +8,17 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 from queue import Queue
-from threading import Thread
 from time import sleep
 from zoneinfo import ZoneInfo
 
-from dotenv import dotenv_values
 from socketio import Client
 from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.utils.models.logs import MessageLogDict
 
-environ = dotenv_values()
 work_dir = Path(__file__).cwd()
-server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
-namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
 
-transports = ["websocket"]
-headers = {"Content-Type": "application/json"}
 
 queue_msg = Queue()
 
@@ -44,12 +37,26 @@ def print_in_thread() -> None:
         pid (str | None): Identificador do processo.
 
     """
-    sio = Client()
-    sio.connect(
-        url=server,
-        namespaces=[namespace],
-        transports=transports,
-    )
+    from dotenv import dotenv_values
+
+    environ = dotenv_values()
+    transports = ["websocket"]
+    headers = {"Content-Type": "application/json"}
+
+    server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
+    namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
+    try:
+        sio = Client()
+        sio.connect(
+            url=server,
+            namespaces=[namespace],
+            transports=transports,
+            headers=headers,
+        )
+    except Exception as e:
+        tqdm.write("\n".join(traceback.format_exception(e)))
+        return
+
     while True:
         data = queue_msg.get()
 
@@ -57,12 +64,12 @@ def print_in_thread() -> None:
             data = dict(data)
 
             start_time: str = data.get("start_time")
-            message: str = data.get("start_time")
-            total_rows: int = data.get("start_time")
-            row: int = data.get("start_time")
-            errors: int = data.get("start_time")
-            type_log: str = data.get("start_time")
-            pid: str | None = data.get("start_time")
+            message: str = data.get("message")
+            total_rows: int = data.get("total_rows")
+            row: int = data.get("row")
+            errors: int = data.get("errors")
+            type_log: str = data.get("type_log")
+            pid: str | None = data.get("pid")
             sleep(5)
 
             try:
@@ -121,8 +128,6 @@ def print_in_thread() -> None:
             except Exception as e:
                 tqdm.write("\n".join(traceback.format_exception(e)))
 
-
-Thread(target=print_in_thread, daemon=True).start()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

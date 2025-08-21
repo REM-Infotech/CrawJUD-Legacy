@@ -71,6 +71,7 @@ class PjeBot[T](CrawJUD):
         **kwargs: T,
     ) -> None:
         """Instancia a classe."""
+        super().__init__(system="pje")
         start_time: datetime = formata_tempo(str(current_task.request.eta))
 
         self.folder_storage = storage_folder_name

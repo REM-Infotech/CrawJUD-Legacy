@@ -29,6 +29,7 @@ from inquirer.themes import GreenPassion
 from tqdm import tqdm
 
 from crawjud.custom import AsyncCelery as Celery
+from crawjud.utils import kill_browsermob, kill_chromedriver
 from crawjud.utils.load_config import Config
 from crawjud.utils.logger import dict_config
 
@@ -210,6 +211,8 @@ def stop_service(proc: Process) -> bool:
     """
     proc.terminate()
     proc.join()
+    kill_browsermob()
+    kill_chromedriver()
     # Retorna True se o processo foi parado com sucesso, False caso contrário.
     return proc.is_alive()
 
