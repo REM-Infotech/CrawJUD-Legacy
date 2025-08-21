@@ -141,7 +141,7 @@ class LogsNamespace[T](Namespace):
             )
 
             message["success"] = count_success
-            message["errors"] = count_error
+            message["error"] = count_error
 
         return message
 
