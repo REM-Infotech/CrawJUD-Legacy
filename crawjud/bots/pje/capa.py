@@ -101,13 +101,13 @@ class Capa(PjeBot):
     def queue(self, regiao: str, data_regiao: list[BotData]) -> None:
         try:
             self.print_msg(message=f"Autenticando no TRT {regiao}")
-            autenticar = self.auth()
+            autenticar = self.auth(regiao=regiao)
             if autenticar:
                 self.print_msg(
                     message="Autenticado com sucesso!",
                     type_log="info",
                 )
-                self.queue_processo(data=data_regiao)
+                self.queue_processo(data=data_regiao, regiao=regiao)
 
         except Exception as e:
             self.print_msg(
@@ -115,18 +115,12 @@ class Capa(PjeBot):
                 type_log="info",
             )
 
-    def queue_processo(self, data: list[BotData]) -> str:
+    def queue_processo(self, data: list[BotData], regiao: str) -> str:
         """Enfileira processos para processamento e salva resultados.
 
         Args:
-            cookies (dict[str, str]): Cookies de autenticação.
-            headers (dict[str, str]): Cabeçalhos HTTP.
-            base_url (str): URL base do serviço.
+            regiao (str): regiao
             data (list[BotData]): Lista de dados dos processos.
-            pid (str): Identificador do processo.
-            start_time (str): Horário de início do processamento.
-            position_process (dict[str, int]): Posições dos processos.
-            total_rows (int): Total de linhas a processar.
             *args (T): Argumentos variáveis.
             **kwargs (T): Argumentos nomeados variáveis.
 
@@ -137,7 +131,12 @@ class Capa(PjeBot):
         pool_exe = ThreadPoolExecutor(max_workers=8)
         with client_context as client, pool_exe as executor:
             futures = [
-                executor.submit(self.thread_processo, item=item, client=client)
+                executor.submit(
+                    self.thread_processo,
+                    item=item,
+                    client=client,
+                    regiao=regiao,
+                )
                 for item in data
             ]
             for future in as_completed(futures):
@@ -147,7 +146,12 @@ class Capa(PjeBot):
             with suppress(Exception):
                 queue_files.join()
 
-    def thread_processo(self, item: BotData, client: Client) -> None:
+    def thread_processo(
+        self,
+        item: BotData,
+        client: Client,
+        regiao: str,
+    ) -> None:
         try:
             sleep(0.5)
             processo = item["NUMERO_PROCESSO"]
@@ -156,6 +160,7 @@ class Capa(PjeBot):
                 data=item,
                 row=row,
                 client=client,
+                regiao=regiao,
             )
 
             if not isinstance(resultados, dict):
@@ -163,9 +168,14 @@ class Capa(PjeBot):
                     message=str(resultados),
                     type_log="error",
                 )
+                sleep(0.5)
                 return
 
-            self.formatar_resultado(result=resultados["data_request"])
+            sleep(0.5)
+            self.formatar_resultado(
+                result=resultados["data_request"],
+                regiao=regiao,
+            )
 
             if item.get("TRAZER_COPIA", "N").lower() == "s":
                 file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
@@ -190,9 +200,13 @@ class Capa(PjeBot):
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
 
-    def formatar_resultado(self, result: ProcessoJudicialDict) -> None:
+    def formatar_resultado(
+        self,
+        result: ProcessoJudicialDict,
+        regiao: str,
+    ) -> None:
         """Formata o resultado da busca para armazenar na planilha."""
-        link_consulta = f"https://pje.trt{self.regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
+        link_consulta = f"https://pje.trt{regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
 
         dict_salvar_planilha = DictSalvarPlanilha(
             ID_PJE=result["id"],

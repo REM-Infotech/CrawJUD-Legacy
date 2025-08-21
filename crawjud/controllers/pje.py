@@ -84,6 +84,7 @@ class PjeBot[T](CrawJUD):
         data: BotData,
         row: int,
         client: Client,
+        regiao: str,
     ) -> DictResults | Literal["Nenhum processo encontrado"]:
         """Realize a busca de um processo no sistema PJe.
 
@@ -91,6 +92,7 @@ class PjeBot[T](CrawJUD):
             data (BotData): Dados do processo a serem consultados.
             row (int): Índice da linha do processo na planilha de entrada.
             client (Client): Instância do cliente HTTP para requisições ao sistema PJe.
+            regiao (str):regiao
 
         Returns:
             DictResults | Literal["Nenhum processo encontrado"]: Resultado da busca do
@@ -99,7 +101,7 @@ class PjeBot[T](CrawJUD):
         """
         # Envia mensagem de log para task assíncrona
         id_processo: str
-        trt_id = self.regiao
+        trt_id = regiao
         numero_processo = data["NUMERO_PROCESSO"]
         message = f"Buscando processo {numero_processo}"
         self.print_msg(
@@ -141,7 +143,7 @@ class PjeBot[T](CrawJUD):
             data_request=result.json(),
         )
 
-    def auth(self) -> bool:
+    def auth(self, regiao: str) -> bool:
         try:
             driver = DriverBot(
                 selected_browser="chrome",
@@ -149,8 +151,11 @@ class PjeBot[T](CrawJUD):
             )
 
             wait = driver.wait
-            url_login = self.formata_url_pje(_format="login")
-            url_valida_sessao = self.formata_url_pje(_format="validate_login")
+            url_login = self.formata_url_pje(_format="login", regiao=regiao)
+            url_valida_sessao = self.formata_url_pje(
+                _format="validate_login",
+                regiao=regiao,
+            )
 
             driver.get(url_login)
             btn_sso = wait.until(
@@ -195,7 +200,7 @@ class PjeBot[T](CrawJUD):
             entry_proxy = [
                 item
                 for item in entries
-                if f"https://pje.trt{self.regiao}.jus.br/pje-comum-api/"
+                if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
                 in item.request.url
             ][-1]
 
@@ -501,6 +506,7 @@ class PjeBot[T](CrawJUD):
 
     def formata_url_pje(
         self,
+        regiao: str,
         _format: str = "login",
     ) -> str:
         """Formata a URL no padrão esperado pelo PJe.
@@ -510,9 +516,9 @@ class PjeBot[T](CrawJUD):
 
         """
         formats = {
-            "login": f"https://pje.trt{self.regiao}.jus.br/primeirograu/login.seam",
-            "validate_login": f"https://pje.trt{self.regiao}.jus.br/pjekz/",
-            "search": f"https://pje.trt{self.regiao}.jus.br/consultaprocessual/",
+            "login": f"https://pje.trt{regiao}.jus.br/primeirograu/login.seam",
+            "validate_login": f"https://pje.trt{regiao}.jus.br/pjekz/",
+            "search": f"https://pje.trt{regiao}.jus.br/consultaprocessual/",
         }
 
         return formats[_format]
