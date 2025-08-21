@@ -55,7 +55,9 @@ class AbstractCrawJUD[T]:
     _headers: dict[str, str] | None = None
     _base_url: str | None = None
     _frame: ClassVar[list[BotData]] = []
-
+    _success: ClassVar[int] = 0
+    _errors: ClassVar[int] = 0
+    _remaining: ClassVar[int] = 0
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
 
@@ -156,3 +158,21 @@ class AbstractCrawJUD[T]:
 
     def auth(self, *args: T, **kwargs: T) -> T:
         return NotImplementedError("Necessário implementar função!")
+
+    @property
+    def success(self) -> int:
+        self._success += 1
+        return self._success
+
+    @property
+    def errors(self) -> int:
+        self._errors += 1
+        return self._errors
+
+    @property
+    def remaining(self) -> int:
+        if self._remaining == 0:
+            self._remaining = self.total_rows + 1
+
+        self._remaining -= 1
+        return self._remaining - 1

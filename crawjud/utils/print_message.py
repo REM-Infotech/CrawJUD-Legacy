@@ -67,7 +67,8 @@ def print_in_thread() -> None:
             message: str = data.get("message")
             total_rows: int = data.get("total_rows")
             row: int = data.get("row")
-            errors: int = data.get("errors")
+            error: int = data.get("error")
+            success: int = data.get("success")
             type_log: str = data.get("type_log")
             pid: str | None = data.get("pid")
             sleep(5)
@@ -96,8 +97,8 @@ def print_in_thread() -> None:
                         type=type_log,
                         status="Em Execução",
                         total=int(total_rows),
-                        success=0,
-                        errors=errors,
+                        success=success,
+                        error=error,
                         remaining=int(total_rows),
                         start_time=start_time,
                     ),

@@ -131,20 +131,6 @@ class LogsNamespace[T](Namespace):
 
         """
         # Inicializa os contadores se não existirem
-
-        if log:
-            count_success = len(
-                list(filter(lambda x: x["type"] == "success", log.messages)),
-            )
-            count_error = len(
-                list(filter(lambda x: x["type"] == "error", log.messages)),
-            )
-            remaining = count_success + count_error
-
-            message["success"] = count_success
-            message["errors"] = count_error
-            message["remaining"] = remaining
-
         return message
 
     async def log_redis(
@@ -171,7 +157,7 @@ class LogsNamespace[T](Namespace):
                 status="Em Execução",
                 row=0,
                 total=0,
-                errors=0,
+                error=0,
                 success=0,
                 remaining=0,
                 type="info",

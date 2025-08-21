@@ -231,16 +231,26 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         """
         sleep(3)
 
+        keyword_args: dict[str, str | int] = {
+            "start_time": self.start_time,
+            "message": message,
+            "total_rows": self.total_rows,
+            "row": row,
+            "type_log": type_log,
+            "pid": self.pid,
+        }
+
+        if any([type_log == "success", type_log == "error"]):
+            keyword_args.update({"remaining": self.remaining})
+
+        if type_log == "success":
+            keyword_args.update({"success": self.success})
+
+        elif type_log == "error":
+            keyword_args.update({"error": self.error})
+
         with suppress(Exception):
-            queue_msg.put({
-                "start_time": self.start_time,
-                "message": message,
-                "total_rows": self.total_rows,
-                "row": row,
-                "errors": 0,
-                "type_log": type_log,
-                "pid": self.pid,
-            })
+            queue_msg.put(keyword_args)
 
     def append_success(
         self,

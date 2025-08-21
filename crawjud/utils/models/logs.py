@@ -112,7 +112,7 @@ class MessageLogDict(TypedDict):
         total (int):
             Total number of rows to be processed (e.g., 100).
 
-        errors (int):
+        error (int):
             Number of errors encountered (e.g., 2).
 
         success (int):
@@ -132,7 +132,7 @@ class MessageLogDict(TypedDict):
     start_time: str
     row: int
     total: int
-    errors: int
+    error: int
     success: int
     remaining: int
 
@@ -166,7 +166,7 @@ class MessageLog(JsonModel):
         total (int):
             Total number of rows to be processed (e.g., 100).
 
-        errors (int):
+        error (int):
             Number of errors encountered (e.g., 2).
 
         success (int):
@@ -204,15 +204,24 @@ class MessageLog(JsonModel):
         default="00/00/0000 - 00:00:00",
         description="e.g. '01/01/2023 - 19:37:15' (data/hora de início)",
     )
-    row: int = Field(description="e.g. 15 (linha atual sendo processada)")
+    row: int = Field(
+        default=0,
+        description="e.g. 15 (linha atual sendo processada)",
+    )
     total: int = Field(
+        default=0,
         description="e.g. 100 (total de linhas a serem processadas)",
     )
-    errors: int = Field(description="e.g. 2 (quantidade de erros encontrados)")
+    error: int = Field(
+        default=0,
+        description="e.g. 2 (quantidade de erros encontrados)",
+    )
     success: int = Field(
+        default=0,
         description="e.g. 98 (quantidade de operações bem-sucedidas)",
     )
     remaining: int = Field(
+        default=0,
         description="e.g. 85 (linhas restantes para processar)",
     )
 
