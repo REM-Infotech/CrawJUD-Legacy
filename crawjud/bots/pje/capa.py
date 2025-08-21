@@ -186,6 +186,7 @@ class Capa(PjeBot):
                     "client": client,
                     "processo": processo,
                     "id_processo": resultados["id_processo"],
+                    "regiao": regiao,
                 })
                 sleep(0.5)
 
@@ -287,12 +288,13 @@ def copia_integral() -> None:
 
         if data:
             data = dict(data)
-            sel: Capa = data.get("self")
+            self: Capa = data.get("self")
             file_name: str = data.get("file_name")
             row: int = data.get("row")
             processo: str = data.get("processo")
             client: Client = data.get("client")
             id_processo: str = data.get("id_processo")
+            regiao: str = data.get("regiao")
 
             try:
                 sleep(0.50)
@@ -306,19 +308,19 @@ def copia_integral() -> None:
                 )
                 sleep(0.50)
                 link = el.LINK_DOWNLOAD_INTEGRA.format(
-                    trt_id=sel.regiao,
+                    trt_id=regiao,
                     id_processo=id_processo,
                 )
                 message = f"Baixando arquivo do processo n.{processo}"
                 sleep(0.50)
-                sel.print_msg(
+                self.print_msg(
                     message=message,
                     row=row,
                     type_log="log",
                 )
 
                 with client.stream("get", url=link) as response:
-                    sel.save_file_downloaded(
+                    self.save_file_downloaded(
                         file_name=file_name,
                         response_data=response,
                         processo=processo,
@@ -326,11 +328,11 @@ def copia_integral() -> None:
                     )
 
             except ExecutionError as e:
-                sel.print_msg(
+                self.print_msg(
                     message="\n".join(traceback.format_exception(e)),
-                    row=sel.row,
+                    row=row,
                     type_log="info",
                 )
 
                 msg = "Erro ao baixar arquivo"
-                sel.print_msg(message=msg, row=row, type_log="info")
+                self.print_msg(message=msg, row=row, type_log="info")
