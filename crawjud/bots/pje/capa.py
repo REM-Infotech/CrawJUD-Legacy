@@ -10,8 +10,9 @@ from __future__ import annotations
 
 import secrets  # noqa: F401
 import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import suppress
-from threading import Lock, Semaphore, Thread
+from threading import Semaphore, Thread
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, TypedDict
 
@@ -79,7 +80,6 @@ class Capa(PjeBot):
 
     """
 
-    locker: Lock = Lock()
     semaforo_arquivo: Semaphore = Semaphore(5)
     semaforo_processo: Semaphore = Semaphore(5)
     threads_processos: ClassVar[list[Thread]] = []
@@ -142,16 +142,15 @@ class Capa(PjeBot):
 
         """
         client_context = Client(cookies=self.cookies, headers=self.headers)
-
-        with client_context as client:
-            for item in data:
-                self.thread_processo(item=item, client=client)
-
-            self.save_results()
-
-            for th in self.threads_processos:
+        pool_exe = ThreadPoolExecutor(max_workers=6)
+        with client_context as client, pool_exe as executor:
+            futures = [
+                executor.submit(self.thread_processo, item=item, client=client)
+                for item in data
+            ]
+            for future in as_completed(futures):
                 with suppress(Exception):
-                    th.join()
+                    future.result()
 
             self.save_results()
 
@@ -223,7 +222,7 @@ class Capa(PjeBot):
             if_sheet_exists="overlay",
         )
 
-        with self.locker, xlsx_writer as writer:
+        with xlsx_writer as writer:
             dataframe = DataFrame(self.to_save)
 
             # Remove timezone dos campos datetime para evitar erro do Excel
