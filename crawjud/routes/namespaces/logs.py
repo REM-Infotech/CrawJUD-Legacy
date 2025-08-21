@@ -90,10 +90,8 @@ class LogsNamespace[T](Namespace):
         """
         # Obtém os dados do formulário e carrega o log do Redis
         data_ = dict(list((await request.form).items()))
-        message = await self.log_redis(pid=data_["pid"])
 
-        log = MessageLog.query_logs(data_["pid"])
-        message = await self._calc_success_errors(message=message, log=log)
+        message = await self._calc_success_errors(pid=data_["pid"])
 
         return message, True
 
@@ -118,23 +116,21 @@ class LogsNamespace[T](Namespace):
 
     async def _calc_success_errors(
         self,
-        message: MessageLogDict,
-        log: MessageLog = None,
+        pid: str,
     ) -> MessageLogDict:
         """Calcula e atualiza os valores de sucesso, erro e restante no log.
 
         Args:
-            self: Instância do objeto.
-            message (MessageLogDict): Mensagem de log.
-            log (MessageLog, opcional): Log de execução.
-            message (MessageLogDict): Dicionário com informações do log.
-            log
+            pid: str
 
         Returns:
             MessageLogDict: Dicionário atualizado com contadores de sucesso e erro.
 
         """
         # Inicializa os contadores se não existirem
+        log = MessageLog.query_logs(pid)
+        message = log.model_dump()
+        message["message"] = "CARREGANDO"
 
         if log:
             count_success = len(
