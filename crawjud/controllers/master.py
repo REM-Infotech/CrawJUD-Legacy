@@ -8,7 +8,7 @@ from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from threading import Lock, Thread
+from threading import Lock
 from time import sleep
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -23,7 +23,7 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
-from crawjud.utils.print_message import print_in_thread
+from crawjud.utils.print_message import queue_msg
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -225,9 +225,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         """
         sleep(3)
-        th_msg = Thread(
-            target=print_in_thread,
-            kwargs={
+
+        with suppress(Exception):
+            queue_msg.put({
                 "locker": locker,
                 "start_time": self.start_time,
                 "message": message,
@@ -236,10 +236,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 "errors": 0,
                 "type_log": type_log,
                 "pid": self.pid,
-            },
-        )
-
-        th_msg.start()
+            })
 
     def append_success(
         self,
