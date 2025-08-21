@@ -79,7 +79,7 @@ class Capa(PjeBot):
 
     """
 
-    tasks_queue_processos: ClassVar[list[Thread]] = []
+    threads_processos: ClassVar[list[Thread]] = []
     threads_download_file: ClassVar[list[Thread]] = []
 
     def execution(self) -> None:
@@ -127,32 +127,60 @@ class Capa(PjeBot):
 
         with client_context as client:
             for item in data:
-                sleep(3)
-                processo = item["NUMERO_PROCESSO"]
-                row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
-                resultados = self.search(data=item, row=row, client=client)
-                self.formatar_resultado(result=resultados["data_request"])
+                if len(self.threads_processos) == 5:
+                    for th in self.threads_processos:
+                        with suppress(Exception):
+                            th.join()
+                            sleep(0.25)
 
-                if item.get("TRAZER_COPIA", "N").lower() == "s":
-                    file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
-                    thread_download_file = Thread(
-                        target=self.copia_integral,
-                        kwargs={
-                            "file_name": file_name,
-                            "row": row,
-                            "client": client,
-                            "id_processo": resultados["id_processo"],
-                        },
-                    )
+                    self.threads_processos.clear()
 
-                    thread_download_file.start()
-                    self.threads_download_file.append(thread_download_file)
-
-                sleep(3)
+                th_processo = Thread(
+                    target=self.thread_processo,
+                    kwargs={"item": item, client: client},
+                )
+                th_processo.start()
+                self.threads_processos.append(th_processo)
+                sleep(0.5)
 
             for th in self.threads_download_file:
                 with suppress(Exception):
                     th.join()
+
+    def thread_processo(self, item: BotData, client: Client) -> None:
+        try:
+            sleep(0.55)
+            processo = item["NUMERO_PROCESSO"]
+            row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
+            resultados = self.search(data=item, row=row, client=client)
+            self.formatar_resultado(result=resultados["data_request"])
+
+            if item.get("TRAZER_COPIA", "N").lower() == "s":
+                file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
+                thread_download_file = Thread(
+                    target=self.copia_integral,
+                    kwargs={
+                        "file_name": file_name,
+                        "row": row,
+                        "client": client,
+                        "processo": processo,
+                        "id_processo": resultados["id_processo"],
+                    },
+                )
+                sleep(0.55)
+                thread_download_file.start()
+                self.threads_download_file.append(thread_download_file)
+
+            self.print_msg(
+                message="Execução Efetuada com sucesso!",
+                row=row,
+                type_log="success",
+            )
+
+            sleep(0.55)
+
+        except Exception as e:
+            tqdm.write("\n".join(traceback.format_exception(e)))
 
     def formatar_resultado(self, result: ProcessoJudicialDict) -> None:
         """Formata o resultado da busca para armazenar na planilha."""
@@ -176,14 +204,25 @@ class Capa(PjeBot):
 
         nome_planilha = f"Planilha Resultados - {self.pid}.xlsx"
         path_planilha = self.output_dir_path.joinpath(nome_planilha)
+
+        mode = "a" if path_planilha.exists() else "w"
+
         with ExcelWriter(
             path=path_planilha,
-            mode="w",
+            mode=mode,
             engine="openpyxl",
+            if_sheet_exists="overlay",
         ) as writer:
-            dataframe = DataFrame(dict_salvar_planilha)
+            dataframe = DataFrame([dict_salvar_planilha])
 
-            max_row = writer.book["Resultados"].max_row
+            # Remove timezone dos campos datetime para evitar erro do Excel
+            for col in dataframe.select_dtypes(include=["datetimetz"]).columns:
+                dataframe[col] = dataframe[col].dt.tz_localize(None)
+
+            max_row = 0
+            with suppress(KeyError):
+                max_row = writer.book["Resultados"].max_row
+
             if max_row > 0:
                 max_row += 1
 
@@ -191,6 +230,7 @@ class Capa(PjeBot):
                 excel_writer=writer,
                 sheet_name="Resultados",
                 startrow=max_row,
+                index=False,
             )
 
     def copia_integral(
