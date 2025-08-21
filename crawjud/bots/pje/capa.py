@@ -147,6 +147,8 @@ class Capa(PjeBot):
             for item in data:
                 self.thread_processo(item=item, client=client)
 
+            self.save_results()
+
             for th in self.threads_processos:
                 with suppress(Exception):
                     th.join()
