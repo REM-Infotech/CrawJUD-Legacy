@@ -171,8 +171,8 @@ class AbstractCrawJUD[T]:
 
     @property
     def remaining(self) -> int:
-        if self._remaining == 0:
-            self._remaining = self.total_rows + 1
+        return self._remaining
 
-        self._remaining -= 1
-        return self._remaining - 1
+    @remaining.setter
+    def remaining(self, remaining: int) -> None:
+        self._remaining = remaining

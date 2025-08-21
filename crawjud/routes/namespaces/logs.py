@@ -91,6 +91,10 @@ class LogsNamespace[T](Namespace):
         # Obtém os dados do formulário e carrega o log do Redis
         data_ = dict(list((await request.form).items()))
         message = await self.log_redis(pid=data_["pid"])
+
+        log = MessageLog.query_logs(data_["pid"])
+        message = await self._calc_success_errors(message=message, log=log)
+
         return message, True
 
     async def on_log_execution(self) -> None:
@@ -131,6 +135,18 @@ class LogsNamespace[T](Namespace):
 
         """
         # Inicializa os contadores se não existirem
+
+        if log:
+            count_success = len(
+                list(filter(lambda x: x["type"] == "success", log.messages)),
+            )
+            count_error = len(
+                list(filter(lambda x: x["type"] == "error", log.messages)),
+            )
+
+            message["success"] = count_success
+            message["errors"] = count_error
+
         return message
 
     async def log_redis(
@@ -157,7 +173,7 @@ class LogsNamespace[T](Namespace):
                 status="Em Execução",
                 row=0,
                 total=0,
-                error=0,
+                errors=0,
                 success=0,
                 remaining=0,
                 type="info",
@@ -168,7 +184,7 @@ class LogsNamespace[T](Namespace):
         msg = message_.pop("message", "Mensagem não informada")
 
         # Atualiza os contadores de sucesso e erro
-        updated_msg = await self._calc_success_errors(message_, log)
+        updated_msg = message_
         type_log = updated_msg.pop("type", "info")
         if not log:
             # Cria novo log se não existir

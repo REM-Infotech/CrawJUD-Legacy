@@ -238,16 +238,30 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             "row": row,
             "type_log": type_log,
             "pid": self.pid,
+            "success": 0,
+            "error": 0,
+            "remaining": 0,
         }
 
-        if any([type_log == "success", type_log == "error"]):
+        if all(
+            [
+                row > 0,
+                self.remaining == 0,
+                "fim da execução" not in message,
+            ],
+        ):
+            self.remaining = self.total_rows
             keyword_args.update({"remaining": self.remaining})
 
-        if type_log == "success":
-            keyword_args.update({"success": self.success})
+        if any([type_log == "success", type_log == "error"]):
+            self.remaining = self.remaining - 1
+            keyword_args.update({"remaining": self.remaining})
 
-        elif type_log == "error":
-            keyword_args.update({"error": self.error})
+            if type_log == "success":
+                keyword_args.update({"success": self.success})
+
+            elif type_log == "error":
+                keyword_args.update({"error": self.error})
 
         with suppress(Exception):
             queue_msg.put(keyword_args)
