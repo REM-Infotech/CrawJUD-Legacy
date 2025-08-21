@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import secrets  # noqa: F401
 import traceback
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from contextlib import suppress
 from queue import Queue
 from threading import Semaphore, Thread
@@ -27,7 +27,6 @@ from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
 from crawjud.interfaces.pje import DictSalvarPlanilha
-from crawjud.interfaces.types.pje import DictResults
 from crawjud.resources.elements import pje as el
 from crawjud.utils.formatadores import formata_tempo
 
@@ -36,6 +35,7 @@ if TYPE_CHECKING:
 
     from crawjud.interfaces.pje import ProcessoJudicialDict
     from crawjud.interfaces.types import BotData
+    from crawjud.interfaces.types.pje import DictResults
 
 load_dotenv()
 
@@ -82,11 +82,17 @@ class Capa(PjeBot):
         ).start()
         generator_regioes = self.regioes()
 
+        futures: list[Future] = []
+
         with ThreadPoolExecutor(max_workers=1) as executor:
-            futures = [
-                executor.submit(self.queue, regiao, data_regiao)
-                for regiao, data_regiao in generator_regioes
-            ]
+            for regiao, data_regiao in generator_regioes:
+                futures.append([
+                    executor.submit(
+                        self.queue,
+                        regiao=regiao,
+                        data_regiao=data_regiao,
+                    ),
+                ])
 
             for future in futures:
                 with suppress(Exception):
@@ -152,7 +158,11 @@ class Capa(PjeBot):
                 client=client,
             )
 
-            if not isinstance(resultados, DictResults):
+            if not isinstance(resultados, dict):
+                self.print_msg(
+                    message=str(resultados),
+                    type_log="error",
+                )
                 return
 
             self.formatar_resultado(result=resultados["data_request"])
