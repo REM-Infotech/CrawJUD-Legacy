@@ -80,8 +80,8 @@ class Capa(PjeBot):
 
     """
 
-    semaforo_arquivo: Semaphore = Semaphore(5)
-    semaforo_processo: Semaphore = Semaphore(5)
+    semaforo_arquivo: Semaphore = Semaphore(10)
+    semaforo_processo: Semaphore = Semaphore(10)
     threads_processos: ClassVar[list[Thread]] = []
     threads_download_file: ClassVar[list[Thread]] = []
 
