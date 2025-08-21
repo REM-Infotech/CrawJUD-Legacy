@@ -145,15 +145,7 @@ class Capa(PjeBot):
 
         with client_context as client:
             for item in data:
-                sleep(0.5)
-                th_processo = Thread(
-                    target=self.thread_processo,
-                    kwargs={"item": item, "client": client},
-                )
-                sleep(0.5)
-                th_processo.start()
-                sleep(0.5)
-                self.threads_processos.append(th_processo)
+                self.thread_processo(item=item, client=client)
 
             for th in self.threads_processos:
                 with suppress(Exception):
