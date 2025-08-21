@@ -182,7 +182,7 @@ class PjeBot[T](CrawJUD):
                     timeout=15,
                     poll_frequency=0.3,
                     ignored_exceptions=(UnexpectedAlertPresentException),
-                ).until(ec.url_to_be(url_valida_sessao))
+                ).until(ec.url_contains(url_valida_sessao))
             except TimeoutException:
                 if "pjekz" not in driver.current_url:
                     return False
