@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import io
-import shutil
 import traceback
+from os import remove
 from pathlib import Path
 from typing import AnyStr, NoReturn
 
@@ -119,7 +119,7 @@ class FileService[T]:
                 _raise_val_err()
 
             # Define diretório temporário para armazenar os chunks
-            path_temp = Path(__file__).cwd().joinpath("temp", sid.upper())
+            path_temp = Path(__file__).cwd().joinpath("temp")
             path_temp.mkdir(parents=True, exist_ok=True)
             file_path = path_temp.joinpath(file_name)
 
@@ -131,7 +131,9 @@ class FileService[T]:
 
             if end_ >= file_size:
                 async with aiofiles.open(file_path, "rb") as f:
-                    data_ = io.BytesIO(await f.read())
+                    b_data = await f.read()
+                    data_ = io.BytesIO(b_data)
+
                     dest_path = str(
                         Path(sid.upper())
                         .joinpath(secure_filename(file_name))
@@ -140,13 +142,13 @@ class FileService[T]:
                     storage.put_object(
                         object_name=dest_path,
                         data=data_,
-                        length=end_,
+                        length=len(b_data),
                         content_type=content_type,
                     )
 
-                shutil.rmtree(file_path.parent)
+                remove(file_path)
 
-        except UploadFileError as e:
+        except (UploadFileError, OSError) as e:
             clear()
             tqdm.write("\n".join(traceback.format_exception(e)))
 

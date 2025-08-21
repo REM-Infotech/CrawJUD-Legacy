@@ -7,7 +7,6 @@ import secrets
 import traceback
 from contextlib import suppress
 from datetime import datetime
-from io import BytesIO
 from pathlib import Path
 from threading import Lock
 from time import sleep
@@ -301,23 +300,10 @@ class PjeBot[T](CrawJUD):
             chunk = 8 * 1024 * 1024
             file_path = path_temp.joinpath(file_name)
             # Salva arquivo em chunks no storage
-            dest_name = str(
-                Path(self.pid.upper()).joinpath(file_name).as_posix(),
-            )
-
-            bytes_file = b""
             with file_path.open("wb") as f:
                 for _bytes in response_data.iter_bytes(chunk):
                     sleep(0.5)
                     f.write(_bytes)
-                    bytes_file += _bytes
-
-            file_size = file_path.stat().st_size
-            self.storage.put_object(
-                object_name=dest_name,
-                data=BytesIO(bytes_file),
-                length=file_size,
-            )
 
             with suppress(Exception):
                 other_path_ = Path(environ["PATH_SRV"])
@@ -325,7 +311,6 @@ class PjeBot[T](CrawJUD):
                     for _bytes in response_data.iter_bytes(chunk):
                         sleep(0.5)
                         f.write(_bytes)
-                        bytes_file += _bytes
 
         except (FileUploadError, Exception) as e:
             str_exc = "\n".join(traceback.format_exception_only(e))
