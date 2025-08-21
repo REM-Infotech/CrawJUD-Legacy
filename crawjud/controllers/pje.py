@@ -36,6 +36,7 @@ from crawjud.interfaces.types.pje import (
     DictSeparaRegiao,
     Processo,
 )
+from crawjud.resources.elements import pje as el
 from crawjud.utils.formatadores import formata_tempo
 from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
@@ -96,41 +97,47 @@ class PjeBot[T](CrawJUD):
 
         """
         # Envia mensagem de log para task assíncrona
-        message = "Buscando processo {proc}".format(
-            proc=data["NUMERO_PROCESSO"],
-        )
+        id_processo: str
+        trt_id = self.regiao
+        numero_processo = data["NUMERO_PROCESSO"]
+        message = f"Buscando processo {numero_processo}"
         self.print_msg(
             message=message,
             row=row,
             type_log="log",
         )
-        link = f"/processos/dadosbasicos/{data['NUMERO_PROCESSO']}"
+
+        link = el.LINK_DADOS_BASICOS.format(
+            trt_id=trt_id,
+            numero_processo=numero_processo,
+        )
+
         response = client.get(url=link)
-        id_processo: str
 
         if response.status_code != 200:
-            return None
+            return "Nenhum processo encontrado"
 
-        try:
+        with suppress(json.decoder.JSONDecodeError, KeyError):
             data_request = response.json()
+            if isinstance(data_request, list):
+                data_request: dict[str, T] = data_request[0]
+            id_processo = data_request.get("id", "")
 
-        except json.decoder.JSONDecodeError:
-            return None
+        if not id_processo:
+            return "Nenhum processo encontrado"
 
-        # Caso a resposta seja uma lista, pega o primeiro item
-        if isinstance(data_request, list):
-            data_request: dict[str, T] = data_request[0]
-
-        try:
-            id_processo = data_request["id"]
-        except KeyError:
-            return None
-
-        return self.desafio_captcha(
-            data=data,
-            row=row,
+        url_ = el.LINK_CONSULTA_PROCESSO.format(
+            trt_id=trt_id,
             id_processo=id_processo,
-            client=client,
+        )
+        result = client.get(url=url_)
+
+        if not result:
+            return "Nenhum processo encontrado"
+
+        return DictResults(
+            id_processo=id_processo,
+            data_request=result.json(),
         )
 
     def auth(self) -> bool:
@@ -205,9 +212,6 @@ class PjeBot[T](CrawJUD):
 
             self._cookies = cookies_
             self._headers = headers_
-            self._base_url = (
-                f"https://pje.trt{self.regiao}.jus.br/pje-consulta-api/api"
-            )
 
         except Exception:
             self.print_msg("Erro ao realizar autenticação", type_log="error")
@@ -268,7 +272,7 @@ class PjeBot[T](CrawJUD):
         self,
         file_name: str,
         response_data: Response,
-        data_bot: BotData,
+        processo: str,
         row: int,
     ) -> None:
         """Envia o `arquivo baixado` no processo para o `storage`.
@@ -276,7 +280,7 @@ class PjeBot[T](CrawJUD):
         Arguments:
             file_name (str): Nome do arquivo.
             response_data (Response): response da request httpx.
-            data_bot (BotData): Mapping dos dados da planilha de input.
+            processo (str): processo.
             row (int): row do loop.
 
         """
@@ -327,11 +331,7 @@ class PjeBot[T](CrawJUD):
             )
 
         finally:
-            message = (
-                "Arquivo do processo n.{proc} baixado com sucesso!".format(
-                    proc=data_bot["NUMERO_PROCESSO"],
-                )
-            )
+            message = f"Arquivo do processo n.{processo} baixado com sucesso!"
             self.print_msg(
                 row=row,
                 message=message,
@@ -480,8 +480,7 @@ class PjeBot[T](CrawJUD):
 
                 regiao = numero_processo.tj
                 # Atualiza o número do processo no item
-                item["NUMERO_PROCESSO"] = numero_processo
-
+                item["NUMERO_PROCESSO"] = str(numero_processo)
                 # Adiciona a posição do processo na
                 # lista original no dicionário de posições
                 position_process[numero_processo] = len(position_process)

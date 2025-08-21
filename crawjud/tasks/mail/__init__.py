@@ -58,7 +58,8 @@ async def send_email(
             username=user_name,
             display_name=bot_name,
             url_web=url_web,
-            pid=pid,
+            pid=pid[:6].upper(),
+            long_pid=pid,
             xlsx=nome_planilha,
         )
 

@@ -54,7 +54,7 @@ def print_in_thread(
     """
     with locker:
         sleep(5)
-        sio = Client(logger=True)
+        sio = Client()
         sio.connect(
             url=server,
             namespaces=[namespace],

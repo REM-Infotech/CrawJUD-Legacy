@@ -117,7 +117,7 @@ async def save_database(
             mail.send_email.apply_async(
                 kwargs={
                     "bot_name": bot.display_name,
-                    "pid": pid[:6].upper(),
+                    "pid": pid,
                     "nome_planilha": arquivo_xlsx,
                     "user_name": usr_.nome_usuario,
                     "email_target": usr_.email,

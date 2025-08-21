@@ -29,7 +29,7 @@ from crawjud.utils.models.logs import CachedExecution
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from crawjud.interfaces.types.pje import Processo
+    from crawjud.interfaces.pje import ProcessoJudicialDict as Processo
 
 clear()
 load_dotenv()
