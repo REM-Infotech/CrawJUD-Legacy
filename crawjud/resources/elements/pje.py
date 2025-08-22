@@ -24,7 +24,6 @@ LINK_DADOS_BASICOS = "https://pje.trt{trt_id}.jus.br/pje-consulta-api/api/proces
 LINK_CONSULTA_PROCESSO = "https://pje.trt{trt_id}.jus.br/pje-comum-api/api/processos/id/{id_processo}"
 LINK_DOWNLOAD_INTEGRA = "https://pje.trt{trt_id}.jus.br/pje-comum-api/api/processos/id/{id_processo}/documentos/agrupados?processoCompleto=true"
 LINK_CONSULTA_PARTES = "https://pje.trt{trt_id}.jus.br/pje-comum-api/api/processos/id/{id_processo}/partes"
-LINK_CONSULTA_ASSUNTOS = "https://pje.trt{trtid}.jus.br/pje-comum-api/api/processos/id/{id_processo}/assuntos"
+LINK_CONSULTA_ASSUNTOS = "https://pje.trt{trt_id}.jus.br/pje-comum-api/api/processos/id/{id_processo}/assuntos"
 LINK_AUDIENCIAS = "https://pje.trt{trt_id}.jus.br/pje-comum-api/api/processos/id/{id_processo}/audiencias"
-
 LINK_AUDIENCIAS_CANCELADAS = str(LINK_AUDIENCIAS + "?canceladas=true")
