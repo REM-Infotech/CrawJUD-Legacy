@@ -208,7 +208,7 @@ class Capa(PjeBot):
                 regiao=regiao,
             )
 
-            sleep(1)
+            sleep(1.5)
 
             self.outras_informacoes(
                 numero_processo=processo,
