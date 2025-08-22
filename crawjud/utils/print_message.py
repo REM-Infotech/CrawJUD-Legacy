@@ -59,7 +59,7 @@ def print_in_thread() -> None:
 
     while True:
         data = queue_msg.get()
-
+        sleep(5)
         if data:
             data = dict(data)
 
@@ -71,7 +71,6 @@ def print_in_thread() -> None:
             success: int = data.get("success")
             type_log: str = data.get("type_log")
             pid: str | None = data.get("pid")
-            sleep(5)
 
             try:
                 sio.emit(
@@ -128,6 +127,9 @@ def print_in_thread() -> None:
 
             except Exception as e:
                 tqdm.write("\n".join(traceback.format_exception(e)))
+
+            finally:
+                queue_msg.task_done()
 
 
 if __name__ == "__main__":
