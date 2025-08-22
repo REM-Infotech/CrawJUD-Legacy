@@ -169,7 +169,7 @@ class LogsNamespace[T](Namespace):
                 status="Em Execução",
                 row=0,
                 total=0,
-                errors=0,
+                error=0,
                 success=0,
                 remaining=0,
                 type="info",

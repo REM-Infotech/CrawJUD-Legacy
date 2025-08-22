@@ -180,7 +180,7 @@ if __name__ == "__main__":
         message=args.message,
         total_rows=args.total_rows,
         row=args.row,
-        errors=args.errors,
+        error=args.errors,
         type_log=args.type_log,
         pid=args.pid,
     )
