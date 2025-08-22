@@ -27,6 +27,7 @@ from pandas import DataFrame, ExcelWriter
 from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.controllers.master import queue_msg
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
@@ -98,19 +99,30 @@ class Capa(PjeBot):
         ).start()
         generator_regioes = self.regioes()
 
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            futures = [
-                executor.submit(
-                    self.queue,
-                    regiao=regiao,
-                    data_regiao=data_regiao,
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures: list[Future] = []
+            for regiao, data_regiao in generator_regioes:
+                futures.append(
+                    executor.submit(
+                        self.queue,
+                        regiao=regiao,
+                        data_regiao=data_regiao,
+                    ),
                 )
-                for regiao, data_regiao in generator_regioes
-            ]
+                sleep(10)
 
             for future in futures:
                 with suppress(Exception):
                     future.result()
+
+        with suppress(Exception):
+            queue_save_xlsx.join()
+
+        with suppress(Exception):
+            queue_msg.join()
+
+        with suppress(Exception):
+            queue_files.join()
 
         event_queue_files.set()
         event_queue_save_xlsx.set()
@@ -159,12 +171,6 @@ class Capa(PjeBot):
             for future in as_completed(futures):
                 with suppress(Exception):
                     future.result()
-
-            with suppress(Exception):
-                queue_files.join()
-
-            with suppress(Exception):
-                queue_save_xlsx.join()
 
     def thread_processo(
         self,
@@ -482,6 +488,7 @@ def save_file(output_dir_path: Path, pid: str) -> None:
                 df[col] = df[col].dt.tz_localize(None)
 
             # --- APPEND na mesma aba, calculando a próxima linha ---
+            tqdm.write(f"Salvando worksheet: {sheet_name}")
             if path_planilha.exists():
                 with ExcelWriter(
                     path=path_planilha,
@@ -516,12 +523,16 @@ def save_file(output_dir_path: Path, pid: str) -> None:
                 ) as writer:
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
 
+            tqdm.write("Worksheet salva!")
         except Exception as e:
             # logue o stack completo (não interrompe o consumidor)
             tqdm.write("\n".join(traceback.format_exception(e)))
 
         finally:
             queue_save_xlsx.task_done()
+            tqdm.write(
+                f"Fim da tarefa. Restantes {queue_save_xlsx.unfinished_tasks}",
+            )
 
 
 def copia_integral() -> None:
@@ -582,3 +593,4 @@ def copia_integral() -> None:
 
         finally:
             queue_files.task_done()
+            tqdm.write("Fim da tarefa")

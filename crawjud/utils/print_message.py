@@ -104,7 +104,11 @@ def print_in_thread() -> None:
                 }
                 sio.emit(event="log_execution", data=data, namespace=namespace)
 
-                file_log = work_dir.joinpath("temp", pid, f"{pid}.log")
+                file_log = work_dir.joinpath(
+                    "temp",
+                    pid,
+                    f"{pid[:4].upper()}.log",
+                )
                 file_log.parent.mkdir(parents=True, exist_ok=True)
                 file_log.touch(exist_ok=True)
 
@@ -123,6 +127,8 @@ def print_in_thread() -> None:
                             }.get(type_log, "white"),
                         ),
                     )
+
+                tqdm.write(message)
                 sleep(2)
 
             except Exception as e:
