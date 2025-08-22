@@ -525,6 +525,7 @@ class Capa(PjeBot):
             try:
                 data = self.queue_files.get()
                 if data:
+                    sleep(2)
                     data = dict(data)
                     file_name: str = data.get("file_name")
                     row: int = data.get("row")
