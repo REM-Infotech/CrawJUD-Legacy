@@ -109,6 +109,26 @@ class RepresentantePartesPJeDict(TypedDict):
     TELEFONE: str
 
 
+class AssuntosProcessoPJeDict(TypedDict):
+    """Defina os campos dos assuntos do processo judicial no padrão PJe.
+
+    Args:
+        ID_PJE (int): Identificador único do processo no PJE.
+        PROCESSO (str): Número do processo judicial.
+        ASSUNTO_COMPLETO (str): Descrição completa do assunto.
+        ASSUNTO_RESUMIDO (str): Descrição resumida do assunto.
+
+    Returns:
+        AssuntosProcessoPJeDict: Dicionário tipado com os dados dos assuntos.
+
+    """
+
+    ID_PJE: int
+    PROCESSO: str
+    ASSUNTO_COMPLETO: str
+    ASSUNTO_RESUMIDO: str
+
+
 class ClasseJudicialDict(TypedDict):
     """Defina os campos da classe judicial conforme estrutura do processo JSON.
 

@@ -31,6 +31,7 @@ from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
 from crawjud.interfaces.pje import (
+    AssuntosProcessoPJeDict,
     CapaProcessualPJeDict,
     PartesProcessoPJeDict,
     RepresentantePartesPJeDict,
@@ -289,9 +290,26 @@ class Capa(PjeBot):
         self,
         numero_processo: str,
         data_assuntos: list[AssuntoDict],
-    ) -> None:
+    ) -> AssuntosProcessoPJeDict | None:
+        list_assuntos: list[AssuntosProcessoPJeDict] = []
         if data_assuntos:
-            tqdm.write("ok")
+            list_assuntos.extend([
+                AssuntosProcessoPJeDict(
+                    ID_PJE=assunto["id"],
+                    PROCESSO=numero_processo,
+                    ASSUNTO_COMPLETO=assunto["assuntoCompleto"],
+                    ASSUNTO_RESUMIDO=assunto["assuntoResumido"],
+                )
+                for assunto in data_assuntos
+            ])
+            queue_save_xlsx.put({
+                "to_save": list_assuntos,
+                "sheet_name": "Assuntos",
+            })
+
+            return list_assuntos[-1]
+
+        return None
 
     def _salva_partes(
         self,
