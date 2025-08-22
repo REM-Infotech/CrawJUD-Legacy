@@ -8,6 +8,7 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 from queue import Queue
+from threading import Event
 from time import sleep
 from zoneinfo import ZoneInfo
 
@@ -21,6 +22,23 @@ work_dir = Path(__file__).cwd()
 
 
 queue_msg = Queue()
+event_stop_bot: Event = Event()
+
+sio = Client()
+
+
+@sio.on(event="stop_bot", namespace="/logsbot")
+def stop_bot[T](*args: T, **kwargs: T) -> None:
+    """Receba evento para parar o bot via SocketIO.
+
+    Args:
+        *args (T): Argumentos posicionais recebidos do evento.
+        **kwargs (T): Argumentos nomeados recebidos do evento.
+
+    """
+    tqdm.write(str(args))
+    tqdm.write(str(kwargs))
+    event_stop_bot.set()
 
 
 def print_in_thread() -> None:
@@ -46,7 +64,6 @@ def print_in_thread() -> None:
     server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
     namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
     try:
-        sio = Client()
         sio.connect(
             url=server,
             namespaces=[namespace],

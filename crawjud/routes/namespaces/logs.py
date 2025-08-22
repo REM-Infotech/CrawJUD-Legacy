@@ -53,7 +53,7 @@ class LogsNamespace[T](Namespace):
         """
         # Evento de desconexão não implementado
 
-    async def on_stopbot(self, *args: T, **kwargs: T) -> None:
+    async def on_stop_bot(self, *args: T, **kwargs: T) -> None:
         """Emitissor de sinal de parada para um processo específico.
 
         Args:
@@ -64,7 +64,7 @@ class LogsNamespace[T](Namespace):
         """
         data = await request.form
 
-        await self.emit("stopbot", room=data["pid"])
+        await self.emit("stop_bot", room=data["pid"])
 
     async def on_join_room(self) -> None:
         """Adiciona o cliente a uma sala específica."""

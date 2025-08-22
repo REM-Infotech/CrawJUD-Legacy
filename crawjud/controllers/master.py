@@ -23,7 +23,11 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
-from crawjud.utils.print_message import print_in_thread, queue_msg
+from crawjud.utils.print_message import (
+    event_stop_bot,
+    print_in_thread,
+    queue_msg,
+)
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -354,3 +358,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             saudacao = "Boa tarde"
 
         return saudacao
+
+
+__all__ = ["event_stop_bot"]

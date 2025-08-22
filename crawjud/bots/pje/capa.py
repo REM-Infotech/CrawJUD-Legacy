@@ -27,7 +27,7 @@ from pandas import DataFrame, ExcelWriter
 from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.master import queue_msg
+from crawjud.controllers.master import event_stop_bot, queue_msg
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
@@ -129,6 +129,9 @@ class Capa(PjeBot):
 
     def queue(self, regiao: str, data_regiao: list[BotData]) -> None:
         try:
+            if event_stop_bot.is_set():
+                return
+
             self.print_msg(message=f"Autenticando no TRT {regiao}")
             autenticar = self.auth(regiao=regiao)
             if autenticar:
@@ -179,6 +182,9 @@ class Capa(PjeBot):
         regiao: str,
     ) -> None:
         try:
+            if event_stop_bot.is_set():
+                return
+
             sleep(0.5)
             processo = item["NUMERO_PROCESSO"]
             row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
@@ -479,6 +485,8 @@ def save_file(output_dir_path: Path, pid: str) -> None:
     while not event_queue_save_xlsx.is_set():
         data = queue_save_xlsx.get()
         try:
+            if event_stop_bot.is_set():
+                return
             rows = data["to_save"]
             sheet_name = data["sheet_name"]
 
@@ -541,7 +549,8 @@ def copia_integral() -> None:
     while not event_queue_files.is_set():
         try:
             data = queue_files.get()
-
+            if event_stop_bot.is_set():
+                return
             if data:
                 data = dict(data)
                 self: Capa = data.get("self")
