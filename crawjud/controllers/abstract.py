@@ -163,9 +163,17 @@ class AbstractCrawJUD[T]:
     def success(self) -> int:
         return self._success
 
+    @success.setter
+    def success(self, success: int) -> int:
+        self._success = success
+
     @property
     def error(self) -> int:
         return self._error
+
+    @error.setter
+    def error(self, error: int) -> int:
+        self._error = error
 
     @property
     def remaining(self) -> int:
