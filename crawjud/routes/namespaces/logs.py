@@ -129,10 +129,22 @@ class LogsNamespace[T](Namespace):
         """
         # Inicializa os contadores se não existirem
         log = MessageLog.query_logs(pid)
-        message = log.model_dump()
-        message["message"] = "CARREGANDO"
+        message = MessageLogDict(
+            message="CARREGANDO",
+            pid=pid,
+            status="Em Execução",
+            row=0,
+            total=0,
+            error=0,
+            success=0,
+            remaining=0,
+            type="info",
+            start_time="01/01/2023 - 00:00:00",
+        )
 
         if log:
+            message = log.model_dump()
+            message["message"] = "CARREGANDO"
             count_success = len(
                 list(filter(lambda x: x["type"] == "success", log.messages)),
             )

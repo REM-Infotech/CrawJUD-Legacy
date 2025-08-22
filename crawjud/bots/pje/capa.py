@@ -16,13 +16,14 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
+from pathlib import Path
 from queue import Queue
 from threading import Event, Semaphore, Thread
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
-from httpx import Client
+from httpx import Client, Response
 from pandas import DataFrame, ExcelWriter
 from tqdm import tqdm
 
@@ -36,7 +37,8 @@ from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-    from pathlib import Path
+
+    from httpx import Response
 
     from crawjud.interfaces.pje import ProcessoJudicialDict
     from crawjud.interfaces.types import BotData
@@ -183,6 +185,12 @@ class Capa(PjeBot):
                 regiao=regiao,
             )
 
+            self.outras_informacoes(
+                client=client,
+                id_processo=resultados["id_processo"],
+                regiao=regiao,
+            )
+
             if item.get("TRAZER_COPIA", "N").lower() == "s":
                 file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
                 queue_files.put({
@@ -206,6 +214,66 @@ class Capa(PjeBot):
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
+
+    def outras_informacoes(
+        self,
+        client: Client,
+        id_processo: str,
+        regiao: str,
+    ) -> None:
+        request_partes: Response = None
+        request_assuntos: Response = None
+        request_audiencias: Response = None
+
+        data_partes = None
+        data_assuntos = None
+        data_audiencias = None
+
+        link_partes = el.LINK_CONSULTA_PARTES.format(
+            trt_id=regiao,
+            id_processo=id_processo,
+        )
+        link_assuntos = el.LINK_CONSULTA_ASSUNTOS.format(
+            trt_id=regiao,
+            id_processo=id_processo,
+        )
+        link_audiencias = el.LINK_AUDIENCIAS.format(
+            trt_id=regiao,
+            id_processo=id_processo,
+        )
+
+        with suppress(Exception):
+            request_partes = client.get(url=link_partes)
+            if request_partes:
+                data_partes = request_partes.json()
+                with Path(f"data_partes_{id_processo}.json").open(
+                    "wb",
+                ) as f:
+                    f.write(request_partes.content)
+
+        with suppress(Exception):
+            request_assuntos = client.get(url=link_assuntos)
+            if request_assuntos:
+                data_assuntos = request_assuntos.json()
+                with Path(f"data_assuntos_{id_processo}.json").open(
+                    "wb",
+                ) as f:
+                    f.write(request_assuntos.content)
+
+        with suppress(Exception):
+            request_audiencias = client.get(url=link_audiencias)
+            if request_audiencias:
+                data_audiencias = request_audiencias.json()
+                with Path(f"data_audiencias_{id_processo}.json").open(
+                    "wb",
+                ) as f:
+                    f.write(request_audiencias.content)
+
+        print(data_partes)  # noqa: T201
+        print(data_assuntos)  # noqa: T201
+        print(data_audiencias)  # noqa: T201
+
+        tqdm.write("ok")
 
     def formatar_resultado(
         self,
