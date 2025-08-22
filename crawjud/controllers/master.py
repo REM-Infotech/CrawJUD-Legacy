@@ -120,19 +120,17 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         while True:
             data = self.queue_msg.get()
             if data:
-                sleep(0.5)
-                data = dict(data)
-
-                start_time: str = data.get("start_time")
-                message: str = data.get("message")
-                total_rows: int = data.get("total_rows")
-                row: int = data.get("row")
-                error: int = data.get("error")
-                success: int = data.get("success")
-                type_log: str = data.get("type_log")
-                pid: str | None = data.get("pid")
-
                 try:
+                    sleep(0.5)
+                    data = dict(data)
+                    start_time: str = data.get("start_time")
+                    message: str = data.get("message")
+                    total_rows: int = data.get("total_rows")
+                    row: int = data.get("row")
+                    error: int = data.get("error")
+                    success: int = data.get("success")
+                    type_log: str = data.get("type_log")
+                    pid: str | None = data.get("pid")
                     sio.emit(
                         event="join_room",
                         data={"data": {"room": pid}},
