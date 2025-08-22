@@ -32,6 +32,7 @@ from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
 from crawjud.interfaces.pje import (
     AssuntosProcessoPJeDict,
+    AudienciaProcessoPjeDict,
     CapaProcessualPJeDict,
     PartesProcessoPJeDict,
     RepresentantePartesPJeDict,
@@ -46,7 +47,7 @@ if TYPE_CHECKING:
     from httpx import Response
 
     from crawjud.interfaces.pje import ProcessoJudicialDict
-    from crawjud.interfaces.pje.assuntos import AssuntoDict
+    from crawjud.interfaces.pje.assuntos import AssuntoDict, ItemAssuntoDict
     from crawjud.interfaces.pje.audiencias import AudienciaDict
     from crawjud.interfaces.pje.partes import ParteDict, PartesJsonDict
     from crawjud.interfaces.types import BotData
@@ -144,7 +145,7 @@ class Capa(PjeBot):
 
         """
         client_context = Client(cookies=self.cookies, headers=self.headers)
-        pool_exe = ThreadPoolExecutor(max_workers=8)
+        pool_exe = ThreadPoolExecutor(max_workers=16)
         with client_context as client, pool_exe as executor:
             futures = [
                 executor.submit(
@@ -284,12 +285,30 @@ class Capa(PjeBot):
         data_audiencia: list[AudienciaDict],
     ) -> None:
         if data_audiencia:
-            tqdm.write("ok")
+            list_audiencias: list[AudienciaProcessoPjeDict] = []
+
+            list_audiencias.extend([
+                AudienciaProcessoPjeDict(
+                    ID_PJE=audiencia["id"],
+                    NUMERO_PROCESSO=numero_processo,
+                    TIPO_AUDIENCIA=audiencia["tipo"]["descricao"],
+                    MODO_AUDIENCIA="PRESENCIAL"
+                    if audiencia["tipo"]["isVirtual"]
+                    else "VIRTUAL",
+                    STATUS=audiencia["status"],
+                )
+                for audiencia in data_audiencia
+            ])
+
+            queue_save_xlsx.put({
+                "to_save": list_audiencias,
+                "sheet_name": "Audiências",
+            })
 
     def _salva_assuntos(
         self,
         numero_processo: str,
-        data_assuntos: list[AssuntoDict],
+        data_assuntos: list[ItemAssuntoDict],
     ) -> AssuntosProcessoPJeDict | None:
         list_assuntos: list[AssuntosProcessoPJeDict] = []
         if data_assuntos:
@@ -297,8 +316,8 @@ class Capa(PjeBot):
                 AssuntosProcessoPJeDict(
                     ID_PJE=assunto["id"],
                     PROCESSO=numero_processo,
-                    ASSUNTO_COMPLETO=assunto["assuntoCompleto"],
-                    ASSUNTO_RESUMIDO=assunto["assuntoResumido"],
+                    ASSUNTO_COMPLETO=assunto["assunto"]["assuntoCompleto"],
+                    ASSUNTO_RESUMIDO=assunto["assunto"]["assuntoResumido"],
                 )
                 for assunto in data_assuntos
             ])

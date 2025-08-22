@@ -45,6 +45,28 @@ class CapaProcessualPJeDict(TypedDict):
     SEGREDO_JUSTIÇA: str
 
 
+class AudienciaProcessoPjeDict(TypedDict):
+    """Defina os campos das audiências do processo judicial no padrão PJe.
+
+    Args:
+        ID_PJE (int): Identificador único do processo no PJE.
+        NUMERO_PROCESSO (str): Número do processo judicial.
+        TIPO_AUDIENCIA (str): Tipo da audiência.
+        MODO_AUDIENCIA (str): Modo de realização da audiência.
+        STATUS (str): Status da audiência.
+
+    Returns:
+        AudienciaProcessoPjeDict: Dicionário tipado com os dados da audiência.
+
+    """
+
+    ID_PJE: int
+    NUMERO_PROCESSO: str
+    TIPO_AUDIENCIA: str
+    MODO_AUDIENCIA: str
+    STATUS: str
+
+
 class PartesProcessoPJeDict(TypedDict):
     """Defina os campos das partes do processo judicial no padrão PJe.
 
