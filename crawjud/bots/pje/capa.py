@@ -95,7 +95,7 @@ class Capa(PjeBot):
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
-        with ThreadPoolExecutor(max_workers=4) as executor:
+        with ThreadPoolExecutor(max_workers=8) as executor:
             futures: list[Future] = []
             for regiao, data_regiao in lista_nova:
                 if self.event_stop_bot.is_set():
@@ -108,7 +108,7 @@ class Capa(PjeBot):
                         data_regiao=data_regiao,
                     ),
                 )
-                sleep(15)
+                sleep(30)
 
             for future in futures:
                 with suppress(Exception):
@@ -184,7 +184,7 @@ class Capa(PjeBot):
             if self.event_stop_bot.is_set():
                 return
 
-            sleep(0.5)
+            sleep(1)
             processo = item["NUMERO_PROCESSO"]
             row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
             resultados: DictResults = self.search(
@@ -193,17 +193,22 @@ class Capa(PjeBot):
                 client=client,
                 regiao=regiao,
             )
-
+            sleep(0.5)
             if not isinstance(resultados, dict):
                 self.print_msg(
                     message=str(resultados),
                     type_log="error",
                     row=row,
                 )
-                sleep(0.5)
+
                 return
 
-            sleep(0.5)
+            self.salvar_resultado(
+                result=resultados["data_request"],
+                regiao=regiao,
+            )
+
+            sleep(1)
 
             self.outras_informacoes(
                 numero_processo=processo,
@@ -212,15 +217,9 @@ class Capa(PjeBot):
                 regiao=regiao,
             )
 
-            self.salvar_resultado(
-                result=resultados["data_request"],
-                regiao=regiao,
-            )
-
             if item.get("TRAZER_COPIA", "N").lower() == "s":
                 file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
                 self.queue_files.put({
-                    "self": self,
                     "file_name": file_name,
                     "row": row,
                     "client": client,
@@ -228,15 +227,12 @@ class Capa(PjeBot):
                     "id_processo": resultados["id_processo"],
                     "regiao": regiao,
                 })
-                sleep(0.5)
 
             self.print_msg(
                 message="Execução Efetuada com sucesso!",
                 row=row,
                 type_log="success",
             )
-
-            sleep(0.5)
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
@@ -269,6 +265,7 @@ class Capa(PjeBot):
             id_processo=id_processo,
         )
 
+        sleep(0.25)
         with suppress(Exception):
             request_partes = client.get(url=link_partes)
             if request_partes:
@@ -277,6 +274,8 @@ class Capa(PjeBot):
                     numero_processo=numero_processo,
                     data_partes=data_partes,
                 )
+
+        sleep(0.25)
         with suppress(Exception):
             request_assuntos = client.get(url=link_assuntos)
             if request_assuntos:
@@ -285,6 +284,8 @@ class Capa(PjeBot):
                     numero_processo=numero_processo,
                     data_assuntos=data_assuntos,
                 )
+
+        sleep(0.25)
         with suppress(Exception):
             request_audiencias = client.get(url=link_audiencias)
             if request_audiencias:
