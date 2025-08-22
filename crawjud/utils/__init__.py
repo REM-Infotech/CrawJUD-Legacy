@@ -21,7 +21,11 @@ def kill_browsermob() -> None:
             psutil.ZombieProcess,
             Exception,
         ):
-            if any(keyword in part for part in proc.info["cmdline"]):
+            if any(
+                keyword in part
+                for part in proc.info["cmdline"]
+                if proc.info["cmdline"] is not None
+            ):
                 matching_procs.append(proc)
 
     # Segunda fase: finalização dos processos encontrados
@@ -46,7 +50,11 @@ def kill_chromedriver() -> None:
             psutil.ZombieProcess,
             Exception,
         ):
-            if any(keyword in part for part in proc.info["cmdline"]):
+            if any(
+                keyword in part
+                for part in proc.info["cmdline"]
+                if proc.info["cmdline"] is not None
+            ):
                 matching_procs.append(proc)
 
     # Segunda fase: finalização dos processos encontrados

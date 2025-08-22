@@ -161,12 +161,10 @@ class AbstractCrawJUD[T]:
 
     @property
     def success(self) -> int:
-        self._success += 1
         return self._success
 
     @property
     def error(self) -> int:
-        self._error += 1
         return self._error
 
     @property

@@ -155,6 +155,17 @@ class LogsNamespace[T](Namespace):
             message["success"] = count_success
             message["error"] = count_error
 
+        elif not log:
+            msg = message.pop("message", "CARREGANDO")
+            type_log = message.pop("type", "log")
+            message["messages"] = [
+                ItemMessageList(
+                    id_log=int(message.pop("id_log", 0)) + 1,
+                    message=msg,
+                    type=type_log,
+                ),
+            ]
+
         return message
 
     async def log_redis(

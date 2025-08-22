@@ -65,7 +65,8 @@ class PartesProcessoPJeDict(TypedDict):
 
     ID_PJE: int
     NOME: str
-    CPF: str
+    DOCUMENTO: str
+    TIPO_DOCUMENTO: str
     TIPO_PARTE: str
     TIPO_PESSOA: str
     PROCESSO: str
@@ -96,7 +97,8 @@ class RepresentantePartesPJeDict(TypedDict):
 
     ID_PJE: int
     NOME: str
-    CPF: str
+    DOCUMENTO: str
+    TIPO_DOCUMENTO: str
     REPRESENTADO: str
     TIPO_PARTE: str
     TIPO_PESSOA: str

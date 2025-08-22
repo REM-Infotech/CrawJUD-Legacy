@@ -276,7 +276,6 @@ class Capa(PjeBot):
                     numero_processo=numero_processo,
                     data_audiencia=data_audiencias,
                 )
-        tqdm.write("ok")
 
     def _salva_audiencias(
         self,
@@ -284,7 +283,7 @@ class Capa(PjeBot):
         data_audiencia: list[AudienciaDict],
     ) -> None:
         if data_audiencia:
-            print(data_audiencia)  # noqa: T201
+            tqdm.write("ok")
 
     def _salva_assuntos(
         self,
@@ -292,7 +291,7 @@ class Capa(PjeBot):
         data_assuntos: list[AssuntoDict],
     ) -> None:
         if data_assuntos:
-            print(data_assuntos)  # noqa: T201
+            tqdm.write("ok")
 
     def _salva_partes(
         self,
@@ -310,33 +309,50 @@ class Capa(PjeBot):
                         PartesProcessoPJeDict(
                             ID_PJE=parte["id"],
                             NOME=parte["nome"],
-                            CPF=parte["cpf"],
+                            DOCUMENTO=parte.get("documento", "000.000.000-00"),
+                            TIPO_DOCUMENTO=parte.get(
+                                "tipoDocumento",
+                                "Não Informado",
+                            ),
                             TIPO_PARTE=parte["polo"],
-                            TIPO_PESSOA=parte["tipoPessoa"],
+                            TIPO_PESSOA="Física"
+                            if parte["tipoPessoa"].lower() == "f"
+                            else "Jurídica",
                             PROCESSO=numero_processo,
                             POLO=parte["polo"],
                             PARTE_PRINCIPAL=parte["principal"],
                         ),
                     )
 
-                    representantes.extend(
-                        [
-                            RepresentantePartesPJeDict(
-                                ID_PJE=representante["id"],
-                                PROCESSO=numero_processo,
-                                NOME=representante["nome"],
-                                CPF=representante["cpf"],
-                                REPRESENTADO=parte["nome"],
-                                TIPO_PARTE=representante["polo"],
-                                TIPO_PESSOA=representante["tipoPessoa"],
-                                POLO=representante["polo"],
-                                OAB=representante.get("numeroOab", "0000"),
-                                EMAILS=",".join(representante["emails"]),
-                                TELEFONE=f"({representante['dddCelular']}) {representante['numeroCelular']}",
-                            )
-                            for representante in parte["representantes"]
-                        ],
-                    )
+                    if "representantes" in parte:
+                        representantes.extend(
+                            [
+                                RepresentantePartesPJeDict(
+                                    ID_PJE=representante["id"],
+                                    PROCESSO=numero_processo,
+                                    NOME=representante["nome"],
+                                    DOCUMENTO=representante["documento"],
+                                    TIPO_DOCUMENTO=representante[
+                                        "tipoDocumento"
+                                    ],
+                                    REPRESENTADO=parte["nome"],
+                                    TIPO_PARTE=representante["polo"],
+                                    TIPO_PESSOA=representante["tipoPessoa"],
+                                    POLO=representante["polo"],
+                                    OAB=representante.get("numeroOab", "0000"),
+                                    EMAILS=",".join(
+                                        representante["emails"]
+                                        if "emails" in representantes
+                                        else [],
+                                    ),
+                                    TELEFONE=f"({representante['dddCelular']}) {representante['numeroCelular']}"
+                                    if "dddCelular" in representante
+                                    and "numeroCelular" in representante
+                                    else "",
+                                )
+                                for representante in parte["representantes"]
+                            ],
+                        )
 
             queue_save_xlsx.put({
                 "to_save": partes,
@@ -458,7 +474,7 @@ def save_file(output_dir_path: Path, pid: str) -> None:
                     mode="w",
                     engine="openpyxl",
                 ) as writer:
-                    df.to_excel(writer, sheet_name="Resultados", index=False)
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
 
         except Exception as e:
             # logue o stack completo (não interrompe o consumidor)

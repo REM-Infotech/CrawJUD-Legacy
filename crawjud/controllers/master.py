@@ -238,9 +238,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             "row": row,
             "type_log": type_log,
             "pid": self.pid,
-            "success": 0,
-            "error": 0,
-            "remaining": 0,
+            "success": self.success,
+            "error": self.error,
+            "remaining": self.remaining,
         }
 
         if all(
@@ -258,9 +258,11 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             keyword_args.update({"remaining": self.remaining})
 
             if type_log == "success":
+                self.success += 1
                 keyword_args.update({"success": self.success})
 
             elif type_log == "error":
+                self.error += 1
                 keyword_args.update({"error": self.error})
 
         with suppress(Exception):
