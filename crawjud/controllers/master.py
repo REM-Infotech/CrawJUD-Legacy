@@ -119,8 +119,8 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         while True:
             data = self.queue_msg.get()
-            sleep(2)
             if data:
+                sleep(0.5)
                 data = dict(data)
 
                 start_time: str = data.get("start_time")

@@ -93,10 +93,11 @@ class Capa(PjeBot):
             name="Salvar Sucessos",
         ).start()
         generator_regioes = self.regioes()
+        lista_nova = list(generator_regioes)
 
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures: list[Future] = []
-            for regiao, data_regiao in generator_regioes:
+            for regiao, data_regiao in lista_nova:
                 if self.event_stop_bot.is_set():
                     break
 
