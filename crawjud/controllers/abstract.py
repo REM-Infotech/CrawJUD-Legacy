@@ -56,7 +56,7 @@ class AbstractCrawJUD[T]:
     _base_url: str | None = None
     _frame: ClassVar[list[BotData]] = []
     _success: ClassVar[int] = 0
-    _errors: ClassVar[int] = 0
+    _error: ClassVar[int] = 0
     _remaining: ClassVar[int] = 0
     semaforo_save = Semaphore(1)
     _storage = Storage("minio")
