@@ -193,6 +193,7 @@ class Capa(PjeBot):
                 self.print_msg(
                     message=str(resultados),
                     type_log="error",
+                    row=row,
                 )
                 sleep(0.5)
                 return
