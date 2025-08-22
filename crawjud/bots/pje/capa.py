@@ -16,7 +16,6 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
-from pathlib import Path
 from queue import Queue
 from threading import Event, Semaphore, Thread
 from time import sleep
@@ -31,16 +30,24 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
-from crawjud.interfaces.pje import DictSalvarPlanilha
+from crawjud.interfaces.pje import (
+    CapaProcessualPJeDict,
+    PartesProcessoPJeDict,
+    RepresentantePartesPJeDict,
+)
 from crawjud.resources.elements import pje as el
 from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from pathlib import Path
 
     from httpx import Response
 
     from crawjud.interfaces.pje import ProcessoJudicialDict
+    from crawjud.interfaces.pje.assuntos import AssuntoDict
+    from crawjud.interfaces.pje.audiencias import AudienciaDict
+    from crawjud.interfaces.pje.partes import ParteDict, PartesJsonDict
     from crawjud.interfaces.types import BotData
     from crawjud.interfaces.types.pje import DictResults
 
@@ -180,14 +187,16 @@ class Capa(PjeBot):
                 return
 
             sleep(0.5)
-            self.formatar_resultado(
-                result=resultados["data_request"],
+
+            self.outras_informacoes(
+                numero_processo=processo,
+                client=client,
+                id_processo=resultados["id_processo"],
                 regiao=regiao,
             )
 
-            self.outras_informacoes(
-                client=client,
-                id_processo=resultados["id_processo"],
+            self.salvar_resultado(
+                result=resultados["data_request"],
                 regiao=regiao,
             )
 
@@ -217,6 +226,7 @@ class Capa(PjeBot):
 
     def outras_informacoes(
         self,
+        numero_processo: str,
         client: Client,
         id_processo: str,
         regiao: str,
@@ -225,9 +235,9 @@ class Capa(PjeBot):
         request_assuntos: Response = None
         request_audiencias: Response = None
 
-        data_partes = None
-        data_assuntos = None
-        data_audiencias = None
+        data_partes: PartesJsonDict = None
+        data_assuntos: list[AssuntoDict] = None
+        data_audiencias: list[AudienciaDict] = None
 
         link_partes = el.LINK_CONSULTA_PARTES.format(
             trt_id=regiao,
@@ -245,37 +255,99 @@ class Capa(PjeBot):
         with suppress(Exception):
             request_partes = client.get(url=link_partes)
             if request_partes:
-                data_partes = request_partes.json()
-                with Path(f"data_partes_{id_processo}.json").open(
-                    "wb",
-                ) as f:
-                    f.write(request_partes.content)
-
+                data_partes: PartesJsonDict = request_partes.json()
+                self._salva_partes(
+                    numero_processo=numero_processo,
+                    data_partes=data_partes,
+                )
         with suppress(Exception):
             request_assuntos = client.get(url=link_assuntos)
             if request_assuntos:
                 data_assuntos = request_assuntos.json()
-                with Path(f"data_assuntos_{id_processo}.json").open(
-                    "wb",
-                ) as f:
-                    f.write(request_assuntos.content)
-
+                self._salva_assuntos(
+                    numero_processo=numero_processo,
+                    data_assuntos=data_assuntos,
+                )
         with suppress(Exception):
             request_audiencias = client.get(url=link_audiencias)
             if request_audiencias:
                 data_audiencias = request_audiencias.json()
-                with Path(f"data_audiencias_{id_processo}.json").open(
-                    "wb",
-                ) as f:
-                    f.write(request_audiencias.content)
-
-        print(data_partes)  # noqa: T201
-        print(data_assuntos)  # noqa: T201
-        print(data_audiencias)  # noqa: T201
-
+                self._salva_audiencias(
+                    numero_processo=numero_processo,
+                    data_audiencia=data_audiencias,
+                )
         tqdm.write("ok")
 
-    def formatar_resultado(
+    def _salva_audiencias(
+        self,
+        numero_processo: str,
+        data_audiencia: list[AudienciaDict],
+    ) -> None:
+        if data_audiencia:
+            print(data_audiencia)  # noqa: T201
+
+    def _salva_assuntos(
+        self,
+        numero_processo: str,
+        data_assuntos: list[AssuntoDict],
+    ) -> None:
+        if data_assuntos:
+            print(data_assuntos)  # noqa: T201
+
+    def _salva_partes(
+        self,
+        numero_processo: str,
+        data_partes: PartesJsonDict,
+    ) -> None:
+        partes: list[PartesProcessoPJeDict] = []
+        representantes: list[RepresentantePartesPJeDict] = []
+        if data_partes:
+            for v in data_partes.values():
+                list_partes: list[ParteDict] = v
+
+                for parte in list_partes:
+                    partes.append(
+                        PartesProcessoPJeDict(
+                            ID_PJE=parte["id"],
+                            NOME=parte["nome"],
+                            CPF=parte["cpf"],
+                            TIPO_PARTE=parte["polo"],
+                            TIPO_PESSOA=parte["tipoPessoa"],
+                            PROCESSO=numero_processo,
+                            POLO=parte["polo"],
+                            PARTE_PRINCIPAL=parte["principal"],
+                        ),
+                    )
+
+                    representantes.extend(
+                        [
+                            RepresentantePartesPJeDict(
+                                ID_PJE=representante["id"],
+                                PROCESSO=numero_processo,
+                                NOME=representante["nome"],
+                                CPF=representante["cpf"],
+                                REPRESENTADO=parte["nome"],
+                                TIPO_PARTE=representante["polo"],
+                                TIPO_PESSOA=representante["tipoPessoa"],
+                                POLO=representante["polo"],
+                                OAB=representante.get("numeroOab", "0000"),
+                                EMAILS=",".join(representante["emails"]),
+                                TELEFONE=f"({representante['dddCelular']}) {representante['numeroCelular']}",
+                            )
+                            for representante in parte["representantes"]
+                        ],
+                    )
+
+            queue_save_xlsx.put({
+                "to_save": partes,
+                "sheet_name": "Partes",
+            })
+            queue_save_xlsx.put({
+                "to_save": representantes,
+                "sheet_name": "Representantes",
+            })
+
+    def salvar_resultado(
         self,
         result: ProcessoJudicialDict,
         regiao: str,
@@ -283,7 +355,7 @@ class Capa(PjeBot):
         """Formata o resultado da busca para armazenar na planilha."""
         link_consulta = f"https://pje.trt{regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
 
-        dict_salvar_planilha = DictSalvarPlanilha(
+        dict_salvar_planilha = CapaProcessualPJeDict(
             ID_PJE=result["id"],
             LINK_CONSULTA=link_consulta,
             NUMERO_PROCESSO=result["numero"],
@@ -297,10 +369,13 @@ class Capa(PjeBot):
             VALOR_CAUSA=result["valorDaCausa"],
         )
 
-        queue_save_xlsx.put({"to_save": [dict_salvar_planilha]})
+        queue_save_xlsx.put({
+            "to_save": [dict_salvar_planilha],
+            "sheet_name": "Capa",
+        })
 
 
-def _as_dict_iter[T](x: T) -> Iterable[DictSalvarPlanilha]:
+def _as_dict_iter[T](x: T) -> Iterable[CapaProcessualPJeDict]:
     """Aceita lista de dicts, objetos Pydantic (.dict) ou dataclasses.
 
     Returns:
@@ -341,15 +416,8 @@ def save_file(output_dir_path: Path, pid: str) -> None:
     while not event_queue_save_xlsx.is_set():
         data = queue_save_xlsx.get()
         try:
-            # extrai lista de registros
-            if isinstance(data, dict) and "to_save" in data:
-                to_save: list[DictSalvarPlanilha] = data["to_save"]
-            else:
-                to_save: list[DictSalvarPlanilha] = data
-
-            rows = list(_as_dict_iter(to_save))
-            if not rows:
-                continue
+            rows = data["to_save"]
+            sheet_name = data["sheet_name"]
 
             df = DataFrame(rows)
 
@@ -368,9 +436,9 @@ def save_file(output_dir_path: Path, pid: str) -> None:
                     # pega a aba (se existir) e calcula a próxima linha
                     wb = writer.book
                     ws = (
-                        wb["Resultados"]
-                        if "Resultados" in wb.sheetnames
-                        else wb.create_sheet("Resultados")
+                        wb[sheet_name]
+                        if sheet_name in wb.sheetnames
+                        else wb.create_sheet(sheet_name)
                     )
                     startrow = (
                         ws.max_row if ws.max_row > 1 else 0
@@ -378,7 +446,7 @@ def save_file(output_dir_path: Path, pid: str) -> None:
                     write_header = startrow == 0
                     df.to_excel(
                         writer,
-                        sheet_name="Resultados",
+                        sheet_name=sheet_name,
                         index=False,
                         header=write_header,
                         startrow=startrow,

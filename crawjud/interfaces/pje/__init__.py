@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class DictSalvarPlanilha(TypedDict):
+class CapaProcessualPJeDict(TypedDict):
     """Defina o dicionário para salvar dados da planilha de processos PJE.
 
     Args:
@@ -29,7 +29,7 @@ class DictSalvarPlanilha(TypedDict):
         SEGREDO_JUSTIÇA (str): Indica se o processo está em segredo de justiça.
 
     Returns:
-        DictSalvarPlanilha: Dicionário tipado com os dados do processo.
+        CapaProcessualPJeDict: Dicionário tipado com os dados do processo.
 
     """
 
@@ -43,6 +43,68 @@ class DictSalvarPlanilha(TypedDict):
     DATA_DISTRIBUICAO: datetime
     STATUS_PROCESSO: str
     SEGREDO_JUSTIÇA: str
+
+
+class PartesProcessoPJeDict(TypedDict):
+    """Defina os campos das partes do processo judicial no padrão PJe.
+
+    Args:
+        ID_PJE (int): Identificador único do processo no PJE.
+        NOME (str): Nome da parte.
+        CPF (str): CPF da parte.
+        TIPO_PESSOA (str): Tipo da pessoa (física/jurídica).
+        PROCESSO (str): Número do processo.
+        POLO (str): Polo da parte (ativo/passivo).
+        PARTE_PRINCIPAL (bool): Indica se é parte principal.
+        TIPO_PARTE (str): Tipo da parte no processo.
+
+    Returns:
+        PartesProcessoPJeDict: Dicionário tipado com os dados da parte.
+
+    """
+
+    ID_PJE: int
+    NOME: str
+    CPF: str
+    TIPO_PARTE: str
+    TIPO_PESSOA: str
+    PROCESSO: str
+    POLO: str
+    PARTE_PRINCIPAL: bool
+
+
+class RepresentantePartesPJeDict(TypedDict):
+    """Defina os campos dos representantes das partes do processo judicial no padrão PJe.
+
+    Args:
+        ID_PJE (int): Identificador único do processo no PJE.
+        NOME (str): Nome do representante.
+        CPF (str): CPF do representante.
+        PARTE_PRINCIPAL (bool): Indica se é parte principal.
+        TIPO_PARTE (str): Tipo da parte representada.
+        TIPO_PESSOA (str): Tipo da pessoa (física/jurídica).
+        PROCESSO (str): Número do processo.
+        POLO (str): Polo da parte (ativo/passivo).
+        OAB (str): Número de inscrição na OAB.
+        EMAILS (str): E-mails do representante.
+        TELEFONE (str): Telefone do representante.
+
+    Returns:
+        RepresentantePartesPJeDict: Dicionário tipado com os dados do representante.
+
+    """
+
+    ID_PJE: int
+    NOME: str
+    CPF: str
+    REPRESENTADO: str
+    TIPO_PARTE: str
+    TIPO_PESSOA: str
+    PROCESSO: str
+    POLO: str
+    OAB: str
+    EMAILS: str
+    TELEFONE: str
 
 
 class ClasseJudicialDict(TypedDict):
