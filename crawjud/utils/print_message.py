@@ -59,7 +59,7 @@ def print_in_thread() -> None:
 
     while True:
         data = queue_msg.get()
-        sleep(5)
+        sleep(2)
         if data:
             data = dict(data)
 
@@ -129,7 +129,7 @@ def print_in_thread() -> None:
                     )
 
                 tqdm.write(message)
-                sleep(2)
+                sleep(0.5)
 
             except Exception as e:
                 tqdm.write("\n".join(traceback.format_exception(e)))
