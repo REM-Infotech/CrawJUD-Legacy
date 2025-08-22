@@ -24,23 +24,6 @@ work_dir = Path(__file__).cwd()
 queue_msg = Queue()
 event_stop_bot: Event = Event()
 
-sio = Client()
-
-
-@sio.on(event="stop_bot", namespace="/logsbot")
-def stop_bot[T](*args: T, **kwargs: T) -> None:
-    """Receba evento para parar o bot via SocketIO.
-
-    Args:
-        *args (T): Argumentos posicionais recebidos do evento.
-        **kwargs (T): Argumentos nomeados recebidos do evento.
-
-    """
-    tqdm.write(str(args))
-    tqdm.write(str(kwargs))
-    tqdm.write("teste")
-    event_stop_bot.set()
-
 
 def print_in_thread() -> None:
     """Envie mensagem de log para o sistema de tarefas assíncronas via SocketIO.
@@ -64,6 +47,22 @@ def print_in_thread() -> None:
 
     server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
     namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
+    sio = Client()
+
+    @sio.on(event="stop_bot", namespace="/logsbot")
+    def stop_bot[T](*args: T, **kwargs: T) -> None:
+        """Receba evento para parar o bot via SocketIO.
+
+        Args:
+            *args (T): Argumentos posicionais recebidos do evento.
+            **kwargs (T): Argumentos nomeados recebidos do evento.
+
+        """
+        tqdm.write(str(args))
+        tqdm.write(str(kwargs))
+        tqdm.write("teste")
+        event_stop_bot.set()
+
     try:
         sio.connect(
             url=server,

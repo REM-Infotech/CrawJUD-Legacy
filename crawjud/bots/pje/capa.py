@@ -16,8 +16,7 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
-from queue import Queue
-from threading import Event, Semaphore, Thread
+from threading import Semaphore, Thread
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
@@ -27,7 +26,6 @@ from pandas import DataFrame, ExcelWriter
 from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.master import event_stop_bot, queue_msg
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
@@ -42,9 +40,6 @@ from crawjud.resources.elements import pje as el
 from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-    from pathlib import Path
-
     from httpx import Response
 
     from crawjud.interfaces.pje import ProcessoJudicialDict
@@ -57,13 +52,9 @@ if TYPE_CHECKING:
 load_dotenv()
 
 SENTINELA = None
-queue_files = Queue(1)
-queue_save_xlsx = Queue()
+
 semaforo_arquivo: Semaphore = Semaphore(10)
 semaforo_processo: Semaphore = Semaphore(10)
-
-event_queue_files = Event()
-event_queue_save_xlsx = Event()
 
 
 @shared_task(name="pje.capa", bind=True, base=ContextTask)
@@ -91,17 +82,24 @@ class Capa(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        Thread(target=copia_integral, daemon=True).start()
         Thread(
-            target=save_file,
-            kwargs={"output_dir_path": self.output_dir_path, "pid": self.pid},
+            target=self.copia_integral,
             daemon=True,
+            name="Salvar Cópia Integral",
+        ).start()
+        Thread(
+            target=self.save_file,
+            daemon=True,
+            name="Salvar Sucessos",
         ).start()
         generator_regioes = self.regioes()
 
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures: list[Future] = []
             for regiao, data_regiao in generator_regioes:
+                if self.event_stop_bot.is_set():
+                    break
+
                 futures.append(
                     executor.submit(
                         self.queue,
@@ -116,17 +114,17 @@ class Capa(PjeBot):
                     future.result()
 
         with suppress(Exception):
-            queue_save_xlsx.join()
+            self.queue_save_xlsx.join()
 
         with suppress(Exception):
-            queue_msg.join()
+            self.queue_msg.join()
 
-        event_queue_files.set()
-        event_queue_save_xlsx.set()
+        self.event_queue_files.set()
+        self.event_queue_save_xlsx.set()
 
     def queue(self, regiao: str, data_regiao: list[BotData]) -> None:
         try:
-            if event_stop_bot.is_set():
+            if self.event_stop_bot.is_set():
                 return
 
             self.print_msg(message=f"Autenticando no TRT {regiao}")
@@ -173,7 +171,7 @@ class Capa(PjeBot):
                     future.result()
 
             with suppress(Exception):
-                queue_files.join()
+                self.queue_files.join()
 
     def thread_processo(
         self,
@@ -182,7 +180,7 @@ class Capa(PjeBot):
         regiao: str,
     ) -> None:
         try:
-            if event_stop_bot.is_set():
+            if self.event_stop_bot.is_set():
                 return
 
             sleep(0.5)
@@ -220,7 +218,7 @@ class Capa(PjeBot):
 
             if item.get("TRAZER_COPIA", "N").lower() == "s":
                 file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
-                queue_files.put({
+                self.queue_files.put({
                     "self": self,
                     "file_name": file_name,
                     "row": row,
@@ -316,7 +314,7 @@ class Capa(PjeBot):
                 for audiencia in data_audiencia
             ])
 
-            queue_save_xlsx.put({
+            self.queue_save_xlsx.put({
                 "to_save": list_audiencias,
                 "sheet_name": "Audiências",
             })
@@ -337,7 +335,7 @@ class Capa(PjeBot):
                 )
                 for assunto in data_assuntos
             ])
-            queue_save_xlsx.put({
+            self.queue_save_xlsx.put({
                 "to_save": list_assuntos,
                 "sheet_name": "Assuntos",
             })
@@ -407,11 +405,11 @@ class Capa(PjeBot):
                             ],
                         )
 
-            queue_save_xlsx.put({
+            self.queue_save_xlsx.put({
                 "to_save": partes,
                 "sheet_name": "Partes",
             })
-            queue_save_xlsx.put({
+            self.queue_save_xlsx.put({
                 "to_save": representantes,
                 "sheet_name": "Representantes",
             })
@@ -438,169 +436,141 @@ class Capa(PjeBot):
             VALOR_CAUSA=result["valorDaCausa"],
         )
 
-        queue_save_xlsx.put({
+        self.queue_save_xlsx.put({
             "to_save": [dict_salvar_planilha],
             "sheet_name": "Capa",
         })
 
+    def save_file(self) -> None:
+        """Consome itens da fila `queue_save_xlsx` e APPENDA na planilha 'Resultados'.
 
-def _as_dict_iter[T](x: T) -> Iterable[CapaProcessualPJeDict]:
-    """Aceita lista de dicts, objetos Pydantic (.dict) ou dataclasses.
+        Encerra quando receber o sentinela (None).
 
-    Returns:
-        Iterable[dict[]]
+        """
+        nome_planilha = f"Planilha Resultados - {self.pid}.xlsx"
+        path_planilha = self.output_dir_path.joinpath(nome_planilha)
 
-    """
-    if isinstance(x, list):
-        if not x:
-            return []
-        # se já forem dicts:
-        if isinstance(x[0], dict):
-            return x
-        # tenta Pydantic/dataclass-like
-        out = []
-        for item in x:
-            if hasattr(item, "dict"):
-                out.append(item.dict())
-            elif hasattr(item, "__dict__"):
-                out.append(vars(item))
-            else:
-                out.append(dict(item))  # pode falhar se não for mapeável
-        return out
-    # fallback: tenta transformar em dict único
-    return [dict(x)]
+        # cria/abre arquivo para APPEND
+        # pandas >= 2.0: if_sheet_exists=('replace'|'overlay'|'new'), funciona só em mode='a'
+        while (
+            not self.event_queue_save_xlsx.is_set()
+            and not self.event_stop_bot.is_set()
+        ):
+            data = self.queue_save_xlsx.get()
+            try:
+                rows = data["to_save"]
+                sheet_name = data["sheet_name"]
 
+                df = DataFrame(rows)
 
-def save_file(output_dir_path: Path, pid: str) -> None:
-    """Consome itens da fila `queue_save_xlsx` e APPENDA na planilha 'Resultados'.
+                # remove timezone para evitar erro no Excel
+                for col in df.select_dtypes(include=["datetimetz"]).columns:
+                    df[col] = df[col].dt.tz_localize(None)
 
-    Encerra quando receber o sentinela (None).
+                # --- APPEND na mesma aba, calculando a próxima linha ---
+                tqdm.write(f"Salvando worksheet: {sheet_name}")
+                if path_planilha.exists():
+                    with ExcelWriter(
+                        path=path_planilha,
+                        mode="a",
+                        engine="openpyxl",
+                        if_sheet_exists="overlay",
+                    ) as writer:
+                        # pega a aba (se existir) e calcula a próxima linha
+                        wb = writer.book
+                        ws = (
+                            wb[sheet_name]
+                            if sheet_name in wb.sheetnames
+                            else wb.create_sheet(sheet_name)
+                        )
+                        startrow = (
+                            ws.max_row if ws.max_row > 1 else 0
+                        )  # 0 => escreve com header
+                        write_header = startrow == 0
+                        df.to_excel(
+                            writer,
+                            sheet_name=sheet_name,
+                            index=False,
+                            header=write_header,
+                            startrow=startrow,
+                        )
+                else:
+                    # primeira escrita cria arquivo e cabeçalho
+                    with ExcelWriter(
+                        path=path_planilha,
+                        mode="w",
+                        engine="openpyxl",
+                    ) as writer:
+                        df.to_excel(writer, sheet_name=sheet_name, index=False)
 
-    """
-    nome_planilha = f"Planilha Resultados - {pid}.xlsx"
-    path_planilha = output_dir_path / nome_planilha
+                tqdm.write("Worksheet salva!")
+            except Exception as e:
+                # logue o stack completo (não interrompe o consumidor)
+                tqdm.write("\n".join(traceback.format_exception(e)))
 
-    # cria/abre arquivo para APPEND
-    # pandas >= 2.0: if_sheet_exists=('replace'|'overlay'|'new'), funciona só em mode='a'
-    while not event_queue_save_xlsx.is_set():
-        data = queue_save_xlsx.get()
-        try:
-            if event_stop_bot.is_set():
-                return
-            rows = data["to_save"]
-            sheet_name = data["sheet_name"]
+            finally:
+                self.queue_save_xlsx.task_done()
+                tqdm.write(
+                    f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
+                )
 
-            df = DataFrame(rows)
+    def copia_integral(self) -> None:
+        """Realiza o download da cópia integral do processo e salva no storage."""
+        while (
+            not self.event_queue_files.is_set()
+            and not self.event_stop_bot.is_set()
+        ):
+            try:
+                data = self.queue_files.get()
+                if data:
+                    data = dict(data)
+                    file_name: str = data.get("file_name")
+                    row: int = data.get("row")
+                    processo: str = data.get("processo")
+                    client: Client = data.get("client")
+                    id_processo: str = data.get("id_processo")
+                    regiao: str = data.get("regiao")
 
-            # remove timezone para evitar erro no Excel
-            for col in df.select_dtypes(include=["datetimetz"]).columns:
-                df[col] = df[col].dt.tz_localize(None)
+                    sleep(0.50)
+                    headers = client.headers
+                    cookies = client.cookies
 
-            # --- APPEND na mesma aba, calculando a próxima linha ---
-            tqdm.write(f"Salvando worksheet: {sheet_name}")
-            if path_planilha.exists():
-                with ExcelWriter(
-                    path=path_planilha,
-                    mode="a",
-                    engine="openpyxl",
-                    if_sheet_exists="overlay",
-                ) as writer:
-                    # pega a aba (se existir) e calcula a próxima linha
-                    wb = writer.book
-                    ws = (
-                        wb[sheet_name]
-                        if sheet_name in wb.sheetnames
-                        else wb.create_sheet(sheet_name)
+                    client = Client(
+                        timeout=900,
+                        headers=headers,
+                        cookies=cookies,
                     )
-                    startrow = (
-                        ws.max_row if ws.max_row > 1 else 0
-                    )  # 0 => escreve com header
-                    write_header = startrow == 0
-                    df.to_excel(
-                        writer,
-                        sheet_name=sheet_name,
-                        index=False,
-                        header=write_header,
-                        startrow=startrow,
+                    sleep(0.50)
+                    link = el.LINK_DOWNLOAD_INTEGRA.format(
+                        trt_id=regiao,
+                        id_processo=id_processo,
                     )
-            else:
-                # primeira escrita cria arquivo e cabeçalho
-                with ExcelWriter(
-                    path=path_planilha,
-                    mode="w",
-                    engine="openpyxl",
-                ) as writer:
-                    df.to_excel(writer, sheet_name=sheet_name, index=False)
-
-            tqdm.write("Worksheet salva!")
-        except Exception as e:
-            # logue o stack completo (não interrompe o consumidor)
-            tqdm.write("\n".join(traceback.format_exception(e)))
-
-        finally:
-            queue_save_xlsx.task_done()
-            tqdm.write(
-                f"Fim da tarefa. Restantes {queue_save_xlsx.unfinished_tasks}",
-            )
-
-
-def copia_integral() -> None:
-    """Realiza o download da cópia integral do processo e salva no storage."""
-    while not event_queue_files.is_set():
-        try:
-            data = queue_files.get()
-            if event_stop_bot.is_set():
-                return
-            if data:
-                data = dict(data)
-                self: Capa = data.get("self")
-                file_name: str = data.get("file_name")
-                row: int = data.get("row")
-                processo: str = data.get("processo")
-                client: Client = data.get("client")
-                id_processo: str = data.get("id_processo")
-                regiao: str = data.get("regiao")
-
-                sleep(0.50)
-                headers = client.headers
-                cookies = client.cookies
-
-                client = Client(
-                    timeout=900,
-                    headers=headers,
-                    cookies=cookies,
-                )
-                sleep(0.50)
-                link = el.LINK_DOWNLOAD_INTEGRA.format(
-                    trt_id=regiao,
-                    id_processo=id_processo,
-                )
-                message = f"Baixando arquivo do processo n.{processo}"
-                sleep(0.50)
-                self.print_msg(
-                    message=message,
-                    row=row,
-                    type_log="log",
-                )
-
-                with client.stream("get", url=link) as response:
-                    self.save_file_downloaded(
-                        file_name=file_name,
-                        response_data=response,
-                        processo=processo,
+                    message = f"Baixando arquivo do processo n.{processo}"
+                    sleep(0.50)
+                    self.print_msg(
+                        message=message,
                         row=row,
+                        type_log="log",
                     )
 
-        except ExecutionError as e:
-            self.print_msg(
-                message="\n".join(traceback.format_exception(e)),
-                row=row,
-                type_log="info",
-            )
+                    with client.stream("get", url=link) as response:
+                        self.save_file_downloaded(
+                            file_name=file_name,
+                            response_data=response,
+                            processo=processo,
+                            row=row,
+                        )
 
-            msg = "Erro ao baixar arquivo"
-            self.print_msg(message=msg, row=row, type_log="info")
+            except ExecutionError as e:
+                self.print_msg(
+                    message="\n".join(traceback.format_exception(e)),
+                    row=row,
+                    type_log="info",
+                )
 
-        finally:
-            queue_files.task_done()
-            tqdm.write("Fim da tarefa")
+                msg = "Erro ao baixar arquivo"
+                self.print_msg(message=msg, row=row, type_log="info")
+
+            finally:
+                self.queue_files.task_done()
+                tqdm.write("Fim da tarefa")

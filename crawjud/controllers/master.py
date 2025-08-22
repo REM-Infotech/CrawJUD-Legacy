@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import json
 import shutil
+import traceback
 from contextlib import suppress
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from threading import Thread
+from queue import Queue
+from threading import Event, Thread
 from time import sleep
 from typing import Literal
 from zoneinfo import ZoneInfo
@@ -16,6 +18,9 @@ from zoneinfo import ZoneInfo
 import base91
 import pandas as pd
 from pandas import Timestamp, read_excel
+from socketio import Client
+from termcolor import colored
+from tqdm import tqdm
 from werkzeug.utils import secure_filename
 
 from crawjud.common import name_colunas
@@ -23,11 +28,7 @@ from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
-from crawjud.utils.print_message import (
-    event_stop_bot,
-    print_in_thread,
-    queue_msg,
-)
+from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -42,6 +43,9 @@ work_dir = Path(__file__).cwd()
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
 
+    event_stop_bot: Event
+    queue_msg = Queue()
+
     def __init__(self, system: str) -> None:
         """Inicialize a instância principal do controller CrawJUD.
 
@@ -50,18 +54,152 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             system (str): sistema do robô
 
         """
+        self.event_stop_bot: Event = Event()
         if system != "pje":
             self._driver = DriverBot(
                 selected_browser="chrome",
                 with_proxy=False,
             )
-
             self._wait = self._driver.wait
+
         Thread(
-            target=print_in_thread,
+            target=self.print_in_thread,
             daemon=True,
             name="Worker Print Message",
         ).start()
+
+    def print_in_thread(self) -> None:
+        """Envie mensagem de log para o sistema de tarefas assíncronas via SocketIO.
+
+        Args:
+            locker (Lock): locker
+            start_time (str): Horário de início do processamento.
+            message (str): Mensagem a ser registrada.
+            total_rows (int): Total de linhas a serem processadas.
+            row (int): Linha atual do processamento.
+            errors (int): Quantidade de erros.
+            type_log (str): Tipo de log (info, error, etc).
+            pid (str | None): Identificador do processo.
+
+        """
+        from dotenv import dotenv_values
+
+        environ = dotenv_values()
+        transports = ["websocket"]
+        headers = {"Content-Type": "application/json"}
+
+        server = environ.get("SOCKETIO_SERVER_URL", "http://localhost:5000")
+        namespace = environ.get("SOCKETIO_SERVER_NAMESPACE", "/")
+        sio = Client()
+
+        @sio.on(event="stop_bot", namespace="/logsbot")
+        def stop_bot[T](*args: T, **kwargs: T) -> None:
+            """Receba evento para parar o bot via SocketIO.
+
+            Args:
+                *args (T): Argumentos posicionais recebidos do evento.
+                **kwargs (T): Argumentos nomeados recebidos do evento.
+
+            """
+            tqdm.write(str(args))
+            tqdm.write(str(kwargs))
+            tqdm.write("teste")
+            self.event_stop_bot.set()
+
+        try:
+            sio.connect(
+                url=server,
+                namespaces=[namespace],
+                transports=transports,
+                headers=headers,
+            )
+        except Exception as e:
+            tqdm.write("\n".join(traceback.format_exception(e)))
+            return
+
+        while True:
+            data = self.queue_msg.get()
+            sleep(2)
+            if data:
+                data = dict(data)
+
+                start_time: str = data.get("start_time")
+                message: str = data.get("message")
+                total_rows: int = data.get("total_rows")
+                row: int = data.get("row")
+                error: int = data.get("error")
+                success: int = data.get("success")
+                type_log: str = data.get("type_log")
+                pid: str | None = data.get("pid")
+
+                try:
+                    sio.emit(
+                        event="join_room",
+                        data={"data": {"room": pid}},
+                        namespace=namespace,
+                    )
+
+                    # Obtém o horário atual formatado
+                    time_exec = datetime.now(
+                        tz=ZoneInfo("America/Manaus"),
+                    ).strftime(
+                        "%H:%M:%S",
+                    )
+                    message = f"[({pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
+                    # Monta o prompt da mensagem
+                    # Cria objeto de log da mensagem
+                    data = {
+                        "data": MessageLogDict(
+                            message=str(message),
+                            pid=str(pid),
+                            row=int(row),
+                            type=type_log,
+                            status="Em Execução",
+                            total=int(total_rows),
+                            success=success,
+                            error=error,
+                            remaining=int(total_rows),
+                            start_time=start_time,
+                        ),
+                    }
+                    sio.emit(
+                        event="log_execution",
+                        data=data,
+                        namespace=namespace,
+                    )
+
+                    file_log = work_dir.joinpath(
+                        "temp",
+                        pid,
+                        f"{pid[:4].upper()}.log",
+                    )
+                    file_log.parent.mkdir(parents=True, exist_ok=True)
+                    file_log.touch(exist_ok=True)
+
+                    with file_log.open("a") as f:
+                        # Cria objeto de log da mensagem
+                        tqdm.write(
+                            file=f,
+                            s=colored(
+                                message,
+                                color={
+                                    "info": "cyan",
+                                    "log": "white",
+                                    "error": "red",
+                                    "warning": "magenta",
+                                    "success": "green",
+                                }.get(type_log, "white"),
+                            ),
+                        )
+
+                    tqdm.write(message)
+                    sleep(0.5)
+
+                except Exception as e:
+                    tqdm.write("\n".join(traceback.format_exception(e)))
+
+                finally:
+                    self.queue_msg.task_done()
 
     def load_data(self) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
@@ -270,7 +408,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 keyword_args.update({"error": self.error})
 
         with suppress(Exception):
-            queue_msg.put(keyword_args)
+            self.queue_msg.put(keyword_args)
 
     def append_success(
         self,
@@ -358,6 +496,3 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             saudacao = "Boa tarde"
 
         return saudacao
-
-
-__all__ = ["event_stop_bot"]
