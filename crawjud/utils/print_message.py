@@ -38,6 +38,7 @@ def stop_bot[T](*args: T, **kwargs: T) -> None:
     """
     tqdm.write(str(args))
     tqdm.write(str(kwargs))
+    tqdm.write("teste")
     event_stop_bot.set()
 
 

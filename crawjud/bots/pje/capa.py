@@ -109,11 +109,17 @@ class Capa(PjeBot):
                         data_regiao=data_regiao,
                     ),
                 )
-                sleep(10)
+                sleep(15)
 
             for future in futures:
                 with suppress(Exception):
                     future.result()
+
+        with suppress(Exception):
+            queue_save_xlsx.join()
+
+        with suppress(Exception):
+            queue_msg.join()
 
         event_queue_files.set()
         event_queue_save_xlsx.set()
@@ -165,12 +171,6 @@ class Capa(PjeBot):
             for future in as_completed(futures):
                 with suppress(Exception):
                     future.result()
-
-            with suppress(Exception):
-                queue_save_xlsx.join()
-
-            with suppress(Exception):
-                queue_msg.join()
 
             with suppress(Exception):
                 queue_files.join()
