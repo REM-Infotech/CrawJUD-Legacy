@@ -65,6 +65,9 @@ class AudienciaProcessoPjeDict(TypedDict):
     TIPO_AUDIENCIA: str
     MODO_AUDIENCIA: str
     STATUS: str
+    DATA_INICIO: str
+    DATA_FIM: str
+    DATA_MARCACAO: str
 
 
 class PartesProcessoPJeDict(TypedDict):

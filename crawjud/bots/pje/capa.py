@@ -152,8 +152,6 @@ class Capa(PjeBot):
             *args (T): Argumentos variáveis.
             **kwargs (T): Argumentos nomeados variáveis.
 
-
-
         """
         client_context = Client(cookies=self.cookies, headers=self.headers)
         pool_exe = ThreadPoolExecutor(max_workers=16)
@@ -312,6 +310,9 @@ class Capa(PjeBot):
                     if audiencia["tipo"]["isVirtual"]
                     else "VIRTUAL",
                     STATUS=audiencia["status"],
+                    DATA_INICIO=audiencia.get("dataInicio"),
+                    DATA_FIM=audiencia.get("dataFim"),
+                    DATA_MARCACAO=audiencia.get("dataMarcacao"),
                 )
                 for audiencia in data_audiencia
             ])
@@ -432,7 +433,9 @@ class Capa(PjeBot):
             SIGLA_CLASSE=result["classeJudicial"]["sigla"],
             ORGAO_JULGADOR=result["orgaoJulgador"]["descricao"],
             SIGLA_ORGAO_JULGADOR=result["orgaoJulgador"]["sigla"],
-            DATA_DISTRIBUICAO=formata_tempo(result["distribuidoEm"]),
+            DATA_DISTRIBUICAO=formata_tempo(result["distribuidoEm"])
+            if "distribuidoEm" in result
+            else "",
             STATUS_PROCESSO=result["labelStatusProcesso"],
             SEGREDO_JUSTIÇA=result["segredoDeJustica"],
             VALOR_CAUSA=result["valorDaCausa"],
