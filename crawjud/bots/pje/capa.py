@@ -463,6 +463,7 @@ class Capa(PjeBot):
         ):
             data = self.queue_save_xlsx.get()
             try:
+                sleep(2)
                 rows = data["to_save"]
                 sheet_name = data["sheet_name"]
 
@@ -508,12 +509,14 @@ class Capa(PjeBot):
                     ) as writer:
                         df.to_excel(writer, sheet_name=sheet_name, index=False)
 
-                tqdm.write("Worksheet salva!")
+                sleep(2)
+                tqdm.write("Worksheet salvo!")
             except Exception as e:
                 # logue o stack completo (não interrompe o consumidor)
                 tqdm.write("\n".join(traceback.format_exception(e)))
 
             finally:
+                sleep(2)
                 self.queue_save_xlsx.task_done()
                 tqdm.write(
                     f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
