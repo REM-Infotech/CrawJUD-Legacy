@@ -170,6 +170,12 @@ class Capa(PjeBot):
                     future.result()
 
             with suppress(Exception):
+                self.queue_save_xlsx.join()
+
+            with suppress(Exception):
+                self.queue_msg.join()
+
+            with suppress(Exception):
                 self.queue_files.join()
 
     def thread_processo(
