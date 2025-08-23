@@ -207,9 +207,16 @@ class Capa(PjeBot):
 
                 return
 
-            self.salvar_resultado(
+            self.print_msg(
+                message="Processo encontrado! extraindo informações...",
+                type_log="info",
+                row=row,
+            )
+
+            self.capa_processuala(
                 result=resultados["data_request"],
                 regiao=regiao,
+                row=row,
             )
 
             sleep(1.5)
@@ -219,6 +226,7 @@ class Capa(PjeBot):
                 client=client,
                 id_processo=resultados["id_processo"],
                 regiao=regiao,
+                row=row,
             )
 
             if item.get("TRAZER_COPIA", "N").lower() == "s":
@@ -240,6 +248,11 @@ class Capa(PjeBot):
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
+            self.print_msg(
+                message="Erro ao extrair informações do processo",
+                type_log="error",
+                row=row,
+            )
 
     def outras_informacoes(
         self,
@@ -247,6 +260,7 @@ class Capa(PjeBot):
         client: Client,
         id_processo: str,
         regiao: str,
+        row: int,
     ) -> None:
         request_partes: Response = None
         request_assuntos: Response = None
@@ -271,6 +285,12 @@ class Capa(PjeBot):
 
         sleep(0.25)
         with suppress(Exception):
+            self.print_msg(
+                message="Extraindo partes",
+                type_log="log",
+                row=row,
+            )
+
             request_partes = client.get(url=link_partes)
             if request_partes:
                 data_partes: PartesJsonDict = request_partes.json()
@@ -281,6 +301,12 @@ class Capa(PjeBot):
 
         sleep(0.25)
         with suppress(Exception):
+            self.print_msg(
+                message="Extraindo assuntos do processo",
+                type_log="log",
+                row=row,
+            )
+
             request_assuntos = client.get(url=link_assuntos)
             if request_assuntos:
                 data_assuntos = request_assuntos.json()
@@ -291,6 +317,12 @@ class Capa(PjeBot):
 
         sleep(0.25)
         with suppress(Exception):
+            self.print_msg(
+                message="Extraindo audiências",
+                type_log="log",
+                row=row,
+            )
+
             request_audiencias = client.get(url=link_audiencias)
             if request_audiencias:
                 data_audiencias = request_audiencias.json()
@@ -423,12 +455,18 @@ class Capa(PjeBot):
                 "sheet_name": "Representantes",
             })
 
-    def salvar_resultado(
+    def capa_processuala(
         self,
         result: ProcessoJudicialDict,
         regiao: str,
+        row: int,
     ) -> None:
         """Formata o resultado da busca para armazenar na planilha."""
+        self.print_msg(
+            message="Extraindo capa do processo...",
+            type_log="log",
+            row=row,
+        )
         link_consulta = f"https://pje.trt{regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
 
         dict_salvar_planilha = CapaProcessualPJeDict(
