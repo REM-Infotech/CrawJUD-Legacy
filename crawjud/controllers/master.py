@@ -518,8 +518,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         Performs cookie cleanup, quits the driver, and prints summary logs.
         """
-        self.row += 1
-
         with suppress(Exception):
             window_handles = self.driver.window_handles
             if window_handles:
