@@ -68,6 +68,12 @@ class Capa(PjeBot):
 
     """
 
+    to_add_representantes: ClassVar[list] = []
+    to_add_audiencias: ClassVar[list] = []
+    to_add_processos: ClassVar[list] = []
+    to_add_assuntos: ClassVar[list] = []
+    to_add_partes: ClassVar[list] = []
+
     futures_download_file: ClassVar[list[Future]] = []
 
     def execution(self) -> None:
@@ -103,7 +109,7 @@ class Capa(PjeBot):
 
                 futures.append(
                     executor.submit(
-                        self.queue,
+                        self.queue_regiao,
                         regiao=regiao,
                         data_regiao=data_regiao,
                     ),
@@ -114,8 +120,36 @@ class Capa(PjeBot):
                 with suppress(Exception):
                     future.result()
 
+        self.queue_save_xlsx.put({
+            "to_save": self.to_add_processos,
+            "sheet_name": "Capa",
+        })
+
+        self.queue_save_xlsx.put({
+            "to_save": self.to_add_audiencias,
+            "sheet_name": "Audiências",
+        })
+
+        self.queue_save_xlsx.put({
+            "to_save": self.to_add_assuntos,
+            "sheet_name": "Assuntos",
+        })
+
+        self.queue_save_xlsx.put({
+            "to_save": self.to_add_partes,
+            "sheet_name": "Partes",
+        })
+
+        self.queue_save_xlsx.put({
+            "to_save": self.to_add_representantes,
+            "sheet_name": "Representantes",
+        })
+
         with suppress(Exception):
             self.queue_save_xlsx.join()
+
+        with suppress(Exception):
+            self.queue_files.join()
 
         with suppress(Exception):
             self.queue_msg.join()
@@ -123,7 +157,7 @@ class Capa(PjeBot):
         self.event_queue_files.set()
         self.event_queue_save_xlsx.set()
 
-    def queue(self, regiao: str, data_regiao: list[BotData]) -> None:
+    def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
         try:
             if self.event_stop_bot.is_set():
                 return
@@ -158,7 +192,7 @@ class Capa(PjeBot):
         with client_context as client, pool_exe as executor:
             futures = [
                 executor.submit(
-                    self.thread_processo,
+                    self.queue,
                     item=item,
                     client=client,
                     regiao=regiao,
@@ -169,16 +203,7 @@ class Capa(PjeBot):
                 with suppress(Exception):
                     future.result()
 
-            with suppress(Exception):
-                self.queue_save_xlsx.join()
-
-            with suppress(Exception):
-                self.queue_msg.join()
-
-            with suppress(Exception):
-                self.queue_files.join()
-
-    def thread_processo(
+    def queue(
         self,
         item: BotData,
         client: Client,
@@ -355,10 +380,7 @@ class Capa(PjeBot):
                 for audiencia in data_audiencia
             ])
 
-            self.queue_save_xlsx.put({
-                "to_save": list_audiencias,
-                "sheet_name": "Audiências",
-            })
+            self.to_add_audiencias.extend(list_audiencias)
 
     def _salva_assuntos(
         self,
@@ -376,10 +398,8 @@ class Capa(PjeBot):
                 )
                 for assunto in data_assuntos
             ])
-            self.queue_save_xlsx.put({
-                "to_save": list_assuntos,
-                "sheet_name": "Assuntos",
-            })
+
+            self.to_add_assuntos.extend(list_assuntos)
 
             return list_assuntos[-1]
 
@@ -446,14 +466,8 @@ class Capa(PjeBot):
                             ],
                         )
 
-            self.queue_save_xlsx.put({
-                "to_save": partes,
-                "sheet_name": "Partes",
-            })
-            self.queue_save_xlsx.put({
-                "to_save": representantes,
-                "sheet_name": "Representantes",
-            })
+            self.to_add_partes.extend(list_partes)
+            self.to_add_representantes.extend(representantes)
 
     def capa_processuala(
         self,
@@ -485,10 +499,7 @@ class Capa(PjeBot):
             VALOR_CAUSA=result["valorDaCausa"],
         )
 
-        self.queue_save_xlsx.put({
-            "to_save": [dict_salvar_planilha],
-            "sheet_name": "Capa",
-        })
+        self.to_add_processos.append(dict_salvar_planilha)
 
     def save_file(self) -> None:
         """Consome itens da fila `queue_save_xlsx` e APPENDA na planilha 'Resultados'.

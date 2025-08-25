@@ -15,15 +15,12 @@ from quart import Quart
 from quart_cors import cors
 from quart_jwt_extended import JWTManager
 from quart_socketio import SocketIO
-from tqdm import tqdm
 
 from crawjud.celery_app import make_celery
 from crawjud.utils.middleware import ProxyHeadersMiddleware
 
 
-def check_cors_allowed_origins(*args) -> bool:
-    tqdm.write(f"CORS allowed origins check: {args[0]}")
-
+def check_cors_allowed_origins(*args, **kwargs) -> bool:  # noqa: ANN003, ARG001
     return True
 
 

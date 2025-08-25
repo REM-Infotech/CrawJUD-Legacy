@@ -66,7 +66,7 @@ async def executions() -> Response:
 
         data = [
             {
-                "pid": item.pid,
+                "pid": item.pid[:8].upper(),
                 "user": item.user.nome_usuario,
                 "botname": item.bot.display_name,
                 "xlsx": item.arquivo_xlsx,
