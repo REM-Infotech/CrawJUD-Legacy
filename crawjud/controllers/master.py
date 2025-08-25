@@ -11,19 +11,18 @@ from io import BytesIO
 from pathlib import Path
 from queue import Queue
 from threading import Event, Thread
+from time import sleep
 from typing import Literal
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import base91
-import pandas as pd
-from pandas import Timestamp, read_excel
+from pandas import DataFrame, ExcelWriter, Timestamp, read_excel
 from socketio import Client
 from termcolor import colored
 from tqdm import tqdm
 from werkzeug.utils import secure_filename
 
-from crawjud.common import name_colunas
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.abstract import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
@@ -414,80 +413,93 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         with suppress(Exception):
             self.queue_msg.put(keyword_args)
 
-    def append_success(
-        self,
-        data: BotData,
-        message: str | None = None,
-        file_name_success: str | None = None,
-        type_log: str = "success",
-    ) -> None:
-        """Registre dados de sucesso em planilha de execuções bem-sucedidas.
+    def save_file(self) -> None:
+        """Consome itens da fila `queue_save_xlsx` e adiciona na planilha.
 
-        Args:
-            data (BotData): Dados a serem registrados.
-            message (str, opcional): Mensagem de sucesso para log.
-            file_name_success (str, opcional): Nome do arquivo para salvar os dados.
-            type_log (str): Tipo de log (default: "success").
+        Encerra quando receber o sentinela (None).
 
         """
-        # Define mensagem padrão caso não seja fornecida
-        if not message:
-            message = "Execução do processo efetuada com sucesso!"
+        nome_planilha = f"Planilha Resultados - {self.pid}.xlsx"
+        path_planilha = self.output_dir_path.joinpath(nome_planilha)
 
-        # Função auxiliar para salvar informações em Excel
-        def save_info(
-            data: list[dict[str, str]],
-            file_name_success: str | None,
-        ) -> None:
-            output_success = self.output_dir_path.joinpath(file_name_success)
-            excel_writer = pd.ExcelWriter(
-                path=str(output_success),
-                engine="openpyxl",
-                mode="w",
-            )
-            with excel_writer as writer:
-                df = pd.DataFrame(data)
-                # Caso a planilha já exista, calcula a próxima linha
-                row_start = 0
+        # cria/abre arquivo para APPEND
+        # pandas >= 2.0: if_sheet_exists=('replace'|'overlay'|'new'), funciona só em mode='a'
+        while (
+            not self.event_queue_save_xlsx.is_set()
+            and not self.event_stop_bot.is_set()
+        ):
+            data = self.queue_save_xlsx.get()
+            try:
+                sleep(2)
+                rows = data["to_save"]
+                sheet_name = data["sheet_name"]
 
-                with suppress(Exception):
-                    row_start = int(writer.book["Sucessos"].max_row) + 1
+                df = DataFrame(rows)
 
-                df.to_excel(
-                    excel_writer=writer,
-                    sheet_name="Sucessos",
-                    startrow=row_start,
-                    index=False,
+                # Remove timezone de todas as colunas possíveis para evitar erro no Excel
+                for col in df.columns:
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_localize(None)
+                            if hasattr(x, "tz_localize")
+                            else x,
+                        )
+                        continue
+
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_convert(None)
+                            if hasattr(x, "tz_convert")
+                            else x,
+                        )
+                # --- APPEND na mesma aba, calculando a próxima linha ---
+                tqdm.write(f"Salvando worksheet: {sheet_name}")
+                if path_planilha.exists():
+                    with ExcelWriter(
+                        path=path_planilha,
+                        mode="a",
+                        engine="openpyxl",
+                        if_sheet_exists="overlay",
+                    ) as writer:
+                        # pega a aba (se existir) e calcula a próxima linha
+                        wb = writer.book
+                        ws = (
+                            wb[sheet_name]
+                            if sheet_name in wb.sheetnames
+                            else wb.create_sheet(sheet_name)
+                        )
+                        startrow = (
+                            ws.max_row if ws.max_row > 1 else 0
+                        )  # 0 => escreve com header
+                        write_header = startrow == 0
+                        df.to_excel(
+                            writer,
+                            sheet_name=sheet_name,
+                            index=False,
+                            header=write_header,
+                            startrow=startrow,
+                        )
+                else:
+                    # primeira escrita cria arquivo e cabeçalho
+                    with ExcelWriter(
+                        path=path_planilha,
+                        mode="w",
+                        engine="openpyxl",
+                    ) as writer:
+                        df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+                sleep(2)
+                tqdm.write("Worksheet salvo!")
+            except Exception as e:
+                # logue o stack completo (não interrompe o consumidor)
+                tqdm.write("\n".join(traceback.format_exception(e)))
+
+            finally:
+                sleep(2)
+                self.queue_save_xlsx.task_done()
+                tqdm.write(
+                    f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
                 )
-
-        # Função auxiliar para normalizar os dados
-        def normalize_data(data: BotData) -> list[dict[str, str]]:
-            if isinstance(data, list) and all(
-                isinstance(item, dict) for item in data
-            ):
-                return data
-
-            data2 = dict.fromkeys(name_colunas, "")
-            for item in data:
-                data2_itens = list(
-                    filter(
-                        lambda x: x[1] is None or str(x[1]).strip() == "",
-                        list(data2.items()),
-                    ),
-                )
-                for key, _ in data2_itens:
-                    data2.update({key: item})
-                    break
-            return [data2]
-
-        # Normaliza os dados para garantir formato correto
-        data_to_save = normalize_data(data)
-
-        # Salva informações na planilha de sucesso
-        save_info(data_to_save, file_name_success)
-
-        # Registra mensagem de log
-        self.print_msg(message=message, type_log=type_log)
 
     def saudacao(self) -> Literal["Bom dia", "Boa tarde", "Boa noite"]:
         hora = datetime.now(tz=ZoneInfo("America/Manaus")).hour

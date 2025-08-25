@@ -22,7 +22,6 @@ from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
 from httpx import Client, Response
-from pandas import DataFrame, ExcelWriter
 from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
@@ -469,94 +468,6 @@ class Capa(PjeBot):
         )
 
         self.to_add_processos.append(dict_salvar_planilha)
-
-    def save_file(self) -> None:
-        """Consome itens da fila `queue_save_xlsx` e adiciona na planilha.
-
-        Encerra quando receber o sentinela (None).
-
-        """
-        nome_planilha = f"Planilha Resultados - {self.pid}.xlsx"
-        path_planilha = self.output_dir_path.joinpath(nome_planilha)
-
-        # cria/abre arquivo para APPEND
-        # pandas >= 2.0: if_sheet_exists=('replace'|'overlay'|'new'), funciona só em mode='a'
-        while (
-            not self.event_queue_save_xlsx.is_set()
-            and not self.event_stop_bot.is_set()
-        ):
-            data = self.queue_save_xlsx.get()
-            try:
-                sleep(2)
-                rows = data["to_save"]
-                sheet_name = data["sheet_name"]
-
-                df = DataFrame(rows)
-
-                # Remove timezone de todas as colunas possíveis para evitar erro no Excel
-                for col in df.columns:
-                    with suppress(Exception):
-                        df[col] = df[col].apply(
-                            lambda x: x.tz_localize(None)
-                            if hasattr(x, "tz_localize")
-                            else x,
-                        )
-                        continue
-
-                    with suppress(Exception):
-                        df[col] = df[col].apply(
-                            lambda x: x.tz_convert(None)
-                            if hasattr(x, "tz_convert")
-                            else x,
-                        )
-                # --- APPEND na mesma aba, calculando a próxima linha ---
-                tqdm.write(f"Salvando worksheet: {sheet_name}")
-                if path_planilha.exists():
-                    with ExcelWriter(
-                        path=path_planilha,
-                        mode="a",
-                        engine="openpyxl",
-                        if_sheet_exists="overlay",
-                    ) as writer:
-                        # pega a aba (se existir) e calcula a próxima linha
-                        wb = writer.book
-                        ws = (
-                            wb[sheet_name]
-                            if sheet_name in wb.sheetnames
-                            else wb.create_sheet(sheet_name)
-                        )
-                        startrow = (
-                            ws.max_row if ws.max_row > 1 else 0
-                        )  # 0 => escreve com header
-                        write_header = startrow == 0
-                        df.to_excel(
-                            writer,
-                            sheet_name=sheet_name,
-                            index=False,
-                            header=write_header,
-                            startrow=startrow,
-                        )
-                else:
-                    # primeira escrita cria arquivo e cabeçalho
-                    with ExcelWriter(
-                        path=path_planilha,
-                        mode="w",
-                        engine="openpyxl",
-                    ) as writer:
-                        df.to_excel(writer, sheet_name=sheet_name, index=False)
-
-                sleep(2)
-                tqdm.write("Worksheet salvo!")
-            except Exception as e:
-                # logue o stack completo (não interrompe o consumidor)
-                tqdm.write("\n".join(traceback.format_exception(e)))
-
-            finally:
-                sleep(2)
-                self.queue_save_xlsx.task_done()
-                tqdm.write(
-                    f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
-                )
 
     def copia_integral(self) -> None:
         """Realiza o download da cópia integral do processo e salva no storage."""
