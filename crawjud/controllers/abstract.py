@@ -106,11 +106,11 @@ class AbstractCrawJUD[T]:
         self._pid = new_pid
 
     @property
-    def start_time(self) -> str:
+    def start_time(self) -> float:
         return self._start_time
 
     @start_time.setter
-    def start_time(self, _start_time: str) -> None:
+    def start_time(self, _start_time: float) -> None:
         self._start_time = _start_time
 
     @property

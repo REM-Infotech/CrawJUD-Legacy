@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from queue import Queue
 from threading import Event, Lock
-from time import sleep
+from time import perf_counter, sleep
 from typing import TYPE_CHECKING, ClassVar, Literal, cast
 
 from dotenv import dotenv_values
@@ -37,7 +37,6 @@ from crawjud.interfaces.types.pje import (
     Processo,
 )
 from crawjud.resources.elements import pje as el
-from crawjud.utils.formatadores import formata_tempo
 from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.recaptcha import captcha_to_image
@@ -84,11 +83,10 @@ class PjeBot[T](CrawJUD):
         self.pid = str(current_task.request.id)
 
         super().__init__(system="pje")
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
 
         self.folder_storage = storage_folder_name
         self.current_task = current_task
-        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.start_time = perf_counter()
 
     def search(
         self,

@@ -11,7 +11,7 @@ from io import BytesIO
 from pathlib import Path
 from queue import Queue
 from threading import Event, Thread
-from time import sleep
+from time import perf_counter, sleep
 from typing import Literal
 from uuid import uuid4
 from zoneinfo import ZoneInfo
@@ -512,3 +512,30 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             saudacao = "Boa tarde"
 
         return saudacao
+
+    def finalize_execution(self) -> None:
+        """Finalize bot execution by closing browsers and logging total time.
+
+        Performs cookie cleanup, quits the driver, and prints summary logs.
+        """
+        self.row += 1
+
+        with suppress(Exception):
+            window_handles = self.driver.window_handles
+            if window_handles:
+                self.driver.delete_all_cookies()
+                self.driver.quit()
+
+        end_time = perf_counter()
+        execution_time = datetime.fromtimestamp(
+            end_time - self.start_time,
+            tz=ZoneInfo("America/Manaus"),
+        )
+
+        type_log = "success"
+        message = f"Fim da execução | Tempo de Execução: {execution_time.strftime('%H:%M:%S')}"
+        self.print_msg(message=message, row=self.row, type_log=type_log)
+
+        type_log = "info"
+        message = f"Sucessos: {self.success} | Erros: {self.error}"
+        self.print_msg(message=message, row=self.row, type_log=type_log)
