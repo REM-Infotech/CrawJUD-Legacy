@@ -13,6 +13,7 @@ from queue import Queue
 from threading import Event, Thread
 from time import perf_counter, sleep
 from typing import Literal
+from unicodedata import combining, normalize
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -546,3 +547,10 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             **kwargs (T): Argumentos nomeados.
 
         """
+
+    def format_string(self, string: str) -> str:
+        normalized_string = "".join([
+            c for c in normalize("NFKD", string) if not combining(c)
+        ])
+
+        return secure_filename(normalized_string)
