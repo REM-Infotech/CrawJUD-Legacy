@@ -11,8 +11,8 @@ from io import BytesIO
 from pathlib import Path
 from queue import Queue
 from threading import Event, Thread
-from time import sleep
 from typing import Literal
+from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import base91
@@ -38,6 +38,14 @@ func_dict_check = {
 }
 
 work_dir = Path(__file__).cwd()
+
+COLORS_DICT = {
+    "info": "cyan",
+    "log": "white",
+    "error": "red",
+    "warning": "magenta",
+    "success": "green",
+}
 
 
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
@@ -114,22 +122,16 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 headers=headers,
             )
 
-            sio.emit(
-                event="join_room",
-                data={"data": {"room": self.pid}},
-                namespace=namespace,
-            )
-
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
             return
 
         while True:
+            current_time = datetime.now(tz=ZoneInfo("America/Manaus"))
             data = self.queue_msg.get()
             if data:
-                try:
-                    sleep(1.5)
-                    data = dict(data)
+                with suppress(Exception):
+                    # Argumentos Necessários
                     start_time: str = data.get("start_time")
                     message: str = data.get("message")
                     total_rows: int = data.get("total_rows")
@@ -137,16 +139,24 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                     error: int = data.get("error")
                     success: int = data.get("success")
                     type_log: str = data.get("type_log")
-                    pid: str | None = data.get("pid")
+                    pid: str | None = data.get("pid", uuid4().hex)
 
-                    # Obtém o horário atual formatado
-                    time_exec = datetime.now(
-                        tz=ZoneInfo("America/Manaus"),
-                    ).strftime(
-                        "%H:%M:%S",
-                    )
-                    message = f"[({pid[:6].upper()}, {type_log}, {row}, {time_exec})> {message}]"
+                    with suppress(Exception):
+                        sio.emit(
+                            event="join_room",
+                            data={"data": {"room": self.pid}},
+                            namespace=namespace,
+                        )
+
+                    # Formata o horário atual
+                    time_exec = current_time.strftime("%H:%M:%S")
+
+                    # Obtém o PID reduzido
+                    mini_pid = pid[:6].upper()
+
                     # Monta o prompt da mensagem
+                    message = f"[({mini_pid}, {type_log}, {row}, {time_exec})> {message}]"
+
                     # Cria objeto de log da mensagem
                     data = {
                         "data": MessageLogDict(
@@ -162,44 +172,39 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                             start_time=start_time,
                         ),
                     }
-                    sio.emit(
-                        event="log_execution",
-                        data=data,
-                        namespace=namespace,
-                    )
 
-                    file_log = work_dir.joinpath(
-                        "temp",
-                        pid,
-                        f"{pid[:4].upper()}.log",
-                    )
-                    file_log.parent.mkdir(parents=True, exist_ok=True)
-                    file_log.touch(exist_ok=True)
-
-                    with file_log.open("a") as f:
-                        # Cria objeto de log da mensagem
-                        tqdm.write(
-                            file=f,
-                            s=colored(
-                                message,
-                                color={
-                                    "info": "cyan",
-                                    "log": "white",
-                                    "error": "red",
-                                    "warning": "magenta",
-                                    "success": "green",
-                                }.get(type_log, "white"),
-                            ),
+                    # Envia o log da execução
+                    with suppress(Exception):
+                        sio.emit(
+                            event="log_execution",
+                            data=data,
+                            namespace=namespace,
                         )
 
-                    tqdm.write(message)
-                    sleep(1.5)
+                    # Cria o caminho do arquivo de log
+                    file_log_name = f"{pid[:4].upper()}.log"
+                    file_log = work_dir.joinpath("temp", pid, file_log_name)
 
-                except Exception as e:
-                    tqdm.write("\n".join(traceback.format_exception(e)))
+                    # Cria o diretório pai, se não existir
+                    file_log.parent.mkdir(parents=True, exist_ok=True)
 
-                finally:
-                    self.queue_msg.task_done()
+                    # Cria o arquivo de log, se não existir
+                    file_log.touch(exist_ok=True)
+
+                    # Define a cor da mensagem
+                    colour = COLORS_DICT.get(type_log, "white")
+                    colored_msg = colored(message, color=colour)
+
+                    # Adiciona a mensagem ao arquivo de log
+                    with file_log.open("a") as f:
+                        # Adiciona a mensagem ao arquivo de log
+                        tqdm.write(file=f, s=colored_msg)
+
+                    # Adiciona a mensagem ao console
+                    tqdm.write(colored_msg)
+
+                # Finaliza a tarefa da fila
+                self.queue_msg.task_done()
 
     def load_data(self) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
