@@ -68,11 +68,11 @@ class Capa(PjeBot):
 
     """
 
-    to_add_representantes: ClassVar[list] = []
-    to_add_audiencias: ClassVar[list] = []
-    to_add_processos: ClassVar[list] = []
-    to_add_assuntos: ClassVar[list] = []
-    to_add_partes: ClassVar[list] = []
+    to_add_representantes: ClassVar[list[RepresentantePartesPJeDict]] = []
+    to_add_audiencias: ClassVar[list[AudienciaProcessoPjeDict]] = []
+    to_add_processos: ClassVar[list[CapaProcessualPJeDict]] = []
+    to_add_assuntos: ClassVar[list[AssuntosProcessoPJeDict]] = []
+    to_add_partes: ClassVar[list[PartesProcessoPJeDict]] = []
 
     futures_download_file: ClassVar[list[Future]] = []
 
@@ -238,7 +238,7 @@ class Capa(PjeBot):
                 row=row,
             )
 
-            self.capa_processuala(
+            self.capa_processual(
                 result=resultados["data_request"],
                 regiao=regiao,
                 row=row,
@@ -469,7 +469,7 @@ class Capa(PjeBot):
             self.to_add_partes.extend(list_partes)
             self.to_add_representantes.extend(representantes)
 
-    def capa_processuala(
+    def capa_processual(
         self,
         result: ProcessoJudicialDict,
         regiao: str,
