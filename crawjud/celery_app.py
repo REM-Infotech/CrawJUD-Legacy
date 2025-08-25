@@ -33,7 +33,6 @@ if TYPE_CHECKING:
 
 app = Celery(__name__)
 
-
 clear()
 envdot = dotenv_values()
 environ["WORKER_NAME"] = f"{uuid4().hex[:5].upper()}@{node()}"

@@ -56,6 +56,7 @@ dependencies = [
     "psycopg2 (>=2.9.10,<3.0.0)",
     "flask-login (>=0.6.3,<0.7.0)",
     "flask-mail (>=0.10.0,<0.11.0)",
+    "celery-types (>=0.23.0,<0.24.0)",
 
 
 ]
