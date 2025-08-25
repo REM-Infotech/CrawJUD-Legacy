@@ -5,6 +5,8 @@ from __future__ import annotations
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
+from queue import Queue
+from threading import Event, Thread
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING, NoReturn
 from zoneinfo import ZoneInfo
@@ -65,6 +67,13 @@ class ProjudiBot[T](CrawJUD):
         self.current_task = current_task
         self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
+
+        self.queue_files = Queue()
+        self.queue_save_xlsx = Queue()
+        self.event_queue_files = Event()
+        self.event_queue_save_xlsx = Event()
+
+        Thread(target=self.save_file, daemon=True).start()
 
         super().__init__(system=system)
 

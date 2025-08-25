@@ -15,6 +15,12 @@ command_sel_parte_protocolo2 = (
     "return document.getElementById('{id_part}').checked"
 )
 
+info_geral_table_primeiro_grau = (
+    '//div[@id="includeContent"]/fieldset/table/tbody'
+)
+
+info_processual_primeiro_grau = '//table[@id="informacoesProcessuais"]/tbody'
+
 url_login = (
     "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
 )

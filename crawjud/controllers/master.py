@@ -10,14 +10,16 @@ from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 from queue import Queue
+from re import search
 from threading import Event, Thread
 from time import perf_counter, sleep
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 from unicodedata import combining, normalize
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import base91
+from bs4 import BeautifulSoup
 from pandas import DataFrame, ExcelWriter, Timestamp, read_excel
 from socketio import Client
 from termcolor import colored
@@ -31,6 +33,9 @@ from crawjud.interfaces.dict.bot import BotData, DictFiles
 from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
+
+if TYPE_CHECKING:
+    from bs4.element import PageElement
 
 func_dict_check = {
     "bot": ["execution"],
@@ -554,3 +559,56 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         ])
 
         return secure_filename(normalized_string)
+
+    def text_is_a_date(self, text: str) -> bool:
+        """Determine if the provided text matches a date-like pattern.
+
+        Args:
+            text (str): The text to evaluate.
+
+        Returns:
+            bool: True if the text resembles a date; False otherwise.
+
+        """
+        date_like_pattern = r"\d{1,4}[-/]\d{1,2}[-/]\d{1,4}"
+        return bool(search(date_like_pattern, text))
+
+    def parse_data(self, inner_html: str) -> dict[str, str]:
+        soup = BeautifulSoup(inner_html, "html.parser")
+        dados = {}
+        # percorre todas as linhas <tr>
+
+        def normalize(txt: str) -> str:
+            # Junta quebras de linha/tabs/múltiplos espaços em espaço simples
+            return " ".join(txt.split())
+
+        def get_text(td: PageElement) -> str:
+            # Usa separador " " para não colar palavras; strip nas bordas
+            return normalize(td.get_text(" ", strip=True))
+
+        for tr in soup.find_all("tr"):
+            tds = tr.find_all("td")
+            i = 0
+            while i < len(tds):
+                td = tds[i]
+                lbl_tag = td.find("label")
+                if lbl_tag:
+                    label = normalize(lbl_tag.get_text().rstrip(":"))
+                    # avançar para o próximo td que tenha conteúdo real (pule espaçadores)
+                    j = i + 1
+                    valor = ""
+                    while j < len(tds):
+                        texto = get_text(tds[j])
+                        # considera vazio se for "&nbsp;" ou string vazia
+                        if texto and texto != " ":  # &nbsp; vira U+00A0
+                            valor = texto
+                            break
+                        j += 1
+                    if label and valor:
+                        dados[label] = valor
+                    # continue a partir do td seguinte ao que usamos como valor
+                    i = j + 1
+                else:
+                    i += 1
+
+        return dados
