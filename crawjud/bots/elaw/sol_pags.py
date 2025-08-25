@@ -109,7 +109,7 @@ class SolPags(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def new_payment(self) -> None:
         """Create a new payment entry.
@@ -139,7 +139,7 @@ class SolPags(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def set_pgto(self, namedef: str) -> None:
         """Set the payment type.
@@ -196,7 +196,7 @@ class SolPags(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def condenacao(self) -> None:
         """Refatore o processamento de condenação para reduzir a complexidade.
@@ -219,7 +219,7 @@ class SolPags(ElawBot):
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def _informar_valor_guia(self) -> None:
         """Informe o valor da guia no campo apropriado."""
@@ -685,7 +685,7 @@ class SolPags(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def save_changes(self) -> None:
         """Save all changes made during the payment process.
@@ -710,7 +710,7 @@ class SolPags(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def confirm_save(self) -> None:
         """Confirm the saving of payment details."""

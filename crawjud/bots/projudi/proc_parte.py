@@ -143,7 +143,7 @@ class ProcParte(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]) -> None:
         """Extract and log details from each process element in the provided list.

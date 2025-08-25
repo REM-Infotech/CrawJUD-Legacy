@@ -53,7 +53,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
     event_stop_bot: Event
     queue_msg = Queue()
 
-    def __init__(self, system: str) -> None:
+    def __init__(self, system: str | None = None) -> None:
         """Inicialize a instância principal do controller CrawJUD.
 
         Args:
@@ -537,3 +537,12 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         type_log = "info"
         message = f"Sucessos: {self.success} | Erros: {self.error}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
+
+    def append_error(self, *args: T, **kwargs: T) -> None:
+        """Adiciona erro ao DataFrame e salva na planilha.
+
+        Args:
+            *args (T): Argumentos posicionais.
+            **kwargs (T): Argumentos nomeados.
+
+        """

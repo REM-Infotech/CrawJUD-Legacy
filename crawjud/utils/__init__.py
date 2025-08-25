@@ -14,7 +14,16 @@ def kill_browsermob() -> None:
     matching_procs = []
 
     # Primeira fase: coleta segura dos processos
-    for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+    list_process_iter = list(
+        filter(
+            lambda p: "cmdline" in p.info
+            and p.info["cmdline"] is not None
+            and len(p.info["cmdline"]) > 0,
+            psutil.process_iter(["pid", "name", "cmdline"]),
+        ),
+    )
+
+    for proc in list_process_iter:
         with suppress(
             psutil.NoSuchProcess,
             psutil.AccessDenied,
@@ -41,9 +50,16 @@ def kill_chromedriver() -> None:
     """Finaliza processos relacionados ao ChromeDriver."""
     keyword = "chromedriver"
     matching_procs = []
-
+    list_process_iter = list(
+        filter(
+            lambda p: "cmdline" in p.info
+            and p.info["cmdline"] is not None
+            and len(p.info["cmdline"]) > 0,
+            psutil.process_iter(["pid", "name", "cmdline"]),
+        ),
+    )
     # Primeira fase: coleta segura dos processos
-    for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+    for proc in list_process_iter:
         with suppress(
             psutil.NoSuchProcess,
             psutil.AccessDenied,

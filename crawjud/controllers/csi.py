@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from time import perf_counter
 from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
@@ -10,11 +11,8 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import csi as el
-from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
-    from datetime import datetime
-
     from crawjud.custom.task import ContextTask
 
 
@@ -41,11 +39,12 @@ class CsiBot[T](CrawJUD):
         **kwargs: T,
     ) -> None:
         """Instancia a classe."""
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
+        self.botname = name
+        self.botsystem = system
 
         self.folder_storage = storage_folder_name
         self.current_task = current_task
-        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
         super().__init__()

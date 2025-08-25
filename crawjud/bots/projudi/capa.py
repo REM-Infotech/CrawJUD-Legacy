@@ -51,7 +51,7 @@ class Capa(ProjudiBot):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    self.auth_bot()
+                    self.auth()
 
             try:
                 self.queue()
@@ -81,7 +81,7 @@ class Capa(ProjudiBot):
         try:
             search = self.search()
             trazer_copia = self.bot_data.get("TRAZER_COPIA", "não")
-            if search is not True:
+            if not search:
                 _raise_execution_error("Processo não encontrado")
 
             self.driver.refresh()
@@ -90,7 +90,7 @@ class Capa(ProjudiBot):
             if trazer_copia and trazer_copia.lower() == "sim":
                 data = self.copia_pdf(data)
 
-            self.append_success(
+            self.save_file(
                 [data],
                 "Informações do processo extraidas com sucesso!",
             )
@@ -99,7 +99,7 @@ class Capa(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def copia_pdf(
         self,

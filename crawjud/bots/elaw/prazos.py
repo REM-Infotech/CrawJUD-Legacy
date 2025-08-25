@@ -120,7 +120,7 @@ class Prazos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def tabela_pautas(self) -> None:
         """Verify if there are existing schedules for the specified day.
@@ -147,7 +147,7 @@ class Prazos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def nova_pauta(self) -> None:
         """Launch a new audience schedule.
@@ -222,7 +222,7 @@ class Prazos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def salvar_prazo(self) -> None:
         """Save the newly created deadline.
@@ -247,7 +247,7 @@ class Prazos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def checar_lancamento(self) -> dict[str, str] | None:
         """Check if the deadline has been successfully recorded.
@@ -317,6 +317,6 @@ class Prazos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
         return data

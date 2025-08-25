@@ -125,7 +125,7 @@ class Protocolo(ProjudiBot):
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def confirm_protocol(self) -> str | None:
         """Empty.
@@ -365,7 +365,7 @@ class Protocolo(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def add_new_file(self) -> None:
         """Upload the main petition file and its attachments for a protocol.
@@ -431,7 +431,7 @@ class Protocolo(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def set_file_principal(self) -> None:
         """Designate the principal file among the uploaded documents.
@@ -463,7 +463,7 @@ class Protocolo(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def more_files(self) -> None:
         """Upload additional files as defined in the bot data for protocol documentation.
@@ -535,7 +535,7 @@ class Protocolo(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def sign_files(self) -> None:
         """Sign the protocol documents by providing the certificate password and confirming.
@@ -594,7 +594,7 @@ class Protocolo(ProjudiBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def finish_move(self) -> None:
         self.message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
@@ -688,7 +688,7 @@ class Protocolo(ProjudiBot):
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def remove_files(self) -> None:
         """Delete the uploaded files from the protocol after processing."""

@@ -5,8 +5,8 @@ from __future__ import annotations
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from time import sleep
-from typing import TYPE_CHECKING
+from time import perf_counter, sleep
+from typing import TYPE_CHECKING, NoReturn
 from zoneinfo import ZoneInfo
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -14,10 +14,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from crawjud.common.exceptions.bot import ExecutionError, LoginSystemError
+from crawjud.common.exceptions.bot import (
+    ExecutionError,
+    LoginSystemError,
+    StartError,
+)
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import projudi as el
-from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
@@ -38,6 +41,10 @@ CSS_INPUT_PROCESSO = {
 }
 
 
+def _raise_start_error(message: str) -> NoReturn:
+    raise StartError(message=message)
+
+
 class ProjudiBot[T](CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
@@ -51,23 +58,29 @@ class ProjudiBot[T](CrawJUD):
         **kwargs: T,
     ) -> None:
         """Instancia a classe."""
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
+        self.botname = name
+        self.botsystem = system
 
         self.folder_storage = storage_folder_name
         self.current_task = current_task
-        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
-        super().__init__()
-
-        self.folder_storage = kwargs.pop("storage_folder_name")
+        super().__init__(system=system)
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)
 
         self.download_files()
 
-        self.auth()
+        autenticado = self.auth()
+        if not autenticado:
+            self.print_msg(message="Falha na autenticação.", type_log="error")
+            with suppress(Exception):
+                self.driver.quit()
+
+            _raise_start_error("Falha na autenticação.")
+
         self._frame = self.load_data()
 
     def search(self) -> bool:
@@ -80,20 +93,22 @@ class ProjudiBot[T](CrawJUD):
         """
         url_search = el.url_busca
 
-        grau = int(self.bot_data.get("GRAU", 1) or 1)
+        bot_data = self.bot_data
+        driver = self.driver
+        grau = int(bot_data.get("GRAU", 1) or 1)
 
         if grau == 2:
             if not self.url_segunda_instancia:
-                self.url_segunda_instancia = self.driver.find_element(
+                self.url_segunda_instancia = driver.find_element(
                     By.CSS_SELECTOR,
                     'a[id="Stm0p7i1eHR"]',
                 ).get_attribute("href")
 
             url_search = self.url_segunda_instancia
 
-        self.driver.get(url_search)
+        driver.get(url_search)
 
-        if self.typebot != "proc_parte":
+        if self.botname != "proc_parte":
             return self.search_proc()
 
         return self.search_proc_parte()
@@ -106,49 +121,54 @@ class ProjudiBot[T](CrawJUD):
         manipula entradas, clique e tentativa condicional
 
         """
-        grau = self.bot_data.get("GRAU", 1) or 1
+        wait = self.wait
+        bot_data = self.bot_data
+        driver = self.driver
 
+        grau = bot_data.get("GRAU", 1) or 1
         if isinstance(grau, str):
             grau = grau.strip()
 
         grau = int(grau)
 
         with suppress(TimeoutException):
-            inputproc = WebDriverWait(self.driver, 10).until(
+            inputproc = WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     CSS_INPUT_PROCESSO[str(grau)],
                 )),
             )
 
-            proc = self.bot_data.get("NUMERO_PROCESSO")
+            proc = bot_data.get("NUMERO_PROCESSO")
             inputproc.send_keys(proc)
             sleep(1)
-            consultar = self.driver.find_element(By.CSS_SELECTOR, "#pesquisar")
+            consultar = driver.find_element(By.CSS_SELECTOR, "#pesquisar")
             consultar.click()
 
             with suppress(TimeoutException, NoSuchElementException, Exception):
-                WebDriverWait(self.driver, 5).until(
+                WebDriverWait(driver, 5).until(
                     ec.presence_of_element_located((
                         By.XPATH,
                         '//*[@id="buscaProcessosQualquerInstanciaForm"]/table[2]/tbody/tr/td',
                     )),
                 )
-                return False
 
-            with suppress(TimeoutException):
-                enterproc = WebDriverWait(self.driver, 5).until(
-                    ec.presence_of_element_located((By.CLASS_NAME, "link")),
-                )
+                with suppress(TimeoutException):
+                    enterproc = WebDriverWait(driver, 5).until(
+                        ec.presence_of_element_located((
+                            By.CLASS_NAME,
+                            "link",
+                        )),
+                    )
 
-                enterproc.click()
-                detect_intimacao(driver=self.driver)
-                allow_access(driver=self.driver)
-                link_grau2 = get_link_grau2(wait=self.wait)
-                if grau == 2 and link_grau2:
-                    self.driver.get(link_grau2)
+                    enterproc.click()
+                    detect_intimacao(driver=driver)
+                    allow_access(driver=driver)
+                    link_grau2 = get_link_grau2(wait=wait)
+                    if grau == 2 and link_grau2:
+                        driver.get(link_grau2)
 
-            return True
+                    return True
 
         return False
 
@@ -294,7 +314,7 @@ class ProjudiBot[T](CrawJUD):
                 )
 
             alert = None
-            with suppress(TimeoutException):
+            with suppress(TimeoutException, Exception):
                 alert: type[Alert] = WebDriverWait(self.driver, 5).until(
                     ec.alert_is_present(),
                 )

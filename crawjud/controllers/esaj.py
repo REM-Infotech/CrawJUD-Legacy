@@ -6,7 +6,7 @@ import string
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from time import sleep
+from time import perf_counter, sleep
 from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import TimeoutException
@@ -16,7 +16,6 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from crawjud.controllers.master import CrawJUD
 from crawjud.resources.elements import esaj as el
-from crawjud.utils.formatadores import formata_tempo
 
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
@@ -43,16 +42,15 @@ class ESajBot[T](CrawJUD):
         **kwargs: T,
     ) -> None:
         """Instancia a classe."""
-        start_time: datetime = formata_tempo(str(current_task.request.eta))
+        self.botname = name
+        self.botsystem = system
 
         self.folder_storage = storage_folder_name
         self.current_task = current_task
-        self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
+        self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
         super().__init__()
-
-        self.folder_storage = kwargs.pop("storage_folder_name")
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)

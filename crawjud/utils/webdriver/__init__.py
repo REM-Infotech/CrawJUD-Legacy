@@ -43,7 +43,7 @@ if TYPE_CHECKING:
     from browsermobproxy import Client
     from selenium.webdriver.common.service import Service
 
-    from crawjud.utils.webdriver._types import (
+    from crawjud.interfaces.types.webdriver_types import (
         BrowserOptions,
         ChromeConfig,
         FirefoxConfig,

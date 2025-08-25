@@ -148,7 +148,7 @@ class Emissao(ESajBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def custas_iniciais(self) -> None:
         """Process initial costs: navigate to the correct URL and fill form fields.
@@ -459,4 +459,4 @@ class Emissao(ESajBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e

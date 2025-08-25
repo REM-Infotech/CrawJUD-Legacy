@@ -183,7 +183,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def validar_campos(self) -> None:
         """Validate the required fields.

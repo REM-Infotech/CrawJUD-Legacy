@@ -98,7 +98,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def get_calcular(self) -> None:
         """Access the calculation page.
@@ -145,7 +145,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def info_numproc(self) -> None:
         """Inform the process number.
@@ -216,7 +216,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def info_requerido(self) -> None:
         """Inform the required party.
@@ -250,7 +250,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def info_jurosapartir(self) -> None:
         """Inform the interest starting point.
@@ -323,7 +323,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def valores_devidos(self) -> None:
         """Inform the owed values.
@@ -375,7 +375,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def acessorios(self) -> None:
         """Inform accessory values like penalties and fees.
@@ -451,7 +451,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def multa_percentual(self) -> None:
         """Informe multa percentual e valores relacionados.
@@ -511,7 +511,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def honorario_sucumb(self) -> None:
         """Informe honorários de sucumbência.
@@ -592,7 +592,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def percent_multa_475j(self) -> None:
         """Informe percentual da multa 475J.
@@ -617,7 +617,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def honorario_cumprimento(self) -> None:
         """Informe honorários de cumprimento.
@@ -698,7 +698,7 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def custas(self) -> None:
         """Informe valores de custas processuais.
@@ -744,4 +744,4 @@ class Tjdft(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e

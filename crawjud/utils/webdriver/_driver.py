@@ -16,7 +16,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 from crawjud.utils.webdriver.config import configure_chrome, configure_gecko
 
 if TYPE_CHECKING:
-    from ._types import OptionsConfig
+    from crawjud.interfaces.types.webdriver_types import OptionsConfig
 
 
 config: OptionsConfig = {

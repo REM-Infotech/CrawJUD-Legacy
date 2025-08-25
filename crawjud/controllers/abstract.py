@@ -7,7 +7,6 @@ from pathlib import Path
 from threading import Semaphore
 from typing import TYPE_CHECKING, ClassVar
 
-from selenium.webdriver.remote.webdriver import WebDriver
 from tqdm import tqdm
 
 from crawjud.utils.storage import Storage
@@ -15,12 +14,12 @@ from crawjud.utils.storage import Storage
 if TYPE_CHECKING:
     from typing import ClassVar
 
-    from selenium.webdriver.remote.webdriver import WebDriver
     from selenium.webdriver.support.wait import WebDriverWait
     from socketio import SimpleClient
 
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData, DictFiles
+    from crawjud.utils.webdriver import DriverBot as WebDriver
 
 
 func_dict_check = {
@@ -32,6 +31,9 @@ work_dir = Path(__file__).cwd()
 
 class AbstractCrawJUD[T]:
     """Classe base para todos os bots."""
+
+    _botname: ClassVar[str] = ""
+    _botsystem: ClassVar[str] = ""
 
     _driver: WebDriver = None
     _wait: WebDriverWait = None
@@ -70,6 +72,22 @@ class AbstractCrawJUD[T]:
     @row.setter
     def row(self, row: int) -> None:
         self._row = row
+
+    @property
+    def botname(self) -> str:
+        return self._botname
+
+    @botname.setter
+    def botname(self, botname: str) -> None:
+        self._botname = botname
+
+    @property
+    def botsystem(self) -> str:
+        return self._botsystem
+
+    @botsystem.setter
+    def botsystem(self, botsystem: str) -> None:
+        self._botsystem = botsystem
 
     @abstractmethod
     def execution(self) -> None:

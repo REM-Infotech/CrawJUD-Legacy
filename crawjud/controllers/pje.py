@@ -76,6 +76,9 @@ class PjeBot[T](CrawJUD):
         **kwargs: T,
     ) -> None:
         """Instancia a classe."""
+        self.botname = name
+        self.botsystem = system
+
         self.queue_files = Queue()
         self.queue_save_xlsx = Queue()
         self.event_queue_files = Event()

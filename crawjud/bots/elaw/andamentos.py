@@ -111,7 +111,7 @@ class Andamentos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def info_data(self) -> None:
         """Inform the date of the andamento.
@@ -146,7 +146,7 @@ class Andamentos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def info_ocorrencia(self) -> None:
         """Inform the occurrence details of the andamento.
@@ -178,7 +178,7 @@ class Andamentos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def info_observacao(self) -> None:
         """Inform the observation details of the andamento.
@@ -210,7 +210,7 @@ class Andamentos(ElawBot):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def add_anexo(self) -> None:
         """Add attachments to the andamento.

@@ -94,7 +94,7 @@ class Emissor(CrawJUD):
             # TODO(Nicholas Silva): Criação de Exceptions
             # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
 
-            raise ExecutionError(e=e) from e
+            raise ExecutionError(exc=e) from e
 
     def get_site(self) -> None:
         """Access deposit site, solve CAPTCHA, and load required deposit interface.

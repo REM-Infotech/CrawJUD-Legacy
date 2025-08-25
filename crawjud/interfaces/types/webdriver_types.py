@@ -1,3 +1,10 @@
+"""Tipos e configurações para opções e preferências de WebDriver Selenium.
+
+Este módulo fornece definições de tipos, TypedDicts e aliases para configuração
+de navegadores Chrome e Firefox, facilitando a tipagem e reutilização de opções
+e preferências em automações Selenium.
+"""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -60,6 +67,20 @@ FirefoxPreferences = TypedDict(
 
 
 class ChromeConfig(TypedDict):
+    """Defina configurações específicas para o WebDriver Chrome Selenium.
+
+    Args:
+        name (str): Nome identificador da configuração do navegador.
+        service (type[ChromeService]): Classe de serviço do ChromeDriver.
+        executor (type[ChromeRemoteConnection]): Executor de conexão remota.
+        options (driver_options): Função construtora das opções do Chrome.
+        manager (type[ChromeDriverManager]): Gerenciador do ChromeDriver.
+
+    Returns:
+        dict: Dicionário tipado com as configurações do Chrome.
+
+    """
+
     name: str
     service: type[ChromeService]
     executor: type[ChromeRemoteConnection]
@@ -68,6 +89,21 @@ class ChromeConfig(TypedDict):
 
 
 class FirefoxConfig(TypedDict):
+    """Defina configurações específicas para o WebDriver Firefox Selenium.
+
+    Args:
+        name (str): Nome identificador da configuração do navegador.
+        service (type[GeckoService]): Classe de serviço do GeckoDriver.
+        executor (type[FirefoxRemoteConnection]): Executor de conexão remota.
+        options (driver_options): Função construtora das opções do Firefox.
+        manager (type[GeckoDriverManager]): Gerenciador do GeckoDriver.
+        args_executor (dict[str, str]): Argumentos adicionais para o executor.
+
+    Returns:
+        dict: Dicionário tipado com as configurações do Firefox.
+
+    """
+
     name: str
     service: type[GeckoService]
     executor: type[FirefoxRemoteConnection]
@@ -77,6 +113,18 @@ class FirefoxConfig(TypedDict):
 
 
 class OptionsConfig(TypedDict):
+    """Defina configurações agrupadas para múltiplos navegadores Selenium.
+
+    Args:
+        chrome (ChromeConfig): Configuração específica para o Chrome.
+        firefox (FirefoxConfig): Configuração específica para o Firefox.
+        gecko (FirefoxConfig): Configuração específica para o GeckoDriver.
+
+    Returns:
+        dict: Dicionário tipado com as configurações de todos os navegadores.
+
+    """
+
     chrome: ChromeConfig
     firefox: FirefoxConfig
     gecko: FirefoxConfig

@@ -17,7 +17,7 @@ from crawjud.utils.webdriver.config.proxy import configure_proxy
 if TYPE_CHECKING:
     from browsermobproxy import Client, Server
 
-    from crawjud.utils.webdriver._types import ChromePreferences
+    from crawjud.interfaces.types.webdriver_types import ChromePreferences
 
 work_dir = Path(__file__).cwd()
 
