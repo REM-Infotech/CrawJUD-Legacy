@@ -81,6 +81,7 @@ class PjeBot[T](CrawJUD):
         self.queue_save_xlsx = Queue()
         self.event_queue_files = Event()
         self.event_queue_save_xlsx = Event()
+        self.pid = str(current_task.request.id)
 
         super().__init__(system="pje")
         start_time: datetime = formata_tempo(str(current_task.request.eta))
@@ -88,7 +89,6 @@ class PjeBot[T](CrawJUD):
         self.folder_storage = storage_folder_name
         self.current_task = current_task
         self.start_time = start_time.strftime("%d/%m/%Y, %H:%M:%S")
-        self.pid = str(current_task.request.id)
 
     def search(
         self,

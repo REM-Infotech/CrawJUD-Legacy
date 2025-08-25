@@ -213,7 +213,6 @@ class Capa(PjeBot):
             if self.event_stop_bot.is_set():
                 return
 
-            sleep(1)
             processo = item["NUMERO_PROCESSO"]
             row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
             resultados: DictResults = self.search(
@@ -232,19 +231,13 @@ class Capa(PjeBot):
 
                 return
 
-            self.print_msg(
-                message="Processo encontrado! extraindo informações...",
-                type_log="info",
-                row=row,
-            )
-
             self.capa_processual(
                 result=resultados["data_request"],
                 regiao=regiao,
                 row=row,
             )
 
-            sleep(1.5)
+            sleep(0.5)
 
             self.outras_informacoes(
                 numero_processo=processo,
@@ -310,12 +303,6 @@ class Capa(PjeBot):
 
         sleep(0.25)
         with suppress(Exception):
-            self.print_msg(
-                message="Extraindo partes",
-                type_log="log",
-                row=row,
-            )
-
             request_partes = client.get(url=link_partes)
             if request_partes:
                 data_partes: PartesJsonDict = request_partes.json()
@@ -326,12 +313,6 @@ class Capa(PjeBot):
 
         sleep(0.25)
         with suppress(Exception):
-            self.print_msg(
-                message="Extraindo assuntos do processo",
-                type_log="log",
-                row=row,
-            )
-
             request_assuntos = client.get(url=link_assuntos)
             if request_assuntos:
                 data_assuntos = request_assuntos.json()
@@ -342,12 +323,6 @@ class Capa(PjeBot):
 
         sleep(0.25)
         with suppress(Exception):
-            self.print_msg(
-                message="Extraindo audiências",
-                type_log="log",
-                row=row,
-            )
-
             request_audiencias = client.get(url=link_audiencias)
             if request_audiencias:
                 data_audiencias = request_audiencias.json()
@@ -476,11 +451,6 @@ class Capa(PjeBot):
         row: int,
     ) -> None:
         """Formata o resultado da busca para armazenar na planilha."""
-        self.print_msg(
-            message="Extraindo capa do processo...",
-            type_log="log",
-            row=row,
-        )
         link_consulta = f"https://pje.trt{regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
 
         dict_salvar_planilha = CapaProcessualPJeDict(
@@ -502,7 +472,7 @@ class Capa(PjeBot):
         self.to_add_processos.append(dict_salvar_planilha)
 
     def save_file(self) -> None:
-        """Consome itens da fila `queue_save_xlsx` e APPENDA na planilha 'Resultados'.
+        """Consome itens da fila `queue_save_xlsx` e adiciona na planilha.
 
         Encerra quando receber o sentinela (None).
 
@@ -524,10 +494,22 @@ class Capa(PjeBot):
 
                 df = DataFrame(rows)
 
-                # remove timezone para evitar erro no Excel
-                for col in df.select_dtypes(include=["datetimetz"]).columns:
-                    df[col] = df[col].dt.tz_localize(None)
+                # Remove timezone de todas as colunas possíveis para evitar erro no Excel
+                for col in df.columns:
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_localize(None)
+                            if hasattr(x, "tz_localize")
+                            else x,
+                        )
+                        continue
 
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_convert(None)
+                            if hasattr(x, "tz_convert")
+                            else x,
+                        )
                 # --- APPEND na mesma aba, calculando a próxima linha ---
                 tqdm.write(f"Salvando worksheet: {sheet_name}")
                 if path_planilha.exists():

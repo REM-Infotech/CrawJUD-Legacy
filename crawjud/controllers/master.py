@@ -113,6 +113,13 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 transports=transports,
                 headers=headers,
             )
+
+            sio.emit(
+                event="join_room",
+                data={"data": {"room": self.pid}},
+                namespace=namespace,
+            )
+
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
             return
@@ -121,7 +128,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             data = self.queue_msg.get()
             if data:
                 try:
-                    sleep(0.5)
                     data = dict(data)
                     start_time: str = data.get("start_time")
                     message: str = data.get("message")
@@ -131,11 +137,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                     success: int = data.get("success")
                     type_log: str = data.get("type_log")
                     pid: str | None = data.get("pid")
-                    sio.emit(
-                        event="join_room",
-                        data={"data": {"room": pid}},
-                        namespace=namespace,
-                    )
 
                     # Obtém o horário atual formatado
                     time_exec = datetime.now(
@@ -191,12 +192,15 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                         )
 
                     tqdm.write(message)
-                    sleep(0.5)
+                    sleep(0.35)
 
                 except Exception as e:
                     tqdm.write("\n".join(traceback.format_exception(e)))
 
                 finally:
+                    tqdm.write(
+                        f"Fim da tarefa. Restantes {self.queue_msg.unfinished_tasks}",
+                    )
                     self.queue_msg.task_done()
 
     def load_data(self) -> list[BotData]:
