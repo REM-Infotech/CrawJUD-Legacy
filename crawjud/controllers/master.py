@@ -128,6 +128,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             data = self.queue_msg.get()
             if data:
                 try:
+                    sleep(1.5)
                     data = dict(data)
                     start_time: str = data.get("start_time")
                     message: str = data.get("message")
@@ -192,7 +193,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                         )
 
                     tqdm.write(message)
-                    sleep(0.35)
+                    sleep(1.5)
 
                 except Exception as e:
                     tqdm.write("\n".join(traceback.format_exception(e)))
@@ -370,7 +371,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
 
         """
-        sleep(3)
 
         keyword_args: dict[str, str | int] = {
             "start_time": self.start_time,
