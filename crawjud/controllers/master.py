@@ -198,9 +198,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                     tqdm.write("\n".join(traceback.format_exception(e)))
 
                 finally:
-                    tqdm.write(
-                        f"Fim da tarefa. Restantes {self.queue_msg.unfinished_tasks}",
-                    )
                     self.queue_msg.task_done()
 
     def load_data(self) -> list[BotData]:
