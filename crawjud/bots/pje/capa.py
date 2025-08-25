@@ -70,10 +70,9 @@ class Capa(PjeBot):
 
     to_add_representantes: ClassVar[list[RepresentantePartesPJeDict]] = []
     to_add_audiencias: ClassVar[list[AudienciaProcessoPjeDict]] = []
-    to_add_processos: ClassVar[list[CapaProcessualPJeDict]] = []
     to_add_assuntos: ClassVar[list[AssuntosProcessoPJeDict]] = []
+    to_add_processos: ClassVar[list[CapaProcessualPJeDict]] = []
     to_add_partes: ClassVar[list[PartesProcessoPJeDict]] = []
-
     futures_download_file: ClassVar[list[Future]] = []
 
     def execution(self) -> None:
