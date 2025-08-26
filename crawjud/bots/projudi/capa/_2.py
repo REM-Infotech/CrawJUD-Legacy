@@ -11,7 +11,7 @@ type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 
 
 class SegundaInstancia(ProjudiBot):
-    def _informacoes_gerais_primeiro_grau(self) -> None:
+    def _informacoes_gerais_segundo_grau(self) -> None:
         wait = self.wait
 
         info_geral = wait.until(
@@ -26,20 +26,20 @@ class SegundaInstancia(ProjudiBot):
         table_info_geral = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
-                el.info_geral_table_primeiro_grau,
+                el.info_geral_table_segundo_grau,
             )),
         )
 
         inner_html = table_info_geral.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
 
-    def _info_processual_primeiro_grau(self) -> dict[str, str]:
+    def _info_processual_segundo_grau(self) -> dict[str, str]:
         wait = self.wait
 
         table_info_processual = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
-                el.info_processual_primeiro_grau,
+                el.info_processual_segundo_grau,
             )),
         )
 
@@ -63,7 +63,7 @@ class SegundaInstancia(ProjudiBot):
         grouptable_partes = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
-                el.partes_primeiro_grau,
+                el.partes_segundo_grau,
             )),
         )
 
