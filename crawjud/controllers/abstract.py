@@ -36,6 +36,7 @@ if TYPE_CHECKING:
 
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData, DictFiles
+    from crawjud.interfaces.types import ProcessInfo
     from crawjud.utils.webdriver import DriverBot as WebDriver
 
 
@@ -91,6 +92,15 @@ class AbstractCrawJUD[T]:
     event_queue_message: Event
     event_queue_files: Event
     event_queue_save_xlsx: Event
+
+    to_add_partes: ClassVar[list[ProcessInfo]] = []
+
+    to_add_processos: ClassVar[list[ProcessInfo]] = []
+    to_add_assuntos: ClassVar[list[ProcessInfo]] = []
+    to_add_audiencias: ClassVar[list[ProcessInfo]] = []
+    to_add_representantes: ClassVar[list[ProcessInfo]] = []
+    to_add_processos_primeiro_grau: ClassVar[list[ProcessInfo]] = []
+    to_add_processos_segundo_grau: ClassVar[list[ProcessInfo]] = []
 
     @property
     def row(self) -> int:
@@ -428,11 +438,15 @@ class AbstractCrawJUD[T]:
                                 if sheet_name in wb.sheetnames
                                 else wb.create_sheet(sheet_name)
                             )
-                            startrow = int(ws.max_row if ws.max_row > 1 else 0)
+                            startrow = (
+                                ws.max_row if ws.max_row > 1 else 0
+                            )  # 0 => escreve com header
+                            write_header = startrow == 0
                             df.to_excel(
-                                writer,
+                                excel_writer=writer,
                                 sheet_name=sheet_name,
                                 index=False,
+                                header=write_header,
                                 startrow=startrow,
                             )
                     else:

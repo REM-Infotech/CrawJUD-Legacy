@@ -34,4 +34,7 @@ type StrPath = str | PathLike
 type ReturnFormataTempo = datetime | float | int | bool | str
 
 
+type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
+type ProcessInfo = dict[str, str | int | datetime]
+
 __all__ = ["BotData"]

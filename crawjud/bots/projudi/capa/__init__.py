@@ -28,8 +28,7 @@ if TYPE_CHECKING:
 
     from selenium.webdriver.remote.webelement import WebElement  # noqa: F401
 
-type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
-type ProcessInfo = dict[str, str | int | datetime]
+    from crawjud.interfaces.types import ListPartes, ProcessInfo
 
 
 @shared_task(name="projudi.capa", bind=True, base=ContextTask)
@@ -40,6 +39,12 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
     This class extends CrawJUD to click through information panels,
     extract process data and participant details, and format them accordingly.
     """
+
+    to_add_partes: ClassVar[list[ProcessInfo]] = []
+    to_add_assuntos: ClassVar[list[ProcessInfo]] = []
+    to_add_processos: ClassVar[list[ProcessInfo]] = []
+    to_add_audiencias: ClassVar[list[ProcessInfo]] = []
+    to_add_representantes: ClassVar[list[ProcessInfo]] = []
 
     list_partes: ClassVar[ListPartes] = []
 
@@ -78,6 +83,17 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 self.append_error(self.bot_data)
 
                 self.message_error = None
+
+        for to_save, sheet_name in [
+            (self.to_add_processos_primeiro_grau, "Capa Primeiro Grau"),
+            (self.to_add_processos_segundo_grau, "Capa Segundo Grau"),
+            (self.to_add_partes, "Partes"),
+            (self.to_add_representantes, "Representantes"),
+        ]:
+            self.queue_save_xlsx.put({
+                "to_save": to_save,
+                "sheet_name": sheet_name,
+            })
 
         self.finalize_execution()
 
@@ -145,62 +161,20 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             _raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
-        process_info: dict[str, str | int | datetime] = {
-            "Número do processo": numero_processo,
-        }
+        process_info: ProcessInfo = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_primeiro_grau())
         process_info.update(self._info_processual_primeiro_grau())
 
-        data_ = self._partes_primeiro_grau(numero_processo=numero_processo)
-        self.list_partes = data_
-
-        self.queue_save_xlsx.put({
-            "to_save": [process_info],
-            "sheet_name": "Capa Primeiro Grau",
-        })
-
-        for list_parte, list_representantes in self.list_partes:
-            if list_parte:
-                self.queue_save_xlsx.put({
-                    "to_save": list_parte,
-                    "sheet_name": "Partes",
-                })
-
-            if list_representantes:
-                self.queue_save_xlsx.put({
-                    "to_save": list_representantes,
-                    "sheet_name": "Partes",
-                })
-
-        self.list_partes.clear()
+        self._partes_primeiro_grau(numero_processo=numero_processo)
+        self.to_add_processos_primeiro_grau.append(process_info)
 
     def segundo_grau(self, numero_processo: str) -> None:
         process_info: ProcessInfo = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_segundo_grau())
         process_info.update(self._info_processual_segundo_grau())
 
-        data_ = self._partes_segundo_grau(numero_processo=numero_processo)
-        self.list_partes = data_
-
-        self.queue_save_xlsx.put({
-            "to_save": [process_info],
-            "sheet_name": "Capa Segundo Grau",
-        })
-
-        for list_parte, list_representantes in self.list_partes:
-            if list_parte:
-                self.queue_save_xlsx.put({
-                    "to_save": list_parte,
-                    "sheet_name": "Partes",
-                })
-
-            if list_representantes:
-                self.queue_save_xlsx.put({
-                    "to_save": list_representantes,
-                    "sheet_name": "Partes",
-                })
-
-        self.list_partes.clear()
+        self._partes_segundo_grau(numero_processo=numero_processo)
+        self.to_add_processos_segundo_grau.append(process_info)
 
     def copia_pdf(
         self,

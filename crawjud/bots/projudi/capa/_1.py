@@ -13,14 +13,12 @@ type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 class PrimeiraInstancia(ProjudiBot):
     def _informacoes_gerais_primeiro_grau(self) -> None:
         wait = self.wait
-
-        info_geral = wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                'li[id="tabItemprefix0"]',
-            )),
+        search_by = (
+            By.CSS_SELECTOR,
+            el.btn_infogeral,
         )
-
+        expected = ec.presence_of_element_located(search_by)
+        info_geral = wait.until(expected)
         info_geral.click()
 
         table_info_geral = wait.until(
@@ -46,10 +44,7 @@ class PrimeiraInstancia(ProjudiBot):
         inner_html = table_info_processual.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
 
-    def _partes_primeiro_grau(
-        self,
-        numero_processo: str,
-    ) -> list[tuple[list[dict[str, str]], list[dict[str, str]]]]:
+    def _partes_primeiro_grau(self, numero_processo: str) -> None:
         wait = self.wait
 
         btn_partes = wait.until(
@@ -57,9 +52,6 @@ class PrimeiraInstancia(ProjudiBot):
         )
 
         btn_partes.click()
-        list_partes: list[
-            tuple[list[dict[str, str]], list[dict[str, str]]]
-        ] = []
         grouptable_partes = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
@@ -70,32 +62,20 @@ class PrimeiraInstancia(ProjudiBot):
         for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
-            list_partes.append(
-                self._partes_projudi_primeiro_grau(
-                    inner_html=inner_html,
-                    numero_processo=numero_processo,
-                ),
+            self._partes_extract_primeiro_grau(
+                html=inner_html,
+                numero_processo=numero_processo,
             )
 
-        return list_partes
-
-    def _partes_projudi_primeiro_grau(
-        self,
-        inner_html: str,
-        numero_processo: str,
-    ) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    def _partes_extract_primeiro_grau(self, html: str, processo: str) -> None:
         """Extraia informações das partes do processo na tabela do Projudi.
 
         Args:
-            inner_html (str): HTML da página contendo a tabela de partes.
-            numero_processo(str): Numero processo
-
-        Returns:
-            (tuple[list[dict[str, str]], list[dict[str, str]]]):
-                Lista de dicionários com dados das partes.
+            html (str): HTML da página contendo a tabela de partes.
+            processo(str): Numero processo
 
         """
-        soup = BeautifulSoup(inner_html, "html.parser")
+        soup = BeautifulSoup(html, "html.parser")
         partes: list[dict[str, str]] = []
         advogados: list[dict[str, str]] = []
         endereco = ""
@@ -136,14 +116,14 @@ class PrimeiraInstancia(ProjudiBot):
                     ).split(" - ")
 
                     advogados.append({
-                        "Número do processo": numero_processo,
+                        "Número do processo": processo,
                         "Nome": advogado_e_oab[1],
                         "OAB": advogado_e_oab[0],
                         "Representado": nome,
                     })
 
                 partes.append({
-                    "Número do processo": numero_processo,
+                    "Número do processo": processo,
                     "Nome": nome,
                     "Documento": documento,
                     "Cpf": cpf,
@@ -151,4 +131,5 @@ class PrimeiraInstancia(ProjudiBot):
                     "Endereco": endereco,
                 })
 
-        return partes, advogados
+        self.to_add_partes.extend(partes)
+        self.to_add_representantes.extend(advogados)
