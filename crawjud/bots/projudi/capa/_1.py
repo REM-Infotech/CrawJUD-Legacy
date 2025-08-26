@@ -64,7 +64,7 @@ class PrimeiraInstancia(ProjudiBot):
             inner_html = tbody_table.get_attribute("innerHTML")
             self._partes_extract_primeiro_grau(
                 html=inner_html,
-                numero_processo=numero_processo,
+                processo=numero_processo,
             )
 
     def _partes_extract_primeiro_grau(self, html: str, processo: str) -> None:
