@@ -94,8 +94,10 @@ class Capa(ProjudiBot):
             if trazer_copia and trazer_copia.lower() == "sim":
                 data = self.copia_pdf(data)
 
-            self.save_file()
-            self.queue_save_xlsx.put()
+            self.queue_save_xlsx.put({
+                "to_save": [data],
+                "sheet_name": "Capa",
+            })
 
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions

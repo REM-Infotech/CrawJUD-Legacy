@@ -57,7 +57,12 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
 
     event_stop_bot: Event
-    queue_msg = Queue()
+    queue_msg: Queue
+    queue_files: Queue
+    queue_save_xlsx: Queue
+
+    event_queue_files: Event
+    event_queue_save_xlsx: Event
 
     def __init__(self, system: str | None = None) -> None:
         """Inicialize a instância principal do controller CrawJUD.
@@ -67,7 +72,13 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             system (str): sistema do robô
 
         """
+        self.queue_msg = Queue()
+        self.queue_files = Queue()
+        self.queue_save_xlsx = Queue()
+        self.event_queue_files = Event()
+        self.event_queue_save_xlsx = Event()
         self.event_stop_bot: Event = Event()
+
         if system != "pje":
             self._driver = DriverBot(
                 selected_browser="chrome",
@@ -524,6 +535,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         Performs cookie cleanup, quits the driver, and prints summary logs.
         """
+        with suppress(Exception):
+            self.queue_save_xlsx.join()
+
         with suppress(Exception):
             window_handles = self.driver.window_handles
             if window_handles:

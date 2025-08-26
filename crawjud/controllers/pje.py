@@ -8,8 +8,7 @@ import traceback
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from queue import Queue
-from threading import Event, Lock
+from threading import Lock
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING, ClassVar, Literal, cast
 
@@ -60,12 +59,6 @@ COUNT_TRYS = 15
 class PjeBot[T](CrawJUD):
     """Classe de controle para robôs do PJe."""
 
-    queue_files: Queue
-    queue_save_xlsx: Queue
-
-    event_queue_files: Event
-    event_queue_save_xlsx: Event
-
     def __init__(
         self,
         current_task: ContextTask = None,
@@ -79,10 +72,6 @@ class PjeBot[T](CrawJUD):
         self.botname = name
         self.botsystem = system
 
-        self.queue_files = Queue()
-        self.queue_save_xlsx = Queue()
-        self.event_queue_files = Event()
-        self.event_queue_save_xlsx = Event()
         self.pid = str(current_task.request.id)
 
         super().__init__(system="pje")
