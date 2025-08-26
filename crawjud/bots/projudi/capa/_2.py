@@ -13,14 +13,12 @@ type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 class SegundaInstancia(ProjudiBot):
     def _informacoes_gerais_segundo_grau(self) -> None:
         wait = self.wait
-
-        info_geral = wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                'li[id="tabItemprefix0"]',
-            )),
+        search_by = (
+            By.CSS_SELECTOR,
+            el.btn_infogeral,
         )
-
+        expected = ec.presence_of_element_located(search_by)
+        info_geral = wait.until(expected)
         info_geral.click()
 
         table_info_geral = wait.until(

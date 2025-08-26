@@ -8,37 +8,35 @@ de documentos no Projudi.
 
 from __future__ import annotations
 
-command_select_parte_protocolo = (
-    'document.getElementById("{id_radio}").removeAttribute("disabled");'
-)
-command_sel_parte_protocolo2 = (
-    "return document.getElementById('{id_part}').checked"
-)
-
-info_geral_table_primeiro_grau = (
-    '//div[@id="includeContent"]/fieldset/table/tbody'
-)
-
-info_processual_primeiro_grau = '//table[@id="informacoesProcessuais"]/tbody'
-
-partes_primeiro_grau = '//*[@id="includeContent"]'
-
-
 url_login = (
     "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
 )
-
 
 campo_username = "#login"
 campo_2_login = "#senha"  # nosec: B105
 btn_entrar = "#btEntrar"
 chk_login = 'iframe[name="userMainFrame"]'
 
+# Capa
+# - Primeira Instancia
+info_geral_table_primeiro_grau = (
+    '//div[@id="includeContent"]/fieldset/table/tbody'
+)
+info_processual_primeiro_grau = '//table[@id="informacoesProcessuais"]/tbody'
+
+# - Segunta Instancia
+info_geral_table_segundo_grau = '//div[@id="tabprefix0"]/fieldset/table/tbody'
+info_processual_segundo_grau = (
+    '//*[@id="recursoForm"]/fieldset/table[1]/tbody/tr/td[1]/table/tbody'
+)
+
+partes_projudi = '//*[@id="includeContent"]'
+
+
 url_busca = (
     "https://projudi.tjam.jus.br/projudi/processo/"
     "buscaProcessosQualquerInstancia.do?actionType=pesquisar"
 )
-
 url_mesa_adv = "https://projudi.tjam.jus.br/projudi/usuario/mesaAdvogado.do?actionType=listaInicio&pageNumber=1"
 
 btn_busca = ""
@@ -91,3 +89,12 @@ botao_concluir = 'input#editButton[value="Concluir Movimento"]'
 botao_deletar = 'input[type="button"][name="deleteButton"]'
 css_containerprogressbar = 'div[id="divProgressBarContainerAssinado"]'
 css_divprogressbar = 'div[id="divProgressBarAssinado"]'
+
+
+# Protocolo
+command_select_parte_protocolo = (
+    'document.getElementById("{id_radio}").removeAttribute("disabled");'
+)
+command_sel_parte_protocolo2 = (
+    "return document.getElementById('{id_part}').checked"
+)

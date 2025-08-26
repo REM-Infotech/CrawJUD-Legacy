@@ -57,6 +57,7 @@ class AbstractCrawJUD[T]:
     current_task: ContextTask
     sio: SimpleClient
     _stop_bot: bool = False
+    url_segunda_instancia: ClassVar[str] = ""
     _folder_storage: ClassVar[str] = ""
     _xlsx_data: ClassVar[DictFiles] = {}
     _downloaded_files: ClassVar[list[DictFiles]] = []
