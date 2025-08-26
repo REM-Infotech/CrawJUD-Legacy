@@ -54,6 +54,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self.queue_files = Queue()
         self.queue_save_xlsx = Queue()
         self.event_queue_files = Event()
+        self.event_queue_message = Event()
         self.event_queue_save_xlsx = Event()
         self.event_stop_bot: Event = Event()
 
@@ -296,9 +297,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         Performs cookie cleanup, quits the driver, and prints summary logs.
         """
         with suppress(Exception):
-            while not self.queue_save_xlsx.empty():
-                if self.queue_save_xlsx.unfinished_tasks == 0:
-                    self.event_queue_save_xlsx.set()
+            self.queue_save_xlsx.join()
 
         with suppress(Exception):
             window_handles = self.driver.window_handles
@@ -320,6 +319,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         message = f"Sucessos: {self.success} | Erros: {self.error}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
 
+        self.event_queue_message.set()
         self.queue_msg.join()
 
     def append_error(self, *args: T, **kwargs: T) -> None:

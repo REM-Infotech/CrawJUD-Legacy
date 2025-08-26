@@ -88,6 +88,7 @@ class AbstractCrawJUD[T]:
     queue_files: Queue
     queue_save_xlsx: Queue
 
+    event_queue_message: Event
     event_queue_files: Event
     event_queue_save_xlsx: Event
 
@@ -279,14 +280,12 @@ class AbstractCrawJUD[T]:
             return
 
         while True:
-            if (
-                self.event_stop_bot.is_set()
-                and self.queue_msg.unfinished_tasks == 0
-            ):
-                break
-
             current_time = datetime.now(tz=ZoneInfo("America/Manaus"))
             data = self.queue_msg.get()
+
+            if self.event_queue_message.is_set() and self.queue_msg.empty():
+                break
+
             if data:
                 with suppress(Exception):
                     # Argumentos Necessários

@@ -132,20 +132,16 @@ class Capa(ProjudiBot):
 
             for list_parte, list_representantes in self.list_partes:
                 if list_parte:
-                    self.queue_save_xlsx.put(
-                        self.queue_save_xlsx.put({
-                            "to_save": list_parte,
-                            "sheet_name": "Partes",
-                        }),
-                    )
+                    self.queue_save_xlsx.put({
+                        "to_save": list_parte,
+                        "sheet_name": "Partes",
+                    })
 
                 if list_representantes:
-                    self.queue_save_xlsx.put(
-                        self.queue_save_xlsx.put({
-                            "to_save": list_representantes,
-                            "sheet_name": "Partes",
-                        }),
-                    )
+                    self.queue_save_xlsx.put({
+                        "to_save": list_representantes,
+                        "sheet_name": "Partes",
+                    })
 
             self.list_partes.clear()
 
