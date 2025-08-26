@@ -61,7 +61,7 @@ class SegundaInstancia(ProjudiBot):
         grouptable_partes = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
-                el.partes_segundo_grau,
+                el.partes_projudi,
             )),
         )
 
