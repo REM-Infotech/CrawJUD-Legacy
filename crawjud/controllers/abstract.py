@@ -428,15 +428,11 @@ class AbstractCrawJUD[T]:
                                 if sheet_name in wb.sheetnames
                                 else wb.create_sheet(sheet_name)
                             )
-                            startrow = (
-                                ws.max_row if ws.max_row > 1 else 0
-                            )  # 0 => escreve com header
-                            write_header = startrow == 0
+                            startrow = int(ws.max_row if ws.max_row > 1 else 0)
                             df.to_excel(
                                 writer,
                                 sheet_name=sheet_name,
                                 index=False,
-                                header=write_header,
                                 startrow=startrow,
                             )
                     else:
@@ -447,7 +443,7 @@ class AbstractCrawJUD[T]:
                             engine="openpyxl",
                         ) as writer:
                             df.to_excel(
-                                writer,
+                                excel_writer=writer,
                                 sheet_name=sheet_name,
                                 index=False,
                             )

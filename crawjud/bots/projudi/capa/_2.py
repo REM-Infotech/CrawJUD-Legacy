@@ -44,7 +44,7 @@ class SegundaInstancia(ProjudiBot):
         inner_html = table_info_processual.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
 
-    def _partes_primario_grau(
+    def _partes_segundo_grau(
         self,
         numero_processo: str,
     ) -> list[tuple[list[dict[str, str]], list[dict[str, str]]]]:

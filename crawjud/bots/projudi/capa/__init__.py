@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement  # noqa: F401
 
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
+type ProcessInfo = dict[str, str | int | datetime]
 
 
 @shared_task(name="projudi.capa", bind=True, base=ContextTask)
@@ -128,63 +129,78 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e
 
-    def get_process_informations(self) -> dict[str, str | int | datetime]:
-        """Extrai informações detalhadas do processo da página atual do Projudi.
-
-        Returns:
-            dict[str, str | int | datetime]: Dicionário com informações formatadas do processo.
-
-        """
-        process_info: dict[str, str | int | datetime] = None
+    def get_process_informations(self) -> None:
+        """Extrai informações detalhadas do processo da página atual do Projudi."""
         try:
             bot_data = self.bot_data
             numero_processo = bot_data.get("NUMERO_PROCESSO")
 
-            callables = {"1": self.primeiro_grau}
+            callables = {"1": self.primeiro_grau, "2": self.segundo_grau}
 
-            data = callables[str(bot_data.get("GRAU", "1"))](
+            callables[str(bot_data.get("GRAU", "1"))](
                 numero_processo=numero_processo,
             )
-
-            self.queue_save_xlsx.put({
-                "to_save": [data],
-                "sheet_name": "Capa",
-            })
-
-            for list_parte, list_representantes in self.list_partes:
-                if list_parte:
-                    self.queue_save_xlsx.put({
-                        "to_save": list_parte,
-                        "sheet_name": "Partes",
-                    })
-
-                if list_representantes:
-                    self.queue_save_xlsx.put({
-                        "to_save": list_representantes,
-                        "sheet_name": "Partes",
-                    })
-
-            self.list_partes.clear()
 
         except (ExecutionError, Exception):
             _raise_execution_error("Erro ao executar operação")
 
-        return process_info
-
-    def primeiro_grau(
-        self,
-        numero_processo: str,
-    ) -> dict[str, str | int | datetime]:
+    def primeiro_grau(self, numero_processo: str) -> None:
         process_info: dict[str, str | int | datetime] = {
             "Número do processo": numero_processo,
         }
         process_info.update(self._informacoes_gerais_primeiro_grau())
         process_info.update(self._info_processual_primeiro_grau())
 
-        data_ = self._partes_primario_grau(numero_processo=numero_processo)
+        data_ = self._partes_primeiro_grau(numero_processo=numero_processo)
         self.list_partes = data_
 
-        return process_info
+        self.queue_save_xlsx.put({
+            "to_save": [process_info],
+            "sheet_name": "Capa Primeiro Grau",
+        })
+
+        for list_parte, list_representantes in self.list_partes:
+            if list_parte:
+                self.queue_save_xlsx.put({
+                    "to_save": list_parte,
+                    "sheet_name": "Partes",
+                })
+
+            if list_representantes:
+                self.queue_save_xlsx.put({
+                    "to_save": list_representantes,
+                    "sheet_name": "Partes",
+                })
+
+        self.list_partes.clear()
+
+    def segundo_grau(self, numero_processo: str) -> None:
+        process_info: ProcessInfo = {"Número do processo": numero_processo}
+        process_info.update(self._informacoes_gerais_segundo_grau())
+        process_info.update(self._info_processual_segundo_grau())
+
+        data_ = self._partes_segundo_grau(numero_processo=numero_processo)
+        self.list_partes = data_
+
+        self.queue_save_xlsx.put({
+            "to_save": [process_info],
+            "sheet_name": "Capa Segundo Grau",
+        })
+
+        for list_parte, list_representantes in self.list_partes:
+            if list_parte:
+                self.queue_save_xlsx.put({
+                    "to_save": list_parte,
+                    "sheet_name": "Partes",
+                })
+
+            if list_representantes:
+                self.queue_save_xlsx.put({
+                    "to_save": list_representantes,
+                    "sheet_name": "Partes",
+                })
+
+        self.list_partes.clear()
 
     def copia_pdf(
         self,
