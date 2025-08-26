@@ -71,7 +71,7 @@ class PrimeiraInstancia(ProjudiBot):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
             list_partes.append(
-                self._partes_projudi(
+                self._partes_projudi_primeiro_grau(
                     inner_html=inner_html,
                     numero_processo=numero_processo,
                 ),
@@ -79,7 +79,7 @@ class PrimeiraInstancia(ProjudiBot):
 
         return list_partes
 
-    def _partes_projudi(
+    def _partes_projudi_primeiro_grau(
         self,
         inner_html: str,
         numero_processo: str,
