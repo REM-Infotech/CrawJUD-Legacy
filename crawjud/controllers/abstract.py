@@ -8,7 +8,6 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from threading import Event, Semaphore
-from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 from uuid import uuid4
 from zoneinfo import ZoneInfo
@@ -382,17 +381,16 @@ class AbstractCrawJUD[T]:
         # cria/abre arquivo para APPEND
         # pandas >= 2.0: if_sheet_exists=('replace'|'overlay'|'new'), funciona só em mode='a'
         while True:
-            if (
-                self.event_queue_save_xlsx.is_set()
-                and self.queue_save_xlsx.unfinished_tasks == 0
-            ):
+            setted_event = self.event_queue_save_xlsx.is_set()
+            empty_queue = self.queue_save_xlsx.unfinished_tasks == 0
+
+            if setted_event and empty_queue:
                 break
 
             data = self.queue_save_xlsx.get()
 
             if data:
                 try:
-                    sleep(2)
                     rows = data["to_save"]
                     sheet_name = data["sheet_name"]
 
@@ -453,7 +451,6 @@ class AbstractCrawJUD[T]:
                                 index=False,
                             )
 
-                    sleep(2)
                 except Exception as e:
                     # logue o stack completo (não interrompe o consumidor)
                     tqdm.write("\n".join(traceback.format_exception(e)))
