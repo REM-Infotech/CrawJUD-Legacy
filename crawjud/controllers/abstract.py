@@ -283,7 +283,9 @@ class AbstractCrawJUD[T]:
             current_time = datetime.now(tz=ZoneInfo("America/Manaus"))
             data = self.queue_msg.get()
 
-            if self.event_queue_message.is_set() and self.queue_msg.empty():
+            event_isset = self.event_queue_message.is_set()
+            empty_queue = self.queue_msg.unfinished_tasks == 0
+            if event_isset and empty_queue:
                 break
 
             if data:
