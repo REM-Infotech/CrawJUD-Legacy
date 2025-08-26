@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import shutil
 from contextlib import suppress
-from datetime import datetime
+from datetime import datetime, timedelta
 from io import BytesIO
 from pathlib import Path
 from queue import Queue
@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo
 
 import base91
 from bs4 import BeautifulSoup
+from humanize import precisedelta
 from pandas import Timestamp, read_excel
 from werkzeug.utils import secure_filename
 
@@ -306,13 +307,17 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 self.driver.quit()
 
         end_time = perf_counter()
-        execution_time = datetime.fromtimestamp(
-            end_time - self.start_time,
-            tz=ZoneInfo("America/Manaus"),
+
+        execution_time = timedelta(seconds=float(end_time - self.start_time))
+        type_log = "success"
+        delta_humanized = precisedelta(
+            execution_time,
+            format="%0.0f",
+            minimum_unit="seconds",
+            suppress=["microseconds"],
         )
 
-        type_log = "success"
-        message = f"Fim da execução | Tempo de Execução: {execution_time.strftime('%H:%M:%S')}"
+        message = f"Fim da execução | Tempo de Execução: {delta_humanized}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
 
         type_log = "info"
