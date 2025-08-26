@@ -157,13 +157,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                     type_log: str = data.get("type_log")
                     pid: str | None = data.get("pid", uuid4().hex)
 
-                    with suppress(Exception):
-                        sio.emit(
-                            event="join_room",
-                            data={"data": {"room": self.pid}},
-                            namespace=namespace,
-                        )
-
                     # Formata o horário atual
                     time_exec = current_time.strftime("%H:%M:%S")
 
@@ -185,17 +178,29 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                             success=success,
                             error=error,
                             remaining=int(total_rows),
-                            start_time=start_time,
+                            start_time=datetime.fromtimestamp(
+                                start_time,
+                                tz=ZoneInfo("America/Manaus"),
+                            ).strftime("%d/%m/%Y %H:%M:%S"),
                         ),
                     }
 
                     # Envia o log da execução
-                    with suppress(Exception):
+                    try:
+                        sio.emit(
+                            event="join_room",
+                            data={"data": {"room": self.pid}},
+                            namespace=namespace,
+                        )
+
                         sio.emit(
                             event="log_execution",
                             data=data,
                             namespace=namespace,
                         )
+
+                    except Exception as e:
+                        tqdm.write("\n".join(traceback.format_exception(e)))
 
                     # Cria o caminho do arquivo de log
                     file_log_name = f"{pid[:4].upper()}.log"
@@ -446,77 +451,82 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             and not self.event_stop_bot.is_set()
         ):
             data = self.queue_save_xlsx.get()
-            try:
-                sleep(2)
-                rows = data["to_save"]
-                sheet_name = data["sheet_name"]
 
-                df = DataFrame(rows)
+            if data:
+                try:
+                    sleep(2)
+                    rows = data["to_save"]
+                    sheet_name = data["sheet_name"]
 
-                # Remove timezone de todas as colunas possíveis para evitar erro no Excel
-                for col in df.columns:
-                    with suppress(Exception):
-                        df[col] = df[col].apply(
-                            lambda x: x.tz_localize(None)
-                            if hasattr(x, "tz_localize")
-                            else x,
-                        )
-                        continue
+                    df = DataFrame(rows)
 
-                    with suppress(Exception):
-                        df[col] = df[col].apply(
-                            lambda x: x.tz_convert(None)
-                            if hasattr(x, "tz_convert")
-                            else x,
-                        )
-                # --- APPEND na mesma aba, calculando a próxima linha ---
-                tqdm.write(f"Salvando worksheet: {sheet_name}")
-                if path_planilha.exists():
-                    with ExcelWriter(
-                        path=path_planilha,
-                        mode="a",
-                        engine="openpyxl",
-                        if_sheet_exists="overlay",
-                    ) as writer:
-                        # pega a aba (se existir) e calcula a próxima linha
-                        wb = writer.book
-                        ws = (
-                            wb[sheet_name]
-                            if sheet_name in wb.sheetnames
-                            else wb.create_sheet(sheet_name)
-                        )
-                        startrow = (
-                            ws.max_row if ws.max_row > 1 else 0
-                        )  # 0 => escreve com header
-                        write_header = startrow == 0
-                        df.to_excel(
-                            writer,
-                            sheet_name=sheet_name,
-                            index=False,
-                            header=write_header,
-                            startrow=startrow,
-                        )
-                else:
-                    # primeira escrita cria arquivo e cabeçalho
-                    with ExcelWriter(
-                        path=path_planilha,
-                        mode="w",
-                        engine="openpyxl",
-                    ) as writer:
-                        df.to_excel(writer, sheet_name=sheet_name, index=False)
+                    # Remove timezone de todas as colunas possíveis para evitar erro no Excel
+                    for col in df.columns:
+                        with suppress(Exception):
+                            df[col] = df[col].apply(
+                                lambda x: x.tz_localize(None)
+                                if hasattr(x, "tz_localize")
+                                else x,
+                            )
+                            continue
 
-                sleep(2)
-                tqdm.write("Worksheet salvo!")
-            except Exception as e:
-                # logue o stack completo (não interrompe o consumidor)
-                tqdm.write("\n".join(traceback.format_exception(e)))
+                        with suppress(Exception):
+                            df[col] = df[col].apply(
+                                lambda x: x.tz_convert(None)
+                                if hasattr(x, "tz_convert")
+                                else x,
+                            )
+                    # --- APPEND na mesma aba, calculando a próxima linha ---
+                    tqdm.write(f"Salvando worksheet: {sheet_name}")
+                    if path_planilha.exists():
+                        with ExcelWriter(
+                            path=path_planilha,
+                            mode="a",
+                            engine="openpyxl",
+                            if_sheet_exists="overlay",
+                        ) as writer:
+                            # pega a aba (se existir) e calcula a próxima linha
+                            wb = writer.book
+                            ws = (
+                                wb[sheet_name]
+                                if sheet_name in wb.sheetnames
+                                else wb.create_sheet(sheet_name)
+                            )
+                            startrow = (
+                                ws.max_row if ws.max_row > 1 else 0
+                            )  # 0 => escreve com header
+                            write_header = startrow == 0
+                            df.to_excel(
+                                writer,
+                                sheet_name=sheet_name,
+                                index=False,
+                                header=write_header,
+                                startrow=startrow,
+                            )
+                    else:
+                        # primeira escrita cria arquivo e cabeçalho
+                        with ExcelWriter(
+                            path=path_planilha,
+                            mode="w",
+                            engine="openpyxl",
+                        ) as writer:
+                            df.to_excel(
+                                writer,
+                                sheet_name=sheet_name,
+                                index=False,
+                            )
 
-            finally:
-                sleep(2)
-                self.queue_save_xlsx.task_done()
-                tqdm.write(
-                    f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
-                )
+                    sleep(2)
+                except Exception as e:
+                    # logue o stack completo (não interrompe o consumidor)
+                    tqdm.write("\n".join(traceback.format_exception(e)))
+
+                finally:
+                    sleep(2)
+                    self.queue_save_xlsx.task_done()
+                    tqdm.write(
+                        f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
+                    )
 
     def saudacao(self) -> Literal["Bom dia", "Boa tarde", "Boa noite"]:
         hora = datetime.now(tz=ZoneInfo("America/Manaus")).hour
@@ -618,7 +628,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                             valor = texto
                             break
                         j += 1
-                    if label and valor:
+                    if label and valor and ":" not in valor:
                         dados[label] = valor
                     # continue a partir do td seguinte ao que usamos como valor
                     i = j + 1

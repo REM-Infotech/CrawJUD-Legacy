@@ -21,9 +21,14 @@ info_geral_table_primeiro_grau = (
 
 info_processual_primeiro_grau = '//table[@id="informacoesProcessuais"]/tbody'
 
+partes_primeiro_grau = '//*[@id="includeContent"]'
+
+
 url_login = (
     "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
 )
+
+
 campo_username = "#login"
 campo_2_login = "#senha"  # nosec: B105
 btn_entrar = "#btEntrar"

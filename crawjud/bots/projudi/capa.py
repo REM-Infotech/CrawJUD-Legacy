@@ -11,9 +11,10 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 from zoneinfo import ZoneInfo  # noqa: F401
 
+from bs4 import BeautifulSoup
 from selenium.common.exceptions import (
     StaleElementReferenceException,  # noqa: F401
 )
@@ -33,6 +34,8 @@ if TYPE_CHECKING:
 
     from selenium.webdriver.remote.webelement import WebElement  # noqa: F401
 
+type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
+
 
 @shared_task(name="projudi.capa", bind=True, base=ContextTask)
 @wrap_cls
@@ -43,12 +46,17 @@ class Capa(ProjudiBot):
     extract process data and participant details, and format them accordingly.
     """
 
+    list_partes: ClassVar[ListPartes] = []
+
     def execution(self) -> None:
         """Execute the main processing loop to extract process information.
 
         Iterates over each data row and queues process data extraction.
         """
         frame = self.frame
+
+        self._total_rows = len(frame)
+
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
@@ -83,12 +91,32 @@ class Capa(ProjudiBot):
 
         """
         try:
-            search = self.search()
-            trazer_copia = self.bot_data.get("TRAZER_COPIA", "não")
-            if not search:
-                _raise_execution_error("Processo não encontrado")
+            driver = self.driver
+            bot_data = self.bot_data
 
-            self.driver.refresh()
+            self.print_msg(
+                message=f"Buscando processo {bot_data['NUMERO_PROCESSO']}",
+                row=self.row,
+                type_log="log",
+            )
+
+            search = self.search()
+            trazer_copia = bot_data.get("TRAZER_COPIA", "não")
+            if not search:
+                self.print_msg(
+                    message="Processo não encontrado.",
+                    row=self.row,
+                    type_log="error",
+                )
+                return
+
+            self.print_msg(
+                message="Processo encontrado! Extraindo informações...",
+                row=self.row,
+                type_log="info",
+            )
+
+            driver.refresh()
             data = self.get_process_informations()
 
             if trazer_copia and trazer_copia.lower() == "sim":
@@ -99,10 +127,32 @@ class Capa(ProjudiBot):
                 "sheet_name": "Capa",
             })
 
-        except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
+            for list_parte, list_representantes in self.list_partes:
+                if list_parte:
+                    self.queue_save_xlsx.put(
+                        self.queue_save_xlsx.put({
+                            "to_save": list_parte,
+                            "sheet_name": "Partes",
+                        }),
+                    )
 
+                if list_representantes:
+                    self.queue_save_xlsx.put(
+                        self.queue_save_xlsx.put({
+                            "to_save": list_representantes,
+                            "sheet_name": "Partes",
+                        }),
+                    )
+
+            self.list_partes.clear()
+
+            self.print_msg(
+                message="Informações extraídas com sucesso!",
+                row=self.row,
+                type_log="success",
+            )
+
+        except ExecutionError as e:
             raise ExecutionError(exc=e) from e
 
     def copia_pdf(
@@ -211,25 +261,30 @@ class Capa(ProjudiBot):
         process_info: dict[str, str | int | datetime] = None
         try:
             bot_data = self.bot_data
+            numero_processo = bot_data.get("NUMERO_PROCESSO")
 
-            def primeiro_grau() -> dict[str, str | int | datetime]:
+            def primeiro_grau(
+                numero_processo: str,
+            ) -> dict[str, str | int | datetime]:
                 process_info: dict[str, str | int | datetime] = {
-                    "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
+                    "Número do processo": numero_processo,
                 }
                 process_info.update(self._informacoes_gerais_primeiro_grau())
-                process_info.update(
-                    self._informacoes_processuais_primeiro_grau(),
+                process_info.update(self._info_processual_primeiro_grau())
+
+                self.list_partes = self._partes_primario_grau(
+                    numero_processo=numero_processo,
                 )
+
                 return process_info
 
             callables = {"1": primeiro_grau}
 
-            return callables[str(bot_data.get("GRAU", "1"))]()
+            return callables[str(bot_data.get("GRAU", "1"))](
+                numero_processo=numero_processo,
+            )
 
         except (ExecutionError, Exception):
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             _raise_execution_error("Erro ao executar operação")
 
         return process_info
@@ -256,7 +311,7 @@ class Capa(ProjudiBot):
         inner_html = table_info_geral.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
 
-    def _informacoes_processuais_primeiro_grau(self) -> dict[str, str]:
+    def _info_processual_primeiro_grau(self) -> dict[str, str]:
         wait = self.wait
 
         table_info_processual = wait.until(
@@ -268,3 +323,110 @@ class Capa(ProjudiBot):
 
         inner_html = table_info_processual.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
+
+    def _partes_primario_grau(
+        self,
+        numero_processo: str,
+    ) -> list[tuple[list[dict[str, str]], list[dict[str, str]]]]:
+        wait = self.wait
+
+        btn_partes = wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, el.btn_partes)),
+        )
+
+        btn_partes.click()
+        list_partes: list[
+            tuple[list[dict[str, str]], list[dict[str, str]]]
+        ] = []
+        grouptable_partes = wait.until(
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.partes_primeiro_grau,
+            )),
+        )
+
+        for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
+            tbody_table = table.find_element(By.TAG_NAME, "tbody")
+            inner_html = tbody_table.get_attribute("innerHTML")
+            list_partes.append(
+                self._partes_projudi(
+                    inner_html=inner_html,
+                    numero_processo=numero_processo,
+                ),
+            )
+
+        return list_partes
+
+    def _partes_projudi(
+        self,
+        inner_html: str,
+        numero_processo: str,
+    ) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+        """Extraia informações das partes do processo na tabela do Projudi.
+
+        Args:
+            inner_html (str): HTML da página contendo a tabela de partes.
+            numero_processo(str): Numero processo
+
+        Returns:
+            (tuple[list[dict[str, str]], list[dict[str, str]]]):
+                Lista de dicionários com dados das partes.
+
+        """
+        soup = BeautifulSoup(inner_html, "html.parser")
+        partes: list[dict[str, str]] = []
+        advogados: list[dict[str, str]] = []
+        endereco = ""
+
+        # Encontra todas as linhas principais das partes
+        for tr in soup.find_all("tr", class_="even"):
+            tds = tr.find_all("td")
+            if not tds or len(tds) < 6:
+                continue
+            # Extrai nome
+            nome = str(tds[1].get_text(strip=True))
+            # Extrai documento (RG ou similar)
+            documento = str(tds[2].get_text(strip=True))
+            # Extrai CPF
+            cpf = str(tds[3].get_text(strip=True))
+            # Extrai OABs e advogados
+            advs = ", ".join([
+                " ".join(str(li.get_text(" ", strip=True)).split())
+                for li in tds[5].find_all("li")
+            ])
+
+            # Busca o id da linha expandida para endereço
+            row_id = tr.get("id")
+            if row_id:
+                row_detalhe = soup.find("tr", id=f"row{row_id}")
+                if row_detalhe:
+                    endereco_div = row_detalhe.find(
+                        "div",
+                        class_="extendedinfo",
+                    )
+                    if endereco_div:
+                        endereco = str(endereco_div.get_text(" ", strip=True))
+
+            if nome != "Descrição:":
+                for li in tds[5].find_all("li"):
+                    advogado_e_oab = " ".join(
+                        str(li.get_text(" ", strip=True)).split(),
+                    ).split(" - ")
+
+                    advogados.append({
+                        "Número do processo": numero_processo,
+                        "Nome": advogado_e_oab[1],
+                        "OAB": advogado_e_oab[0],
+                        "Representado": nome,
+                    })
+
+                partes.append({
+                    "Número do processo": numero_processo,
+                    "Nome": nome,
+                    "Documento": documento,
+                    "Cpf": cpf,
+                    "Advogados": advs,
+                    "Endereco": endereco,
+                })
+
+        return partes, advogados

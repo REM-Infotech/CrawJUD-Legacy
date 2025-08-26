@@ -118,30 +118,17 @@ class Capa(PjeBot):
                 with suppress(Exception):
                     future.result()
 
-        self.queue_save_xlsx.put({
-            "to_save": self.to_add_processos,
-            "sheet_name": "Capa",
-        })
-
-        self.queue_save_xlsx.put({
-            "to_save": self.to_add_audiencias,
-            "sheet_name": "Audiências",
-        })
-
-        self.queue_save_xlsx.put({
-            "to_save": self.to_add_assuntos,
-            "sheet_name": "Assuntos",
-        })
-
-        self.queue_save_xlsx.put({
-            "to_save": self.to_add_partes,
-            "sheet_name": "Partes",
-        })
-
-        self.queue_save_xlsx.put({
-            "to_save": self.to_add_representantes,
-            "sheet_name": "Representantes",
-        })
+        for to_save, sheet_name in [
+            (self.to_add_processos, "Capa"),
+            (self.to_add_audiencias, "Audiências"),
+            (self.to_add_assuntos, "Assuntos"),
+            (self.to_add_partes, "Partes"),
+            (self.to_add_representantes, "Representantes"),
+        ]:
+            self.queue_save_xlsx.put({
+                "to_save": to_save,
+                "sheet_name": sheet_name,
+            })
 
         with suppress(Exception):
             self.queue_save_xlsx.join()
