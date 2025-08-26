@@ -58,6 +58,9 @@ class Capa(ProjudiBot):
         self._total_rows = len(frame)
 
         for pos, value in enumerate(frame):
+            if self.event_stop_bot.is_set():
+                break
+
             self.row = pos + 1
             self.bot_data = value
 

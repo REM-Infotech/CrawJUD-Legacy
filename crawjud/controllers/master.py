@@ -524,9 +524,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 finally:
                     sleep(2)
                     self.queue_save_xlsx.task_done()
-                    tqdm.write(
-                        f"Fim da tarefa. Restantes {self.queue_save_xlsx.unfinished_tasks}",
-                    )
 
     def saudacao(self) -> Literal["Bom dia", "Boa tarde", "Boa noite"]:
         hora = datetime.now(tz=ZoneInfo("America/Manaus")).hour

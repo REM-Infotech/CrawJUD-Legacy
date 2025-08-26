@@ -516,4 +516,3 @@ class Capa(PjeBot):
 
             finally:
                 self.queue_files.task_done()
-                tqdm.write("Fim da tarefa")
