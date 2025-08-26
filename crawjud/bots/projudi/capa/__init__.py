@@ -140,26 +140,12 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             bot_data = self.bot_data
             numero_processo = bot_data.get("NUMERO_PROCESSO")
 
-            def primeiro_grau(
-                numero_processo: str,
-            ) -> dict[str, str | int | datetime]:
-                process_info: dict[str, str | int | datetime] = {
-                    "Número do processo": numero_processo,
-                }
-                process_info.update(self._informacoes_gerais_primeiro_grau())
-                process_info.update(self._info_processual_primeiro_grau())
-
-                self.list_partes = self._partes_primario_grau(
-                    numero_processo=numero_processo,
-                )
-
-                return process_info
-
-            callables = {"1": primeiro_grau}
+            callables = {"1": self.primeiro_grau}
 
             data = callables[str(bot_data.get("GRAU", "1"))](
                 numero_processo=numero_processo,
             )
+
             self.queue_save_xlsx.put({
                 "to_save": [data],
                 "sheet_name": "Capa",
@@ -182,6 +168,21 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
 
         except (ExecutionError, Exception):
             _raise_execution_error("Erro ao executar operação")
+
+        return process_info
+
+    def primeiro_grau(
+        self,
+        numero_processo: str,
+    ) -> dict[str, str | int | datetime]:
+        process_info: dict[str, str | int | datetime] = {
+            "Número do processo": numero_processo,
+        }
+        process_info.update(self._informacoes_gerais_primeiro_grau())
+        process_info.update(self._info_processual_primeiro_grau())
+
+        data_ = self._partes_primario_grau(numero_processo=numero_processo)
+        self.list_partes = data_
 
         return process_info
 
