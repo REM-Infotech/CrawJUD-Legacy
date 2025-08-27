@@ -73,12 +73,11 @@ class PjeBot[T](CrawJUD):
         self.botsystem = system
 
         self.pid = str(current_task.request.id)
-
-        super().__init__(system="pje")
-
         self.folder_storage = storage_folder_name
         self.current_task = current_task
         self.start_time = perf_counter()
+
+        super().__init__(system="pje")
 
     def search(
         self,

@@ -142,6 +142,7 @@ class Capa(PjeBot):
 
         self.event_queue_files.set()
         self.event_queue_save_xlsx.set()
+        self.finalize_execution()
 
     def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
         try:
@@ -176,15 +177,18 @@ class Capa(PjeBot):
         client_context = Client(cookies=self.cookies, headers=self.headers)
         pool_exe = ThreadPoolExecutor(max_workers=16)
         with client_context as client, pool_exe as executor:
-            futures = [
-                executor.submit(
-                    self.queue,
-                    item=item,
-                    client=client,
-                    regiao=regiao,
+            futures: list[Future] = []
+            for item in data:
+                futures.append(
+                    executor.submit(
+                        self.queue,
+                        item=item,
+                        client=client,
+                        regiao=regiao,
+                    ),
                 )
-                for item in data
-            ]
+                sleep(3)
+
             for future in as_completed(futures):
                 with suppress(Exception):
                     future.result()
