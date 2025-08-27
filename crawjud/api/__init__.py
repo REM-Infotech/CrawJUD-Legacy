@@ -20,7 +20,7 @@ from crawjud.celery_app import make_celery
 from crawjud.utils.middleware import ProxyHeadersMiddleware
 
 
-def check_cors_allowed_origins(*args, **kwargs) -> bool:  # noqa: ANN003, ARG001
+def check_cors_allowed_origins(*args, **kwargs) -> bool:
     return True
 
 
