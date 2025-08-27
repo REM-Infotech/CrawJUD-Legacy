@@ -66,13 +66,15 @@ async def executions() -> Response:
 
         data = [
             {
-                "pid": item.pid[:8].upper(),
+                "pid": item.pid,
                 "user": item.user.nome_usuario,
                 "botname": item.bot.display_name,
                 "xlsx": item.arquivo_xlsx,
-                "start_date": item.data_execucao,
+                "start_date": item.data_execucao.strftime("%d/%m/%Y %H:%M:%S"),
                 "status": item.status,
-                "stop_date": item.data_finalizacao,
+                "stop_date": item.data_finalizacao.strftime(
+                    "%d/%m/%Y %H:%M:%S",
+                ),
                 "file_output": item.file_output,
             }
             for item in executions
