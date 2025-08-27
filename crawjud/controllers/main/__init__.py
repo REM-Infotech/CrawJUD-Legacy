@@ -323,8 +323,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             suppress=["microseconds"],
         )
 
-        self.event_queue_message.set()
-
         message = f"Fim da execução | Tempo de Execução: {delta_humanized}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
 
@@ -343,6 +341,8 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         message = f"Baixe os resultados aqui: {link}"
         self.print_msg(message=message, row=self.row, type_log="info")
+
+        self.event_queue_message.set()
 
     def append_error(self, *args: T, **kwargs: T) -> None:
         """Adiciona erro ao DataFrame e salva na planilha.
