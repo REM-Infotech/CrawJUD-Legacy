@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Literal
 
 type MessageNadaEncontrado = Literal["Nenhum processo encontrado"]
@@ -20,3 +21,14 @@ type StatusType = Literal[
 type TReturnMessageMail = Literal["E-mail enviado com sucesso!"]
 type TReturnMessageExecutBot = Literal["Execução encerrada com sucesso!"]
 type TReturnMessageUploadFile = Literal["Arquivo enviado com sucesso!"]
+type MethodRequested = Literal["INSERT", "UPDATE", "DELETE"]
+
+# Mensagem de operações na tabela de usuários
+type MsgUsuarioCadastrado = Literal["Usuário Cadastrado com sucesso!"]
+type MsgUsuarioDeletado = Literal["Usuário deletado com sucesso!"]
+type MsgUsuarioAtualizado = Literal["Informações atualizadas com sucesso!"]
+type ReturnCallMethod = (
+    MsgUsuarioCadastrado | MsgUsuarioAtualizado | MsgUsuarioDeletado
+)
+
+type CallableMethodRequest = Callable[[dict[str, str]], ReturnCallMethod]

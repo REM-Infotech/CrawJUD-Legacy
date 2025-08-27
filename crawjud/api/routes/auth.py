@@ -24,8 +24,10 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import datetime
 from traceback import format_exception
 from typing import TYPE_CHECKING
+from zoneinfo import ZoneInfo
 
 from quart import (
     Blueprint,
@@ -117,6 +119,9 @@ async def login() -> Response:
         )
         if usr and usr.check_password(form.password):
             is_admin = bool(usr.admin or usr.supersu)
+
+            usr.login_time = datetime.now(tz=ZoneInfo("America/Manaus"))
+            db.session.commit()
 
             session["license_object"] = LicenseUserDict(**{
                 k: v

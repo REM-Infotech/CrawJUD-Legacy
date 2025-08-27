@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import ClassVar
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -98,7 +99,7 @@ class Users(db.Model):
     )
     email: str = db.Column(db.String(length=50), nullable=False, unique=True)
     password: str = db.Column(db.String(length=60), nullable=False)
-    login_time = db.Column(
+    login_time: ClassVar[datetime] = db.Column(
         db.DateTime,
         default=datetime.now(ZoneInfo("America/Manaus")),
     )
