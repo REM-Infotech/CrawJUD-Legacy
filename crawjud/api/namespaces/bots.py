@@ -67,7 +67,9 @@ class BotsNamespace(Namespace):
 
             return v
 
-        for bot in db.session.query(BotsCrawJUD).all():
+        query_bots = db.session.query(BotsCrawJUD).all()
+        sorted_query_bots = sorted(query_bots, key=lambda x: x.id)
+        for bot in sorted_query_bots:
             bot_data = {
                 k: decode_str(v)
                 for k, v in bot.__dict__.items()
