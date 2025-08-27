@@ -26,7 +26,7 @@ from crawjud.common.exceptions.bot import (
     FileUploadError,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
-from crawjud.controllers.master import CrawJUD
+from crawjud.controllers.main import CrawJUD
 from crawjud.interfaces.types import BotData
 from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.interfaces.types.pje import (

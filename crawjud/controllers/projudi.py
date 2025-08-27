@@ -20,7 +20,7 @@ from crawjud.common.exceptions.bot import (
     LoginSystemError,
     StartError,
 )
-from crawjud.controllers.master import CrawJUD
+from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import projudi as el
 
 if TYPE_CHECKING:

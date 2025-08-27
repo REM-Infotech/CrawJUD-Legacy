@@ -11,7 +11,7 @@ from functools import wraps
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from crawjud.controllers.master import CrawJUD
+    from crawjud.controllers.main import CrawJUD
 
 
 def wrap_init[T](cls: type[CrawJUD]) -> type[T]:

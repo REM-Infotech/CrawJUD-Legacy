@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from crawjud.controllers.master import CrawJUD
+from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import csi as el
 
 if TYPE_CHECKING:

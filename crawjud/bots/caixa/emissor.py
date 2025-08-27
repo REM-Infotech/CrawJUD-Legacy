@@ -14,7 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.master import CrawJUD
+from crawjud.controllers.main import CrawJUD
 
 
 class Emissor(CrawJUD):
