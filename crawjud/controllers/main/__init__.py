@@ -67,11 +67,19 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             )
             self._wait = self._driver.wait
 
-        Thread(
+        self.print_thread = Thread(
             target=self.print_in_thread,
             daemon=True,
             name="Worker Print Message",
-        ).start()
+        )
+
+        self.thread_save_file = Thread(
+            target=self.save_file,
+            daemon=True,
+        )
+
+        self.print_thread.start()
+        self.thread_save_file.start()
 
     def load_data(self) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
@@ -315,12 +323,16 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             suppress=["microseconds"],
         )
 
+        self.event_queue_message.set()
+
         message = f"Fim da execução | Tempo de Execução: {delta_humanized}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
 
         type_log = "info"
         message = f"Sucessos: {self.success} | Erros: {self.error}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
+
+        self.thread_save_file.join()
 
         zip_file = self.zip_result()
         self.storage.upload_file(file_name=zip_file.name, file_path=zip_file)
@@ -331,10 +343,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         message = f"Baixe os resultados aqui: {link}"
         self.print_msg(message=message, row=self.row, type_log="info")
-
-        self.event_queue_message.set()
-        self.queue_msg.join()
-        self.queue_save_xlsx.join()
 
     def append_error(self, *args: T, **kwargs: T) -> None:
         """Adiciona erro ao DataFrame e salva na planilha.

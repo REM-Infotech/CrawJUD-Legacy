@@ -5,7 +5,6 @@ from __future__ import annotations
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from threading import Thread
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING, NoReturn
 from zoneinfo import ZoneInfo
@@ -67,8 +66,6 @@ class ProjudiBot[T](CrawJUD):
         self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
-        Thread(target=self.save_file, daemon=True).start()
-
         super().__init__(system=system)
 
         for k, v in kwargs.copy().items():
@@ -124,7 +121,6 @@ class ProjudiBot[T](CrawJUD):
         manipula entradas, clique e tentativa condicional
 
         """
-        wait = self.wait
         bot_data = self.bot_data
         driver = self.driver
 
@@ -167,9 +163,6 @@ class ProjudiBot[T](CrawJUD):
                     enterproc.click()
                     detect_intimacao(driver=driver)
                     allow_access(driver=driver)
-                    link_grau2 = get_link_grau2(wait=wait)
-                    if grau == 2 and link_grau2:
-                        driver.get(link_grau2)
 
                     return True
 

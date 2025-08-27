@@ -48,7 +48,10 @@ class SegundaInstancia(ProjudiBot):
         wait = self.wait
 
         btn_partes = wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.btn_partes)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                "tabItemprefix1",
+            )),
         )
 
         btn_partes.click()
