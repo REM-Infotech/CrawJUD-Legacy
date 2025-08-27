@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.common.exceptions.bot import ExecutionError, raise_start_error
 from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import esaj as el
 
@@ -56,8 +56,13 @@ class ElawBot[T](CrawJUD):
 
         self.download_files()
 
-        self.auth()
+        if not self.auth():
+            raise_start_error("Falha na autenticação.")
+
+        self.print_msg(message="Sucesso na autenticação!", type_log="info")
         self._frame = self.load_data()
+
+        sleep(0.5)
         self.print_msg(message="Execução inicializada!", type_log="info")
 
     def auth(self) -> bool:

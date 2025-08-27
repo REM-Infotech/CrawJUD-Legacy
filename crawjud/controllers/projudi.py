@@ -6,7 +6,7 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import perf_counter, sleep
-from typing import TYPE_CHECKING, NoReturn
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -17,7 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from crawjud.common.exceptions.bot import (
     ExecutionError,
     LoginSystemError,
-    StartError,
+    raise_start_error,
 )
 from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import projudi as el
@@ -39,10 +39,6 @@ CSS_INPUT_PROCESSO = {
     "1": "#numeroProcesso",
     "2": "#numeroRecurso",
 }
-
-
-def _raise_start_error(message: str) -> NoReturn:
-    raise StartError(message=message)
 
 
 class ProjudiBot[T](CrawJUD):
@@ -73,16 +69,13 @@ class ProjudiBot[T](CrawJUD):
 
         self.download_files()
 
-        autenticado = self.auth()
-        if not autenticado:
-            self.print_msg(message="Falha na autenticação.", type_log="error")
-            with suppress(Exception):
-                self.driver.quit()
+        if not self.auth():
+            raise_start_error("Falha na autenticação.")
 
-            _raise_start_error("Falha na autenticação.")
-
+        self.print_msg(message="Sucesso na autenticação!", type_log="info")
         self._frame = self.load_data()
 
+        sleep(0.5)
         self.print_msg(message="Execução inicializada!", type_log="info")
 
     def search(self) -> bool:

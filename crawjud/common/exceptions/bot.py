@@ -3,10 +3,24 @@
 from __future__ import annotations
 
 import traceback
+from typing import NoReturn
 
 from crawjud.common.exceptions import BaseCrawJUDError
 
 MessageError = "Erro ao executar operaçao: "
+
+
+def raise_start_error(message: str) -> NoReturn:
+    """Lança exceção StartError com mensagem personalizada fornecida.
+
+    Args:
+        message (str): Mensagem de erro a ser exibida na exceção.
+
+    Raises:
+        StartError: Exceção lançada com a mensagem informada.
+
+    """
+    raise StartError(message=message)
 
 
 def formata_msg(exc: Exception | None = None) -> str:

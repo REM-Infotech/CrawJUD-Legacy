@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from time import perf_counter
+from time import perf_counter, sleep
 from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from crawjud.common.exceptions.bot import raise_start_error
 from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import csi as el
 
@@ -54,9 +55,13 @@ class CsiBot[T](CrawJUD):
 
         self.download_files()
 
-        self.auth()
+        if not self.auth():
+            raise_start_error("Falha na autenticação.")
+
+        self.print_msg(message="Sucesso na autenticação!", type_log="info")
         self._frame = self.load_data()
 
+        sleep(0.5)
         self.print_msg(message="Execução inicializada!", type_log="info")
 
     def search(self) -> bool:
