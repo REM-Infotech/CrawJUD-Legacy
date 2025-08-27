@@ -23,7 +23,7 @@ from pandas import Timestamp, read_excel
 from werkzeug.utils import secure_filename
 
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.abstract import AbstractCrawJUD
+from crawjud.controllers.main._master import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
 from crawjud.utils.storage import Storage
