@@ -5,6 +5,8 @@ Gerencia operações de storage e persistência de dados.
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta
+from mimetypes import guess_type
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, BinaryIO, Literal
 
@@ -12,7 +14,6 @@ from dotenv import dotenv_values
 from minio import Minio as Client
 from minio.credentials import EnvMinioProvider
 from minio.xml import unmarshal
-from tqdm import tqdm
 
 from crawjud.utils.storage._bucket import Blob as Blob
 from crawjud.utils.storage._bucket import Bucket, ListBuckets
@@ -25,6 +26,8 @@ if TYPE_CHECKING:
 
     from minio.datatypes import Object
     from minio.helpers import ObjectWriteResult
+
+    from crawjud.interfaces.types import DictType
 environ = dotenv_values()
 storages = Literal["google", "minio"]
 
@@ -91,7 +94,7 @@ class Storage[T](Client):
         super().__init__(
             endpoint=server_url,
             credentials=credentials,
-            secure=False,
+            secure=True,
         )
 
     @property
@@ -162,27 +165,8 @@ class Storage[T](Client):
                 message=f"Arquivo não encontrado: {file_path}",
             )
 
-        file_size = file_path.stat().st_size
-        chunk_size = 1024  # Tamanho do chunk em bytes
-
         # Abre o arquivo em modo binário
-        with (
-            file_path.open("rb") as f,
-            tqdm(
-                total=file_size,
-                unit="B",
-                unit_scale=True,
-                desc=file_name,
-            ) as pbar,
-        ):
-            # Inicializa barra de progresso
-            while True:
-                tqdm.write(str(f))
-                chunk = f.read(chunk_size)
-                if not chunk:
-                    break
-                pbar.update(len(chunk))
-                self.bucket.append_object(file_name, chunk, 0)
+        self.fput_object(object_name=file_name, file_path=str(file_path))
 
     def fget_object(
         self,
@@ -211,8 +195,7 @@ class Storage[T](Client):
     def fput_object(
         self,
         object_name: str,
-        file_path: str,
-        content_type: str = "application/octet-stream",
+        file_path: str | Path,
         metadata: T | None = None,
         sse: T | None = None,
         progress: T | None = None,
@@ -223,21 +206,27 @@ class Storage[T](Client):
         *,
         legal_hold: bool = False,
     ) -> ObjectWriteResult:
-        bucket_name = self.bucket.name
-        return super().fput_object(
-            bucket_name=bucket_name,
-            object_name=object_name,
-            file_path=file_path,
-            content_type=content_type,
-            metadata=metadata,
-            sse=sse,
-            progress=progress,
-            part_size=part_size,
-            num_parallel_uploads=num_parallel_uploads,
-            tags=tags,
-            retention=retention,
-            legal_hold=legal_hold,
-        )
+        if isinstance(file_path, str):
+            file_path = Path(file_path)
+
+        file_size = file_path.stat().st_size
+        type_file, _ = guess_type(url=file_path)
+
+        with file_path.open("rb") as file:
+            self.put_object(
+                object_name=object_name,
+                data=file,
+                length=file_size,
+                content_type=type_file,
+                metadata=metadata,
+                sse=sse,
+                progress=progress,
+                part_size=part_size,
+                num_parallel_uploads=num_parallel_uploads,
+                tags=tags,
+                retention=retention,
+                legal_hold=legal_hold,
+            )
 
     def put_object(
         self,
@@ -307,3 +296,25 @@ class Storage[T](Client):
                 file.name,
                 dest.joinpath(file.name),
             )
+
+    def get_presigned_url(
+        self,
+        method: str,
+        object_name: str,
+        expires: timedelta = timedelta(days=7),
+        response_headers: DictType | None = None,
+        request_date: datetime | None = None,
+        version_id: str | None = None,
+        extra_query_params: DictType | None = None,
+    ) -> str:
+        bucket_name = self.bucket.name
+        return super().get_presigned_url(
+            method,
+            bucket_name,
+            object_name,
+            expires,
+            response_headers,
+            request_date,
+            version_id,
+            extra_query_params,
+        )

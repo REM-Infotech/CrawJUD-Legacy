@@ -14,6 +14,7 @@ from threading import Event, Thread
 from time import perf_counter
 from typing import TYPE_CHECKING, Literal
 from unicodedata import combining, normalize
+from zipfile import ZIP_DEFLATED, ZipFile
 from zoneinfo import ZoneInfo
 
 import base91
@@ -321,6 +322,16 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         message = f"Sucessos: {self.success} | Erros: {self.error}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
 
+        zip_file = self.zip_result()
+        self.storage.upload_file(file_name=zip_file.name, file_path=zip_file)
+        link = self.storage.get_presigned_url(
+            method="GET",
+            object_name=zip_file.name,
+        )
+
+        message = f"Baixe os resultados aqui: {link}"
+        self.print_msg(message=message, row=self.row, type_log="info")
+
         self.event_queue_message.set()
         self.queue_msg.join()
         self.queue_save_xlsx.join()
@@ -393,3 +404,20 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                     i += 1
 
         return dados
+
+    def zip_result(self) -> Path:
+        zip_filename = f"{self.pid[:6].upper()}.zip"
+        source_dir = self.output_dir_path
+        output_dir = work_dir.joinpath("archives", zip_filename)
+
+        output_dir.parent.mkdir(exist_ok=True, parents=True)
+
+        with ZipFile(output_dir, "w", ZIP_DEFLATED) as zipfile:
+            for root, _, files in source_dir.walk():
+                for file in files:
+                    if self.pid in file and ".log" not in file:
+                        file_path = root.joinpath(file)
+                        arcname = file_path.relative_to(source_dir)
+                        zipfile.write(file_path, arcname)
+
+        return output_dir
