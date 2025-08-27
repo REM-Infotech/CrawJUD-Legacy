@@ -31,7 +31,7 @@ async def main_app() -> None:
                 app,
                 cors_allowed_origins=check_cors_allowed_origins,
             )
-            from crawjud.routes.namespaces import register_namespaces
+            from crawjud.api.namespaces import register_namespaces
 
             await register_namespaces(io)
             # Use "127.0.0.1" como padrão para evitar exposição a todas as interfaces

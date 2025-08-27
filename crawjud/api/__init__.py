@@ -37,6 +37,8 @@ io = SocketIO(
     cookie="access",
 )
 
+workdir = Path(__file__).cwd()
+
 
 async def create_app() -> Quart:
     """Create and configure the Quart application instance.
@@ -48,9 +50,8 @@ async def create_app() -> Quart:
         ASGIApp: The ASGI application instance with CORS and middleware applied.
 
     """
-    app.config.from_pyfile(
-        Path(__file__).parent.resolve().joinpath("quartconf.py"),
-    )
+    file_config = workdir.joinpath("crawjud", "quartconf.py")
+    app.config.from_pyfile(file_config)
 
     async with app.app_context():
         await init_extensions(app)
