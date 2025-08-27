@@ -60,12 +60,16 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self.event_queue_save_xlsx = Event()
         self.event_stop_bot: Event = Event()
 
+        self.print_msg(message="Inicializando...")
+
         if system != "pje":
             self._driver = DriverBot(
                 selected_browser="chrome",
                 with_proxy=False,
             )
             self._wait = self._driver.wait
+
+        self.print_msg(message="Start recebido! Inicializando execução...")
 
         self.print_thread = Thread(
             target=self.print_in_thread,

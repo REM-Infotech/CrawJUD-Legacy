@@ -79,6 +79,8 @@ class PjeBot[T](CrawJUD):
 
         super().__init__(system="pje")
 
+        self.print_msg(message="Execução inicializada!", type_log="info")
+
     def search(
         self,
         data: BotData,

@@ -59,6 +59,7 @@ class ESajBot[T](CrawJUD):
 
         self.auth()
         self._frame = self.load_data()
+        self.print_msg(message="Execução inicializada!", type_log="info")
 
     def auth(self) -> bool:
         loginuser = "".join(

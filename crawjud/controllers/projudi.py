@@ -83,6 +83,8 @@ class ProjudiBot[T](CrawJUD):
 
         self._frame = self.load_data()
 
+        self.print_msg(message="Execução inicializada!", type_log="info")
+
     def search(self) -> bool:
         """Procura processos no PROJUDI.
 
