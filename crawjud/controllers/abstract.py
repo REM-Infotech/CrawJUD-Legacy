@@ -263,7 +263,7 @@ class AbstractCrawJUD[T]:
         sio = Client()
 
         @sio.on(event="stop_bot", namespace="/logsbot")
-        def stop_bot[T](*args: T, **kwargs: T) -> None:  # noqa: ARG001
+        def stop_bot[T](*args: T, **kwargs: T) -> None:
             """Receba evento para parar o bot via SocketIO.
 
             Args:
