@@ -298,9 +298,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         Performs cookie cleanup, quits the driver, and prints summary logs.
         """
         with suppress(Exception):
-            self.queue_save_xlsx.join()
-
-        with suppress(Exception):
             window_handles = self.driver.window_handles
             if window_handles:
                 self.driver.delete_all_cookies()
@@ -326,6 +323,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         self.event_queue_message.set()
         self.queue_msg.join()
+        self.queue_save_xlsx.join()
 
     def append_error(self, *args: T, **kwargs: T) -> None:
         """Adiciona erro ao DataFrame e salva na planilha.

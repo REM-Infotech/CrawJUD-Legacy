@@ -109,7 +109,7 @@ class SegundaInstancia(ProjudiBot):
                     if endereco_div:
                         endereco = str(endereco_div.get_text(" ", strip=True))
 
-            if nome != "Descrição:":
+            if ":" not in nome:
                 for li in tds[5].find_all("li"):
                     advogado_e_oab = " ".join(
                         str(li.get_text(" ", strip=True)).split(),
@@ -122,13 +122,16 @@ class SegundaInstancia(ProjudiBot):
                         "Representado": nome,
                     })
 
+                def limpa_campo(valor: str) -> str:
+                    return valor if ":" not in valor else ""
+
                 partes.append({
                     "Número do processo": processo,
                     "Nome": nome,
-                    "Documento": documento,
-                    "Cpf": cpf,
+                    "Documento": limpa_campo(documento),
+                    "Cpf": limpa_campo(cpf),
                     "Advogados": advs,
-                    "Endereco": endereco,
+                    "Endereco": limpa_campo(endereco),
                 })
 
         self.to_add_partes.extend(partes)
