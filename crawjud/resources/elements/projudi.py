@@ -62,10 +62,11 @@ data_inicio = 'input[id="dataInicialMovimentacaoFiltro"]'
 data_fim = 'input[id="dataFinalMovimentacaoFiltro"]'
 filtro = 'input[id="editButton"]'
 expand_btn_projudi = 'a[href="javascript://nop/"]'
-table_moves = (
-    './/tr[contains(@class, "odd") or contains(@class, "even")]'
-    '[not(@style="display:none")]'
-)
+
+table_moves = '//div[@id="includeContent"]/table/tbody'
+list_moves_semarquivo = '//tr[(contains(@class, "even") or contains(@class, "odd")) and contains(@id, "SEMARQUIVO")][not(@style="display:none")]'
+list_moves_comarquivo = '//tr[(contains(@class, "even") or contains(@class, "odd")) and not(contains(@id, "SEMARQUIVO"))][not(@style="display:none")]'
+
 
 primeira_instform1 = "#informacoesProcessuais"
 primeira_instform2 = "#tabprefix0 > #container > #includeContent > fieldset"
