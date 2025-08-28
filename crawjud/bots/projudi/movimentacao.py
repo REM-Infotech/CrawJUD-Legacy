@@ -362,19 +362,22 @@ class Movimentacao(ProjudiBot):
         """
         bot_data = self.bot_data
 
+        evento = tds[3].text
+        movimentado_por = tds[4].text
+
         dados = {
             "Número do Processo": bot_data["NUMERO_PROCESSO"],
             "Seq.": tds[1].text.strip(),
             "Data": tds[2].text,
-            "Evento": " ".join(tds[3].text.split()),
+            "Evento": " ".join(evento.split()),
             "Descrição Evento": "Sem Descrição",
             "Movimentado Por": " ".join([
-                t.capitalize() for t in tds[4].text.split()
+                t.capitalize() for t in movimentado_por.split()
             ]),
         }
 
-        if "\n" in tds[4].text:
-            movimentador_split = tds[4].text.split("\n")
+        if "\n" in movimentado_por:
+            movimentador_split = movimentado_por.split("\n")
             movimentador = " ".join(movimentador_split[0].split())
             classificacao = movimentador_split[1]
             dados.update({
@@ -382,8 +385,8 @@ class Movimentacao(ProjudiBot):
                 "Classificação": " ".join(classificacao.split()),
             })
 
-        if "\n" in tds[3].text:
-            evento_e_descricaco = tds[3].text.split("\n")
+        if "\n" in evento:
+            evento_e_descricaco = evento.split("\n")
 
             dados.update({
                 "Evento": " ".join(evento_e_descricaco[0].split()),
