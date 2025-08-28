@@ -36,13 +36,13 @@ class BotsCrawJUD(db.Model):
 
     __tablename__ = "bots"
     id: int = db.Column(db.Integer, primary_key=True)
-    display_name: str = db.Column(db.String(length=45), nullable=False)
-    system: str = db.Column(db.String(length=45), nullable=False)
-    state: str = db.Column(db.String(length=45), nullable=False)
-    client: str = db.Column(db.String(length=45), nullable=False)
-    type: str = db.Column(db.String(length=45), nullable=False)
-    form_cfg: str = db.Column(db.String(length=45), nullable=False)
-    classification: str = db.Column(db.String(length=45), nullable=False)
+    display_name: str = db.Column(db.String(length=64), nullable=False)
+    system: str = db.Column(db.String(length=64), nullable=False)
+    state: str = db.Column(db.String(length=64), nullable=False)
+    client: str = db.Column(db.String(length=64), nullable=False)
+    type: str = db.Column(db.String(length=64), nullable=False)
+    form_cfg: str = db.Column(db.String(length=64), nullable=False)
+    classification: str = db.Column(db.String(length=64), nullable=False)
     text: str = db.Column(db.String(length=512), nullable=False)
 
 
@@ -65,13 +65,13 @@ class Credentials(db.Model):
 
     __tablename__ = "credentials"
     id: int = db.Column(db.Integer, primary_key=True)
-    nome_credencial: str = db.Column(db.String(length=45), nullable=False)
-    system: str = db.Column(db.String(length=45), nullable=False)
-    login_method: str = db.Column(db.String(length=45), nullable=False)
-    login: str = db.Column(db.String(length=45), nullable=False)
-    password: str = db.Column(db.String(length=45))
-    key: str = db.Column(db.String(length=45))
-    certficate: str = db.Column(db.String(length=45))
+    nome_credencial: str = db.Column(db.String(length=64), nullable=False)
+    system: str = db.Column(db.String(length=64), nullable=False)
+    login_method: str = db.Column(db.String(length=64), nullable=False)
+    login: str = db.Column(db.String(length=64), nullable=False)
+    password: str = db.Column(db.String(length=64))
+    key: str = db.Column(db.String(length=64))
+    certficate: str = db.Column(db.String(length=64))
     certficate_blob: Buffer = db.Column(db.LargeBinary(length=(2**32) - 1))
 
     license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
@@ -103,9 +103,9 @@ class Executions(db.Model):
     __tablename__ = "executions"
     pid: str = db.Column(db.String(length=64), nullable=False)
     id: int = db.Column(db.Integer, primary_key=True)
-    status: str = db.Column(db.String(length=45), nullable=False)
+    status: str = db.Column(db.String(length=64), nullable=False)
     file_output: str = db.Column(db.String(length=512))
-    total_rows: str = db.Column(db.String(length=45))
+    total_rows: str = db.Column(db.String(length=64))
     url_socket: str = db.Column(db.String(length=64))
     data_execucao: datetime = db.Column(db.DateTime, default=now_)
     data_finalizacao: datetime = db.Column(db.DateTime, default=now_)
