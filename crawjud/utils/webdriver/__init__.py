@@ -194,6 +194,8 @@ class DriverBot[T](WebDriver):
     def quit(self) -> None:
         with suppress(Exception):
             self.options.proxy_client.close()
+
+        with suppress(Exception):
             self.options.proxy_server.stop()
 
         return super().quit()

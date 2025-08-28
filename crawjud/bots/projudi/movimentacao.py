@@ -6,6 +6,7 @@ Handle movement-related operations in the Projudi system with data scraping and 
 from __future__ import annotations
 
 from contextlib import suppress
+from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
 from httpx import Client
@@ -290,17 +291,13 @@ class Movimentacao(ProjudiBot):
 
         class_btn = btn_show_files.get_attribute("class")
         id_rowmovimentacao = class_btn.replace("linkArquivos", "row")
-        row_arquivo_movimentacao = table_movimentacoes.find_element(
+        arquivo_movimentacao = table_movimentacoes.find_element(
             By.CSS_SELECTOR,
             f'tr[id="{id_rowmovimentacao}"]',
         )
 
-        table_files = row_arquivo_movimentacao.wait.until(
-            ec.presence_of_element_located((
-                By.TAG_NAME,
-                "table",
-            )),
-        )
+        sleep(3)
+        table_files = arquivo_movimentacao.find_element(By.TAG_NAME, "table")
 
         cookies = {
             str(cookie["name"]): str(cookie["value"])
@@ -349,6 +346,10 @@ class Movimentacao(ProjudiBot):
         with path_pdf.open("wb") as fp:
             writer.write(fp)
 
+        with suppress(Exception):
+            for file in part_files:
+                file.unlink()
+
     def _formatar_dados(
         self,
         tds: list[WebElementBot],
@@ -365,13 +366,15 @@ class Movimentacao(ProjudiBot):
             "Número do Processo": bot_data["NUMERO_PROCESSO"],
             "Seq.": tds[1].text.strip(),
             "Data": tds[2].text,
-            "Evento": tds[3].text,
+            "Evento": " ".join(tds[3].text.split()),
             "Descrição Evento": "Sem Descrição",
-            "Movimentado Por": tds[4].text,
+            "Movimentado Por": " ".join([
+                t.capitalize() for t in tds[4].text.split()
+            ]),
         }
 
-        if "\n" in dados["Movimentado Por"]:
-            movimentador_split = dados["Movimentado Por"].split("\n")
+        if "\n" in tds[4].text:
+            movimentador_split = tds[4].text.split("\n")
             movimentador = " ".join(movimentador_split[0].split())
             classificacao = movimentador_split[1]
             dados.update({
@@ -379,8 +382,8 @@ class Movimentacao(ProjudiBot):
                 "Classificação": " ".join(classificacao.split()),
             })
 
-        if "\n" in dados["Evento"]:
-            evento_e_descricaco = dados["Evento"].split("\n")
+        if "\n" in tds[3].text:
+            evento_e_descricaco = tds[3].text.split("\n")
 
             dados.update({
                 "Evento": " ".join(evento_e_descricaco[0].split()),

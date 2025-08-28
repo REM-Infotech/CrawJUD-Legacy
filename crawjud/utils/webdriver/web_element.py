@@ -15,8 +15,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 if TYPE_CHECKING:
-    from selenium.webdriver.support.wait import WebDriverWait
-
     from crawjud.utils.webdriver import DriverBot as WebDriver
 
 
@@ -229,12 +227,6 @@ class WebElementBot[T](WebElement):
         >>>     self.driver.execute_script(command2)
 
         """
-
-    @property
-    def wait(self) -> WebDriverWait:
-        wt = self._cuurent_driver.wait
-        wt._driver = self
-        return wt
 
     def find_element(
         self,
