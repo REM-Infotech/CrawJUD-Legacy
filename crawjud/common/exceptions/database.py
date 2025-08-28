@@ -24,6 +24,15 @@ class DeleteError(Exception):
 
         self.message = message
 
+    def __str__(self) -> str:
+        """Retorna a representação em string da exceção.
+
+        Returns:
+            str: mensagem da exceção
+
+        """
+        return self.message
+
 
 class UpdateError(Exception):
     """Exception raised when trying to update the user itself."""
@@ -39,6 +48,15 @@ class UpdateError(Exception):
 
         self.message = message
 
+    def __str__(self) -> str:
+        """Retorna a representação em string da exceção.
+
+        Returns:
+            str: mensagem da exceção
+
+        """
+        return self.message
+
 
 class InsertError(Exception):
     """Exception raised when trying to insert the user itself."""
@@ -53,3 +71,12 @@ class InsertError(Exception):
             message = "\n".join(traceback.format_exception(exc))
 
         self.message = message
+
+    def __str__(self) -> str:
+        """Retorna a representação em string da exceção.
+
+        Returns:
+            str: mensagem da exceção
+
+        """
+        return self.message

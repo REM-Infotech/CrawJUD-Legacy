@@ -182,7 +182,10 @@ async def users() -> Response:
 
             return await make_response(jsonify(message=message), 200)
         except (InsertError, UpdateError, DeleteError) as e:
-            return await make_response(jsonify({"message": str(e)}, 400))
+            return await make_response(
+                jsonify({"message": str(e)}),
+                400,
+            )
 
     except ValueError as e:
         app.logger.exception("\n".join(format_exception(e)))
