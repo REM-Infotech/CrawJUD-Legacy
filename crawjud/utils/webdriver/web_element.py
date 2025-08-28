@@ -15,10 +15,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 if TYPE_CHECKING:
-    from selenium.webdriver.remote.webdriver import WebDriver
+    from selenium.webdriver.support.wait import WebDriverWait
+
+    from crawjud.utils.webdriver import DriverBot as WebDriver
 
 
-class WebElementBot(WebElement):
+class WebElementBot[T](WebElement):
     """Gerencie e estenda funcionalidades de elementos WebDriver para automação web.
 
     Esta classe fornece métodos utilitários para interação avançada com elementos
@@ -227,3 +229,23 @@ class WebElementBot(WebElement):
         >>>     self.driver.execute_script(command2)
 
         """
+
+    @property
+    def wait(self) -> WebDriverWait:
+        wt = self._cuurent_driver.wait
+        wt._driver = self
+        return wt
+
+    def find_element(
+        self,
+        by: str = By.ID,
+        value: T | None = None,
+    ) -> WebElementBot:
+        return super().find_element(by=by, value=value)
+
+    def find_elements(
+        self,
+        by: str = By.ID,
+        value: T | None = None,
+    ) -> list[WebElementBot]:
+        return super().find_elements(by=by, value=value)
