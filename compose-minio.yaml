@@ -1,0 +1,17 @@
+name: minio-rhsolut
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_SERVER_URL: http://localhost:9000
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:9001
+
+    ports:
+      - "9002:9000" # Porta da API S3
+      - "9003:9001" # Porta do console MinIO
+    volumes:
+      - /mnt/minio:/data # <-- agora o diretório do host será usado
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
