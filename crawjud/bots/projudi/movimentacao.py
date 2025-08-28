@@ -31,19 +31,21 @@ if TYPE_CHECKING:
 @shared_task(name="projudi.movimentacao", bind=True, base=ContextTask)
 @wrap_cls
 class Movimentacao(ProjudiBot):
-    """Manage movements in Projudi by scraping, filtering, and logging process-related actions.
+    """Gerencie movimentações no Projudi por raspagem e registro de ações processuais.
 
-    This class extends CrawJUD to handle operations including movement search,
-    keyword filtering, and report generation for movement activities.
+    Esta classe estende CrawJUD para realizar operações como busca de movimentações,
+    filtragem por palavras-chave e geração de relatórios das atividades processuais.
     """
 
     movimentacao_encontrada: ClassVar[bool] = False
     list_movimentacoes_extraidas: ClassVar[list[dict[str, str]]] = []
 
     def execution(self) -> None:
-        """Loop through data rows and process each movement with error management.
+        """Execute o processamento das linhas de dados e trate erros de movimentação.
 
-        Iterates over data frame entries and queues movement processing.
+        Percorra as entradas do frame de dados, processando cada movimentação e
+        gerenciando possíveis exceções durante a execução.
+
         """
         frame = self.frame
         self._total_rows = len(frame)
@@ -77,10 +79,10 @@ class Movimentacao(ProjudiBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage queuing of movement operations and scrape required data.
+        """Gerencie a fila de operações de movimentação e realize a raspagem de dados.
 
         Raises:
-            ExecutionError: If processing fails during movement queue operations.
+            ExecutionError: Caso ocorra falha durante o processamento da fila.
 
         """
         try:
@@ -128,7 +130,7 @@ class Movimentacao(ProjudiBot):
             raise ExecutionError(exc=e) from e
 
     def set_page_size(self) -> None:
-        """Set the page size of the movement table to 1000."""
+        """Defina o tamanho da página da tabela de movimentações para 1000 registros."""
         select = Select(
             self.wait.until(
                 ec.presence_of_element_located((
@@ -140,10 +142,10 @@ class Movimentacao(ProjudiBot):
         select.select_by_value("1000")
 
     def extrair_movimentacoes(self) -> None:
-        """Extrai e processa as movimentações do processo no sistema Projudi.
+        """Extraia e processe as movimentações do processo no sistema Projudi.
 
-        Realiza a raspagem das movimentações do processo atualmente selecionado,
-        processando e armazenando os dados relevantes para posterior análise.
+        Realize a raspagem das movimentações do processo atualmente selecionado,
+        processando e armazenando os dados relevantes para análise posterior.
 
         """
         wait = self.wait
@@ -237,6 +239,14 @@ class Movimentacao(ProjudiBot):
         *,
         com_documento: bool = False,
     ) -> None:
+        """Itera sobre as movimentações filtradas e processe cada uma conforme regras.
+
+        Args:
+            table_movimentacoes (WebElementBot): Elemento da tabela de movimentações.
+            filtered_moves (list[WebElementBot]): Lista de linhas filtradas.
+            com_documento (bool, opcional): Indica se deve extrair arquivos. Padrão: False.
+
+        """
         bot_data = self.bot_data
         qtd_movimentacoes = len(filtered_moves)
         if qtd_movimentacoes > 0:
