@@ -92,11 +92,6 @@ class Capa(PjeBot):
             daemon=True,
             name="Salvar Cópia Integral",
         ).start()
-        Thread(
-            target=self.save_file,
-            daemon=True,
-            name="Salvar Sucessos",
-        ).start()
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
