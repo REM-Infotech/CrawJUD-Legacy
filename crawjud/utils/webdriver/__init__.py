@@ -91,7 +91,7 @@ class DriverBot[T](WebDriver):
         execution_path: str | Path | None = None,
         *,
         with_proxy: bool = False,
-        **kwargs: T,
+        **kwargs: P.kwargs,
     ) -> None:
         """Inicialize o WebDriver com as opções e configurações fornecidas.
 
@@ -123,6 +123,7 @@ class DriverBot[T](WebDriver):
 
         self._wait = WebDriverWait(self, 5)
         self.new_har()
+        self.maximize_window()
 
     def _configure_manager(
         self,

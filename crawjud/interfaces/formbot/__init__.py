@@ -48,7 +48,7 @@ FORM_CONFIG: dict[str, dict[str, ClassFormDict]] = {
         "pautas": JuridicoFormPautas,
         "proc_parte": JuridicoFormProcParte,
         "pje": JuridicoFormPJE,
-        "pje_protocolo": JuridicoFormMultipleFilesPJe,
+        "jusbr_protocolo": JuridicoFormMultipleFilesPJe,
     },
     "ADMINISTRATIVO": {
         "file_auth": AdministrativoFormFileAuth,
