@@ -15,6 +15,7 @@ from crawjud.interfaces.formbot.administrativo import (
 from crawjud.interfaces.formbot.juridico import (
     JuridicoFormFileAuth,
     JuridicoFormMultipleFiles,
+    JuridicoFormMultipleFilesPJe,
     JuridicoFormOnlyAuth,
     JuridicoFormOnlyFile,
     JuridicoFormPautas,
@@ -35,6 +36,7 @@ type ClassFormDict = (
     | JuridicoFormProcParte
     | AdministrativoFormFileAuth
     | AdministrativoFormMultipleFiles
+    | JuridicoFormMultipleFilesPJe
 )
 
 FORM_CONFIG: dict[str, dict[str, ClassFormDict]] = {
@@ -46,6 +48,7 @@ FORM_CONFIG: dict[str, dict[str, ClassFormDict]] = {
         "pautas": JuridicoFormPautas,
         "proc_parte": JuridicoFormProcParte,
         "pje": JuridicoFormPJE,
+        "pje_protocolo": JuridicoFormMultipleFilesPJe,
     },
     "ADMINISTRATIVO": {
         "file_auth": AdministrativoFormFileAuth,
@@ -56,6 +59,7 @@ FORM_CONFIG: dict[str, dict[str, ClassFormDict]] = {
 
 class FormDict(
     JuridicoFormFileAuth,
+    JuridicoFormMultipleFilesPJe,
     JuridicoFormMultipleFiles,
     JuridicoFormOnlyAuth,
     JuridicoFormOnlyFile,

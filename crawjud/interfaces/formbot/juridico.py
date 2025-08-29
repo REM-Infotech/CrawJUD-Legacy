@@ -236,3 +236,33 @@ class JuridicoFormPJE(TypedDict):
     task_hour_minute: str | None
     email_notify: str | None
     days_task: list | None
+
+
+class JuridicoFormMultipleFilesPJe(TypedDict):
+    """Representa formulário com múltiplos arquivos e autenticação.
+
+    Args:
+        xlsx (FileMultiDict): Arquivo Excel principal.
+        otherfiles (list[FileMultiDict]): Lista de outros arquivos enviados.
+        creds (str): Credenciais do usuário.
+        state (str): Estado do formulário.
+        confirm_fields (bool): Indica se os campos foram confirmados.
+        periodic_task (bool): Indica se é tarefa periódica.
+        task_name (str | None): Nome da tarefa agendada.
+        task_hour_minute (str | None): Horário agendado no formato "HH:MM".
+        email_notify (str | None): E-mail para notificação.
+        days_task (list | None): Dias para execução da tarefa periódica.
+
+    Returns:
+        TypedDict: Estrutura de dados do formulário.
+
+    """
+
+    xlsx: FileMultiDict
+    otherfiles: list[FileMultiDict]
+    confirm_fields: bool
+    periodic_task: bool
+    task_name: str | None
+    task_hour_minute: str | None
+    email_notify: str | None
+    days_task: list | None

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
+from crawjud.bots.pje import capa, pauta
 
-capa = importlib.import_module(".capa", __package__)
-
-__all__ = ["capa"]
+__all__ = ["capa", "pauta"]

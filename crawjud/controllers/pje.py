@@ -201,31 +201,31 @@ class PjeBot[T](CrawJUD):
             ):
                 driver.refresh()
 
+            cookies_driver = driver.get_cookies()
+            har_data_ = driver.current_har
+            entries = list(har_data_.entries)
+            entry_proxy = [
+                item
+                for item in entries
+                if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
+                in item.request.url
+            ][-1]
+
+            cookies_ = {
+                str(cookie["name"]): str(cookie["value"])
+                for cookie in cookies_driver
+            }
+
+            headers_ = {
+                str(header["name"]): str(header["value"])
+                for header in entry_proxy.request.headers
+            }
+
+            self._cookies = cookies_
+            self._headers = headers_
+
             if autentica_capa:
-                cookies_driver = driver.get_cookies()
-                har_data_ = driver.current_har
-                entries = list(har_data_.entries)
-                entry_proxy = [
-                    item
-                    for item in entries
-                    if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
-                    in item.request.url
-                ][-1]
-
-                cookies_ = {
-                    str(cookie["name"]): str(cookie["value"])
-                    for cookie in cookies_driver
-                }
-
-                headers_ = {
-                    str(header["name"]): str(header["value"])
-                    for header in entry_proxy.request.headers
-                }
-
                 driver.quit()
-
-                self._cookies = cookies_
-                self._headers = headers_
 
         except Exception:
             self.print_msg("Erro ao realizar autenticação", type_log="error")
