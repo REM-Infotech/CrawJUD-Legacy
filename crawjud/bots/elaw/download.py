@@ -63,7 +63,7 @@ class Download(ElawBot):
 
                 self.print_msg(message=f"{message_error}.", type_log="error")
 
-                self.bot_data.update({"MOTIVO_ERRO": self.message_error})
+                self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(self.bot_data)
 
                 self.message_error = None
