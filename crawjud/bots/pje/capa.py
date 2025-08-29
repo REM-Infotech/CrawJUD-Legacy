@@ -145,7 +145,7 @@ class Capa(PjeBot):
                 return
 
             self.print_msg(message=f"Autenticando no TRT {regiao}")
-            autenticar = self.auth(regiao=regiao)
+            autenticar = self.auth(regiao=regiao, autentica_capa=True)
             if autenticar:
                 self.print_msg(
                     message="Autenticado com sucesso!",

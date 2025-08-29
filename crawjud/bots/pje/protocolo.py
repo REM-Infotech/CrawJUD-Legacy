@@ -21,7 +21,6 @@ from time import sleep
 from typing import TYPE_CHECKING
 
 from dotenv import load_dotenv
-from httpx import Client
 from tqdm import tqdm
 
 from crawjud.controllers.pje import PjeBot
@@ -64,9 +63,9 @@ class Protocolo(PjeBot):
         """
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
+        futures: list[Future] = []
 
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            futures: list[Future] = []
+        with ThreadPoolExecutor(max_workers=1) as executor:
             for regiao, data_regiao in lista_nova:
                 if self.event_stop_bot.is_set():
                     break
@@ -84,29 +83,6 @@ class Protocolo(PjeBot):
                 with suppress(Exception):
                     future.result()
 
-        for to_save, sheet_name in [
-            (self.to_add_processos, "Protocolo"),
-            (self.to_add_audiencias, "Audiências"),
-            (self.to_add_assuntos, "Assuntos"),
-            (self.to_add_partes, "Partes"),
-            (self.to_add_representantes, "Representantes"),
-        ]:
-            self.queue_save_xlsx.put({
-                "to_save": to_save,
-                "sheet_name": sheet_name,
-            })
-
-        with suppress(Exception):
-            self.queue_save_xlsx.join()
-
-        with suppress(Exception):
-            self.queue_files.join()
-
-        with suppress(Exception):
-            self.queue_msg.join()
-
-        self.event_queue_files.set()
-        self.event_queue_save_xlsx.set()
         self.finalize_execution()
 
     def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
@@ -139,16 +115,13 @@ class Protocolo(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        client_context = Client(cookies=self.cookies, headers=self.headers)
-        pool_exe = ThreadPoolExecutor(max_workers=16)
-        with client_context as client, pool_exe as executor:
+        with ThreadPoolExecutor(max_workers=16) as executor:
             futures: list[Future] = []
             for item in data:
                 futures.append(
                     executor.submit(
                         self.queue,
                         item=item,
-                        client=client,
                         regiao=regiao,
                     ),
                 )
@@ -161,7 +134,6 @@ class Protocolo(PjeBot):
     def queue(
         self,
         item: BotData,
-        client: Client,
         regiao: str,
     ) -> None:
         try:
