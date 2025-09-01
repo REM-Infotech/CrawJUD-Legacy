@@ -9,6 +9,7 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 from __future__ import annotations
 
 from contextlib import suppress
+from typing import TYPE_CHECKING
 
 import dotenv
 from selenium.webdriver.common.by import By
@@ -23,6 +24,9 @@ from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import jusbr as el
+
+if TYPE_CHECKING:
+    from crawjud.utils.webdriver.web_element import WebElementBot
 
 dotenv.load_dotenv()
 
@@ -125,7 +129,7 @@ class Protocolo(JusBrBot):
             ),
         )
 
-        input_peticao_principal = wait.until(
+        input_peticao_principal: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.campo_arquivo_principal,

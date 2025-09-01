@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json.decoder
+import platform
 import secrets
 import traceback
 from contextlib import suppress
@@ -152,8 +153,12 @@ class PjeBot[T](CrawJUD):
         autentica_capa: bool = False,
     ) -> bool:
         try:
+            selected_browser = "chrome"
+            if platform.system() == "Linux":
+                selected_browser = "firefox"
+
             driver = DriverBot(
-                selected_browser="chrome",
+                selected_browser=selected_browser,
                 with_proxy=True,
             )
 

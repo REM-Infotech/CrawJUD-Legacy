@@ -56,7 +56,6 @@ class WebElementBot[T](WebElement):
                 break
 
         if send is None:
-            self.click()
             for c in str(word):
                 sleep(0.005)
                 super().send_keys(c)

@@ -33,6 +33,8 @@ from crawjud.utils.webdriver import DriverBot
 if TYPE_CHECKING:
     from bs4.element import PageElement
 
+    from crawjud.interfaces.types.webdriver_types import BrowserOptions
+
 func_dict_check = {
     "bot": ["execution"],
     "search": ["buscar_processo"],
@@ -44,11 +46,15 @@ work_dir = Path(__file__).cwd()
 class CrawJUD[T](AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
 
-    def __init__(self, system: str | None = None) -> None:
+    def __init__(
+        self,
+        system: str | None = None,
+        selected_browser: BrowserOptions = "chrome",
+    ) -> None:
         """Inicialize a instância principal do controller CrawJUD.
 
         Args:
-            self: Self@CrawJUD[T@CrawJUD]: Instância do objeto.
+            selected_browser: selected_browser
             system (str): sistema do robô
 
         """
@@ -64,7 +70,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         if system != "pje":
             self._driver = DriverBot(
-                selected_browser="chrome",
+                selected_browser=selected_browser,
                 with_proxy=False,
             )
             self._wait = self._driver.wait

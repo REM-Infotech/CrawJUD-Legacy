@@ -54,7 +54,7 @@ class JusBrBot[T](CrawJUD):
         self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
-        super().__init__(system=system)
+        super().__init__(system=system, selected_browser="firefox")
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)
