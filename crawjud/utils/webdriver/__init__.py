@@ -121,7 +121,7 @@ class DriverBot[T](WebDriver):
             web_element_cls=WebElementBot.set_driver(self),
         )
 
-        self._wait = WebDriverWait(self, 5)
+        self._wait = WebDriverWait(self, 60)
         self.new_har()
         self.maximize_window()
 

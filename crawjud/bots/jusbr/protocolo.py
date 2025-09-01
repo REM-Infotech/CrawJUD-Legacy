@@ -14,6 +14,7 @@ import dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
+from werkzeug.utils import secure_filename
 
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
@@ -74,6 +75,10 @@ class Protocolo(JusBrBot):
 
         self.__seleciona_tipo_protocolo()
         self.__peticao_principal()
+
+        if "ANEXOS" in bot_data and bot_data["ANEXOS"].strip():
+            self.__anexos_protocolo()
+
         _processo = bot_data["NUMERO_PROCESSO"]
         tqdm.write("ok")
 
@@ -116,7 +121,7 @@ class Protocolo(JusBrBot):
 
         path_peticao = str(
             self.output_dir_path.joinpath(
-                bot_data["PETICAO_PRINCIPAL"],
+                secure_filename(bot_data["PETICAO_PRINCIPAL"]),
             ),
         )
 
@@ -156,3 +161,21 @@ class Protocolo(JusBrBot):
             _raise_execution_error(message="Tipo de protocolo não encontrado!")
 
         filter_tipo[-1].click()
+
+    def __anexos_protocolo(self) -> None:
+        """Empty."""
+        driver = self.driver
+        bot_data = self.bot_data
+        row_anexo = 2
+        element_select_anexos = f'mat-select[id="mat-select-{row_anexo}"]'
+
+        anexos = (
+            bot_data["ANEXOS"].split(",")
+            if "," in bot_data["ANEXOS"]
+            else [bot_data["ANEXOS"]]
+        )
+
+        for _item in anexos:
+            driver.find_element(By.CSS_SELECTOR, element_select_anexos).click()
+
+            row_anexo += 2

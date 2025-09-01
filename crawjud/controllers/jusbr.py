@@ -116,6 +116,7 @@ class JusBrBot[T](CrawJUD):
             bool: Retorna True se o processo for encontrado, caso contrário False.
 
         """
+        self.driver.refresh()
 
         def navegacao_guiada() -> None:
             with suppress(Exception):
