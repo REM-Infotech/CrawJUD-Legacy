@@ -53,6 +53,10 @@ class FormData(TypedDict):
     @classmethod
     async def _form_data(cls) -> MultiDict:
         data = await request.data or await request.form or await request.json
+        _form = await request.form
+        _json = await request.json
+        _data = await request.data
+
         if isinstance(data, bytes):
             data = data.decode()
             if isinstance(data, str):
@@ -72,6 +76,13 @@ class FormData(TypedDict):
 
         for k, v in files.items():
             data_.update({k: v})
+
+        if data_.get("otherfiles"):
+            data_["otherfiles"] = (
+                data_["otherfiles"].split(",")
+                if "," in data_["otherfiles"]
+                else [data_["otherfiles"]]
+            )
 
         return cls(**data_)
 
@@ -233,6 +244,11 @@ class LoadForm:
                 if item == "creds":
                     credential = self._query_credentials(int(val))
                     form_data.update(self._format_credential(credential))
+                    continue
+
+                if isinstance(val, list):
+                    val = [secure_filename(item) for item in val]
+                    form_data.update({"otherfiles": val})
                     continue
 
                 form_data.update({item: secure_filename(val)})

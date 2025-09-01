@@ -185,15 +185,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
                 path_minio_ = Path(folder_temp_).joinpath(file).as_posix()
                 file_ = storage.bucket.get_object(path_minio_)
                 suffix_ = Path(file).suffix
-
-                file_base91str = base91.encode(file_.data)
-                list_files.append(
-                    DictFiles(
-                        file_name=file,
-                        file_base91str=file_base91str,
-                        file_suffix=suffix_,
-                    ),
-                )
+                out = self.output_dir_path.joinpath(file)
+                with out.open("wb") as fp:
+                    fp.write(file_.data)
 
         shutil.rmtree(path_files.joinpath(self.folder_storage))
 
