@@ -50,7 +50,7 @@ class Protocolo(PjeBot):
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        with ThreadPoolExecutor(max_workers=1) as executor:
             futures: list[Future] = []
             for regiao, data_regiao in lista_nova:
                 if self.event_stop_bot.is_set():
