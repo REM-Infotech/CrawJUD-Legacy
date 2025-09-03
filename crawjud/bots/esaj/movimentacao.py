@@ -94,7 +94,7 @@ class Movimentacao(ESajBot):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    self.auth_bot()
+                    self.auth()
 
             try:
                 self.queue()
@@ -108,7 +108,7 @@ class Movimentacao(ESajBot):
                             message="Webdriver encerrado inesperadamente, reinicializando...",
                         )
 
-                    self.auth_bot()
+                    self.auth()
 
                 message_error = str(e)
 

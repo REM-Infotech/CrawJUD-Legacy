@@ -79,7 +79,7 @@ class Pauta(PjeBot):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    self.auth_bot()
+                    self.auth()
 
             try:
                 self.queue(vara)

@@ -43,7 +43,7 @@ class ProcParte(ProjudiBot):
         while not self.isStoped:
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    self.auth_bot()
+                    self.auth()
 
             try:
                 self.queue()
@@ -74,7 +74,7 @@ class ProcParte(ProjudiBot):
 
                 with suppress(Exception):
                     if self.driver.title.lower() == "a sessao expirou":
-                        self.auth_bot()
+                        self.auth()
 
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
@@ -137,7 +137,7 @@ class ProcParte(ProjudiBot):
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":
-                    self.auth_bot()
+                    self.auth()
 
         except ExecutionError as e:
             # TODO(Nicholas Silva): Criação de Exceptions
