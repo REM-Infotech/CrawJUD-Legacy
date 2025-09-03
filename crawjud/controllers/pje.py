@@ -79,7 +79,7 @@ class PjeBot[T](CrawJUD):
         self.pid = str(current_task.request.id)
 
         selected_browser = "chrome"
-        if platform.system() == "Windows":
+        if platform.system() == "Linux":
             selected_browser = "firefox"
 
         super().__init__(selected_browser=selected_browser)
