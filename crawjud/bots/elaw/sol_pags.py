@@ -51,10 +51,6 @@ class SolPags(ElawBot):
             self.row = pos + 1
             self.bot_data = self.elaw_formats(value)
 
-            with suppress(Exception):
-                if self.driver.title.lower() == "a sessao expirou":
-                    self.auth_bot()
-
             try:
                 self.queue()
 
@@ -67,7 +63,7 @@ class SolPags(ElawBot):
                             message="Webdriver encerrado inesperadamente, reinicializando...",
                         )
 
-                    self.auth_bot()
+                    self.auth()
 
                 message_error = str(e)
 
