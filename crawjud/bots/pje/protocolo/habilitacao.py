@@ -34,13 +34,14 @@ class HabilitiacaoPJe(PjeBot):
 
     def protocolar_habilitacao(self, bot_data: BotData, regiao: str) -> None:
         """Empty."""
-        driver = self.driver
-        wait = WebDriverWait(driver, 5)
-
         link_habilitacao = (
             f"https://pje.trt{regiao}.jus.br/pjekz/habilitacao-autos"
         )
         self.driver.get(link_habilitacao)
+
+        sleep(5)
+
+        wait = WebDriverWait(self.driver, 5)
 
         xpath_busca_processo0 = '//*[@id="mat-input-0"]'
         xpath_busca_processo1 = '//*[@id="mat-input-1"]'
@@ -62,9 +63,9 @@ class HabilitiacaoPJe(PjeBot):
             )
 
         campo_busca_processo.send_keys(bot_data["NUMERO_PROCESSO"])
-        sleep(2)
+        sleep(0.5)
         campo_busca_processo.send_keys(Keys.ENTER)
-        tqdm.write("ok")
+        sleep(0.5)
 
         xpath_btn_prosseguir = (
             '//*[@id="area-cadastro"]/mat-action-row/div[2]/button'
@@ -76,6 +77,7 @@ class HabilitiacaoPJe(PjeBot):
                 xpath_btn_prosseguir,
             )),
         )
+        sleep(0.5)
 
         btn_prosseguir.click()
         self.selecionar_parte(bot_data=bot_data)
@@ -87,15 +89,14 @@ class HabilitiacaoPJe(PjeBot):
         """Empty."""
         tag_tables_pje = "pje-habilitacao-partes-grid"
 
-        driver = self.driver
-        wait = WebDriverWait(driver, 10)
-
+        wait = WebDriverWait(self.driver, 10)
+        sleep(0.5)
         partes_grid = wait.until(
             ec.presence_of_all_elements_located((By.TAG_NAME, tag_tables_pje)),
         )
 
         nome_parte = bot_data["PARTE_PETICIONANTE"]
-
+        sleep(0.5)
         # Itera sobre os grids de partes e busca a parte peticionante para seleção
         for parte_grid in partes_grid:
             # Busca todas as linhas (tr) diretamente em todas as tabelas do grid
@@ -105,7 +106,7 @@ class HabilitiacaoPJe(PjeBot):
                 for tr in table.find_element(
                     By.TAG_NAME,
                     "tbody",
-                ).find_elements("tr")
+                ).find_elements(By.TAG_NAME, "tr")
             ]
 
             parte = list(
@@ -125,6 +126,7 @@ class HabilitiacaoPJe(PjeBot):
         xpath_btn_prosseguir = (
             '//*[@id="area-cadastro"]/mat-action-row/div[2]/button'
         )
+        sleep(1.5)
 
         btn_prosseguir = wait.until(
             ec.presence_of_element_located(
@@ -132,18 +134,18 @@ class HabilitiacaoPJe(PjeBot):
             ),
         )
         btn_prosseguir.click()
-
+        sleep(2.5)
         btn_prosseguir2 = wait.until(
             ec.presence_of_element_located(
                 (By.XPATH, xpath_btn_prosseguir),
             ),
         )
         btn_prosseguir2.click()
+        sleep(0.5)
 
     def vincular_outros_advogados(self) -> None:
         """Vincula outro advogado ao processo.
 
-        >>> driver = self.driver
         >>> wait = WebDriverWait(driver, 10)
 
         >>> btn_adicionar_advogado = wait.until(
@@ -158,8 +160,8 @@ class HabilitiacaoPJe(PjeBot):
 
     def peticao_principal(self, bot_data: BotData) -> None:
         """Empty."""
-        driver = self.driver
-        wait = WebDriverWait(driver, 10)
+        sleep(0.5)
+        wait = WebDriverWait(driver=self.driver, timeout=10)
 
         xpath_input_doc_principal = '//*[@id="upload-anexo-0"]'
 
@@ -169,7 +171,7 @@ class HabilitiacaoPJe(PjeBot):
                 xpath_input_doc_principal,
             )),
         )
-
+        sleep(1.5)
         nome_arquivo = secure_filename(bot_data["PETICAO_PRINCIPAL"])
         path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
 
@@ -185,8 +187,8 @@ class HabilitiacaoPJe(PjeBot):
 
     def anexos_peticao(self, bot_data: BotData) -> None:
         """Empty."""
-        driver = self.driver
-        wait = WebDriverWait(driver, 10)
+        sleep(0.5)
+        wait = WebDriverWait(driver=self.driver, timeout=10)
 
         btn_anexos = wait.until(
             ec.presence_of_element_located(
@@ -195,7 +197,7 @@ class HabilitiacaoPJe(PjeBot):
         )
 
         btn_anexos.click()
-
+        sleep(0.5)
         campo_anexos = wait.until(
             ec.presence_of_element_located(
                 ec.presence_of_element_located(
@@ -204,12 +206,13 @@ class HabilitiacaoPJe(PjeBot):
                 ),
             ),
         )
+        sleep(0.5)
         anexos_data = bot_data["ANEXOS"]
         tipo_anexos_data = bot_data["TIPO_ANEXOS"]
         anexos = (
             anexos_data.split(",") if "," in anexos_data else [anexos_data]
         )
-
+        sleep(0.5)
         tipo_anexos = (
             tipo_anexos_data.split(",")
             if "," in tipo_anexos_data
@@ -220,6 +223,7 @@ class HabilitiacaoPJe(PjeBot):
             nome_arquivo = secure_filename(anexo)
             path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
             campo_anexos.send_keys(path_input_doc)
+            sleep(5.0)
 
         list_anexos = wait.until(
             ec.presence_of_element_located(
@@ -227,6 +231,7 @@ class HabilitiacaoPJe(PjeBot):
             ),
         ).find_elements(By.TAG_NAME, "li")
 
+        sleep(0.5)
         for pos, tipo_anexo in enumerate(tipo_anexos):
             anexo = list_anexos[pos]
             elemento = el.XPATH_INPUT_TIPO_ANEXO
@@ -236,8 +241,8 @@ class HabilitiacaoPJe(PjeBot):
 
     def assinar_salvar_comprovante(self, bot_data: BotData) -> None:
         """Empty."""
-        driver = self.driver
-        wait = WebDriverWait(driver=driver, timeout=10)
+        sleep(0.5)
+        wait = WebDriverWait(driver=self.driver, timeout=10)
 
         btn_assinar = wait.until(
             ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_ASSINAR)),
@@ -255,10 +260,16 @@ class HabilitiacaoPJe(PjeBot):
                 ),
             ),
         )
-
+        sleep(0.5)
         processo = bot_data["NUMERO_PROCESSO"]
         pid = self.pid
         nome_comprovante = f"Comprovante Protocolo - {processo} - {pid}.png"
         path_comprovante = self.output_dir_path.joinpath(nome_comprovante)
         with path_comprovante.open("wb") as fp:
             fp.write(dialog_comprovante.screenshot_as_png)
+
+        self.print_msg(
+            "Protocolo efetuado com sucesso!",
+            row=self.row,
+            type_log="success",
+        )

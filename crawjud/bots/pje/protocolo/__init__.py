@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 
 import dotenv
 from httpx import Client
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
 
 from crawjud.bots.pje.protocolo.habilitacao import HabilitiacaoPJe
 from crawjud.custom.task import ContextTask
@@ -105,12 +105,10 @@ class Protocolo(HabilitiacaoPJe):
         data_regiao: list[BotData],
         regiao: str,
     ) -> None:
-        try:
-            client_context = Client(cookies=self.cookies)
-
-            with client_context as client:
-                _wait2 = WebDriverWait(self.driver, 10)
-                for data in data_regiao:
+        client_context = Client(cookies=self.cookies)
+        with client_context as client:
+            for data in data_regiao:
+                try:
                     if self.event_stop_bot.is_set():
                         return
 
@@ -122,6 +120,7 @@ class Protocolo(HabilitiacaoPJe):
                         client=client,
                     )
 
+                    self.row = row
                     sleep(5)
 
                     tipo_protocolo = data["TIPO_PROTOCOLO"]
@@ -131,6 +130,7 @@ class Protocolo(HabilitiacaoPJe):
                             bot_data=data,
                             regiao=regiao,
                         )
+                        continue
 
                     self.print_msg(
                         message="Execução Efetuada com sucesso!",
@@ -138,9 +138,11 @@ class Protocolo(HabilitiacaoPJe):
                         type_log="success",
                     )
 
-        except Exception:
-            self.print_msg(
-                message="Erro ao extrair informações do processo",
-                type_log="error",
-                row=row,
-            )
+                except (KeyError, Exception) as e:
+                    exc_message = "\n".join(traceback.format_exception_only(e))
+
+                    self.print_msg(
+                        message=f"Erro ao protocolar processo. Erro: {exc_message}",
+                        type_log="error",
+                        row=row,
+                    )
