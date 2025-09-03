@@ -28,7 +28,7 @@ from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import esaj as el
 
 
-@shared_task(name="esaj.movimentacao", bind=True, base=ContextTask)
+@shared_task(name="esaj.emissao", bind=True, base=ContextTask)
 @wrap_cls
 class Emissao(ESajBot):
     """Perform emission tasks by generating docs and extracting PDF barcodes.

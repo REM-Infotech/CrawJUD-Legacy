@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
-@shared_task(name="esaj.movimentacao", bind=True, base=ContextTask)
+@shared_task(name="esaj.busca_pags", bind=True, base=ContextTask)
 @wrap_cls
 class BuscaPags(ESajBot):
     """Class BuscaPags.
