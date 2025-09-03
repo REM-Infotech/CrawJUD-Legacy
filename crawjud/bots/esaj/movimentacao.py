@@ -6,11 +6,10 @@ This module manages movement operations on the Esaj system using the CrawJUD fra
 from __future__ import annotations
 
 import re
-import time
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from selenium.common.exceptions import NoSuchElementException
@@ -20,12 +19,17 @@ from selenium.webdriver.support import expected_conditions as ec
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.esaj import ESajBot
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import esaj as el
 
 if TYPE_CHECKING:
     from crawjud.utils.webdriver.web_element import WebElementBot
 
 
+@shared_task(name="esaj.movimentacao", bind=True, base=ContextTask)
+@wrap_cls
 class Movimentacao(ESajBot):
     """Class Movimentacao.
 
@@ -43,41 +47,6 @@ class Movimentacao(ESajBot):
         get_moves: Extract movement information from page elements.
 
     """
-
-    @classmethod
-    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
-        """Initialize a new Movimentacao instance.
-
-        Args:
-            *args (str | int): Variable arguments.
-            **kwargs (str | int): Keyword arguments.
-
-        Returns:
-            Self: A new Movimentacao instance.
-
-        # Inline: Directly return an instance with given arguments.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
-        """Construct the Movimentacao instance.
-
-        Sets up the crawler by configuring authentication and environment.
-
-        Args:
-            *args: Positional arguments for setup.
-            **kwargs: Keyword arguments for configuration.
-
-        # Inline: Leverage parent classes for setup and authentication.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
         """Execute movement processing.

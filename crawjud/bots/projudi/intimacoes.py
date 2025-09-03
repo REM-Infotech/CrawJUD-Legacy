@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import time
 from contextlib import suppress
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -32,43 +32,6 @@ class Intimacoes(ProjudiBot):
     This class extends CrawJUD to enter the intimacoes tab, set page sizes,
     and retrieve detailed process intimation information.
     """
-
-    @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize an Intimacoes instance with given parameters.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        Returns:
-            Self: The initialized Intimacoes instance.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize the Intimacoes instance and authenticate.
-
-        Args:
-            *args (tuple[str | int]): Positional arguments.
-            **kwargs (dict[str, str | int]): Keyword arguments.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
         """Execute the intimation extraction loop and handle pagination.

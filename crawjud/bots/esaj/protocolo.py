@@ -6,12 +6,10 @@ This module manages protocol operations in the ESaj system using the CrawJUD fra
 from __future__ import annotations
 
 import shutil
-import time
 import unicodedata
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
-from typing import Self
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
@@ -22,9 +20,14 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.esaj import ESajBot
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import esaj as el
 
 
+@shared_task(name="esaj.protocolo", bind=True, base=ContextTask)
+@wrap_cls
 class Protocolo(ESajBot):
     """Class Protocolo.
 
@@ -48,49 +51,6 @@ class Protocolo(ESajBot):
         get_confirm_protocol: Confirm protocol and process receipt.
 
     """
-
-    @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize a new Protocolo instance.
-
-        Args:
-            *args (str | int): Variable number of string or int arguments.
-            **kwargs (str | int): Arbitrary keyword arguments.
-
-        Returns:
-            Self: A new Protocolo instance.
-
-        # Inline: Delegate initialization to the class constructor.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Construct a Protocolo instance.
-
-        Sets up authentication, initializes necessary variables, and prepares the processing environment.
-
-        Args:
-            *args (str | int): Variable arguments.
-            **kwargs (str | int): Arbitrary keyword arguments.
-
-        # Inline: Call parent setup and authentication.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
         """Execute protocol processing on each row.

@@ -8,11 +8,9 @@ from __future__ import annotations
 
 import platform
 import re
-import time
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
-from typing import Self
 
 import requests
 from pypdf import PdfReader
@@ -24,9 +22,14 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.esaj import ESajBot
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import esaj as el
 
 
+@shared_task(name="esaj.movimentacao", bind=True, base=ContextTask)
+@wrap_cls
 class Emissao(ESajBot):
     """Perform emission tasks by generating docs and extracting PDF barcodes.
 
@@ -37,46 +40,6 @@ class Emissao(ESajBot):
         count_doc (callable): Utility function to count document type.
 
     """
-
-    @classmethod
-    def initialize(
-        cls,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> Self:
-        """Initialize an Emissao instance with given parameters and settings.
-
-        Args:
-            *args (str|int): Variable length positional arguments.
-            **kwargs (str|int): Arbitrary keyword arguments.
-
-        Returns:
-            Self: A new instance of Emissao.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(
-        self,
-        *args: str | int,
-        **kwargs: str | int,
-    ) -> None:
-        """Initialize Emissao instance and configure authentication.
-
-        Args:
-            *args (str|int): Positional arguments.
-            **kwargs (str|int): Keyword arguments.
-
-        Side Effects:
-            Authenticates bot and records start time for processing.
-
-        """
-        super().__init__()
-        self.module_bot = __name__
-
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
 
     def execution(self) -> None:
         """Perform emission processing iterating over data rows and handling errors.

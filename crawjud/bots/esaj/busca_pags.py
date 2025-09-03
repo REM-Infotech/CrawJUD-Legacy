@@ -5,10 +5,9 @@ This module manages page search operations for paid costs in the CrawJUD-Bots ap
 
 from __future__ import annotations
 
-import time
 from contextlib import suppress
 from datetime import datetime
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from selenium.webdriver.common.by import By
@@ -16,12 +15,17 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.esaj import ESajBot
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import esaj as el
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
+@shared_task(name="esaj.movimentacao", bind=True, base=ContextTask)
+@wrap_cls
 class BuscaPags(ESajBot):
     """Class BuscaPags.
 
@@ -39,42 +43,6 @@ class BuscaPags(ESajBot):
         page_custas: Extract cost details from the paid costs table.
 
     """
-
-    @classmethod
-    def initialize(cls, *args: str | int, **kwargs: str | int) -> Self:
-        """Initialize a new BuscaPags instance.
-
-        Args:
-            *args (str | int): Positional arguments.
-            **kwargs (str | int): Keyword arguments.
-
-        Returns:
-            Self: A new BuscaPags instance.
-
-        # Inline: Simple instantiation.
-
-        """
-        return cls(*args, **kwargs)
-
-    def __init__(self, *args: str | int, **kwargs: str | int) -> None:
-        """Construct the BuscaPags instance.
-
-        Sets up the crawler, authentication, and datetime configuration.
-
-        Args:
-            *args: Positional arguments.
-            **kwargs: Keyword arguments.
-
-        # Inline: Calls parent setup and configures timezone.
-
-        """
-        self.module_bot = __name__
-        super().setup(*args, **kwargs)
-        super().auth_bot()
-        self.start_time = time.perf_counter()
-        self.datetimeNOW = datetime.now(ZoneInfo("America/Manaus")).strftime(
-            "%d-%m-%Y",
-        )
 
     def execution(self) -> None:
         """Execute page search.
