@@ -42,7 +42,7 @@ class Provisao(ElawBot):
 
     def execution(self) -> None:
         """Execute the main processing loop for provisions."""
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
         self.driver.maximize_window()
         self.driver.execute_script("document.body.style.zoom = '0.5'")

@@ -32,7 +32,7 @@ class Andamentos(ElawBot):
         Handles session expiration and error logger.
 
         """
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

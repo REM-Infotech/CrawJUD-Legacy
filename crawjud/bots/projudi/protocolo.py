@@ -45,12 +45,12 @@ class Protocolo(ProjudiBot):
     """
 
     def execution(self) -> None:
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
-        for pos, value in enumerate(frame):
+        for pos, bot_data in enumerate(frame):
             self.row = pos + 1
-            self.bot_data = value
+            self.bot_data = bot_data
 
             with suppress(Exception):
                 if self.driver.title.lower() == "a sessao expirou":

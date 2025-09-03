@@ -34,7 +34,7 @@ class Download(ElawBot):
 
     def execution(self) -> None:
         """Execute the download process."""
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

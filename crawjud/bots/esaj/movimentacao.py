@@ -85,7 +85,7 @@ class Movimentacao(ESajBot):
         Iterates over each process row, handling session renewal and error logging.
 
         """
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

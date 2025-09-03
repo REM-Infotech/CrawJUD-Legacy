@@ -75,7 +75,7 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
         Handles authentication and error logger.
 
         """
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

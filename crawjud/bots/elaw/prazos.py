@@ -36,7 +36,7 @@ class Prazos(ElawBot):
 
     def execution(self) -> None:
         """Execute the main processing loop for deadlines."""
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

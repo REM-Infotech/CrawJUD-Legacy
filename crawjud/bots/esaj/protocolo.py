@@ -98,7 +98,7 @@ class Protocolo(ESajBot):
         Iterates over protocol rows and handles session renewals and errors.
 
         """
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

@@ -84,7 +84,7 @@ class Emissao(ESajBot):
         Iterates the data frame to run the emission workflow. Handles page timeouts,
         session renewals, and logs errors accordingly.
         """
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):

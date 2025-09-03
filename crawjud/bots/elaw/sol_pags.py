@@ -44,7 +44,7 @@ class SolPags(ElawBot):
 
     def execution(self) -> None:
         """Execute the main processing loop for page solutions."""
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
         self.driver.maximize_window()
         for pos, value in enumerate(frame):

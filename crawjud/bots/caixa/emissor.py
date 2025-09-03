@@ -30,7 +30,7 @@ class Emissor(CrawJUD):
         Iterate through the DataFrame while checking session validity, capturing
         errors, and resuming operations as required.
         """
-        frame = self.dataFrame()
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):
