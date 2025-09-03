@@ -18,11 +18,10 @@ import dotenv
 from httpx import Client
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.controllers.pje import PjeBot
+from crawjud.bots.pje.protocolo.habilitacao import HabilitiacaoPJe
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
-from crawjud.utils.webdriver import DriverBot
 
 if TYPE_CHECKING:
     from crawjud.interfaces.dict.bot import BotData
@@ -32,7 +31,7 @@ dotenv.load_dotenv()
 
 @shared_task(name="pje.protocolo", bind=True, base=ContextTask)
 @wrap_cls
-class Protocolo(PjeBot):
+class Protocolo(HabilitiacaoPJe):
     """Gerencia o protocolo de petições no sistema JusBr."""
 
     def execution(self) -> None:
@@ -76,28 +75,24 @@ class Protocolo(PjeBot):
             if self.event_stop_bot.is_set():
                 return
 
-            self.print_msg(message=f"Autenticando no TRT {regiao}")
-            autenticar = self.auth(regiao=regiao, autentica_capa=True)
-            if autenticar:
-                self.print_msg(
-                    message="Autenticado com sucesso!",
-                    type_log="info",
-                )
+            _grau_text = {
+                "1": "primeirograu",
+                "2": "segundograu",
+            }
 
-                driver = DriverBot(
-                    selected_browser="firefox",
-                    with_proxy=False,
-                )
-                wait = driver.wait
+            url = f"https://pje.trt{regiao}.jus.br/primeirograu/authenticateSSO.seam"
+            self.driver.get(url)
 
-                driver.add_cookie({k: v} for k, v in self.cookies.items())
+            cookies_driver = self.driver.get_cookies()
+            self._cookies = {
+                str(cookie["name"]): str(cookie["value"])
+                for cookie in cookies_driver
+            }
 
-                self.queue(
-                    data_regiao=data_regiao,
-                    regiao=regiao,
-                    driver=driver,
-                    wait=wait,
-                )
+            self.queue(
+                data_regiao=data_regiao,
+                regiao=regiao,
+            )
 
         except Exception as e:
             self.print_msg(
@@ -109,20 +104,18 @@ class Protocolo(PjeBot):
         self,
         data_regiao: list[BotData],
         regiao: str,
-        driver: DriverBot,
-        wait: WebDriverWait,
     ) -> None:
         try:
-            client_context = Client(headers=self.headers, cookies=self.cookies)
+            client_context = Client(cookies=self.cookies)
 
             with client_context as client:
-                _wait2 = WebDriverWait(driver, 10)
+                _wait2 = WebDriverWait(self.driver, 10)
                 for data in data_regiao:
                     if self.event_stop_bot.is_set():
                         return
 
                     row = self.posicoes_processos[data["NUMERO_PROCESSO"]] + 1
-                    self.search(
+                    _d = self.search(
                         data=data,
                         row=row,
                         regiao=regiao,
@@ -130,6 +123,14 @@ class Protocolo(PjeBot):
                     )
 
                     sleep(5)
+
+                    tipo_protocolo = data["TIPO_PROTOCOLO"]
+
+                    if "habilitação" in tipo_protocolo.lower():
+                        self.protocolar_habilitacao(
+                            bot_data=data,
+                            regiao=regiao,
+                        )
 
                     self.print_msg(
                         message="Execução Efetuada com sucesso!",

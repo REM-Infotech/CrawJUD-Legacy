@@ -169,7 +169,7 @@ class Capa(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        client_context = Client(cookies=self.cookies, headers=self.headers)
+        client_context = Client(cookies=self.cookies)
         pool_exe = ThreadPoolExecutor(max_workers=16)
         with client_context as client, pool_exe as executor:
             futures: list[Future] = []

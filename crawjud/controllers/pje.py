@@ -25,6 +25,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.common.exceptions.bot import (
     ExecutionError,
     FileUploadError,
+    raise_start_error,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
 from crawjud.controllers.main import CrawJUD
@@ -40,7 +41,6 @@ from crawjud.resources.elements import pje as el
 from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.recaptcha import captcha_to_image
-from crawjud.utils.webdriver import DriverBot
 
 if TYPE_CHECKING:
     from httpx import Client, Response
@@ -73,13 +73,29 @@ class PjeBot[T](CrawJUD):
         self.botname = name
         self.botsystem = system
 
-        self.pid = str(current_task.request.id)
         self.folder_storage = storage_folder_name
         self.current_task = current_task
         self.start_time = perf_counter()
+        self.pid = str(current_task.request.id)
 
-        super().__init__(system="pje")
+        selected_browser = "chrome"
+        if platform.system() == "Windows":
+            selected_browser = "firefox"
 
+        super().__init__(selected_browser=selected_browser)
+
+        for k, v in kwargs.copy().items():
+            setattr(self, k, v)
+
+        self.download_files()
+
+        if not self.auth():
+            raise_start_error("Falha na autenticação.")
+
+        self.print_msg(message="Sucesso na autenticação!", type_log="info")
+        self._frame = self.load_data()
+
+        sleep(0.5)
         self.print_msg(message="Execução inicializada!", type_log="info")
 
     def search(
@@ -148,35 +164,11 @@ class PjeBot[T](CrawJUD):
 
     def auth(
         self,
-        regiao: str,
-        *,
-        autentica_capa: bool = False,
     ) -> bool:
         try:
-            selected_browser = "chrome"
-            if platform.system() == "Linux":
-                selected_browser = "firefox"
-
-            driver = DriverBot(
-                selected_browser=selected_browser,
-                with_proxy=True,
-            )
-
-            wait = driver.wait
-            url_login = self.formata_url_pje(_format="login", regiao=regiao)
-            url_valida_sessao = self.formata_url_pje(
-                _format="validate_login",
-                regiao=regiao,
-            )
-
-            driver.get(url_login)
-            btn_sso = wait.until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    'button[id="btnSsoPdpj"]',
-                )),
-            )
-            btn_sso.click()
+            driver = self.driver
+            wait = self.wait
+            driver.get("https://www.jus.br")
 
             sleep(5)
 
@@ -188,14 +180,13 @@ class PjeBot[T](CrawJUD):
             )
             event_cert = btn_certificado.get_attribute("onclick")
             driver.execute_script(event_cert)
-            sleep(1)
             try:
                 WebDriverWait(
                     driver=driver,
-                    timeout=15,
+                    timeout=60,
                     poll_frequency=0.3,
                     ignored_exceptions=(UnexpectedAlertPresentException),
-                ).until(ec.url_contains(url_valida_sessao))
+                ).until(ec.url_to_be("https://www.jus.br/"))
             except TimeoutException:
                 if "pjekz" not in driver.current_url:
                     return False
@@ -205,32 +196,6 @@ class PjeBot[T](CrawJUD):
                 or "pjekz" in driver.current_url
             ):
                 driver.refresh()
-
-            cookies_driver = driver.get_cookies()
-            har_data_ = driver.current_har
-            entries = list(har_data_.entries)
-            entry_proxy = [
-                item
-                for item in entries
-                if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
-                in item.request.url
-            ][-1]
-
-            cookies_ = {
-                str(cookie["name"]): str(cookie["value"])
-                for cookie in cookies_driver
-            }
-
-            headers_ = {
-                str(header["name"]): str(header["value"])
-                for header in entry_proxy.request.headers
-            }
-
-            self._cookies = cookies_
-            self._headers = headers_
-
-            if autentica_capa:
-                driver.quit()
 
         except Exception:
             self.print_msg("Erro ao realizar autenticação", type_log="error")

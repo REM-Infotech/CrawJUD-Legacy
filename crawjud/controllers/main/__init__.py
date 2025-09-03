@@ -67,13 +67,11 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self.event_stop_bot: Event = Event()
 
         self.print_msg(message="Inicializando...")
-
-        if system != "pje":
-            self._driver = DriverBot(
-                selected_browser=selected_browser,
-                with_proxy=False,
-            )
-            self._wait = self._driver.wait
+        self._driver = DriverBot(
+            selected_browser=selected_browser,
+            with_proxy=False,
+        )
+        self._wait = self._driver.wait
 
         self.print_msg(message="Start recebido! Inicializando execução...")
 
