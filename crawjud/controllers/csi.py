@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import suppress
 from pathlib import Path
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING
@@ -56,6 +57,9 @@ class CsiBot[T](CrawJUD):
         self.download_files()
 
         if not self.auth():
+            with suppress(Exception):
+                self.driver.quit()
+
             raise_start_error("Falha na autenticação.")
 
         self.print_msg(message="Sucesso na autenticação!", type_log="info")

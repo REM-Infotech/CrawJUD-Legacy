@@ -59,6 +59,9 @@ class ESajBot[T](CrawJUD):
         self.download_files()
 
         if not self.auth():
+            with suppress(Exception):
+                self.driver.quit()
+
             raise_start_error("Falha na autenticação.")
 
         self.print_msg(message="Sucesso na autenticação!", type_log="info")
