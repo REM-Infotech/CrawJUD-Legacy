@@ -46,7 +46,7 @@ class Protocolo(ProjudiBot):
 
     def execution(self) -> None:
         frame = self.dataFrame()
-        self.max_rows = len(frame)
+        self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):
             self.row = pos + 1

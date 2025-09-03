@@ -84,7 +84,7 @@ class BuscaPags(ESajBot):
         # Inline: For each row, execute the queue sequence.
         """
         frame = self.dataFrame()
-        self.max_rows = len(frame)
+        self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):
             self.row = pos + 1
