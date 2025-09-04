@@ -12,6 +12,7 @@ from typing import (
     ParamSpec,
 )
 
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
@@ -105,6 +106,7 @@ class DriverBot[T](WebDriver):
         """
         driver_config = config[selected_browser]
         tqdm.write(with_proxy)
+        self.selected_browser = selected_browser
         kwargs.update({"with_proxy": with_proxy})
         # Configura o Manager
         self._configure_manager(
@@ -206,6 +208,11 @@ class DriverBot[T](WebDriver):
         self._wait = new_wait
 
     def find_element(self, *args: P.args, **kwargs: P.kwargs) -> WebElementBot:
+        if self.selected_browser != "chrome":
+            with suppress(Exception):
+                alert = Alert(self)
+                alert.dismiss()
+
         return super().find_element(*args, **kwargs)
 
     def find_elements(
@@ -213,6 +220,11 @@ class DriverBot[T](WebDriver):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> list[WebElementBot]:
+        if self.selected_browser != "chrome":
+            with suppress(Exception):
+                alert = Alert(self)
+                alert.dismiss()
+
         return super().find_elements(*args, **kwargs)
 
     @property
