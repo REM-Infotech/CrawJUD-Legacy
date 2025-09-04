@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import Literal, TypedDict
+
+type PolosProcessuais = Literal["Passivo", "Ativo"]
 
 
 class DictReturnAuth(TypedDict):
@@ -26,7 +28,7 @@ class BotData(TypedDict):
 
     NUMERO_PROCESSO: str
     GRAU: int | str
-
+    POLO_PARTE: PolosProcessuais
     FORO: str  # ESAJ EMISSAO | ELAW CADASTRO
     VALOR_CALCULADO: str  # CAIXA | CALCULADORA TJDFT
     ADVOGADO_INTERNO: str  # ELAW CADASTRO | ELAW COMPLEMENTO
