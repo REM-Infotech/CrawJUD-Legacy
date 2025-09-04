@@ -102,16 +102,25 @@ class HabilitiacaoPJe(PjeBot):
             # Busca todas as linhas (tr) diretamente em todas as tabelas do grid
             linhas = [
                 tr
-                for table in parte_grid.find_elements(By.TAG_NAME, "table")
+                for table in parte_grid.find_elements(
+                    By.TAG_NAME,
+                    "table",
+                )
                 for tr in table.find_element(
                     By.TAG_NAME,
                     "tbody",
-                ).find_elements(By.TAG_NAME, "tr")
+                ).find_elements(
+                    By.TAG_NAME,
+                    "tr",
+                )
             ]
 
             parte = list(
                 filter(
-                    lambda x: x.find_elements(By.TAG_NAME, "td")[1].text
+                    lambda x: x.find_elements(
+                        By.TAG_NAME,
+                        "td",
+                    )[1].text
                     == nome_parte,
                     linhas,
                 ),
