@@ -149,18 +149,12 @@ class ELAW_AME(Configuracao):  # noqa: N801
     ))
 
     # Div do tipo de documento
-    type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:eFileTipoCombo"]'
-    list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
-    editar_pagamento = 'input[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:uploadGedEFile_input"]'
-    css_div_condenacao_type = (
-        'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-    )
-    valor_sentenca = (
-        'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_3"]'
-    )
-    valor_acordao = (
-        'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_1"]'
-    )
+    type_doc_css = 'div[id*="eFileTipoCombo"]'
+    list_type_doc_css = 'ul[id*="eFileTipoCombo_items"]'
+    editar_pagamento = 'input[id*="uploadGedEFile_input"]'
+    css_div_condenacao_type = 'div[id*="pvpEFBtypeSelectField1CombosCombo"]'
+    valor_sentenca = 'li[id*="pvpEFBtypeSelectField1CombosCombo_3"]'
+    valor_acordao = 'li[id*="pvpEFBtypeSelectField1CombosCombo_1"]'
     css_desc_pgto = 'textarea[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoDescription"]'
     css_data = 'input[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoVencData_input"]'
     css_inputfavorecido = 'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
@@ -182,14 +176,10 @@ class ELAW_AME(Configuracao):  # noqa: N801
         'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_a_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
     )
     valor_guia = 'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
-    css_gru = 'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:eFileTipoCombo_35"]'
-    editar_pagamentofile = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:gedEFileDataTable"]'
-    css_tipocusta = (
-        'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-    )
-    css_listcusta = (
-        'ul[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_items"]'
-    )
+    css_gru = 'li[id*="eFileTipoCombo_35"]'
+    editar_pagamentofile = 'div[id*="gedEFileDataTable"]'
+    css_tipocusta = 'div[id*="pvpEFBtypeSelectField1CombosCombo"]'
+    css_listcusta = 'ul[id*="pvpEFBtypeSelectField1CombosCombo_items"]'
     custas_civis = 'li[data-label="CUSTAS JUDICIAIS CIVEIS"]'
     custas_monitorias = 'li[data-label="CUSTAS JUDICIAIS - MONITORIAS"]'
     botao_salvar_pagamento = 'button[id="processoValorPagamentoEditForm:btnSalvarProcessoValorPagamento"]'
