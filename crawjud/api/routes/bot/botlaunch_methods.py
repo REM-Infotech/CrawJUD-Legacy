@@ -24,6 +24,7 @@ from crawjud.common.exceptions._form import LoadFormError
 from crawjud.interfaces.formbot import FormDict
 from crawjud.interfaces.session import SessionDict
 from crawjud.models.users import LicensesUsers
+from crawjud.resources import format_string
 from crawjud.utils.storage import Storage
 
 if TYPE_CHECKING:
@@ -78,11 +79,16 @@ class FormData(TypedDict):
             data_.update({k: v})
 
         if data_.get("otherfiles"):
-            data_["otherfiles"] = (
-                data_["otherfiles"].split(",")
+            other_files = (
+                str(data_["otherfiles"]).split(",")
                 if "," in data_["otherfiles"]
-                else [data_["otherfiles"]]
+                else [str(data_["otherfiles"])]
             )
+
+            data_["otherfiles"] = [format_string(file) for file in other_files]
+
+        if data_.get("xlsx"):
+            data_["xlsx"] = format_string(data_["xlsx"])
 
         return cls(**data_)
 
@@ -252,6 +258,9 @@ class LoadForm:
                     continue
 
                 form_data.update({item: secure_filename(val)})
+
+        if self.bot.type.upper() == "PROTOCOLO":
+            form_data["token"] = _data["token"]
 
         return form_data
 
