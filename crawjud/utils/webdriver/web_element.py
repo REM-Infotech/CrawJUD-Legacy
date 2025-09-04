@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import platform
 from contextlib import suppress
+from pathlib import Path
 from time import sleep
 from typing import TYPE_CHECKING, Self
 
@@ -47,7 +49,7 @@ class WebElementBot[T](WebElement):
         super().click()
         sleep(0.05)
 
-    def send_keys(self, word: any) -> None:
+    def send_keys(self, word: T) -> None:
         send = None
         for key in dir(Keys):
             if getattr(Keys, key) == word:
@@ -59,6 +61,24 @@ class WebElementBot[T](WebElement):
             for c in str(word):
                 sleep(0.005)
                 super().send_keys(c)
+
+    def send_file(self, file: str | Path) -> None:
+        try:
+            file_ = file
+            if isinstance(file, Path):
+                file_ = file.as_uri()
+
+            super().send_keys(file_)
+
+        except Exception:
+            file_ = file
+            if isinstance(file, Path):
+                if platform.system() == "Linux":
+                    file_ = file.as_posix()
+                else:
+                    file_ = str(file)
+
+            super().send_keys(file)
 
     def double_click(self) -> None:
         """Double-click on the given WebElement.

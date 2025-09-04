@@ -114,15 +114,13 @@ class Protocolo(ProjudiBot):
             type_log = "error"
             self.append_error(self.bot_data)
             self.print_msg(message=message, type_log=type_log, row=self.row)
-            return
 
         if data:
             self.append_success(data)
 
     def __entra_pagina_protocolo(self) -> None:
         """Empty."""
-        driver = self.driver
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(self.driver, 10)
 
         btn_peticionar = wait.until(
             ec.presence_of_element_located((
@@ -136,8 +134,8 @@ class Protocolo(ProjudiBot):
     def __informa_tipo_protocolo(self) -> None:
         """Empty."""
         bot_data = self.bot_data
-        driver = self.driver
-        wait = WebDriverWait(driver, 10)
+
+        wait = WebDriverWait(self.driver, 10)
 
         tipo_protocolo = bot_data["TIPO_PROTOCOLO"]
 
@@ -156,8 +154,8 @@ class Protocolo(ProjudiBot):
     def __seleciona_parte_interessada(self) -> None:
         """Empty."""
         bot_data = self.bot_data
-        driver = self.driver
-        wait = WebDriverWait(driver, 10)
+
+        wait = WebDriverWait(self.driver, 10)
 
         polo_parte = bot_data["POLO_PARTE"]
         nome_parte = bot_data["PARTE_PETICIONANTE"]
@@ -182,19 +180,18 @@ class Protocolo(ProjudiBot):
     def __adicionar_arquivos(self) -> None:
         """Empty."""
         bot_data = self.bot_data
-        driver = self.driver
 
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(self.driver, 10)
 
         btn_arquivos = wait.until(
             ec.presence_of_element_located((
-                By.XPATH,
+                By.CSS_SELECTOR,
                 el.CSS_BTN_ENTRAR_TELA_ARQUIVOS,
             )),
         )
         btn_arquivos.click()
 
-        main_window = driver.current_window_handle
+        main_window = self.driver.current_window_handle
         wait.until(
             ec.frame_to_be_available_and_switch_to_it((By.TAG_NAME, "iframe")),
         )
@@ -208,13 +205,12 @@ class Protocolo(ProjudiBot):
         self.__assinar()
         self.__confirma_inclusao()
 
-        driver.switch_to.window(main_window)
+        self.driver.switch_to.window(main_window)
 
     def __check_contains_files(self) -> None:
         """Empty."""
-        driver = self.driver
         contem_arquivos = True
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(self.driver, 10)
         table_arquivos = wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
@@ -242,7 +238,7 @@ class Protocolo(ProjudiBot):
                 btn_remove_arquivo.click()
 
                 with suppress(Exception):
-                    Alert(driver).accept()
+                    Alert(self.driver).accept()
 
     def __peticao_principal(self) -> None:
         """Empty."""
@@ -290,14 +286,14 @@ class Protocolo(ProjudiBot):
         path_arq = out.joinpath(nome_arq_normalizado)
 
         wait = WebDriverWait(self.driver, 10)
-        input_file = wait.until(
+        input_file: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.CSS_INPUT_ARQUIVO,
             )),
         )
 
-        input_file.send_keys(str(path_arq))
+        input_file.send_file(path_arq)
         self.__wait_upload_file()
 
         table_arquivos = wait.until(
@@ -422,7 +418,6 @@ class Protocolo(ProjudiBot):
 
         """
         pid = self.pid
-        driver = self.driver
 
         out_dir = self.output_dir_path
         bot_data = self.bot_data
@@ -437,7 +432,7 @@ class Protocolo(ProjudiBot):
         file_screenshot_0 = self.output_dir_path.joinpath("tr_0.png")
         file_screenshot_1 = self.output_dir_path.joinpath("tr_1.png")
 
-        table_moves = driver.find_element(By.CLASS_NAME, "resultTable")
+        table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
         table_moves = table_moves.find_elements(By.XPATH, el.table_mov)
 
         with file_screenshot_0.open("wb") as fp:
@@ -491,11 +486,10 @@ class Protocolo(ProjudiBot):
         )
 
     def __wait_upload_file(self) -> None:
-        driver = self.driver
         while True:
             sleep(0.5)
             try:
-                progress_bar = driver.find_element(
+                progress_bar = self.driver.find_element(
                     By.CSS_SELECTOR,
                     'div[id="divProgressBarContainerAssinado"]',
                 )

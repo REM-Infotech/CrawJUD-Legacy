@@ -167,6 +167,12 @@ class ProjudiBot[T](CrawJUD):
                     detect_intimacao(driver=driver)
                     allow_access(driver=driver)
 
+                    self.print_msg(
+                        "Processo Encontrado!",
+                        type_log="info",
+                        row=self.row,
+                    )
+
                     return True
 
         type_log = "error"

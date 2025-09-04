@@ -12,8 +12,8 @@ url_login = (
     "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
 )
 # Elementos Projudi
-XPATH_RADIO_POLO_PARTE = "//input[@type='radio'][following-sibling::text()[contains(., {POLO_PARTE})]]"
-XPATH_CHECKBOX_PARTE = "//input[@type='checkbox'][following-sibling::text()[contains(., {NOME_PARTE})]]"
+XPATH_RADIO_POLO_PARTE = "//input[@type='radio'][following-sibling::text()[contains(., '{POLO_PARTE}')]]"
+XPATH_CHECKBOX_PARTE = "//input[@type='checkbox'][following-sibling::text()[contains(., '{NOME_PARTE}')]]"
 CSS_BTN_PETICIONAR = 'input[id="peticionarButton"]'
 CSS_INPUT_TIPO_PROTOCOLO = 'input[id="descricaoTipoDocumento"]'
 CSS_INPUT_ARQUIVO = 'input[id="conteudo"]'
