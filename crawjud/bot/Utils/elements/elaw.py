@@ -208,11 +208,11 @@ class ELAW_AME(Configuracao):  # noqa: N801
     visualizar_tipoCondenacao = r"#processoValorPagamentoView\:j_id_p_1_2_1_2_1 > table > tbody > tr:nth-child(4)"  # noqa: N815
 
     # PROVISIONAMENTO
-    css_btn_edit = 'button[id="tabViewProcesso:j_id_i1_c_1_6_2:processoValoresEditarBtn"]'
+    css_btn_edit = 'button[id*="processoValoresEditarBtn"]'
     ver_valores = 'a[href="#tabViewProcesso:valores"]'
 
-    # table_valores_css = 'tbody[id="tabViewProcesso:j_id_i1_c_1_5_2:j_id_i1_c_1_5_70:viewValoresCustomeDt_data"]'
-    table_valores_css = 'tbody[id="tabViewProcesso:j_id_i1_c_1_6_2:j_id_i1_c_1_6_4x:viewValoresCustomeDt_data"]'
+    # table_valores_css = 'tbody[id=*":viewValoresCustomeDt_data"]'
+    table_valores_css = 'tbody[id*="viewValoresCustomeDt_data"]'
     value_provcss = 'div[id*="viewValoresCustomeDt:0"]'
     div_tipo_obj_css = 'div[id="selectManyObjetoAdicionarList"]'
     itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
