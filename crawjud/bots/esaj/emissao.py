@@ -108,9 +108,6 @@ class Emissao(ESajBot):
             self.append_success(self.get_barcode())
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def custas_iniciais(self) -> None:
@@ -419,7 +416,4 @@ class Emissao(ESajBot):
             ]
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e

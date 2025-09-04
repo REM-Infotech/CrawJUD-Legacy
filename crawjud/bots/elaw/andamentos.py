@@ -104,9 +104,6 @@ class Andamentos(ElawBot):
                 ])
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def info_data(self) -> None:
@@ -139,9 +136,6 @@ class Andamentos(ElawBot):
             self.interact.sleep_load('div[id="j_id_34"]')
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def info_ocorrencia(self) -> None:
@@ -171,9 +165,6 @@ class Andamentos(ElawBot):
             self.interact.send_key(ocorrencia, text_andamento)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def info_observacao(self) -> None:
@@ -203,9 +194,6 @@ class Andamentos(ElawBot):
             self.interact.send_key(observacao, text_andamento)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def add_anexo(self) -> None:
@@ -240,9 +228,6 @@ class Andamentos(ElawBot):
             save_button.click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(
                 message="Não foi possivel salvar andamento",
                 e=e,

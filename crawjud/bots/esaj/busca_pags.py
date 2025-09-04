@@ -101,9 +101,6 @@ class BuscaPags(ESajBot):
             self.page_custas()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def get_page_custas_pagas(self) -> None:

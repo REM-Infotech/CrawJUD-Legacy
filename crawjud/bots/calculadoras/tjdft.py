@@ -91,9 +91,6 @@ class Tjdft(CrawJUD):
             self.finalizar_execucao()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def get_calcular(self) -> None:
@@ -138,9 +135,6 @@ class Tjdft(CrawJUD):
                 self.driver.switch_to.default_content()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def info_numproc(self) -> None:
@@ -172,9 +166,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(
                 message="Erro ao informar número do processo",
                 e=e,
@@ -209,9 +200,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def info_requerido(self) -> None:
@@ -243,9 +231,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def info_jurosapartir(self) -> None:
@@ -316,9 +301,6 @@ class Tjdft(CrawJUD):
                 )
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def valores_devidos(self) -> None:
@@ -368,9 +350,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def acessorios(self) -> None:
@@ -444,9 +423,6 @@ class Tjdft(CrawJUD):
             self.append_success(data)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def multa_percentual(self) -> None:
@@ -504,9 +480,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def honorario_sucumb(self) -> None:
@@ -585,9 +558,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def percent_multa_475j(self) -> None:
@@ -610,9 +580,6 @@ class Tjdft(CrawJUD):
             )
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def honorario_cumprimento(self) -> None:
@@ -691,9 +658,6 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def custas(self) -> None:
@@ -737,7 +701,4 @@ class Tjdft(CrawJUD):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e

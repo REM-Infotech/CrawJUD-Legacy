@@ -124,9 +124,6 @@ class Movimentacao(ProjudiBot):
             self.extrair_movimentacoes()
 
         except (ExecutionError, Exception) as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def set_page_size(self) -> None:

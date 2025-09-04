@@ -77,9 +77,6 @@ class ProcParte(ProjudiBot):
                         self.auth()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             message_error = str(e)
 
             self.print_msg(message=f"{message_error}.", type_log="error")
@@ -140,9 +137,6 @@ class ProcParte(ProjudiBot):
                     self.auth()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def use_list_process(self, list_processos: list[WebElement]) -> None:

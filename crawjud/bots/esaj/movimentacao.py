@@ -136,9 +136,6 @@ class Movimentacao(ESajBot):
                 self.append_error(data)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def setup_config(self) -> None:

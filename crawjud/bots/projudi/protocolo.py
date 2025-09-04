@@ -123,8 +123,6 @@ class Protocolo(ProjudiBot):
             self.append_success(data)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
             raise ExecutionError(exc=e) from e
 
     def confirm_protocol(self) -> str | None:
@@ -362,9 +360,6 @@ class Protocolo(ProjudiBot):
             """ Corrigir elements """
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def add_new_file(self) -> None:
@@ -428,9 +423,6 @@ class Protocolo(ProjudiBot):
                     break
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def set_file_principal(self) -> None:
@@ -460,9 +452,6 @@ class Protocolo(ProjudiBot):
             radiobutton.click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def more_files(self) -> None:
@@ -532,9 +521,6 @@ class Protocolo(ProjudiBot):
                         break
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def sign_files(self) -> None:
@@ -591,9 +577,6 @@ class Protocolo(ProjudiBot):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def finish_move(self) -> None:
@@ -686,8 +669,6 @@ class Protocolo(ProjudiBot):
             ]
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
             raise ExecutionError(exc=e) from e
 
     def remove_files(self) -> None:

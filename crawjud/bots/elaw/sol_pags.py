@@ -102,9 +102,6 @@ class SolPags(ElawBot):
                 _raise_execution_error(message="Processo não encontrado!")
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def new_payment(self) -> None:
@@ -132,9 +129,6 @@ class SolPags(ElawBot):
             novo_pgto.click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def set_pgto(self, namedef: str) -> None:
@@ -189,9 +183,6 @@ class SolPags(ElawBot):
             _raise_execution_error(message="Tipo de Pagamento não encontrado")
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def condenacao(self) -> None:
@@ -213,8 +204,6 @@ class SolPags(ElawBot):
             self._informar_centro_custas()
             self._informar_conta_debito()
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
             raise ExecutionError(exc=e) from e
 
     def _informar_valor_guia(self) -> None:
@@ -678,9 +667,6 @@ class SolPags(ElawBot):
                 conta_debito.click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def save_changes(self) -> None:
@@ -703,9 +689,6 @@ class SolPags(ElawBot):
             save.click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def confirm_save(self) -> None:

@@ -101,9 +101,6 @@ class Download(ElawBot):
                 ])
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def buscar_doc(self) -> None:

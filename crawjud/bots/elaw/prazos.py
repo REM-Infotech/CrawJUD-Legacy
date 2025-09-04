@@ -113,9 +113,6 @@ class Prazos(ElawBot):
             self.append_success([comprovante], self.message)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def tabela_pautas(self) -> None:
@@ -140,9 +137,6 @@ class Prazos(ElawBot):
             self.prt()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def nova_pauta(self) -> None:
@@ -215,9 +209,6 @@ class Prazos(ElawBot):
             data_audiencia.send_keys(self.data_Concat)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def salvar_prazo(self) -> None:
@@ -240,9 +231,6 @@ class Prazos(ElawBot):
             btn_salvar.click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
     def checar_lancamento(self) -> dict[str, str] | None:
@@ -310,9 +298,6 @@ class Prazos(ElawBot):
                     }
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(exc=e) from e
 
         return data

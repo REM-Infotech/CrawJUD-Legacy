@@ -177,8 +177,6 @@ class ElawCadadastro(CadastroComplementar, PreCadastro):
                     self.print_comprovante()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
             raise ExecutionError(exc=e) from e
 
     def validar_campos(self) -> None:

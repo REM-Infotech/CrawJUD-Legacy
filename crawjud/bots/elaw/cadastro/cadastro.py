@@ -899,9 +899,6 @@ class PreCadastro(ElawBot):
             interact.sleep_load(ELEMENT_LOAD)
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(
                 message="Não foi possível cadastrar advogado",
                 e=e,
@@ -1055,8 +1052,6 @@ class PreCadastro(ElawBot):
             ).click()
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
             raise ExecutionError(exc=e) from e
 
     def salvar_tudo(self) -> None:

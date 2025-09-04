@@ -247,9 +247,6 @@ class Provisao(ElawBot):
             self.interact.sleep_load('div[id="j_id_8c"]')
 
         except ExecutionError as e:
-            # TODO(Nicholas Silva): Criação de Exceptions
-            # https://github.com/REM-Infotech/CrawJUD-Reestruturado/issues/35
-
             raise ExecutionError(
                 message="Não foi possivel atualizar provisão",
                 e=e,
