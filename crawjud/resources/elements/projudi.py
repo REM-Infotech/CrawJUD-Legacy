@@ -11,6 +11,20 @@ from __future__ import annotations
 url_login = (
     "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
 )
+# Elementos Projudi
+XPATH_RADIO_POLO_PARTE = "//input[@type='radio'][following-sibling::text()[contains(., {POLO_PARTE})]]"
+XPATH_CHECKBOX_PARTE = "//input[@type='checkbox'][following-sibling::text()[contains(., {NOME_PARTE})]]"
+CSS_BTN_PETICIONAR = 'input[id="peticionarButton"]'
+CSS_INPUT_TIPO_PROTOCOLO = 'input[id="descricaoTipoDocumento"]'
+CSS_INPUT_ARQUIVO = 'input[id="conteudo"]'
+CSS_BTN_ENTRAR_TELA_ARQUIVOS = 'input[value="Adicionar"]'
+XPATH_CHECK_CONTAINS_FILES = "//td[contains(@colspan, '3')]"
+CSS_TABLE_ARQUIVOS = 'table[class="resultTable"] > tbody'
+CSS_SENHA_CERTIFICADO = 'input[name="senhaCertificado"]'
+CSS_BTN_CONFIRMA_INCLUSAO = 'input[value="Confirmar Inclusão"]'
+CSS_BTN_REMOVE_ARQUIVO = 'input[name="deleteButton"]'
+# Elementos Projudi
+
 
 campo_username = "#login"
 campo_2_login = "#senha"  # nosec: B105
@@ -62,6 +76,8 @@ data_inicio = 'input[id="dataInicialMovimentacaoFiltro"]'
 data_fim = 'input[id="dataFinalMovimentacaoFiltro"]'
 filtro = 'input[id="editButton"]'
 expand_btn_projudi = 'a[href="javascript://nop/"]'
+
+table_mov = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
 
 table_moves = '//div[@id="includeContent"]/table/tbody'
 list_moves_semarquivo = '//tr[(contains(@class, "even") or contains(@class, "odd")) and contains(@id, "SEMARQUIVO")][not(@style="display:none")]'
