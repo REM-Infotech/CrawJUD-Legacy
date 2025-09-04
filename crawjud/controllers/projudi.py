@@ -169,6 +169,10 @@ class ProjudiBot[T](CrawJUD):
 
                     return True
 
+        type_log = "error"
+        message = "Processo não encontrado!"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
+
         return False
 
     def search_proc_parte(self) -> bool:
@@ -325,6 +329,9 @@ class ProjudiBot[T](CrawJUD):
             raise LoginSystemError(exception=e) from e
 
         return check_login is not None
+
+    def append_success(self, *args: T, **kwargs: T) -> None:
+        """Not Implemented."""
 
 
 def detect_intimacao(driver: WebDriver) -> None:

@@ -52,7 +52,7 @@ class AbstractCrawJUD[T]:
 
     _botname: ClassVar[str] = ""
     _botsystem: ClassVar[str] = ""
-
+    _token: ClassVar[str] = ""
     _driver: WebDriver = None
     _wait: WebDriverWait = None
     current_task: ContextTask
@@ -101,6 +101,14 @@ class AbstractCrawJUD[T]:
     to_add_representantes: ClassVar[list[ProcessInfo]] = []
     to_add_processos_primeiro_grau: ClassVar[list[ProcessInfo]] = []
     to_add_processos_segundo_grau: ClassVar[list[ProcessInfo]] = []
+
+    @property
+    def token(self) -> str:
+        return self._token
+
+    @token.setter
+    def token(self, token: str) -> None:
+        self._token = token
 
     @property
     def row(self) -> int:

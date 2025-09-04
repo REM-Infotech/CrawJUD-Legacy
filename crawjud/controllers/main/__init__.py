@@ -35,10 +35,8 @@ if TYPE_CHECKING:
 
     from crawjud.interfaces.types.webdriver_types import BrowserOptions
 
-func_dict_check = {
-    "bot": ["execution"],
-    "search": ["buscar_processo"],
-}
+type TypeLogs = Literal["log", "info", "success", "error"]
+
 
 work_dir = Path(__file__).cwd()
 
@@ -227,7 +225,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         message: str,
         row: int = 0,
         errors: int = 0,
-        type_log: str = "log",
+        type_log: TypeLogs = "log",
     ) -> None:
         """Imprime mensagem de log do processo.
 
@@ -236,24 +234,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             message (str): Mensagem a ser exibida.
             row (int): Linha do processo.
             errors (int): Quantidade de erros.
-            type_log (str): Tipo de log.
+            type_log (TypeLogs): Tipo de log.
 
         """
-        """Envia mensagem de log para o sistema de tarefas assíncronas.
-
-        Args:
-            pid (str): Identificador do processo.
-            message (str): Mensagem a ser registrada.
-            row (int): Linha atual do processamento.
-            type_log (str): Tipo de log (info, error, etc).
-            total_rows (int): Total de linhas a serem processadas.
-            start_time (str): Horário de início do processamento.
-            status (str): Status atual do processamento (default: "Em Execução").
-
-
-
-        """
-
         keyword_args: dict[str, str | int] = {
             "start_time": self.start_time,
             "message": message,
