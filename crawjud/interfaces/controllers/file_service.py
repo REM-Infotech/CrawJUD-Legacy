@@ -15,6 +15,7 @@ from tqdm import tqdm
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
+from crawjud.resources import format_string
 from crawjud.utils.storage import Storage
 
 workdir_path = Path(__file__).cwd()
@@ -96,7 +97,7 @@ class FileService[T]:
             file_ = await request.files
             sid = str(session.sid)
 
-            file_name = str(data.get("name"))
+            file_name = format_string(str(data.get("name")))
             index = int(data.get("index", 0))
 
             _total = int(data.get("total", 1)) * 1024
