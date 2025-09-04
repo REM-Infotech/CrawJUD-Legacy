@@ -30,13 +30,13 @@ from crawjud.common.exceptions.bot import (
 from crawjud.common.exceptions.validacao import ValidacaoStringError
 from crawjud.controllers.main import CrawJUD
 from crawjud.interfaces.types import BotData
-from crawjud.interfaces.types.custom import StrProcessoCNJ
-from crawjud.interfaces.types.pje import (
+from crawjud.interfaces.types.bots.pje import (
     DictDesafio,
     DictResults,
     DictSeparaRegiao,
     Processo,
 )
+from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.resources.elements import pje as el
 from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
