@@ -33,9 +33,6 @@ from crawjud.utils.webdriver.config.proxy import (
     RequestData,
     ResponseData,
 )
-from crawjud.utils.webdriver.config.proxy import (
-    CreatorInfo as CreatorInfo,
-)
 from crawjud.utils.webdriver.web_element import WebElementBot
 
 if TYPE_CHECKING:

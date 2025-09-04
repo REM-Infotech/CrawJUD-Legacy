@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from crawjud.controllers.main import CrawJUD
     from crawjud.interfaces.dict.bot import BotData
-    from crawjud.interfaces.types.pje import DictSeparaRegiao
+    from crawjud.interfaces.types.bots.pje import DictSeparaRegiao
 
 
 class RegioesIterator:
