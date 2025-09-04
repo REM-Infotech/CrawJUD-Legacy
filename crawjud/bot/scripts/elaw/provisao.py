@@ -288,7 +288,7 @@ class Provisao(CrawJUD):
 
         """
         try:
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.interact.sleep_load('div[id="j_id_3q"]')
             self.message = "Informando valores"
             self.type_log = "log"
             self.prt()
@@ -296,7 +296,7 @@ class Provisao(CrawJUD):
             row_valores = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']",
+                    "tbody[id*='processoAmountObjetoDt_data']",
                 ))
             ).find_elements(
                 By.XPATH,
@@ -314,7 +314,7 @@ class Provisao(CrawJUD):
 
                 campo_valor_dml.send_keys(Keys.CONTROL + "a")
                 campo_valor_dml.send_keys(Keys.BACKSPACE)
-                self.interact.sleep_load('div[id="j_id_2z"]')
+                self.interact.sleep_load('div[id="j_id_3q"]')
 
                 if isinstance(valor_informar, int):
                     valor_informar = str(valor_informar) + ",00"
@@ -326,7 +326,7 @@ class Provisao(CrawJUD):
 
                 id_campo_valor_dml = campo_valor_dml.get_attribute("id")
                 self.driver.execute_script(f"document.getElementById('{id_campo_valor_dml}').blur()")
-                self.interact.sleep_load('div[id="j_id_2z"]')
+                self.interact.sleep_load('div[id="j_id_3q"]')
 
         except Exception as e:
             self.logger.exception("".join(traceback.format_exception(e)))
@@ -339,9 +339,11 @@ class Provisao(CrawJUD):
             None
 
         """
-        self.driver.execute_script(
-            'document.getElementById("j_id_2z:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" '
-        )
+        with suppress(Exception):
+            self.driver.execute_script(
+                'document.getElementById("j_id_3d:j_id_3g_2e:processoAmountObjetoDt").style.zoom = "0.5" '
+            )
+
         try:
             self.message = "Alterando risco"
             self.type_log = "log"
@@ -350,7 +352,7 @@ class Provisao(CrawJUD):
             row_valores = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']",
+                    "tbody[id*='processoAmountObjetoDt_data']",
                 ))
             ).find_elements(
                 By.XPATH,
@@ -415,7 +417,7 @@ class Provisao(CrawJUD):
                 self.interact.send_key(data_correcao, data_base_correcao)
 
                 self.driver.execute_script(f"document.getElementById('{css_daata_correcao}').blur()")
-                self.interact.sleep_load('div[id="j_id_2z"]')
+                self.interact.sleep_load('div[id="j_id_3q"]')
 
             def set_data_juros(data_base_juros: str) -> None:
                 data_juros = self.driver.find_element(By.CSS_SELECTOR, self.elements.data_jurosCss)
@@ -423,7 +425,7 @@ class Provisao(CrawJUD):
                 self.interact.clear(data_juros)
                 self.interact.send_key(data_juros, data_base_juros)
                 self.driver.execute_script(f"document.getElementById('{css_data}').blur()")
-                self.interact.sleep_load('div[id="j_id_2z"]')
+                self.interact.sleep_load('div[id="j_id_3q"]')
 
             data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
             data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
@@ -456,7 +458,7 @@ class Provisao(CrawJUD):
             sleep(1)
             try_salvar.click()
 
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.interact.sleep_load('div[id="j_id_3q"]')
 
             self.message = "Informando justificativa"
             self.type_log = "log"
@@ -479,7 +481,7 @@ class Provisao(CrawJUD):
             ExecutionError: If unable to save the provision.
 
         """
-        self.interact.sleep_load('div[id="j_id_2z"]')
+        self.interact.sleep_load('div[id="j_id_3q"]')
         salvar = self.driver.find_element(By.CSS_SELECTOR, self.elements.botao_salvar_id)
         salvar.click()
 

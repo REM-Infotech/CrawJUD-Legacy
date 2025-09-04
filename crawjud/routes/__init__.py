@@ -118,7 +118,7 @@ async def serve_profile(user: str) -> Response:
 
     """
     try:
-        with app.app_context():
+        async with app.app_context():
             from crawjud.models import Users
 
             user = Users.query.filter(Users.login == user).first()
@@ -140,7 +140,7 @@ async def serve_profile(user: str) -> Response:
 
             original_path = os.path.join(app.config["IMAGE_TEMP_DIR"], filename)
 
-            with aiofiles.open(original_path, "wb") as file:
+            async with aiofiles.open(original_path, "wb") as file:
                 file.write(image_data)
 
             response = await make_response(await send_from_directory(app.config["IMAGE_TEMP_DIR"], filename))

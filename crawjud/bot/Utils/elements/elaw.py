@@ -224,14 +224,14 @@ class ELAW_AME(Configuracao):  # noqa: N801
         "/html/body/div[1]/div[4]/div[1]/div/div[2]/form[2]/table/tbody/tr[2]/td/div/div/table[2]",
         "/tbody/tr[2]/td/span/div/div/div/div[1]/div/table/tbody/tr[1]/td[7]/div",
     ))
-    processo_objt = 'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
+    processo_objt = 'ul[id*="j_id_3g_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
     botao_salvar_id = 'button[id="salvarBtn"]'
-    data_correcaoCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'  # noqa: N815
-    data_jurosCss = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'  # noqa: N815
-    texto_motivo = 'textarea[id="j_id_2z:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
+    data_correcaoCss = 'input[id*="j_id_3g_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'  # noqa: N815
+    data_jurosCss = 'input[id*="j_id_3g_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'  # noqa: N815
+    texto_motivo = 'textarea[id="j_id_3d:j_id_3g_2e:j_id_3g_2j_7:j_id_3g_2j_i"]'
 
-    type_risk_label = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
-    type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
+    type_risk_label = 'span[id*="provisaoTipoPedidoCombo_label"]'
+    type_risk_select = 'select[id*="provisaoTipoPedidoCombo_input"]'
 
     tabela_advogados_resp = 'tbody[id*="lawyerOwnersDataTable_data"]'
     tr_not_adv = "tr.ui-datatable-empty-message"
