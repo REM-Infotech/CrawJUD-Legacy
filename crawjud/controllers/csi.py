@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import platform
 from contextlib import suppress
 from pathlib import Path
 from time import perf_counter, sleep
@@ -49,7 +50,11 @@ class CsiBot[T](CrawJUD):
         self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
-        super().__init__()
+        selected_browser = "chrome"
+        if platform.system() == "Linux":
+            selected_browser = "firefox"
+
+        super().__init__(selected_browser=selected_browser)
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)

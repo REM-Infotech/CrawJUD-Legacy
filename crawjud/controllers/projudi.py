@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import platform
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -62,7 +63,11 @@ class ProjudiBot[T](CrawJUD):
         self.start_time = perf_counter()
         self.pid = str(current_task.request.id)
 
-        super().__init__(system=system, selected_browser="firefox")
+        selected_browser = "chrome"
+        if platform.system() == "Linux":
+            selected_browser = "firefox"
+
+        super().__init__(selected_browser=selected_browser)
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)
