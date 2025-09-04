@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from crawjud.interfaces.pje.audiencias import AudienciaDict
     from crawjud.interfaces.pje.partes import ParteDict, PartesJsonDict
     from crawjud.interfaces.types import BotData
-    from crawjud.interfaces.types.pje import DictResults
+    from crawjud.interfaces.types.bots.pje import DictResults
 
 load_dotenv()
 
