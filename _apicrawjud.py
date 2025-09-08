@@ -8,11 +8,8 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-import _initjpype as initjp
 from crawjud.api import check_cors_allowed_origins, create_app, io
 from crawjud.utils.logger import dict_config
-
-__all__ = ["initjp"]
 
 
 async def main_app() -> None:
