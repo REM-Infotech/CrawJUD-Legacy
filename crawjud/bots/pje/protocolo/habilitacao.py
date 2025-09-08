@@ -134,7 +134,9 @@ class HabilitiacaoPJe(PjeBot):
 
             if len(parte) > 0:
                 parte = parte[-1]
-                btn_seleciona = parte.find_elements(By.TAG_NAME, "td")[0]
+                btn_seleciona = parte.find_elements(By.TAG_NAME, "td")[
+                    0
+                ].find_element(By.TAG_NAME, "mat-checkbox")
                 btn_seleciona.click()
                 break
 
