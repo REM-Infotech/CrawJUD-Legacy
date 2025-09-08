@@ -59,11 +59,6 @@ class Protocolo(ProjudiBot):
     """
 
     def execution(self) -> None:
-        """Execute protocol processing over each data frame entry and handle errors.
-
-        Iterates through the data rows and executes protocol operations including moves,
-        file uploads, signing and final finalization.
-        """
         frame = self.frame
         self.total_rows = len(frame)
 
@@ -82,7 +77,6 @@ class Protocolo(ProjudiBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Manage the execution queue for protocol processing."""
         data: DataSucessoProtocoloProjudi = {}
 
         try:

@@ -308,7 +308,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         )
 
         message = f"Fim da execução | Tempo de Execução: {delta_humanized}"
-        self.print_msg(message=message, row=self.row, type_log=type_log)
+        self.print_msg(message=message, row=self.row, type_log="info")
 
         type_log = "info"
         message = f"Sucessos: {self.success} | Erros: {self.error}"
