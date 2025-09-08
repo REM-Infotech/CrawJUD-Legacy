@@ -95,7 +95,7 @@ class Capa(PjeBot):
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        with ThreadPoolExecutor(max_workers=24) as executor:
             futures: list[Future] = []
             for regiao, data_regiao in lista_nova:
                 if self.event_stop_bot.is_set():
@@ -139,41 +139,47 @@ class Capa(PjeBot):
         self.event_queue_save_xlsx.set()
         self.finalize_execution()
 
+    def __get_headers_cookies(
+        self,
+        regiao: str,
+    ) -> tuple[dict[str, str], dict[str, str]]:
+        cookies_driver = self.driver.get_cookies()
+        har_data_ = self.driver.current_har
+        entries = list(har_data_.entries)
+
+        entry_proxy = [
+            item
+            for item in entries
+            if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
+            in item.request.url
+        ][-1]
+
+        return (
+            {
+                str(header["name"]): str(header["value"])
+                for header in entry_proxy.request.headers
+            },
+            {
+                str(cookie["name"]): str(cookie["value"])
+                for cookie in cookies_driver
+            },
+        )
+
     def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
-        try:
-            if self.event_stop_bot.is_set():
-                return
+        pool_exe = ThreadPoolExecutor(max_workers=8)
+        url = el.LINK_AUTENTICACAO_SSO.format(regiao=regiao)
+        self.driver.get(url)
 
-            self.print_msg(message=f"Autenticando no TRT {regiao}")
-            autenticar = self.auth(regiao=regiao, autentica_capa=True)
-            if autenticar:
-                self.print_msg(
-                    message="Autenticado com sucesso!",
-                    type_log="info",
-                )
-                self.queue_processo(data=data_regiao, regiao=regiao)
+        sleep(2)
+        headers, cookies = self.__get_headers_cookies(regiao=regiao)
+        client_context = Client(cookies=cookies, headers=headers)
 
-        except Exception as e:
-            self.print_msg(
-                message="\n".join(traceback.format_exception(e)),
-                type_log="info",
-            )
-
-    def queue_processo(self, data: list[BotData], regiao: str) -> str:
-        """Enfileira processos para processamento e salva resultados.
-
-        Args:
-            regiao (str): regiao
-            data (list[BotData]): Lista de dados dos processos.
-            *args (T): Argumentos variáveis.
-            **kwargs (T): Argumentos nomeados variáveis.
-
-        """
-        client_context = Client(cookies=self.cookies)
-        pool_exe = ThreadPoolExecutor(max_workers=16)
         with client_context as client, pool_exe as executor:
             futures: list[Future] = []
-            for item in data:
+            for item in data_regiao:
+                if self.event_stop_bot.is_set():
+                    break
+
                 futures.append(
                     executor.submit(
                         self.queue,
@@ -182,8 +188,7 @@ class Capa(PjeBot):
                         regiao=regiao,
                     ),
                 )
-                sleep(3)
-
+                sleep(5)
             for future in as_completed(futures):
                 with suppress(Exception):
                     future.result()
@@ -195,59 +200,57 @@ class Capa(PjeBot):
         regiao: str,
     ) -> None:
         try:
-            if self.event_stop_bot.is_set():
-                return
+            if not self.event_stop_bot.is_set():
+                processo = item["NUMERO_PROCESSO"]
+                row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
+                resultados: DictResults = self.search(
+                    data=item,
+                    row=row,
+                    client=client,
+                    regiao=regiao,
+                )
+                sleep(0.5)
+                if not isinstance(resultados, dict):
+                    self.print_msg(
+                        message=str(resultados),
+                        type_log="error",
+                        row=row,
+                    )
 
-            processo = item["NUMERO_PROCESSO"]
-            row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
-            resultados: DictResults = self.search(
-                data=item,
-                row=row,
-                client=client,
-                regiao=regiao,
-            )
-            sleep(0.5)
-            if not isinstance(resultados, dict):
-                self.print_msg(
-                    message=str(resultados),
-                    type_log="error",
+                    return
+
+                self.capa_processual(
+                    result=resultados["data_request"],
+                    regiao=regiao,
                     row=row,
                 )
 
-                return
+                sleep(0.5)
 
-            self.capa_processual(
-                result=resultados["data_request"],
-                regiao=regiao,
-                row=row,
-            )
+                self.outras_informacoes(
+                    numero_processo=processo,
+                    client=client,
+                    id_processo=resultados["id_processo"],
+                    regiao=regiao,
+                    row=row,
+                )
 
-            sleep(0.5)
+                if item.get("TRAZER_COPIA", "N").lower() == "s":
+                    file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
+                    self.queue_files.put({
+                        "file_name": file_name,
+                        "row": row,
+                        "client": client,
+                        "processo": processo,
+                        "id_processo": resultados["id_processo"],
+                        "regiao": regiao,
+                    })
 
-            self.outras_informacoes(
-                numero_processo=processo,
-                client=client,
-                id_processo=resultados["id_processo"],
-                regiao=regiao,
-                row=row,
-            )
-
-            if item.get("TRAZER_COPIA", "N").lower() == "s":
-                file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
-                self.queue_files.put({
-                    "file_name": file_name,
-                    "row": row,
-                    "client": client,
-                    "processo": processo,
-                    "id_processo": resultados["id_processo"],
-                    "regiao": regiao,
-                })
-
-            self.print_msg(
-                message="Execução Efetuada com sucesso!",
-                row=row,
-                type_log="success",
-            )
+                self.print_msg(
+                    message="Execução Efetuada com sucesso!",
+                    row=row,
+                    type_log="success",
+                )
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))

@@ -20,6 +20,9 @@ pattern_url = (
     r"\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}\/\d+(#[a-zA-Z0-9]+)?$"
 )
 
+LINK_AUTENTICACAO_SSO = (
+    "https://pje.trt{regiao}.jus.br/primeirograu/authenticateSSO.seam"
+)
 OL_LIST_ANEXOS = '//*[@id="cdk-drop-list-3"]'
 XPATH_BTN_ASSINAR = (
     '//*[contains(@aria-label, "Assinar documento e juntar ao processo")]'

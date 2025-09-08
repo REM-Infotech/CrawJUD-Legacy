@@ -47,10 +47,13 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self,
         system: str | None = None,
         selected_browser: BrowserOptions = "chrome",
+        *,
+        with_proxy: bool = False,
     ) -> None:
         """Inicialize a instância principal do controller CrawJUD.
 
         Args:
+            with_proxy: with_proxy
             selected_browser: selected_browser
             system (str): sistema do robô
 
@@ -66,7 +69,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self.print_msg(message="Inicializando...")
         self._driver = DriverBot(
             selected_browser=selected_browser,
-            with_proxy=False,
+            with_proxy=with_proxy,
         )
         self._wait = self._driver.wait
 
