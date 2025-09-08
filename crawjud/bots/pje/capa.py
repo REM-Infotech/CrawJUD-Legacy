@@ -74,32 +74,6 @@ class Capa(PjeBot):
 
     futures_download_file: ClassVar[list[Future]] = []
 
-    def __get_headers_cookies(
-        self,
-        regiao: str,
-    ) -> tuple[dict[str, str], dict[str, str]]:
-        cookies_driver = self.driver.get_cookies()
-        har_data_ = self.driver.current_har
-        entries = list(har_data_.entries)
-
-        entry_proxy = [
-            item
-            for item in entries
-            if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
-            in item.request.url
-        ][-1]
-
-        return (
-            {
-                str(header["name"]): str(header["value"])
-                for header in entry_proxy.request.headers
-            },
-            {
-                str(cookie["name"]): str(cookie["value"])
-                for cookie in cookies_driver
-            },
-        )
-
     def execution(self) -> None:
         """Executa o fluxo principal de processamento da capa dos processos PJE.
 
@@ -131,7 +105,7 @@ class Capa(PjeBot):
 
                 url = el.LINK_AUTENTICACAO_SSO.format(regiao=regiao)
                 self.driver.get(url)
-                headers, cookies = self.__get_headers_cookies(regiao=regiao)
+                headers, cookies = self.get_headers_cookies(regiao=regiao)
 
                 futures.append(
                     executor.submit(

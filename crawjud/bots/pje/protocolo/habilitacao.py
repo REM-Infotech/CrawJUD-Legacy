@@ -17,7 +17,6 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from tqdm import tqdm
 
 from crawjud.controllers.pje import PjeBot
 from crawjud.resources import format_string
@@ -38,10 +37,20 @@ class HabilitiacaoPJe(PjeBot):
             f"https://pje.trt{regiao}.jus.br/pjekz/habilitacao-autos"
         )
         self.driver.get(link_habilitacao)
+        self.bot_data = bot_data
 
-        sleep(5)
+        self.__busca_processo()
+        self.__selecionar_parte()
+        self.__selecionar_parte()
+        self.__peticao_principal()
+        if bot_data.get("ANEXOS"):
+            self.__anexos_peticao()
 
+        self.__assinar_salvar_comprovante()
+
+    def __busca_processo(self) -> None:
         wait = WebDriverWait(self.driver, 5)
+        bot_data = self.bot_data
 
         xpath_busca_processo0 = '//*[@id="mat-input-0"]'
         xpath_busca_processo1 = '//*[@id="mat-input-1"]'
@@ -80,15 +89,12 @@ class HabilitiacaoPJe(PjeBot):
         sleep(0.5)
 
         btn_prosseguir.click()
-        self.selecionar_parte(bot_data=bot_data)
-        self.peticao_principal(bot_data=bot_data)
-        if bot_data.get("ANEXOS"):
-            self.anexos_peticao()
 
-    def selecionar_parte(self, bot_data: BotData) -> None:
+    def __selecionar_parte(self) -> None:
         """Empty."""
         tag_tables_pje = "pje-habilitacao-partes-grid"
 
+        bot_data = self.bot_data
         wait = WebDriverWait(self.driver, 10)
         sleep(0.5)
         partes_grid = wait.until(
@@ -167,9 +173,10 @@ class HabilitiacaoPJe(PjeBot):
         >>> btn_adicionar_advogado.click()
         """
 
-    def peticao_principal(self, bot_data: BotData) -> None:
+    def __peticao_principal(self) -> None:
         """Empty."""
         sleep(0.5)
+        bot_data = self.bot_data
         wait = WebDriverWait(driver=self.driver, timeout=10)
 
         xpath_input_doc_principal = '//*[@id="upload-anexo-0"]'
@@ -194,9 +201,10 @@ class HabilitiacaoPJe(PjeBot):
         )
         salvar_arquivo.click()
 
-    def anexos_peticao(self, bot_data: BotData) -> None:
+    def __anexos_peticao(self) -> None:
         """Empty."""
         sleep(0.5)
+        bot_data = self.bot_data
         wait = WebDriverWait(driver=self.driver, timeout=10)
 
         btn_anexos = wait.until(
@@ -248,18 +256,16 @@ class HabilitiacaoPJe(PjeBot):
             input_tipo_anexo.send_keys(tipo_anexo)
             sleep(0.5)
 
-    def assinar_salvar_comprovante(self, bot_data: BotData) -> None:
+    def __assinar_salvar_comprovante(self) -> None:
         """Empty."""
         sleep(0.5)
-        wait = WebDriverWait(driver=self.driver, timeout=10)
+        bot_data = self.bot_data
+        wait = WebDriverWait(driver=self.driver, timeout=30)
 
         btn_assinar = wait.until(
             ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_ASSINAR)),
         )
         btn_assinar.click()
-        tqdm.write("ok")
-
-        sleep(15)
 
         dialog_comprovante = wait.until(
             ec.presence_of_element_located(
@@ -276,9 +282,3 @@ class HabilitiacaoPJe(PjeBot):
         path_comprovante = self.output_dir_path.joinpath(nome_comprovante)
         with path_comprovante.open("wb") as fp:
             fp.write(dialog_comprovante.screenshot_as_png)
-
-        self.print_msg(
-            "Protocolo efetuado com sucesso!",
-            row=self.row,
-            type_log="success",
-        )

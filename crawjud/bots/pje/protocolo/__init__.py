@@ -11,7 +11,6 @@ from __future__ import annotations
 import traceback
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
-from time import sleep
 from typing import TYPE_CHECKING
 
 import dotenv
@@ -62,7 +61,6 @@ class Protocolo(HabilitiacaoPJe):
                         data_regiao=data_regiao,
                     ),
                 )
-                sleep(30)
 
             for future in futures:
                 with suppress(Exception):
@@ -83,11 +81,10 @@ class Protocolo(HabilitiacaoPJe):
             url = f"https://pje.trt{regiao}.jus.br/primeirograu/authenticateSSO.seam"
             self.driver.get(url)
 
-            cookies_driver = self.driver.get_cookies()
-            self._cookies = {
-                str(cookie["name"]): str(cookie["value"])
-                for cookie in cookies_driver
-            }
+            headers, cookies = self.get_headers_cookies(regiao=regiao)
+
+            self._headers = headers
+            self._cookies = cookies
 
             self.queue(
                 data_regiao=data_regiao,
@@ -113,16 +110,7 @@ class Protocolo(HabilitiacaoPJe):
                         return
 
                     row = self.posicoes_processos[data["NUMERO_PROCESSO"]] + 1
-                    _d = self.search(
-                        data=data,
-                        row=row,
-                        regiao=regiao,
-                        client=client,
-                    )
-
                     self.row = row
-                    sleep(5)
-
                     tipo_protocolo = data["TIPO_PROTOCOLO"]
 
                     if "habilitação" in tipo_protocolo.lower():
@@ -130,10 +118,17 @@ class Protocolo(HabilitiacaoPJe):
                             bot_data=data,
                             regiao=regiao,
                         )
-                        continue
+
+                    else:
+                        _d = self.search(
+                            data=data,
+                            row=row,
+                            regiao=regiao,
+                            client=client,
+                        )
 
                     self.print_msg(
-                        message="Execução Efetuada com sucesso!",
+                        "Protocolo efetuado com sucesso!",
                         row=row,
                         type_log="success",
                     )

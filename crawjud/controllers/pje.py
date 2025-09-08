@@ -101,6 +101,32 @@ class PjeBot[T](CrawJUD):
         sleep(0.5)
         self.print_msg(message="Execução inicializada!", type_log="info")
 
+    def get_headers_cookies(
+        self,
+        regiao: str,
+    ) -> tuple[dict[str, str], dict[str, str]]:
+        cookies_driver = self.driver.get_cookies()
+        har_data_ = self.driver.current_har
+        entries = list(har_data_.entries)
+
+        entry_proxy = [
+            item
+            for item in entries
+            if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
+            in item.request.url
+        ][-1]
+
+        return (
+            {
+                str(header["name"]): str(header["value"])
+                for header in entry_proxy.request.headers
+            },
+            {
+                str(cookie["name"]): str(cookie["value"])
+                for cookie in cookies_driver
+            },
+        )
+
     def search(
         self,
         data: BotData,
