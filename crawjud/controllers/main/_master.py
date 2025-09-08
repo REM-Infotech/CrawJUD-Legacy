@@ -416,6 +416,9 @@ class AbstractCrawJUD[T]:
                     rows = data["to_save"]
                     sheet_name = data["sheet_name"]
 
+                    if not isinstance(rows, list):
+                        rows = [rows]
+
                     df = DataFrame(rows)
 
                     # Remove timezone de todas as colunas possíveis para evitar erro no Excel

@@ -29,12 +29,12 @@ from quart import (
 )
 from quart import current_app as app
 from quart_jwt_extended import get_jwt_identity, jwt_required
-from werkzeug.utils import secure_filename
 
 from crawjud.api import db
 from crawjud.interfaces.credentials import CredendialsDict
 from crawjud.interfaces.session import SessionDict
 from crawjud.models import BotsCrawJUD, Credentials, LicensesUsers, Users
+from crawjud.resources import format_string
 
 if TYPE_CHECKING:
     from flask_sqlalchemy import SQLAlchemy
@@ -246,7 +246,7 @@ async def cadastro() -> Response:
             cer_path = str(
                 Path(temporarypath)
                 .resolve()
-                .joinpath(secure_filename(filecert.fileName)),
+                .joinpath(format_string(filecert.fileName)),
             )
 
             await filecert.save(cer_path)
@@ -260,9 +260,7 @@ async def cadastro() -> Response:
                     login_method=form["auth_method"],
                     login=form["doc_cert"],
                     key=form["key"],
-                    certficate=secure_filename(
-                        filecert.fileName,
-                    ),
+                    certficate=format_string(filecert.fileName),
                     certficate_blob=await certficate_blob,
                 )
                 licenseusr = LicensesUsers.query.filter(

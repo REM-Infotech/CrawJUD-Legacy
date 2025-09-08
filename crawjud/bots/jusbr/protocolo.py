@@ -15,7 +15,6 @@ import dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
-from werkzeug.utils import secure_filename
 
 from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
@@ -23,6 +22,7 @@ from crawjud.controllers.jusbr import JusBrBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
+from crawjud.resources import format_string
 from crawjud.resources.elements import jusbr as el
 
 if TYPE_CHECKING:
@@ -125,7 +125,7 @@ class Protocolo(JusBrBot):
 
         path_peticao = str(
             self.output_dir_path.joinpath(
-                secure_filename(bot_data["PETICAO_PRINCIPAL"]),
+                format_string(bot_data["PETICAO_PRINCIPAL"]),
             ),
         )
 

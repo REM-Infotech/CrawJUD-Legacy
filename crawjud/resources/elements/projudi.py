@@ -16,12 +16,13 @@ XPATH_RADIO_POLO_PARTE = "//input[@type='radio'][following-sibling::text()[conta
 XPATH_CHECKBOX_PARTE = "//input[@type='checkbox'][following-sibling::text()[contains(., '{NOME_PARTE}')]]"
 CSS_BTN_PETICIONAR = 'input[id="peticionarButton"]'
 CSS_INPUT_TIPO_PROTOCOLO = 'input[id="descricaoTipoDocumento"]'
-CSS_INPUT_ARQUIVO = 'input[id="conteudo"]'
+XPATH_INPUT_ARQUIVO = '//*[@id="trUploadArquivo"]/td/input'
 CSS_BTN_ENTRAR_TELA_ARQUIVOS = 'input[value="Adicionar"]'
 XPATH_CHECK_CONTAINS_FILES = "//td[contains(@colspan, '3')]"
 CSS_TABLE_ARQUIVOS = 'table[class="resultTable"] > tbody'
 CSS_SENHA_CERTIFICADO = 'input[name="senhaCertificado"]'
-CSS_BTN_CONFIRMA_INCLUSAO = 'input[value="Confirmar Inclusão"]'
+CSS_BTN_CONFIRMA_INCLUSAO = 'input#closeButton[value="Confirmar Inclusão"]'
+CSS_BTN_CONCLUIR_MOVIMENTO = 'input#editButton[value="Concluir Movimento"]'
 CSS_BTN_REMOVE_ARQUIVO = 'input[name="deleteButton"]'
 # Elementos Projudi
 

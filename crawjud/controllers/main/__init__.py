@@ -13,7 +13,6 @@ from re import search
 from threading import Event, Thread
 from time import perf_counter
 from typing import TYPE_CHECKING, Literal
-from unicodedata import combining, normalize
 from zipfile import ZIP_DEFLATED, ZipFile
 from zoneinfo import ZoneInfo
 
@@ -21,12 +20,12 @@ import base91
 from bs4 import BeautifulSoup
 from humanize import precisedelta
 from pandas import Timestamp, read_excel
-from werkzeug.utils import secure_filename
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.main._master import AbstractCrawJUD
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
+from crawjud.resources import format_string
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
 
@@ -164,7 +163,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             setattr(self, k, v)
 
         if data_json_.get("xlsx"):
-            xlsx_name_ = secure_filename(data_json_.get("xlsx"))
+            xlsx_name_ = format_string(data_json_.get("xlsx"))
 
             path_minio_ = Path(folder_temp_).joinpath(xlsx_name_).as_posix()
             file_xlsx = storage.bucket.get_object(path_minio_)
@@ -183,7 +182,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         if data_json_.get("otherfiles"):
             files_list: list[str] = data_json_.get("otherfiles")
             for file in files_list:
-                file = secure_filename(file)
+                file = format_string(file)
                 path_minio_ = Path(folder_temp_).joinpath(file).as_posix()
                 file_ = storage.bucket.get_object(path_minio_)
                 suffix_ = Path(file).suffix
@@ -329,21 +328,20 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         self.event_queue_message.set()
 
-    def append_error(self, *args: T, **kwargs: T) -> None:
-        """Adiciona erro ao DataFrame e salva na planilha.
+    def append_success(self, data: T, *args: T, **kwargs: T) -> None:
+        self.queue_save_xlsx.put({
+            "to_save": data,
+            "sheet_name": f"Sucessos {self.botname} {self.botsystem}",
+        })
 
-        Args:
-            *args (T): Argumentos posicionais.
-            **kwargs (T): Argumentos nomeados.
-
-        """
+    def append_error(self, data: T, *args: T, **kwargs: T) -> None:
+        self.queue_save_xlsx.put({
+            "to_save": data,
+            "sheet_name": f"Erros {self.botname} {self.botsystem}",
+        })
 
     def format_string(self, string: str) -> str:
-        normalized_string = "".join([
-            c for c in normalize("NFKD", string) if not combining(c)
-        ])
-
-        return secure_filename(normalized_string)
+        return format_string(string)
 
     def text_is_a_date(self, text: str) -> bool:
         """Determine if the provided text matches a date-like pattern.

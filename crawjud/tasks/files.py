@@ -6,10 +6,10 @@ from os import environ
 from pathlib import Path
 
 import pandas as pd
-from werkzeug.utils import secure_filename
 
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
+from crawjud.resources import format_string
 from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.storage import Storage
 
@@ -70,5 +70,5 @@ class SaveSuccessTask(ContextTask):
                 sheet_name="Resultados",
             )
 
-        file_name = secure_filename(path_planilha.name)
+        file_name = format_string(path_planilha.name)
         storage.upload_file(f"{pid}/{file_name}", path_planilha)

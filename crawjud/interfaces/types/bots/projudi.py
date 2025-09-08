@@ -9,3 +9,4 @@ class DataSucessoProtocoloProjudi(TypedDict):
     NUMERO_PROCESSO: str
     MENSAGEM: str
     NOME_COMPROVANTE: str
+    NOME_COMPROVANTE_2: str

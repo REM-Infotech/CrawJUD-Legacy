@@ -19,4 +19,9 @@ def format_string(string: str) -> str:
         c for c in normalize("NFKD", string) if not combining(c)
     ])
 
-    return secure_filename(normalized_string)
+    return " ".join(
+        secure_filename(normalized_string)
+        .replace("-", "")
+        .replace("_", " ")
+        .split(),
+    )

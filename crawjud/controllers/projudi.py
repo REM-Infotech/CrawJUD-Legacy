@@ -127,6 +127,13 @@ class ProjudiBot[T](CrawJUD):
         bot_data = self.bot_data
         driver = self.driver
 
+        numero_processo = bot_data["NUMERO_PROCESSO"]
+        self.print_msg(
+            message=f"Buscando processo {numero_processo}",
+            type_log="log",
+            row=self.row,
+        )
+
         grau = bot_data.get("GRAU", 1) or 1
         if isinstance(grau, str):
             grau = grau.strip()
@@ -141,8 +148,7 @@ class ProjudiBot[T](CrawJUD):
                 )),
             )
 
-            proc = bot_data.get("NUMERO_PROCESSO")
-            inputproc.send_keys(proc)
+            inputproc.send_keys(numero_processo)
             sleep(1)
             consultar = driver.find_element(By.CSS_SELECTOR, "#pesquisar")
             consultar.click()
@@ -335,9 +341,6 @@ class ProjudiBot[T](CrawJUD):
             raise LoginSystemError(exception=e) from e
 
         return check_login is not None
-
-    def append_success(self, *args: T, **kwargs: T) -> None:
-        """Not Implemented."""
 
 
 def detect_intimacao(driver: WebDriver) -> None:

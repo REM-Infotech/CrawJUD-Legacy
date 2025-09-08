@@ -18,7 +18,6 @@ from quart import (
     request,
     session,
 )
-from werkzeug.utils import secure_filename
 
 from crawjud.common.exceptions._form import LoadFormError
 from crawjud.interfaces.formbot import FormDict
@@ -253,11 +252,11 @@ class LoadForm:
                     continue
 
                 if isinstance(val, list):
-                    val = [secure_filename(item) for item in val]
+                    val = [format_string(item) for item in val]
                     form_data.update({"otherfiles": val})
                     continue
 
-                form_data.update({item: secure_filename(val)})
+                form_data.update({item: format_string(val)})
 
         if self.bot.type.upper() == "PROTOCOLO":
             form_data["token"] = _data["token"]

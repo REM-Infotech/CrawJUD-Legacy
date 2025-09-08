@@ -18,9 +18,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
-from werkzeug.utils import secure_filename
 
 from crawjud.controllers.pje import PjeBot
+from crawjud.resources import format_string
 from crawjud.resources.elements import pje as el
 
 if TYPE_CHECKING:
@@ -181,7 +181,7 @@ class HabilitiacaoPJe(PjeBot):
             )),
         )
         sleep(1.5)
-        nome_arquivo = secure_filename(bot_data["PETICAO_PRINCIPAL"])
+        nome_arquivo = format_string(bot_data["PETICAO_PRINCIPAL"])
         path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
 
         input_doc_principal.send_keys(path_input_doc)
@@ -229,7 +229,7 @@ class HabilitiacaoPJe(PjeBot):
         )
 
         for anexo in anexos:
-            nome_arquivo = secure_filename(anexo)
+            nome_arquivo = format_string(anexo)
             path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
             campo_anexos.send_keys(path_input_doc)
             sleep(5.0)

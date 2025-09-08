@@ -13,7 +13,6 @@ from clear import clear
 from quart import request, session
 from tqdm import tqdm
 from werkzeug.datastructures import FileStorage
-from werkzeug.utils import secure_filename
 
 from crawjud.resources import format_string
 from crawjud.utils.storage import Storage
@@ -97,6 +96,10 @@ class FileService[T]:
             file_ = await request.files
             sid = str(session.sid)
 
+            if not data:
+                data = request.socket_data
+                file_ = request.socket_data
+
             file_name = format_string(str(data.get("name")))
             index = int(data.get("index", 0))
 
@@ -137,7 +140,7 @@ class FileService[T]:
 
                     dest_path = str(
                         Path(sid.upper())
-                        .joinpath(secure_filename(file_name))
+                        .joinpath(format_string(file_name))
                         .as_posix(),
                     )
                     storage.put_object(

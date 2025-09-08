@@ -62,7 +62,7 @@ class LogsNamespace[T](Namespace):
 
 
         """
-        data = await request.form
+        data = await request.form or request.socket_data
 
         await self.emit("stop_bot", room=data["pid"])
 
@@ -70,7 +70,7 @@ class LogsNamespace[T](Namespace):
         """Adiciona o cliente a uma sala específica."""
         # Obtém o session id e os dados do formulário
         sid = request.sid
-        data = await request.form
+        data = await request.form or request.socket_data
         # Adiciona o cliente à sala informada
         await self.enter_room(
             sid=sid,
@@ -89,7 +89,10 @@ class LogsNamespace[T](Namespace):
 
         """
         # Obtém os dados do formulário e carrega o log do Redis
-        data_ = dict(list((await request.form).items()))
+
+        data_ = await request.form or request.socket_data
+
+        data_ = dict(list((data_).items()))
 
         message = await self._calc_success_errors(pid=data_["pid"])
 
@@ -98,7 +101,8 @@ class LogsNamespace[T](Namespace):
     async def on_log_execution(self) -> None:
         """Recebe e propaga logs de execução em tempo real."""
         # Obtém os dados do formulário e atualiza o log no Redis
-        data_ = dict(list((await request.form).items()))
+        data_ = await request.form or request.socket_data
+        data_ = dict(list((data_).items()))
 
         try:
             task = create_task(

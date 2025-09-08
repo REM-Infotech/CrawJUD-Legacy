@@ -14,6 +14,8 @@ from selenium.common.exceptions import (
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.utils import keys_to_typing
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webelement import WebElement
 
 if TYPE_CHECKING:
@@ -63,22 +65,19 @@ class WebElementBot[T](WebElement):
                 super().send_keys(c)
 
     def send_file(self, file: str | Path) -> None:
-        try:
-            file_ = file
-            if isinstance(file, Path):
-                file_ = file.as_uri()
-
-            super().send_keys(file_)
-
-        except Exception:
-            file_ = file
-            if isinstance(file, Path):
-                if platform.system() == "Linux":
-                    file_ = file.as_posix()
-                else:
-                    file_ = str(file)
-
-            super().send_keys(file)
+        file_ = file
+        if isinstance(file, Path):
+            if platform.system() == "Linux":
+                file_ = file.as_posix()
+            else:
+                file_ = str(file)
+        self._execute(
+            Command.SEND_KEYS_TO_ELEMENT,
+            {
+                "text": "".join(keys_to_typing(file_)),
+                "value": keys_to_typing(file_),
+            },
+        )
 
     def double_click(self) -> None:
         """Double-click on the given WebElement.
