@@ -21,7 +21,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+from tqdm import tqdm
 
+from crawjud.common.exceptions.bot import FileError
 from crawjud.common.exceptions.bot.projudi import PasswordTokenError
 from crawjud.common.exceptions.selenium_webdriver import SeleniumError
 from crawjud.controllers.projudi import ProjudiBot
@@ -91,9 +93,16 @@ class Protocolo(ProjudiBot):
 
             self.__entra_pagina_protocolo()
             self.__informa_tipo_protocolo()
-            self.__seleciona_parte_interessada()
             self.__adicionar_arquivos()
+
+            sleep(0.5)
+
+            self.__seleciona_parte_interessada()
+
+            sleep(0.5)
+
             self.__finaliza_peticionamento()
+
             if self.__confirma_protocolo():
                 data = self.__screenshot_sucesso()
 
@@ -109,8 +118,11 @@ class Protocolo(ProjudiBot):
             self.append_error(self.bot_data)
             self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        except Exception:
-            message = "Erro de operação."
+        except Exception as e:
+            exc = "\n".join(format_exception_only(e))
+            tqdm.write(exc)
+
+            message = f"Erro de operação. {exc}"
             type_log = "error"
             self.append_error(self.bot_data)
             self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -120,6 +132,12 @@ class Protocolo(ProjudiBot):
 
     def __entra_pagina_protocolo(self) -> None:
         """Empty."""
+        self.print_msg(
+            message="Inicializando Protocolo",
+            type_log="log",
+            row=self.row,
+        )
+
         wait = WebDriverWait(self.driver, 10)
 
         btn_peticionar = wait.until(
@@ -134,6 +152,12 @@ class Protocolo(ProjudiBot):
     def __informa_tipo_protocolo(self) -> None:
         """Empty."""
         bot_data = self.bot_data
+
+        self.print_msg(
+            message="Informando Tipo da movimentação",
+            type_log="log",
+            row=self.row,
+        )
 
         wait = WebDriverWait(self.driver, 10)
 
@@ -153,6 +177,12 @@ class Protocolo(ProjudiBot):
 
     def __seleciona_parte_interessada(self) -> None:
         """Empty."""
+        self.print_msg(
+            message="Selecionando parte representada",
+            type_log="log",
+            row=self.row,
+        )
+
         bot_data = self.bot_data
 
         wait = WebDriverWait(self.driver, 10)
@@ -180,6 +210,11 @@ class Protocolo(ProjudiBot):
     def __adicionar_arquivos(self) -> None:
         """Empty."""
         bot_data = self.bot_data
+        self.print_msg(
+            message="Adicionando arquivos...",
+            type_log="log",
+            row=self.row,
+        )
 
         wait = WebDriverWait(self.driver, 10)
 
@@ -243,6 +278,11 @@ class Protocolo(ProjudiBot):
     def __peticao_principal(self) -> None:
         """Empty."""
         bot_data = self.bot_data
+        self.print_msg(
+            message="Enviando petição principal.",
+            type_log="log",
+            row=self.row,
+        )
 
         nome_arquivo = bot_data["PETICAO_PRINCIPAL"]
         tipo_arquivo = bot_data["TIPO_ARQUIVO"]
@@ -252,8 +292,19 @@ class Protocolo(ProjudiBot):
             peticao_principal=True,
         )
 
+        self.print_msg(
+            message="Petição principal enviada!",
+            type_log="info",
+            row=self.row,
+        )
+
     def __anexos_adicionais(self) -> None:
         """Empty."""
+        self.print_msg(
+            message="Enviando anexos...",
+            type_log="log",
+            row=self.row,
+        )
         bot_data = self.bot_data
         anexos_data = bot_data["ANEXOS"]
         tipo_anexos_data = bot_data["TIPO_ANEXOS"]
@@ -267,10 +318,20 @@ class Protocolo(ProjudiBot):
         )
 
         for pos, nome_arquivo in enumerate(anexos):
+            self.print_msg(
+                message=f'Enviando anexo "{nome_arquivo}"',
+                type_log="log",
+                row=self.row,
+            )
             tipo_arquivo = tipo_anexos[pos]
             self.__envia_arquivo(
                 nome_arquivo=nome_arquivo,
                 tipo_arquivo=tipo_arquivo,
+            )
+            self.print_msg(
+                message="Anexo enviado!",
+                type_log="info",
+                row=self.row,
             )
 
     def __envia_arquivo(
@@ -280,7 +341,17 @@ class Protocolo(ProjudiBot):
         *,
         peticao_principal: bool = False,
     ) -> None:
-        """Empty."""
+        """Realiza o envio de um arquivo para o sistema Projudi e seleciona seu tipo.
+
+        Args:
+            nome_arquivo (str): Nome do arquivo a ser enviado.
+            tipo_arquivo (str): Tipo do arquivo a ser selecionado.
+            peticao_principal (bool): Indica se é petição principal.
+
+        Raises:
+            FileError: Caso o arquivo não seja encontrado após upload.
+
+        """
         out = self.output_dir_path
         nome_arq_normalizado = format_string(nome_arquivo)
         path_arq = out.joinpath(nome_arq_normalizado)
@@ -288,12 +359,13 @@ class Protocolo(ProjudiBot):
         wait = WebDriverWait(self.driver, 10)
         input_file: WebElementBot = wait.until(
             ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                el.CSS_INPUT_ARQUIVO,
+                By.XPATH,
+                el.XPATH_INPUT_ARQUIVO,
             )),
         )
 
         input_file.send_file(path_arq)
+        sleep(0.5)
         self.__wait_upload_file()
 
         table_arquivos = wait.until(
@@ -303,17 +375,31 @@ class Protocolo(ProjudiBot):
             )),
         )
 
+        files = list(table_arquivos.find_elements(By.TAG_NAME, "tr"))
+        _files_name = [
+            f.find_elements(By.TAG_NAME, "td")[1]
+            .find_element(By.TAG_NAME, "a")
+            .text
+            for f in files
+        ]
+
         tr_arquivo = list(
             filter(
                 lambda x: x.find_elements(By.TAG_NAME, "td")[1]
                 .find_element(By.TAG_NAME, "a")
                 .text
-                == nome_arquivo,
-                table_arquivos.find_elements(By.TAG_NAME, "tr"),
+                == nome_arq_normalizado,
+                files,
             ),
-        )[-1]
+        )
+
+        if not tr_arquivo:
+            raise FileError(
+                message=f'Falha ao enviar arquivo "{nome_arquivo}"',
+            )
+
         self.__seleciona_tipo_arquivo(
-            tr_arquivo=tr_arquivo,
+            tr_arquivo=tr_arquivo[-1],
             tipo_arquivo=tipo_arquivo,
             peticao_principal=peticao_principal,
         )
@@ -374,6 +460,8 @@ class Protocolo(ProjudiBot):
         )
         input_senha_token.send_keys(senha_token)
         senha_incorreta = False
+        input_senha_token.send_keys(Keys.ENTER)
+
         with suppress(Exception):
             WebDriverWait(self.driver, 5).until(
                 ec.presence_of_element_located((
@@ -406,7 +494,7 @@ class Protocolo(ProjudiBot):
 
         finish_button = self.driver.find_element(
             By.CSS_SELECTOR,
-            self.elements.botao_concluir,
+            el.CSS_BTN_CONCLUIR_MOVIMENTO,
         )
         finish_button.click()
 
@@ -476,13 +564,14 @@ class Protocolo(ProjudiBot):
             fp.write(self.driver.get_screenshot_as_png())
 
         message = f"Peticionamento do processo Nº{self.bot_data.get('NUMERO_PROCESSO')} concluído com sucesso!"
-        type_log = "log"
+        type_log = "success"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         return DataSucessoProtocoloProjudi(
             NUMERO_PROCESSO=numero_processo,
             MENSAGEM=message,
             NOME_COMPROVANTE=comprovante1_name,
+            NOME_COMPROVANTE_2=comprovante2_name,
         )
 
     def __wait_upload_file(self) -> None:
@@ -495,7 +584,7 @@ class Protocolo(ProjudiBot):
                 )
                 style_progressbar = progress_bar.get_attribute("style")
 
-                if style_progressbar == "visibility:hidden":
+                if style_progressbar == "visibility: hidden;":
                     break
             except Exception:
                 break
