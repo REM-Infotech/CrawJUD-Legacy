@@ -101,6 +101,15 @@ class AbstractCrawJUD[T]:
     to_add_representantes: ClassVar[list[ProcessInfo]] = []
     to_add_processos_primeiro_grau: ClassVar[list[ProcessInfo]] = []
     to_add_processos_segundo_grau: ClassVar[list[ProcessInfo]] = []
+    _pbar: ClassVar[tqdm] = None
+
+    @property
+    def pbar(self) -> tqdm:
+        return self._pbar
+
+    @pbar.setter
+    def pbar(self, pbar: tqdm) -> None:
+        self._pbar = pbar
 
     @property
     def token(self) -> str:
@@ -393,6 +402,11 @@ class AbstractCrawJUD[T]:
 
                     # Adiciona a mensagem ao console
                     tqdm.write(colored_msg)
+
+                    if type_log == "success" or type_log == "error":
+                        with suppress(Exception):
+                            if self.pbar:
+                                self.pbar.update()
 
                 # Finaliza a tarefa da fila
                 self.queue_msg.task_done()

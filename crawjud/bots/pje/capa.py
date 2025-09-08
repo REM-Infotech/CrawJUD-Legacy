@@ -117,6 +117,7 @@ class Capa(PjeBot):
             daemon=True,
             name="Salvar Cópia Integral",
         ).start()
+
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
@@ -251,9 +252,6 @@ class Capa(PjeBot):
                     row=row,
                     type_log="success",
                 )
-
-                with suppress(Exception):
-                    self.pbar.update()
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
