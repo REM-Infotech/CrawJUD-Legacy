@@ -143,10 +143,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'
 
     # Input informa valor de pagamento
-    css_element = "".join((
-        'input[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_1_1_9_1g_1:',
-        'processoValorRateioAmountAllDt:0:j_id_30_1_i_1_1_9_1g_2_2_q_input"]',
-    ))
+    css_element = 'input[id*="processoValorRateioAmountAllDt"]'
 
     # Div do tipo de documento
     type_doc_css = 'div[id*="eFileTipoCombo"]'
@@ -159,21 +156,12 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_data = 'input[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoVencData_input"]'
     css_inputfavorecido = 'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
     resultado_favorecido = 'li[class="ui-autocomplete-item ui-autocomplete-list-item ui-corner-all ui-state-highlight"]'
-    valor_processo = (
-        'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_8_1_9_28_1_2_1:pvpEFSpgTypeSelectField1CombosCombo"]'
-    )
-    boleto = (
-        'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_8_1_9_28_1_2_1:pvpEFSpgTypeSelectField1CombosCombo_1"]'
-    )
-    css_cod_bars = "".join(
-        (
-            'input[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_8_1_9_28_1_2_1:j_id_30_1_i_8_1_9_28_1_2_c_2:j_id_30_',
-            '1_i_8_1_9_28_1_2_c_5:0:j_id_30_1_i_8_1_9_28_1_2_c_16:j_id_30_1_i_8_1_9_28_1_2_c_1w"]',
-        ),
-    )
-    css_centro_custas = 'input[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_9_1_9_28_1_1_1:pvpEFBfieldText"]'
+    valor_processo = 'div[id*="pvpEFSpgTypeSelectField1CombosCombo"]'
+    boleto = 'li[id*="pvpEFSpgTypeSelectField1CombosCombo_1"]'
+    css_cod_bars = 'input[id*="j_id_3e_1_i_8_1_9_29_1_2_c_1w"]'
+    css_centro_custas = 'input[id*="pvpEFBfieldText"]'
     css_div_conta_debito = (
-        'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_a_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
+        'div[id="processoValorPagamentoEditForm:pvp:j_id_3e_1_i_a_1_9_29_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
     )
     valor_guia = 'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
     css_gru = 'li[id*="eFileTipoCombo_35"]'

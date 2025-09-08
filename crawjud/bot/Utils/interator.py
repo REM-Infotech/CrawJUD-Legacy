@@ -181,7 +181,7 @@ class Interact(CrawJUD):
             sleep(0.05)
             div1 = 'div[class="ui-fileupload-files"]'
             div2 = 'div[class="ui-fileupload-row"]'
-            div0 = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:uploadGedEFile"]'
+            div0 = 'div[id*="uploadGedEFile"]'
             progress_bar = None
 
             div0progress_bar = self.driver.find_element(By.CSS_SELECTOR, div0)

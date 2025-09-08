@@ -14,6 +14,7 @@ import subprocess  # nosec: B404
 import time
 import traceback
 import unicodedata
+from contextlib import suppress
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -484,6 +485,12 @@ class OtherUtils(CrawJUD):
 
         new_data = pd.DataFrame(df)
         new_data.to_excel(self.path_erro, index=False)
+
+        with suppress(Exception):
+            numero_processo = self.bot_data["NUMERO_PROCESSO"]
+            path_screenshot = self.output_dir_path.joinpath(f"Tela Erro - {numero_processo} - {self.pid}.png")
+            with path_screenshot.open("wb") as fp:
+                fp.write(self.driver.get_screenshot_as_png())
 
     def append_validarcampos(self, data: list[dict[str, str]]) -> None:
         """Append validated field records to the validation spreadsheet.
