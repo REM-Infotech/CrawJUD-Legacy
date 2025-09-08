@@ -258,7 +258,10 @@ class LoadForm:
 
                 form_data.update({item: format_string(val)})
 
-        if self.bot.type.upper() == "PROTOCOLO":
+        if (
+            self.bot.type.upper() == "PROTOCOLO"
+            and self.bot.system.lower() != "pje"
+        ):
             form_data["token"] = _data["token"]
 
         return form_data
