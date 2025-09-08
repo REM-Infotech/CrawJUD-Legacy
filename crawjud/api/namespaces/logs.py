@@ -115,7 +115,7 @@ class LogsNamespace[T](Namespace):
 
         except KeyError as e:
             tqdm.write(
-                f"Erro ao processar log: {'\n'.join(traceback.format_exception(e))}",
+                f"Erro ao processar log: {'\n'.join(traceback.format_exception_only(e))}",
             )
 
     async def _calc_success_errors(

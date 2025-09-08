@@ -45,9 +45,8 @@ if TYPE_CHECKING:
     from crawjud.interfaces.pje.assuntos import AssuntoDict, ItemAssuntoDict
     from crawjud.interfaces.pje.audiencias import AudienciaDict
     from crawjud.interfaces.pje.partes import ParteDict, PartesJsonDict
-    from crawjud.interfaces.types import BotData
+    from crawjud.interfaces.types import BotData, DictType
     from crawjud.interfaces.types.bots.pje import DictResults
-
 load_dotenv()
 
 SENTINELA = None
@@ -75,70 +74,6 @@ class Capa(PjeBot):
 
     futures_download_file: ClassVar[list[Future]] = []
 
-    def execution(self) -> None:
-        """Executa o fluxo principal de processamento da capa dos processos PJE.
-
-        Args:
-            name (str | None): Nome do bot.
-            system (str | None): Sistema do bot.
-            current_task (ContextTask): Tarefa atual do Celery.
-            storage_folder_name (str): Nome da pasta de armazenamento.
-            *args (T): Argumentos variáveis.
-            **kwargs (T): Argumentos nomeados variáveis.
-
-        """
-        Thread(
-            target=self.copia_integral,
-            daemon=True,
-            name="Salvar Cópia Integral",
-        ).start()
-        generator_regioes = self.regioes()
-        lista_nova = list(generator_regioes)
-
-        with ThreadPoolExecutor(max_workers=24) as executor:
-            futures: list[Future] = []
-            for regiao, data_regiao in lista_nova:
-                if self.event_stop_bot.is_set():
-                    break
-
-                futures.append(
-                    executor.submit(
-                        self.queue_regiao,
-                        regiao=regiao,
-                        data_regiao=data_regiao,
-                    ),
-                )
-                sleep(30)
-
-            for future in futures:
-                with suppress(Exception):
-                    future.result()
-
-        for to_save, sheet_name in [
-            (self.to_add_processos, "Capa"),
-            (self.to_add_audiencias, "Audiências"),
-            (self.to_add_assuntos, "Assuntos"),
-            (self.to_add_partes, "Partes"),
-            (self.to_add_representantes, "Representantes"),
-        ]:
-            self.queue_save_xlsx.put({
-                "to_save": to_save,
-                "sheet_name": sheet_name,
-            })
-
-        with suppress(Exception):
-            self.queue_save_xlsx.join()
-
-        with suppress(Exception):
-            self.queue_files.join()
-
-        with suppress(Exception):
-            self.queue_msg.join()
-
-        self.event_queue_files.set()
-        self.event_queue_save_xlsx.set()
-        self.finalize_execution()
-
     def __get_headers_cookies(
         self,
         regiao: str,
@@ -165,13 +100,78 @@ class Capa(PjeBot):
             },
         )
 
-    def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
-        pool_exe = ThreadPoolExecutor(max_workers=8)
-        url = el.LINK_AUTENTICACAO_SSO.format(regiao=regiao)
-        self.driver.get(url)
+    def execution(self) -> None:
+        """Executa o fluxo principal de processamento da capa dos processos PJE.
+
+        Args:
+            name (str | None): Nome do bot.
+            system (str | None): Sistema do bot.
+            current_task (ContextTask): Tarefa atual do Celery.
+            storage_folder_name (str): Nome da pasta de armazenamento.
+            *args (T): Argumentos variáveis.
+            **kwargs (T): Argumentos nomeados variáveis.
+
+        """
+        Thread(
+            target=self.copia_integral,
+            daemon=True,
+            name="Salvar Cópia Integral",
+        ).start()
+        generator_regioes = self.regioes()
+        lista_nova = list(generator_regioes)
+
+        self.pbar = tqdm(total=len(self._frame))
+
+        with ThreadPoolExecutor(max_workers=24) as executor:
+            futures: list[Future] = []
+            for regiao, data_regiao in lista_nova:
+                if self.event_stop_bot.is_set():
+                    break
+
+                url = el.LINK_AUTENTICACAO_SSO.format(regiao=regiao)
+                self.driver.get(url)
+                headers, cookies = self.__get_headers_cookies(regiao=regiao)
+
+                futures.append(
+                    executor.submit(
+                        self.queue_regiao,
+                        regiao=regiao,
+                        data_regiao=data_regiao,
+                        headers=headers,
+                        cookies=cookies,
+                    ),
+                )
+                sleep(10)
+
+            for future in futures:
+                with suppress(Exception):
+                    future.result()
+
+        for to_save, sheet_name in [
+            (self.to_add_processos, "Capa"),
+            (self.to_add_audiencias, "Audiências"),
+            (self.to_add_assuntos, "Assuntos"),
+            (self.to_add_partes, "Partes"),
+            (self.to_add_representantes, "Representantes"),
+        ]:
+            self.queue_save_xlsx.put({
+                "to_save": to_save,
+                "sheet_name": sheet_name,
+            })
+
+        self.finalize_execution()
+
+    def queue_regiao(
+        self,
+        regiao: str,
+        data_regiao: list[BotData],
+        headers: DictType,
+        cookies: DictType,
+    ) -> None:
+        pool_exe = ThreadPoolExecutor(max_workers=16)
 
         sleep(2)
-        headers, cookies = self.__get_headers_cookies(regiao=regiao)
+
         client_context = Client(cookies=cookies, headers=headers)
 
         with client_context as client, pool_exe as executor:
@@ -188,7 +188,7 @@ class Capa(PjeBot):
                         regiao=regiao,
                     ),
                 )
-                sleep(5)
+                sleep(2)
             for future in as_completed(futures):
                 with suppress(Exception):
                     future.result()
@@ -251,6 +251,9 @@ class Capa(PjeBot):
                     row=row,
                     type_log="success",
                 )
+
+                with suppress(Exception):
+                    self.pbar.update()
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
@@ -461,10 +464,13 @@ class Capa(PjeBot):
 
     def copia_integral(self) -> None:
         """Realiza o download da cópia integral do processo e salva no storage."""
-        while (
-            not self.event_queue_files.is_set()
-            and not self.event_stop_bot.is_set()
-        ):
+        while True:
+            setted_event = self.event_stop_bot.is_set()
+            empty_queue = self.queue_files.unfinished_tasks == 0
+
+            if setted_event and empty_queue:
+                break
+
             try:
                 data = self.queue_files.get()
                 if data:

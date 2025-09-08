@@ -7,7 +7,7 @@ from abc import abstractmethod
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from threading import Event, Semaphore
+from threading import Event, Semaphore, Thread
 from typing import TYPE_CHECKING, ClassVar
 from uuid import uuid4
 from zoneinfo import ZoneInfo
@@ -300,7 +300,7 @@ class AbstractCrawJUD[T]:
         while True:
             current_time = datetime.now(tz=ZoneInfo("America/Manaus"))
 
-            setted_event = self.event_queue_message.is_set()
+            setted_event = self.event_stop_bot.is_set()
             empty_queue = self.queue_msg.unfinished_tasks == 0
             if setted_event and empty_queue:
                 break
@@ -316,7 +316,7 @@ class AbstractCrawJUD[T]:
                     error: int = data.get("error")
                     success: int = data.get("success")
                     type_log: str = data.get("type_log")
-                    pid: str | None = data.get("pid", uuid4().hex)
+                    pid: str = str(data.get("pid", uuid4().hex))
 
                     # Formata o horário atual
                     time_exec = current_time.strftime("%H:%M:%S")
@@ -328,44 +328,53 @@ class AbstractCrawJUD[T]:
                     message = f"[({mini_pid}, {type_log}, {row}, {time_exec})> {message}]"
 
                     # Cria objeto de log da mensagem
-                    data = {
-                        "data": MessageLogDict(
-                            message=str(message),
-                            pid=str(pid),
-                            row=int(row),
-                            type=type_log,
-                            status="Em Execução",
-                            total=int(total_rows),
-                            success=success,
-                            error=error,
-                            remaining=int(total_rows),
-                            start_time=datetime.fromtimestamp(
-                                start_time,
-                                tz=ZoneInfo("America/Manaus"),
-                            ).strftime("%d/%m/%Y %H:%M:%S"),
-                        ),
-                    }
 
                     # Envia o log da execução
-                    try:
-                        sio.emit(
-                            event="join_room",
-                            data={"data": {"room": self.pid}},
-                            namespace=namespace,
-                        )
+                    with suppress(Exception):
+                        Thread(
+                            target=sio.emit,
+                            kwargs={
+                                "event": "join_room",
+                                "data": {"data": {"room": self.pid}},
+                                "namespace": namespace,
+                            },
+                            daemon=True,
+                        ).start()
 
-                        sio.emit(
-                            event="log_execution",
-                            data=data,
-                            namespace=namespace,
-                        )
-
-                    except Exception as e:
-                        tqdm.write("\n".join(traceback.format_exception(e)))
+                    with suppress(Exception):
+                        Thread(
+                            target=sio.emit,
+                            kwargs={
+                                "event": "log_execution",
+                                "data": {
+                                    "data": MessageLogDict(
+                                        message=str(message),
+                                        pid=str(pid),
+                                        row=int(row),
+                                        type=type_log,
+                                        status="Em Execução",
+                                        total=int(total_rows),
+                                        success=success,
+                                        error=error,
+                                        remaining=int(total_rows),
+                                        start_time=datetime.fromtimestamp(
+                                            start_time,
+                                            tz=ZoneInfo("America/Manaus"),
+                                        ).strftime("%d/%m/%Y %H:%M:%S"),
+                                    ),
+                                },
+                                "namespace": namespace,
+                            },
+                            daemon=True,
+                        ).start()
 
                     # Cria o caminho do arquivo de log
-                    file_log_name = f"{pid[:4].upper()}.log"
-                    file_log = work_dir.joinpath("temp", pid, file_log_name)
+
+                    file_log = work_dir.joinpath(
+                        "temp",
+                        pid,
+                        f"{mini_pid}.log",
+                    )
 
                     # Cria o diretório pai, se não existir
                     file_log.parent.mkdir(parents=True, exist_ok=True)
