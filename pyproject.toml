@@ -2,10 +2,8 @@
 name = "crawjud"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Robotz213",email = "nicholas@robotz.dev"}
-]
-license = {text = "MIT"}
+authors = [{ name = "Robotz213", email = "nicholas@robotz.dev" }]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.12,<4"
 dependencies = [
@@ -63,32 +61,29 @@ dependencies = [
 
 
 ]
-[tool.poetry]
-package-mode = false
+# [tool.poetry]
+# package-mode = false
 
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^4.2.0"
-quart-jwt-extended = "^0.1.0"
-numba = "^0.61.2"
-pyjion = {version = "^2.0.0", markers = "python_version == \"3.10\""}
-pytest-asyncio = "^1.1.0"
-coverage = "^7.10.3"
-pytest = "^8.4.1"
-pytest-cov = "^6.2.1"
+# [tool.poetry.group.dev.dependencies]
+# pre-commit = "^4.2.0"
+# quart-jwt-extended = "^0.1.0"
+# numba = "^0.61.2"
+# pyjion = {version = "^2.0.0", markers = "python_version == \"3.10\""}
+# pytest-asyncio = "^1.1.0"
+# coverage = "^7.10.3"
+# pytest = "^8.4.1"
+# pytest-cov = "^6.2.1"
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.coverage.run]
 source = ["."]
 omit = [
     "utils/webdriver/*",
-     "utils/storage/*",
-     "utils/logger/*",
-     "tests/*",
-     "**/__main__.py",
-     "crawjud_app/addons/search/**/*",
-     "api/common/__init__.py",
-     "api/common/exceptions/__init__.py"
+    "utils/storage/*",
+    "utils/logger/*",
+    "tests/*",
+    "**/__main__.py",
+    "crawjud_app/addons/search/**/*",
+    "api/common/__init__.py",
+    "api/common/exceptions/__init__.py",
 ]
