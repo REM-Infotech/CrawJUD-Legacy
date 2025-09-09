@@ -5,7 +5,9 @@ Este módulo contém exceções personalizadas e utilitários comuns utilizados 
 ## Estrutura
 
 ### Exceções (`exceptions/`)
+
 Sistema de exceções customizadas organizadas por categoria:
+
 - **Database**: Exceções relacionadas ao banco de dados
 - **Bot**: Exceções específicas de bots de automação
 - **Mail**: Exceções de envio de email
@@ -17,6 +19,7 @@ Sistema de exceções customizadas organizadas por categoria:
 ## Exceções Personalizadas
 
 ### Exceções de Database (`database.py`)
+
 ```python
 class DatabaseConnectionError(Exception):
     """Erro de conexão com banco de dados."""
@@ -32,9 +35,11 @@ class DatabaseIntegrityError(Exception):
 ```
 
 ### Exceções de Bot (`bot/`)
+
 Exceções específicas para diferentes sistemas:
 
 #### ProJudi (`bot/projudi.py`)
+
 ```python
 class ProJudiAuthenticationError(Exception):
     """Erro de autenticação no ProJudi."""
@@ -50,6 +55,7 @@ class ProJudiDataExtractionError(Exception):
 ```
 
 ### Exceções de Mail (`mail.py`)
+
 ```python
 class EmailConfigurationError(Exception):
     """Erro de configuração de email."""
@@ -65,6 +71,7 @@ class EmailTemplateError(Exception):
 ```
 
 ### Exceções de Validação (`validacao.py`)
+
 ```python
 class ValidationError(Exception):
     """Erro de validação de dados."""
@@ -84,6 +91,7 @@ class EmailValidationError(ValidationError):
 ```
 
 ### Exceções E-law (`elaw.py`)
+
 ```python
 class ElawConnectionError(Exception):
     """Erro de conexão com E-law."""
@@ -99,6 +107,7 @@ class ElawAPIError(Exception):
 ```
 
 ### Exceções Selenium (`selenium_webdriver.py`)
+
 ```python
 class WebDriverInitializationError(Exception):
     """Erro na inicialização do WebDriver."""
@@ -118,6 +127,7 @@ class CaptchaError(Exception):
 ```
 
 ### Exceções de Form (`_form.py`)
+
 ```python
 class FormValidationError(Exception):
     """Erro de validação de formulário."""
@@ -135,6 +145,7 @@ class FormFieldError(Exception):
 ## Padrões de Uso
 
 ### Hierarquia de Exceções
+
 ```python
 class CrawJUDError(Exception):
     """Exceção base do CrawJUD."""
@@ -150,10 +161,11 @@ class PJeError(BotError):
 ```
 
 ### Informações Contextuais
+
 ```python
 class DetailedError(Exception):
     """Exceção com informações detalhadas."""
-    
+
     def __init__(self, message, error_code=None, context=None):
         super().__init__(message)
         self.error_code = error_code
@@ -162,10 +174,11 @@ class DetailedError(Exception):
 ```
 
 ### Logging Automático
+
 ```python
 class LoggedError(Exception):
     """Exceção que faz log automático."""
-    
+
     def __init__(self, message, logger=None):
         super().__init__(message)
         if logger:
@@ -175,6 +188,7 @@ class LoggedError(Exception):
 ## Tratamento de Erros
 
 ### Try-Catch Padronizado
+
 ```python
 try:
     # Operação que pode falhar
@@ -193,6 +207,7 @@ except Exception as e:
 ```
 
 ### Decorador para Tratamento
+
 ```python
 def handle_errors(error_map=None):
     """Decorador para tratamento automático de erros."""
@@ -211,6 +226,7 @@ def handle_errors(error_map=None):
 ## Utilitários Comuns
 
 ### Validadores
+
 ```python
 def validate_cpf(cpf: str) -> bool:
     """Valida CPF brasileiro."""
@@ -228,6 +244,7 @@ def validate_email(email: str) -> bool:
 ```
 
 ### Formatadores
+
 ```python
 def format_cpf(cpf: str) -> str:
     """Formata CPF com pontuação."""
@@ -243,6 +260,7 @@ def format_cnpj(cnpj: str) -> str:
 ## Logging e Monitoramento
 
 ### Context Logging
+
 ```python
 import contextvars
 
@@ -250,13 +268,14 @@ request_id = contextvars.ContextVar('request_id')
 
 class ContextualError(Exception):
     """Exceção com contexto de requisição."""
-    
+
     def __init__(self, message):
         self.request_id = request_id.get(None)
         super().__init__(f"[{self.request_id}] {message}")
 ```
 
 ### Métricas de Erro
+
 ```python
 error_metrics = {
     'database_errors': 0,
@@ -274,6 +293,7 @@ def track_error(error_type):
 ## Configuração
 
 ### Error Handlers Globais
+
 ```python
 from quart import Quart
 
@@ -289,10 +309,11 @@ async def handle_db_error(error):
 ```
 
 ### Recovery Automático
+
 ```python
 class RetryableError(Exception):
     """Exceção que permite retry automático."""
-    
+
     def __init__(self, message, retry_after=60):
         super().__init__(message)
         self.retry_after = retry_after

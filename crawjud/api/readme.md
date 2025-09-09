@@ -26,16 +26,19 @@ A API é organizada em camadas:
 ## Recursos da API
 
 ### Autenticação
+
 - Sistema JWT (JSON Web Tokens)
 - Middleware de autenticação
 - Controle de sessões com Redis
 
 ### CORS
+
 - Configuração de Cross-Origin Resource Sharing
 - Suporte a origens múltiplas
 - Headers personalizados permitidos
 
 ### Middleware
+
 - Proxy headers para deployment
 - Tratamento de erros centralizado
 - Logging de requisições
@@ -43,31 +46,37 @@ A API é organizada em camadas:
 ## Endpoints Principais
 
 ### Autenticação (`/auth`)
+
 - Login e logout de usuários
 - Renovação de tokens JWT
 - Gerenciamento de sessões
 
 ### Bots (`/bot`)
+
 - Inicialização de robôs
 - Monitoramento de execuções
 - Controle de status
 
 ### Configuração (`/config`)
+
 - Configurações administrativas
 - Gerenciamento de parâmetros
 - Configurações de sistema
 
 ### Execução (`/execution`)
+
 - Controle de execuções de bots
 - Histórico de execuções
 - Status e logs
 
 ### Dashboard (`/dashboard`)
+
 - Métricas do sistema
 - Painéis administrativos
 - Estatísticas de uso
 
 ### Credenciais (`/credentials`)
+
 - Gerenciamento de credenciais
 - Configurações de acesso
 - Validação de credenciais
@@ -87,6 +96,7 @@ await app.run_task(host="0.0.0.0", port=8000)
 ## Configuração
 
 A API é configurada através de:
+
 - Variáveis de ambiente
 - Arquivo `quartconf.py`
 - Configurações de database

@@ -44,6 +44,7 @@ O CrawJUD é construído sobre uma arquitetura moderna e escalável utilizando:
 ## Configuração
 
 A aplicação é configurada através de:
+
 - `quartconf.py` - Configurações do Quart
 - `celery_app.py` - Configurações do Celery
 - Variáveis de ambiente (`.env`)
@@ -51,6 +52,7 @@ A aplicação é configurada através de:
 ## Desenvolvimento
 
 Para contribuir com o projeto, consulte:
+
 - [Guia de Contribuição](../docs/CONTRIBUTING.md)
 - [Estrutura do Projeto](../PROJECT-STRUCTURE.md)
 - [Política de Segurança](../docs/SECURITY.md)
