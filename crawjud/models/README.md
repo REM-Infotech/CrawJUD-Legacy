@@ -5,13 +5,16 @@ Este módulo contém todos os modelos de banco de dados do CrawJUD, implementado
 ## Arquitetura
 
 ### ORM SQLAlchemy
+
 - Modelos declarativos
 - Relacionamentos automáticos
 - Migrações de schema
 - Queries otimizadas
 
 ### Estrutura de Dados
+
 Os modelos são organizados por domínio:
+
 - **Usuários e Autenticação**
 - **Bots e Execuções**
 - **Agendamento e Cron**
@@ -22,6 +25,7 @@ Os modelos são organizados por domínio:
 ### Usuários (`users.py`)
 
 #### Users
+
 ```python
 class Users:
     id: int
@@ -34,6 +38,7 @@ class Users:
 ```
 
 #### SuperUser
+
 ```python
 class SuperUser:
     id: int
@@ -43,6 +48,7 @@ class SuperUser:
 ```
 
 #### LicensesUsers
+
 ```python
 class LicensesUsers:
     id: int
@@ -56,6 +62,7 @@ class LicensesUsers:
 ### Bots (`bots.py`)
 
 #### BotsCrawJUD
+
 ```python
 class BotsCrawJUD:
     id: int
@@ -69,6 +76,7 @@ class BotsCrawJUD:
 ```
 
 #### Executions
+
 ```python
 class Executions:
     id: int
@@ -82,6 +90,7 @@ class Executions:
 ```
 
 #### ThreadBots
+
 ```python
 class ThreadBots:
     id: int
@@ -93,6 +102,7 @@ class ThreadBots:
 ```
 
 #### Credentials
+
 ```python
 class Credentials:
     id: int
@@ -107,6 +117,7 @@ class Credentials:
 ### Agendamento (`schedule.py`)
 
 #### ScheduleModel
+
 ```python
 class ScheduleModel:
     id: int
@@ -120,6 +131,7 @@ class ScheduleModel:
 ```
 
 #### CrontabModel
+
 ```python
 class CrontabModel:
     id: int
@@ -134,7 +146,9 @@ class CrontabModel:
 ### Relacionamentos Secundários (`secondaries.py`)
 
 #### admins
+
 Tabela de relacionamento para administradores:
+
 ```python
 admins = Table(
     'admins',
@@ -144,7 +158,9 @@ admins = Table(
 ```
 
 #### execution_bots
+
 Tabela de relacionamento para execuções e bots:
+
 ```python
 execution_bots = Table(
     'execution_bots',
@@ -156,22 +172,26 @@ execution_bots = Table(
 ## Relacionamentos
 
 ### One-to-Many
+
 - Users → Executions
 - Users → Credentials
 - BotsCrawJUD → Executions
 - ScheduleModel → Executions
 
 ### Many-to-Many
+
 - Users ↔ LicensesUsers (através de admins)
 - Executions ↔ BotsCrawJUD (através de execution_bots)
 
 ### One-to-One
+
 - ScheduleModel → CrontabModel
 - ThreadBots → Executions
 
 ## Inicialização do Banco
 
 ### Função `init_database()`
+
 A função principal de inicialização:
 
 1. **Criação de Tabelas**: `db.create_all()`
@@ -181,7 +201,9 @@ A função principal de inicialização:
 5. **Commit**: Persistência das mudanças
 
 ### Dados Iniciais
+
 Os dados iniciais são carregados de:
+
 - Variáveis de ambiente (usuário root)
 - Arquivo `export.json` (bots disponíveis)
 - Configurações padrão do sistema
@@ -189,12 +211,14 @@ Os dados iniciais são carregados de:
 ## Validações
 
 ### Modelos
+
 - Validação de tipos
 - Constraints de banco
 - Validações customizadas
 - Sanitização de dados
 
 ### Segurança
+
 - Hash de senhas (bcrypt)
 - Criptografia de credenciais
 - Tokens seguros
@@ -203,6 +227,7 @@ Os dados iniciais são carregados de:
 ## Queries Comuns
 
 ### Usuários
+
 ```python
 # Buscar usuário por login
 user = Users.query.filter(Users.login == username).first()
@@ -214,6 +239,7 @@ active_users = Users.query.join(LicensesUsers).filter(
 ```
 
 ### Execuções
+
 ```python
 # Execuções recentes
 recent_executions = Executions.query.filter(
@@ -227,6 +253,7 @@ running_executions = Executions.query.filter(
 ```
 
 ### Bots
+
 ```python
 # Bots ativos
 active_bots = BotsCrawJUD.query.filter(
@@ -242,12 +269,14 @@ judicial_bots = BotsCrawJUD.query.filter(
 ## Migrações
 
 ### Versionamento
+
 - Controle de versão do schema
 - Migrações incrementais
 - Rollback seguro
 - Backup automático
 
 ### Estratégias
+
 - Migrações online (sem downtime)
 - Validação de dados
 - Testes de migração
@@ -256,12 +285,14 @@ judicial_bots = BotsCrawJUD.query.filter(
 ## Performance
 
 ### Otimizações
+
 - Índices apropriados
 - Queries otimizadas
 - Lazy loading
 - Connection pooling
 
 ### Monitoramento
+
 - Slow query log
 - Métricas de performance
 - Análise de queries

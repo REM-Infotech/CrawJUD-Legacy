@@ -5,13 +5,16 @@ Este módulo contém as definições de interfaces, protocolos, tipos customizad
 ## Arquitetura
 
 ### Type Hints e Protocols
+
 Utilização de Python typing para:
+
 - Definição de contratos claros
 - Verificação estática de tipos
 - Documentação de APIs
 - IntelliSense melhorado
 
 ### Estrutura Organizacional
+
 As interfaces são organizadas por domínio de responsabilidade:
 
 ## Estrutura de Diretórios
@@ -40,11 +43,11 @@ from crawjud.interfaces.auth import SessionDict, CredendialsDict
 
 class AuthProvider(Protocol):
     """Interface para provedores de autenticação."""
-    
+
     async def authenticate(self, credentials: dict) -> dict:
         """Autentica usuário com credenciais."""
         ...
-    
+
     async def refresh_token(self, refresh_token: str) -> dict:
         """Renova token de acesso."""
         ...
@@ -63,19 +66,19 @@ from crawjud.interfaces.bots import BotData, DictSeparaRegiao
 
 class BotInterface(Protocol):
     """Interface base para todos os bots."""
-    
+
     async def initialize(self) -> None:
         """Inicializa o bot."""
         ...
-    
+
     async def authenticate(self, credentials: dict) -> bool:
         """Autentica no sistema judicial."""
         ...
-    
+
     async def execute_task(self, task_data: dict) -> dict:
         """Executa tarefa específica."""
         ...
-    
+
     async def cleanup(self) -> None:
         """Finaliza recursos do bot."""
         ...
@@ -86,12 +89,14 @@ class BotInterface(Protocol):
 Tipos relacionados a sistemas externos e suas integrações:
 
 #### `systems/pje/` - Sistema PJe
+
 - **`processos.py`**: Tipos principais de processos judiciais
 - **`partes.py`**: Tipos de partes processuais
 - **`audiencias.py`**: Tipos de audiências
 - **`assuntos.py`**: Tipos de assuntos processuais
 
 #### `systems/webdriver/` - WebDriver
+
 - **`config.py`**: Configurações de WebDriver (Chrome, Firefox)
 
 ```python
@@ -100,11 +105,11 @@ from crawjud.interfaces.systems.webdriver import ChromeConfig
 
 class PJeInterface(Protocol):
     """Interface para operações do PJe."""
-    
+
     async def get_process_capa(self, process_number: str) -> dict:
         """Obtém capa processual."""
         ...
-    
+
     async def get_process_pauta(self, date_range: tuple) -> List[dict]:
         """Obtém pauta de processos."""
         ...
@@ -122,11 +127,11 @@ from crawjud.interfaces.tasks import Signature, Task
 
 class CeleryTask(Protocol):
     """Interface para tarefas Celery."""
-    
+
     def delay(self, *args, **kwargs) -> AsyncResult:
         """Executa tarefa assincronamente."""
         ...
-    
+
     def apply_async(self, args=None, kwargs=None, **options) -> AsyncResult:
         """Executa com opções customizadas."""
         ...
@@ -144,7 +149,7 @@ from crawjud.interfaces.forms import JuridicoFormFileAuth, FormDict
 
 class FormValidator(Protocol):
     """Interface para validação de formulários."""
-    
+
     def validate(self, data: dict) -> tuple[bool, dict]:
         """Valida dados do formulário."""
         ...
@@ -163,11 +168,11 @@ T = TypeVar('T')
 
 class Repository(Protocol, Generic[T]):
     """Interface genérica para repositórios."""
-    
+
     async def create(self, entity: T) -> T:
         """Cria nova entidade."""
         ...
-    
+
     async def get_by_id(self, entity_id: int) -> Optional[T]:
         """Busca entidade por ID."""
         ...
@@ -207,21 +212,25 @@ from crawjud.interfaces.systems.webdriver import ChromeConfig, FirefoxConfig
 ## Benefícios da Estrutura
 
 ### 🎯 **Organização por Domínio**
+
 - Tipos relacionados ficam agrupados
 - Facilita localização e manutenção
 - Reduz acoplamento entre módulos
 
 ### 📚 **Clareza de Responsabilidades**
+
 - Cada diretório tem responsabilidade bem definida
 - Nomenclatura consistente e intuitiva
 - Documentação organizada por contexto
 
 ### 🔄 **Facilidade de Manutenção**
+
 - Mudanças em um domínio não afetam outros
 - Imports mais claros e organizados
 - Redução de dependências circulares
 
 ### 🚀 **Escalabilidade**
+
 - Estrutura preparada para novos tipos e sistemas
 - Padrão consistente para extensões
 - Modularidade que facilita testes unitários
@@ -229,13 +238,14 @@ from crawjud.interfaces.systems.webdriver import ChromeConfig, FirefoxConfig
 ## Validação de Interfaces
 
 ### Runtime Type Checking
+
 ```python
 from typing import runtime_checkable
 
 @runtime_checkable
 class Serializable(Protocol):
     """Interface para objetos serializáveis."""
-    
+
     def to_dict(self) -> dict:
         """Converte para dicionário."""
         ...
@@ -248,6 +258,7 @@ def serialize_if_possible(obj: Any) -> Optional[dict]:
 ```
 
 ### Type Guards
+
 ```python
 from typing import TypeGuard
 

@@ -5,12 +5,14 @@ Este módulo implementa o sistema de tarefas assíncronas utilizando Celery. As 
 ## Arquitetura Celery
 
 ### Componentes
+
 - **Worker**: Processo que executa as tarefas
 - **Broker**: Redis como broker de mensagens
 - **Backend**: Redis para armazenar resultados
 - **Beat**: Agendador para tarefas periódicas
 
 ### Configuração
+
 ```python
 # celery_app.py
 app = Celery('crawjud')
@@ -20,21 +22,27 @@ app.config_from_object('crawjud.celeryconfig')
 ## Tipos de Tarefas
 
 ### Execução de Bots
+
 Tarefas principais para execução de robôs:
+
 - Inicialização de bots
 - Processamento de dados
 - Geração de relatórios
 - Notificações de resultado
 
 ### Tarefas de Manutenção
+
 Tarefas de housekeeping do sistema:
+
 - Limpeza de logs antigos
 - Backup de dados
 - Verificação de saúde
 - Sincronização de dados
 
 ### Tarefas Agendadas
+
 Tarefas executadas periodicamente:
+
 - Relatórios automáticos
 - Sincronização com sistemas externos
 - Monitoramento de status
@@ -43,7 +51,9 @@ Tarefas executadas periodicamente:
 ## Estrutura de Diretórios
 
 ### Mail (`mail/`)
+
 Tarefas relacionadas ao envio de emails:
+
 - **Templates**: Templates HTML para emails
 - **Envio**: Tarefas de envio assíncrono
 - **Notificações**: Alertas e notificações
@@ -51,18 +61,19 @@ Tarefas relacionadas ao envio de emails:
 ## Implementação de Tarefas
 
 ### Decorador @task
+
 ```python
 from celery import current_app
 
 @current_app.task(bind=True)
 def execute_bot(self, bot_id, user_id, parameters):
     """Executa um bot específico de forma assíncrona.
-    
+
     Args:
         bot_id (int): ID do bot a ser executado
         user_id (int): ID do usuário solicitante
         parameters (dict): Parâmetros de execução
-        
+
     Returns:
         dict: Resultado da execução
     """
@@ -76,6 +87,7 @@ def execute_bot(self, bot_id, user_id, parameters):
 ```
 
 ### Configurações de Retry
+
 ```python
 @current_app.task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 60})
 def resilient_task(self):
@@ -86,6 +98,7 @@ def resilient_task(self):
 ## Monitoramento
 
 ### Status de Tarefas
+
 ```python
 from celery.result import AsyncResult
 
@@ -94,6 +107,7 @@ status = result.status  # PENDING, SUCCESS, FAILURE, RETRY, REVOKED
 ```
 
 ### Métricas
+
 - Número de tarefas ativas
 - Taxa de sucesso/falha
 - Tempo médio de execução
@@ -102,6 +116,7 @@ status = result.status  # PENDING, SUCCESS, FAILURE, RETRY, REVOKED
 ## Padrões de Uso
 
 ### Chain de Tarefas
+
 ```python
 from celery import chain
 
@@ -115,6 +130,7 @@ result = workflow.apply_async()
 ```
 
 ### Group de Tarefas
+
 ```python
 from celery import group
 
