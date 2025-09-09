@@ -1,0 +1,10 @@
+- A pull request precisa explicar de forma geral o que foi alterado, por quê e como.
+- A pull request também deve listar os arquivos alterados e uma breve descrição do que foi alterado em cada arquivo.
+- O título da pull request deve ser breve, descritivo e no imperativo, indicando resumidamente a principal alteração realizada.
+- A linguagem da pull request deve ser português.
+- Estruture o conteúdo com títulos, subtítulos e listas quando apropriado.
+- Prefira frases objetivas e linguagem técnica adequada ao contexto do projeto.
+- Utilize exemplos práticos quando necessário.
+- Adote convenções de formatação Markdown (ex: `#` para títulos, `-` para listas, blocos de código com crase).
+- Inclua sumário ou introdução breve no início do arquivo, quando relevante.
+- Evite informações redundantes ou fora do escopo do projeto.
