@@ -137,7 +137,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     botao_baixar = 'button[title="Baixar"]'
 
     # PAGAMENTOS
-    valor_pagamento = 'a[href="#tabViewProcesso:processoValorPagamento"]'
+    valor_pagamento = 'a[href*=":processoValorPagamento"]'
     botao_novo_pagamento = 'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]'
     css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
     listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'

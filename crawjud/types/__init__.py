@@ -26,9 +26,9 @@ binds = Union[
 ]
 
 Numbers = Union[int, float, complex, datetime, timedelta]
-TypeValues = Union[str, Numbers, list, tuple]
-SubDict = dict[str, Union[TypeValues, Numbers]]
-TypeHint = Union[list[str | Numbers | SubDict] | SubDict]
+type TypeValues = Union[str, Numbers, list, tuple]
+type SubDict = dict[str, Union[TypeValues, Numbers]]
+type TypeHint = Union[list[str | Numbers | SubDict] | SubDict]
 
 DataStores = TypeVar("DataStores", bound=datastores)
 AnyType = TypeVar("AnyType", bound=binds)

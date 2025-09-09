@@ -729,6 +729,13 @@ class SolPags(CrawJUD):
             raise ExecutionError(message="Pagamento não solicitado")
 
         except Exception as e:
+            with suppress(Exception):
+                numero_processo = self.bot_data["NUMERO_PROCESSO"]
+                name_file = f"Erro {numero_processo} - {self.pid}.png"
+                path_screenshot_erro = self.output_dir_path.joinpath(name_file)
+                with path_screenshot_erro.open("wb") as fp:
+                    fp.write(self.driver.get_screenshot_as_png())
+
             self.logger.exception("".join(traceback.format_exception(e)))
             return [self.bot_data.get("NUMERO_PROCESSO"), "Pagamento solicitado com sucesso!!"]
 
