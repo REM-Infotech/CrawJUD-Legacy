@@ -490,21 +490,13 @@ class SolPags(CrawJUD):
             self.type_log = "log"
             self.prt()
 
-            div_tipo_custa = self.driver.find_element(By.CSS_SELECTOR, self.elements.css_tipocusta)
-            div_tipo_custa.click()
             sleep(1)
 
             tipo_guia = str(self.bot_data.get("TIPO_GUIA"))
             list_tipo_custa: WebElement = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.css_listcusta)),
             )
-            list_tipo_custa = list_tipo_custa.find_elements(By.TAG_NAME, "li")
-            for item in list_tipo_custa:
-                item: WebElement = item
-                if tipo_guia.lower() == item.text.lower():
-                    sleep(0.5)
-                    item.click()
-                    break
+            self.select2_elaw(list_tipo_custa, tipo_guia)
 
             sleep(1)
             self.message = "Informando data para pagamento"

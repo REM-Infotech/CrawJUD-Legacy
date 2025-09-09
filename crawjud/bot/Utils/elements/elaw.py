@@ -167,7 +167,11 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_gru = 'li[id*="eFileTipoCombo_35"]'
     editar_pagamentofile = 'div[id*="gedEFileDataTable"]'
     css_tipocusta = 'div[id*="pvpEFBtypeSelectField1CombosCombo"]'
-    css_listcusta = 'ul[id*="pvpEFBtypeSelectField1CombosCombo_items"]'
+
+    id_select_custa = (
+        "processoValorPagamentoEditForm:pvp:j_id_3e_1_i_4_1_9_29_1_1_1:pvpEFBtypeSelectField1CombosCombo_input"
+    )
+    css_listcusta = f'select[id="{id_select_custa}"]'
     custas_civis = 'li[data-label="CUSTAS JUDICIAIS CIVEIS"]'
     custas_monitorias = 'li[data-label="CUSTAS JUDICIAIS - MONITORIAS"]'
     botao_salvar_pagamento = 'button[id="processoValorPagamentoEditForm:btnSalvarProcessoValorPagamento"]'
