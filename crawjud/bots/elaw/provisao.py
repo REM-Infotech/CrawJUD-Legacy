@@ -15,7 +15,6 @@ from __future__ import annotations
 
 from contextlib import suppress
 from datetime import datetime
-from pathlib import Path
 from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -244,7 +243,7 @@ class Provisao(ElawBot):
             )
             add_objeto.click()
 
-            self.interact.sleep_load('div[id="j_id_8c"]')
+            self.sleep_load('div[id="j_id_8c"]')
 
         except ExecutionError as e:
             raise ExecutionError(
@@ -269,7 +268,7 @@ class Provisao(ElawBot):
             None
 
         """
-        self.interact.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_2z"]')
         self.message = "Informando valores"
         self.type_log = "log"
         self.prt()
@@ -293,7 +292,7 @@ class Provisao(ElawBot):
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.sleep_load('div[id="j_id_2z"]')
 
             if isinstance(valor_informar, int):
                 valor_informar = str(valor_informar) + ",00"
@@ -307,7 +306,7 @@ class Provisao(ElawBot):
             self.driver.execute_script(
                 f"document.getElementById('{id_campo_valor_dml}').blur()",
             )
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.sleep_load('div[id="j_id_2z"]')
 
     def set_risk(self) -> None:
         """Set the risk type for the provision.
@@ -355,7 +354,7 @@ class Provisao(ElawBot):
                 provisao_from_xlsx,
             )
 
-            self.interact.sleep_load('div[id="j_id_3c"]')
+            self.sleep_load('div[id="j_id_3c"]')
 
     def informar_datas(self) -> None:
         """Inform the correction base date and interest date.
@@ -380,7 +379,7 @@ class Provisao(ElawBot):
             self.driver.execute_script(
                 f"document.getElementById('{css_daata_correcao}').blur()",
             )
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.sleep_load('div[id="j_id_2z"]')
 
         def set_data_juros(data_base_juros: str) -> None:
             data_juros = self.driver.find_element(
@@ -393,7 +392,7 @@ class Provisao(ElawBot):
             self.driver.execute_script(
                 f"document.getElementById('{css_data}').blur()",
             )
-            self.interact.sleep_load('div[id="j_id_2z"]')
+            self.sleep_load('div[id="j_id_2z"]')
 
         data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
         data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
@@ -424,7 +423,7 @@ class Provisao(ElawBot):
         sleep(1)
         try_salvar.click()
 
-        self.interact.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_2z"]')
 
         self.message = "Informando justificativa"
         self.type_log = "log"
@@ -450,7 +449,7 @@ class Provisao(ElawBot):
             ExecutionError: If unable to save the provision.
 
         """
-        self.interact.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_2z"]')
         salvar = self.driver.find_element(
             By.CSS_SELECTOR,
             el.botao_salvar_id,
@@ -476,17 +475,3 @@ class Provisao(ElawBot):
             "Provisão atualizada com sucesso!",
         ]
         self.append_success(data, message="Provisão atualizada com sucesso!")
-
-    def print_comprovante(self) -> str:
-        """Capture and save a screenshot as proof of the provision.
-
-        Returns:
-            str: The name of the saved screenshot file.
-
-        """
-        name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
-        savecomprovante = (
-            Path(self.output_dir_path).resolve().joinpath(name_comprovante)
-        )
-        self.driver.get_screenshot_as_file(savecomprovante)
-        return name_comprovante

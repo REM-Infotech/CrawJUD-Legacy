@@ -315,11 +315,6 @@ class ElawBot[T](CrawJUD):
                 break
 
     def wait_fileupload(self) -> None:
-        """Wait until the file upload progress completes.
-
-        Checks repeatedly until no progress bar is present.
-
-        """
         while True:
             sleep(0.05)
             div1 = 'div[class="ui-fileupload-files"]'
@@ -343,13 +338,6 @@ class ElawBot[T](CrawJUD):
                 break
 
     def print_comprovante(self) -> None:
-        """Print the receipt of the registration.
-
-        This method handles the printing of the registration receipt by interacting
-        with the relevant web el, taking a screenshot, and logging the actions
-        performed.
-
-        """
         name_comprovante = f"Comprovante - {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid}.png"
         savecomprovante = self.output_dir_path.joinpath(name_comprovante)
 

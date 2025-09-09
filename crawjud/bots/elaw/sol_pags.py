@@ -225,7 +225,7 @@ class SolPags(ElawBot):
         self.driver.execute_script(
             f"document.querySelector('{el.css_element}').blur()",
         )
-        self.interact.sleep_load('div[id="j_id_2x"]')
+        self.sleep_load('div[id="j_id_2x"]')
 
     def _selecionar_tipo_documento(self) -> None:
         """Selecione o tipo de documento 'guia de pagamento'."""
@@ -248,7 +248,7 @@ class SolPags(ElawBot):
             if item.text.lower() == "guia de pagamento":
                 item.click()
                 break
-        self.interact.sleep_load('div[id="j_id_2x"]')
+        self.sleep_load('div[id="j_id_2x"]')
 
     def _enviar_documentos_condenacao(self) -> None:
         """Envie os documentos necessários para a condenação."""
@@ -337,7 +337,7 @@ class SolPags(ElawBot):
         self.driver.execute_script(
             f"document.querySelector('{el.css_data}').blur()",
         )
-        self.interact.sleep_load('div[id="j_id_2x"]')
+        self.sleep_load('div[id="j_id_2x"]')
 
     def _informar_favorecido(self) -> None:
         """Informe o favorecido do pagamento."""
@@ -363,7 +363,7 @@ class SolPags(ElawBot):
             )),
         )
         result_favorecido.click()
-        self.interact.sleep_load('div[id="j_id_2x"]')
+        self.sleep_load('div[id="j_id_2x"]')
 
     def _informar_forma_pagamento(self) -> None:
         """Informe a forma de pagamento (boleto)."""
@@ -378,7 +378,7 @@ class SolPags(ElawBot):
         sleep(1)
         boleto = self.driver.find_element(By.CSS_SELECTOR, el.boleto)
         boleto.click()
-        self.interact.sleep_load('div[id="j_id_2x"]')
+        self.sleep_load('div[id="j_id_2x"]')
         campo_cod_barras = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
@@ -394,7 +394,7 @@ class SolPags(ElawBot):
         self.driver.execute_script(
             f"document.querySelector('{el.css_cod_bars}').blur()",
         )
-        self.interact.sleep_load('div[id="j_id_2x"]')
+        self.sleep_load('div[id="j_id_2x"]')
 
     def _informar_centro_custas(self) -> None:
         """Informe o centro de custas."""
@@ -567,7 +567,7 @@ class SolPags(ElawBot):
             self.driver.execute_script(
                 f"document.querySelector('{el.css_data}').blur()",
             )
-            self.interact.sleep_load('div[id="j_id_2x"]')
+            self.sleep_load('div[id="j_id_2x"]')
 
             label_forma_pgto = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -579,7 +579,7 @@ class SolPags(ElawBot):
             boleto = self.driver.find_element(By.CSS_SELECTOR, el.boleto)
             boleto.click()
 
-            self.interact.sleep_load('div[id="j_id_2x"]')
+            self.sleep_load('div[id="j_id_2x"]')
 
             campo_cod_barras = self.wait.until(
                 ec.presence_of_element_located((
