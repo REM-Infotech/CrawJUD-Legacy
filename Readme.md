@@ -11,9 +11,11 @@ para gerenciamento de filas e Quart para a API web, o CrawJUD oferece uma soluç
 para escritórios de advocacia e departamentos jurídicos que buscam otimizar processos
 repetitivos e melhorar a eficiência operacional.
 
-[Instruções de Contribuição](./docs/CONTRIBUTING.md)
-[Política de Segurança](./docs/SECURITY.md)
-[Código de Conduta](./docs/CODE_OF_CONDUCT.md)
+> [Instruções de Contribuição](./docs/CONTRIBUTING.md)
+
+> [Política de Segurança](./docs/SECURITY.md)
+
+> [Código de Conduta](./docs/CODE_OF_CONDUCT.md)
 
 #
 

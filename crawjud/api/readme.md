@@ -6,23 +6,32 @@ A pasta `api/` é responsável por expor as funcionalidades do backend do CrawJU
 
 ## Estrutura da Pasta
 
-├── [`__init__.py`](./__init__.py): Inicializa o pacote e configurações globais da API.
-├── [`namespaces/`](./namespaces/): Define namespaces lógicos para organização dos endpoints e recursos.
-│ ├── [`bots.py`](./namespaces/bots.py): Gerencia operações relacionadas aos robôs.
-│ ├── [`files.py`](./namespaces/files.py): Manipula arquivos e operações de upload/download.
-│ ├── [`logs.py`](./namespaces/logs.py): Disponibiliza logs de execução e auditoria.
-│ ├── [`notifications.py`](./namespaces/notifications.py): Gerencia notificações do sistema.
-│ └── [`system.py`](./namespaces/system.py): Fornece informações e operações do sistema.
-├── [`routes/`](./routes/): Implementa as rotas principais da API.
-│ ├── [`auth.py`](./routes/auth.py): Endpoints de autenticação e autorização.
-│ ├── [`credentials.py`](./routes/credentials.py): Gerenciamento de credenciais de acesso.
-│ ├── [`dashboard.py`](./routes/dashboard.py): Dados e operações do dashboard administrativo.
-│ ├── [`bot/`](./routes/bot/): Métodos e rotas específicas para execução e controle de bots.
-│ │ ├── [`launch.py`](./routes/bot/launch.py): Métodos auxiliares para inicialização de bots.
-│ └── [`config/`](./routes/config/): Rotas de configuração e gerenciamento de usuários.
-│ ├── [`users.py`](./routes/config/users.py): Operações de cadastro, consulta e atualização de usuários.
-│ └── [`execution/`](./routes/execution/): Controle de execuções e agendamentos.
-│ ├── [`schedules.py`](./routes/execution/schedules.py): Gerenciamento de tarefas agendadas.
+```
+api
+├───namespaces
+│   ├───__init__.py
+│   ├───bots.py
+│   ├───files.py
+│   └───logs.py
+│
+└───routes
+    ├───bot
+    │   ├───__init__.py
+    │   └───launch.py
+    ├───config
+    │   ├───__init__.py
+    │   ├───users.py
+    └───execution
+        ├───__init__.py
+        └───schedules.py
+```
+
+- [**namespaces/**](./namespaces/__init__.py): Contém definições de namespaces para organizar os endpoints em grupos lógicos, facilitando a manutenção e a navegação na API.
+
+- [**routes/**](./routes/__init__.py): Abriga os arquivos de rotas que definem os endpoints específicos para diferentes funcionalidades:
+  - [**bot/**](./routes/bot/__init__.py): Rotas relacionadas ao gerenciamento e controle dos bots de automação.
+  - [**config/**](./routes/config/__init__.py): Rotas para configuração do sistema, incluindo usuários, permissões e parâmetros globais.
+  - [**execution/**](./routes/execution/__init__.py): Rotas para iniciar, monitorar e gerenciar execuções de tarefas automatizadas.
 
 ## Funcionamento e Lógica
 
