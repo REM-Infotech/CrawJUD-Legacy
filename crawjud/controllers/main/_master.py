@@ -22,7 +22,7 @@ from crawjud.utils.storage import Storage
 
 COLORS_DICT = {
     "info": "cyan",
-    "log": "white",
+    "log": "yellow",
     "error": "red",
     "warning": "magenta",
     "success": "green",
@@ -309,7 +309,7 @@ class AbstractCrawJUD[T]:
         while True:
             current_time = datetime.now(tz=ZoneInfo("America/Manaus"))
 
-            setted_event = self.event_stop_bot.is_set()
+            setted_event = self.event_queue_message.is_set()
             empty_queue = self.queue_msg.unfinished_tasks == 0
             if setted_event and empty_queue:
                 break

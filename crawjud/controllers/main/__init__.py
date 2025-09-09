@@ -61,8 +61,8 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self.queue_msg = Queue()
         self.queue_files = Queue()
         self.queue_save_xlsx = Queue()
-        self.event_stop_bot: Event = Event()
-
+        self.event_stop_bot = Event()
+        self.event_queue_message = Event()
         self.print_msg(message="Inicializando...")
         self._driver = DriverBot(
             selected_browser=selected_browser,
@@ -326,6 +326,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         message = f"Baixe os resultados aqui: {link}"
         self.print_msg(message=message, row=self.row, type_log="info")
 
+        self.event_queue_message.set()
         self.print_thread.join()
 
     def append_success(self, data: T, *args: T, **kwargs: T) -> None:
