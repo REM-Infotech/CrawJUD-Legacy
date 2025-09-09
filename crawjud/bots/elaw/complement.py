@@ -18,7 +18,7 @@ import time
 from contextlib import suppress
 from pathlib import Path
 from time import sleep
-from typing import TYPE_CHECKING, NoReturn, Self
+from typing import TYPE_CHECKING, NoReturn
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -32,8 +32,6 @@ from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
     from crawjud.utils.webdriver import WebElementBot as WebElement
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -145,17 +143,13 @@ class Complement(ElawBot):
             esfera_xls = self.bot_data.get("ESFERA")
 
             if esfera_xls and check_esfera.text.lower() != esfera_xls.lower():
-                Complement.esfera(self, esfera_xls)
+                self.esfera(self, esfera_xls)
 
             for item in lista1:
-                func: Callable[[], None] = getattr(
-                    Complement,
-                    item.lower(),
-                    None,
-                )
+                func = getattr(self, item.lower(), None)
 
                 if func and item.lower() != "esfera":
-                    func(self)
+                    func()
 
             end_time = time.perf_counter()
             execution_time = end_time - start_time
@@ -165,9 +159,7 @@ class Complement(ElawBot):
             seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
             self.validar_campos()
-
             self.validar_advs_participantes()
-
             self.save_all()
 
             if self.confirm_save() is True:
@@ -384,8 +376,7 @@ class Complement(ElawBot):
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante
 
-    @classmethod
-    def advogado_interno(cls, self: Self) -> None:
+    def advogado_interno(self) -> None:
         """Inform the internal lawyer.
 
         This method inputs the internal lawyer information into the system
@@ -456,8 +447,7 @@ class Complement(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def esfera(cls, self: Self, text: str = "Judicial") -> None:
+    def esfera(self, text: str = "Judicial") -> None:
         """Handle the selection of the judicial sphere in the process.
 
         This function performs the following steps:
@@ -493,8 +483,7 @@ class Complement(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def estado(cls, self: Self) -> None:
+    def estado(self) -> None:
         """Update the state of the process in the system.
 
         This method retrieves the state information from `self.bot_data` using the key "ESTADO",
@@ -528,8 +517,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def comarca(cls, self: Self) -> None:
+    def comarca(self) -> None:
         """Inform the "comarca" (jurisdiction) of the process.
 
         This method retrieves the comarca information from the bot data,
@@ -562,8 +550,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def foro(cls, self: Self) -> None:
+    def foro(self) -> None:
         """Update the forum (foro) information for the process.
 
         This method selects the appropriate forum input element and updates it with the
@@ -596,8 +583,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def vara(cls, self: Self) -> None:
+    def vara(self) -> None:
         """Update the "vara" (court) information for the process.
 
         This method retrieves the "VARA" data from the bot's data, selects the appropriate
@@ -629,8 +615,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def unidade_consumidora(cls, self: Self) -> None:
+    def unidade_consumidora(self) -> None:
         """Handle the process of informing the consumer unit in the web application.
 
         This function performs the following steps:
@@ -671,8 +656,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def localidade(cls, self: Self) -> None:
+    def localidade(self) -> None:
         """Inform the locality of the process.
 
         This method inputs the locality information into the system
@@ -710,8 +694,7 @@ class Complement(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def bairro(cls, self: Self) -> None:
+    def bairro(self) -> None:
         """Inform the neighborhood of the process.
 
         This method inputs the neighborhood information into the system
@@ -749,8 +732,7 @@ class Complement(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def divisao(cls, self: Self) -> None:
+    def divisao(self) -> None:
         """Inform the division of the process.
 
         This method inputs the division information into the system
@@ -783,8 +765,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def data_citacao(cls, self: Self) -> None:
+    def data_citacao(self) -> None:
         """Inform the citation date in the process.
 
         This method inputs the citation date into the system and ensures it is properly selected.
@@ -820,8 +801,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def fase(cls, self: Self) -> None:
+    def fase(self) -> None:
         """Inform the phase of the process.
 
         This method inputs the phase information into the system
@@ -853,8 +833,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def provimento(cls, self: Self) -> None:
+    def provimento(self) -> None:
         """Inform the anticipatory provision in the process.
 
         This method inputs the anticipatory provision information into the system
@@ -886,8 +865,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def valor_causa(cls, self: Self) -> None:
+    def valor_causa(self) -> None:
         """Inform the value of the cause.
 
         This method inputs the value of the cause into the system
@@ -926,8 +904,7 @@ class Complement(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def fato_gerador(cls, self: Self) -> None:
+    def fato_gerador(self) -> None:
         """Inform the triggering event (fato gerador).
 
         This method inputs the triggering event information into the system
@@ -960,8 +937,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def desc_objeto(cls, self: Self) -> None:
+    def desc_objeto(self) -> None:
         """Fill in the description object field.
 
         This method inputs the description of the object into the system
@@ -992,8 +968,7 @@ class Complement(ElawBot):
         comando = f"document.querySelector('{id_input_css}').blur()"
         self.driver.execute_script(comando)
 
-    @classmethod
-    def objeto(cls, self: Self) -> None:
+    def objeto(self) -> None:
         """Inform the object of the process.
 
         This method inputs the object information into the system
@@ -1025,8 +1000,7 @@ class Complement(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def tipo_empresa(cls, self: Self) -> None:
+    def tipo_empresa(self) -> None:
         """Set the type of company and update relevant UI elements.
 
         This method determines the type of company (either "Ativa" or "Passiva") based on the
@@ -1076,8 +1050,7 @@ class Complement(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    @classmethod
-    def escritorio_externo(cls, self: Self) -> None:
+    def escritorio_externo(self) -> None:
         """Inform the external office involved in the process.
 
         This method retrieves the external office information from the bot data,
