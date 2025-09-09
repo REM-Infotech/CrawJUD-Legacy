@@ -1,0 +1,132 @@
+"""Integração e configuração de formulários para bots jurídicos e administrativos.
+
+Define tipos de formulários, mapeamento de configurações e utilitários 
+para construção dinâmica de dicionários de formulário.
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, AnyStr, Self
+
+from .administrativo import (
+    AdministrativoFormFileAuth,
+    AdministrativoFormMultipleFiles,
+)
+from .juridico import (
+    JuridicoFormFileAuth,
+    JuridicoFormMultipleFiles,
+    JuridicoFormMultipleFilesPJe,
+    JuridicoFormOnlyAuth,
+    JuridicoFormOnlyFile,
+    JuridicoFormPautas,
+    JuridicoFormPJE,
+    JuridicoFormProcParte,
+)
+
+if TYPE_CHECKING:
+    from crawjud.models.bots import BotsCrawJUD
+
+
+type ClassFormDict = (
+    JuridicoFormFileAuth
+    | JuridicoFormMultipleFiles
+    | JuridicoFormOnlyAuth
+    | JuridicoFormOnlyFile
+    | JuridicoFormPautas
+    | JuridicoFormProcParte
+    | AdministrativoFormFileAuth
+    | AdministrativoFormMultipleFiles
+    | JuridicoFormMultipleFilesPJe
+)
+
+FORM_CONFIG: dict[str, dict[str, ClassFormDict]] = {
+    "JURIDICO": {
+        "only_auth": JuridicoFormOnlyAuth,
+        "file_auth": JuridicoFormFileAuth,
+        "multipe_files": JuridicoFormMultipleFiles,
+        "only_file": JuridicoFormOnlyFile,
+        "pautas": JuridicoFormPautas,
+        "proc_parte": JuridicoFormProcParte,
+        "pje": JuridicoFormPJE,
+        "pje_protocolo": JuridicoFormMultipleFilesPJe,
+        "jusbr_protocolo": JuridicoFormMultipleFilesPJe,
+    },
+    "ADMINISTRATIVO": {
+        "file_auth": AdministrativoFormFileAuth,
+        "multipe_files": AdministrativoFormMultipleFiles,
+    },
+}
+
+
+class FormDict(
+    JuridicoFormFileAuth,
+    JuridicoFormMultipleFilesPJe,
+    JuridicoFormMultipleFiles,
+    JuridicoFormOnlyAuth,
+    JuridicoFormOnlyFile,
+    JuridicoFormPautas,
+    JuridicoFormProcParte,
+    AdministrativoFormFileAuth,
+    AdministrativoFormMultipleFiles,
+):
+    """Permite construção dinâmica e acesso a anotações de tipos de formulários.
+
+    Herda todos os TypedDicts de formulários jurídicos e administrativos.
+    """
+
+    @classmethod
+    async def constructor(
+        cls,
+        bot: BotsCrawJUD,
+        data: dict[str, AnyStr],
+    ) -> Self:
+        """Construa dinamicamente um formulário baseado na configuração do bot.
+
+        Args:
+            bot (BotsCrawJUD): Instância do bot contendo configuração.
+            data (dict[str, AnyStr]): Dados para inicializar o formulário.
+
+        Returns:
+            Self: Instância do formulário apropriado preenchida com os dados.
+
+        """
+        classification = bot.classification.upper()
+        config = bot.form_cfg.lower()
+        return FORM_CONFIG[classification][config](**data)
+
+    @classmethod
+    def get_annotations(
+        cls,
+        classification: str,
+        config: str,
+    ) -> dict[str, Any]:
+        """Recupere as anotações de tipo do formulário conforme configuração.
+
+        Args:
+            classification (str): Classificação do formulário (ex: 'JURIDICO').
+            config (str): Configuração do formulário (ex: 'file_auth').
+
+        Returns:
+            dict[str, Any]: Dicionário de anotações de tipo do formulário.
+
+        """
+        return FORM_CONFIG[classification][config].__annotations__
+
+
+__all__ = [
+    # Form types
+    "AdministrativoFormFileAuth",
+    "AdministrativoFormMultipleFiles", 
+    "JuridicoFormFileAuth",
+    "JuridicoFormMultipleFiles",
+    "JuridicoFormMultipleFilesPJe",
+    "JuridicoFormOnlyAuth",
+    "JuridicoFormOnlyFile",
+    "JuridicoFormPautas",
+    "JuridicoFormPJE",
+    "JuridicoFormProcParte",
+    # Utilities
+    "ClassFormDict",
+    "FORM_CONFIG",
+    "FormDict",
+]
