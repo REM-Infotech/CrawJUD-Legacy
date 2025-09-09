@@ -452,7 +452,7 @@ class Complement(ElawBot):
 
         """
         element_select = self.elements.css_esfera_judge
-        message = "Informando esfera do processo"
+        message = "Informando esfera do processo."
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
