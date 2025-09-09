@@ -280,3 +280,84 @@ class ElawBot[T](CrawJUD):
         """Define 'CNPJ_FAVORECIDO' padrão se vazio."""
         if not data.get("CNPJ_FAVORECIDO"):
             data["CNPJ_FAVORECIDO"] = "04.812.509/0001-90"
+
+    def sleep_load(self, element: str) -> None:
+        """Wait until the loading indicator for a specific element is hidden."""
+        while True:
+            sleep(0.5)
+            load = None
+            aria_value = None
+            with suppress(TimeoutException):
+                load = WebDriverWait(self.driver, 5).until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, element)),
+                )
+
+            if load:
+                for attributes in ["aria-live", "aria-hidden", "class"]:
+                    aria_value = load.get_attribute(attributes)
+
+                    if not aria_value:
+                        continue
+
+                    break
+
+                if aria_value is None or any(
+                    value == aria_value
+                    for value in [
+                        "off",
+                        "true",
+                        "spinner--fullpage spinner--fullpage--show",
+                    ]
+                ):
+                    break
+
+            if not load:
+                break
+
+    def wait_fileupload(self) -> None:
+        """Wait until the file upload progress completes.
+
+        Checks repeatedly until no progress bar is present.
+
+        """
+        while True:
+            sleep(0.05)
+            div1 = 'div[class="ui-fileupload-files"]'
+            div2 = 'div[class="ui-fileupload-row"]'
+            div0 = 'div[id*=":uploadGedEFile"]'
+            progress_bar = None
+
+            div0progress_bar = super().find_element(By.CSS_SELECTOR, div0)
+            div1progress_bar = div0progress_bar.find_element(
+                By.CSS_SELECTOR,
+                div1,
+            )
+
+            with suppress(NoSuchElementException):
+                progress_bar = div1progress_bar.find_element(
+                    By.CSS_SELECTOR,
+                    div2,
+                )
+
+            if progress_bar is None:
+                break
+
+    def print_comprovante(self) -> None:
+        """Print the receipt of the registration.
+
+        This method handles the printing of the registration receipt by interacting
+        with the relevant web el, taking a screenshot, and logging the actions
+        performed.
+
+        """
+        name_comprovante = f"Comprovante - {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid}.png"
+        savecomprovante = self.output_dir_path.joinpath(name_comprovante)
+
+        with savecomprovante.open("wb") as fp:
+            fp.write(self.driver.get_screenshot_as_png())
+
+        self.append_success([
+            self.bot_data.get("NUMERO_PROCESSO"),
+            name_comprovante,
+            self.pid,
+        ])

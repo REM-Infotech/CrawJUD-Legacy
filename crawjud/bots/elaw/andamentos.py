@@ -9,8 +9,8 @@ Classes:
 
 from __future__ import annotations
 
-from contextlib import suppress
 from time import sleep
+from typing import NoReturn
 
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -20,6 +20,16 @@ from selenium.webdriver.support.wait import WebDriverWait
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.elaw import ElawBot
 from crawjud.resources.elements import elaw as el
+
+
+def raise_error(message: str) -> NoReturn:
+    """Empty.
+
+    Raises:
+        ExecutionError: ExecutionError
+
+    """
+    raise ExecutionError(message=message)
 
 
 class Andamentos(ElawBot):
@@ -39,28 +49,7 @@ class Andamentos(ElawBot):
             self.row = pos + 1
             self.bot_data = value
 
-            try:
-                self.queue()
-
-            except ExecutionError as e:
-                windows = self.driver.window_handles
-
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.driver_launch(
-                            message="Webdriver encerrado inesperadamente, reinicializando...",
-                        )
-
-                    self.auth()
-
-                message_error = str(e)
-
-                self.print_msg(message=f"{message_error}.", type_log="error")
-
-                self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+            self.queue()
 
         self.finalize_execution()
 
@@ -68,43 +57,32 @@ class Andamentos(ElawBot):
         """Handle the andamento queue processing.
 
         Attempts to perform the andamento operations and handles cases where the process is not found.
-
-        Raises:
-            ExecutionError: If an error occurs during queue processing.
-
         """
         try:
-            search = self.search_bot()
-            if search is True:
-                btn_newmove = el.botao_andamento
-                new_move = self.wait.until(
-                    ec.presence_of_element_located((
-                        By.CSS_SELECTOR,
-                        btn_newmove,
-                    )),
-                )
-                new_move.click()
+            search = self.search()
+            if not search:
+                return
 
-                self.info_data()
-                self.info_ocorrencia()
-                self.info_observacao()
+            btn_newmove = el.botao_andamento
+            new_move = self.wait.until(
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    btn_newmove,
+                )),
+            )
+            new_move.click()
 
-                if self.bot_data.get("ANEXOS", None):
-                    self.add_anexo()
+            self.info_data()
+            self.info_ocorrencia()
+            self.info_observacao()
 
-                self.save_andamento()
+            if self.bot_data.get("ANEXOS", None):
+                self.add_anexo()
 
-            elif search is not True:
-                self.message = "Processo não encontrado!"
-                self.type_log = "error"
-                self.prt()
-                self.append_error([
-                    self.bot_data.get("NUMERO_PROCESSO"),
-                    self.message,
-                ])
+            self.save_andamento()
 
-        except ExecutionError as e:
-            raise ExecutionError(exc=e) from e
+        except (ExecutionError, Exception) as e:
+            self.append_error(exc=e)
 
     def info_data(self) -> None:
         """Inform the date of the andamento.
@@ -116,9 +94,9 @@ class Andamentos(ElawBot):
 
         """
         try:
-            self.message = "Informando data"
-            self.type_log = "log"
-            self.prt()
+            message = "Informando data"
+            type_log = "log"
+            self.print_msg(message=message, type_log=type_log, row=self.row)
             css_campo_data = el.input_data
             campo_data = self.wait.until(
                 ec.presence_of_element_located((
@@ -130,10 +108,10 @@ class Andamentos(ElawBot):
             campo_data.send_keys(Keys.CONTROL, "a")
             sleep(0.5)
             campo_data.send_keys(Keys.BACKSPACE)
-            self.interact.send_key(campo_data, self.bot_data.get("DATA"))
+            campo_data.send_keys(self.bot_data.get("DATA"))
             campo_data.send_keys(Keys.TAB)
 
-            self.interact.sleep_load('div[id="j_id_34"]')
+            self.driver.sleep_load('div[id="j_id_34"]')
 
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e
@@ -148,9 +126,9 @@ class Andamentos(ElawBot):
 
         """
         try:
-            self.message = "Informando ocorrência"
-            self.type_log = "log"
-            self.prt()
+            message = "Informando ocorrência"
+            type_log = "log"
+            self.print_msg(message=message, type_log=type_log, row=self.row)
 
             ocorrencia = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -162,7 +140,7 @@ class Andamentos(ElawBot):
                 .replace("\n", "")
             )
 
-            self.interact.send_key(ocorrencia, text_andamento)
+            ocorrencia.send_keys(text_andamento)
 
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e
@@ -177,9 +155,9 @@ class Andamentos(ElawBot):
 
         """
         try:
-            self.message = "Informando observação"
-            self.type_log = "log"
-            self.prt()
+            message = "Informando observação"
+            type_log = "log"
+            self.print_msg(message=message, type_log=type_log, row=self.row)
 
             observacao = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -191,7 +169,7 @@ class Andamentos(ElawBot):
                 .replace("\n", "")
             )
 
-            self.interact.send_key(observacao, text_andamento)
+            observacao.send_keys(text_andamento)
 
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e
@@ -216,9 +194,9 @@ class Andamentos(ElawBot):
 
         """
         try:
-            self.message = "Salvando andamento..."
-            self.type_log = "log"
-            self.prt()
+            message = "Salvando andamento..."
+            type_log = "log"
+            self.print_msg(message=message, type_log=type_log, row=self.row)
             sleep(1)
             self.link = self.driver.current_url
             save_button = self.driver.find_element(

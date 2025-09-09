@@ -84,7 +84,7 @@ class SolPags(ElawBot):
 
         """
         try:
-            search = self.search_bot()
+            search = self.search()
 
             if search is True:
                 namedef = self.format_string(

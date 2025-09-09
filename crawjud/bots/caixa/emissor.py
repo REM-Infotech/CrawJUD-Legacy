@@ -14,10 +14,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.main import CrawJUD
+from crawjud.controllers.caixa import CaixaBot
 
 
-class Emissor(CrawJUD):
+class Emissor(CaixaBot):
     """Manage creation and processing of judicial deposit documents using the Emissor bot fully.
 
     Offer a range of functionalities to access deposit pages, handle login flows,
@@ -37,28 +37,7 @@ class Emissor(CrawJUD):
             self.row = pos + 1
             self.bot_data = value
 
-            try:
-                self.queue()
-
-            except ExecutionError as e:
-                windows = self.driver.window_handles
-
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.driver_launch(
-                            message="Webdriver encerrado inesperadamente, reinicializando...",
-                        )
-
-                    self.auth()
-
-                message_error = str(e)
-
-                self.print_msg(message=f"{message_error}.", type_log="error")
-
-                self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+            self.queue()
 
         self.finalize_execution()
 
@@ -67,9 +46,6 @@ class Emissor(CrawJUD):
 
         Execute steps like site navigation, deposit data input, PDF creation,
         and data extraction in a single call.
-
-        Raises:
-            ExecutionError: Erro de execução
 
         """
         try:
@@ -85,7 +61,7 @@ class Emissor(CrawJUD):
             self.append_success(data)
 
         except ExecutionError as e:
-            raise ExecutionError(exc=e) from e
+            self.append_error(exc=e)
 
     def get_site(self) -> None:
         """Access deposit site, solve CAPTCHA, and load required deposit interface.
