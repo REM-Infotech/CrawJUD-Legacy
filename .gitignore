@@ -21,6 +21,7 @@ lib64/
 *.pfx
 *.p7s
 *.p12
+celerybeat-*
 *.xlsx
 .graalvenv/*
 _teste.py

@@ -40,6 +40,18 @@ environ["WORKER_NAME"] = f"{uuid4().hex[:5].upper()}@{node()}"
 work_dir = Path(__file__).cwd()
 
 
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender: Celery, **kwargs) -> None:  # noqa: D103
+    clear_cache = importlib.import_module(
+        "crawjud.tasks.files",
+        __package__,
+    ).clear_cache
+
+    # Executes every Monday morning at 7:30 a.m.
+
+    sender.add_periodic_task(60.0, clear_cache.s())
+
+
 def make_celery() -> Celery:
     """Create and configure a Celery instance with Quart application context.
 
@@ -96,10 +108,9 @@ def start_beat() -> None:
     """Start the Celery beat scheduler."""
     celery = make_celery()
     environ.update({"APPLICATION_APP": "beat"})
-    scheduler = "crawjud.addons.scheduler:DatabaseScheduler"
+    # DatabaseScheduler scheduler = "crawjud.utils.scheduler:DatabaseScheduler"
     beat = Beat(
         app=celery,
-        scheduler=scheduler,
         max_interval=5,
         loglevel="INFO",
         logfile=work_dir.joinpath(

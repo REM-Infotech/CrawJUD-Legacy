@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import shutil
+from contextlib import suppress
 from os import environ
 from pathlib import Path
 
 import pandas as pd
+from celery.result import AsyncResult
+from clear import clear
 
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
@@ -72,3 +76,24 @@ class SaveSuccessTask(ContextTask):
 
         file_name = format_string(path_planilha.name)
         storage.upload_file(f"{pid}/{file_name}", path_planilha)
+
+
+@shared_task(name="clear_cache")
+def clear_cache() -> None:  # noqa: D103
+    from crawjud.celery_app import app
+
+    clear()
+    temp_dir = Path(__file__).cwd().joinpath("temp")
+
+    for root, dirs, _ in temp_dir.walk():
+        for dir_ in dirs:
+            path_task = root.joinpath(dir_)
+            if ".wdm" in str(path_task) or "logs" in str(path_task):
+                continue
+            tsk = AsyncResult(dir_, app=app)
+
+            if tsk.ready():
+                continue
+
+            with suppress(Exception):
+                shutil.rmtree(path_task)
