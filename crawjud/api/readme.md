@@ -1,69 +1,102 @@
-# Documentação da Pasta API
+# API - Interface Web RESTful
 
-## Introdução
+O módulo API fornece uma interface web RESTful construída com Quart (framework assíncrono baseado em Flask). Este módulo gerencia toda a comunicação HTTP entre clientes e o sistema CrawJUD.
 
-A pasta `api/` é responsável por expor as funcionalidades do backend do CrawJUD por meio de endpoints RESTful, gerenciamento de autenticação, controle de rotas, namespaces e integração com módulos internos do sistema. Ela centraliza a comunicação entre clientes externos (frontends, automações, integrações) e os serviços internos, garantindo segurança, padronização e escalabilidade.
+## Arquitetura
 
-## Estrutura da Pasta
+A API é organizada em camadas:
 
+- **Rotas**: Endpoints HTTP organizados por funcionalidade
+- **Namespaces**: Agrupamento lógico de rotas relacionadas
+- **Middlewares**: Processamento de requisições e respostas
+- **Autenticação**: Sistema JWT para controle de acesso
+
+## Estrutura
+
+### Diretórios
+
+- [`routes/`](./routes/README.md) - Endpoints da API organizados por funcionalidade
+- [`namespaces/`](./namespaces/README.md) - Agrupamentos de rotas relacionadas
+
+### Arquivos Principais
+
+- `__init__.py` - Configuração e inicialização da aplicação Quart
+- `quartconf.py` - Configurações específicas do Quart
+
+## Recursos da API
+
+### Autenticação
+- Sistema JWT (JSON Web Tokens)
+- Middleware de autenticação
+- Controle de sessões com Redis
+
+### CORS
+- Configuração de Cross-Origin Resource Sharing
+- Suporte a origens múltiplas
+- Headers personalizados permitidos
+
+### Middleware
+- Proxy headers para deployment
+- Tratamento de erros centralizado
+- Logging de requisições
+
+## Endpoints Principais
+
+### Autenticação (`/auth`)
+- Login e logout de usuários
+- Renovação de tokens JWT
+- Gerenciamento de sessões
+
+### Bots (`/bot`)
+- Inicialização de robôs
+- Monitoramento de execuções
+- Controle de status
+
+### Configuração (`/config`)
+- Configurações administrativas
+- Gerenciamento de parâmetros
+- Configurações de sistema
+
+### Execução (`/execution`)
+- Controle de execuções de bots
+- Histórico de execuções
+- Status e logs
+
+### Dashboard (`/dashboard`)
+- Métricas do sistema
+- Painéis administrativos
+- Estatísticas de uso
+
+### Credenciais (`/credentials`)
+- Gerenciamento de credenciais
+- Configurações de acesso
+- Validação de credenciais
+
+## Uso
+
+```python
+from crawjud.api import create_app
+
+# Criar aplicação
+app = await create_app()
+
+# Executar aplicação
+await app.run_task(host="0.0.0.0", port=8000)
 ```
-api
-├───namespaces
-│   ├───__init__.py
-│   ├───bots.py
-│   ├───files.py
-│   └───logs.py
-│
-└───routes
-    ├───bot
-    │   ├───__init__.py
-    │   └───launch.py
-    ├───config
-    │   ├───__init__.py
-    │   ├───users.py
-    └───execution
-        ├───__init__.py
-        └───schedules.py
-```
 
-- [**namespaces/**](./namespaces/__init__.py): Contém definições de namespaces para organizar os endpoints em grupos lógicos, facilitando a manutenção e a navegação na API.
+## Configuração
 
-- [**routes/**](./routes/__init__.py): Abriga os arquivos de rotas que definem os endpoints específicos para diferentes funcionalidades:
-  - [**bot/**](./routes/bot/__init__.py): Rotas relacionadas ao gerenciamento e controle dos bots de automação.
-  - [**config/**](./routes/config/__init__.py): Rotas para configuração do sistema, incluindo usuários, permissões e parâmetros globais.
-  - [**execution/**](./routes/execution/__init__.py): Rotas para iniciar, monitorar e gerenciar execuções de tarefas automatizadas.
+A API é configurada através de:
+- Variáveis de ambiente
+- Arquivo `quartconf.py`
+- Configurações de database
+- Configurações de JWT
 
-## Funcionamento e Lógica
+## Extensões
 
-- **Autenticação e Segurança:**  
-  Utiliza JWT e validação de sessão para proteger endpoints sensíveis, garantindo que apenas usuários autenticados possam acessar recursos restritos.
-
-- **Organização Modular:**  
-  Os namespaces e subpastas permitem separar responsabilidades, facilitando manutenção, testes e extensibilidade.
-
-- **Gerenciamento de Bots:**  
-  Permite iniciar, monitorar e controlar robôs de automação via API, além de consultar status, logs e resultados.
-
-- **Gerenciamento de Arquivos:**  
-  Suporta upload, download e manipulação de arquivos necessários para os fluxos automatizados.
-
-- **Logs e Auditoria:**  
-  Disponibiliza endpoints para consulta de logs de execução, facilitando o acompanhamento e troubleshooting.
-
-- **Notificações e Dashboard:**  
-  Integra notificações em tempo real e fornece dados para dashboards administrativos.
-
-## Exemplo de Uso
-
-- **Autenticação:**  
-  Realize login via endpoint `/auth` para obter um token JWT.
-- **Execução de Bot:**  
-  Dispare a execução de um robô via rota `/bot/launch` e acompanhe o status pelo endpoint de logs.
-- **Gerenciamento de Usuários:**  
-  Utilize as rotas em `/config/users` para cadastrar ou atualizar usuários do sistema.
-
-## Observações
-
-- Todas as rotas seguem convenções REST e retornam respostas em JSON.
-- A estrutura modular facilita a adição de novos recursos sem impactar funcionalidades existentes.
-- Consulte a documentação de cada submódulo para
+- **SQLAlchemy**: ORM para banco de dados
+- **JWT Extended**: Autenticação JWT
+- **CORS**: Cross-Origin Resource Sharing
+- **SocketIO**: Comunicação em tempo real
+- **Session**: Gerenciamento de sessões
+- **Mail**: Envio de emails
