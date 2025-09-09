@@ -1,15 +1,4 @@
-"""Module for managing new registrations in the ELAW system.
-
-This module handles the creation and management of new registrations within the ELAW system.
-It automates the process of entering new records and their associated data.
-
-Classes:
-    Cadastro: Manages new registrations by extending the CrawJUD base class
-
-Attributes:
-    type_doc (dict): Maps document lengths to document types (CPF/CNPJ)
-
-"""
+"""Modulo Elaw Pré Cadastro."""
 
 from __future__ import annotations
 
@@ -24,8 +13,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.elaw.cadastro import ElawCadastro
 from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.elaw import ElawBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
@@ -39,7 +28,7 @@ type_doc = {"11": "cpf", "14": "cnpj"}
 
 @shared_task(name="elaw.cadastro", bind=True, context=ContextTask)
 @wrap_cls
-class Cadastro(ElawBot):
+class Cadastro(ElawCadastro):
     """The Cadastro class extends CrawJUD to manage registration tasks within the application.
 
     Attributes:
@@ -66,12 +55,6 @@ class Cadastro(ElawBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Handle the registration queue processing.
-
-        Refreshes the driver, extracts process information, and manages the registration
-        process using the ELAW system. Logs the steps, calculates execution time,
-        and handles potential exceptions.
-        """
         try:
             driver = self.driver
             search = self.search(bot_data=self.bot_data)
@@ -147,235 +130,7 @@ class Cadastro(ElawBot):
         except Exception as e:
             self.append_error(exc=e)
 
-    def area_direito(self) -> None:
-        """Select the area of law in the web form.
-
-        This method interacts with a web form to select the area of law specified
-        in the bot data. It logs the process and handles any necessary waits and
-        interactions with the web el.
-
-
-        """
-        wait = self.wait
-        message = "Informando área do direito"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-        text = str(self.bot_data.get("AREA_DIREITO"))
-        sleep(0.5)
-
-        element_area_direito: WebElement = wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                el.css_label_area,
-            )),
-        )
-        element_area_direito.select2(text)
-        self.sleep_load('div[id="j_id_47"]')
-
-        message = "Área do direito selecionada!"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def subarea_direito(self) -> None:
-        """Select the sub-area of law in the web form.
-
-        This method interacts with a web form to select the sub-area of law specified
-        in the bot data. It logs the process and handles any necessary waits and
-        interactions with the web el.
-        """
-        wait = self.wait
-        message = "Informando sub-área do direito"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        text = str(self.bot_data.get("SUBAREA_DIREITO"))
-        sleep(0.5)
-
-        element_subarea: WebElement = wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                el.comboareasub_css,
-            )),
-        )
-        element_subarea.select2(text)
-
-        self.sleep_load('div[id="j_id_4b"]')
-        message = "Sub-Área do direito selecionada!"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def next_page(self) -> None:
-        """Navigate to the next page by clicking the designated button.
-
-        This method waits until the next page button is present in the DOM,
-        then clicks it to navigate to the next page.
-
-        """
-        next_page: WebElement = self.wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                el.css_button,
-            )),
-            message="Erro ao encontrar elemento",
-        )
-        next_page.click()
-
-    def info_localizacao(self) -> None:
-        """Provide information about the location of the process.
-
-        This method selects the judicial sphere of the process and logs the actions performed.
-        It interacts with the web el to set the sphere and waits for the loading to complete.
-
-        """
-        text = "Judicial"
-
-        message = "Informando esfera do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        element_select: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.css_esfera_judge)),
-        )
-
-        element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
-
-        message = "Esfera Informada!"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def informa_estado(self) -> None:
-        """Informs the state of the process by selecting the appropriate option from a dropdown menu.
-
-        This method retrieves the state information from the bot's data, logs the action,
-        selects the state in the dropdown menu using the select2 method, waits for the
-        page to load, and then logs the completion of the action.
-
-
-        """
-        key = "ESTADO"
-
-        text = str(self.bot_data.get(key, None))
-
-        message = "Informando estado do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        element_select: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.estado_input)),
-        )
-
-        element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
-
-        message = "Estado do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def informa_comarca(self) -> None:
-        """Fill in the comarca (judicial district) information for the process.
-
-        This method retrieves the comarca information from the bot data, selects the appropriate
-        input element, and inputs the comarca text. It also logs the actions performed.
-        Steps:
-        1. Retrieve the comarca information from crawjud.bot data.
-        2. Select the comarca input element.
-        3. Log the action of informing the comarca.
-        4. Use the select2 method to input the comarca text.
-        5. Wait for the loading indicator to disappear.
-        6. Log the completion of the comarca information input.
-
-
-        """
-        text = str(self.bot_data.get("COMARCA"))
-
-        message = "Informando comarca do processo"
-        type_log = "log"
-
-        element_select: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.comarca_input)),
-        )
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
-
-        message = "Comarca do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def informa_foro(self) -> None:
-        """Informs the court jurisdiction (foro) for the process.
-
-        This method retrieves the court jurisdiction information from the bot data,
-        logs the action, and interacts with the web element to input the court jurisdiction.
-        Steps:
-        1. Retrieves the court jurisdiction from `self.bot_data`.
-        2. Logs the action of informing the court jurisdiction.
-        3. Uses the `select2` method to select the court jurisdiction in the web element.
-        4. Waits for the loading element to disappear.
-        5. Logs the completion of the action.
-
-
-        """
-        text = str(self.bot_data.get("FORO"))
-
-        message = "Informando foro do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        element_select: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.foro_input)),
-        )
-        element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
-
-        message = "Foro do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def informa_vara(self) -> None:
-        """Fill in the court information for the process.
-
-        This method retrieves the court information from the bot data and inputs it
-        into the appropriate field in the ELAW system. It logs the actions performed
-        and ensures the input is processed by the system.
-        Steps:
-        1. Retrieve the court information from `self.bot_data`.
-        2. Log the action of informing the court information.
-        3. Use the `select2` method to input the court information.
-        4. Wait for the system to process the input.
-        5. Log the completion of the action.
-
-
-
-        """
-        text = self.bot_data.get("VARA")
-
-        wait = self.wait
-        message = "Informando vara do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        element_select: WebElement = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.vara_input)),
-        )
-
-        element_select.select2(text)
-
-        self.sleep_load('div[id="j_id_4b"]')
-
-        message = "Vara do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
     def informa_proceso(self) -> None:
-        """Inform the process number in the web form.
-
-        This method retrieves the process number from the bot data, inputs it into the
-        designated field, and handles any necessary interactions and waits.
-
-        """
         key = "NUMERO_PROCESSO"
         css_campo_processo = el.numero_processo
 
@@ -404,14 +159,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def informa_empresa(self) -> None:
-        """Inform the company associated with the process.
-
-        This method retrieves the company name from the bot data, selects the appropriate
-        input field, and inputs the company name. It includes logging of actions performed.
-
-
-
-        """
         text = self.bot_data.get("EMPRESA")
         element_select: WebElement = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.empresa_input)),
@@ -430,16 +177,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def set_classe_empresa(self) -> None:
-        """Set the classification of the company.
-
-        This method retrieves the company type from the bot data, formats it,
-        and uses it to interact with a specific input element on the page.
-        It logs messages before and after the interaction to indicate the
-        progress of the operation.
-
-
-
-        """
         key = "TIPO_EMPRESA"
         element_select = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.tipo_empresa_input)),
@@ -458,16 +195,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def parte_contraria(self) -> None:
-        """Handle the opposing party information.
-
-        This method manages the input and processing of opposing party details.
-        It interacts with the relevant web el and ensures the data is correctly
-        entered and processed.
-
-        Raises:
-            ExecutionError: If an error occurs during the process.
-
-        """
         message = "Preechendo informações da parte contrária"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -540,14 +267,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def uf_proc(self) -> None:
-        """Inform the federal unit (state) of the process.
-
-        This method selects the appropriate state from the dropdown menu based on
-        the bot data and logs the action performed.
-
-
-
-        """
         message = "Preenchendo UF Processo..."
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -577,14 +296,6 @@ class Cadastro(ElawBot):
             self.interact.send_key(other_location, Keys.ENTER)
 
     def acao_proc(self) -> None:
-        """Inform the action of the process.
-
-        This method selects the appropriate action type for the process from the
-        dropdown menu based on the bot data and logs the action performed.
-
-
-
-        """
         message = "Informando ação do processo"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -617,14 +328,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def data_distribuicao(self) -> None:
-        """Inform the distribution date of the process.
-
-        This method inputs the distribution date into the designated field and logs
-        the action performed.
-
-
-
-        """
         self.sleep_load('div[id="j_id_4b"]')
         message = "Informando data de distribuição"
         type_log = "log"
@@ -652,86 +355,7 @@ class Cadastro(ElawBot):
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-    def advogado_interno(self) -> None:
-        """Inform the internal lawyer.
-
-        This method inputs the internal lawyer information into the system
-        and ensures it is properly selected.
-
-        Raises:
-            ExecutionError: Erro caso advogado não seja encontrado
-
-        """
-        wait = self.wait
-        driver = self.driver
-
-        bot_data = self.bot_data
-
-        message = "informando advogado interno"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        input_adv_responsavel: WebElement = wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                el.adv_responsavel,
-            )),
-        )
-        input_adv_responsavel.click()
-        input_adv_responsavel.send_keys(
-            bot_data.get("ADVOGADO_INTERNO"),
-        )
-
-        id_input_adv = input_adv_responsavel.get_attribute("id").replace(
-            "_input",
-            "_panel",
-        )
-        css_wait_adv = f"span[id='{id_input_adv}'] > ul > li"
-
-        wait_adv = None
-
-        with suppress(TimeoutException):
-            wait_adv: WebElement = WebDriverWait(driver, 25).until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    css_wait_adv,
-                )),
-            )
-
-        if wait_adv:
-            wait_adv.click()
-        elif not wait_adv:
-            raise ExecutionError(message="Advogado interno não encontrado")
-
-        self.sleep_load('div[id="j_id_4b"]')
-
-        self.sleep_load('div[id="j_id_4b"]')
-        element_select: WebElement = wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                el.select_advogado_responsavel,
-            )),
-        )
-        element_select.select2(bot_data.get("ADVOGADO_INTERNO"))
-
-        id_element = element_select.get_attribute("id")
-        id_input_css = f'[id="{id_element}"]'
-        comando = f"document.querySelector('{id_input_css}').blur()"
-        driver.execute_script(comando)
-
-        self.sleep_load('div[id="j_id_4b"]')
-
-        message = "Advogado interno informado!"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
     def adv_parte_contraria(self) -> None:
-        """Inform the lawyer for the opposing party.
-
-        This method retrieves the opposing party's lawyer information from the bot data,
-        inputs it into the designated field, and logs the action performed.
-
-        """
         driver = self.driver
         wait = self.wait
 
@@ -885,14 +509,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def tipo_contingencia(self) -> None:
-        """Inform the type of contingency for the process.
-
-        This method selects the appropriate contingency type from the dropdown menu
-        based on the bot data and logs the action performed.
-
-
-
-        """
         wait = self.wait
         bot_data = self.bot_data
 
@@ -922,15 +538,6 @@ class Cadastro(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def cadastro_advogado_contra(self) -> None:
-        """Register the lawyer information.
-
-        This method handles the registration of lawyer details by interacting with
-        the relevant web el and logging the actions performed.
-
-        Raises:
-            ExecutionError: If an error occurs during the process.
-
-        """
         try:
             wait = self.wait
             driver = self.driver
@@ -1036,15 +643,6 @@ class Cadastro(ElawBot):
             ) from e
 
     def cadastro_parte_contraria(self) -> None:
-        """Register the party information.
-
-        This method handles the registration of party details by interacting with
-        the relevant web el and logging the actions performed.
-
-        Raises:
-            ExecutionError: If an error occurs during the process
-
-        """
         try:
             message = "Cadastrando parte"
             type_log = "log"
@@ -1179,45 +777,7 @@ class Cadastro(ElawBot):
         except Exception as e:
             raise ExecutionError(e=e) from e
 
-    def salvar_tudo(self) -> None:
-        """Save all entered information.
-
-        This method clicks the save button to persist all entered data and logs the
-        action performed.
-
-
-
-        """
-        wait = self.wait
-
-        self.sleep_load('div[id="j_id_4b"]')
-        salvartudo: WebElement = wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                el.css_salvar_proc,
-            )),
-            message="Erro ao encontrar elemento",
-        )
-
-        message = "Salvando processo novo"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        salvartudo.click()
-
     def check_part_found(self) -> str | None:
-        """Check if the opposing party is found.
-
-        This method verifies the presence of the opposing party in the process.
-        It interacts with the web el to perform the check and returns the result.
-
-        Args:
-            driver: The WebDriver instance.
-
-        Returns:
-            str | None: The status of the opposing party search.
-
-        """
         name_parte = None
         tries: int = 0
 
@@ -1241,54 +801,3 @@ class Cadastro(ElawBot):
             tries += 1
 
         return name_parte
-
-    def confirm_save(self) -> bool:
-        """Confirm the saving of information.
-
-        This method verifies that all information has been successfully saved
-        by checking the URL and interacting with web el as needed.
-        Logs the action performed.
-
-        Returns:
-            bool: True if the save is confirmed, False otherwise.
-
-        Raises:
-            ExecutionError: If the save confirmation fails.
-
-        """
-        wait = self.wait
-        driver = self.driver
-
-        with suppress(TimeoutException):
-            WebDriverWait(driver, 20).until(
-                ec.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
-                message="Erro ao encontrar elemento",
-            )
-
-            self.print_msg(
-                message="Processo salvo com sucesso!",
-                type_log="log",
-                row=self.row,
-            )
-            return True
-
-        mensagem_erro: str = None
-        with suppress(TimeoutException, NoSuchElementException):
-            mensagem_erro = (
-                wait.until(
-                    ec.presence_of_element_located((
-                        By.CSS_SELECTOR,
-                        el.div_messageerro_css,
-                    )),
-                    message="Erro ao encontrar elemento",
-                )
-                .find_element(By.TAG_NAME, "ul")
-                .text
-            )
-
-        if not mensagem_erro:
-            mensagem_erro = (
-                "Cadastro do processo nao finalizado, verificar manualmente"
-            )
-
-        raise ExecutionError(mensagem_erro)

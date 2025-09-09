@@ -15,18 +15,14 @@ Attributes:
 from __future__ import annotations
 
 import time
-from contextlib import suppress
 from pathlib import Path
 from time import sleep
-from typing import TYPE_CHECKING, NoReturn
+from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.common.exceptions.bot import ExecutionError
-from crawjud.controllers.elaw import ElawBot
+from crawjud.bots.elaw.cadastro import ElawCadastro
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
@@ -35,46 +31,16 @@ if TYPE_CHECKING:
     from crawjud.utils.webdriver import WebElementBot as WebElement
 type_doc = {11: "cpf", 14: "cnpj"}
 
-campos_validar: list[str] = [
-    "estado",
-    "comarca",
-    "foro",
-    "vara",
-    "divisao",
-    "fase",
-    "provimento",
-    "fato_gerador",
-    "objeto",
-    "tipo_empresa",
-    "tipo_entrada",
-    "acao",
-    "escritorio_externo",
-    "classificacao",
-    "toi_criado",
-    "nota_tecnica",
-    "liminar",
-]
-
 
 @shared_task(name="elaw.complementar_cadastro", bind=True, context=ContextTask)
 @wrap_cls
-class Complement(ElawBot):
+class Complement(ElawCadastro):
     """A class that configures and retrieves an elements bot instance.
 
     This class interacts with the ELAW system to complete the registration of a process.
     """
 
     def execution(self) -> None:
-        """Execute the complement bot.
-
-        This method executes the complement bot by calling the queue method
-        for each row in the DataFrame, and handling any exceptions that may
-        occur. If the Webdriver is closed unexpectedly, it will be
-        reinitialized. The bot will also be stopped if the isStoped attribute
-        is set to True.
-
-
-        """
         frame = self.frame
         self.total_rows = len(frame)
 
@@ -145,7 +111,7 @@ class Complement(ElawBot):
 
             self.validar_campos()
             self.validar_advs_participantes()
-            self.save_all()
+            self.salva_tudo()
 
             if self.confirm_save() is True:
                 name_comprovante = self.print_comprovante()
@@ -167,181 +133,6 @@ class Complement(ElawBot):
         except Exception as e:
             self.append_error(exc=e)
 
-    def save_all(self) -> None:
-        """Save all changes in the process.
-
-        This method interacts with the web elements to save all changes made
-        to the process. It logs the action and clicks the save button.
-
-
-        """
-        self.interact.sleep_load('div[id="j_id_48"]')
-        salvartudo: WebElement = self.wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                self.elements.css_salvar_proc,
-            )),
-        )
-        type_log = "log"
-        message = "Salvando processo novo"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-        salvartudo.click()
-
-    def validar_campos(self) -> None:
-        """Validate the required fields.
-
-        This method checks each required field in the process to ensure
-        they are properly filled. It logs the validation steps and raises
-        an error if any required field is missing.
-
-        """
-        message = "Validando campos"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        validar: dict[str, str] = {
-            "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
-        }
-        message_campo: list[str] = []
-
-        def raise_execution() -> NoReturn:
-            raise ExecutionError(
-                message=f'Campo "{campo}" não preenchido',
-            )
-
-        for campo in campos_validar:
-            try:
-                campo_validar: str = self.elements.dict_campos_validar.get(
-                    campo,
-                )
-                command = f"return $('{campo_validar}').text()"
-                element = self.driver.execute_script(command)
-
-                if not element or element.lower() == "selecione":
-                    raise_execution()
-
-                message_campo.append(
-                    f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>',
-                )
-                validar.update({campo.upper(): element})
-
-            except Exception as e:
-                try:
-                    message = e.message
-
-                except Exception:
-                    message = str(e)
-
-                validar.update({campo.upper(): message})
-
-                message = message
-                type_log = "info"
-                self.print_msg(
-                    message=message,
-                    type_log=type_log,
-                    row=self.row,
-                )()
-
-        self.append_validarcampos([validar])
-        message_campo.append('<p class="fw-bold">Campos validados!</p>')
-        message = "".join(message_campo)
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def validar_advogado(self) -> str:
-        """Validate the responsible lawyer.
-
-        This method ensures that the responsible lawyer field is filled and
-        properly selected. It logs the validation steps and raises an error
-        if the field is not properly filled.
-
-        Returns:
-        str
-            The name of the responsible lawyer.
-
-
-        Raises:
-            ExecutionError: If the responsible lawyer field is not filled.
-
-        """
-        message = "Validando advogado responsável"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        campo_validar = self.elements.dict_campos_validar.get(
-            "advogado_interno",
-        )
-        command = f"return $('{campo_validar}').text()"
-        element = self.driver.execute_script(command)
-
-        if not element or element.lower() == "selecione":
-            raise ExecutionError(
-                message='Campo "Advogado Responsável" não preenchido',
-            )
-
-        message = f'Campo "Advogado Responsável" | Texto: {element}'
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        sleep(0.5)
-
-        return element
-
-    def validar_advs_participantes(self) -> None:
-        """Validate participating lawyers.
-
-        This method ensures that the responsible lawyer is present in the
-        list of participating lawyers. It logs the validation steps and
-        raises an error if the responsible lawyer is not found.
-
-        Raises:
-            ExecutionError: If the responsible lawyer is not found in the list of participating lawyers.
-
-        """
-        data_bot = self.bot_data
-        adv_name = data_bot.get("ADVOGADO_INTERNO", self.validar_advogado())
-
-        if not adv_name.strip():
-            raise ExecutionError(
-                message="Necessário advogado interno para validação!",
-            )
-
-        message = "Validando advogados participantes"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        tabela_advogados = self.driver.find_element(
-            By.CSS_SELECTOR,
-            self.elements.tabela_advogados_resp,
-        )
-
-        not_adv = None
-        with suppress(NoSuchElementException):
-            tr_not_adv = self.elements.tr_not_adv
-            not_adv = tabela_advogados.find_element(
-                By.CSS_SELECTOR,
-                tr_not_adv,
-            )
-
-        if not_adv is not None:
-            raise ExecutionError(message="Sem advogados participantes!")
-
-        advs = tabela_advogados.find_elements(By.TAG_NAME, "tr")
-
-        for adv in advs:
-            advogado = adv.find_element(By.TAG_NAME, "td").text
-            if advogado.lower() == adv_name.lower():
-                break
-
-        else:
-            raise ExecutionError(
-                message="Advogado responsável não encontrado na lista de advogados participantes!",
-            )
-
-        message = "Advogados participantes validados"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
     def print_comprovante(self) -> str:
         """Print the comprovante (receipt) of the registration.
 
@@ -360,245 +151,6 @@ class Complement(ElawBot):
         )
         self.driver.get_screenshot_as_file(savecomprovante)
         return name_comprovante
-
-    def advogado_interno(self) -> None:
-        """Inform the internal lawyer.
-
-        This method inputs the internal lawyer information into the system
-        and ensures it is properly selected.
-
-        Parameters
-        ----------
-        self : Self
-            The instance of the class.
-
-        Raises
-        ------
-            ExecutionError: If the internal lawyer is not found.
-
-        """
-        message = "informando advogado interno"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        input_adv_responsavel: WebElement = self.wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                self.elements.adv_responsavel,
-            )),
-        )
-        input_adv_responsavel.click()
-        self.interact.send_key(
-            input_adv_responsavel,
-            self.bot_data.get("ADVOGADO_INTERNO"),
-        )
-
-        css_wait_adv = f"{input_adv_responsavel.get_attribute('id')} > ul > li"
-
-        wait_adv = None
-
-        with suppress(TimeoutException):
-            wait_adv: WebElement = WebDriverWait(self.driver, 25).until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    css_wait_adv,
-                )),
-            )
-
-        if wait_adv:
-            wait_adv.click()
-        elif not wait_adv:
-            raise ExecutionError(message="Advogado interno não encontrado")
-
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        self.interact.sleep_load('div[id="j_id_48"]')
-        element_select = self.wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                self.elements.select_advogado_responsavel,
-            )),
-        )
-        element_select.select2_elaw(self.bot_data.get("ADVOGADO_INTERNO"))
-
-        id_element = element_select.get_attribute("id")
-        id_input_css = f'[id="{id_element}"]'
-        comando = f"document.querySelector('{id_input_css}').blur()"
-        self.driver.execute_script(comando)
-
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        message = "Advogado interno informado!"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def esfera(self, text: str = "Judicial") -> None:
-        """Handle the selection of the judicial sphere in the process.
-
-        This function performs the following steps:
-        1. Selects the judicial sphere element.
-        2. Sets the text to "Judicial".
-        3. Logs the message "Informando esfera do processo".
-        4. Calls the select2_elaw method to select the element.
-        5. Waits for the loading of the specified div element.
-        6. Logs the message "Esfera Informada!".
-
-        Parameters
-        ----------
-        self : Self
-            The instance of the class.
-        text : str, optional
-            The text to set for the judicial sphere, by default "Judicial".
-
-        """
-        element_select = self.elements.css_esfera_judge
-        message = "Informando esfera do processo."
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        self.select2_elaw(
-            self.wait.until(
-                ec.presence_of_element_located((By.XPATH, element_select)),
-            ),
-            text,
-        )
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        message = "Esfera Informada!"
-        type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def estado(self) -> None:
-        """Update the state of the process in the system.
-
-        This method retrieves the state information from `self.bot_data` using the key "ESTADO",
-        logs the action, and updates the state input field in the system using the `select2_elaw` method.
-        It then waits for the system to load the changes.
-
-        Parameters
-        ----------
-        self : Self
-            The instance of the class.
-
-
-        """
-        key = "ESTADO"
-        element_select = self.elements.estado_input
-        text = str(self.bot_data.get(key, None))
-
-        message = "Informando estado do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        self.select2_elaw(
-            self.wait.until(
-                ec.presence_of_element_located((By.XPATH, element_select)),
-            ),
-            text,
-        )
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        message = "Estado do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def comarca(self) -> None:
-        """Inform the "comarca" (jurisdiction) of the process.
-
-        This method retrieves the comarca information from the bot data,
-        selects the appropriate input element, and interacts with the
-        interface to input the comarca information.
-
-        Parameters
-        ----------
-        self : Self
-            The instance of the class.
-
-
-        """
-        text = str(self.bot_data.get("COMARCA"))
-        element_select = self.elements.comarca_input
-
-        message = "Informando comarca do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        self.select2_elaw(
-            self.wait.until(
-                ec.presence_of_element_located((By.XPATH, element_select)),
-            ),
-            text,
-        )
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        message = "Comarca do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def foro(self) -> None:
-        """Update the forum (foro) information for the process.
-
-        This method selects the appropriate forum input element and updates it with the
-        forum information retrieved from `self.bot_data`. It logs the actions performed
-        and interacts with the necessary elements on the page to ensure the forum information
-        is correctly updated.
-
-        Parameters
-        ----------
-        self : Self
-            The instance of the class.
-
-        """
-        element_select = self.elements.foro_input
-        text = str(self.bot_data.get("FORO"))
-
-        message = "Informando foro do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        self.select2_elaw(
-            self.wait.until(
-                ec.presence_of_element_located((By.XPATH, element_select)),
-            ),
-            text,
-        )
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        message = "Foro do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-    def vara(self) -> None:
-        """Update the "vara" (court) information for the process.
-
-        This method retrieves the "VARA" data from the bot's data, selects the appropriate
-        input element for "vara", and interacts with the ELAW system to update the information.
-        It logs messages before and after the interaction to indicate the status of the operation.
-
-        Parameters
-        ----------
-        self : Self
-            The instance of the class.
-
-        """
-        text = self.bot_data.get("VARA")
-        element_select = self.elements.vara_input
-
-        message = "Informando vara do processo"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        self.select2_elaw(
-            self.wait.until(
-                ec.presence_of_element_located((By.XPATH, element_select)),
-            ),
-            text,
-        )
-        self.interact.sleep_load('div[id="j_id_48"]')
-
-        message = "Vara do processo informado!"
-        type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def unidade_consumidora(self) -> None:
         """Handle the process of informing the consumer unit in the web application.
