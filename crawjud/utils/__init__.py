@@ -1,4 +1,34 @@
-"""Utilitários gerais do CrawJUD."""
+"""Módulo de Utilitários - Ferramentas e Funções Auxiliares.
+
+Este módulo contém utilitários e ferramentas auxiliares utilizadas em todo o 
+sistema CrawJUD. Fornece funcionalidades de suporte para automação web, 
+gerenciamento de processos, logging, armazenamento e outras operações comuns.
+
+Principais funcionalidades:
+    - Gerenciamento de processos WebDriver
+    - Finalização de processos relacionados ao BrowserMob Proxy
+    - Finalização de processos ChromeDriver órfãos
+    - Utilitários para limpeza de recursos
+
+Submodulos principais:
+    - logger: Sistema de logging estruturado
+    - storage: Gerenciamento de armazenamento e arquivos
+    - webdriver: Configuração e gerenciamento do Selenium WebDriver
+    - xlsx_generator: Geração de planilhas e relatórios
+    - formatadores: Formatação de dados brasileiros (CPF, CNPJ, etc.)
+    - recaptcha: Integração com serviços de resolução de captcha
+
+Exemplo de uso:
+    >>> from crawjud.utils import kill_chromedriver, kill_browsermob
+    >>> 
+    >>> # Limpeza de processos órfãos
+    >>> kill_chromedriver()
+    >>> kill_browsermob()
+
+Funções principais:
+    - kill_browsermob(): Finaliza processos do BrowserMob Proxy
+    - kill_chromedriver(): Finaliza processos do ChromeDriver
+"""
 
 from __future__ import annotations
 

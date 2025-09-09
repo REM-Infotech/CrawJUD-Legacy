@@ -1,4 +1,36 @@
-"""Módulo Celery App do CrawJUD Automatização."""
+"""Módulo Celery App do CrawJUD - Sistema de Tarefas Assíncronas.
+
+Este módulo implementa o sistema de tarefas assíncronas do CrawJUD utilizando 
+Celery. Fornece funcionalidades para execução de bots, processamento de dados
+e gerenciamento de filas de tarefas.
+
+Principais funcionalidades:
+- Configuração e inicialização do Celery
+- Gerenciamento de workers e beat scheduler
+- Interface CLI para controle do sistema
+- Monitoramento e logging de tarefas
+- Integração com Redis como broker
+
+Classes principais:
+    - AsyncCelery: Celery customizado para operações assíncronas
+    - Worker: Configuração de workers
+    - Beat: Agendador de tarefas periódicas
+
+Exemplo de uso:
+    >>> celery = make_celery()
+    >>> 
+    >>> @celery.task
+    >>> def minha_tarefa(parametros):
+    ...     return processar_dados(parametros)
+    >>>
+    >>> # Executar tarefa
+    >>> resultado = minha_tarefa.delay(dados)
+
+CLI Commands:
+    python -m crawjud.celery_app worker    # Iniciar worker
+    python -m crawjud.celery_app beat      # Iniciar agendador
+    python -m crawjud.celery_app monitor   # Monitor de tarefas
+"""
 
 from __future__ import annotations
 

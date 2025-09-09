@@ -1,14 +1,24 @@
-# Documentação da Estrutura de Interfaces e Tipos
+# Interfaces - Definições de Tipos e Protocolos
 
-## Introdução
+Este módulo contém as definições de interfaces, protocolos, tipos customizados e contratos da aplicação CrawJUD. As interfaces garantem consistência de tipos e facilitam a manutenção do código através de definições claras de contratos.
 
-Este documento detalha a estrutura reorganizada dos tipos e interfaces do projeto CrawJUD, organizando-os de forma mais coesa e intuitiva por domínio de responsabilidade.
+## Arquitetura
+
+### Type Hints e Protocols
+Utilização de Python typing para:
+- Definição de contratos claros
+- Verificação estática de tipos
+- Documentação de APIs
+- IntelliSense melhorado
+
+### Estrutura Organizacional
+As interfaces são organizadas por domínio de responsabilidade:
 
 ## Estrutura de Diretórios
 
 ### 📁 `core/` - Tipos Básicos e Fundamentais
 
-Contém tipos primitivos, literais e customizados utilizados em toda a aplicação.
+Contém tipos primitivos, literais e customizados utilizados em toda a aplicação:
 
 - **`primitives.py`**: Aliases de tipos básicos (DictData, ListData, PyNumbers, etc.)
 - **`literals.py`**: Tipos literais para mensagens, status e enumerações
@@ -20,18 +30,29 @@ from crawjud.interfaces.core import StrProcessoCNJ, DictData, StatusType
 
 ### 🔐 `auth/` - Tipos de Autenticação
 
-Tipos relacionados à autenticação, sessão e credenciais.
+Tipos relacionados à autenticação, sessão e credenciais:
 
 - **`session.py`**: Tipos de sessão de usuário (CurrentUser, SessionDict)
 - **`credentials.py`**: Tipos de credenciais de sistemas judiciais
 
 ```python
 from crawjud.interfaces.auth import SessionDict, CredendialsDict
+
+class AuthProvider(Protocol):
+    """Interface para provedores de autenticação."""
+    
+    async def authenticate(self, credentials: dict) -> dict:
+        """Autentica usuário com credenciais."""
+        ...
+    
+    async def refresh_token(self, refresh_token: str) -> dict:
+        """Renova token de acesso."""
+        ...
 ```
 
 ### 🤖 `bots/` - Tipos Relacionados aos Bots
 
-Tipos específicos para configuração e operação dos bots.
+Tipos específicos para configuração e operação dos bots:
 
 - **`data.py`**: Estruturas de dados dos bots (BotData, DictReturnAuth)
 - **`pje.py`**: Tipos específicos para bots do PJe
@@ -39,11 +60,30 @@ Tipos específicos para configuração e operação dos bots.
 
 ```python
 from crawjud.interfaces.bots import BotData, DictSeparaRegiao
+
+class BotInterface(Protocol):
+    """Interface base para todos os bots."""
+    
+    async def initialize(self) -> None:
+        """Inicializa o bot."""
+        ...
+    
+    async def authenticate(self, credentials: dict) -> bool:
+        """Autentica no sistema judicial."""
+        ...
+    
+    async def execute_task(self, task_data: dict) -> dict:
+        """Executa tarefa específica."""
+        ...
+    
+    async def cleanup(self) -> None:
+        """Finaliza recursos do bot."""
+        ...
 ```
 
 ### 🔧 `systems/` - Tipos de Sistemas Externos
 
-Tipos relacionados a sistemas externos e suas integrações.
+Tipos relacionados a sistemas externos e suas integrações:
 
 #### `systems/pje/` - Sistema PJe
 - **`processos.py`**: Tipos principais de processos judiciais
@@ -57,35 +97,81 @@ Tipos relacionados a sistemas externos e suas integrações.
 ```python
 from crawjud.interfaces.systems.pje import ProcessoJudicialDict
 from crawjud.interfaces.systems.webdriver import ChromeConfig
+
+class PJeInterface(Protocol):
+    """Interface para operações do PJe."""
+    
+    async def get_process_capa(self, process_number: str) -> dict:
+        """Obtém capa processual."""
+        ...
+    
+    async def get_process_pauta(self, date_range: tuple) -> List[dict]:
+        """Obtém pauta de processos."""
+        ...
 ```
 
 ### ⚙️ `tasks/` - Tipos de Tarefas Assíncronas
 
-Tipos relacionados ao processamento assíncrono e Celery.
+Tipos relacionados ao processamento assíncrono e Celery:
 
 - **`canvas.py`**: Tipos de Canvas (Signature, CeleryResult)
 - **`task.py`**: Tipos de tarefas customizadas
 
 ```python
 from crawjud.interfaces.tasks import Signature, Task
+
+class CeleryTask(Protocol):
+    """Interface para tarefas Celery."""
+    
+    def delay(self, *args, **kwargs) -> AsyncResult:
+        """Executa tarefa assincronamente."""
+        ...
+    
+    def apply_async(self, args=None, kwargs=None, **options) -> AsyncResult:
+        """Executa com opções customizadas."""
+        ...
 ```
 
 ### 📋 `forms/` - Tipos de Formulários
 
-Tipos para formulários dinâmicos dos bots.
+Tipos para formulários dinâmicos dos bots:
 
 - **`juridico.py`**: Formulários jurídicos
 - **`administrativo.py`**: Formulários administrativos
 
 ```python
 from crawjud.interfaces.forms import JuridicoFormFileAuth, FormDict
+
+class FormValidator(Protocol):
+    """Interface para validação de formulários."""
+    
+    def validate(self, data: dict) -> tuple[bool, dict]:
+        """Valida dados do formulário."""
+        ...
 ```
 
 ### 🎮 `controllers/` - Tipos de Controladores
 
-Tipos relacionados aos controladores de sistema.
+Tipos relacionados aos controladores de sistema:
 
 - **`file_service.py`**: Serviços de arquivos
+
+```python
+from typing import Protocol, Generic, TypeVar
+
+T = TypeVar('T')
+
+class Repository(Protocol, Generic[T]):
+    """Interface genérica para repositórios."""
+    
+    async def create(self, entity: T) -> T:
+        """Cria nova entidade."""
+        ...
+    
+    async def get_by_id(self, entity_id: int) -> Optional[T]:
+        """Busca entidade por ID."""
+        ...
+```
 
 ## Uso e Importações
 
@@ -118,7 +204,7 @@ from crawjud.interfaces.systems.pje import ProcessoJudicialDict, PartesProcessoP
 from crawjud.interfaces.systems.webdriver import ChromeConfig, FirefoxConfig
 ```
 
-## Benefícios da Nova Estrutura
+## Benefícios da Estrutura
 
 ### 🎯 **Organização por Domínio**
 - Tipos relacionados ficam agrupados
@@ -140,22 +226,35 @@ from crawjud.interfaces.systems.webdriver import ChromeConfig, FirefoxConfig
 - Padrão consistente para extensões
 - Modularidade que facilita testes unitários
 
-## Migração de Código Existente
+## Validação de Interfaces
 
-### Mapeamento de Imports Antigos para Novos
-
+### Runtime Type Checking
 ```python
-# ANTES
-from crawjud.interfaces.types import DictData, StrProcessoCNJ
-from crawjud.interfaces.dict.bot import BotData
-from crawjud.interfaces.pje import ProcessoJudicialDict
-from crawjud.interfaces.session import SessionDict
+from typing import runtime_checkable
 
-# DEPOIS  
-from crawjud.interfaces.core import DictData, StrProcessoCNJ
-from crawjud.interfaces.bots import BotData
-from crawjud.interfaces.systems.pje import ProcessoJudicialDict
-from crawjud.interfaces.auth import SessionDict
+@runtime_checkable
+class Serializable(Protocol):
+    """Interface para objetos serializáveis."""
+    
+    def to_dict(self) -> dict:
+        """Converte para dicionário."""
+        ...
+
+def serialize_if_possible(obj: Any) -> Optional[dict]:
+    """Serializa objeto se implementar interface."""
+    if isinstance(obj, Serializable):
+        return obj.to_dict()
+    return None
+```
+
+### Type Guards
+```python
+from typing import TypeGuard
+
+def is_valid_user_dict(data: dict) -> TypeGuard[UserDict]:
+    """Verifica se dicionário é UserDict válido."""
+    required_keys = {'id', 'login', 'email', 'nome_usuario', 'active'}
+    return all(key in data for key in required_keys)
 ```
 
 ## Convenções de Nomenclatura
@@ -173,15 +272,3 @@ Cada arquivo de tipo deve incluir:
 2. **Documentação de cada tipo** com Args e Returns
 3. **Exemplos de uso** quando apropriado
 4. **Lista `__all__`** com exports explícitos
-
-## Considerações de Performance
-
-- Imports organizados reduzem tempo de inicialização
-- TYPE_CHECKING usado para imports apenas em tempo de verificação
-- Re-exports controlados evitam imports desnecessários
-
-## Versionamento e Compatibilidade
-
-- Estrutura é retrocompatível via re-exports no `__init__.py` principal
-- Deprecation warnings podem ser adicionados para imports antigos
-- Migração gradual é possível mantendo ambas as estruturas temporariamente
