@@ -40,9 +40,6 @@ from quart import (
 )
 from quart_jwt_extended import (
     create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    jwt_refresh_token_required,
     set_access_cookies,
     unset_jwt_cookies,
 )
@@ -178,27 +175,3 @@ async def logout() -> Response:
     except ValueError as e:
         current_app.logger.exception("\n".join(format_exception(e)))
     return response
-
-
-# Rota para atualizar o token de acesso
-@auth.route("/refresh", methods=["POST"])
-@jwt_refresh_token_required
-async def refresh() -> Response:
-    """Refresh the access token.
-
-    Returns:
-        Response: JSON response with new access and refresh tokens.
-
-    """
-    current_user = get_jwt_identity()
-    new_access_token = create_access_token(identity=current_user)
-    new_refresh_token = create_refresh_token(identity=current_user)
-    session.clear()
-
-    return await make_response(
-        jsonify(
-            access_token=new_access_token,
-            refresh_token=new_refresh_token,
-        ),
-        200,
-    )

@@ -193,6 +193,7 @@ async def users() -> Response:
 
 
 @admin.get("/usuarios/lista")
+@jwt_required
 async def listagem_usuarios() -> Response:
     """Retorne a lista de usuários vinculados à licença ativa do usuário atual.
 

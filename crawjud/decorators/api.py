@@ -56,8 +56,8 @@ def verify_jwt_websocket[T](func: Callable) -> T:
             valid = True
 
         if not valid:
-            await io.emit("not_logged", namespace="/main")
-            return await func(*args, **kwargs)
+            await io.emit("not_logged", namespace="/master")
+            return []
 
         return await func(*args, **kwargs)
 
