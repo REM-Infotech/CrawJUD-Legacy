@@ -1,7 +1,7 @@
 """Módulo de Bots - Robôs de Automação Judicial.
 
-Este módulo contém os robôs de automação para diversos sistemas judiciais 
-brasileiros. Cada bot é especializado em um sistema específico e implementa 
+Este módulo contém os robôs de automação para diversos sistemas judiciais
+brasileiros. Cada bot é especializado em um sistema específico e implementa
 funcionalidades como consulta de processos, protocolos e operações automatizadas.
 
 Módulos disponíveis:
