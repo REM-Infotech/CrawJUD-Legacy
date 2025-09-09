@@ -191,7 +191,7 @@ class Protocolo(ESajBot):
 
         """
         try:
-            self.interact.sleep_load('div[id="loadFeedback"]')
+            self.sleep_load('div[id="loadFeedback"]')
             self.prt.print_log("log", "Informando tipo de peticionamento")
             button_classification = self.wait.until(
                 ec.presence_of_element_located((
