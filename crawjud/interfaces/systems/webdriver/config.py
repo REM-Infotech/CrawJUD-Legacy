@@ -17,10 +17,9 @@ from typing import (
     TypeVar,
 )
 
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.firefox.options import Options as GeckoOptions
-
 if TYPE_CHECKING:
+    from selenium.webdriver.chrome.options import Options as ChromeOptions
+    from selenium.webdriver.firefox.options import Options as GeckoOptions
     from selenium.webdriver.chrome.remote_connection import (
         ChromeRemoteConnection,
     )
@@ -36,10 +35,14 @@ P = ParamSpec("optionsConstructor")
 BrowserOptions = Literal["chrome", "gecko", "firefox"]
 TExtensionsPath = TypeVar("ExtensionsPath", bound=str | Path)
 
-driver_options = TypeVar(
-    "DriverOptions",
-    bound=Callable[..., GeckoOptions] | Callable[..., ChromeOptions],
-)
+if TYPE_CHECKING:
+    driver_options = TypeVar(
+        "DriverOptions",
+        bound=Callable[..., GeckoOptions] | Callable[..., ChromeOptions],
+    )
+else:
+    # Runtime placeholder when selenium is not available
+    driver_options = TypeVar("DriverOptions")
 
 ChromePreferences = TypedDict(
     "ChromePreferences",
