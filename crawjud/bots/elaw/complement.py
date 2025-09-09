@@ -75,12 +75,12 @@ class Complement(ElawBot):
 
 
         """
-        frame = [self.elawFormats(item) for item in self.dataFrame()]
+        frame = self.frame
         self.total_rows = len(frame)
 
         for pos, value in enumerate(frame):
             self.row = pos + 1
-            self.bot_data = value
+            self.bot_data = self.elaw_formats(value)
 
             if self.event_stop_bot.is_set():
                 self.success = self.total_rows - pos
@@ -100,24 +100,9 @@ class Complement(ElawBot):
         steps, calculates the execution time, and handles potential exceptions
         during the process.
 
-        Steps:
-        1. Check the search status and format bot data.
-        2. If the search is successful:
-           - Initialize the registration Complement.
-           - Locate and click the edit button for complementing processes.
-           - Iterate over the bot data to perform specific actions based on keys.
-           - Validate fields and participants.
-           - Save all changes and confirm the save operation.
-           - Log the success message and execution time.
-        3. If the search is not successful, raise an error.
-        4. Handle any exceptions by raising `ExecutionError`.
-
-        Raises:
-            ExecutionError: If the process is not found or an error occurs.
-
         """
         try:
-            search = self.search()
+            search = self.search(bot_data=self.bot_data)
 
             if not search:
                 self.print_msg(
@@ -174,13 +159,13 @@ class Complement(ElawBot):
                 ],
                 message,
             )
-            message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
 
+            message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
             type_log = "log"
             self.print_msg(message=message, type_log=type_log, row=self.row)
 
         except Exception as e:
-            raise ExecutionError(e=e) from e
+            self.append_error(exc=e)
 
     def save_all(self) -> None:
         """Save all changes in the process.

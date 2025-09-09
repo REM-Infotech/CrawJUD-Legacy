@@ -60,8 +60,7 @@ class Cadastro(ElawBot):
 
         for pos, value in enumerate(frame):
             self.row = pos + 1
-            self.bot_data = value
-
+            self.bot_data = self.elaw_formats(value)
             self.queue()
 
         self.finalize_execution()
@@ -74,78 +73,76 @@ class Cadastro(ElawBot):
         and handles potential exceptions.
         """
         try:
-            self.bot_data = self.elawFormats(self.bot_data)
-            pid = self.pid
-
             driver = self.driver
+            search = self.search(bot_data=self.bot_data)
 
-            bot_data = self.bot_data
-            search = self.search()
-
-            if search is True:
-                self.append_success([
-                    bot_data.get("NUMERO_PROCESSO"),
-                    "Processo já cadastrado!",
-                    pid,
-                ])
-
-            elif search is not True:
-                message = "Processo não encontrado, inicializando cadastro..."
-                type_log = "log"
+            if search:
+                message = "Processo já cadastrado!"
+                type_log = "error"
                 self.print_msg(
                     message=message,
                     type_log=type_log,
                     row=self.row,
                 )
+                self.append_success()
+                return
 
-                btn_newproc = driver.find_element(
-                    By.CSS_SELECTOR,
-                    el.botao_novo,
-                )
-                btn_newproc.click()
+            message = "Processo não encontrado, inicializando cadastro..."
+            type_log = "log"
+            self.print_msg(
+                message=message,
+                type_log=type_log,
+                row=self.row,
+            )
 
-                start_time = time.perf_counter()
+            btn_newproc = driver.find_element(
+                By.CSS_SELECTOR,
+                el.botao_novo,
+            )
+            btn_newproc.click()
 
-                self.area_direito()
-                self.subarea_direito()
-                self.next_page()
-                self.info_localizacao()
-                self.informa_estado()
-                self.informa_comarca()
-                self.informa_foro()
-                self.informa_vara()
-                self.informa_proceso()
-                self.informa_empresa()
-                self.set_classe_empresa()
-                self.parte_contraria()
-                self.uf_proc()
-                self.acao_proc()
-                self.advogado_interno()
-                self.adv_parte_contraria()
-                self.data_distribuicao()
-                self.info_valor_causa()
-                self.escritorio_externo()
-                self.tipo_contingencia()
+            start_time = time.perf_counter()
 
-                end_time = time.perf_counter()
-                execution_time = end_time - start_time
-                calc = execution_time / 60
-                splitcalc = str(calc).split(".")
-                minutes = int(splitcalc[0])
-                seconds = int(float(f"0.{splitcalc[1]}") * 60)
+            self.area_direito()
+            self.subarea_direito()
+            self.next_page()
+            self.info_localizacao()
+            self.informa_estado()
+            self.informa_comarca()
+            self.informa_foro()
+            self.informa_vara()
+            self.informa_proceso()
+            self.informa_empresa()
+            self.set_classe_empresa()
+            self.parte_contraria()
+            self.uf_proc()
+            self.acao_proc()
+            self.advogado_interno()
+            self.adv_parte_contraria()
+            self.data_distribuicao()
+            self.info_valor_causa()
+            self.escritorio_externo()
+            self.tipo_contingencia()
 
-                message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-                type_log = "log"
-                self.print_msg(
-                    message=message,
-                    type_log=type_log,
-                    row=self.row,
-                )
+            end_time = time.perf_counter()
+            execution_time = end_time - start_time
+            calc = execution_time / 60
+            splitcalc = str(calc).split(".")
+            minutes = int(splitcalc[0])
+            seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
-                self.salvar_tudo()
+            message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
+            type_log = "log"
+            self.print_msg(
+                message=message,
+                type_log=type_log,
+                row=self.row,
+            )
 
-                if self.confirm_save() is True:
-                    self.print_comprovante()
+            self.salvar_tudo()
+
+            if self.confirm_save() is True:
+                self.print_comprovante()
 
         except Exception as e:
             self.append_error(exc=e)
