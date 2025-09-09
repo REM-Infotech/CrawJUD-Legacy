@@ -107,7 +107,7 @@ class Movimentacao(ESajBot):
                 if value is None:
                     self.bot_data.pop(key)
 
-            search = self.search_bot()
+            search = self.search()
 
             if search is not True:
                 _raise_execution_error(message="Processo não encontrado!")

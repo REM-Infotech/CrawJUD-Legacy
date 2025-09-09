@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from contextlib import suppress
 from time import sleep
-from traceback import format_exception_only
 from typing import TYPE_CHECKING, NoReturn
 
 import dotenv
@@ -21,7 +20,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import FileError
 from crawjud.common.exceptions.bot.projudi import PasswordTokenError
@@ -101,25 +99,13 @@ class Protocolo(ProjudiBot):
                 data = self.__screenshot_sucesso()
 
         except PasswordTokenError as e:
-            message = e.message
-            type_log = "error"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.append_error(exc=e)
 
         except SeleniumError as e:
-            exc = "\n".join(format_exception_only(e))
-            message = f"Erro de operação. {exc}"
-            type_log = "error"
-            self.append_error(self.bot_data)
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.append_error(exc=e)
 
         except Exception as e:
-            exc = "\n".join(format_exception_only(e))
-            tqdm.write(exc)
-
-            message = f"Erro de operação. {exc}"
-            type_log = "error"
-            self.append_error(self.bot_data)
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.append_error(exc=e)
 
         if data:
             self.append_success(data)

@@ -12,6 +12,7 @@ from queue import Queue
 from re import search
 from threading import Event, Thread
 from time import perf_counter
+from traceback import format_exception_only
 from typing import TYPE_CHECKING, Literal
 from zipfile import ZIP_DEFLATED, ZipFile
 from zoneinfo import ZoneInfo
@@ -26,6 +27,7 @@ from crawjud.controllers.main._master import AbstractCrawJUD
 from crawjud.custom.canvas import subtask
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
+from crawjud.interfaces.types import DictType as DictType
 from crawjud.resources import format_string
 from crawjud.utils.storage import Storage
 from crawjud.utils.webdriver import DriverBot
@@ -352,7 +354,19 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             "sheet_name": f"Sucessos {self.botname} {self.botsystem}",
         })
 
-    def append_error(self, data: T, *args: T, **kwargs: T) -> None:
+    def append_error(self, exc: Exception) -> None:
+        data = self.bot_data
+        exc = "\n".join(format_exception_only(exc))
+        message = f"Erro de operação. {exc}"
+        type_log = "error"
+
+        self.print_msg(
+            message=message,
+            type_log=type_log,
+            row=self.row,
+        )
+        data["MOTIVO_ERRO"] = message
+
         self.queue_save_xlsx.put({
             "to_save": data,
             "sheet_name": f"Erros {self.botname} {self.botsystem}",

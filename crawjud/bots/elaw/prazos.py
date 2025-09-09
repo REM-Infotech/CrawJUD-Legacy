@@ -76,7 +76,7 @@ class Prazos(ElawBot):
 
         """
         try:
-            search = self.search_bot()
+            search = self.search()
             if not search:
                 self.message = "Buscando Processo"
                 _raise_execution_error(message="Não Encontrado!")

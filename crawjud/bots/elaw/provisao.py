@@ -77,7 +77,7 @@ class Provisao(ElawBot):
 
     def queue(self) -> None:
         """Handle the provision queue processing."""
-        search = self.search_bot()
+        search = self.search()
         if search is True:
             self.type_log = "log"
             self.message = "Processo encontrado! Informando valores..."

@@ -104,7 +104,7 @@ class Protocolo(ESajBot):
 
         """
         try:
-            self.search_bot()
+            self.search()
             self.init_protocolo()
             self.set_tipo_protocolo()
             self.set_subtipo_protocolo()

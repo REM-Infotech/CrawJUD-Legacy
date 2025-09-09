@@ -74,7 +74,7 @@ class Download(ElawBot):
 
         """
         try:
-            search = self.search_bot()
+            search = self.search()
             if search is True:
                 self.message = "Processo encontrado!"
                 self.type_log = "log"
