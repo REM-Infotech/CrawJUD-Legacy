@@ -15,7 +15,6 @@ from __future__ import annotations
 
 from contextlib import suppress
 from datetime import datetime
-from pathlib import Path
 from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -476,17 +475,3 @@ class Provisao(ElawBot):
             "Provisão atualizada com sucesso!",
         ]
         self.append_success(data, message="Provisão atualizada com sucesso!")
-
-    def print_comprovante(self) -> str:
-        """Capture and save a screenshot as proof of the provision.
-
-        Returns:
-            str: The name of the saved screenshot file.
-
-        """
-        name_comprovante = f"Comprovante Cadastro - {self.bot_data.get('NUMERO_PROCESSO')} - PID {self.pid}.png"
-        savecomprovante = (
-            Path(self.output_dir_path).resolve().joinpath(name_comprovante)
-        )
-        self.driver.get_screenshot_as_file(savecomprovante)
-        return name_comprovante
