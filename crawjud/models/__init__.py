@@ -8,6 +8,7 @@ from uuid import uuid4
 
 import pandas as pd
 from dotenv import dotenv_values
+from termcolor import colored
 from tqdm import tqdm
 
 from crawjud.api import app, db
@@ -49,20 +50,24 @@ class DatabaseInitEnvDict(TypedDict):
 async def init_database() -> None:
     """Inicializa o banco de dados."""
     async with app.app_context():
+        # Faz um db.drop_all()
+
+        # Faz um db.session.flush()
+
         db.create_all()
 
         env = DatabaseInitEnvDict(**environ)
 
+        username = env["ROOT_USERNAME"]
+        user = db.session.query(Users).filter(Users.login == username).first()
         with db.session.no_autoflush:
             bot_toadd = []
-            user = Users.query.filter(
-                Users.login == env["ROOT_USERNAME"],
-            ).first()
+
             if not user:
                 user = Users(
-                    login=env["ROOT_USERNAME"],
+                    login=username,
                     email=env["ROOT_EMAIL"],
-                    nome_usuario=env["ROOT_USERNAME"],
+                    nome_usuario=env["ROOT_NAME"],
                 )
 
                 user.senhacrip = env["ROOT_PASSWORD"]
@@ -111,5 +116,22 @@ async def init_database() -> None:
                 db.session.add_all(bot_toadd)
 
             db.session.commit()
+            tqdm.write(
+                colored(
+                    "Database initialized successfully.",
+                    color="green",
+                    attrs=["bold", "blink"],
+                ),
+            )
+        tqdm.write(
+            f"""
+==============================
+CrawJUD {colored("v.2.0", color="yellow")} - {colored("Good Computers", color="cyan")}
 
-        tqdm.write("Database initialized successfully.")
+    - Quart v.0.20.x
+    - SQLAlchemy v.2.0.x
+    - Celery v.5.5.x
+
+==============================
+""",
+        )

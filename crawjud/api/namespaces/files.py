@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, AnyStr
 
 from quart import session
 from quart_socketio import Namespace, SocketIO
-from tqdm import tqdm
 
 from crawjud.interfaces.controllers.file_service import FileService
 
@@ -51,7 +50,6 @@ class FilesNamespace(Namespace):
             environ: The WSGI environment dictionary for the connection.
 
         """
-        tqdm.write(f"Client connected to namespace {self.namespace}")
 
     async def on_disconnect(self) -> None:
         """Handle client disconnection event.

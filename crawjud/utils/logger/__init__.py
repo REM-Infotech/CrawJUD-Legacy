@@ -32,11 +32,6 @@ def dict_config(**kwargs: str | int) -> tuple[dict[str, Any], str]:
             "maxBytes": 1024,
             "backupCount": 1,
         },
-        "stream_handler": {
-            "class": "logging.StreamHandler",
-            "level": logging.INFO,
-            "formatter": "color",  # Usa o novo formatter colorido
-        },
     }
     handlers_config["file_handler"]["level"] = logging.INFO
     handlers_config["file_handler"]["maxBytes"] = 40960
