@@ -6,23 +6,23 @@ A pasta `api/` é responsável por expor as funcionalidades do backend do CrawJU
 
 ## Estrutura da Pasta
 
-- `__init__.py`: Inicializa o pacote e configurações globais da API.
-- `namespaces/`: Define namespaces lógicos para organização dos endpoints e recursos.
-  - `bots.py`: Gerencia operações relacionadas aos robôs.
-  - `files.py`: Manipula arquivos e operações de upload/download.
-  - `logs.py`: Disponibiliza logs de execução e auditoria.
-  - `notifications.py`: Gerencia notificações do sistema.
-  - `system.py`: Fornece informações e operações do sistema.
-- `routes/`: Implementa as rotas principais da API.
-  - `auth.py`: Endpoints de autenticação e autorização.
-  - `credentials.py`: Gerenciamento de credenciais de acesso.
-  - `dashboard.py`: Dados e operações do dashboard administrativo.
-  - `bot/`: Métodos e rotas específicas para execução e controle de bots.
-    - `botlaunch_methods.py`: Métodos auxiliares para inicialização de bots.
-  - `config/`: Rotas de configuração e gerenciamento de usuários.
-    - `users.py`: Operações de cadastro, consulta e atualização de usuários.
-  - `execution/`: Controle de execuções e agendamentos.
-    - `schedules.py`: Gerenciamento de tarefas agendadas.
+├── [`__init__.py`](./__init__.py): Inicializa o pacote e configurações globais da API.
+├── [`namespaces/`](./namespaces/): Define namespaces lógicos para organização dos endpoints e recursos.
+│ ├── [`bots.py`](./namespaces/bots.py): Gerencia operações relacionadas aos robôs.
+│ ├── [`files.py`](./namespaces/files.py): Manipula arquivos e operações de upload/download.
+│ ├── [`logs.py`](./namespaces/logs.py): Disponibiliza logs de execução e auditoria.
+│ ├── [`notifications.py`](./namespaces/notifications.py): Gerencia notificações do sistema.
+│ └── [`system.py`](./namespaces/system.py): Fornece informações e operações do sistema.
+├── [`routes/`](./routes/): Implementa as rotas principais da API.
+│ ├── [`auth.py`](./routes/auth.py): Endpoints de autenticação e autorização.
+│ ├── [`credentials.py`](./routes/credentials.py): Gerenciamento de credenciais de acesso.
+│ ├── [`dashboard.py`](./routes/dashboard.py): Dados e operações do dashboard administrativo.
+│ ├── [`bot/`](./routes/bot/): Métodos e rotas específicas para execução e controle de bots.
+│ │ ├── [`launch.py`](./routes/bot/launch.py): Métodos auxiliares para inicialização de bots.
+│ └── [`config/`](./routes/config/): Rotas de configuração e gerenciamento de usuários.
+│ ├── [`users.py`](./routes/config/users.py): Operações de cadastro, consulta e atualização de usuários.
+│ └── [`execution/`](./routes/execution/): Controle de execuções e agendamentos.
+│ ├── [`schedules.py`](./routes/execution/schedules.py): Gerenciamento de tarefas agendadas.
 
 ## Funcionamento e Lógica
 

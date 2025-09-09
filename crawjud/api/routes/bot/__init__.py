@@ -14,7 +14,7 @@ from quart import (
 from quart_jwt_extended import jwt_required
 from werkzeug.exceptions import HTTPException
 
-from crawjud.api.routes.bot.botlaunch_methods import LoadForm
+from crawjud.api.routes.bot.launch import LoadForm
 from crawjud.decorators.api import crossdomain
 from crawjud.utils.xlsx_generator import MakeTemplates as MakeTemplates
 
