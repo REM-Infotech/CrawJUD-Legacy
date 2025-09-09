@@ -11,7 +11,7 @@ para gerenciamento de filas e Quart para a API web, o CrawJUD oferece uma soluç
 para escritórios de advocacia e departamentos jurídicos que buscam otimizar processos
 repetitivos e melhorar a eficiência operacional.
 
-# Badges
+# Tencnologias
 
 [![License MIT](https://img.shields.io/badge/licence-MIT-blue.svg?style=for-the-badge)](./LICENSE)
 [![Python 3.13](https://shields.io/badge/python-3.13%20-green?style=for-the-badge&logo=python)](https://python.org/downloads/release/python-3132/)
