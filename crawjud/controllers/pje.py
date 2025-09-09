@@ -82,7 +82,12 @@ class PjeBot[T](CrawJUD):
         if platform.system() == "Linux":
             selected_browser = "firefox"
 
-        super().__init__(selected_browser=selected_browser, with_proxy=True)
+        super().__init__(
+            selected_browser=selected_browser,
+            with_proxy=True,
+            *args,
+            **kwargs,
+        )
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)

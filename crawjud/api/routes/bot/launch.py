@@ -159,8 +159,15 @@ class LoadForm:
 
             crawjud_app: Celery = current_app.extensions["celery"]
 
+            token_ = self.sess["license_object"]["license_token"]
             args_task = {
                 "storage_folder_name": name_file_config,
+                "bot_execution_id": self.bot.id,
+                "arquivo_xlsx": form.pop("xlsx", "Sem Arquivo"),
+                "signal": "start",
+                "status": "Em Execução",
+                "user_id": self.sess["current_user"]["id"],
+                "license_token": token_,
             }
 
             task_ = crawjud_app.send_task(
@@ -170,20 +177,6 @@ class LoadForm:
             )
 
             task_id = task_.task_id
-
-            token_ = self.sess["license_object"]["license_token"]
-            crawjud_app.send_task(
-                "crawjud.save_database",
-                kwargs={
-                    "bot_execution_id": self.bot.id,
-                    "pid": task_id,
-                    "arquivo_xlsx": form.pop("xlsx", "Sem Arquivo"),
-                    "signal": "start",
-                    "status": "Em Execução",
-                    "user_id": self.sess["current_user"]["id"],
-                    "license_token": token_,
-                },
-            )
 
         except LoadFormError:
             current_app.logger.error("\n".join(traceback.format_exception()))

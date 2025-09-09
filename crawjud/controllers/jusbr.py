@@ -59,7 +59,7 @@ class JusBrBot[T](CrawJUD):
         if platform.system() == "Linux":
             selected_browser = "firefox"
 
-        super().__init__(selected_browser=selected_browser)
+        super().__init__(selected_browser=selected_browser, *args, **kwargs)
 
         for k, v in kwargs.copy().items():
             setattr(self, k, v)

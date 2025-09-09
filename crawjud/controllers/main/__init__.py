@@ -23,6 +23,7 @@ from pandas import Timestamp, read_excel
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.main._master import AbstractCrawJUD
+from crawjud.custom.canvas import subtask
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.dict.bot import BotData, DictFiles
 from crawjud.resources import format_string
@@ -32,6 +33,7 @@ from crawjud.utils.webdriver import DriverBot
 if TYPE_CHECKING:
     from bs4.element import PageElement
 
+    from crawjud.interfaces.types import PyNumbers, PyStrings
     from crawjud.interfaces.types.webdriver_types import BrowserOptions
 
 type TypeLogs = Literal["log", "info", "success", "error"]
@@ -49,6 +51,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         selected_browser: BrowserOptions = "chrome",
         *,
         with_proxy: bool = False,
+        **kwargs: PyStrings | PyNumbers,
     ) -> None:
         """Inicialize a instância principal do controller CrawJUD.
 
@@ -56,6 +59,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             with_proxy: with_proxy
             selected_browser: selected_browser
             system (str): sistema do robô
+            **kwargs: args
 
         """
         self.queue_msg = Queue()
@@ -85,6 +89,19 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         self.print_thread.start()
         self.thread_save_file.start()
+
+        add_db_task = subtask("crawjud.save_database")
+        add_db_task.apply_async(
+            kwargs={
+                "bot_execution_id": kwargs.get("bot_execution_id"),
+                "pid": self.pid,
+                "arquivo_xlsx": kwargs.get("arquivo_xlsx"),
+                "signal": "start",
+                "status": "Em Execução",
+                "user_id": kwargs.get("user_id"),
+                "license_token": kwargs.get("license_token"),
+            },
+        )
 
     def load_data(self) -> list[BotData]:
         """Convert an Excel file to a list of dictionaries with formatted data.
