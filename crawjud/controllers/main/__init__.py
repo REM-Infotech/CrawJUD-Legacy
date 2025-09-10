@@ -11,7 +11,7 @@ from pathlib import Path
 from queue import Queue
 from re import search
 from threading import Event, Thread
-from time import perf_counter
+from time import perf_counter, sleep
 from traceback import format_exception_only
 from typing import TYPE_CHECKING, Literal
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -345,6 +345,8 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
         message = f"Baixe os resultados aqui: {link}"
         self.print_msg(message=message, row=self.row, type_log="info")
+
+        sleep(5)
 
         self.event_queue_message.set()
         self.print_thread.join()
