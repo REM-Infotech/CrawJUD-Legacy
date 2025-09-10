@@ -86,7 +86,7 @@ class Complement(ElawCadastro):
 
             self.validar_campos()
             self.validar_advs_participantes()
-            self.salva_tudo()
+            self.salvar_tudo()
 
             if self.confirm_save():
                 message = "Processo salvo com sucesso!"

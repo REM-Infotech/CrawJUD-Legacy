@@ -27,12 +27,12 @@ class WebElementBot[T](WebElement):
 
     """
 
-    _cuurent_driver: WebDriver = None
+    _current_driver: WebDriver = None
     _action: ActionChains = None
 
     @classmethod
     def set_driver(cls, _driver: WebDriver) -> type[Self]:
-        cls._cuurent_driver = _driver
+        cls._current_driver = _driver
         cls._action = ActionChains(_driver)
 
         return cls
@@ -135,8 +135,8 @@ class WebElementBot[T](WebElement):
         for item in items:
             value_item = item.get_attribute("value")
 
-            cms = f"select#{id_select} > option[value='{value_item}']"
-            text_item = self.driver.execute_script(
+            cms = f"select[id='{id_select}'] > option[value='{value_item}']"
+            text_item = self._current_driver.execute_script(
                 f'return $("{cms}").text();',
             )
 
@@ -148,5 +148,5 @@ class WebElementBot[T](WebElement):
             command = f"$('select#{id_select}').val(['{value_opt}']);"
             command2 = f"$('select#{id_select}').trigger('change');"
 
-            self._cuurent_driver.execute_script(command)
-            self._cuurent_driver.execute_script(command2)
+            self._current_driver.execute_script(command)
+            self._current_driver.execute_script(command2)

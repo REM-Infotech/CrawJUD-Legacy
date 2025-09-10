@@ -66,8 +66,10 @@ comarca_input = "//select[contains(@id, 'comboComarcaVara_input')]"
 foro_input = "//select[contains(@id, 'comboForoTribunal_input')]"
 vara_input = "//select[contains(@id, 'comboVara_input')]"
 empresa_input = "//select[contains(@id, 'comboClientProcessoParte_input')]"
-tipo_empresa_input = '//select[contains(@id, "j_id_4c_5_2_2_4_9_2_5_input")]'
-tipo_parte_contraria_input = (
+XPATH_CLASSIFICACAO_EMPRESA = (
+    '//select[contains(@id, "j_id_4c_5_2_2_4_9_2_6_input")]'
+)
+XPATH_TIPO_PARTE_CONTRARIA = (
     "//select[contains(@id, 'j_id_4c_5_2_2_5_9_9_4_2_m_input')]"
 )
 select_tipo_doc = "//select[contains(@id, 'tipoDocumentoInput_input')]"
@@ -246,12 +248,12 @@ dict_campos_validar = {
     "advogado_interno": 'select[id*="comboAdvogadoResponsavelProcesso_input"] > option:selected',
     "divisao": 'select[id*="fieldid_9241typeSelectField1CombosCombo_input"] > option:selected',
     "classificacao": 'select[id*="processoClassificacaoCombo_input"] > option:selected',
-    "toi_criado": 'select[id=*"fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected',
-    "nota_tecnica": 'select[id=*"fieldid_9244typeSelectField1CombosCombo_input"] > option:selected',
-    "liminar": 'select[id=*"fieldid_9830typeSelectField1CombosCombo_input"] > option:selected',
-    "provimento": 'select[id=*"fieldid_8401typeSelectField1CombosCombo_input"] > option:selected',
+    "toi_criado": 'select[id*="fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected',
+    "nota_tecnica": 'select[id*="fieldid_9244typeSelectField1CombosCombo_input"] > option:selected',
+    "liminar": 'select[id*="fieldid_9830typeSelectField1CombosCombo_input"] > option:selected',
+    "provimento": 'select[id*="fieldid_8401typeSelectField1CombosCombo_input"] > option:selected',
     "fato_gerador": 'select[id*="fieldid_9239typeSelectField1CombosCombo_input"] > option:selected',
     "acao": 'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
     "tipo_entrada": 'select[id*="fieldid_9242typeSelectField1CombosCombo_input"] > option:selected',
-    "objeto": 'select[id=*"fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
+    "objeto": 'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > option:selected',
 }

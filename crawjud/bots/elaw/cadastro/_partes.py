@@ -43,15 +43,18 @@ class ElawPartesPrincipais(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
     def tipo_empresa(self) -> None:
-        key = "TIPO_EMPRESA"
-        element_select = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.tipo_empresa_input)),
-        )
-        text = str(self.bot_data.get(key)).capitalize()
-
         message = "Informando classificação da Empresa"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
+
+        key = "TIPO_EMPRESA"
+        element_select = self.wait.until(
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_CLASSIFICACAO_EMPRESA,
+            )),
+        )
+        text = str(self.bot_data.get(key)).capitalize()
 
         element_select.select2(text)
         self.sleep_load('div[id="j_id_4p"]')
@@ -100,7 +103,7 @@ class ElawPartesPrincipais(ElawBot):
         element_select: WebElement = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
-                el.tipo_parte_contraria_input,
+                el.XPATH_TIPO_PARTE_CONTRARIA,
             )),
         )
         element_select.select2(text)
