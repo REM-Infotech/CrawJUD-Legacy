@@ -24,11 +24,16 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.elaw import ElawBot
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import elaw as el
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
+@shared_task(name="elaw.provisao", bind=True, context=ContextTask)
+@wrap_cls
 class Provisao(ElawBot):
     """The Provisao class extends CrawJUD to manage provisions within the application.
 
@@ -108,10 +113,7 @@ class Provisao(ElawBot):
         get_valores = self.get_valores_proc()
 
         provisao = (
-            str(self.bot_data.get("PROVISAO"))
-            .replace("possivel", "possível")
-            .replace("provavel", "provável")
-            .lower()
+            str(self.bot_data.get("PROVISAO")).replace("possivel", "possível").replace("provavel", "provável").lower()
         )
 
         chk_getvals1 = get_valores == "Contém valores"
@@ -185,10 +187,7 @@ class Provisao(ElawBot):
                     el.value_provcss,
                 ).text
 
-            if (
-                "-" in valueprovisao
-                or valueprovisao == "Nenhum registro encontrado!"
-            ):
+            if "-" in valueprovisao or valueprovisao == "Nenhum registro encontrado!":
                 return valueprovisao
 
         return "Contém valores"
@@ -271,9 +270,10 @@ class Provisao(ElawBot):
         )
 
         for row_valor in row_valores:
-            campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[
-                9
-            ].find_element(By.CSS_SELECTOR, 'input[id*="_input"]')
+            campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[9].find_element(
+                By.CSS_SELECTOR,
+                'input[id*="_input"]',
+            )
 
             valor_informar = self.bot_data.get("VALOR_ATUALIZACAO")
 

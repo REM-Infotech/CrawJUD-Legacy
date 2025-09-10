@@ -207,5 +207,16 @@
     "form_cfg": "multipe_files",
     "classification": "ADMINISTRATIVO",
     "text": "Robô responsável por inserção de andamentos"
+  },
+  {
+    "id": "20",
+    "display_name": "ELAW - COMPLEMENTAR CADASTRO",
+    "system": "ELAW",
+    "state": "EVERYONE",
+    "client": "AME - AMAZONAS ENERGIA",
+    "type": "COMPLEMENTAR_CADASTRO",
+    "form_cfg": "file_auth",
+    "classification": "ADMINISTRATIVO",
+    "text": "Robô responsável por realizar complemento de cadastro nos processos"
   }
 ]
