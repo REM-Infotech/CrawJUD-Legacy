@@ -121,7 +121,7 @@ class ElawBot[T](CrawJUD):
         )
         campo_numproc.clear()
         sleep(0.15)
-        campo_numproc.send_keys()
+        campo_numproc.send_keys(numero_processo)
         self.driver.find_element(By.ID, "btnPesquisar").click()
 
         try:
