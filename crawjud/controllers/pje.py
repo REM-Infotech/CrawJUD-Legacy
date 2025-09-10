@@ -318,12 +318,14 @@ class PjeBot[T](CrawJUD):
                     sleep(0.5)
                     f.write(_bytes)
 
-            with suppress(Exception):
-                other_path_ = Path(environ["PATH_SRV"])
-                with other_path_.joinpath(file_name).open("wb") as f:
-                    for _bytes in response_data.iter_bytes(chunk):
-                        sleep(0.5)
-                        f.write(_bytes)
+            """
+            >>> with suppress(Exception):
+            >>>     other_path_ = Path(environ["PATH_SRV"])
+            >>>     with other_path_.joinpath(file_name).open("wb") as f:
+            >>>         for _bytes in response_data.iter_bytes(chunk):
+            >>>             sleep(0.5)
+            >>>             f.write(_bytes)
+            """
 
         except (FileUploadError, Exception) as e:
             str_exc = "\n".join(traceback.format_exception_only(e))
