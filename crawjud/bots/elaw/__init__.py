@@ -18,7 +18,6 @@ from crawjud.bots.elaw import (
     andamentos,
     cadastro,
     download,
-    prazos,
     provisao,
     solicita_pagamento,
 )
@@ -27,7 +26,6 @@ __all__ = [
     "andamentos",
     "cadastro",
     "download",
-    "prazos",
     "provisao",
     "solicita_pagamento",
 ]
