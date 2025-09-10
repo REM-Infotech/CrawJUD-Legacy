@@ -10,12 +10,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict
 
-from crawjud.interfaces.systems.pje.processos import ProcessoJudicialDict as Processo
+from crawjud.interfaces.systems.pje.processos import (
+    ProcessoJudicialDict as Processo,
+)
 
 if TYPE_CHECKING:
     from crawjud.interfaces.bots.data import BotData
-    from crawjud.interfaces.systems.pje.processos import ProcessoJudicialDict
     from crawjud.interfaces.core.primitives import DictType
+    from crawjud.interfaces.systems.pje.processos import ProcessoJudicialDict
 
 
 class DictSeparaRegiao(TypedDict):

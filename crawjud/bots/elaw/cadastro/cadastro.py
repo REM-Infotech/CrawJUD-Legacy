@@ -111,7 +111,8 @@ class Cadastro(ElawCadastro):
             self.salvar_tudo()
 
             if self.confirm_save() is True:
-                self.print_comprovante()
+                message = "Processo salvo com sucesso!"
+                self.print_comprovante(message=message)
 
         except Exception as e:
             self.append_error(exc=e)

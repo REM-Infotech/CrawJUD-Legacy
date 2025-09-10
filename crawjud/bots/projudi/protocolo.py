@@ -28,7 +28,7 @@ from crawjud.controllers.projudi import ProjudiBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
-from crawjud.interfaces.types.bots.projudi import DataSucessoProtocoloProjudi
+from crawjud.interfaces.types.bots import DataSucesso
 from crawjud.resources import format_string
 from crawjud.resources.elements import projudi as el
 
@@ -75,7 +75,7 @@ class Protocolo(ProjudiBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        data: DataSucessoProtocoloProjudi = {}
+        data: DataSucesso = {}
 
         try:
             search = self.search()
@@ -478,11 +478,11 @@ class Protocolo(ProjudiBot):
         )
         finish_button.click()
 
-    def __screenshot_sucesso(self) -> DataSucessoProtocoloProjudi:
+    def __screenshot_sucesso(self) -> DataSucesso:
         """Capture and merge screenshots after successful protocol processing.
 
         Returns:
-            DataSucessoProtocoloProjudi: DataSucessoProtocoloProjudi
+            DataSucesso: DataSucesso
 
         """
         pid = self.pid
@@ -547,7 +547,7 @@ class Protocolo(ProjudiBot):
         type_log = "success"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        return DataSucessoProtocoloProjudi(
+        return DataSucesso(
             NUMERO_PROCESSO=numero_processo,
             MENSAGEM=message,
             NOME_COMPROVANTE=comprovante1_name,

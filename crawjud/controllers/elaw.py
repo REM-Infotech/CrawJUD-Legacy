@@ -16,6 +16,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.common.exceptions.bot import ExecutionError, raise_start_error
 from crawjud.controllers.main import CrawJUD
+from crawjud.interfaces.types.bots import DataSucesso
 from crawjud.resources.elements import esaj as el
 
 if TYPE_CHECKING:
@@ -337,15 +338,20 @@ class ElawBot[T](CrawJUD):
             if progress_bar is None:
                 break
 
-    def print_comprovante(self) -> None:
-        name_comprovante = f"Comprovante - {self.bot_data.get('NUMERO_PROCESSO')} - {self.pid}.png"
+    def print_comprovante(self, message: str) -> None:
+        numero_processo = self.bot_data.get("NUMERO_PROCESSO")
+        name_comprovante = f"Comprovante - {numero_processo} - {self.pid}.png"
         savecomprovante = self.output_dir_path.joinpath(name_comprovante)
 
         with savecomprovante.open("wb") as fp:
             fp.write(self.driver.get_screenshot_as_png())
 
-        self.append_success([
-            self.bot_data.get("NUMERO_PROCESSO"),
-            name_comprovante,
-            self.pid,
-        ])
+        data = DataSucesso(
+            NUMERO_PROCESSO=numero_processo,
+            MENSAGEM=message,
+            NOME_COMPROVANTE=name_comprovante,
+            NOME_COMPROVANTE_2="",
+        )
+        self.append_success(data=data)
+
+        self.print_msg(message=message, type_log="success", row=self.row)

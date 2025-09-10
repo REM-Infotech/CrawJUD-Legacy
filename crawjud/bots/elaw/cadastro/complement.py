@@ -80,26 +80,17 @@ class Complement(ElawCadastro):
             minutes = int(splitcalc[0])
             seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
+            message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
+            type_log = "log"
+            self.print_msg(message=message, type_log=type_log, row=self.row)
+
             self.validar_campos()
             self.validar_advs_participantes()
             self.salva_tudo()
 
-            if self.confirm_save() is True:
-                name_comprovante = self.print_comprovante()
+            if self.confirm_save():
                 message = "Processo salvo com sucesso!"
-
-            self.append_success(
-                [
-                    self.bot_data.get("NUMERO_PROCESSO"),
-                    message,
-                    name_comprovante,
-                ],
-                message,
-            )
-
-            message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-            type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+                self.print_comprovante(message=message)
 
         except Exception as e:
             self.append_error(exc=e)
