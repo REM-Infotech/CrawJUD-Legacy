@@ -96,7 +96,10 @@ class Provisao(ElawBot):
 
         if label_classificacao_risco.text == "Risco Quebrado":
             element_select: WebElement = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, el.CSS_SELETOR_TIPO_RISCO)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    el.CSS_SELETOR_TIPO_RISCO,
+                )),
             )
 
             element_select.select2("Risco")
@@ -107,10 +110,16 @@ class Provisao(ElawBot):
         verifica_valores = self.get_valores_proc()
 
         provisao = (
-            str(self.bot_data.get("PROVISAO")).replace("possivel", "possível").replace("provavel", "provável").lower()
+            str(self.bot_data.get("PROVISAO"))
+            .replace("possivel", "possível")
+            .replace("provavel", "provável")
+            .lower()
         )
 
-        is_valores_and_possivel = all([verifica_valores == "Contém valores", provisao == "possível"])
+        is_valores_and_possivel = all([
+            verifica_valores == "Contém valores",
+            provisao == "possível",
+        ])
 
         if is_valores_and_possivel:
             message = "Aviso: Já existe uma provisão possível cadastrada."
@@ -135,7 +144,11 @@ class Provisao(ElawBot):
             ])
 
         elif verifica_valores == "Contém valores" or verifica_valores == "-":
-            calls.extend([self.edita_provisao, self.verifica_classe_risco, self.atualiza_valores])
+            calls.extend([
+                self.edita_provisao,
+                self.verifica_classe_risco,
+                self.atualiza_valores,
+            ])
 
             if provisao == "provável" or provisao == "possível":
                 calls.append(self.informar_datas)
@@ -174,7 +187,10 @@ class Provisao(ElawBot):
                     el.value_provcss,
                 ).text
 
-            if "-" in valueprovisao or valueprovisao == "Nenhum registro encontrado!":
+            if (
+                "-" in valueprovisao
+                or valueprovisao == "Nenhum registro encontrado!"
+            ):
                 return valueprovisao
 
         return "Contém valores"
@@ -234,7 +250,9 @@ class Provisao(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         for row_valor in self.__tabela_valores():
-            campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[9].find_element(
+            campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[
+                9
+            ].find_element(
                 By.CSS_SELECTOR,
                 'input[id*="_input"]',
             )
@@ -276,9 +294,13 @@ class Provisao(ElawBot):
 
             id_selector = selector_filter_risco.get_attribute("id")
 
-            css_element = el.CSS_SELETOR_FILTRA_RISCO.format(id_selector=id_selector)
+            css_element = el.CSS_SELETOR_FILTRA_RISCO.format(
+                id_selector=id_selector,
+            )
 
-            element_select: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_element)))
+            element_select: WebElement = self.wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, css_element)),
+            )
 
             provisao_from_xlsx = (
                 str(self.bot_data.get("PROVISAO"))
