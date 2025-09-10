@@ -228,6 +228,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         bot_data: list[BotData] = self.load_data()
         self._frame = bot_data
         self._bot_data = bot_data
+        self._total_rows = len(bot_data)
 
     def carregar_arquivos(self) -> None:
         self.download_files()

@@ -130,7 +130,7 @@ class ElawBot[T](CrawJUD):
             return True
 
         driver = self.driver
-        type_bot = self.type_bot
+        type_bot = self.botname
         interact = self.interact
         wait = self.wait
         bot_data = self.bot_data
