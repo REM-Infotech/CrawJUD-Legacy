@@ -50,6 +50,7 @@ work_dir = Path(__file__).cwd()
 class AbstractCrawJUD[T]:
     """Classe base para todos os bots."""
 
+    thread_copia_integral: Thread = None
     _botname: ClassVar[str] = ""
     _botsystem: ClassVar[str] = ""
     _token: ClassVar[str] = ""

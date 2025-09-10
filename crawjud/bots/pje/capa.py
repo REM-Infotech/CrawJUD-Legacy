@@ -86,11 +86,13 @@ class Capa(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        Thread(
+        self.thread_copia_integral = Thread(
             target=self.copia_integral,
             daemon=True,
             name="Salvar Cópia Integral",
-        ).start()
+        )
+
+        self.thread_copia_integral.start()
 
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
@@ -134,6 +136,7 @@ class Capa(PjeBot):
                 "sheet_name": sheet_name,
             })
 
+        self.thread_copia_integral.join()
         self.finalize_execution()
 
     def queue_regiao(
@@ -446,7 +449,6 @@ class Capa(PjeBot):
             try:
                 data = self.queue_files.get()
                 if data:
-                    sleep(2)
                     data = dict(data)
                     file_name: str = data.get("file_name")
                     row: int = data.get("row")
@@ -454,6 +456,12 @@ class Capa(PjeBot):
                     client: Client = data.get("client")
                     id_processo: str = data.get("id_processo")
                     regiao: str = data.get("regiao")
+
+                    self.print_msg(
+                        message=f"Baixando arquivo do processo n.{processo}",
+                        type_log="log",
+                        row=row,
+                    )
 
                     sleep(0.50)
                     headers = client.headers

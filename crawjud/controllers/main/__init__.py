@@ -349,6 +349,9 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         sleep(5)
 
         self.event_queue_message.set()
+
+        self.thread_copia_integral.join()
+
         self.print_thread.join()
 
     def append_success(self, data: T, *args: T, **kwargs: T) -> None:
