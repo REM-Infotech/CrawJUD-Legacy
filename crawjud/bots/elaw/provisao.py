@@ -39,14 +39,6 @@ type_doc = {11: "cpf", 14: "cnpj"}
 @shared_task(name="elaw.provisao", bind=True, context=ContextTask)
 @wrap_cls
 class Provisao(ElawBot):
-    """The Provisao class extends CrawJUD to manage provisions within the application.
-
-    Attributes:
-        attribute_name (type): Description of the attribute.
-
-
-    """
-
     def execution(self) -> None:
         """Execute the main processing loop for provisions."""
         frame = self.frame
@@ -63,13 +55,6 @@ class Provisao(ElawBot):
         try:
             search = self.search(bot_data=self.bot_data)
             if not search:
-                message = "Processo não encontrado!"
-                type_log = "error"
-                self.print_msg(
-                    message=message,
-                    type_log=type_log,
-                    row=self.row,
-                )
                 return
 
             type_log = "log"
@@ -333,12 +318,6 @@ class Provisao(ElawBot):
             self.set_data_juros(data_base_juros)
 
     def informar_motivo(self) -> None:
-        """Inform the justification for the provision.
-
-        Raises:
-            None
-
-        """
         try_salvar = self.driver.find_element(
             By.CSS_SELECTOR,
             el.CSS_BTN_SALVAR,

@@ -105,6 +105,12 @@ class ElawBot[T](CrawJUD):
         wait = self.wait
         bot_data = self.bot_data
 
+        numero_processo = bot_data.get("NUMERO_PROCESSO")
+
+        message = f"Buscando processo {numero_processo}"
+        type_log = "log"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
+
         self.driver.implicitly_wait(5)
 
         if self.driver.current_url != el.LINK_PROCESSO_LIST:
@@ -115,13 +121,20 @@ class ElawBot[T](CrawJUD):
         )
         campo_numproc.clear()
         sleep(0.15)
-        campo_numproc.send_keys(bot_data.get("NUMERO_PROCESSO"))
+        campo_numproc.send_keys()
         self.driver.find_element(By.ID, "btnPesquisar").click()
 
         try:
             return self.open_proc()
 
         except TimeoutException:
+            message = "Processo não encontrado!"
+            type_log = "error"
+            self.print_msg(
+                message=message,
+                type_log=type_log,
+                row=self.row,
+            )
             return False
 
         except StaleElementReferenceException:
@@ -301,5 +314,9 @@ class ElawBot[T](CrawJUD):
                 )
 
             open_proc.click()
+
+        message = "Processo encontrado!"
+        type_log = "info"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
 
         return True
