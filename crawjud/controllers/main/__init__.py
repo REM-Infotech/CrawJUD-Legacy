@@ -144,10 +144,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         for col in df.select_dtypes(include=["float"]).columns:
             df[col] = df[col].apply(format_float)
 
-        return [
-            BotData(list(item.items()))
-            for item in df.to_dict(orient="records")
-        ]
+        return [BotData(list(item.items())) for item in df.to_dict(orient="records")]
 
     def download_files(
         self,
@@ -356,21 +353,34 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
 
     def append_error(self, exc: Exception) -> None:
         data = self.bot_data
+
         exc = "\n".join(format_exception_only(exc))
         message = f"Erro de operação. {exc}"
+        data["MOTIVO_ERRO"] = message
+
         type_log = "error"
+
+        with suppress(Exception):
+            numero_processo = data["NUMERO_PROCESSO"]
+            print_erro = f"Screenshot Erro - {numero_processo} - {self.pid}.png"
+            path_print_erro = self.output_dir_path.joinpath(print_erro)
+
+            png_erro = self.driver.get_screenshot_as_png()
+            with path_print_erro.open("wb") as fp:
+                fp.write(png_erro)
+
+            data["TELA_ERRO"] = print_erro
+
+        self.queue_save_xlsx.put({
+            "to_save": data,
+            "sheet_name": f"Erros {self.botname} {self.botsystem}",
+        })
 
         self.print_msg(
             message=message,
             type_log=type_log,
             row=self.row,
         )
-        data["MOTIVO_ERRO"] = message
-
-        self.queue_save_xlsx.put({
-            "to_save": data,
-            "sheet_name": f"Erros {self.botname} {self.botsystem}",
-        })
 
     def format_string(self, string: str) -> str:
         return format_string(string)

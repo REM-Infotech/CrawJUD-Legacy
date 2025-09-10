@@ -20,7 +20,7 @@ from crawjud.bots.elaw import (
     download,
     prazos,
     provisao,
-    solicita_pgto,
+    solicita_pagamento,
 )
 
 __all__ = [
@@ -29,5 +29,5 @@ __all__ = [
     "download",
     "prazos",
     "provisao",
-    "solicita_pgto",
+    "solicita_pagamento",
 ]
