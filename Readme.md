@@ -29,3 +29,8 @@ repetitivos e melhorar a eficiência operacional.
 [![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 [![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=for-the-badge&logo=celery&logoColor=ddf4a4)](https://docs.celeryq.dev/en/stable/#)
 [![Quart](https://img.shields.io/badge/Quart-8A2BE2?style=for-the-badge)](https://quart.palletsprojects.com/en/stable/)
+
+#
+
+[_Contagem de Linhas de Código (LOC)_](./docs/CONTAGEM.md)
+_Última atualização: `10/09/2025 12:14 (América/São_Paulo)`_
