@@ -127,3 +127,5 @@ name_colunas = [
     "DESC_PAGAMENTO",
     "DESC_OBJETO",
 ]
+
+__all__ = ["_raise_execution_error"]

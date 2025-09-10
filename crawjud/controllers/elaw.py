@@ -316,3 +316,21 @@ class ElawBot[T](CrawJUD):
         self.append_success(data=data)
 
         self.print_msg(message=message, type_log="success", row=self.row)
+
+    def screenshot_iframe(self, url_page: str, path_comprovante: Path) -> None:
+        driver = self.driver
+        main_window = driver.current_window_handle
+
+        self.driver.switch_to.new_window("tab")
+        self.driver.get(url_page)
+
+        sleep(5)
+
+        bytes_png = self.driver.get_screenshot_as_png()
+
+        with path_comprovante.open("wb") as fp:
+            fp.write(bytes_png)
+
+        self.driver.close()
+
+        self.driver.switch_to.window(main_window)
