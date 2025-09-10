@@ -263,9 +263,6 @@ class Provisao(ElawBot):
             self.sleep_load('div[id="j_id_3q"]')
 
     def atualiza_risco(self) -> None:
-        self.driver.execute_script(
-            'document.getElementById("j_id_3q:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" ',
-        )
         message = "Alterando risco"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -396,12 +393,19 @@ class Provisao(ElawBot):
         self.sleep_load('div[id="j_id_3q"]')
 
     def __tabela_valores(self) -> list[WebElement]:
-        return self.wait.until(
+        tabela_valores = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.CSS_TABELA_VALORES,
             )),
-        ).find_elements(
+        )
+
+        id_parent = tabela_valores.get_attribute("id")
+        self.driver.execute_script(
+            f'document.getElementById("{id_parent}").style.zoom = "0.5" ',
+        )
+
+        return tabela_valores.find_elements(
             By.XPATH,
             el.XPATH_ROWS_VALORES_TABELA,
         )

@@ -8,15 +8,17 @@ from __future__ import annotations
 LINK_PROCESSO_LIST = "https://amazonas.elaw.com.br/processoList.elaw"
 
 
-CSS_TABELA_VALORES = (
-    "tbody[id='j_id_3d:j_id_32_2e:processoAmountObjetoDt_data']"
-)
+CSS_TABELA_VALORES = "tbody[id*='processoAmountObjetoDt_data']"
 XPATH_ROWS_VALORES_TABELA = './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]'
 CSS_SELETOR_FILTRA_RISCO = 'select[id="{id_selector}"]'
 
 CSS_BTN_SALVAR = 'button[id="salvarBtn"]'
-CSS_DATA_CORRECAO = 'input[id*="j_id_3g_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'
-CSS_DATA_JUROS = 'input[id*="j_id_3g_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'
+CSS_DATA_CORRECAO = (
+    'input[id*="processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'
+)
+CSS_DATA_JUROS = (
+    'input[id*="jprocessoAmountObjetoDt:dataBaseJurosTodosField_input"]'
+)
 
 
 CSS_TEXTAREA_MOTIVO = (
@@ -237,7 +239,7 @@ type_risk_select = 'select[id*="provisaoTipoPedidoCombo_input"]'
 tabela_advogados_resp = 'tbody[id*="lawyerOwnersDataTable_data"]'
 tr_not_adv = "tr.ui-datatable-empty-message"
 
-dict_campos_validar = {
+DICT_CAMPOS_VALIDAR = {
     "estado": 'select[id*="comboEstadoVara_input"] > option:selected',
     "comarca": 'select[id*="comboComarcaVara_input"] > option:selected',
     "foro": 'select[id*="comboForoTribunal_input"] > option:selected',

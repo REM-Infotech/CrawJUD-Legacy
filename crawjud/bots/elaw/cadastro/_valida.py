@@ -47,7 +47,7 @@ class ElawValidacao(ElawBot):
 
         for campo in campos_validar:
             try:
-                campo_validar: str = el.dict_campos_validar.get(
+                campo_validar: str = el.DICT_CAMPOS_VALIDAR.get(
                     campo,
                 )
                 command = f"return $('{campo_validar}').text()"
@@ -88,7 +88,7 @@ class ElawValidacao(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        campo_validar = el.dict_campos_validar.get(
+        campo_validar = el.DICT_CAMPOS_VALIDAR.get(
             "advogado_interno",
         )
         command = f"return $('{campo_validar}').text()"
