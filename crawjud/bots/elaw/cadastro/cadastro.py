@@ -48,13 +48,7 @@ class Cadastro(ElawCadastro):
 
             if search:
                 message = "Processo já cadastrado!"
-                type_log = "error"
-                self.print_msg(
-                    message=message,
-                    type_log=type_log,
-                    row=self.row,
-                )
-                self.append_success()
+                self.print_comprovante(message=message)
                 return
 
             message = "Processo não encontrado, inicializando cadastro..."

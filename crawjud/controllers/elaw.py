@@ -100,17 +100,6 @@ class ElawBot[T](CrawJUD):
         return url != "https://amazonas.elaw.com.br/login"
 
     def search(self, bot_data: dict[str, str]) -> bool:
-        """Procura processo no ESAJ.
-
-        Returns:
-           bool: True se encontrado; ou False
-        Navega pela pagina do ESAJ, processa entradas com base no grau do processo.
-
-        Raises:
-            ExecutionError:
-                Erro de execução
-
-        """
         self.bot_data = bot_data
         grau = self.bot_data.get("GRAU", 1)
         id_consultar = "botaoConsultarProcessos"
