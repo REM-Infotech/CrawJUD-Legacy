@@ -16,6 +16,7 @@ from __future__ import annotations
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
+from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
@@ -28,6 +29,9 @@ from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task
 from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import elaw as el
+
+if TYPE_CHECKING:
+    from crawjud.utils.webdriver.web_element import WebElementBot as WebElement
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -47,8 +51,6 @@ class Provisao(ElawBot):
         """Execute the main processing loop for provisions."""
         frame = self.frame
         self.total_rows = len(frame)
-        self.driver.maximize_window()
-        self.driver.execute_script("document.body.style.zoom = '0.5'")
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
@@ -58,7 +60,6 @@ class Provisao(ElawBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        """Handle the provision queue processing."""
         try:
             search = self.search()
             if not search:
@@ -69,6 +70,7 @@ class Provisao(ElawBot):
                     type_log=type_log,
                     row=self.row,
                 )
+                return
 
             type_log = "log"
             message = "Processo encontrado! Informando valores..."
@@ -84,42 +86,33 @@ class Provisao(ElawBot):
         except Exception as e:
             self.append_error(exc=e)
 
-    def chk_risk(self) -> None:
-        """Check and select the appropriate risk type based on the provision label.
-
-        Raises:
-            None
-
-        """
-        label_risk = self.wait.until(
+    def verifica_classe_risco(self) -> None:
+        label_classificacao_risco = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                el.type_risk_label,
+                el.CSS_LABEL_TIPO_RISCO,
             )),
         )
 
-        if label_risk.text == "Risco Quebrado":
-            self.select2_elaw(el.type_risk_select, "Risco")
+        if label_classificacao_risco.text == "Risco Quebrado":
+            element_select: WebElement = self.wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, el.CSS_SELETOR_TIPO_RISCO)),
+            )
+
+            element_select.select2("Risco")
 
     def setup_calls(self) -> list:
-        """Configure sequence of method calls based on the provision data.
-
-        Returns:
-            list: A list of method references to be called.
-
-        """
         calls = []
 
-        get_valores = self.get_valores_proc()
+        verifica_valores = self.get_valores_proc()
 
         provisao = (
             str(self.bot_data.get("PROVISAO")).replace("possivel", "possível").replace("provavel", "provável").lower()
         )
 
-        chk_getvals1 = get_valores == "Contém valores"
-        possible = provisao == "possível"
+        is_valores_and_possivel = all([verifica_valores == "Contém valores", provisao == "possível"])
 
-        if chk_getvals1 and possible:
+        if is_valores_and_possivel:
             message = "Aviso: Já existe uma provisão possível cadastrada."
             type_log = "info"
             self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -132,39 +125,33 @@ class Provisao(ElawBot):
         )
         edit_button.click()
 
-        if get_valores == "Nenhum registro encontrado!":
+        if verifica_valores == "Nenhum registro encontrado!":
             calls.extend([
-                self.add_new_valor,
-                self.edit_valor,
-                self.chk_risk,
-                self.set_valores,
+                self.adiciona_nova_provisao,
+                self.edita_provisao,
+                self.verifica_classe_risco,
+                self.atualiza_valores,
                 self.informar_datas,
             ])
 
-        elif get_valores == "Contém valores" or get_valores == "-":
-            calls.extend([self.edit_valor, self.chk_risk, self.set_valores])
+        elif verifica_valores == "Contém valores" or verifica_valores == "-":
+            calls.extend([self.edita_provisao, self.verifica_classe_risco, self.atualiza_valores])
 
             if provisao == "provável" or provisao == "possível":
                 calls.append(self.informar_datas)
 
-        calls.extend([self.set_risk, self.informar_motivo])
+        calls.extend([self.atualiza_risco, self.informar_motivo])
 
         return calls
 
     def get_valores_proc(self) -> str:
-        """Retrieve the values related to the process.
-
-        Returns:
-            str: Description of the process values.
-
-        """
-        get_valores = self.wait.until(
+        verifica_valores = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.ver_valores,
             )),
         )
-        get_valores.click()
+        verifica_valores.click()
 
         check_exists_provisao = self.wait.until(
             ec.presence_of_element_located((
@@ -192,13 +179,7 @@ class Provisao(ElawBot):
 
         return "Contém valores"
 
-    def add_new_valor(self) -> None:
-        """Add a new value entry.
-
-        Raises:
-            ExecutionError: If unable to update the provision.
-
-        """
+    def adiciona_nova_provisao(self) -> None:
         try:
             div_tipo_obj = self.wait.until(
                 ec.presence_of_element_located((
@@ -237,8 +218,7 @@ class Provisao(ElawBot):
                 e=e,
             ) from e
 
-    def edit_valor(self) -> None:
-        """Edit an existing value entry."""
+    def edita_provisao(self) -> None:
         editar_pedido = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
@@ -247,29 +227,13 @@ class Provisao(ElawBot):
         )
         editar_pedido.click()
 
-    def set_valores(self) -> None:
-        """Set the provision values.
-
-        Raises:
-            None
-
-        """
+    def atualiza_valores(self) -> None:
         self.sleep_load('div[id="j_id_2z"]')
         message = "Informando valores"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        row_valores = self.wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']",
-            )),
-        ).find_elements(
-            By.XPATH,
-            './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]',
-        )
-
-        for row_valor in row_valores:
+        for row_valor in self.__tabela_valores():
             campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[9].find_element(
                 By.CSS_SELECTOR,
                 'input[id*="_input"]',
@@ -295,13 +259,7 @@ class Provisao(ElawBot):
             )
             self.sleep_load('div[id="j_id_2z"]')
 
-    def set_risk(self) -> None:
-        """Set the risk type for the provision.
-
-        Raises:
-            None
-
-        """
+    def atualiza_risco(self) -> None:
         self.driver.execute_script(
             'document.getElementById("j_id_2z:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" ',
         )
@@ -309,25 +267,18 @@ class Provisao(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        row_valores = self.wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']",
-            )),
-        ).find_elements(
-            By.XPATH,
-            './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]',
-        )
-
-        for row_risk in row_valores:
-            selector_filter_risk = (
-                row_risk.find_elements(By.TAG_NAME, "td")[10]
+        for row_risco in self.__tabela_valores():
+            selector_filter_risco = (
+                row_risco.find_elements(By.TAG_NAME, "td")[10]
                 .find_element(By.TAG_NAME, "div")
                 .find_element(By.TAG_NAME, "select")
             )
 
-            id_selector = selector_filter_risk.get_attribute("id")
-            css_selector_filter_risk = f'select[id="{id_selector}"]'
+            id_selector = selector_filter_risco.get_attribute("id")
+
+            css_element = el.CSS_SELETOR_FILTRA_RISCO.format(id_selector=id_selector)
+
+            element_select: WebElement = self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, css_element)))
 
             provisao_from_xlsx = (
                 str(self.bot_data.get("PROVISAO"))
@@ -336,50 +287,14 @@ class Provisao(ElawBot):
                 .replace("provavel", "provável")
             )
 
-            self.interact.select2_elaw(
-                css_selector_filter_risk,
-                provisao_from_xlsx,
-            )
+            element_select.select2(provisao_from_xlsx)
 
             self.sleep_load('div[id="j_id_3c"]')
 
     def informar_datas(self) -> None:
-        """Inform the correction base date and interest date.
-
-        Raises:
-            None
-
-        """
         message = "Alterando datas de correção base e juros"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
-
-        def set_data_correcao(data_base_correcao: str) -> None:
-            data_correcao = self.driver.find_element(
-                By.CSS_SELECTOR,
-                el.data_correcaoCss,
-            )
-            css_daata_correcao = data_correcao.get_attribute("id")
-            self.interact.clear(data_correcao)
-            self.interact.send_keys(data_correcao, data_base_correcao)
-
-            self.driver.execute_script(
-                f"document.getElementById('{css_daata_correcao}').blur()",
-            )
-            self.sleep_load('div[id="j_id_2z"]')
-
-        def set_data_juros(data_base_juros: str) -> None:
-            data_juros = self.driver.find_element(
-                By.CSS_SELECTOR,
-                el.data_jurosCss,
-            )
-            css_data = data_juros.get_attribute("id")
-            self.interact.clear(data_juros)
-            self.interact.send_keys(data_juros, data_base_juros)
-            self.driver.execute_script(
-                f"document.getElementById('{css_data}').blur()",
-            )
-            self.sleep_load('div[id="j_id_2z"]')
 
         data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
         data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
@@ -387,13 +302,13 @@ class Provisao(ElawBot):
             if isinstance(data_base_correcao, datetime):
                 data_base_correcao = data_base_correcao.strftime("%d/%m/%Y")
 
-            set_data_correcao(data_base_correcao)
+            self.set_data_correcao(data_base_correcao)
 
         if data_base_juros is not None:
             if isinstance(data_base_juros, datetime):
                 data_base_juros = data_base_juros.strftime("%d/%m/%Y")
 
-            set_data_juros(data_base_juros)
+            self.set_data_juros(data_base_juros)
 
     def informar_motivo(self) -> None:
         """Inform the justification for the provision.
@@ -404,7 +319,7 @@ class Provisao(ElawBot):
         """
         try_salvar = self.driver.find_element(
             By.CSS_SELECTOR,
-            el.botao_salvar_id,
+            el.CSS_BTN_SALVAR,
         )
 
         sleep(1)
@@ -418,7 +333,7 @@ class Provisao(ElawBot):
         informar_motivo = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                el.texto_motivo,
+                el.CSS_TEXTAREA_MOTIVO,
             )),
         )
         informar_motivo.send_keys(
@@ -439,7 +354,7 @@ class Provisao(ElawBot):
         self.sleep_load('div[id="j_id_2z"]')
         salvar = self.driver.find_element(
             By.CSS_SELECTOR,
-            el.botao_salvar_id,
+            el.CSS_BTN_SALVAR,
         )
         salvar.click()
 
@@ -457,3 +372,41 @@ class Provisao(ElawBot):
 
         message = "Provisão atualizada com sucesso!"
         self.print_comprovante(message=message)
+
+    def set_data_correcao(self, data_base_correcao: str) -> None:
+        data_correcao = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.CSS_DATA_CORRECAO,
+        )
+        css_daata_correcao = data_correcao.get_attribute("id")
+        data_correcao.clear()
+        data_correcao.send_keys(data_base_correcao)
+
+        self.driver.execute_script(
+            f"document.getElementById('{css_daata_correcao}').blur()",
+        )
+        self.sleep_load('div[id="j_id_2z"]')
+
+    def set_data_juros(self, data_base_juros: str) -> None:
+        data_juros = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.CSS_DATA_JUROS,
+        )
+        css_data = data_juros.get_attribute("id")
+        data_juros.clear()
+        data_juros.send_keys(data_base_juros)
+        self.driver.execute_script(
+            f"document.getElementById('{css_data}').blur()",
+        )
+        self.sleep_load('div[id="j_id_2z"]')
+
+    def __tabela_valores(self) -> list[WebElement]:
+        return self.wait.until(
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.CSS_TABELA_VALORES,
+            )),
+        ).find_elements(
+            By.XPATH,
+            el.XPATH_ROWS_VALORES_TABELA,
+        )
