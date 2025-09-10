@@ -185,7 +185,7 @@ class ElawInformacoesProcesso(ElawBot):
         div_comboProcessoTipo: WebElement = self.wait.until(  # noqa: N806
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
-                el.comboProcessoTipo,
+                el.combo_processo_tipo,
             )),
             message="Erro ao encontrar elemento",
         )

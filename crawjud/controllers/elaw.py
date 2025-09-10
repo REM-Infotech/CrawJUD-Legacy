@@ -86,19 +86,18 @@ class ElawBot[T](CrawJUD):
         username.send_keys(self.username)
 
         password = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "#password")),
+            ec.presence_of_element_located((By.CSS_SELECTOR, "#authKey")),
         )
         password.send_keys(self.password)
 
         entrar = self.wait.until(
-            ec.presence_of_element_located((By.ID, "j_id_a_1_5_f")),
+            ec.presence_of_element_located((By.ID, "j_id_c_1_5_f")),
         )
         entrar.click()
 
         sleep(7)
 
         url = self.driver.current_url
-
         return url != "https://amazonas.elaw.com.br/login"
 
     def search(self, bot_data: dict[str, str]) -> bool:
