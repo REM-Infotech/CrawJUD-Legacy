@@ -168,6 +168,8 @@ class LoadForm:
                 "status": "Em Execução",
                 "user_id": self.sess["current_user"]["id"],
                 "license_token": token_,
+                "name": self.bot.type,
+                "system": self.bot.system,
             }
 
             task_ = crawjud_app.send_task(

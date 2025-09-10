@@ -55,9 +55,10 @@ css_label_area = '//select[contains(@id, "comboArea_input")]'
 comboareasub_css = '//select[contains(@id, "comboAreaSub_input")]'
 css_button = 'button[id="btnContinuar"]'
 xpath_checkadvinterno = (
-    "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
+    "//*[contains(@id, 'j_id_4c_1:autoCompleteLawyer_item')]"
 )
-label_esfera = 'span[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
+
+label_esfera = 'span[id="j_id_4c_1:j_id_4c_5_2_2_1_9_u_1:comboRito_label"]'
 
 css_esfera_judge = '//select[contains(@id, "comboRito_input")]'
 estado_input = "//select[contains(@id, 'comboEstadoVara_input')]"
@@ -65,31 +66,31 @@ comarca_input = "//select[contains(@id, 'comboComarcaVara_input')]"
 foro_input = "//select[contains(@id, 'comboForoTribunal_input')]"
 vara_input = "//select[contains(@id, 'comboVara_input')]"
 empresa_input = "//select[contains(@id, 'comboClientProcessoParte_input')]"
-tipo_empresa_input = '//select[contains(@id, "j_id_3y_4_2_2_4_9_2_5_input")]'
+tipo_empresa_input = '//select[contains(@id, "j_id_4c_5_2_2_4_9_2_5_input")]'
 tipo_parte_contraria_input = (
-    "//select[contains(@id, 'j_id_3y_4_2_2_5_9_9_4_2_m_input')]"
+    "//select[contains(@id, 'j_id_4c_5_2_2_5_9_9_4_2_m_input')]"
 )
 select_tipo_doc = "//select[contains(@id, 'tipoDocumentoInput_input')]"
 combo_rito = '//select[contains(@id, "comboRito_input")]'
 
-numero_processo = "input[id='j_id_3y_1:j_id_3y_4_2_2_2_9_f_2:txtNumeroMask']"
-css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
+numero_processo = "input[id='j_id_4c_1:j_id_4c_5_2_2_2_9_f_2:txtNumeroMask']"
+css_campo_doc = 'input[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:cpfCnpjInput"]'
 css_search_button = (
-    'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
+    'button[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:j_id_4c_5_2_2_5_9_9_4_2_f"]'
 )
 
 select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
-select_field = 'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
-css_other_location = 'input[id="j_id_3y_1:j_id_3y_4_2_2_9_9_46_2:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_1:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_c:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_f:0:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_1g:fieldText"]'
-combo_processo_tipo = 'div[id="j_id_3y_1:combo_processo_tipo"]'
-filtro_processo = 'input[id="j_id_3y_1:comboProcessoTipo_filter"]'
-css_data_distribuicao = 'input[id="j_id_3y_1:dataDistribuicao_input"]'
+select_field = 'div[id="j_id_4c_1:j_id_4c_5_2_2_9_9_44_2:j_id_4c_5_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
+css_other_location = 'input[id="j_id_4c_1:j_id_4c_5_2_2_9_9_46_2:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_1:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_2_1_c:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_2_1_f:0:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_2_1_1g:fieldText"]'
+combo_processo_tipo = 'div[id="j_id_4c_1:combo_processo_tipo"]'
+filtro_processo = 'input[id="j_id_4c_1:comboProcessoTipo_filter"]'
+css_data_distribuicao = 'input[id="j_id_4c_1:dataDistribuicao_input"]'
 adv_responsavel = "//input[contains(@id, 'autoCompleteLawyer_input')]"
 select_advogado_responsavel = (
     "//select[contains(@id, 'comboAdvogadoResponsavelProcesso_input')]"
 )
 css_input_select_adv = (
-    'input[id="j_id_3y_1:comboAdvogadoResponsavelProcesso_filter"]'
+    'input[id="j_id_4c_1:comboAdvogadoResponsavelProcesso_filter"]'
 )
 css_input_adv = 'input[id*="autoCompleteLawyerOutraParte_input"]'
 css_check_adv = '//*[contains(@id, "autoCompleteLawyerOutraParte_item")]'
@@ -97,8 +98,8 @@ valor_causa = "//input[contains(@id, 'amountCase_input')]"
 escritrorio_externo = '//div[contains(@id, "comboEscritorio")]'
 select_escritorio = "//select[contains(@id, 'comboEscritorio_input')]"
 contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
-contigencia_panel = 'div[id="j_id_3y_1:j_id_3y_4_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
-css_add_adv = 'button[id="j_id_3y_1:lawyerOutraParteNovoButtom"]'
+contigencia_panel = 'div[id="j_id_4c_1:j_id_4c_5_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
+css_add_adv = 'button[id="j_id_4c_1:lawyerOutraParteNovoButtom"]'
 iframe_cadastro_parte_contraria = (
     'div[id*=":parteContrariaMainGridBtnNovo_dlg"] > div > iframe'
 )
@@ -107,10 +108,10 @@ iframe_cadastro_parte_close_dnv = (
 )
 
 iframe_cadastro_advogado_close_dnv = (
-    'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > a'
+    'div[id="j_id_4c_1:lawyerOutraParteNovoButtom_dlg"] > div > a'
 )
 iframe_cadastro_advogado_contra = (
-    'div[id="j_id_3y_1:lawyerOutraParteNovoButtom_dlg"] > div > iframe'
+    'div[id="j_id_4c_1:lawyerOutraParteNovoButtom_dlg"] > div > iframe'
 )
 btn_novo_advogado_contra = (
     '//button[contains(@id, "lawyerOutraParteNovoButtom")]'
@@ -130,7 +131,7 @@ botao_parte_contraria = 'button[id="j_id_1e"]'
 css_name_parte = 'input[id="j_id_1k"]'
 css_save_button = 'button[id="parteContrariaButtom"]'
 css_salvar_proc = 'button[id="btnSalvarOpen"]'
-css_t_found = 'table[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
+css_t_found = 'table[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:parteContrariaSearchDisplayGrid"]'
 div_messageerro_css = 'div[id="messages"]'
 
 # COMPLEMENTAR
@@ -240,7 +241,7 @@ dict_campos_validar = {
     "foro": 'select[id*="comboForoTribunal_input"] > option:selected',
     "vara": 'select[id*="comboVara_input"] > option:selected',
     "fase": 'select[id*="processoFaseCombo_input"] > option:selected',
-    "tipo_empresa": 'select[id*="j_id_3y_4_2_2_4_9_2_5_input"] > option:selected',
+    "tipo_empresa": 'select[id*="j_id_4c_5_2_2_4_9_2_5_input"] > option:selected',
     "escritorio": 'select[id*="comboEscritorio_input"] > option:selected',
     "advogado_interno": 'select[id*="comboAdvogadoResponsavelProcesso_input"] > option:selected',
     "divisao": 'select[id*="fieldid_9241typeSelectField1CombosCombo_input"] > option:selected',

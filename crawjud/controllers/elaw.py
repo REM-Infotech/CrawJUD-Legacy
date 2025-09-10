@@ -102,83 +102,36 @@ class ElawBot[T](CrawJUD):
         return url != "https://amazonas.elaw.com.br/login"
 
     def search(self, bot_data: dict[str, str]) -> bool:
-        """Perform an ELAW system search for a legal process.
-
-        Returns:
-            bool: True if the process is found; False otherwise.
-
-        Navigates to the appropriate ELAW page, interacts with elements, and clicks to open the process.
-
-        """
-
-        def open_proc() -> bool:
-            open_proc = WebDriverWait(driver, 10).until(
-                ec.presence_of_element_located((
-                    By.ID,
-                    "dtProcessoResults:0:btnProcesso",
-                )),
-            )
-            if type_bot.upper() != "CADASTRO":
-                if type_bot.upper() == "COMPLEMENT":
-                    open_proc = driver.find_element(
-                        By.ID,
-                        "dtProcessoResults:0:btnEditar",
-                    )
-
-                open_proc.click()
-
-            return True
-
-        driver = self.driver
-        type_bot = self.botname
-        interact = self.interact
         wait = self.wait
         bot_data = self.bot_data
 
-        driver.implicitly_wait(5)
+        self.driver.implicitly_wait(5)
 
-        if driver.current_url != el.LINK_PROCESSO_LIST:
-            driver.get(el.LINK_PROCESSO_LIST)
+        if self.driver.current_url != el.LINK_PROCESSO_LIST:
+            self.driver.get(el.LINK_PROCESSO_LIST)
 
         campo_numproc: WebElementBot = wait.until(
             ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")),
         )
         campo_numproc.clear()
         sleep(0.15)
-        interact.send_key(campo_numproc, bot_data.get("NUMERO_PROCESSO"))
-        driver.find_element(By.ID, "btnPesquisar").click()
+        campo_numproc.send_keys(bot_data.get("NUMERO_PROCESSO"))
+        self.driver.find_element(By.ID, "btnPesquisar").click()
 
         try:
-            return open_proc()
+            return self.open_proc()
 
         except TimeoutException:
             return False
 
         except StaleElementReferenceException:
             sleep(5)
-            return open_proc()
+            return self.open_proc()
 
     def elaw_formats(
         self,
         data: dict[str, str],
     ) -> dict[str, str]:
-        """Formata um dicionário de processo jurídico conforme regras pré-definidas.
-
-        Args:
-            data (dict[str, str]): Dicionário de dados brutos.
-
-        Returns:
-            (dict[str, str]): Dados formatados com tipos e valores adequados.
-
-        Examples:
-            - Remove chaves com valores vazios ou None.
-            - Atualiza "TIPO_PARTE_CONTRARIA" se "TIPO_EMPRESA" for "RÉU".
-            - Atualiza "CAPITAL_INTERIOR" conforme "COMARCA".
-            - Define "DATA_INICIO" se ausente e "DATA_LIMITE" presente.
-            - Formata valores numéricos para duas casas decimais.
-            - Define "CNPJ_FAVORECIDO" padrão se vazio.
-
-        """
         # Remove chaves com valores vazios ou None
         self._remove_empty_keys(data)
 
@@ -332,3 +285,21 @@ class ElawBot[T](CrawJUD):
         self.driver.close()
 
         self.driver.switch_to.window(main_window)
+
+    def open_proc(self) -> bool:
+        open_proc = WebDriverWait(self.driver, 10).until(
+            ec.presence_of_element_located((
+                By.ID,
+                "dtProcessoResults:0:btnProcesso",
+            )),
+        )
+        if self.botname.upper() != "CADASTRO":
+            if self.botname.upper() == "COMPLEMENTAR_CADASTRO":
+                open_proc = self.driver.find_element(
+                    By.ID,
+                    "dtProcessoResults:0:btnEditar",
+                )
+
+            open_proc.click()
+
+        return True
