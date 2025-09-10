@@ -22,7 +22,6 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from crawjud.common import _raise_execution_error
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.elaw import ElawBot
 from crawjud.resources.elements import elaw as el
@@ -49,38 +48,26 @@ class Provisao(ElawBot):
             self.row = pos + 1
             self.bot_data = value
 
-            try:
-                self.queue()
-
-            except ExecutionError as e:
-                windows = self.driver.window_handles
-
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.driver_launch(
-                            message="Webdriver encerrado inesperadamente, reinicializando...",
-                        )
-
-                    self.auth()
-
-                message_error = str(e)
-
-                self.print_msg(message=f"{message_error}.", type_log="error")
-
-                self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+            self.queue()
 
         self.finalize_execution()
 
     def queue(self) -> None:
         """Handle the provision queue processing."""
-        search = self.search()
-        if search is True:
-            self.type_log = "log"
-            self.message = "Processo encontrado! Informando valores..."
-            self.prt()
+        try:
+            search = self.search()
+            if not search:
+                message = "Processo não encontrado!"
+                type_log = "error"
+                self.print_msg(
+                    message=message,
+                    type_log=type_log,
+                    row=self.row,
+                )
+
+            type_log = "log"
+            message = "Processo encontrado! Informando valores..."
+            self.print_msg(message=message, type_log=type_log, row=self.row)
 
             calls = self.setup_calls()
 
@@ -89,8 +76,8 @@ class Provisao(ElawBot):
 
             self.save_changes()
 
-        if search is False:
-            _raise_execution_error(message="Processo não encontrado!")
+        except Exception as e:
+            self.append_error(exc=e)
 
     def chk_risk(self) -> None:
         """Check and select the appropriate risk type based on the provision label.
@@ -131,9 +118,9 @@ class Provisao(ElawBot):
         possible = provisao == "possível"
 
         if chk_getvals1 and possible:
-            self.message = "Aviso: Já existe uma provisão possível cadastrada."
-            self.type_log = "info"
-            self.prt()
+            message = "Aviso: Já existe uma provisão possível cadastrada."
+            type_log = "info"
+            self.print_msg(message=message, type_log=type_log, row=self.row)
 
         edit_button = self.wait.until(
             ec.presence_of_element_located((
@@ -269,9 +256,9 @@ class Provisao(ElawBot):
 
         """
         self.sleep_load('div[id="j_id_2z"]')
-        self.message = "Informando valores"
-        self.type_log = "log"
-        self.prt()
+        message = "Informando valores"
+        type_log = "log"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
 
         row_valores = self.wait.until(
             ec.presence_of_element_located((
@@ -318,9 +305,9 @@ class Provisao(ElawBot):
         self.driver.execute_script(
             'document.getElementById("j_id_2z:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" ',
         )
-        self.message = "Alterando risco"
-        self.type_log = "log"
-        self.prt()
+        message = "Alterando risco"
+        type_log = "log"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
 
         row_valores = self.wait.until(
             ec.presence_of_element_located((
@@ -363,9 +350,9 @@ class Provisao(ElawBot):
             None
 
         """
-        self.message = "Alterando datas de correção base e juros"
-        self.type_log = "log"
-        self.prt()
+        message = "Alterando datas de correção base e juros"
+        type_log = "log"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
 
         def set_data_correcao(data_base_correcao: str) -> None:
             data_correcao = self.driver.find_element(
@@ -425,9 +412,9 @@ class Provisao(ElawBot):
 
         self.sleep_load('div[id="j_id_2z"]')
 
-        self.message = "Informando justificativa"
-        self.type_log = "log"
-        self.prt()
+        message = "Informando justificativa"
+        type_log = "log"
+        self.print_msg(message=message, type_log=type_log, row=self.row)
         informar_motivo = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
