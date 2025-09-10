@@ -38,7 +38,7 @@ class ElawLocalidade(ElawBot):
         comando = f"document.querySelector('{id_input_css}').blur()"
         self.driver.execute_script(comando)
 
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Localidade informada!"
         type_log = "info"
@@ -56,7 +56,7 @@ class ElawLocalidade(ElawBot):
         )
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Esfera Informada!"
         type_log = "info"
@@ -76,7 +76,7 @@ class ElawLocalidade(ElawBot):
         )
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Estado do processo informado!"
         type_log = "log"
@@ -94,7 +94,7 @@ class ElawLocalidade(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Comarca do processo informado!"
         type_log = "log"
@@ -112,7 +112,7 @@ class ElawLocalidade(ElawBot):
             ec.presence_of_element_located((By.XPATH, el.foro_input)),
         )
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Foro do processo informado!"
         type_log = "log"
@@ -132,7 +132,7 @@ class ElawLocalidade(ElawBot):
 
         element_select.select2(text)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Vara do processo informado!"
         type_log = "log"
@@ -150,7 +150,7 @@ class ElawLocalidade(ElawBot):
         element_select.select2(text)
         sleep(0.5)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         if (
             str(self.bot_data.get("CAPITAL_INTERIOR")).lower()
@@ -199,7 +199,7 @@ class ElawLocalidade(ElawBot):
         comando = f"document.querySelector('{id_input_css}').blur()"
         self.driver.execute_script(comando)
 
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Bairro informado!"
         type_log = "info"

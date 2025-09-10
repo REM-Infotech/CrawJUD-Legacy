@@ -40,7 +40,7 @@ class ElawInformacoesProcesso(ElawBot):
         self.driver.execute_script(
             f'document.querySelector("{css_campo_processo}").blur()',
         )
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Número do processo informado!"
         type_log = "info"
@@ -84,7 +84,7 @@ class ElawInformacoesProcesso(ElawBot):
         )
         element_subarea.select2(text)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
         message = "Sub-Área do direito selecionada!"
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -100,7 +100,7 @@ class ElawInformacoesProcesso(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Fase informada!"
         type_log = "log"
@@ -117,7 +117,7 @@ class ElawInformacoesProcesso(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Provimento antecipatório informado!"
         type_log = "log"
@@ -135,7 +135,7 @@ class ElawInformacoesProcesso(ElawBot):
         text = self.bot_data.get("FATO_GERADOR")
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Fato gerador informado!"
         type_log = "log"
@@ -171,7 +171,7 @@ class ElawInformacoesProcesso(ElawBot):
         text = self.bot_data.get("OBJETO")
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Objeto do processo informado!"
         type_log = "log"
@@ -203,7 +203,7 @@ class ElawInformacoesProcesso(ElawBot):
         elemento.click()
         elemento.send_keys(text)
         elemento.send_keys(Keys.ENTER)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Ação informada!"
         type_log = "info"

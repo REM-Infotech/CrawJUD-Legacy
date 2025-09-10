@@ -58,7 +58,7 @@ xpath_checkadvinterno = (
     "//*[contains(@id, 'j_id_4c_1:autoCompleteLawyer_item')]"
 )
 
-label_esfera = 'span[id="j_id_4c_1:j_id_4c_5_2_2_1_9_u_1:comboRito_label"]'
+label_esfera = 'span[id="j_id_4c_1:j_id_4c_5_2_2_1_9_t_1:comboRito_label"]'
 
 css_esfera_judge = '//select[contains(@id, "comboRito_input")]'
 estado_input = "//select[contains(@id, 'comboEstadoVara_input')]"

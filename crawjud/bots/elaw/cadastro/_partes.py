@@ -36,7 +36,7 @@ class ElawPartesPrincipais(ElawBot):
 
         element_select.select2(text)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Empresa informada!"
         type_log = "info"
@@ -54,7 +54,7 @@ class ElawPartesPrincipais(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Classificação da Empresa informada"
         type_log = "info"
@@ -82,10 +82,10 @@ class ElawPartesPrincipais(ElawBot):
         )
 
         select_contigencia.select2(text[0])
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         select_polo.select2(text[1])
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Contingenciamento informado!"
         type_log = "info"
@@ -117,7 +117,7 @@ class ElawPartesPrincipais(ElawBot):
         )
         select_tipo_doc.select2(tipo_doc)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
         campo_doc: WebElement = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
@@ -130,7 +130,7 @@ class ElawPartesPrincipais(ElawBot):
         campo_doc.clear()
         sleep(0.05)
         campo_doc.send_keys(self.bot_data.get("DOC_PARTE_CONTRARIA"))
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         search_button_parte: WebElement = self.wait.until(
             ec.presence_of_element_located((
@@ -140,7 +140,7 @@ class ElawPartesPrincipais(ElawBot):
             message="Erro ao encontrar elemento",
         )
         search_button_parte.click()
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         check_parte = self.check_part_found()
 
@@ -148,7 +148,7 @@ class ElawPartesPrincipais(ElawBot):
             try:
                 self.cadastro_parte_contraria()
                 self.driver.switch_to.default_content()
-                self.sleep_load('div[id="j_id_4b"]')
+                self.sleep_load('div[id="j_id_4p"]')
 
             except Exception:
                 message = "Não foi possível cadastrar parte"
@@ -178,7 +178,7 @@ class ElawPartesPrincipais(ElawBot):
             )
             add_parte.click()
 
-            self.sleep_load('div[id="j_id_4b"]')
+            self.sleep_load('div[id="j_id_4p"]')
 
             iframe = None
 

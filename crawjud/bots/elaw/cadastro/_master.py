@@ -81,7 +81,7 @@ class ElawCadastro(
     def salvar_tudo(self) -> None:
         wait = self.wait
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
         salvartudo: WebElement = wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,

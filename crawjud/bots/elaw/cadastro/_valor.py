@@ -19,12 +19,12 @@ if TYPE_CHECKING:
 
 class ElawValores(ElawBot):
     def data_distribuicao(self) -> None:
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
         message = "Informando data de distribuição"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
         data_distribuicao: WebElement = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
@@ -37,7 +37,7 @@ class ElawValores(ElawBot):
 
         data_distribuicao.send_keys(self.bot_data.get("DATA_DISTRIBUICAO"))
         data_distribuicao.send_keys(Keys.TAB)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Data de distribuição informada!"
         type_log = "info"
@@ -69,7 +69,7 @@ class ElawValores(ElawBot):
             f"document.querySelector('{input_valor_causa}').blur()",
         )
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Valor da causa informado!"
         type_log = "info"
@@ -87,14 +87,14 @@ class ElawValores(ElawBot):
             )),
         )
         data_citacao.clear()
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
         data_citacao.send_keys(self.bot_data.get("DATA_CITACAO"))
         sleep(2)
         id_element = data_citacao.get_attribute("id")
         id_input_css = f'[id="{id_element}"]'
         comando = f"document.querySelector('{id_input_css}').blur()"
         self.driver.execute_script(comando)
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Data de citação informada!"
         type_log = "log"

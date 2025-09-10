@@ -53,7 +53,7 @@ class ElawRepresentantes(ElawBot):
 
         check_adv = None
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         with suppress(TimeoutException):
             check_adv = (
@@ -77,7 +77,7 @@ class ElawRepresentantes(ElawBot):
                 f"document.querySelector('{element_campo_adv_outraparte}').blur()",
             )
 
-            self.sleep_load('div[id="j_id_4b"]')
+            self.sleep_load('div[id="j_id_4p"]')
 
             message = "Adv. parte contrária informado!"
             type_log = "info"
@@ -89,7 +89,7 @@ class ElawRepresentantes(ElawBot):
             self.cadastro_advogado_contra()
             driver.switch_to.default_content()
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Adv. parte contrária informado!"
         type_log = "info"
@@ -137,9 +137,9 @@ class ElawRepresentantes(ElawBot):
         elif not wait_adv:
             _raise_execution_error(message="Advogado interno não encontrado")
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
         element_select: WebElement = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
@@ -153,7 +153,7 @@ class ElawRepresentantes(ElawBot):
         comando = f"document.querySelector('{id_input_css}').blur()"
         driver.execute_script(comando)
 
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Advogado interno informado!"
         type_log = "info"
@@ -185,7 +185,7 @@ class ElawRepresentantes(ElawBot):
             )),
         )
         select_escritorio.select2(text)
-        self.sleep_load('div[id="j_id_4b"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Escritório externo informado!"
         type_log = "info"
@@ -211,7 +211,7 @@ class ElawRepresentantes(ElawBot):
             )
             add_parte.click()
 
-            self.sleep_load('div[id="j_id_4b"]')
+            self.sleep_load('div[id="j_id_4p"]')
 
             main_window = driver.current_window_handle
 
@@ -288,7 +288,7 @@ class ElawRepresentantes(ElawBot):
                 )),
             )
 
-            self.sleep_load('div[id="j_id_4b"]')
+            self.sleep_load('div[id="j_id_4p"]')
 
         except Exception:
             message = "Não foi possível cadastrar advogado"

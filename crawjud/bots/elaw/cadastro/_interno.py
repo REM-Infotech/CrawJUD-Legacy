@@ -48,7 +48,7 @@ class ElawInformacaoInterna(ElawBot):
         )
         element_select.select2(text)
 
-        self.sleep_load('div[id="j_id_48"]')
+        self.sleep_load('div[id="j_id_4p"]')
 
         message = "Divisão informada!"
         type_log = "log"
