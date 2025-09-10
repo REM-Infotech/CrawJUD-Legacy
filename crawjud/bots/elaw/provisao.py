@@ -61,7 +61,7 @@ class Provisao(ElawBot):
 
     def queue(self) -> None:
         try:
-            search = self.search()
+            search = self.search(bot_data=self.bot_data)
             if not search:
                 message = "Processo não encontrado!"
                 type_log = "error"
@@ -244,7 +244,7 @@ class Provisao(ElawBot):
         editar_pedido.click()
 
     def atualiza_valores(self) -> None:
-        self.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_3q"]')
         message = "Informando valores"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -261,7 +261,7 @@ class Provisao(ElawBot):
 
             campo_valor_dml.send_keys(Keys.CONTROL + "a")
             campo_valor_dml.send_keys(Keys.BACKSPACE)
-            self.sleep_load('div[id="j_id_2z"]')
+            self.sleep_load('div[id="j_id_3q"]')
 
             if isinstance(valor_informar, int):
                 valor_informar = str(valor_informar) + ",00"
@@ -275,11 +275,11 @@ class Provisao(ElawBot):
             self.driver.execute_script(
                 f"document.getElementById('{id_campo_valor_dml}').blur()",
             )
-            self.sleep_load('div[id="j_id_2z"]')
+            self.sleep_load('div[id="j_id_3q"]')
 
     def atualiza_risco(self) -> None:
         self.driver.execute_script(
-            'document.getElementById("j_id_2z:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" ',
+            'document.getElementById("j_id_3q:j_id_32_2e:processoAmountObjetoDt").style.zoom = "0.5" ',
         )
         message = "Alterando risco"
         type_log = "log"
@@ -347,7 +347,7 @@ class Provisao(ElawBot):
         sleep(1)
         try_salvar.click()
 
-        self.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_3q"]')
 
         message = "Informando justificativa"
         type_log = "log"
@@ -373,7 +373,7 @@ class Provisao(ElawBot):
             ExecutionError: If unable to save the provision.
 
         """
-        self.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_3q"]')
         salvar = self.driver.find_element(
             By.CSS_SELECTOR,
             el.CSS_BTN_SALVAR,
@@ -407,7 +407,7 @@ class Provisao(ElawBot):
         self.driver.execute_script(
             f"document.getElementById('{css_daata_correcao}').blur()",
         )
-        self.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_3q"]')
 
     def set_data_juros(self, data_base_juros: str) -> None:
         data_juros = self.driver.find_element(
@@ -420,7 +420,7 @@ class Provisao(ElawBot):
         self.driver.execute_script(
             f"document.getElementById('{css_data}').blur()",
         )
-        self.sleep_load('div[id="j_id_2z"]')
+        self.sleep_load('div[id="j_id_3q"]')
 
     def __tabela_valores(self) -> list[WebElement]:
         return self.wait.until(

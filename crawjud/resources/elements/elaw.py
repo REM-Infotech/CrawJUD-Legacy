@@ -9,7 +9,7 @@ LINK_PROCESSO_LIST = "https://amazonas.elaw.com.br/processoList.elaw"
 
 
 CSS_TABELA_VALORES = (
-    "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']"
+    "tbody[id='j_id_3q:j_id_32_2e:processoAmountObjetoDt_data']"
 )
 XPATH_ROWS_VALORES_TABELA = './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]'
 CSS_SELETOR_FILTRA_RISCO = 'select[id="{id_selector}"]'
@@ -20,10 +20,10 @@ CSS_DATA_JUROS = 'input[id*="j_id_3g_2e:processoAmountObjetoDt:dataBaseJurosTodo
 
 
 CSS_TEXTAREA_MOTIVO = (
-    'textarea[id="j_id_2z:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
+    'textarea[id="j_id_3q:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
 )
-CSS_LABEL_TIPO_RISCO = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
-CSS_SELETOR_TIPO_RISCO = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
+CSS_LABEL_TIPO_RISCO = 'span[id="j_id_3q:provisaoTipoPedidoCombo_label"]'
+CSS_SELETOR_TIPO_RISCO = 'select[id="j_id_3q:provisaoTipoPedidoCombo_input"]'
 
 # ANDAMENTOS
 botao_andamento = (
