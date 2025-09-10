@@ -21,6 +21,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import (
     ExecutionError,
@@ -313,10 +314,14 @@ class PjeBot[T](CrawJUD):
             chunk = 8 * 1024 * 1024
             file_path = path_temp.joinpath(file_name)
             # Salva arquivo em chunks no storage
-            with file_path.open("wb") as f:
+            with (
+                file_path.open("wb") as f,
+                tqdm(total=response_data.num_bytes_downloaded) as pbar,
+            ):
                 for _bytes in response_data.iter_bytes(chunk):
                     sleep(0.5)
                     f.write(_bytes)
+                    pbar.update(len(_bytes))
 
             """
             >>> with suppress(Exception):
