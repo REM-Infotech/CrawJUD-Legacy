@@ -105,7 +105,9 @@ class AbstractCrawJUD[T]:
 
     @property
     def current_time(self) -> str:
-        return datetime.now(ZoneInfo("America/Manaus")).strftime("%d-%m-%Y %H.%M.%S")
+        return datetime.now(ZoneInfo("America/Manaus")).strftime(
+            "%d-%m-%Y %H.%M.%S",
+        )
 
     @property
     def pbar(self) -> tqdm:
@@ -449,13 +451,17 @@ class AbstractCrawJUD[T]:
                     for col in df.columns:
                         with suppress(Exception):
                             df[col] = df[col].apply(
-                                lambda x: x.tz_localize(None) if hasattr(x, "tz_localize") else x,
+                                lambda x: x.tz_localize(None)
+                                if hasattr(x, "tz_localize")
+                                else x,
                             )
                             continue
 
                         with suppress(Exception):
                             df[col] = df[col].apply(
-                                lambda x: x.tz_convert(None) if hasattr(x, "tz_convert") else x,
+                                lambda x: x.tz_convert(None)
+                                if hasattr(x, "tz_convert")
+                                else x,
                             )
                     # --- APPEND na mesma aba, calculando a próxima linha ---
                     if path_planilha.exists():
@@ -467,8 +473,14 @@ class AbstractCrawJUD[T]:
                         ) as writer:
                             # pega a aba (se existir) e calcula a próxima linha
                             wb = writer.book
-                            ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.create_sheet(sheet_name)
-                            startrow = ws.max_row if ws.max_row > 1 else 0  # 0 => escreve com header
+                            ws = (
+                                wb[sheet_name]
+                                if sheet_name in wb.sheetnames
+                                else wb.create_sheet(sheet_name)
+                            )
+                            startrow = (
+                                ws.max_row if ws.max_row > 1 else 0
+                            )  # 0 => escreve com header
                             write_header = startrow == 0
                             df.to_excel(
                                 excel_writer=writer,

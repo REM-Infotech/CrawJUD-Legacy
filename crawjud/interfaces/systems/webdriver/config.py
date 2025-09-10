@@ -7,7 +7,6 @@ e preferências em automações Selenium.
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -18,12 +17,14 @@ from typing import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from selenium.webdriver.chrome.options import Options as ChromeOptions
-    from selenium.webdriver.firefox.options import Options as GeckoOptions
     from selenium.webdriver.chrome.remote_connection import (
         ChromeRemoteConnection,
     )
     from selenium.webdriver.chrome.service import Service as ChromeService
+    from selenium.webdriver.firefox.options import Options as GeckoOptions
     from selenium.webdriver.firefox.remote_connection import (
         FirefoxRemoteConnection,
     )

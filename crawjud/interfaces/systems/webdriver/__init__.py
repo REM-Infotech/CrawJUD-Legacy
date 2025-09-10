@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .config import *  # noqa: F403, F401
+from .config import *  # noqa: F403
 
 __all__ = [
     # All types are re-exported from config module

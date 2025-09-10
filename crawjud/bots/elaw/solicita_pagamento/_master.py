@@ -46,12 +46,18 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         """
         try:
             tab_pagamentos: WebElement = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, el.valor_pagamento)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    el.valor_pagamento,
+                )),
             )
             tab_pagamentos.click()
 
             novo_pgto: WebElement = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, el.botao_novo_pagamento)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    el.botao_novo_pagamento,
+                )),
             )
             novo_pgto.click()
 
@@ -64,14 +70,20 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         type_itens: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.css_typeitens)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.css_typeitens,
+            )),
         )
         type_itens.click()
 
         sleep(0.5)
 
         list_itens: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.listitens_css)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.listitens_css,
+            )),
         )
         list_itens = list_itens.find_elements(By.TAG_NAME, "li")
 
@@ -99,7 +111,10 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
             type_log = "log"
             self.print_msg(message=message, type_log=type_log, row=self.row)
             save: WebElement = self.wait.until(
-                ec.element_to_be_clickable((By.CSS_SELECTOR, el.botao_salvar_pagamento)),
+                ec.element_to_be_clickable((
+                    By.CSS_SELECTOR,
+                    el.botao_salvar_pagamento,
+                )),
             )
             save.click()
 
@@ -114,12 +129,20 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         message = "Pagamento não encontrado!"
 
         tab_pagamentos: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.valor_pagamento)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.valor_pagamento,
+            )),
         )
         tab_pagamentos.click()
 
         check_solicitacoes: list[WebElement] = (
-            self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, el.valor_resultado)))
+            self.wait.until(
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    el.valor_resultado,
+                )),
+            )
             .find_element(By.TAG_NAME, "table")
             .find_element(By.TAG_NAME, "tbody")
             .find_elements(By.TAG_NAME, "tr")
@@ -127,16 +150,24 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
         numero_processo = self.bot_data.get("NUMERO_PROCESSO")
 
-        name_comprovante1 = f"COMPROVANTE 1 {numero_processo} - {self.pid} - {now}.png"
+        name_comprovante1 = (
+            f"COMPROVANTE 1 {numero_processo} - {self.pid} - {now}.png"
+        )
         path_comprovante1 = self.output_dir_path.joinpath(name_comprovante1)
 
-        name_comprovante2 = f"COMPROVANTE 2 {numero_processo} - {self.pid} - {now}.png"
+        name_comprovante2 = (
+            f"COMPROVANTE 2 {numero_processo} - {self.pid} - {now}.png"
+        )
         path_comprovante2 = self.output_dir_path.joinpath(name_comprovante2)
 
-        codigo_barras_planilha = str(self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", ""))
+        codigo_barras_planilha = str(
+            self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", ""),
+        )
         tipo_condenacao_xls = str(self.bot_data.get("TIPO_CONDENACAO", ""))
         tipo_custa_xls = str(self.bot_data.get("TIPO_GUIA", ""))
-        namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO")).lower()
+        namedef = self.format_string(
+            self.bot_data.get("TIPO_PAGAMENTO"),
+        ).lower()
 
         for pos, item in enumerate(check_solicitacoes):
             if item.text == "Nenhum registro encontrado!":
@@ -149,12 +180,16 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
             frame_pgto, close_context = self.__get_frame_pgto(pos)
 
-            tipo_custa, codigo_de_barras, tipo_condenacao = self.__informacoes_para_comparar()
+            tipo_custa, codigo_de_barras, tipo_condenacao = (
+                self.__informacoes_para_comparar()
+            )
 
             check_codigo_barras = codigo_de_barras == codigo_barras_planilha
 
             if namedef == "condenacao":
-                match_condenacao = tipo_condenacao_xls.lower() == tipo_condenacao.lower()
+                match_condenacao = (
+                    tipo_condenacao_xls.lower() == tipo_condenacao.lower()
+                )
                 matchs = all([match_condenacao, check_codigo_barras])
 
             elif namedef == "custas":
@@ -189,7 +224,10 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         self.append_success(data=data)
         self.print_msg(message=message, type_log="success", row=self.row)
 
-    def __get_frame_pgto(self, pos: int) -> tuple[WebElement, Callable[[str], None]]:
+    def __get_frame_pgto(
+        self,
+        pos: int,
+    ) -> tuple[WebElement, Callable[[str], None]]:
         close_context = self.wait.until(
             ec.presence_of_element_located(
                 (

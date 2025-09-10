@@ -35,17 +35,17 @@ type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 type ProcessInfo = dict[str, str | int | datetime]
 
 __all__ = [
+    "Binds",
+    "DataStores",
     "DictData",
+    "DictType",
     "ListData",
+    "ListPartes",
+    "ListType",
+    "ProcessInfo",
     "PyNumbers",
     "PyStrings",
-    "TupleType",
-    "ListType",
-    "DictType",
-    "DataStores",
-    "Binds",
-    "StrPath",
     "ReturnFormataTempo",
-    "ListPartes",
-    "ProcessInfo",
+    "StrPath",
+    "TupleType",
 ]

@@ -9,7 +9,7 @@ __all__ = [
     # Bot data
     "BotData",
     "DictFiles",
-    "DictReturnAuth", 
+    "DictReturnAuth",
     "PolosProcessuais",
     # PJe bot types
     "DictDesafio",

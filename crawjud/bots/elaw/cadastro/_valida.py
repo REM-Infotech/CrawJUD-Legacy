@@ -11,6 +11,7 @@ from crawjud.controllers.elaw import ElawBot
 from crawjud.custom.task import ContextTask as ContextTask
 from crawjud.decorators import shared_task as shared_task
 from crawjud.decorators.bot import wrap_cls as wrap_cls
+from crawjud.resources.elements import elaw as el
 
 type ListStr = list[str]
 campos_validar: ListStr = [
@@ -43,7 +44,6 @@ class ElawValidacao(ElawBot):
         validar: dict[str, str] = {
             "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
         }
-        message_campo: list[str] = []
 
         for campo in campos_validar:
             try:
@@ -58,10 +58,8 @@ class ElawValidacao(ElawBot):
                         message=f'Campo "{campo}" não preenchido',
                     )
 
-                message_campo.append(
-                    f'<p class="fw-bold">Campo "{campo}" Validado | Texto: {element}</p>',
-                )
-                validar.update({campo.upper(): element})
+                message = f'Campo "{campo}" Validado | Texto: {element}'
+                self.print_msg(message=message, type_log="info", row=self.row)
 
             except Exception as e:
                 try:
@@ -81,8 +79,7 @@ class ElawValidacao(ElawBot):
                 )
 
         self.append_validarcampos([validar])
-        message_campo.append('<p class="fw-bold">Campos validados!</p>')
-        message = "".join(message_campo)
+        message = "Campos validados!"
         type_log = "info"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 

@@ -1,7 +1,7 @@
 """CrawJUD - Sistema de Automação Jurídica.
 
-Este é o módulo principal do CrawJUD, uma plataforma modular para automação de 
-rotinas jurídicas que integra robôs de automação, APIs web, tarefas assíncronas 
+Este é o módulo principal do CrawJUD, uma plataforma modular para automação de
+rotinas jurídicas que integra robôs de automação, APIs web, tarefas assíncronas
 e comunicação em tempo real.
 
 Principais funcionalidades:

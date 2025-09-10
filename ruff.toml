@@ -1,6 +1,6 @@
 preview = true
 extend-include = ["*.ipynb"]
-line-length = 120
+line-length = 79
 indent-width = 4
 
 [lint]
@@ -51,10 +51,10 @@ extend-select = [
     "RUF",
 ]
 
-ignore = ["ARG002", "FBT003"]
+ignore = ["ARG002", "FBT003", "RUF022", "D203", "D213"]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
-unfixable = ["B", "S", "D203", "D213", "D211"]
+unfixable = ["B", "S", "D203", "D213", "D211", "COM812"]
 
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"

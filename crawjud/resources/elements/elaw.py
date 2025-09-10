@@ -172,10 +172,7 @@ botao_novo_pagamento = (
     'button[id="tabViewProcesso:pvp-pgBotoesValoresPagamentoBtnNovo"]'
 )
 css_typeitens = 'div[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo"]'
-listitens_css = (
-    'ul[id="processoValorPagamentoEditForm:pvp:'
-    'processoValorPagamentoTipoCombo_items"]'
-)
+listitens_css = 'ul[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoTipoCombo_items"]'
 
 # Input informa valor de pagamento
 css_element = (
@@ -184,51 +181,18 @@ css_element = (
 )
 
 # Div do tipo de documento
-type_doc_css = (
-    'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:'
-    'eFileTipoCombo"]'
-)
-list_type_doc_css = (
-    'ul[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:'
-    'eFileTipoCombo_items"]'
-)
-editar_pagamento = (
-    'input[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_2_1_9_g_1:uploadGedEFile_input"]'
-)
-css_div_condenacao_type = (
-    'div[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-)
-valor_sentenca = (
-    'li[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_3"]'
-)
-valor_acordao = (
-    'li[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_1"]'
-)
-css_desc_pgto = (
-    'textarea[id="processoValorPagamentoEditForm:pvp:'
-    'processoValorPagamentoDescription"]'
-)
-css_data = (
-    'input[id="processoValorPagamentoEditForm:pvp:'
-    'processoValorPagamentoVencData_input"]'
-)
+type_doc_css = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:eFileTipoCombo"]'
+list_type_doc_css = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:eFileTipoCombo_items"]'
+editar_pagamento = 'input[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:uploadGedEFile_input"]'
+css_div_condenacao_type = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
+valor_sentenca = 'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_3"]'
+valor_acordao = 'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_3_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_1"]'
+css_desc_pgto = 'textarea[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoDescription"]'
+css_data = 'input[id="processoValorPagamentoEditForm:pvp:processoValorPagamentoVencData_input"]'
 css_inputfavorecido = 'input[id="processoValorPagamentoEditForm:pvp:processoValorFavorecido_input"]'
-resultado_favorecido = (
-    'li[class="ui-autocomplete-item ui-autocomplete-list-item '
-    'ui-corner-all ui-state-highlight"]'
-)
-valor_processo = (
-    'div[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_8_1_9_28_1_2_1:pvpEFSpgTypeSelectField1CombosCombo"]'
-)
-boleto = (
-    'li[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_8_1_9_28_1_2_1:pvpEFSpgTypeSelectField1CombosCombo_1"]'
-)
+resultado_favorecido = 'li[class="ui-autocomplete-item ui-autocomplete-list-item ui-corner-all ui-state-highlight"]'
+valor_processo = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_8_1_9_28_1_2_1:pvpEFSpgTypeSelectField1CombosCombo"]'
+boleto = 'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_8_1_9_28_1_2_1:pvpEFSpgTypeSelectField1CombosCombo_1"]'
 css_cod_bars = (
     'input[id="processoValorPagamentoEditForm:pvp:'
     "j_id_30_1_i_8_1_9_28_1_2_1:"
@@ -237,31 +201,13 @@ css_cod_bars = (
     "j_id_30_1_i_8_1_9_28_1_2_c_16:"
     'j_id_30_1_i_8_1_9_28_1_2_c_1w"]'
 )
-css_centro_custas = (
-    'input[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_9_1_9_28_1_1_1:pvpEFBfieldText"]'
-)
-css_div_conta_debito = (
-    'div[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_a_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-)
+css_centro_custas = 'input[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_9_1_9_28_1_1_1:pvpEFBfieldText"]'
+css_div_conta_debito = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_a_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
 valor_guia = 'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
-css_gru = (
-    'li[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_2_1_9_g_1:eFileTipoCombo_35"]'
-)
-editar_pagamentofile = (
-    'div[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_2_1_9_g_1:gedEFileDataTable"]'
-)
-css_tipo_custa = (
-    'div[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-)
-css_listcusta = (
-    'ul[id="processoValorPagamentoEditForm:pvp:'
-    'j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_items"]'
-)
+css_gru = 'li[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:eFileTipoCombo_35"]'
+editar_pagamentofile = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_2_1_9_g_1:gedEFileDataTable"]'
+css_tipo_custa = 'div[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
+css_listcusta = 'ul[id="processoValorPagamentoEditForm:pvp:j_id_30_1_i_4_1_9_28_1_1_1:pvpEFBtypeSelectField1CombosCombo_items"]'
 custas_civis = 'li[data-label="CUSTAS JUDICIAIS CIVEIS"]'
 custas_monitorias = 'li[data-label="CUSTAS JUDICIAIS - MONITORIAS"]'
 botao_salvar_pagamento = 'button[id="processoValorPagamentoEditForm:btnSalvarProcessoValorPagamento"]'
@@ -284,10 +230,7 @@ css_btn_edit = (
 )
 ver_valores = 'a[href="#tabViewProcesso:valores"]'
 
-table_valores_css = (
-    'tbody[id="tabViewProcesso:j_id_i1_c_1_6_2:j_id_i1_c_1_6_4x:'
-    'viewValoresCustomeDt_data"]'
-)
+table_valores_css = 'tbody[id="tabViewProcesso:j_id_i1_c_1_6_2:j_id_i1_c_1_6_4x:viewValoresCustomeDt_data"]'
 value_provcss = 'div[id*="viewValoresCustomeDt:0"]'
 div_tipo_obj_css = 'div[id="selectManyObjetoAdicionarList"]'
 itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
@@ -302,23 +245,25 @@ css_risk = (
     "div/div/table[2]/tbody/tr[2]/td/span/div/div/div/div[1]/div/table/tbody/"
     "tr[1]/td[7]/div"
 )
-processo_objt = (
-    'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:'
-    'j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
-)
-botao_salvar_id = 'button[id="salvarBtn"]'
-data_correcao_css = (
-    'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:'
-    'dataBaseCorrecaoTodosField_input"]'
-)
-data_juros_css = (
-    'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:'
-    'dataBaseJurosTodosField_input"]'
-)
-texto_motivo = 'textarea[id="j_id_2z:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
+processo_objt = 'ul[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
 
-type_risk_label = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
-type_risk_select = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
+
+CSS_TABELA_VALORES = (
+    "tbody[id='j_id_2z:j_id_32_2e:processoAmountObjetoDt_data']"
+)
+XPATH_ROWS_VALORES_TABELA = './/tr[contains(@class, "ui-datatable-odd") or contains(@class, "ui-datatable-even")]'
+CSS_SELETOR_FILTRA_RISCO = 'select[id="{id_selector}"]'
+
+CSS_BTN_SALVAR = 'button[id="salvarBtn"]'
+CSS_DATA_CORRECAO = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'
+CSS_DATA_JUROS = 'input[id="j_id_2z:j_id_32_2e:processoAmountObjetoDt:dataBaseJurosTodosField_input"]'
+
+
+CSS_TEXTAREA_MOTIVO = (
+    'textarea[id="j_id_2z:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
+)
+CSS_LABEL_TIPO_RISCO = 'span[id="j_id_2z:provisaoTipoPedidoCombo_label"]'
+CSS_SELETOR_TIPO_RISCO = 'select[id="j_id_2z:provisaoTipoPedidoCombo_input"]'
 
 tabela_advogados_resp = 'tbody[id*="lawyerOwnersDataTable_data"]'
 tr_not_adv = "tr.ui-datatable-empty-message"
@@ -335,42 +280,33 @@ dict_campos_validar = {
         'select[id*="comboAdvogadoResponsavelProcesso_input"] > option:selected'
     ),
     "divisao": (
-        'select[id*="fieldid_9241typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_9241typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "classificacao": (
         'select[id*="processoClassificacaoCombo_input"] > option:selected'
     ),
     "toi_criado": (
-        'select[id*="fieldid_9243pgTypeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_9243pgTypeSelectField1CombosCombo_input"] > option:selected'
     ),
     "nota_tecnica": (
-        'select[id*="fieldid_9244typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_9244typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "liminar": (
-        'select[id*="fieldid_9830typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_9830typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "provimento": (
-        'select[id*="fieldid_8401typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_8401typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "fato_gerador": (
-        'select[id*="fieldid_9239typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_9239typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "acao": (
-        'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "tipo_entrada": (
-        'select[id*="fieldid_9242typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_9242typeSelectField1CombosCombo_input"] > option:selected'
     ),
     "objeto": (
-        'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > '
-        "option:selected"
+        'select[id*="fieldid_8405typeSelectField1CombosCombo_input"] > option:selected'
     ),
 }
