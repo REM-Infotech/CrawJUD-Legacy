@@ -1,14 +1,18 @@
 # Contagem de Linhas de Código (LOC)
 
-> github.com/AlDanial/cloc v 2.06 T=2.08 s (100.3 files/s, 26393.3 lines/s)
+> [github.com/AlDanial/cloc](https://github.com/AlDanial/cloc) v 2.06 T=2.05 s (105.2 files/s, 27387.1 lines/s)
 
 | Linguagem      | Arquivos | Linhas em branco | Comentários | Código |
 | -------------- | -------- | ---------------- | ----------- | ------ |
-| Python         | 184      | 5783             | 4711        | 17335  |
-| Markdown       | 29       | 1187             | 0           | 3655   |
-| JSON           | 27       | 0                | 0           | 627    |
-| TOML           | 2        | 18               | 30          | 150    |
-| YAML           | 3        | 10               | 5           | 70     |
+| CSS            | 2        | 4825             | 52          | 21019  |
+| Python         | 135      | 5679             | 4863        | 14101  |
+| JSON           | 17       | 0                | 0           | 1570   |
+| HTML           | 27       | 71               | 27          | 1308   |
+| Markdown       | 15       | 333              | 0           | 1159   |
+| JavaScript     | 9        | 78               | 51          | 644    |
+| TOML           | 3        | 19               | 16          | 229    |
+| YAML           | 2        | 10               | 6           | 72     |
 | Jinja Template | 3        | 1                | 0           | 48     |
-| INI            | 1        | 1                | 0           | 7      |
-| **Total**      | 249      | 7000             | 4746        | 21892  |
+| INI            | 2        | 7                | 0           | 39     |
+| SVG            | 1        | 0                | 0           | 1      |
+| **Total**      | 216      | 11023            | 5015        | 40190  |
