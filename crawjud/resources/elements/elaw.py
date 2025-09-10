@@ -16,6 +16,8 @@ chk_login = ""
 url_busca = ""
 btn_busca = ""
 
+LINK_PROCESSO_LIST = "https://amazonas.elaw.com.br/processoList.elaw"
+
 # ANDAMENTOS
 botao_andamento = (
     'button[id="tabViewProcesso:j_id_i1_4_1_3_ae:novoAndamentoPrimeiraBtn"]'

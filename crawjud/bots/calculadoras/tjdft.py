@@ -283,7 +283,7 @@ class Tjdft(CrawJUD):
                         'input[id="juros_percent2"]',
                     ),
                 )
-                self.interact.send_key(
+                self.interact.send_keys(
                     self.wait.until(
                         ec.presence_of_element_located((
                             By.CSS_SELECTOR,
@@ -295,7 +295,7 @@ class Tjdft(CrawJUD):
 
             if juros_partir != "VENCIMENTO":
                 css_data_incide = 'input[name="juros_data"][id="juros_data"]'
-                self.interact.send_key(
+                self.interact.send_keys(
                     self.driver.find_element(By.CSS_SELECTOR, css_data_incide),
                     self.bot_data.get("DATA_INCIDENCIA"),
                 )
@@ -469,11 +469,11 @@ class Tjdft(CrawJUD):
                 valor = str(self.bot_data.get("MULTA_VALOR"))
                 valor = f"{valor},00" if "," not in valor else valor
 
-                self.interact.send_key(
+                self.interact.send_keys(
                     multa_data,
                     self.bot_data.get("MULTA_DATA"),
                 )
-                self.interact.send_key(multa_valor, valor)
+                self.interact.send_keys(multa_valor, valor)
 
             self.message = "Multa informada"
             self.type_log = "log"
@@ -543,12 +543,12 @@ class Tjdft(CrawJUD):
                 valor = str(self.bot_data.get("HONORARIO_SUCUMB_VALOR"))
                 valor = f"{valor},00" if "," not in valor else valor
 
-                self.interact.send_key(
+                self.interact.send_keys(
                     honor_sucumb_data,
                     self.bot_data.get("HONORARIO_SUCUMB_DATA"),
                 )
-                self.interact.send_key(honor_sucumb_valor, valor)
-                self.interact.send_key(
+                self.interact.send_keys(honor_sucumb_valor, valor)
+                self.interact.send_keys(
                     sucumb_juros_partir,
                     self.bot_data.get("HONORARIO_SUCUMB_PARTIR"),
                 )
@@ -574,7 +574,7 @@ class Tjdft(CrawJUD):
                 By.CSS_SELECTOR,
                 'input[id="multa475_exec_percent"]',
             )
-            self.interact.send_key(
+            self.interact.send_keys(
                 percent_multa_,
                 self.bot_data.get("PERCENT_MULTA_475J"),
             )
@@ -643,12 +643,12 @@ class Tjdft(CrawJUD):
                 valor = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_VALOR"))
                 valor = f"{valor},00" if "," not in valor else valor
 
-                self.interact.send_key(
+                self.interact.send_keys(
                     honor_exec_data,
                     self.bot_data.get("HONORARIO_CUMPRIMENTO_DATA"),
                 )
-                self.interact.send_key(honor_exec_valor, valor)
-                self.interact.send_key(
+                self.interact.send_keys(honor_exec_valor, valor)
+                self.interact.send_keys(
                     exec_juros_partir,
                     self.bot_data.get("HONORARIO_CUMPRIMENTO_PARTIR"),
                 )

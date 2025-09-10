@@ -4,25 +4,27 @@ from __future__ import annotations
 
 import platform
 from contextlib import suppress
-from datetime import datetime
 from pathlib import Path
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from crawjud.common.exceptions.bot import ExecutionError, raise_start_error
+from crawjud.common.exceptions.bot import raise_start_error
 from crawjud.controllers.main import CrawJUD
 from crawjud.interfaces.types.bots import DataSucesso
-from crawjud.resources.elements import esaj as el
+from crawjud.resources.elements import elaw as el
 
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
-DictData = dict[str, str | datetime]
-ListData = list[DictData]
+    from crawjud.utils.webdriver.web_element import WebElementBot
 
 workdir = Path(__file__).cwd()
 
@@ -100,91 +102,61 @@ class ElawBot[T](CrawJUD):
         return url != "https://amazonas.elaw.com.br/login"
 
     def search(self, bot_data: dict[str, str]) -> bool:
-        self.bot_data = bot_data
-        grau = self.bot_data.get("GRAU", 1)
-        id_consultar = "botaoConsultarProcessos"
-        if grau == 2:
-            self.driver.get(el.consultaproc_grau2)
-            id_consultar = "pbConsultar"
+        """Perform an ELAW system search for a legal process.
 
-        elif not grau or grau != 1 or grau != 2:
-            raise ExecutionError(message="Informar instancia!")
+        Returns:
+            bool: True if the process is found; False otherwise.
 
-        sleep(1)
-        # Coloca o campo em formato "Outros" para inserir o número do processo
-        radio_numero_antigo = self.wait.until(
-            ec.presence_of_element_located((By.ID, "radioNumeroAntigo")),
-        )
-        radio_numero_antigo.click()
+        Navigates to the appropriate ELAW page, interacts with elements, and clicks to open the process.
 
-        # Insere o processo no Campo
-        lineprocess = self.wait.until(
-            ec.presence_of_element_located((
-                By.ID,
-                "nuProcessoAntigoFormatado",
-            )),
-        )
-        lineprocess.click()
-        lineprocess.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
+        """
 
-        # Abre o Processo
-        openprocess = None
-        with suppress(TimeoutException):
-            openprocess = self.wait.until(
-                ec.presence_of_element_located((By.ID, id_consultar)),
-            )
-            openprocess.click()
-
-        check_process = None
-        with suppress(NoSuchElementException, TimeoutException):
-            check_process = WebDriverWait(self.driver, 5).until(
+        def open_proc() -> bool:
+            open_proc = WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    "#numeroProcesso",
+                    By.ID,
+                    "dtProcessoResults:0:btnProcesso",
                 )),
             )
-
-        # Retry 1
-        if not check_process:
-            with suppress(NoSuchElementException, TimeoutException):
-                check_process = WebDriverWait(self.driver, 5).until(
-                    ec.presence_of_element_located((
-                        By.CSS_SELECTOR,
-                        'div[id="listagemDeProcessos"]',
-                    )),
-                )
-
-                if check_process:
-                    check_process = (
-                        check_process.find_element(By.TAG_NAME, "ul")
-                        .find_elements(By.TAG_NAME, "li")[0]
-                        .find_element(By.TAG_NAME, "a")
+            if type_bot.upper() != "CADASTRO":
+                if type_bot.upper() == "COMPLEMENT":
+                    open_proc = driver.find_element(
+                        By.ID,
+                        "dtProcessoResults:0:btnEditar",
                     )
 
-                    url_proc = check_process.get_attribute("href")
-                    self.driver.get(url_proc)
+                open_proc.click()
 
-        # Retry 2
-        if not check_process:
-            with suppress(NoSuchElementException, TimeoutException):
-                check_process = WebDriverWait(self.driver, 5).until(
-                    ec.presence_of_element_located(
-                        (
-                            By.CSS_SELECTOR,
-                            'div.modal__process-choice > input[type="radio"]',
-                        ),
-                    ),
-                )
+            return True
 
-                if check_process:
-                    check_process.click()
-                    button_enviar_incidente = self.driver.find_element(
-                        By.CSS_SELECTOR,
-                        'input[name="btEnviarIncidente"]',
-                    )
-                    button_enviar_incidente.click()
+        driver = self.driver
+        type_bot = self.type_bot
+        interact = self.interact
+        wait = self.wait
+        bot_data = self.bot_data
 
-        return check_process is not None
+        driver.implicitly_wait(5)
+
+        if driver.current_url != el.LINK_PROCESSO_LIST:
+            driver.get(el.LINK_PROCESSO_LIST)
+
+        campo_numproc: WebElementBot = wait.until(
+            ec.presence_of_element_located((By.ID, "tabSearchTab:txtSearch")),
+        )
+        campo_numproc.clear()
+        sleep(0.15)
+        interact.send_key(campo_numproc, bot_data.get("NUMERO_PROCESSO"))
+        driver.find_element(By.ID, "btnPesquisar").click()
+
+        try:
+            return open_proc()
+
+        except TimeoutException:
+            return False
+
+        except StaleElementReferenceException:
+            sleep(5)
+            return open_proc()
 
     def elaw_formats(
         self,

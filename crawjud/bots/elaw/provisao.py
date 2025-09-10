@@ -374,7 +374,7 @@ class Provisao(ElawBot):
             )
             css_daata_correcao = data_correcao.get_attribute("id")
             self.interact.clear(data_correcao)
-            self.interact.send_key(data_correcao, data_base_correcao)
+            self.interact.send_keys(data_correcao, data_base_correcao)
 
             self.driver.execute_script(
                 f"document.getElementById('{css_daata_correcao}').blur()",
@@ -388,7 +388,7 @@ class Provisao(ElawBot):
             )
             css_data = data_juros.get_attribute("id")
             self.interact.clear(data_juros)
-            self.interact.send_key(data_juros, data_base_juros)
+            self.interact.send_keys(data_juros, data_base_juros)
             self.driver.execute_script(
                 f"document.getElementById('{css_data}').blur()",
             )
@@ -468,10 +468,5 @@ class Provisao(ElawBot):
         if not check_provisao_atualizada:
             raise ExecutionError(message="Não foi possivel atualizar provisão")
 
-        comprovante = self.print_comprovante()
-        data = [
-            str(self.bot_data.get("NUMERO_PROCESSO")),
-            comprovante,
-            "Provisão atualizada com sucesso!",
-        ]
-        self.append_success(data, message="Provisão atualizada com sucesso!")
+        message = "Provisão atualizada com sucesso!"
+        self.print_comprovante(message=message)

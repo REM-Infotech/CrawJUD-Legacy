@@ -221,7 +221,7 @@ class SolPags(ElawBot):
         sleep(0.5)
         element.send_keys(Keys.CONTROL, "a")
         element.send_keys(Keys.BACKSPACE)
-        self.interact.send_key(element, text)
+        self.interact.send_keys(element, text)
         self.driver.execute_script(
             f"document.querySelector('{el.css_element}').blur()",
         )

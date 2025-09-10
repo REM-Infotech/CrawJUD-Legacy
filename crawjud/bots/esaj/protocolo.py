@@ -219,12 +219,12 @@ class Protocolo(ESajBot):
                     el.input_classe,
                 )),
             )
-            self.interact.send_key(
+            self.interact.send_keys(
                 input_tipo_peticao,
                 self.bot_data.get("TIPO_PROTOCOLO"),
             )
             sleep(1.5)
-            self.interact.send_key(input_tipo_peticao, Keys.ENTER)
+            self.interact.send_keys(input_tipo_peticao, Keys.ENTER)
 
         except Exception as e:
             raise ExecutionError(
@@ -261,7 +261,7 @@ class Protocolo(ESajBot):
                     el.input_categoria,
                 )),
             )
-            self.interact.send_key(
+            self.interact.send_keys(
                 input_categoria_peticao,
                 self.bot_data.get("SUBTIPO_PROTOCOLO"),
             )
