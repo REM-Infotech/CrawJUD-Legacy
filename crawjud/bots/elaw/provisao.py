@@ -387,7 +387,8 @@ class Provisao(ElawBot):
         data_correcao.send_keys(data_base_correcao)
 
         self.driver.execute_script(
-            f"document.getElementById('{css_daata_correcao}').blur()",
+            "document.getElementById(arguments[0]).blur()",
+            css_daata_correcao,
         )
         self.sleep_load('div[id="j_id_3q"]')
 
