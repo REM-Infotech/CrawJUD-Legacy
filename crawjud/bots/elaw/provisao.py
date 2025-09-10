@@ -367,12 +367,6 @@ class Provisao(ElawBot):
         )
 
     def save_changes(self) -> None:
-        """Save all changes made during the provision process.
-
-        Raises:
-            ExecutionError: If unable to save the provision.
-
-        """
         self.sleep_load('div[id="j_id_3q"]')
         salvar = self.driver.find_element(
             By.CSS_SELECTOR,
