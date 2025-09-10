@@ -148,8 +148,6 @@ class Capa(PjeBot):
     ) -> None:
         pool_exe = ThreadPoolExecutor(max_workers=16)
 
-        sleep(2)
-
         client_context = Client(cookies=cookies, headers=headers)
 
         with client_context as client, pool_exe as executor:
