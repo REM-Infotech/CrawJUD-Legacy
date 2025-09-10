@@ -22,7 +22,7 @@ CSS_DATA_JUROS = (
 
 
 CSS_TEXTAREA_MOTIVO = (
-    'textarea[id="j_id_3d:j_id_32_2e:j_id_32_2j_7:j_id_32_2j_i"]'
+    'textarea[id="j_id_3d:j_id_3g_2e:j_id_3g_2j_7:j_id_3g_2j_i"]'
 )
 CSS_LABEL_TIPO_RISCO = 'span[id*=":provisaoTipoPedidoCombo_label"]'
 CSS_SELETOR_TIPO_RISCO = 'select[id*=":provisaoTipoPedidoCombo_input"]'

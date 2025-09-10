@@ -39,8 +39,20 @@ type_doc = {11: "cpf", 14: "cnpj"}
 @shared_task(name="elaw.provisao", bind=True, context=ContextTask)
 @wrap_cls
 class Provisao(ElawBot):
+    """Gerencie entradas e atualizações de provisão no sistema ELAW de forma automatizada.
+
+    Args:
+    Nenhum.
+
+    Returns:
+    None: Esta classe não retorna valores diretamente.
+
+    Raises:
+    ExecutionError: Caso ocorra falha ao atualizar ou salvar provisão.
+
+    """
+
     def execution(self) -> None:
-        """Execute the main processing loop for provisions."""
         frame = self.frame
         self.total_rows = len(frame)
         for pos, value in enumerate(frame):
@@ -138,7 +150,7 @@ class Provisao(ElawBot):
             if provisao == "provável" or provisao == "possível":
                 calls.append(self.informar_datas)
 
-        calls.extend([self.atualiza_risco, self.informar_motivo])
+        calls.extend([self.atualiza_risco, self.informa_justificativa])
 
         return calls
 
@@ -314,7 +326,7 @@ class Provisao(ElawBot):
 
             self.set_data_juros(data_base_juros)
 
-    def informar_motivo(self) -> None:
+    def informa_justificativa(self) -> None:
         try_salvar = self.driver.find_element(
             By.CSS_SELECTOR,
             el.CSS_BTN_SALVAR,
@@ -328,18 +340,18 @@ class Provisao(ElawBot):
         message = "Informando justificativa"
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
-        informar_motivo = self.wait.until(
+        informa_justificativa = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.CSS_TEXTAREA_MOTIVO,
             )),
         )
-        informar_motivo.send_keys(
+        informa_justificativa.send_keys(
             self.bot_data.get("OBSERVACAO", "Atualização de provisão"),
         )
-        id_informar_motivo = informar_motivo.get_attribute("id")
+        id_informa_justificativa = informa_justificativa.get_attribute("id")
         self.driver.execute_script(
-            f"document.getElementById('{id_informar_motivo}').blur()",
+            f"document.getElementById('{id_informa_justificativa}').blur()",
         )
 
     def save_changes(self) -> None:
