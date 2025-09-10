@@ -45,7 +45,9 @@ class ElawCondenacao(ElawBot):
         element.send_keys(Keys.CONTROL, "a")
         element.send_keys(Keys.BACKSPACE)
         self.interact.send_key(element, text)
-        self.driver.execute_script(f"document.querySelector('{el.css_element}').blur()")
+        self.driver.execute_script(
+            f"document.querySelector('{el.css_element}').blur()",
+        )
 
         self.interact.sleep_load('div[id="j_id_2x"]')
 
@@ -56,7 +58,10 @@ class ElawCondenacao(ElawBot):
         sleep(0.5)
 
         list_type_doc: WebElement = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.list_type_doc_css)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.list_type_doc_css,
+            )),
         )
         list_type_doc = list_type_doc.find_elements(By.TAG_NAME, "li")
 
@@ -85,7 +90,10 @@ class ElawCondenacao(ElawBot):
         for doc in docs:
             doc = self.format_string(doc.upper())
             insert_doc: WebElement = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, el.editar_pagamento)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    el.editar_pagamento,
+                )),
             )
             path_doc = self.output_dir_path.joinpath(doc)
             insert_doc.send_keys(path_doc)
@@ -97,19 +105,28 @@ class ElawCondenacao(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
         div_condenacao_type: WebElement = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_div_condenacao_type)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_div_condenacao_type,
+            )),
         )
         div_condenacao_type.click()
 
         tipo_condenacao = str(self.bot_data.get("TIPO_CONDENACAO"))
         if tipo_condenacao.lower() == "sentença":
             sleep(0.5)
-            sentenca = self.driver.find_element(By.CSS_SELECTOR, el.valor_sentenca)
+            sentenca = self.driver.find_element(
+                By.CSS_SELECTOR,
+                el.valor_sentenca,
+            )
             sentenca.click()
 
         elif tipo_condenacao.lower() == "acórdão":
             sleep(0.5)
-            acordao = self.driver.find_element(By.CSS_SELECTOR, el.valor_acordao)
+            acordao = self.driver.find_element(
+                By.CSS_SELECTOR,
+                el.valor_acordao,
+            )
             acordao.click()
 
         message = "Informando descrição do pagamento"
@@ -130,7 +147,9 @@ class ElawCondenacao(ElawBot):
         desc_pgto.send_keys(desc_pagamento)
         sleep(0.5)
 
-        self.driver.execute_script(f"document.querySelector('{el.css_desc_pgto}').blur()")
+        self.driver.execute_script(
+            f"document.querySelector('{el.css_desc_pgto}').blur()",
+        )
 
         message = "Informando data para pagamento"
         type_log = "log"
@@ -142,7 +161,9 @@ class ElawCondenacao(ElawBot):
         data_lancamento.click()
         data_lancamento.send_keys(self.bot_data.get("DATA_LANCAMENTO"))
         data_lancamento.send_keys(Keys.TAB)
-        self.driver.execute_script(f"document.querySelector('{el.css_data}').blur()")
+        self.driver.execute_script(
+            f"document.querySelector('{el.css_data}').blur()",
+        )
 
         self.interact.sleep_load('div[id="j_id_2x"]')
         message = "Informando favorecido"
@@ -150,16 +171,24 @@ class ElawCondenacao(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         input_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_inputfavorecido)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_inputfavorecido,
+            )),
         )
         input_favorecido.click()
         input_favorecido.clear()
         sleep(2)
 
-        input_favorecido.send_keys(self.bot_data.get("CNPJ_FAVORECIDO", "00.360.305/0001-04"))
+        input_favorecido.send_keys(
+            self.bot_data.get("CNPJ_FAVORECIDO", "00.360.305/0001-04"),
+        )
 
         result_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.resultado_favorecido)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.resultado_favorecido,
+            )),
         )
         result_favorecido.click()
 
@@ -168,7 +197,10 @@ class ElawCondenacao(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        label_forma_pgto = self.driver.find_element(By.CSS_SELECTOR, el.valor_processo)
+        label_forma_pgto = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.valor_processo,
+        )
         label_forma_pgto.click()
 
         sleep(1)
@@ -184,8 +216,12 @@ class ElawCondenacao(ElawBot):
         sleep(0.5)
 
         cod_barras = str(self.bot_data.get("COD_BARRAS"))
-        campo_cod_barras.send_keys(cod_barras.replace("\t", "").replace("\n", ""))
-        self.driver.execute_script(f"document.querySelector('{el.css_cod_bars}').blur()")
+        campo_cod_barras.send_keys(
+            cod_barras.replace("\t", "").replace("\n", ""),
+        )
+        self.driver.execute_script(
+            f"document.querySelector('{el.css_cod_bars}').blur()",
+        )
 
         self.interact.sleep_load('div[id="j_id_2x"]')
         message = "Informando centro de custas"
@@ -193,12 +229,17 @@ class ElawCondenacao(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         centro_custas: WebElement = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_centro_custas)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_centro_custas,
+            )),
         )
         centro_custas.click()
         centro_custas.send_keys("A906030100")
 
-        self.driver.execute_script(f"document.querySelector('{el.css_centro_custas}').blur()")
+        self.driver.execute_script(
+            f"document.querySelector('{el.css_centro_custas}').blur()",
+        )
 
         sleep(1)
         message = "Informando conta para débito"
@@ -206,7 +247,10 @@ class ElawCondenacao(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         div_conta_debito: WebElement = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_div_conta_debito)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_div_conta_debito,
+            )),
         )
         div_conta_debito.click()
         sleep(1)

@@ -1,7 +1,7 @@
 """Módulo de Utilitários - Ferramentas e Funções Auxiliares.
 
-Este módulo contém utilitários e ferramentas auxiliares utilizadas em todo o 
-sistema CrawJUD. Fornece funcionalidades de suporte para automação web, 
+Este módulo contém utilitários e ferramentas auxiliares utilizadas em todo o
+sistema CrawJUD. Fornece funcionalidades de suporte para automação web,
 gerenciamento de processos, logging, armazenamento e outras operações comuns.
 
 Principais funcionalidades:
@@ -20,7 +20,6 @@ Submodulos principais:
 
 Exemplo de uso:
     >>> from crawjud.utils import kill_chromedriver, kill_browsermob
-    >>> 
     >>> # Limpeza de processos órfãos
     >>> kill_chromedriver()
     >>> kill_browsermob()

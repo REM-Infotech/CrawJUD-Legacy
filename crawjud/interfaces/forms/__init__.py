@@ -1,6 +1,6 @@
 """Integração e configuração de formulários para bots jurídicos e administrativos.
 
-Define tipos de formulários, mapeamento de configurações e utilitários 
+Define tipos de formulários, mapeamento de configurações e utilitários
 para construção dinâmica de dicionários de formulário.
 """
 
@@ -116,7 +116,7 @@ class FormDict(
 __all__ = [
     # Form types
     "AdministrativoFormFileAuth",
-    "AdministrativoFormMultipleFiles", 
+    "AdministrativoFormMultipleFiles",
     "JuridicoFormFileAuth",
     "JuridicoFormMultipleFiles",
     "JuridicoFormMultipleFilesPJe",

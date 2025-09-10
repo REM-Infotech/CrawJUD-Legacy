@@ -16,6 +16,7 @@ from typing import (
     AnyStr,
     ClassVar,
     Generic,
+    NoReturn,
     ParamSpec,
     Self,
     TypeVar,
@@ -26,7 +27,9 @@ if TYPE_CHECKING:
         from celery.canvas import Signature as __Signature
         from celery.result import AsyncResult as __AsyncResult
         from celery.result import states
+
         from crawjud.custom.celery import AsyncCelery
+
         _CELERY_AVAILABLE = True
     except ImportError:
         _CELERY_AVAILABLE = False
@@ -34,12 +37,13 @@ if TYPE_CHECKING:
         __Signature = object
         __AsyncResult = object
         states = None
-        AsyncCelery = Any
+        type AsyncCelery = Any
 else:
     try:
         from celery.canvas import Signature as __Signature
         from celery.result import AsyncResult as __AsyncResult
         from celery.result import states
+
         _CELERY_AVAILABLE = True
     except ImportError:
         _CELERY_AVAILABLE = False
@@ -54,6 +58,15 @@ TClassBot = TypeVar("TClassBot", bound=object)
 TBotSpec = ParamSpec("TBotSpec", bound=AnyStr)
 
 class_set = set()
+
+
+class CeleryRuntimeError(RuntimeError):
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+
+
+def runtime_error() -> NoReturn:
+    raise CeleryRuntimeError(message="Celery not available")
 
 
 class CeleryResult[T](__AsyncResult):
@@ -84,12 +97,11 @@ class CeleryResult[T](__AsyncResult):
         no_ack: bool = True,
         follow_parents: bool = True,
         disable_sync_subtasks: bool = True,
-        exception_states: Any = None,
-        propagate_states: Any = None,
+        exception_states: T = None,
+        propagate_states: T = None,
     ) -> Generic[R]:
-        """Wait until task is ready, and return its result."""
         if not _CELERY_AVAILABLE:
-            raise RuntimeError("Celery not available")
+            runtime_error()
         return super().get(
             timeout,
             propagate,
@@ -105,7 +117,6 @@ class CeleryResult[T](__AsyncResult):
         )
 
     def wait_ready(self, timeout: float | None = None) -> T:
-        """Aguarde até que o resultado da tarefa esteja pronto ou o timeout."""
         if not _CELERY_AVAILABLE:
             return None
         # Implementação simplificada para evitar dependências
@@ -132,7 +143,7 @@ class Signature[T](__Signature):
         subtask_type: T = None,
         *,
         immutable: bool = False,
-        app: Any = None,
+        app: T = None,
         **ex: T,
     ) -> None:
         """Inicialize uma instância de Signature com os parâmetros fornecidos."""
@@ -143,7 +154,7 @@ class Signature[T](__Signature):
             self.kwargs = kwargs or {}
             self.options = options or {}
             return
-            
+
         if isinstance(task, str) and app:
             task = app.tasks[task]
 
@@ -161,10 +172,9 @@ class Signature[T](__Signature):
 
     @classmethod
     def from_dict(cls, d: T, app: T | None = None) -> Self:
-        """Crie uma instância de Signature a partir de um dicionário de dados."""
         if not _CELERY_AVAILABLE:
             return cls(d.get("task"), d.get("args"), d.get("kwargs"))
-        
+
         typ = d.get("subtask_type")
         if typ and hasattr(cls, "TYPES"):
             target_cls = cls.TYPES.get(typ, cls)
@@ -179,18 +189,17 @@ class Signature[T](__Signature):
         route_name: str | None = None,
         **options: AnyStr,
     ) -> CeleryResult | None:
-        """Apply this task asynchronously."""
         if not _CELERY_AVAILABLE:
             return None
-        
+
         try:
-            async_result = super().apply_async(
+            return super().apply_async(
                 args,
                 kwargs,
                 route_name=route_name,
                 **options,
             )
-            return async_result
+
         except Exception:
             return None
 

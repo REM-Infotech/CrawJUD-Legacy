@@ -11,6 +11,7 @@ from crawjud.controllers.elaw import ElawBot
 from crawjud.custom.task import ContextTask as ContextTask
 from crawjud.decorators import shared_task as shared_task
 from crawjud.decorators.bot import wrap_cls as wrap_cls
+from crawjud.resources.elements import elaw as el
 
 type ListStr = list[str]
 campos_validar: ListStr = [
