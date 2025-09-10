@@ -17,6 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.common.cidades import cidades_amazonas
 from crawjud.common.exceptions.bot import raise_start_error
 from crawjud.controllers.main import CrawJUD
 from crawjud.interfaces.types.bots import DataSucesso
@@ -160,13 +161,11 @@ class ElawBot[T](CrawJUD):
     def elaw_formats(
         self,
         data: dict[str, str],
-        cities_amazonas: dict[str, str],
     ) -> dict[str, str]:
         """Formata um dicionário de processo jurídico conforme regras pré-definidas.
 
         Args:
             data (dict[str, str]): Dicionário de dados brutos.
-            cities_amazonas (dict[str, str]): Dicionário das cidades do Amazonas.
 
         Returns:
             (dict[str, str]): Dados formatados com tipos e valores adequados.
@@ -187,7 +186,7 @@ class ElawBot[T](CrawJUD):
         self._update_tipo_parte_contraria(data)
 
         # Atualiza "CAPITAL_INTERIOR" conforme "COMARCA"
-        self._update_capital_interior(data, cities_amazonas)
+        self._update_capital_interior(data, cidades_amazonas)
 
         # Define "DATA_INICIO" se ausente e "DATA_LIMITE" presente
         self._set_data_inicio(data)
