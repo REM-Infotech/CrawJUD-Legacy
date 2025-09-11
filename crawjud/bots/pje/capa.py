@@ -375,20 +375,20 @@ class Capa(PjeBot):
                 for parte in list_partes:
                     partes.append(
                         PartesProcessoPJeDict(
-                            ID_PJE=parte["id"],
-                            NOME=parte["nome"],
+                            ID_PJE=parte.get("id"),
+                            NOME=parte.get("nome"),
                             DOCUMENTO=parte.get("documento", "000.000.000-00"),
                             TIPO_DOCUMENTO=parte.get(
                                 "tipoDocumento",
                                 "Não Informado",
                             ),
-                            TIPO_PARTE=parte["polo"],
+                            TIPO_PARTE=parte.get("polo"),
                             TIPO_PESSOA="Física"
-                            if parte["tipoPessoa"].lower() == "f"
+                            if parte.get("tipoPessoa", "f").lower() == "f"
                             else "Jurídica",
                             PROCESSO=numero_processo,
-                            POLO=parte["polo"],
-                            PARTE_PRINCIPAL=parte["principal"],
+                            POLO=parte.get("polo"),
+                            PARTE_PRINCIPAL=parte.get("principal", False),
                         ),
                     )
 
@@ -396,13 +396,17 @@ class Capa(PjeBot):
                         representantes.extend(
                             [
                                 RepresentantePartesPJeDict(
-                                    ID_PJE=representante["id"],
+                                    ID_PJE=representante.get("id", ""),
                                     PROCESSO=numero_processo,
-                                    NOME=representante["nome"],
-                                    DOCUMENTO=representante["documento"],
-                                    TIPO_DOCUMENTO=representante[
-                                        "tipoDocumento"
-                                    ],
+                                    NOME=representante.get("nome", ""),
+                                    DOCUMENTO=representante.get(
+                                        "documento",
+                                        "",
+                                    ),
+                                    TIPO_DOCUMENTO=representante.get(
+                                        "tipoDocumento",
+                                        "",
+                                    ),
                                     REPRESENTADO=parte["nome"],
                                     TIPO_PARTE=representante["polo"],
                                     TIPO_PESSOA=representante["tipoPessoa"],
@@ -413,7 +417,7 @@ class Capa(PjeBot):
                                         if "emails" in representantes
                                         else [],
                                     ),
-                                    TELEFONE=f"({representante['dddCelular']}) {representante['numeroCelular']}"
+                                    TELEFONE=f"({representante.get('dddCelular')}) {representante.get('numeroCelular')}"
                                     if "dddCelular" in representante
                                     and "numeroCelular" in representante
                                     else "",
@@ -422,7 +426,7 @@ class Capa(PjeBot):
                             ],
                         )
 
-            self.to_add_partes.extend(list_partes)
+            self.to_add_partes.extend(partes)
             self.to_add_representantes.extend(representantes)
 
     def capa_processual(
@@ -455,10 +459,9 @@ class Capa(PjeBot):
     def copia_integral(self) -> None:
         """Realiza o download da cópia integral do processo e salva no storage."""
         while True:
-            setted_event = self.event_stop_bot.is_set()
             empty_queue = self.queue_files.unfinished_tasks == 0
 
-            if setted_event and empty_queue:
+            if empty_queue:
                 break
 
             try:
