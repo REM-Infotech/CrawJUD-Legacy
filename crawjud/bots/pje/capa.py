@@ -463,10 +463,9 @@ class Capa(PjeBot):
     def copia_integral(self) -> None:
         """Realiza o download da cópia integral do processo e salva no storage."""
         while True:
-            setted_event = self.event_stop_bot.is_set()
             empty_queue = self.queue_files.unfinished_tasks == 0
 
-            if setted_event and empty_queue:
+            if empty_queue:
                 break
 
             try:
