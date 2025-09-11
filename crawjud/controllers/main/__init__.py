@@ -334,8 +334,6 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         message = f"Sucessos: {self.success} | Erros: {self.error}"
         self.print_msg(message=message, row=self.row, type_log=type_log)
 
-        self.thread_save_file.join()
-
         zip_file = self.zip_result()
         self.storage.upload_file(file_name=zip_file.name, file_path=zip_file)
         link = self.storage.get_presigned_url(
@@ -347,10 +345,10 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         self.print_msg(message=message, row=self.row, type_log="info")
 
         sleep(5)
-
         self.event_queue_message.set()
 
-        self.thread_copia_integral.join()
+        if self.thread_copia_integral:
+            self.thread_copia_integral.join()
 
         self.print_thread.join()
 

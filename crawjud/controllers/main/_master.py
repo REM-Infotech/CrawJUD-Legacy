@@ -430,7 +430,7 @@ class AbstractCrawJUD[T]:
         # cria/abre arquivo para APPEND
         # pandas >= 2.0: if_sheet_exists=('replace'|'overlay'|'new'), funciona só em mode='a'
         while True:
-            setted_event = self.event_stop_bot.is_set()
+            setted_event = self.event_queue_message.is_set()
             empty_queue = self.queue_save_xlsx.unfinished_tasks == 0
 
             if setted_event and empty_queue:
