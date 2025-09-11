@@ -70,7 +70,7 @@ class Cadastro(ElawCadastro):
             self.area_direito()
             self.subarea_direito()
             self.next_page()
-            self.localizacao()
+            self.esfera()
             self.estado()
             self.comarca()
             self.foro()
