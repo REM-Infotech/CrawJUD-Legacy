@@ -5,7 +5,6 @@ from __future__ import annotations
 import json.decoder
 import platform
 import secrets
-import traceback
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
@@ -24,7 +23,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.common.exceptions.bot import (
     ExecutionError,
-    FileUploadError,
     raise_start_error,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
@@ -43,7 +41,7 @@ from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.recaptcha import captcha_to_image
 
 if TYPE_CHECKING:
-    from httpx import Client, Response
+    from httpx import Client
 
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData
@@ -285,64 +283,6 @@ class PjeBot[T](CrawJUD):
 
         """
         return RegioesIterator(self)
-
-    def save_file_downloaded(
-        self,
-        file_name: str,
-        response_data: Response,
-        processo: str,
-        row: int,
-    ) -> None:
-        """Envia o `arquivo baixado` no processo para o `storage`.
-
-        Arguments:
-            file_name (str): Nome do arquivo.
-            response_data (Response): response da request httpx.
-            processo (str): processo.
-            row (int): row do loop.
-
-        """
-        try:
-            path_temp = workdir.joinpath("temp", self.pid.upper())
-
-            path_temp.mkdir(parents=True, exist_ok=True)
-
-            sleep_time = secrets.randbelow(7) + 2
-            sleep(sleep_time)
-
-            chunk = 8 * 1024 * 1024
-            file_path = path_temp.joinpath(file_name)
-            # Salva arquivo em chunks no storage
-            with file_path.open("wb") as f:
-                for _bytes in response_data.iter_bytes(chunk):
-                    sleep(0.5)
-                    f.write(_bytes)
-
-            """
-            >>> with suppress(Exception):
-            >>>     other_path_ = Path(environ["PATH_SRV"])
-            >>>     with other_path_.joinpath(file_name).open("wb") as f:
-            >>>         for _bytes in response_data.iter_bytes(chunk):
-            >>>             sleep(0.5)
-            >>>             f.write(_bytes)
-            """
-
-        except (FileUploadError, Exception) as e:
-            str_exc = "\n".join(traceback.format_exception_only(e))
-            message = "Não foi possível baixar o arquivo. " + str_exc
-            self.print_msg(
-                row=row,
-                message=message,
-                type_log="info",
-            )
-
-        finally:
-            message = f"Arquivo do processo n.{processo} baixado com sucesso!"
-            self.print_msg(
-                row=row,
-                message=message,
-                type_log="info",
-            )
 
     def save_success_cache(
         self,

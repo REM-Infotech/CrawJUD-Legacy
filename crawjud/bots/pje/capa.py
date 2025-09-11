@@ -8,6 +8,7 @@ dos processos e salvar os resultados no storage.
 
 from __future__ import annotations
 
+import secrets
 import traceback
 from concurrent.futures import (
     Future,
@@ -15,6 +16,7 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
+from pathlib import Path
 from threading import Semaphore, Thread
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar
@@ -23,7 +25,10 @@ from dotenv import load_dotenv
 from httpx import Client, Response
 from tqdm import tqdm
 
-from crawjud.common.exceptions.bot import ExecutionError
+from crawjud.common.exceptions.bot import (
+    ExecutionError,
+    FileUploadError,
+)
 from crawjud.controllers.pje import PjeBot
 from crawjud.custom.task import ContextTask
 from crawjud.decorators import shared_task, wrap_cls
@@ -33,6 +38,10 @@ from crawjud.interfaces.pje import (
     CapaProcessualPJeDict,
     PartesProcessoPJeDict,
     RepresentantePartesPJeDict,
+)
+from crawjud.interfaces.types import BotData
+from crawjud.interfaces.types.bots.pje import (
+    DictResults,
 )
 from crawjud.resources.elements import pje as el
 from crawjud.utils.formatadores import formata_tempo
@@ -49,7 +58,7 @@ if TYPE_CHECKING:
 load_dotenv()
 
 SENTINELA = None
-
+workdir = Path(__file__).cwd()
 semaforo_arquivo: Semaphore = Semaphore(10)
 semaforo_processo: Semaphore = Semaphore(10)
 
@@ -210,7 +219,12 @@ class Capa(PjeBot):
                     row=row,
                 )
 
+                type_log = "success"
+                message = "Execução Efetuada com sucesso!"
+
                 if item.get("TRAZER_COPIA", "N").lower() == "s":
+                    type_log = "info"
+
                     file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
                     self.queue_files.put({
                         "file_name": file_name,
@@ -222,9 +236,9 @@ class Capa(PjeBot):
                     })
 
                 self.print_msg(
-                    message="Execução Efetuada com sucesso!",
+                    message=message,
+                    type_log=type_log,
                     row=row,
-                    type_log="success",
                 )
 
         except Exception as e:
@@ -502,3 +516,61 @@ class Capa(PjeBot):
 
             finally:
                 self.queue_files.task_done()
+
+    def save_file_downloaded(
+        self,
+        file_name: str,
+        response_data: Response,
+        processo: str,
+        row: int,
+    ) -> None:
+        """Envia o `arquivo baixado` no processo para o `storage`.
+
+        Arguments:
+            file_name (str): Nome do arquivo.
+            response_data (Response): response da request httpx.
+            processo (str): processo.
+            row (int): row do loop.
+
+        """
+        try:
+            path_temp = workdir.joinpath("temp", self.pid.upper())
+
+            path_temp.mkdir(parents=True, exist_ok=True)
+
+            sleep_time = secrets.randbelow(7) + 2
+            sleep(sleep_time)
+
+            chunk = 8 * 1024 * 1024
+            file_path = path_temp.joinpath(file_name)
+            # Salva arquivo em chunks no storage
+            with file_path.open("wb") as f:
+                for _bytes in response_data.iter_bytes(chunk):
+                    sleep(0.5)
+                    f.write(_bytes)
+
+            """
+            >>> with suppress(Exception):
+            >>>     other_path_ = Path(environ["PATH_SRV"])
+            >>>     with other_path_.joinpath(file_name).open("wb") as f:
+            >>>         for _bytes in response_data.iter_bytes(chunk):
+            >>>             sleep(0.5)
+            >>>             f.write(_bytes)
+            """
+
+        except (FileUploadError, Exception) as e:
+            str_exc = "\n".join(traceback.format_exception_only(e))
+            message = "Não foi possível baixar o arquivo. " + str_exc
+            self.print_msg(
+                row=row,
+                message=message,
+                type_log="info",
+            )
+
+        finally:
+            message = f"Arquivo do processo n.{processo} baixado com sucesso!"
+            self.print_msg(
+                row=row,
+                message=message,
+                type_log="success",
+            )
