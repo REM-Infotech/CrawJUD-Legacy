@@ -139,7 +139,7 @@ class Capa(PjeBot):
                 "sheet_name": sheet_name,
             })
 
-        self.thread_copia_integral.join()
+        self.queue_files.join()
         self.finalize_execution()
 
     def queue_regiao(
@@ -154,13 +154,13 @@ class Capa(PjeBot):
 
         client_context = Client(cookies=cookies, headers=headers)
 
-        self.thread_copia_integral = Thread(
+        thread_copia_integral_ = Thread(
             target=self.copia_integral,
             daemon=True,
             name=f"Salvar Cópia Integral Thread-{pos}",
         )
 
-        self.thread_copia_integral.start()
+        thread_copia_integral_.start()
 
         with client_context as client, pool_exe as executor:
             futures: list[Future] = []
