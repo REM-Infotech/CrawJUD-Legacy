@@ -94,14 +94,6 @@ class Capa(PjeBot):
             **kwargs (T): Argumentos nomeados variáveis.
 
         """
-        self.thread_copia_integral = Thread(
-            target=self.copia_integral,
-            daemon=True,
-            name="Salvar Cópia Integral",
-        )
-
-        self.thread_copia_integral.start()
-
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
@@ -109,7 +101,9 @@ class Capa(PjeBot):
 
         with ThreadPoolExecutor(max_workers=24) as executor:
             futures: list[Future] = []
-            for regiao, data_regiao in lista_nova:
+            for pos, t_regiao in enumerate(lista_nova):
+                regiao, data_regiao = t_regiao
+
                 if self.event_stop_bot.is_set():
                     break
 
@@ -124,6 +118,7 @@ class Capa(PjeBot):
                         data_regiao=data_regiao,
                         headers=headers,
                         cookies=cookies,
+                        pos=pos,
                     ),
                 )
                 sleep(10)
@@ -153,10 +148,19 @@ class Capa(PjeBot):
         data_regiao: list[BotData],
         headers: DictType,
         cookies: DictType,
+        pos: int,
     ) -> None:
         pool_exe = ThreadPoolExecutor(max_workers=16)
 
         client_context = Client(cookies=cookies, headers=headers)
+
+        self.thread_copia_integral = Thread(
+            target=self.copia_integral,
+            daemon=True,
+            name=f"Salvar Cópia Integral Thread-{pos}",
+        )
+
+        self.thread_copia_integral.start()
 
         with client_context as client, pool_exe as executor:
             futures: list[Future] = []
