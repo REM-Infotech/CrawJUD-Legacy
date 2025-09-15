@@ -109,13 +109,16 @@ class Prazos(JusdsBot):
         current_time = datetime.now(ZoneInfo("America/Manaus"))
 
         for campo_nome, elemento in list(campos_prazo.items()):
-            data = bot_data.get(campo_nome.upper())
+            data: str = bot_data.get(campo_nome.upper(), "")
 
             if campo_nome == "data_inicio" and not data:
                 data = current_time.strftime("%d/%m/%Y")
 
             if data:
-                elemento.send_keys(elemento)
+                if "valor" not in campo_nome or "data" not in campo_nome:
+                    data = data.upper()
+
+                elemento.send_keys(data)
                 sleep(0.5)
 
         btn_salva_compromisso = wait.until(

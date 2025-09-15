@@ -137,7 +137,7 @@ class BotData(TypedDict):
     # ESAJ | PROJUDI | PJE CAPA
     TRAZER_COPIA: str
 
-    #  ESAJ | PROJUDI | PJE MOVIMENTACAO
+    #  ESAJ | PROJUDI | PJE MOVIMENTACAO | JUSDS PRAZO
     PALAVRAS_CHAVE: str
     DATA_INICIO: str
     DATA_FIM: str
@@ -155,3 +155,12 @@ class BotData(TypedDict):
     SUBTIPO_PROTOCOLO: str
     PETICAO_PRINCIPAL: str
     PARTE_PETICIONANTE: str
+
+    TIPO: str
+    SUBTIPO: str
+    DESCRICAO: str
+    ATRIBUIR_PARA: str
+    SITUACAO_EXECUCAO: str
+    VALOR_MULTA: str
+    VALOR_PGTO: str
+    DATA_ATUALIZACAO: str
