@@ -184,7 +184,11 @@ class AbstractCrawJUD[T]:
 
     @bot_data.setter
     def bot_data(self, bot_data: BotData) -> None:
-        self._bot_data = bot_data
+        bot_data_ = bot_data
+        for k, v in list(bot_data.items()):
+            bot_data_[k.upper()] = v
+
+        self._bot_data = bot_data_
 
     @property
     def frame(self) -> list[BotData]:
