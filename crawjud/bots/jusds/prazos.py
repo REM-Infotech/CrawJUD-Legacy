@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from time import sleep
+from zoneinfo import ZoneInfo
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -97,15 +99,20 @@ class Prazos(JusdsBot):
             "descricao": campos[2].find_element(By.TAG_NAME, "input"),
             "atribuir_para": campos[3].find_element(By.TAG_NAME, "input"),
             "situacao_execucao": campos[6].find_element(By.TAG_NAME, "input"),
-            "inicio": campos[7].find_element(By.TAG_NAME, "input"),
-            "fim": campos[9].find_element(By.TAG_NAME, "input"),
+            "data_inicio": campos[7].find_element(By.TAG_NAME, "input"),
+            "data_fim": campos[9].find_element(By.TAG_NAME, "input"),
             "valor_multa": campos[12].find_element(By.TAG_NAME, "input"),
             "valor_pgto": campos[13].find_element(By.TAG_NAME, "input"),
             "data_atualizacao": campos[14].find_element(By.TAG_NAME, "input"),
         }
 
+        current_time = datetime.now(ZoneInfo("America/Manaus"))
+
         for campo_nome, elemento in list(campos_prazo.items()):
             data = bot_data.get(campo_nome.upper())
+
+            if campo_nome == "data_inicio" and not data:
+                data = current_time.strftime("%d/%m/%Y")
 
             if data:
                 elemento.send_keys(elemento)
