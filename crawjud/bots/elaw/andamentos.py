@@ -1,11 +1,4 @@
-"""Module for tracking and recording process progress in the ELAW system.
-
-This module handles the creation and management of process progress records within the ELAW
-system. It automates the recording of progress updates and related documentation.
-
-Classes:
-    Andamentos: Manages process progress by extending the CrawJUD base class
-"""
+"""Robô de automação elaw andamentos."""
 
 from __future__ import annotations
 
@@ -19,6 +12,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.elaw import ElawBot
+from crawjud.custom.task import ContextTask
+from crawjud.decorators import shared_task
+from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import elaw as el
 
 
@@ -32,6 +28,8 @@ def raise_error(message: str) -> NoReturn:
     raise ExecutionError(message=message)
 
 
+@shared_task(name="elaw.andamentos", bind=True, context=ContextTask)
+@wrap_cls
 class Andamentos(ElawBot):
     """The Andamentos class manages the andamento tracking bot."""
 
