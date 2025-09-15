@@ -360,10 +360,12 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
             "sheet_name": f"Sucessos {self.botname} {self.botsystem}",
         })
 
-    def append_error(self, exc: Exception) -> None:
+    def append_error(self, exc: Exception | str) -> None:
         data = self.bot_data
 
-        exc = "\n".join(format_exception_only(exc))
+        if isinstance(exc, Exception):
+            exc = "\n".join(format_exception_only(exc))
+
         message = f"Erro de operação. {exc}"
         data["MOTIVO_ERRO"] = message
 
