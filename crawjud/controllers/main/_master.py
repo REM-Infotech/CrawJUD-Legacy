@@ -104,6 +104,25 @@ class AbstractCrawJUD[T]:
     to_add_processos_segundo_grau: ClassVar[list[ProcessInfo]] = []
     _pbar: ClassVar[tqdm] = None
 
+    _window_busca_processo: ClassVar[str] = ""
+    _main_window: ClassVar[str] = ""
+
+    @property
+    def main_window(self) -> str:
+        return self._main_window
+
+    @main_window.setter
+    def main_window(self, main_window: str) -> None:
+        self._main_window = main_window
+
+    @property
+    def window_busca_processo(self) -> str:
+        return self._window_busca_processo
+
+    @window_busca_processo.setter
+    def window_busca_processo(self, window_busca_processo: str) -> None:
+        self._window_busca_processo = window_busca_processo
+
     @property
     def current_time(self) -> str:
         return datetime.now(ZoneInfo("America/Manaus")).strftime(
