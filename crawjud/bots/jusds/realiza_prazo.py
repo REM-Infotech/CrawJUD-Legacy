@@ -55,14 +55,35 @@ class RealizaPrazos(JusdsBot):
         try:
             numero_prazo = bot_data["NUMERO_COMPROMISSO"]
 
-            for prazo in self.iter_prazos():
+            message = f"Buscando prazo com o ID {numero_prazo}"
+            type_log = "log"
+
+            self.print_msg(message=message, type_log=type_log, row=self.row)
+
+            for pos, prazo in enumerate(self.iter_prazos()):
                 td_prazo = prazo.find_elements(By.TAG_NAME, "td")
+
+                self.print_msg(
+                    message=str(pos),
+                    type_log=type_log,
+                    row=self.row,
+                )
+
+                sleep(0.5)
 
                 prazo_numero_jusds = td_prazo[8].text
 
                 if prazo_numero_jusds == str(numero_prazo):
                     tqdm.write("ok")
                     sleep(15)
+
+                    _sit_prazo = td_prazo[6]
+
+                    message = "Prazo encontrado!"
+                    type_log = "success"
+
+                    self.print_msg(message=message, type_log=type_log)
+
                     break
 
         except (ExecutionError, Exception) as e:
@@ -71,11 +92,19 @@ class RealizaPrazos(JusdsBot):
     def iter_prazos(self) -> Generator[WebElementBot, Any, None]:
         wait = WebDriverWait(self.driver, 10)
 
-        url = self.driver.current_url.split(".jsp?")[1]
+        if ".jsp" in self.driver.current_url:
+            url = self.driver.current_url.split(".jsp?")[1]
 
-        link_prazos = f"https://infraero.jusds.com.br/JRD/openform.do?{url}"
+            link_prazos = (
+                f"https://infraero.jusds.com.br/JRD/openform.do?{url}"
+            )
 
-        self.driver.get(url=link_prazos)
+            self.driver.get(url=link_prazos)
+
+        else:
+            self.driver.refresh()
+
+        sleep(5)
 
         while True:
             btn_next_page = wait.until(
