@@ -218,5 +218,16 @@
     "form_cfg": "file_auth",
     "classification": "ADMINISTRATIVO",
     "text": "Robô responsável por realizar complemento de cadastro nos processos"
+  },
+  {
+    "id": "21",
+    "display_name": "JUSDS - Realizar Compromisso",
+    "system": "JUSDS",
+    "state": "EVERYONE",
+    "client": "INFRAERO",
+    "type": "REALIZA_PRAZO",
+    "form_cfg": "multipe_filesh",
+    "classification": "ADMINISTRATIVO",
+    "text": "Robô responsável por realizar compromissos no JUSDS"
   }
 ]
