@@ -99,7 +99,7 @@ class BotsNamespace(Namespace):
         query = db.session.query(Credentials).all()
 
         # Inicializa o dicionário de credenciais com opções padrão para cada sistema
-        sistemas = ["elaw", "esaj", "projudi", "pje", "csi"]
+        sistemas = ["elaw", "esaj", "projudi", "pje", "csi", "jusds"]
         credentials = {
             sistema: [
                 CredendialDictSelect(
