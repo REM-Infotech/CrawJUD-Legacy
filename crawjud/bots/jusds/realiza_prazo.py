@@ -50,9 +50,9 @@ class RealizaPrazos(JusdsBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        try:
-            bot_data = self.bot_data
+        bot_data = self.bot_data
 
+        try:
             numero_prazo = bot_data["NUMERO_COMPROMISSO"]
 
             for prazo in self.iter_prazos():
@@ -60,7 +60,7 @@ class RealizaPrazos(JusdsBot):
 
                 prazo_numero_jusds = td_prazo[8].text
 
-                if prazo_numero_jusds == numero_prazo:
+                if prazo_numero_jusds == str(numero_prazo):
                     tqdm.write("ok")
                     sleep(15)
                     break
@@ -70,6 +70,13 @@ class RealizaPrazos(JusdsBot):
 
     def iter_prazos(self) -> Generator[WebElementBot, Any, None]:
         wait = WebDriverWait(self.driver, 10)
+
+        url = self.driver.current_url.split(".jsp?")[1]
+
+        link_prazos = f"https://infraero.jusds.com.br/JRD/openform.do?{url}"
+
+        self.driver.get(url=link_prazos)
+
         while True:
             btn_next_page = wait.until(
                 ec.presence_of_element_located((
@@ -77,9 +84,6 @@ class RealizaPrazos(JusdsBot):
                     el.XPATH_BTN_NEXT_PAGE,
                 )),
             )
-
-            if "disabled" in btn_next_page.get_attribute("class"):
-                break
 
             table_prazos = wait.until(
                 ec.presence_of_element_located((
@@ -89,6 +93,9 @@ class RealizaPrazos(JusdsBot):
             ).find_elements(By.TAG_NAME, "tr")
 
             yield from table_prazos
+
+            if "disabled" in btn_next_page.get_attribute("class"):
+                break
 
             sleep(5)
 
