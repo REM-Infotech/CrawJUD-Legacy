@@ -32,6 +32,16 @@ class RealizaPrazos(JusdsBot):
         frame = self.frame
         self.total_rows = len(frame)
 
+        window = list(
+            filter(
+                lambda x: x != self.main_window,
+                self.driver.window_handles,
+            ),
+        )
+
+        if window:
+            self.driver.switch_to.window(window[-1])
+
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = value
@@ -43,7 +53,7 @@ class RealizaPrazos(JusdsBot):
         try:
             bot_data = self.bot_data
 
-            numero_prazo: str = bot_data["NUMERO_PRAZO"]
+            numero_prazo = bot_data["NUMERO_COMPROMISSO"]
 
             for prazo in self.iter_prazos():
                 td_prazo = prazo.find_elements(By.TAG_NAME, "td")
