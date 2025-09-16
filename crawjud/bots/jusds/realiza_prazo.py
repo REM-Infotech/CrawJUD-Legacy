@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from crawjud.utils.webdriver.web_element import WebElementBot
 
 
-@shared_task(name="jusds.realiza_prazos", bind=True, context=ContextTask)
+@shared_task(name="jusds.realiza_prazo", bind=True, context=ContextTask)
 @wrap_cls
 class RealizaPrazos(JusdsBot):
     """empty."""
