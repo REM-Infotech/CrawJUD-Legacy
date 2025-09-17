@@ -26,6 +26,10 @@ class RealizaPrazos(JusdsBot):
     """empty."""
 
     @property
+    def numero_prazo(self) -> str:
+        return self.bot_data["NUMERO_COMPROMISSO"]
+
+    @property
     def btn_next_page(self) -> WebElementBot:
         wait = WebDriverWait(self.driver, 10)
         return wait.until(
@@ -80,12 +84,9 @@ class RealizaPrazos(JusdsBot):
         self.finalize_execution()
 
     def queue(self) -> None:
-        bot_data = self.bot_data
-
         self.prazo_encontrado = False
 
         try:
-            self.numero_prazo = bot_data["NUMERO_COMPROMISSO"]
             message = f"Buscando prazo com o ID {self.numero_prazo}"
             type_log = "log"
 
