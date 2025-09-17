@@ -26,3 +26,4 @@ XPATH_TABELA_COMPROMISSOS = '//*[@id="isc_4Qtable"]/tbody'
 XPATH_SALVA_COMPROMISSO = '//*[@id="TMAKERGRID6bar"]/I[@id="saveButton"]'
 XPATH_BTN_NEXT_PAGE = '//*[@id="TMAKERGRIDbar"]/div/ul/li[4]'
 XPATH_TABLE_PRAZOS = '//table[@id="isc_34table"]/tbody'
+URL_CORRETA = "https://infraero.jusds.com.br/JRD/openform.do?{url}"

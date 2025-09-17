@@ -206,3 +206,14 @@ class JusdsBot(CrawJUD):
         self.append_success(data=data)
 
         self.print_msg(message=message, type_log="success", row=self.row)
+
+    def exit_iframe(self) -> None:
+        if ".jsp" in self.driver.current_url:
+            url = self.driver.current_url.split(".jsp?")[1]
+
+            link_prazos = el.URL_CORRETA.format(url=url)
+
+            self.driver.get(url=link_prazos)
+
+        else:
+            self.driver.refresh()

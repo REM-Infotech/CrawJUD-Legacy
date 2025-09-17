@@ -8,6 +8,7 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from threading import Event, Semaphore, Thread
+from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 from uuid import uuid4
 from zoneinfo import ZoneInfo
@@ -184,11 +185,7 @@ class AbstractCrawJUD[T]:
 
     @bot_data.setter
     def bot_data(self, bot_data: BotData) -> None:
-        bot_data_ = bot_data
-        for k, v in list(bot_data.items()):
-            bot_data_[k.upper()] = v
-
-        self._bot_data = bot_data_
+        self._bot_data = bot_data
 
     @property
     def frame(self) -> list[BotData]:
@@ -347,6 +344,8 @@ class AbstractCrawJUD[T]:
             data = self.queue_msg.get()
             if data:
                 with suppress(Exception):
+                    sleep(0.5)
+
                     # Argumentos Necessários
                     start_time: str = data.get("start_time")
                     message: str = data.get("message")

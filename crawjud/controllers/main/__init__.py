@@ -144,10 +144,21 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         for col in df.select_dtypes(include=["float"]).columns:
             df[col] = df[col].apply(format_float)
 
-        return [
+        data_bot = []
+
+        for item in [
             BotData(list(item.items()))
             for item in df.to_dict(orient="records")
-        ]
+        ]:
+            dt = {}
+
+            for k, v in list(item.items()):
+                dt[k.upper()] = v
+
+            if dt:
+                data_bot.append(dt)
+
+        return data_bot
 
     def download_files(
         self,

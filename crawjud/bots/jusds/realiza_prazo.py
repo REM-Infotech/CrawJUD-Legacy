@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 from time import sleep
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from tqdm import tqdm
 
 from crawjud.common.exceptions.bot import ExecutionError
 from crawjud.controllers.jusds import JusdsBot
@@ -18,8 +17,6 @@ from crawjud.decorators.bot import wrap_cls
 from crawjud.resources.elements import jusds as el
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
-
     from crawjud.utils.webdriver.web_element import WebElementBot
 
 
@@ -27,6 +24,39 @@ if TYPE_CHECKING:
 @wrap_cls
 class RealizaPrazos(JusdsBot):
     """empty."""
+
+    @property
+    def btn_next_page(self) -> WebElementBot:
+        wait = WebDriverWait(self.driver, 10)
+        return wait.until(
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_BTN_NEXT_PAGE,
+            )),
+        )
+
+    @property
+    def table_prazos(self) -> list[WebElementBot]:
+        wait = WebDriverWait(self.driver, 10)
+        return wait.until(
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_TABLE_PRAZOS,
+            )),
+        ).find_elements(By.TAG_NAME, "tr")
+
+    @property
+    def prazo_filtrado(self) -> list[WebElementBot]:
+        prazo_filtrado = []
+        for prazo in self.table_prazos:
+            td_prazo = prazo.find_elements(By.TAG_NAME, "td")
+            prazo_numero_jusds = td_prazo[8].text
+            if prazo_numero_jusds == str(self.numero_prazo):
+                self.td_prazo = td_prazo
+                prazo_filtrado.append(prazo)
+                break
+
+        return prazo_filtrado
 
     def execution(self) -> None:
         frame = self.frame
@@ -52,80 +82,58 @@ class RealizaPrazos(JusdsBot):
     def queue(self) -> None:
         bot_data = self.bot_data
 
-        try:
-            numero_prazo = bot_data["NUMERO_COMPROMISSO"]
+        self.prazo_encontrado = False
 
-            message = f"Buscando prazo com o ID {numero_prazo}"
+        try:
+            self.numero_prazo = bot_data["NUMERO_COMPROMISSO"]
+            message = f"Buscando prazo com o ID {self.numero_prazo}"
             type_log = "log"
 
             self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.exit_iframe()
 
-            for pos, prazo in enumerate(self.iter_prazos()):
-                td_prazo = prazo.find_elements(By.TAG_NAME, "td")
+            sleep(5)
+
+            while True:
+                if self.prazo_filtrado:
+                    self.tratativas_compromisso()
+
+                if any((
+                    "disabled" in self.btn_next_page.get_attribute("class"),
+                    self.event_stop_bot.is_set(),
+                    self.prazo_encontrado,
+                )):
+                    break
+
+                self.btn_next_page.click()
+
+            if all((
+                not self.prazo_encontrado,
+                not self.event_stop_bot.is_set(),
+            )):
+                message = "Prazo não encontrado!"
+                type_log = "error"
 
                 self.print_msg(
-                    message=str(pos),
+                    message=message,
                     type_log=type_log,
                     row=self.row,
                 )
 
-                sleep(0.5)
-
-                prazo_numero_jusds = td_prazo[8].text
-
-                if prazo_numero_jusds == str(numero_prazo):
-                    tqdm.write("ok")
-                    sleep(15)
-
-                    _sit_prazo = td_prazo[6]
-
-                    message = "Prazo encontrado!"
-                    type_log = "success"
-
-                    self.print_msg(message=message, type_log=type_log)
-
-                    break
-
         except (ExecutionError, Exception) as e:
             self.append_error(e)
 
-    def iter_prazos(self) -> Generator[WebElementBot, Any, None]:
-        wait = WebDriverWait(self.driver, 10)
+    def tratativas_compromisso(self) -> None:
+        self.prazo_encontrado = True
 
-        if ".jsp" in self.driver.current_url:
-            url = self.driver.current_url.split(".jsp?")[1]
+        td_prazo = self.td_prazo
+        _sit_prazo = td_prazo[6]
 
-            link_prazos = (
-                f"https://infraero.jusds.com.br/JRD/openform.do?{url}"
-            )
+        message = "Prazo encontrado!"
+        type_log = "success"
 
-            self.driver.get(url=link_prazos)
-
-        else:
-            self.driver.refresh()
-
-        sleep(5)
-
-        while True:
-            btn_next_page = wait.until(
-                ec.presence_of_element_located((
-                    By.XPATH,
-                    el.XPATH_BTN_NEXT_PAGE,
-                )),
-            )
-
-            table_prazos = wait.until(
-                ec.presence_of_element_located((
-                    By.XPATH,
-                    el.XPATH_TABLE_PRAZOS,
-                )),
-            ).find_elements(By.TAG_NAME, "tr")
-
-            yield from table_prazos
-
-            if "disabled" in btn_next_page.get_attribute("class"):
-                break
-
-            sleep(5)
-
-            btn_next_page.click()
+        self.print_msg(
+            message=message,
+            type_log=type_log,
+            row=self.row,
+        )
