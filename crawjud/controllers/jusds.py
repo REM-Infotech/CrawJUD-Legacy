@@ -117,14 +117,27 @@ class JusdsBot(CrawJUD):
             bool: Boleano da busca processual
 
         """
-        if not self.window_busca_processo:
-            self.driver.switch_to.window("window")
-            self.window_busca_processo = self.driver.current_window_handle
+        message = f"Buscando processo {self.bot_data['NUMERO_PROCESSO']}"
+        type_log = "log"
 
-            self.driver.get(el.LINK_CONSULTA_PROCESSO)
+        self.print_msg(message=message, type_log=type_log, row=self.row)
+
+        if not self.window_busca_processo:
+            not_mainwindow = list(
+                filter(
+                    lambda x: x != self.main_window,
+                    self.driver.window_handles,
+                ),
+            )
+
+            if not_mainwindow:
+                self.driver.switch_to.window(not_mainwindow[0])
+                self.window_busca_processo = self.driver.current_window_handle
 
         elif self.window_busca_processo:
             self.driver.switch_to.window(self.window_busca_processo)
+
+        self.driver.get(el.LINK_CONSULTA_PROCESSO)
 
         numero_processo = self.bot_data["NUMERO_PROCESSO"]
         wait = WebDriverWait(self.driver, 15)
@@ -141,12 +154,21 @@ class JusdsBot(CrawJUD):
 
         campo_busca_processo = wait.until(
             ec.presence_of_element_located((
-                By.XPATH,
+                By.CSS_SELECTOR,
                 el.CSS_CAMPO_BUSCA_PROCESSO,
             )),
         )
 
         campo_busca_processo.send_keys(numero_processo)
+
+        btn_buscar = wait.until(
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_BTN_BUSCAR_PROCESSO,
+            )),
+        )
+
+        btn_buscar.click()
 
         with suppress(Exception):
             wait.until(
@@ -155,6 +177,23 @@ class JusdsBot(CrawJUD):
                     el.XPATH_BTN_ENTRA_PROCESSO,
                 )),
             )
+
+            with suppress(Exception):
+                modal_load = wait.until(
+                    ec.presence_of_element_located((
+                        By.XPATH,
+                        el.XPATH_LOAD_MODAL,
+                    )),
+                )
+
+                if modal_load:
+                    btn_close_modal = wait.until(
+                        ec.presence_of_element_located((
+                            By.XPATH,
+                            el.XPATH_CLOSE_MODAL,
+                        )),
+                    )
+                    btn_close_modal.click()
 
             btn_entra_processo = wait.until(
                 ec.element_to_be_clickable((
@@ -184,8 +223,22 @@ class JusdsBot(CrawJUD):
             self.driver.get(
                 el.URL_INFORMACOES_PROCESSO.format(args_url=args_url),
             )
-
+            message = "Processo encontrado!"
+            type_log = "info"
+            self.print_msg(
+                message=message,
+                type_log=type_log,
+                row=self.row,
+            )
             return True
+
+        message = "Processo não encontrado!"
+        type_log = "error"
+        self.print_msg(
+            message=message,
+            type_log=type_log,
+            row=self.row,
+        )
 
         return False
 

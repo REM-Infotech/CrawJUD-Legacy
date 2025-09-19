@@ -123,6 +123,12 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         decoded_b91 = base91.decode(xlsx_b91)
         buffer_planilha = BytesIO(decoded_b91)
 
+        xlsx_name = self.format_string(self._xlsx_data["file_name"])
+        path_xlsx = self.output_dir_path.joinpath(xlsx_name)
+
+        with path_xlsx.open("wb") as fp:
+            fp.write(base91.decode(xlsx_b91))
+
         df = read_excel(buffer_planilha)
         df.columns = df.columns.str.upper()
 
