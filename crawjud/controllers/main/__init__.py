@@ -383,7 +383,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         if isinstance(exc, Exception):
             exc = "\n".join(format_exception(exc))
 
-        message = f"Erro de operação. {exc}"
+        message = "Erro de operação. "
         data["MOTIVO_ERRO"] = message
 
         type_log = "error"
