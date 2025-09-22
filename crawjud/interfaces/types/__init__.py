@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from os import PathLike
-from typing import TypeVar
+from typing import Literal, TypeVar
 
 from crawjud.interfaces.dict.bot import BotData
 
@@ -17,6 +17,7 @@ from crawjud.interfaces.dict.bot import BotData
 
 T = TypeVar("T")
 
+type ConfigName = Literal["default"]
 type DictData = dict[str, str | datetime]
 type ListData = list[DictData]
 # Tipos primitivos do Python

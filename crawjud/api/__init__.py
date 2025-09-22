@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import re
 from importlib import import_module
-from pathlib import Path
-from typing import Literal
+from typing import TYPE_CHECKING
 
 import quart_flask_patch as quart_patch
 from dotenv import dotenv_values
@@ -18,11 +17,11 @@ from quart_jwt_extended import JWTManager
 from quart_socketio import SocketIO
 
 from crawjud.app_celery import make_celery
+from crawjud.resources import workdir
 from crawjud.utils.middleware import ProxyHeadersMiddleware
 
-
-def check_cors_allowed_origins(*args, **kwargs) -> bool:
-    return True
+if TYPE_CHECKING:
+    from crawjud.interfaces.types import ConfigName
 
 
 environ = dotenv_values()
@@ -37,10 +36,6 @@ io = SocketIO(
     launch_mode="uvicorn",
     cookie="access",
 )
-
-workdir = Path(__file__).cwd()
-
-type ConfigName = Literal["default"]
 
 
 async def create_app(config_name: ConfigName = "default") -> Quart:
@@ -73,25 +68,6 @@ async def create_app(config_name: ConfigName = "default") -> Quart:
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_credentials=True,
     )
-
-
-async def database_start(app: Quart) -> None:
-    """Initialize and configure the application database.
-
-    This function performs the following tasks:
-    1. Checks if the current server exists in the database
-    2. Creates a new server entry if it doesn't exist
-    3. Initializes all database tables
-
-    Args:
-        app (Quart): The Quart application instance
-
-    Note:
-        This function requires the following environment variables:
-        - NAMESERVER: The name of the server
-        - HOSTNAME: The address of the server
-
-    """
 
 
 async def register_routes(app: Quart) -> None:
@@ -134,14 +110,12 @@ async def init_extensions(app: Quart) -> None:
         app (Quart): The Quart application instance
 
     """
-    db.init_app(app)
-    jwt.init_app(app)
-    sess.init_app(app)
-    mail.init_app(app)
-    app.extensions["celery"] = make_celery()
-
     async with app.app_context():
-        await database_start(app)
+        db.init_app(app)
+        jwt.init_app(app)
+        sess.init_app(app)
+        mail.init_app(app)
+        app.extensions["celery"] = make_celery()
 
 
 __all__ = ["quart_patch"]
