@@ -1,10 +1,4 @@
-"""Gerencia tarefas e execução de chamados CSI para automação judicial.
-
-Este módulo define a classe Chamados, responsável por orquestrar tarefas
-automatizadas relacionadas a chamados CSI, utilizando integração com bots,
-tratamento de contexto e execução assíncrona de tarefas.
-
-"""
+"""Download de anexos de chamados do CSI."""
 
 from __future__ import annotations
 
@@ -101,25 +95,7 @@ class DownloadDocumento(CsiBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         wait = WebDriverWait(self.driver, 10)
-        wait.until(
-            ec.frame_to_be_available_and_switch_to_it((
-                By.XPATH,
-                el.IFRAME_ANEXOS,
-            )),
-        )
-
-        self.driver.execute_script(
-            el.COMMAND_ANEXOS.format(
-                NUMERO_CHAMADO=self.bot_data["NUMERO_CHAMADO"],
-            ),
-        )
-
-        wait.until(
-            ec.presence_of_element_located((
-                By.XPATH,
-                el.XPATH_DIV_POPUP_ANEXOS,
-            )),
-        )
+        self.swtich_iframe_anexos(wait)
 
         anexos: list[WebElementBot] = wait.until(
             ec.presence_of_element_located((By.TAG_NAME, "tbody")),
@@ -152,7 +128,11 @@ class DownloadDocumento(CsiBot):
                 )
 
                 with (
-                    client.stream("get", url=link_anexo) as stream,
+                    client.stream(
+                        "get",
+                        link_anexo,
+                        timeout=240,
+                    ) as stream,
                     path_anexo.open("wb") as fp,
                 ):
                     for chunk in stream.iter_bytes(chunk_size=8192):
@@ -171,3 +151,24 @@ class DownloadDocumento(CsiBot):
         message = "Anexos Baixados com sucesso!"
         type_log = "success"
         self.print_msg(message=message, type_log=type_log, row=self.row)
+
+    def swtich_iframe_anexos(self, wait: WebDriverWait) -> None:
+        self.driver.execute_script(
+            el.COMMAND_ANEXOS.format(
+                NUMERO_CHAMADO=self.bot_data["NUMERO_CHAMADO"],
+            ),
+        )
+
+        wait.until(
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_DIV_POPUP_ANEXOS,
+            )),
+        )
+
+        wait.until(
+            ec.frame_to_be_available_and_switch_to_it((
+                By.XPATH,
+                el.XPATH_IFRAME_ANEXOS,
+            )),
+        )

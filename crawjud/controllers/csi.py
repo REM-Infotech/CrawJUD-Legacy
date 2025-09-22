@@ -94,7 +94,7 @@ class CsiBot[T](CrawJUD):
         campo_password.send_keys(self.password)
 
         btn_entrar = self.driver.find_element(
-            By.CSS_SELECTOR,
+            By.XPATH,
             el.XPATH_BTN_ENTRAR,
         )
         btn_entrar.click()
