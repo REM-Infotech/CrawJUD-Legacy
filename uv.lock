@@ -344,6 +344,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/52/d0/ef4b7cd74fae2ecadc0130b206558ae5e43da9760f9069556aa48b318292/browsermob-proxy-0.8.0.tar.gz", hash = "sha256:fb345bc2207fccdb8a584694c8d02d01c2cfc539c9d43bbed38f0c54e1abbbaf", size = 8474, upload-time = "2017-02-07T13:11:57.5Z" }
 
 [[package]]
+name = "bs4"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "beautifulsoup4" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c9/aa/4acaf814ff901145da37332e05bb510452ebed97bc9602695059dd46ef39/bs4-0.0.2.tar.gz", hash = "sha256:a48685c58f50fe127722417bae83fe6badf500d54b55f7e39ffe43b798653925", size = 698, upload-time = "2024-01-17T18:15:47.371Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/51/bb/bf7aab772a159614954d84aa832c129624ba6c32faa559dfb200a534e50b/bs4-0.0.2-py2.py3-none-any.whl", hash = "sha256:abf8742c0805ef7f662dce4b51cca104cffe52b835238afc169142ab9b3fbccc", size = 1189, upload-time = "2024-01-17T18:15:48.613Z" },
+]
+
+[[package]]
 name = "cachelib"
 version = "0.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -542,6 +554,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "blinker" },
     { name = "browsermob-proxy" },
+    { name = "bs4" },
     { name = "celery" },
     { name = "chardet" },
     { name = "clear" },
@@ -600,6 +613,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.13.0" },
     { name = "blinker", specifier = ">=1.9.0,<2.0.0" },
     { name = "browsermob-proxy", specifier = ">=0.8.0,<0.9.0" },
+    { name = "bs4", specifier = ">=0.0.2" },
     { name = "celery", specifier = ">=5.5.2,<6.0.0" },
     { name = "chardet", specifier = ">=5.2.0" },
     { name = "clear", specifier = ">=2.0.0,<3.0.0" },
