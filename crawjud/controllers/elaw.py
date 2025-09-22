@@ -25,7 +25,9 @@ from crawjud.resources.elements import elaw as el
 
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
+    from crawjud.interfaces.types import T
     from crawjud.utils.webdriver.web_element import WebElementBot
+
 
 workdir = Path(__file__).cwd()
 
@@ -33,7 +35,7 @@ HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15
 
 
-class ElawBot[T](CrawJUD):
+class ElawBot(CrawJUD):
     """Classe de controle para robôs do Elaw."""
 
     def __init__(

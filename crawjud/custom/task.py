@@ -22,13 +22,14 @@ environ = dotenv_values()
 P = ParamSpec("P")
 
 if TYPE_CHECKING:
+    from crawjud.interfaces.types import T
     from crawjud.interfaces.types.celery.canvas import (
         CeleryResult,
         Signature,
     )
 
 
-class ContextTask[T](TaskBase):
+class ContextTask(TaskBase):
     """Implementa uma tarefa customizada para integração com Celery.
 
     Esta classe estende a TaskBase do Celery, permitindo execução de tarefas

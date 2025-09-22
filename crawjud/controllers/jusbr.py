@@ -23,6 +23,7 @@ from crawjud.resources.elements import jusbr as el
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData
+    from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -32,7 +33,7 @@ workdir = Path(__file__).cwd()
 type MethodsSearch = Literal["peticionamento", "consulta"]
 
 
-class JusBrBot[T](CrawJUD):
+class JusBrBot(CrawJUD):
     """Classe Master para robôs do 'jus.br'."""
 
     navegação_guiada_checked: ClassVar[bool] = False

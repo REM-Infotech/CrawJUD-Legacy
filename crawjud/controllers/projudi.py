@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
 
     from crawjud.custom.task import ContextTask
+    from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -42,7 +43,7 @@ CSS_INPUT_PROCESSO = {
 }
 
 
-class ProjudiBot[T](CrawJUD):
+class ProjudiBot(CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
     def __init__(

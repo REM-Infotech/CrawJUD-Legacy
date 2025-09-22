@@ -21,6 +21,7 @@ from crawjud.resources.elements import esaj as el
 
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
+    from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -31,7 +32,7 @@ HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15
 
 
-class ESajBot[T](CrawJUD):
+class ESajBot(CrawJUD):
     """Classe de controle para robôs do ESaj."""
 
     def __init__(

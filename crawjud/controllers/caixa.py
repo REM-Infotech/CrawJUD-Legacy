@@ -16,6 +16,7 @@ from crawjud.controllers.main import CrawJUD
 
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
+    from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -30,7 +31,7 @@ CSS_INPUT_PROCESSO = {
 }
 
 
-class CaixaBot[T](CrawJUD):
+class CaixaBot(CrawJUD):
     """Classe de controle para robôs do Caixa."""
 
     def __init__(

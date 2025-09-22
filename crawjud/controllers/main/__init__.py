@@ -35,7 +35,7 @@ from crawjud.utils.webdriver import DriverBot
 if TYPE_CHECKING:
     from bs4.element import PageElement
 
-    from crawjud.interfaces.types import PyNumbers, PyStrings
+    from crawjud.interfaces.types import PyNumbers, PyStrings, T
     from crawjud.interfaces.types.webdriver_types import BrowserOptions
 
 type TypeLogs = Literal["log", "info", "success", "error"]
@@ -44,7 +44,7 @@ type TypeLogs = Literal["log", "info", "success", "error"]
 work_dir = Path(__file__).cwd()
 
 
-class CrawJUD[T](AbstractCrawJUD, ContextTask):
+class CrawJUD(AbstractCrawJUD, ContextTask):
     """Classe CrawJUD."""
 
     def __init__(

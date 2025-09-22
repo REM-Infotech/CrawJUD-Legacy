@@ -17,9 +17,11 @@ from crawjud.resources.elements import csi as el
 
 if TYPE_CHECKING:
     from crawjud.custom.task import ContextTask
+    from crawjud.interfaces.types import T
 
 
 workdir = Path(__file__).cwd()
+
 
 HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15
@@ -29,7 +31,7 @@ CSS_INPUT_PROCESSO = {
 }
 
 
-class CsiBot[T](CrawJUD):
+class CsiBot(CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
     def __init__(
@@ -61,14 +63,23 @@ class CsiBot[T](CrawJUD):
 
         self.download_files()
 
+        self._frame = self.load_data()
+        self.total_rows = len(self._frame)
+
         if not self.auth():
+            self.error = self.total_rows
+
+            self.print_msg(
+                message="Falha na autenticação!",
+                type_log="error",
+            )
+
             with suppress(Exception):
                 self.driver.quit()
 
             raise_start_error("Falha na autenticação.")
 
         self.print_msg(message="Sucesso na autenticação!", type_log="info")
-        self._frame = self.load_data()
 
         sleep(0.5)
         self.print_msg(message="Execução inicializada!", type_log="info")

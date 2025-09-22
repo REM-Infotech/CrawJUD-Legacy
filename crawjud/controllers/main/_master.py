@@ -37,9 +37,8 @@ if TYPE_CHECKING:
 
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData, DictFiles
-    from crawjud.interfaces.types import ProcessInfo
+    from crawjud.interfaces.types import ProcessInfo, T
     from crawjud.utils.webdriver import DriverBot as WebDriver
-
 
 func_dict_check = {
     "bot": ["execution"],
@@ -48,7 +47,7 @@ func_dict_check = {
 work_dir = Path(__file__).cwd()
 
 
-class AbstractCrawJUD[T]:
+class AbstractCrawJUD:
     """Classe base para todos os bots."""
 
     thread_copia_integral: Thread = None

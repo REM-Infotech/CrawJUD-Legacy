@@ -9,10 +9,13 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from os import PathLike
+from typing import TypeVar
 
 from crawjud.interfaces.dict.bot import BotData
 
 # Tipos de retorno das funções
+
+T = TypeVar("T")
 
 type DictData = dict[str, str | datetime]
 type ListData = list[DictData]

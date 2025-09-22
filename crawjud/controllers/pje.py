@@ -45,6 +45,7 @@ if TYPE_CHECKING:
 
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData
+    from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -55,7 +56,7 @@ HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15
 
 
-class PjeBot[T](CrawJUD):
+class PjeBot(CrawJUD):
     """Classe de controle para robôs do PJe."""
 
     def __init__(
