@@ -97,10 +97,6 @@ class DownloadDocumento(CsiBot):
         wait = WebDriverWait(self.driver, 10)
         self.swtich_iframe_anexos(wait)
 
-        anexos: list[WebElementBot] = wait.until(
-            ec.presence_of_element_located((By.TAG_NAME, "tbody")),
-        ).find_elements(By.TAG_NAME, "tr")[1:]
-
         cookies = {
             item["name"]: item["value"] for item in self.driver.get_cookies()
         }
@@ -108,7 +104,17 @@ class DownloadDocumento(CsiBot):
         out_dir = self.output_dir_path
         chamado = self.bot_data["NUMERO_CHAMADO"]
         with httpx.Client(cookies=cookies) as client:
-            for anexo in anexos:
+            for anexo in wait.until(
+                ec.presence_of_element_located(
+                    (
+                        By.TAG_NAME,
+                        "tbody",
+                    ),
+                ),
+            ).find_elements(
+                By.TAG_NAME,
+                "tr",
+            )[1:]:
                 with suppress(Exception):
                     anexo.scroll_to()
 
