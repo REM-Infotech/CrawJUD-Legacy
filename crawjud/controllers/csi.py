@@ -77,23 +77,26 @@ class CsiBot[T](CrawJUD):
         _url_search = el.url_busca
 
     def auth(self) -> bool:
-        self.driver.get(el.url_login)
+        self.driver.get(el.URL_LOGIN)
 
         campo_username = self.wait.until(
             ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                el.campo_username,
+                By.XPATH,
+                el.XPATH_CAMPO_USERNAME,
             )),
         )
         campo_username.send_keys(self.username)
 
         campo_password = self.driver.find_element(
-            By.CSS_SELECTOR,
-            el.campo_passkey,
+            By.XPATH,
+            el.XPATH_CAMPO_SENHA,
         )
         campo_password.send_keys(self.password)
 
-        btn_entrar = self.driver.find_element(By.CSS_SELECTOR, el.btn_entrar)
+        btn_entrar = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.XPATH_BTN_ENTRAR,
+        )
         btn_entrar.click()
 
-        return self.wait.until(ec.url_to_be(el.url_logado))
+        return self.wait.until(ec.url_to_be(el.URL_CONFIRMA_LOGIN))
