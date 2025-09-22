@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from importlib import import_module
 from pathlib import Path
+from typing import Literal
 
 import quart_flask_patch as quart_patch
 from dotenv import dotenv_values
@@ -39,8 +40,10 @@ io = SocketIO(
 
 workdir = Path(__file__).cwd()
 
+type ConfigName = Literal["default"]
 
-async def create_app(config_name: str = "default") -> Quart:
+
+async def create_app(config_name: ConfigName = "default") -> Quart:
     """Create and configure the Quart application instance.
 
     Args:
