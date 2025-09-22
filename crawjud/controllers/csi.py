@@ -99,4 +99,9 @@ class CsiBot[T](CrawJUD):
         )
         btn_entrar.click()
 
-        return self.wait.until(ec.url_to_be(el.URL_CONFIRMA_LOGIN))
+        with suppress(Exception):
+            self.wait.until(ec.url_to_be(el.URL_CONFIRMA_LOGIN))
+
+            return True
+
+        return False

@@ -229,5 +229,16 @@
     "form_cfg": "multipe_files",
     "classification": "ADMINISTRATIVO",
     "text": "Robô responsável por realizar compromissos no JUSDS"
+  },
+  {
+    "id": "22",
+    "display_name": "CSI - Download Documentos",
+    "system": "CSI",
+    "state": "EVERYONE",
+    "client": "INFRAERO",
+    "type": "DOWNLOAD_DOCUMENTO",
+    "form_cfg": "file_auth",
+    "classification": "ADMINISTRATIVO",
+    "text": "Robô responsável por realizar o download de documentos no CSI"
   }
 ]

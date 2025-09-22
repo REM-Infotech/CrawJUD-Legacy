@@ -165,3 +165,5 @@ class BotData(TypedDict):
     VALOR_PGTO: str
     DATA_ATUALIZACAO: str
     NUMERO_COMPROMISSO: str
+
+    NUMERO_CHAMADO: str
