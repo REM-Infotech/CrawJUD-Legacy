@@ -8,8 +8,6 @@ from uuid import uuid4
 
 import pandas as pd
 from dotenv import dotenv_values
-from termcolor import colored
-from tqdm import tqdm
 
 from crawjud.api import app, db
 from crawjud.models.bots import (
@@ -116,22 +114,3 @@ async def init_database() -> None:
                 db.session.add_all(bot_toadd)
 
             db.session.commit()
-            tqdm.write(
-                colored(
-                    "Database initialized successfully.",
-                    color="green",
-                    attrs=["bold", "blink"],
-                ),
-            )
-        tqdm.write(
-            f"""
-==============================
-CrawJUD {colored("v.2.0", color="yellow")} - {colored("Good Computers", color="cyan")}
-
-    - Quart v.0.20.x
-    - SQLAlchemy v.2.0.x
-    - Celery v.5.5.x
-
-==============================
-""",
-        )

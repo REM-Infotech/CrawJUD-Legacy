@@ -16,7 +16,7 @@ Também inclui a extensão ASyncServerType para socketio.AsyncServer.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 # Importações principais de cada domínio - apenas módulos testados e funcionais
 from . import auth, core
@@ -48,6 +48,12 @@ else:
     # Define uma classe placeholder quando socketio não está disponível
     class ASyncServerType:
         """Placeholder for ASyncServerType when socketio is not available."""
+
+
+class HealtCheck(TypedDict):
+    status: str
+    database: str
+    timestamp: str
 
 
 # Re-exportação dos principais tipos de cada domínio

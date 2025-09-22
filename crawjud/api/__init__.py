@@ -40,11 +40,11 @@ io = SocketIO(
 workdir = Path(__file__).cwd()
 
 
-async def create_app() -> Quart:
+async def create_app(config_name: str = "default") -> Quart:
     """Create and configure the Quart application instance.
 
     Args:
-        confg (object): The configuration object to load settings from.
+        config_name (str): Nome da configuração a ser utilizada
 
     Returns:
         ASGIApp: The ASGI application instance with CORS and middleware applied.
@@ -89,10 +89,6 @@ async def database_start(app: Quart) -> None:
         - HOSTNAME: The address of the server
 
     """
-    from crawjud.models import init_database
-
-    async with app.app_context():
-        await init_database()
 
 
 async def register_routes(app: Quart) -> None:
