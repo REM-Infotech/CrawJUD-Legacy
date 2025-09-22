@@ -5,6 +5,6 @@ facilitando a integração com sistemas externos e o processamento de dados.
 
 """
 
-from . import chamados
+from . import chamados, download_document
 
-__all__ = ["chamados"]
+__all__ = ["chamados", "download_document"]
