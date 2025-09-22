@@ -60,6 +60,7 @@ dependencies = [
     "humanize (>=4.13.0,<5.0.0)",
     "chardet>=5.2.0",
     "h2>=4.3.0",
+    "click-repl>=0.3.0",
 ]
 # [tool.poetry]
 # package-mode = false

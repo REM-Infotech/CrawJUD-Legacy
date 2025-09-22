@@ -44,7 +44,6 @@ from uuid import uuid4
 
 from celery.apps.beat import Beat
 from celery.apps.worker import Worker
-from clear import clear
 from dotenv import dotenv_values
 from inquirer import List, prompt
 from inquirer.themes import GreenPassion
@@ -59,7 +58,6 @@ if TYPE_CHECKING:
 
 app = Celery(__name__)
 
-clear()
 envdot = dotenv_values()
 environ["WORKER_NAME"] = f"{uuid4().hex[:5].upper()}@{node()}"
 
@@ -222,7 +220,6 @@ def main() -> None:  # pragma: no cover
         opt_2 = f"Encerrar {str(namespaces.type).capitalize()}"
 
         while process_running:
-            clear()
             questions = [
                 List(
                     "option_server",
@@ -247,5 +244,4 @@ def main() -> None:  # pragma: no cover
             elif result.get("option_server") == opt_2:
                 process_running = stop_service(process_celery)
 
-    clear()
     tqdm.write("Serviço encerrado!")
