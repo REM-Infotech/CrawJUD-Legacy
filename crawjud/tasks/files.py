@@ -80,7 +80,7 @@ class SaveSuccessTask(ContextTask):
 
 @shared_task(name="clear_cache")
 def clear_cache() -> None:  # noqa: D103
-    from crawjud.celery_app import app
+    from crawjud.app_celery import app
 
     clear()
     temp_dir = Path(__file__).cwd().joinpath("temp")

@@ -5,6 +5,6 @@ inicializa a instância global da aplicação Celery para uso em todo o projeto.
 
 """
 
-from crawjud.celery_app import make_celery
+from crawjud.app_celery import make_celery
 
 app = make_celery()

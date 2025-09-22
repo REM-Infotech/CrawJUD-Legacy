@@ -16,7 +16,7 @@ from quart_cors import cors
 from quart_jwt_extended import JWTManager
 from quart_socketio import SocketIO
 
-from crawjud.celery_app import make_celery
+from crawjud.app_celery import make_celery
 from crawjud.utils.middleware import ProxyHeadersMiddleware
 
 
