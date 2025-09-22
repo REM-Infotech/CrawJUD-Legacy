@@ -107,18 +107,13 @@ class DownloadDocumento(CsiBot):
 
         out_dir = self.output_dir_path
         chamado = self.bot_data["NUMERO_CHAMADO"]
+
+        anexos = wait.until(
+            ec.presence_of_element_located((By.TAG_NAME, "tbody")),
+        ).find_elements(By.TAG_NAME, "tr")[1:]
+
         with httpx.Client(cookies=cookies) as client:
-            for anexo in wait.until(
-                ec.presence_of_element_located(
-                    (
-                        By.TAG_NAME,
-                        "tbody",
-                    ),
-                ),
-            ).find_elements(
-                By.TAG_NAME,
-                "tr",
-            )[1:]:
+            for anexo in anexos:
                 if self.event_stop_bot.is_set():
                     break
 
