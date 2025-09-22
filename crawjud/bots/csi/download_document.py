@@ -39,8 +39,12 @@ class DownloadDocumento(CsiBot):
 
         frame = self.frame
         self.driver.maximize_window()
+        self.total_rows = len(frame)
 
-        for pos, item in tqdm(enumerate(frame)):
+        for pos, item in enumerate(frame):
+            if self.event_stop_bot.is_set():
+                break
+
             self.bot_data = item
             self.row = pos + 1
             self.queue()
@@ -115,6 +119,9 @@ class DownloadDocumento(CsiBot):
                 By.TAG_NAME,
                 "tr",
             )[1:]:
+                if self.event_stop_bot.is_set():
+                    break
+
                 with suppress(Exception):
                     anexo.scroll_to()
 

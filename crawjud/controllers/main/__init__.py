@@ -12,7 +12,7 @@ from queue import Queue
 from re import search
 from threading import Event, Thread
 from time import perf_counter, sleep
-from traceback import format_exception_only
+from traceback import format_exception
 from typing import TYPE_CHECKING, Literal
 from zipfile import ZIP_DEFLATED, ZipFile
 from zoneinfo import ZoneInfo
@@ -381,7 +381,7 @@ class CrawJUD[T](AbstractCrawJUD, ContextTask):
         data = self.bot_data
 
         if isinstance(exc, Exception):
-            exc = "\n".join(format_exception_only(exc))
+            exc = "\n".join(format_exception(exc))
 
         message = f"Erro de operação. {exc}"
         data["MOTIVO_ERRO"] = message
