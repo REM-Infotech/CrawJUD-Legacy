@@ -72,6 +72,9 @@ async def after_request(response: Response) -> Response:
     # Verifica se o status é 401 e exibe mensagem de erro
     if response.status_code == 401:
         # Tenta obter mensagem de erro do corpo da resposta
+
+        response.status_code = 200
+
         try:
             # Decodifica o corpo da resposta para JSON
             error_data = await response.get_data()
