@@ -396,37 +396,31 @@ class Capa(PjeBot):
                         representantes.extend(
                             [
                                 RepresentantePartesPJeDict(
-                                    ID_PJE=representante.get("id"),
+                                    ID_PJE=representante.get("id", ""),
                                     PROCESSO=numero_processo,
-                                    NOME=representante.get("nome"),
+                                    NOME=representante.get("nome", ""),
                                     DOCUMENTO=representante.get(
                                         "documento",
-                                        "000.000.000-00",
+                                        "",
                                     ),
                                     TIPO_DOCUMENTO=representante.get(
                                         "tipoDocumento",
-                                        "Não Informado",
+                                        "",
                                     ),
-                                    REPRESENTADO=parte.get("nome"),
-                                    TIPO_PARTE=representante.get("polo"),
-                                    TIPO_PESSOA=representante.get(
-                                        "tipoPessoa",
-                                        "Não Informado",
-                                    ),
-                                    POLO=representante.get(
-                                        "polo",
-                                        "Não Informado",
-                                    ),
+                                    REPRESENTADO=parte["nome"],
+                                    TIPO_PARTE=representante["polo"],
+                                    TIPO_PESSOA=representante["tipoPessoa"],
+                                    POLO=representante["polo"],
                                     OAB=representante.get("numeroOab", "0000"),
                                     EMAILS=",".join(
                                         representante.get("emails", []),
                                     ),
-                                    TELEFONE=f"({representante.get('dddCelular', '')}) {representante.get('numeroCelular', '')}",
+                                    TELEFONE=f"({representante.get('dddCelular')}) {representante.get('numeroCelular')}"
+                                    if "dddCelular" in representante
+                                    and "numeroCelular" in representante
+                                    else "",
                                 )
-                                for representante in parte.get(
-                                    "representantes",
-                                    [],
-                                )
+                                for representante in parte["representantes"]
                             ],
                         )
 
