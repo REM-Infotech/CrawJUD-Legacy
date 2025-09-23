@@ -19,7 +19,10 @@ from quart import current_app as app
 from quart_jwt_extended import jwt_required, unset_jwt_cookies
 
 if TYPE_CHECKING:
+    from flask_sqlalchemy import SQLAlchemy
     from werkzeug.exceptions import HTTPException
+
+    from crawjud.interfaces import HealtCheck
 
 
 @app.route("/", methods=["GET"], websocket=True)
@@ -32,6 +35,29 @@ async def index() -> Response:
 
     """
     return await make_response(jsonify(message="ok"), 200)
+
+
+@app.route("/api/health")
+def health_check() -> HealtCheck:
+    """Verifique status de saúde da aplicação.
+
+    Returns:
+        HealtCheck: HealtCheck
+
+    """
+    try:
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
+        # Testa conexão com banco de dados
+        db.session.execute(db.text("SELECT 1"))
+        db_status = "ok"
+    except Exception:
+        db_status = "erro"
+
+    return {
+        "status": "ok" if db_status == "ok" else "erro",
+        "database": db_status,
+        "timestamp": str(db.func.now()),
+    }
 
 
 @app.errorhandler(401)

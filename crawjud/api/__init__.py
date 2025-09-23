@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import quart_flask_patch as quart_patch
-from clear import clear
 from dotenv import dotenv_values
 from flask_mail import Mail
 from flask_session import Session
@@ -20,8 +19,6 @@ from quart import Quart
 from quart_cors import cors
 from quart_jwt_extended import JWTManager
 from quart_socketio import SocketIO
-from termcolor import colored
-from tqdm import tqdm
 
 from crawjud.app_celery import make_celery
 from crawjud.resources import check_cors_allowed_origins, workdir
@@ -29,24 +26,7 @@ from crawjud.utils.logger import dict_config
 from crawjud.utils.middleware import ProxyHeadersMiddleware
 
 if TYPE_CHECKING:
-    from crawjud.interfaces import HealtCheck
     from crawjud.interfaces.types import ConfigName
-
-
-environ = dotenv_values()
-sess = Session()
-app = Quart(__name__)
-jwt = JWTManager()
-db = SQLAlchemy()
-mail = Mail()
-
-io = SocketIO(
-    async_mode="asgi",
-    launch_mode="uvicorn",
-    cookie="access",
-)
-
-config_name = environ.get("FLASK_ENV", "default")
 
 
 async def create_app(config_name: ConfigName = "default") -> Quart:
@@ -59,6 +39,7 @@ async def create_app(config_name: ConfigName = "default") -> Quart:
         ASGIApp: The ASGI application instance with CORS and middleware applied.
 
     """
+    app = Quart(__name__)
     file_config = workdir.joinpath("crawjud", "quartconf.py")
     app.config.from_pyfile(file_config)
 
@@ -129,20 +110,21 @@ async def init_extensions(app: Quart) -> None:
         app.extensions["celery"] = make_celery()
 
 
-@app.cli.command()
-def init_database() -> None:
-    """Inicializa o banco de dados criando todas as tabelas necessárias."""
-    from crawjud.models import init_database
+environ = dotenv_values()
+sess = Session()
 
-    asyncio.run(init_database())
+jwt = JWTManager()
+db = SQLAlchemy()
+mail = Mail()
 
-    tqdm.write(
-        colored(
-            "Banco de dados inicializado com sucesso!",
-            color="green",
-            attrs=["bold", "blink"],
-        ),
-    )
+io = SocketIO(
+    async_mode="asgi",
+    launch_mode="uvicorn",
+    cookie="access",
+)
+
+config_name = environ.get("FLASK_ENV", "default")
+app = asyncio.run(create_app(config_name=config_name))
 
 
 async def main_app() -> None:
@@ -191,48 +173,5 @@ async def main_app() -> None:
             )
 
 
-@app.route("/api/health")
-def health_check() -> HealtCheck:
-    """Verifique status de saúde da aplicação.
-
-    Returns:
-        HealtCheck: HealtCheck
-
-    """
-    try:
-        # Testa conexão com banco de dados
-        db.session.execute(db.text("SELECT 1"))
-        db_status = "ok"
-    except Exception:
-        db_status = "erro"
-
-    return {
-        "status": "ok" if db_status == "ok" else "erro",
-        "database": db_status,
-        "timestamp": str(db.func.now()),
-    }
-
-
-@app.cli.command()
-def start() -> None:
-    """Executa o App."""
-    try:
-        clear()
-        asyncio.run(main_app())
-    except KeyboardInterrupt:
-        from blessed import Terminal
-
-        term = Terminal()
-
-        tqdm.write(term.home + term.clear + term.move_y(term.height // 2))
-        tqdm.write(
-            term.black_on_darkkhaki(term.center("press any key to continue.")),
-        )
-
-        with term.cbreak(), term.hidden_cursor():
-            term.inkey()
-
-        clear()
-
-
+import_module("._command", package=__package__)
 __all__ = ["quart_patch"]
