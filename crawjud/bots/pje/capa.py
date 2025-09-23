@@ -370,25 +370,25 @@ class Capa(PjeBot):
         representantes: list[RepresentantePartesPJeDict] = []
         if data_partes:
             for v in data_partes.values():
-                list_partes: list[ParteDict] = v
+                list_partes_request: list[ParteDict] = v
 
-                for parte in list_partes:
+                for parte in list_partes_request:
                     partes.append(
                         PartesProcessoPJeDict(
-                            ID_PJE=parte["id"],
-                            NOME=parte["nome"],
+                            ID_PJE=parte.get("id"),
+                            NOME=parte.get("nome"),
                             DOCUMENTO=parte.get("documento", "000.000.000-00"),
                             TIPO_DOCUMENTO=parte.get(
                                 "tipoDocumento",
                                 "Não Informado",
                             ),
-                            TIPO_PARTE=parte["polo"],
+                            TIPO_PARTE=parte.get("polo"),
                             TIPO_PESSOA="Física"
-                            if parte["tipoPessoa"].lower() == "f"
+                            if parte.get("tipoPessoa", "f").lower() == "f"
                             else "Jurídica",
                             PROCESSO=numero_processo,
-                            POLO=parte["polo"],
-                            PARTE_PRINCIPAL=parte["principal"],
+                            POLO=parte.get("polo"),
+                            PARTE_PRINCIPAL=parte.get("principal", False),
                         ),
                     )
 
@@ -396,33 +396,41 @@ class Capa(PjeBot):
                         representantes.extend(
                             [
                                 RepresentantePartesPJeDict(
-                                    ID_PJE=representante["id"],
+                                    ID_PJE=representante.get("id"),
                                     PROCESSO=numero_processo,
-                                    NOME=representante["nome"],
-                                    DOCUMENTO=representante["documento"],
-                                    TIPO_DOCUMENTO=representante[
-                                        "tipoDocumento"
-                                    ],
-                                    REPRESENTADO=parte["nome"],
-                                    TIPO_PARTE=representante["polo"],
-                                    TIPO_PESSOA=representante["tipoPessoa"],
-                                    POLO=representante["polo"],
+                                    NOME=representante.get("nome"),
+                                    DOCUMENTO=representante.get(
+                                        "documento",
+                                        "000.000.000-00",
+                                    ),
+                                    TIPO_DOCUMENTO=representante.get(
+                                        "tipoDocumento",
+                                        "Não Informado",
+                                    ),
+                                    REPRESENTADO=parte.get("nome"),
+                                    TIPO_PARTE=representante.get("polo"),
+                                    TIPO_PESSOA=representante.get(
+                                        "tipoPessoa",
+                                        "Não Informado",
+                                    ),
+                                    POLO=representante.get(
+                                        "polo",
+                                        "Não Informado",
+                                    ),
                                     OAB=representante.get("numeroOab", "0000"),
                                     EMAILS=",".join(
-                                        representante["emails"]
-                                        if "emails" in representantes
-                                        else [],
+                                        representante.get("emails", []),
                                     ),
-                                    TELEFONE=f"({representante['dddCelular']}) {representante['numeroCelular']}"
-                                    if "dddCelular" in representante
-                                    and "numeroCelular" in representante
-                                    else "",
+                                    TELEFONE=f"({representante.get('dddCelular', '')}) {representante.get('numeroCelular', '')}",
                                 )
-                                for representante in parte["representantes"]
+                                for representante in parte.get(
+                                    "representantes",
+                                    [],
+                                )
                             ],
                         )
 
-            self.to_add_partes.extend(list_partes)
+            self.to_add_partes.extend(partes)
             self.to_add_representantes.extend(representantes)
 
     def capa_processual(

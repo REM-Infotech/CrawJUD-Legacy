@@ -6,8 +6,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 from zoneinfo import ZoneInfo
 
-from quart import current_app as app
-
 from crawjud import bots
 from crawjud.decorators import shared_task
 from crawjud.models.bots import BotsCrawJUD, Executions
@@ -65,6 +63,9 @@ async def save_database(
     total_rows: int | None = None,
 ) -> None:
     """Salva o estado atual do banco de dados."""
+    from crawjud.api import create_app
+
+    app = await create_app()
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     async with app.app_context():
         with db.session.no_autoflush:
