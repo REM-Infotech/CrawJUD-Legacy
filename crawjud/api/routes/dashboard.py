@@ -19,12 +19,12 @@ from quart import (
 )
 from quart_jwt_extended import jwt_required
 
-from crawjud.models import Executions
 from crawjud.utils.colors import escurecer_cor, gerar_cor_base, rgb_to_hex
 
 if TYPE_CHECKING:
     from flask_sqlalchemy import SQLAlchemy
 
+    from crawjud.models import Executions
     from crawjud.models.bots import BotsCrawJUD
 
 dash = Blueprint("dash", __name__)
@@ -70,6 +70,8 @@ async def linechart_system() -> Response:
 
     """
     try:
+        from crawjud.models import Executions
+
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         executions = db.session.query(Executions).all()
 
@@ -168,6 +170,8 @@ async def linechart_bot() -> Response:
 
     """
     try:
+        from crawjud.models import Executions
+
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         executions = db.session.query(Executions).all()
         system_colors = {

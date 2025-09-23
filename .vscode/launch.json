@@ -17,39 +17,23 @@
   //   }
   // ],
   "configurations": [
-    // {
-    //   "name": "Python Debugger: Remote Attach",
-    //   "type": "debugpy",
-    //   "request": "attach",
-    //   "connect": { "host": "localhost", "port": 5115 },
-    //   "pathMappings": [
-    //     { "localRoot": "${workspaceFolder}", "remoteRoot": "." }
-    //   ],
-    //   "justMyCode": false
-    // },
     {
-      "name": "Debug API CrawJUD",
+      "name": "Python Debugger: Flask",
       "type": "debugpy",
       "request": "launch",
-      "program": "_apicrawjud.py"
+      "module": "quart",
+      "env": { "FLASK_APP": "app.py", "FLASK_DEBUG": "1" },
+      "args": ["start"]
     },
     {
-      "name": "Debug Celery-Worker CrawJUD",
+      "name": "Python Debugger: Celery",
       "type": "debugpy",
       "request": "launch",
-      "program": "_crawjudapp.py",
-      "args": ["--type", "worker"]
-    },
-    {
-      "name": "Debug Celery-Beat CrawJUD",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "_crawjudapp.py",
-      "args": ["--type", "beat"]
+      "module": "celery",
+      "env": { "CELERY_APP": "celery_app" },
+      "args": ["worker", "-P", "threads", "-E"]
     }
   ],
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
   "version": "0.2.0"
 }

@@ -32,7 +32,6 @@ from quart_jwt_extended import get_jwt_identity, jwt_required
 
 from crawjud.interfaces.credentials import CredendialsDict
 from crawjud.interfaces.session import SessionDict
-from crawjud.models import BotsCrawJUD, Credentials, LicensesUsers, Users
 from crawjud.resources import format_string
 
 if TYPE_CHECKING:
@@ -81,6 +80,8 @@ def license_user(usr: int, db: SQLAlchemy) -> str:
 
 
     """
+    from crawjud.models import LicensesUsers, Users
+
     query = (
         db.session.query(LicensesUsers)
         .select_from(Users)
@@ -107,6 +108,8 @@ async def systems() -> Response:
         Nenhuma exceção específica.
 
     """
+    from crawjud.models import BotsCrawJUD
+
     list_systems: list[dict[str, str]] = [
         {"value": None, "text": "Escolha um sistema", "disabled": True},
     ]
@@ -133,6 +136,8 @@ async def credentials() -> Response:
 
     """
     try:
+        from crawjud.models import Credentials, LicensesUsers
+
         sess = SessionDict(**{
             k: v for k, v in session.items() if not k.startswith("_")
         })
@@ -186,6 +191,8 @@ async def cadastro() -> Response:
 
     """
     try:
+        from crawjud.models import BotsCrawJUD, Credentials, LicensesUsers
+
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         request_data: MultiDict = (
             await request.form or await request.data or await request.json

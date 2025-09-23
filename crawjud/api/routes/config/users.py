@@ -25,8 +25,6 @@ from crawjud.common.exceptions.database import (
 )
 from crawjud.interfaces.dict import ActionsDict
 from crawjud.interfaces.session import SessionDict
-from crawjud.models import LicensesUsers, Users
-from crawjud.models import SuperUser as SuperUser
 
 from . import admin
 
@@ -38,15 +36,18 @@ if TYPE_CHECKING:
         CallableMethodRequest,
         MethodRequested,
     )
+    from crawjud.models import LicensesUsers
 
 
-def license_(usr: int) -> LicensesUsers | None:
+def license_[T](usr: int) -> LicensesUsers | None:
     """Get the user's license.
 
     Returns:
         LicensesUsers | None: License of the user or None if not found.
 
     """
+    from crawjud.models import LicensesUsers, Users
+
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     return (
         db.session.query(LicensesUsers)
@@ -71,6 +72,8 @@ def cadastro_user(form: dict) -> Literal["Usuário Cadastrado com sucesso!"]:
 
     """
     try:
+        from crawjud.models import Users
+
         db: SQLAlchemy = app.extensions["sqlalchemy"]
 
         password = form.pop("password")
@@ -104,6 +107,8 @@ def update_user(
 
     """
     try:
+        from crawjud.models import Users
+
         db: SQLAlchemy = app.extensions["sqlalchemy"]
 
         password: str = form.pop("password")
@@ -133,6 +138,8 @@ def delete_user(form: dict) -> Literal["Usuário deletado com sucesso!"]:
         (Literal["Usuário deletado com sucesso!"]): Mensagem de sucesso
 
     """
+    from crawjud.models import Users
+
     db: SQLAlchemy = app.extensions["sqlalchemy"]
 
     usr = db.session.query(Users).filter(Users.id == form["id"]).first()
@@ -201,6 +208,8 @@ async def listagem_usuarios() -> Response:
         Response: Objeto HTTP contendo a lista de usuários em formato JSON.
 
     """
+    from crawjud.models import LicensesUsers, Users
+
     db: SQLAlchemy = app.extensions["sqlalchemy"]
     sess = SessionDict(**{
         k: v for k, v in session.items() if not k.startswith("_")

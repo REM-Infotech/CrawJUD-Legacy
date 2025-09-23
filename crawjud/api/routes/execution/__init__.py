@@ -24,10 +24,6 @@ from quart_jwt_extended import (
     jwt_required,
 )
 
-from crawjud.models import Executions, Users
-from crawjud.models import SuperUser as SuperUser
-from crawjud.models import admins as admins
-
 if TYPE_CHECKING:
     from flask_sqlalchemy import SQLAlchemy
 
@@ -44,6 +40,8 @@ async def executions() -> Response:
 
     """
     try:
+        from crawjud.models import Executions, Users
+
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         _data = await request.data
         current_user = get_jwt_identity()
@@ -98,6 +96,8 @@ async def clear_executions() -> Response:
 
     """
     try:
+        from crawjud.models import Executions
+
         db: SQLAlchemy = app.extensions["sqlalchemy"]
         db.session.query(Executions).filter(
             Executions.status == "Finalizado",
