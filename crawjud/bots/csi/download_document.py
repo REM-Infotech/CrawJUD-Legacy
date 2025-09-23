@@ -49,7 +49,7 @@ class DownloadDocumento(CsiBot):
             self.row = pos + 1
             self.queue()
 
-        self.driver.quit()
+        self.finalize_execution()
 
     def queue(self) -> None:
         try:
