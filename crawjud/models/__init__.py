@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import pathlib
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 from uuid import uuid4
 
 import pandas as pd
 from dotenv import dotenv_values
+from quart import current_app as app
 
-from crawjud.api import app, db
 from crawjud.models.bots import (
     BotsCrawJUD,
     Credentials,
@@ -19,6 +19,9 @@ from crawjud.models.bots import (
 from crawjud.models.schedule import CrontabModel, ScheduleModel
 from crawjud.models.secondaries import admins, execution_bots
 from crawjud.models.users import LicensesUsers, SuperUser, Users
+
+if TYPE_CHECKING:
+    from flask_sqlalchemy import SQLAlchemy
 
 __all__ = [
     "BotsCrawJUD",
@@ -51,6 +54,8 @@ async def init_database() -> None:
         # Faz um db.drop_all()
 
         # Faz um db.session.flush()
+
+        db: SQLAlchemy = app.extensions["sqlalchemy"]
 
         db.create_all()
 

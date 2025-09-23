@@ -19,13 +19,13 @@ from quart import (
 )
 from quart_jwt_extended import jwt_required
 
-from crawjud.api import db
 from crawjud.models import Executions
 from crawjud.utils.colors import escurecer_cor, gerar_cor_base, rgb_to_hex
 
 if TYPE_CHECKING:
-    from crawjud.models.bots import BotsCrawJUD
+    from flask_sqlalchemy import SQLAlchemy
 
+    from crawjud.models.bots import BotsCrawJUD
 
 dash = Blueprint("dash", __name__)
 
@@ -70,6 +70,7 @@ async def linechart_system() -> Response:
 
     """
     try:
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         executions = db.session.query(Executions).all()
 
         contagem_execucoes = []
@@ -167,6 +168,7 @@ async def linechart_bot() -> Response:
 
     """
     try:
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         executions = db.session.query(Executions).all()
         system_colors = {
             "PROJUDI": {

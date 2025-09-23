@@ -30,7 +30,6 @@ from quart import (
 from quart import current_app as app
 from quart_jwt_extended import get_jwt_identity, jwt_required
 
-from crawjud.api import db
 from crawjud.interfaces.credentials import CredendialsDict
 from crawjud.interfaces.session import SessionDict
 from crawjud.models import BotsCrawJUD, Credentials, LicensesUsers, Users
@@ -111,7 +110,7 @@ async def systems() -> Response:
     list_systems: list[dict[str, str]] = [
         {"value": None, "text": "Escolha um sistema", "disabled": True},
     ]
-
+    db: SQLAlchemy = current_app.extensions["sqlalchemy"]
     for item in db.session.query(BotsCrawJUD).all():
         if item.system not in [i["text"] for i in list_systems]:
             list_systems.append({"value": item.id, "text": item.system})
@@ -137,6 +136,7 @@ async def credentials() -> Response:
         sess = SessionDict(**{
             k: v for k, v in session.items() if not k.startswith("_")
         })
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         license_user = sess["license_object"]
         license_token = license_user["license_token"]
         query = (
@@ -186,6 +186,7 @@ async def cadastro() -> Response:
 
     """
     try:
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         request_data: MultiDict = (
             await request.form or await request.data or await request.json
         )

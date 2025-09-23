@@ -98,20 +98,20 @@ async def register_routes(app: Quart) -> None:
 
     """
     async with app.app_context():
+        from crawjud.api.routes.auth import auth
+        from crawjud.api.routes.bot import bot
+        from crawjud.api.routes.config import admin
+        from crawjud.api.routes.credentials import cred
+        from crawjud.api.routes.dashboard import dash
+        from crawjud.api.routes.execution import exe
+
         # Dynamically import additional route modules as needed.
         import_module("crawjud.api.routes", package=__package__)
 
-    from crawjud.api.routes.auth import auth
-    from crawjud.api.routes.bot import bot
-    from crawjud.api.routes.config import admin
-    from crawjud.api.routes.credentials import cred
-    from crawjud.api.routes.dashboard import dash
-    from crawjud.api.routes.execution import exe
+        list_blueprints = [bot, auth, exe, dash, cred, admin]
 
-    list_blueprints = [bot, auth, exe, dash, cred, admin]
-
-    for bp in list_blueprints:
-        app.register_blueprint(bp)
+        for bp in list_blueprints:
+            app.register_blueprint(bp)
 
 
 async def init_extensions(app: Quart) -> None:
@@ -158,11 +158,12 @@ async def main_app() -> None:
     """
     with suppress(KeyboardInterrupt):
         async with app.app_context():
+            from crawjud.api.namespaces import register_namespaces
+
             await io.init_app(
                 app,
                 cors_allowed_origins=check_cors_allowed_origins,
             )
-            from crawjud.api.namespaces import register_namespaces
 
             await register_namespaces(io)
             # Use "127.0.0.1" como padrão para evitar exposição a todas as interfaces

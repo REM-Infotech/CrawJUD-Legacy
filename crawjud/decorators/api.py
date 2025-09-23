@@ -23,8 +23,6 @@ from quart import (
 )
 from quart_jwt_extended import decode_token
 
-from crawjud.api import io
-
 P = ParamSpec("P", bound=AnyStr)
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -57,6 +55,8 @@ def verify_jwt_websocket[T](func: Callable) -> T:
             valid = True
 
         if not valid:
+            from crawjud.api import io
+
             await io.emit("not_logged", namespace="/master")
             return []
 

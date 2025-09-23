@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from quart import current_app
 from quart_socketio import Namespace
 
-from crawjud.api import db
 from crawjud.decorators.api import verify_jwt_websocket
 from crawjud.interfaces.credentials import (
     CredendialDictSelect,
@@ -14,6 +14,8 @@ from crawjud.interfaces.credentials import (
 from crawjud.models.bots import BotsCrawJUD, Credentials
 
 if TYPE_CHECKING:
+    from flask_sqlalchemy import SQLAlchemy
+
     from crawjud.interfaces import ASyncServerType
 
 
@@ -67,6 +69,7 @@ class BotsNamespace(Namespace):
 
             return v
 
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         query_bots = db.session.query(BotsCrawJUD).all()
         sorted_query_bots = sorted(query_bots, key=lambda x: x.id)
         for bot in sorted_query_bots:
@@ -96,6 +99,7 @@ class BotsNamespace(Namespace):
             Nenhuma exceção explícita.
 
         """
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         query = db.session.query(Credentials).all()
 
         # Inicializa o dicionário de credenciais com opções padrão para cada sistema

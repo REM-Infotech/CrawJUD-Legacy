@@ -12,6 +12,7 @@ from quart import (
     Blueprint,
     Response,
     abort,
+    current_app,
     jsonify,
     make_response,
     render_template,
@@ -23,7 +24,6 @@ from quart_jwt_extended import (
     jwt_required,
 )
 
-from crawjud.api import db
 from crawjud.models import Executions, Users
 from crawjud.models import SuperUser as SuperUser
 from crawjud.models import admins as admins
@@ -44,6 +44,7 @@ async def executions() -> Response:
 
     """
     try:
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         _data = await request.data
         current_user = get_jwt_identity()
 

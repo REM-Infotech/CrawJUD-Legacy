@@ -6,8 +6,9 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 from zoneinfo import ZoneInfo
 
+from quart import current_app as app
+
 from crawjud import bots
-from crawjud.api import app
 from crawjud.decorators import shared_task
 from crawjud.models.bots import BotsCrawJUD, Executions
 from crawjud.models.users import LicensesUsers, Users
