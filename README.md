@@ -1,36 +1,61 @@
-<div align="center"><img src="./crawjud/logo.png" alt="" height="150"></div>
+# CrawJUD-Vue
 
-# CrawJUD Automação Jurídica
+This template should help get you started developing with Vue 3 in Vite.
 
-CrawJUD é uma plataforma modular para automação de rotinas jurídicas, integrando robôs,
-APIs, tarefas assíncronas e comunicação em tempo real. O projeto prioriza escalabilidade,
-manutenção e integração com sistemas judiciais diversos.
+## Recommended IDE Setup
 
-Utilizando Selenium para automação de navegadores, Celery para tarefas assíncronas, Redis
-para gerenciamento de filas e Quart para a API web, o CrawJUD oferece uma solução robusta
-para escritórios de advocacia e departamentos jurídicos que buscam otimizar processos
-repetitivos e melhorar a eficiência operacional.
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-> [Instruções de Contribuição](./docs/CONTRIBUTING.md)
+## Type Support for `.vue` Imports in TS
 
-> [Política de Segurança](./docs/SECURITY.md)
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-> [Código de Conduta](./docs/CODE_OF_CONDUCT.md)
+## Customize configuration
 
-#
+See [Vite Configuration Reference](https://vite.dev/config/).
 
-[![License MIT](https://img.shields.io/badge/licence-MIT-blue.svg?style=for-the-badge)](./LICENSE)
-[![Python 3.13](https://shields.io/badge/python-3.13%20-green?style=for-the-badge&logo=python)](https://python.org/downloads/release/python-3132/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
-[![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge&logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+## Project Setup
 
-[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-306998?style=for-the-badge&logo=python&logoColor=white)](https://www.sqlalchemy.org/)
-[![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
-[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
-[![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=for-the-badge&logo=celery&logoColor=ddf4a4)](https://docs.celeryq.dev/en/stable/#)
-[![Quart](https://img.shields.io/badge/Quart-8A2BE2?style=for-the-badge)](https://quart.palletsprojects.com/en/stable/)
+```sh
+pnpm install
+```
 
-#
+### Compile and Hot-Reload for Development
 
-[_Contagem de Linhas de Código (LOC)_](./docs/CONTAGEM.md)
-_Última atualização: `10/09/2025 12:14 (América/São_Paulo)`_
+```sh
+pnpm dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+pnpm build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+pnpm test:unit
+```
+
+### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+
+```sh
+pnpm test:e2e:dev
+```
+
+This runs the end-to-end tests against the Vite development server.
+It is much faster than the production build.
+
+But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+
+```sh
+pnpm build
+pnpm test:e2e
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+pnpm lint
+```

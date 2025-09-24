@@ -1,0 +1,3 @@
+interface Beta {
+  tuebetacara: string;
+}

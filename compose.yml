@@ -1,0 +1,17 @@
+services:
+  minio:
+    image: quay.io/minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - minionetwork
+    volumes:
+      - "/opt/minio:/data" # Alterado aqui
+    env_file:
+      - .env
+    command: 'server /data --console-address ":9001"'
+
+networks:
+  minionetwork:
+    driver: bridge
