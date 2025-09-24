@@ -26,4 +26,4 @@ Se você identificar uma vulnerabilidade de segurança no CrawJUD-Bots, siga est
 - Atualizações regulares sobre o progresso da correção
 - Crédito na documentação de segurança para relatos válidos (caso deseje)
 
-Obrigado por contribuir para a segurança do CrawJUD-Bots!
+Obrigado por contribuir para a segurança do CrawJUD!
