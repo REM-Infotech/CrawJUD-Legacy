@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     from browsermobproxy import Client
     from selenium.webdriver.common.service import Service
 
-    from crawjud.interfaces.types import P
+    from crawjud.interfaces.types import P, T
     from crawjud.interfaces.types.webdriver_types import (
         BrowserOptions,
         ChromeConfig,
@@ -52,7 +52,7 @@ if TYPE_CHECKING:
 work_dir = Path(__file__).cwd()
 
 
-class DriverBot[T](WebDriver):
+class DriverBot(WebDriver):
     """Gerencie instâncias WebDriver e recursos de proxy para automação de navegação web.
 
     Esta classe encapsula a configuração, inicialização e manipulação de instâncias do
@@ -149,7 +149,7 @@ class DriverBot[T](WebDriver):
     def _configure_service(
         self,
         driver_config: ChromeConfig | FirefoxConfig,
-        **kwargs: T,
+        **kwargs: P.kwargs,
     ) -> None:
         self._service = driver_config["service"](
             executable_path=self._manager.install(),
