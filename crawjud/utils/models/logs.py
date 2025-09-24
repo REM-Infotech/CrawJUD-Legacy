@@ -12,9 +12,9 @@ from __future__ import annotations
 from collections.abc import Callable, Generator, Mapping
 from contextlib import suppress
 from typing import (
+    TYPE_CHECKING,
     Any,
     Literal,
-    ParamSpec,
     Self,
     TypedDict,
 )
@@ -24,6 +24,9 @@ from redis_om import Field, HashModel, JsonModel, NotFoundError
 from crawjud.interfaces.pje import ProcessoJudicialDict as Processo
 from crawjud.utils.interfaces import ItemMessageList
 
+if TYPE_CHECKING:
+    from crawjud.interfaces.types import P
+
 description_message = (
     "e.g. '[(C3K7H5, log, 15, 19:37:15)> Salvando arquivos na pasta...]'"
 )
@@ -31,7 +34,6 @@ description_message = (
 description_pid = "e.g. 'C3K7H5' (identificador do processo)"
 
 
-P = ParamSpec("RedisQuerySpecs")
 type IncEx = (
     set[int]
     | set[str]

@@ -9,7 +9,6 @@ from typing import (
     Any,
     AnyStr,
     ClassVar,
-    ParamSpec,
 )
 
 from selenium.webdriver.common.alert import Alert
@@ -41,6 +40,7 @@ if TYPE_CHECKING:
     from browsermobproxy import Client
     from selenium.webdriver.common.service import Service
 
+    from crawjud.interfaces.types import P
     from crawjud.interfaces.types.webdriver_types import (
         BrowserOptions,
         ChromeConfig,

@@ -6,7 +6,6 @@ import traceback
 from abc import abstractmethod
 from contextlib import suppress
 from datetime import datetime
-from pathlib import Path
 from threading import Event, Semaphore, Thread
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar
@@ -18,17 +17,12 @@ from socketio import Client
 from termcolor import colored
 from tqdm import tqdm
 
+from crawjud.resources import workdir
 from crawjud.utils.models.logs import MessageLogDict
 from crawjud.utils.storage import Storage
 
-COLORS_DICT = {
-    "info": "cyan",
-    "log": "yellow",
-    "error": "red",
-    "warning": "magenta",
-    "success": "green",
-}
 if TYPE_CHECKING:
+    from pathlib import Path
     from queue import Queue
     from typing import ClassVar
 
@@ -37,14 +31,21 @@ if TYPE_CHECKING:
 
     from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData, DictFiles
-    from crawjud.interfaces.types import ProcessInfo, T
+    from crawjud.interfaces.types import ColorsDict, ProcessInfo, T
     from crawjud.utils.webdriver import DriverBot as WebDriver
 
 func_dict_check = {
     "bot": ["execution"],
     "search": ["buscar_processo"],
 }
-work_dir = Path(__file__).cwd()
+
+COLORS_DICT: ColorsDict = {
+    "info": "cyan",
+    "log": "yellow",
+    "error": "red",
+    "warning": "magenta",
+    "success": "green",
+}
 
 
 class AbstractCrawJUD:
@@ -237,7 +238,7 @@ class AbstractCrawJUD:
 
     @property
     def output_dir_path(self) -> Path:
-        out_dir = work_dir.joinpath("temp", self.pid)
+        out_dir = workdir.joinpath("temp", self.pid)
 
         out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -251,11 +252,11 @@ class AbstractCrawJUD:
     def wait(self) -> WebDriverWait:
         return self._wait
 
-    def search(self, *args: T, **kwargs: T) -> T:
-        return NotImplementedError("Necessário implementar função!")
+    @abstractmethod
+    def search(self, *args: T, **kwargs: T) -> T: ...
 
-    def auth(self, *args: T, **kwargs: T) -> T:
-        return NotImplementedError("Necessário implementar função!")
+    @abstractmethod
+    def auth(self, *args: T, **kwargs: T) -> T: ...
 
     @property
     def success(self) -> int:
@@ -407,7 +408,7 @@ class AbstractCrawJUD:
 
                     # Cria o caminho do arquivo de log
 
-                    file_log = work_dir.joinpath(
+                    file_log = workdir.joinpath(
                         "temp",
                         pid,
                         f"{mini_pid}.log",

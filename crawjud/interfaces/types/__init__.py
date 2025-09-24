@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from os import PathLike
-from typing import Literal, ParamSpec, TypeVar
+from typing import Literal, ParamSpec, TypedDict, TypeVar
 
 from crawjud.interfaces.dict.bot import BotData
 
@@ -17,6 +17,15 @@ from crawjud.interfaces.dict.bot import BotData
 
 T = TypeVar("T")
 P = ParamSpec("P")
+
+
+class ColorsDict(TypedDict):
+    info: Literal["cyan"]
+    log: Literal["yellow"]
+    error: Literal["red"]
+    warning: Literal["magenta"]
+    success: Literal["green"]
+
 
 type ConfigName = Literal["default"]
 type DictData = dict[str, str | datetime]

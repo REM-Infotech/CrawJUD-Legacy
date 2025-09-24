@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Literal,
-    ParamSpec,
     TypedDict,
     TypeVar,
 )
@@ -32,7 +31,6 @@ if TYPE_CHECKING:
     from webdriver_manager.chrome import ChromeDriverManager
     from webdriver_manager.firefox import GeckoDriverManager
 
-P = ParamSpec("optionsConstructor")
 BrowserOptions = Literal["chrome", "gecko", "firefox"]
 TExtensionsPath = TypeVar("ExtensionsPath", bound=str | Path)
 

@@ -12,6 +12,7 @@ export default defineConfig({
   base: "/",
   server: {
     port: 1474,
+    allowedHosts: true,
   },
   build: {
     sourcemap: true,
