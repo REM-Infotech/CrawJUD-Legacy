@@ -30,7 +30,7 @@ from quart import (
 from quart import current_app as app
 from quart_jwt_extended import get_jwt_identity, jwt_required
 
-from crawjud.decorators.api import crossdomain
+from crawjud.decorators.api import CrossDomain
 from crawjud.interfaces.credentials import CredendialsDict
 from crawjud.interfaces.session import SessionDict
 from crawjud.resources import format_string
@@ -95,7 +95,7 @@ def license_user(usr: int, db: SQLAlchemy) -> str:
 
 
 @cred.get("/systems")
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def systems() -> Response:
     """Retorna lista de sistemas disponíveis para autenticação.
@@ -128,7 +128,7 @@ async def systems() -> Response:
 
 
 @cred.get("/credentials")
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def credentials() -> Response:
     """Retorna lista de credenciais associadas ao usuário autenticado.
@@ -180,7 +180,7 @@ async def credentials() -> Response:
 
 
 @cred.route("/peform_credencial", methods=["POST", "DELETE"])
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def cadastro() -> Response:
     """Realiza cadastro ou exclusão de credenciais conforme ação informada.

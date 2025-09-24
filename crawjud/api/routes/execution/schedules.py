@@ -10,7 +10,7 @@ from quart import current_app as app
 from quart_jwt_extended import jwt_required
 from sqlalchemy.orm import aliased
 
-from crawjud.decorators.api import crossdomain
+from crawjud.decorators.api import CrossDomain
 from crawjud.models import ScheduleModel, SuperUser, Users, admins
 
 from . import exe
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 @exe.get("/schedules")
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def schedules() -> Response:
     """Display a list of executions filtered by search criteria.

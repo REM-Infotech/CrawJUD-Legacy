@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from asyncio import iscoroutinefunction
 from asyncio import run as run_async
-from typing import TYPE_CHECKING, ClassVar, Generic, ParamSpec
+from typing import TYPE_CHECKING, ClassVar, Generic
 
 from celery.app.task import Task as TaskBase
 from dotenv import dotenv_values
@@ -19,7 +19,7 @@ from dotenv import dotenv_values
 from crawjud.custom.canvas import subtask
 
 environ = dotenv_values()
-P = ParamSpec("P")
+
 
 if TYPE_CHECKING:
     from crawjud.interfaces.types import T

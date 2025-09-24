@@ -6,7 +6,7 @@ em funções e métodos de classe, garantindo integração com type annotations.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ParamSpec
+from typing import TYPE_CHECKING
 
 from celery import shared_task as share
 
@@ -15,14 +15,14 @@ from .bot import wrap_cls, wrap_init
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from crawjud.interfaces.types import P, T
     from crawjud.interfaces.types.celery.task import Task
 
-P = ParamSpec("P")
 
 class_set = set()
 
 
-def shared_task[T](*args: T, **kwargs: T) -> Task | Callable[..., Task]:
+def shared_task(*args: T, **kwargs: T) -> Task | Callable[..., Task]:
     """Crie um decorador do shared_task com Type Annotations.
 
     Args:
@@ -34,7 +34,7 @@ def shared_task[T](*args: T, **kwargs: T) -> Task | Callable[..., Task]:
 
     """
 
-    def decorator[T](func: Callable[P, T]) -> Task:
+    def decorator(func: Callable[P, T]) -> Task:
         # Aplica o shared_task na função
         task = share(*args, **kwargs)(func)
         task.contains_classmethod = True
@@ -48,7 +48,7 @@ def shared_task[T](*args: T, **kwargs: T) -> Task | Callable[..., Task]:
     return decorator
 
 
-def classmethod_shared_task[T](
+def classmethod_shared_task(
     *args: T,
     **kwargs: T,
 ) -> Task | Callable[P, Task]:
@@ -63,7 +63,7 @@ def classmethod_shared_task[T](
 
     """
 
-    def decorator[T](func: Callable[P, T]) -> Task:
+    def decorator(func: Callable[P, T]) -> Task:
         # Aplica o shared_task na função
         task = share(*args, **kwargs)(func)
         task.contains_classmethod = True

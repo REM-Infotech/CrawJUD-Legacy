@@ -51,8 +51,6 @@ if TYPE_CHECKING:
 
 work_dir = Path(__file__).cwd()
 
-P = ParamSpec("P")
-
 
 class DriverBot[T](WebDriver):
     """Gerencie instâncias WebDriver e recursos de proxy para automação de navegação web.

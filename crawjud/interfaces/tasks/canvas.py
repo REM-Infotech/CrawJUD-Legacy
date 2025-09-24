@@ -52,7 +52,7 @@ else:
         __AsyncResult = object
         states = None
 
-P = ParamSpec("P")
+
 R = TypeVar("R")
 TClassBot = TypeVar("TClassBot", bound=object)
 TBotSpec = ParamSpec("TBotSpec", bound=AnyStr)

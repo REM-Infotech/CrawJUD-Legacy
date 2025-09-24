@@ -9,7 +9,6 @@ from typing import AnyStr, ParamSpec, TypeVar
 from crawjud.custom.task import ContextTask
 from crawjud.interfaces.types.celery.canvas import Signature
 
-P = ParamSpec("P")
 R = TypeVar("R")
 TClassBot = TypeVar("TClassBot", bound=object)
 TBotSpec = ParamSpec("TBotSpec", bound=AnyStr)

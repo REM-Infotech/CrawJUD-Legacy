@@ -28,10 +28,10 @@ Decoradores para validação de dados.
 
 ### CORS Decorator (`api.py`)
 
-#### @crossdomain
+#### @CrossDomain
 
 ```python
-def crossdomain(origin=None, methods=None, headers=None,
+def CrossDomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True, automatic_options=True):
     """Decorador para habilitar CORS em endpoints da API.
 
@@ -48,7 +48,7 @@ def crossdomain(origin=None, methods=None, headers=None,
 
     Example:
         @app.route('/api/endpoint')
-        @crossdomain(origin='*', methods=['GET', 'POST'])
+        @CrossDomain(origin='*', methods=['GET', 'POST'])
         async def endpoint():
             return {"status": "ok"}
     """
@@ -473,7 +473,7 @@ def handle_errors(error_map=None, default_status=500):
 
 ```python
 @app.route('/api/bots/<int:bot_id>/execute', methods=['POST'])
-@crossdomain(origin='*', methods=['POST'])
+@CrossDomain(origin='*', methods=['POST'])
 @jwt_required_custom()
 @require_permissions('bot_execute')
 @validate_json(bot_execution_schema)

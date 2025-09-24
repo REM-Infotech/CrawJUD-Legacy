@@ -15,14 +15,14 @@ from quart_jwt_extended import jwt_required
 from werkzeug.exceptions import HTTPException
 
 from crawjud.api.routes.bot.launch import LoadForm
-from crawjud.decorators.api import crossdomain
+from crawjud.decorators.api import CrossDomain
 from crawjud.utils.xlsx_generator import MakeTemplates as MakeTemplates
 
 bot = Blueprint("bot", __name__, url_prefix="/bot")
 
 
 @bot.route("/start_bot", methods=["get", "post", "options"])
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def start_bot() -> None:
     """Inicie o bot de operações judiciais e retorne o PID da execução iniciada.

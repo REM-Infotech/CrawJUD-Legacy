@@ -9,13 +9,14 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from os import PathLike
-from typing import Literal, TypeVar
+from typing import Literal, ParamSpec, TypeVar
 
 from crawjud.interfaces.dict.bot import BotData
 
 # Tipos de retorno das funções
 
 T = TypeVar("T")
+P = ParamSpec("P")
 
 type ConfigName = Literal["default"]
 type DictData = dict[str, str | datetime]
@@ -37,7 +38,9 @@ type Binds = PyNumbers | PyStrings | TupleType | ListType | DictType
 type StrPath = str | PathLike
 type ReturnFormataTempo = datetime | float | int | bool | str
 
-
+type Methods = list[
+    Literal["GET", "POST", "PUT", "DELETE", "UPDATE", "INSERT", "OPTIONS"]
+]
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 type ProcessInfo = dict[str, str | int | datetime]
 

@@ -23,7 +23,7 @@ from crawjud.common.exceptions.database import (
     InsertError,
     UpdateError,
 )
-from crawjud.decorators.api import crossdomain
+from crawjud.decorators.api import CrossDomain
 from crawjud.interfaces.dict import ActionsDict
 from crawjud.interfaces.session import SessionDict
 
@@ -163,7 +163,7 @@ action = ActionsDict(
 
 
 @admin.post("/perform_user")
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def users() -> Response:
     """Render the users list template.
@@ -202,7 +202,7 @@ async def users() -> Response:
 
 
 @admin.get("/usuarios/lista")
-@crossdomain(origin="*", methods=["get", "post", "options"])
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def listagem_usuarios() -> Response:
     """Retorne a lista de usuários vinculados à licença ativa do usuário atual.
