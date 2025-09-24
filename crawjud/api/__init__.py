@@ -83,13 +83,12 @@ async def register_routes(app: Quart) -> None:
         from crawjud.api.routes.bot import bot
         from crawjud.api.routes.config import admin
         from crawjud.api.routes.credentials import cred
-        from crawjud.api.routes.dashboard import dash
         from crawjud.api.routes.execution import exe
 
         # Dynamically import additional route modules as needed.
         import_module("crawjud.api.routes", package=__package__)
 
-        list_blueprints = [bot, auth, exe, dash, cred, admin]
+        list_blueprints = [bot, auth, exe, cred, admin]
 
         for bp in list_blueprints:
             app.register_blueprint(bp)

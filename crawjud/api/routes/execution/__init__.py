@@ -24,6 +24,8 @@ from quart_jwt_extended import (
     jwt_required,
 )
 
+from crawjud.decorators.api import crossdomain
+
 if TYPE_CHECKING:
     from flask_sqlalchemy import SQLAlchemy
 
@@ -31,6 +33,7 @@ exe = Blueprint("exe", __name__)
 
 
 @exe.get("/executions")
+@crossdomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def executions() -> Response:
     """Display a list of executions filtered by search criteria.
@@ -87,6 +90,7 @@ async def executions() -> Response:
 
 
 @exe.post("/clear_executions")
+@crossdomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
 async def clear_executions() -> Response:
     """Clear all executions from the database.

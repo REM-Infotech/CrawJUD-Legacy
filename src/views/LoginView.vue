@@ -21,7 +21,11 @@ async function handleSubmit(e: Event) {
   let message = "Erro ao realizar login";
   let isLogged = false;
   try {
-    const response = await api.request({ method: "POST", data: Form, url: "/login" });
+    const form = new FormData();
+
+    Object.entries(Form).map(([key, value]) => form.append(key, value));
+
+    const response = await api.request({ method: "POST", data: form, url: "/login" });
     const data = response.data;
 
     message = data.message;

@@ -1,10 +1,10 @@
 {
   "compounds": [
     {
-      "configurations": ["Celery", "Quart", "Launch App Web"],
-      "name": "Test Backend",
+      "configurations": ["Celery", "Quart", "Launch via PNPM", "Launch App Web"],
+      "name": "Debug CrawJUD",
       "presentation": {
-        "group": "Test Backend",
+        "group": "Debug CrawJUD",
         "hidden": false,
         "order": 1
       },
@@ -12,6 +12,13 @@
     }
   ],
   "configurations": [
+    {
+      "command": "pnpm dev",
+      "name": "Launch via PNPM",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+
     {
       "name": "Launch App Web",
       "request": "launch",
