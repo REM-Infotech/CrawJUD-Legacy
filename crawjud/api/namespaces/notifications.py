@@ -2,6 +2,7 @@
 
 from quart_socketio import Namespace
 
+from crawjud.decorators.api import verify_jwt_websocket
 from crawjud.interfaces import ASyncServerType
 
 
@@ -11,6 +12,7 @@ class NotificationNamespace(Namespace):
     namespace: str
     server: ASyncServerType
 
+    @verify_jwt_websocket
     async def on_connect(self, sid: str, environ: dict[str, str]) -> None:
         """Handle client connection event for notifications.
 

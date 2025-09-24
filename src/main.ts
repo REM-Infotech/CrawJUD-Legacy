@@ -35,7 +35,7 @@ router.afterEach((to) => {
       mainSocket.connect();
       socketBots.connect();
       FileSocket.connect();
-    }, 500);
+    }, 1000);
   }
   if (to.name === "login") disconnectSocket();
 });

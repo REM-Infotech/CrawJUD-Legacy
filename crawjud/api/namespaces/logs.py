@@ -10,6 +10,7 @@ from quart import request, session
 from quart_socketio import Namespace
 from tqdm import tqdm
 
+from crawjud.decorators.api import verify_jwt_websocket
 from crawjud.utils.interfaces import ItemMessageList
 from crawjud.utils.models.logs import MessageLog, MessageLogDict
 
@@ -34,6 +35,7 @@ class LogsNamespace[T](Namespace):
     namespace: str
     server: ASyncServerType
 
+    @verify_jwt_websocket
     async def on_connect(self) -> None:
         """Manipula o evento de conexão de um cliente ao namespace."""
         # Obtém o session id do request
