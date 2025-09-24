@@ -20,8 +20,8 @@ if TYPE_CHECKING:
 
 
 @exe.get("/schedules")
-@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 async def schedules() -> Response:
     """Display a list of executions filtered by search criteria.
 

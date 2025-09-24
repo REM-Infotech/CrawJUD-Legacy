@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from functools import update_wrapper
+from functools import wraps
 from typing import TYPE_CHECKING
 
 from quart import (
@@ -80,21 +80,23 @@ class CrossDomain:
         normalized_origin = self._normalize_origin(self.origin)
         normalized_max_age = self._normalize_max_age(self.max_age)
 
+        @wraps(wrapped_function)
         async def _wrapped(
             *args: P.args,
             **kwargs: P.kwargs,
         ) -> Response:
-            if self.automatic_options and request.method == "OPTIONS":
+            if request.method == "GET":
+                resp = await make_response(
+                    await wrapped_function(*args, **kwargs),
+                )
+
+            elif self.automatic_options and request.method == "OPTIONS":
                 resp = await self._handle_options()
             elif request.method == "POST":
                 resp = await self._handle_post(
                     wrapped_function,
                     *args,
                     **kwargs,
-                )
-            else:
-                resp = await make_response(
-                    await wrapped_function(*args, **kwargs),
                 )
 
             if not self.attach_to_all and request.method != "OPTIONS":
@@ -110,7 +112,7 @@ class CrossDomain:
             return resp
 
         wrapped_function.provide_automatic_options = False
-        return update_wrapper(_wrapped, wrapped_function)
+        return _wrapped
 
     def _normalize_methods(self, methods: list[str] | None) -> str | None:
         """Normaliza os métodos HTTP para cabeçalho CORS.

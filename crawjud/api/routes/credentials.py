@@ -95,8 +95,8 @@ def license_user(usr: int, db: SQLAlchemy) -> str:
 
 
 @cred.get("/systems")
-@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 async def systems() -> Response:
     """Retorna lista de sistemas disponíveis para autenticação.
 
@@ -128,8 +128,8 @@ async def systems() -> Response:
 
 
 @cred.get("/credentials")
-@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 async def credentials() -> Response:
     """Retorna lista de credenciais associadas ao usuário autenticado.
 
@@ -180,8 +180,8 @@ async def credentials() -> Response:
 
 
 @cred.route("/peform_credencial", methods=["POST", "DELETE"])
-@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 async def cadastro() -> Response:
     """Realiza cadastro ou exclusão de credenciais conforme ação informada.
 

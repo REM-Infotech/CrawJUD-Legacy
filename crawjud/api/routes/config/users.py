@@ -163,8 +163,8 @@ action = ActionsDict(
 
 
 @admin.post("/perform_user")
-@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 async def users() -> Response:
     """Render the users list template.
 
@@ -202,8 +202,8 @@ async def users() -> Response:
 
 
 @admin.get("/usuarios/lista")
-@CrossDomain(origin="*", methods=["get", "post", "options"])
 @jwt_required
+@CrossDomain(origin="*", methods=["get", "post", "options"])
 async def listagem_usuarios() -> Response:
     """Retorne a lista de usuários vinculados à licença ativa do usuário atual.
 
