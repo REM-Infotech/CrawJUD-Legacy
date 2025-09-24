@@ -1,7 +1,7 @@
 {
   "compounds": [
     {
-      "configurations": ["Celery", "Quart"],
+      "configurations": ["Celery", "Quart", "Launch App Web"],
       "name": "Test Backend",
       "presentation": {
         "group": "Test Backend",
@@ -12,6 +12,13 @@
     }
   ],
   "configurations": [
+    {
+      "name": "Launch App Web",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:1474",
+      "webRoot": "${workspaceFolder}"
+    },
     {
       "name": "Quart",
       "type": "debugpy",

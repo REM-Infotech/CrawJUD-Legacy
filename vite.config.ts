@@ -11,9 +11,8 @@ import vueDevTools from "vite-plugin-vue-devtools";
 export default defineConfig({
   base: "/",
   server: {
-    allowedHosts: ["fronttest.robotz.dev", "crawjud2.robotz.dev", "crawjud.rhsolut.com.br"],
+    port: 1474,
   },
-
   build: {
     sourcemap: true,
     outDir: "./dist",
