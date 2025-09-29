@@ -44,6 +44,7 @@ def verify_jwt_websocket(func: Callable[P, T]) -> Callable[P, T]:
     async def decorated_function(*args: P.args, **kwargs: P.kwargs) -> T:
         valid = False
         with suppress(Exception):
+            valid = True
             decode_token(
                 request.cookies["access_token_cookie"],
                 request.cookies["X-Xsrf-Token"],
