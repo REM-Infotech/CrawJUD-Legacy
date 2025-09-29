@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 from quart import current_app
 from quart_socketio import Namespace
 
-from crawjud.decorators.api import verify_jwt_websocket
 from crawjud.interfaces.credentials import (
     CredendialDictSelect,
 )
@@ -25,7 +24,6 @@ class BotsNamespace(Namespace):
     namespace: str
     server: ASyncServerType
 
-    @verify_jwt_websocket
     async def on_connect(self) -> None:
         """Handle client connection event for notifications.
 
@@ -45,7 +43,6 @@ class BotsNamespace(Namespace):
         """
         # Optionally, log the disconnection
 
-    @verify_jwt_websocket
     async def on_bots_list(self) -> list:
         """Retorne uma lista de bots cadastrados no sistema.
 
@@ -82,7 +79,6 @@ class BotsNamespace(Namespace):
 
         return bots
 
-    @verify_jwt_websocket
     async def on_bot_credentials_select(
         self,
     ) -> dict[str, list[CredendialDictSelect]]:

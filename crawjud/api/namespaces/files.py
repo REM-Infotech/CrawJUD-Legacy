@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, AnyStr
 from quart import session
 from quart_socketio import Namespace, SocketIO
 
-from crawjud.decorators.api import verify_jwt_websocket
 from crawjud.interfaces.controllers.file_service import FileService
 
 if TYPE_CHECKING:
@@ -41,7 +40,6 @@ class FilesNamespace(Namespace):
         """
         await self.file_service.save_file()
 
-    @verify_jwt_websocket
     async def on_connect(self) -> None:
         """Handle client connection event.
 
