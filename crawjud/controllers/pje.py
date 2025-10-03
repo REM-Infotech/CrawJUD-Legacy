@@ -21,6 +21,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from crawjud.bots.pje.iterators import RegioesIterator
 from crawjud.common.exceptions.bot import (
     ExecutionError,
     raise_start_error,
@@ -36,7 +37,6 @@ from crawjud.interfaces.types.bots.pje import (
 )
 from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.resources.elements import pje as el
-from crawjud.utils.iterators import RegioesIterator
 from crawjud.utils.models.logs import CachedExecution
 from crawjud.utils.recaptcha import captcha_to_image
 
