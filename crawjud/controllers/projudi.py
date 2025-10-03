@@ -15,11 +15,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from crawjud.common.exceptions.bot import (
-    ExecutionError,
-    LoginSystemError,
-    raise_start_error,
-)
 from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import projudi as el
 
@@ -27,7 +22,6 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
     from selenium.webdriver.remote.webdriver import WebDriver
 
-    from crawjud.custom.task import ContextTask
     from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
@@ -48,7 +42,7 @@ class ProjudiBot(CrawJUD):
 
     def __init__(
         self,
-        current_task: ContextTask = None,
+        current_task: object = None,
         storage_folder_name: str | None = None,
         name: str | None = None,
         system: str | None = None,
@@ -79,7 +73,7 @@ class ProjudiBot(CrawJUD):
             with suppress(Exception):
                 self.driver.quit()
 
-            raise_start_error("Falha na autenticação.")
+            raise ValueError("Falha na autenticação.")
 
         self.print_msg(message="Sucesso na autenticação!", type_log="info")
         self._frame = self.load_data()
@@ -338,8 +332,8 @@ class ProjudiBot(CrawJUD):
             if alert:
                 alert.accept()
 
-        except ExecutionError as e:
-            raise LoginSystemError(exception=e) from e
+        except Exception as e:
+            raise ValueError("Falha na autenticação.") from e
 
         return check_login is not None
 
@@ -355,7 +349,7 @@ def detect_intimacao(driver: WebDriver) -> None:
 
     """
     if "intimacaoAdvogado.do" in driver.current_url:
-        raise ExecutionError(
+        raise ValueError(
             message="Processo com Intimação pendente de leitura!",
         )
 

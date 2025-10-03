@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import json.decoder
 import platform
-import secrets
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from threading import Lock
 from time import perf_counter, sleep
-from typing import TYPE_CHECKING, ClassVar, Literal, cast
+from typing import TYPE_CHECKING, ClassVar, Literal
 
 from dotenv import dotenv_values
 from selenium.common.exceptions import (
@@ -22,15 +21,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from crawjud.bots.pje.iterators import RegioesIterator
-from crawjud.common.exceptions.bot import (
-    ExecutionError,
-    raise_start_error,
-)
-from crawjud.common.exceptions.validacao import ValidacaoStringError
 from crawjud.controllers.main import CrawJUD
 from crawjud.interfaces.types import BotData
 from crawjud.interfaces.types.bots.pje import (
-    DictDesafio,
     DictResults,
     DictSeparaRegiao,
     Processo,
@@ -38,12 +31,10 @@ from crawjud.interfaces.types.bots.pje import (
 from crawjud.interfaces.types.custom import StrProcessoCNJ
 from crawjud.resources.elements import pje as el
 from crawjud.utils.models.logs import CachedExecution
-from crawjud.utils.recaptcha import captcha_to_image
 
 if TYPE_CHECKING:
     from httpx import Client
 
-    from crawjud.custom.task import ContextTask
     from crawjud.interfaces.dict.bot import BotData
     from crawjud.interfaces.types import T
 
@@ -61,14 +52,13 @@ class PjeBot(CrawJUD):
 
     def __init__(
         self,
-        current_task: ContextTask = None,
+        current_task: object = None,
         storage_folder_name: str | None = None,
         name: str | None = None,
         system: str | None = None,
         *args: T,
         **kwargs: T,
     ) -> None:
-        """Instancia a classe."""
         self.botname = name
         self.botsystem = system
 
@@ -97,7 +87,7 @@ class PjeBot(CrawJUD):
             with suppress(Exception):
                 self.driver.quit()
 
-            raise_start_error("Falha na autenticação.")
+            raise ValueError("Falha na autenticação.")
 
         self.print_msg(message="Sucesso na autenticação!", type_log="info")
         self._frame = self.load_data()
@@ -306,110 +296,6 @@ class PjeBot(CrawJUD):
             )
             cache.save()
 
-    def desafio_captcha(
-        self,
-        row: int,
-        data: BotData,
-        id_processo: str,
-        client: Client,
-    ) -> DictResults:
-        """Resolve o desafio captcha para acessar informações do processo no PJe.
-
-        Returns:
-            Resultados: Dicionário contendo headers, cookies e resultados do processo.
-
-        Raises:
-            ExecutionError: Caso não seja possível obter informações do processo
-            após 15 tentativas.
-
-        """
-        count_try: int = 0
-        response_desafio = None
-        data_request: DictDesafio = {}
-
-        def formata_data_result() -> DictDesafio:
-            request_json = response_desafio.json()
-
-            if isinstance(request_json, list):
-                request_json = request_json[-1]
-
-            return cast("DictDesafio", request_json)
-
-        def args_desafio() -> tuple[str, str]:
-            if count_try == 0:
-                link = f"/captcha?idProcesso={id_processo}"
-
-                nonlocal response_desafio
-                response_desafio = client.get(url=link, timeout=60)
-
-                nonlocal data_request
-                data_request = formata_data_result()
-
-            img = data_request.get("imagem")
-            token_desafio = data_request.get("tokenDesafio")
-
-            return img, token_desafio
-
-        while count_try <= COUNT_TRYS:
-            sleep(0.25)
-            with suppress(Exception):
-                img, token_desafio = args_desafio()
-                text = captcha_to_image(img)
-
-                link = (
-                    f"/processos/{id_processo}"
-                    f"?tokenDesafio={token_desafio}"
-                    f"&resposta={text}"
-                )
-                response_desafio = client.get(url=link, timeout=60)
-
-                sleep_time = secrets.randbelow(5) + 3
-
-                if response_desafio.status_code == HTTP_STATUS_FORBIDDEN:
-                    raise ExecutionError(
-                        message="Erro ao obter informações do processo",
-                    )
-
-                data_request = response_desafio.json()
-                imagem = data_request.get("imagem")
-
-                if imagem:
-                    count_try += 1
-                    sleep(sleep_time)
-                    continue
-
-                msg = (
-                    f"Processo {data['NUMERO_PROCESSO']} encontrado! "
-                    "Salvando dados..."
-                )
-                self.print_msg(
-                    message=msg,
-                    row=row,
-                    type_log="info",
-                )
-
-                captcha_token = response_desafio.headers.get(
-                    "captchatoken",
-                    "",
-                )
-                return DictResults(
-                    id_processo=id_processo,
-                    captchatoken=str(captcha_token),
-                    text=text,
-                    data_request=cast("Processo", data_request),
-                )
-            count_try += 1
-
-        if count_try > COUNT_TRYS:
-            self.print_msg(
-                message="Erro ao obter informações do processo",
-                row=row,
-                type_log="info",
-            )
-            return None
-
-        return None
-
     def separar_regiao(self) -> DictSeparaRegiao:
         """Separa os processos por região a partir do número do processo.
 
@@ -440,7 +326,7 @@ class PjeBot(CrawJUD):
                 # Caso a região já exista, adiciona o item à lista correspondente
                 regioes_dict[regiao].append(item)
 
-            except ValidacaoStringError:
+            except Exception:
                 continue
 
         return {"regioes": regioes_dict, "position_process": position_process}
