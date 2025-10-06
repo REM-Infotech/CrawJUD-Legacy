@@ -1,0 +1,18 @@
+[project]
+name = "my_project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aether",
+    "flask>=3.1.2",
+    "flask-sqlalchemy>=3.1.1",
+    "python-dotenv>=1.1.1",
+]
+
+[tool.uv.sources]
+aether = { git = "https://github.com/Robotz213/Aether.git" }
+
+[dependency-groups]
+dev = ["debugpy>=1.8.17"]
