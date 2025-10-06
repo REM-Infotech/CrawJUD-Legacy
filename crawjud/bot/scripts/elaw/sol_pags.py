@@ -279,7 +279,7 @@ class SolPags(CrawJUD):
                 docs.extend(calculos)
 
             for doc in docs:
-                doc = self.format_string(doc.upper())
+                doc = self.format_string(doc)
                 insert_doc: WebElement = self.wait.until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, self.elements.editar_pagamento)),
                 )
