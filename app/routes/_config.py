@@ -1,7 +1,7 @@
 from flask import Flask
 
 
-def register_routes(app: Flask) -> None:
+def register_routes(app: Flask) -> Flask:
     from .auth import auth
 
     blueprints = [auth]
