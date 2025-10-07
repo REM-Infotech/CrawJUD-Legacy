@@ -1,4 +1,4 @@
-from typing import Any, Literal, ParamSpec, TypeVar
+from typing import Any, Literal, ParamSpec, TypedDict, TypeVar
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -11,3 +11,9 @@ type ConfigNames = Literal[
     "TestingConfig",
     "ProductionConfig",
 ]
+
+
+class HealtCheck(TypedDict):
+    status: str
+    database: str
+    timestamp: str

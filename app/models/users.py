@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 import bcrypt
 from flask_jwt_extended import get_current_user
 
-from app.api import db, jwt
+from app.resources.extensions import db, jwt
 
 salt = bcrypt.gensalt()
 

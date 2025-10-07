@@ -45,7 +45,6 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
 )
 
-from app.interfaces.session import CurrentUser, LicenseUserDict
 from app.models.users import TokenBlocklist as TokenBlocklist
 from app.models.users import Users
 
@@ -120,18 +119,6 @@ def login() -> Response:
 
             usr.login_time = datetime.now(tz=ZoneInfo("America/Manaus"))
             db.session.commit()
-
-            session["license_object"] = LicenseUserDict(**{
-                k: v
-                for k, v in usr.licenseusr.__dict__.items()
-                if not k.startswith("_") and not isinstance(v, list)
-            })
-
-            session["current_user"] = CurrentUser(**{
-                k: v
-                for k, v in usr.__dict__.items()
-                if k.lower() in CurrentUser.__annotations__
-            })
 
             resp = make_response(
                 jsonify({
