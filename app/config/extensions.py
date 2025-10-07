@@ -12,8 +12,10 @@ db = SQLAlchemy()
 
 
 def start_extensions(app: Flask) -> None:
-    db.init_app(app)
-
     from app import models
 
     _ = models
+
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
