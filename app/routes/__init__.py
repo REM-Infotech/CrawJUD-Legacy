@@ -1,24 +1,57 @@
-"""App routes."""
+"""Module for main application routes.
 
-from flask import Flask, Response, make_response, redirect, url_for
+This module defines global routes, context processors, and custom error handling.
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from flask import (
+    Response,
+    current_app,
+    jsonify,
+    make_response,
+)
+from flask import current_app as app
+from flask_jwt_extended import jwt_required
+
+if TYPE_CHECKING:
+    from flask_sqlalchemy import SQLAlchemy
+
+    from app.interfaces import HealtCheck
 
 
-def register_routes(app: Flask) -> None:
-    """Registra as rotas do aplicativo."""
-    from .api import api
-    from .auth import auth
+@app.route("/", methods=["GET"], websocket=True)
+@jwt_required
+def index() -> Response:
+    """Redirect to the authentication login page.
 
-    blueprints = [auth, api]
+    Returns:
+        Response: A Quart redirect response to the login page.
 
-    for blueprint in blueprints:
-        app.register_blueprint(blueprint)
+    """
+    return make_response(jsonify(message="ok"), 200)
 
-    @app.route("/", methods=["GET"])
-    def index() -> Response:
-        """Rota Index.
 
-        Returns:
-            Response: Redireciona para a rota de saúde (/api/health).
+@app.route("/api/health")
+def health_check() -> HealtCheck:
+    """Verifique status de saúde da aplicação.
 
-        """
-        return make_response(redirect(url_for("api.health")))
+    Returns:
+        HealtCheck: HealtCheck
+
+    """
+    try:
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
+        # Testa conexão com banco de dados
+        db.session.execute(db.text("SELECT 1"))
+        db_status = "ok"
+    except Exception:
+        db_status = "erro"
+
+    return {
+        "status": "ok" if db_status == "ok" else "erro",
+        "database": db_status,
+        "timestamp": str(db.func.now()),
+    }

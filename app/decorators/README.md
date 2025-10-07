@@ -49,7 +49,7 @@ def CrossDomain(origin=None, methods=None, headers=None,
     Example:
         @app.route('/api/endpoint')
         @CrossDomain(origin='*', methods=['GET', 'POST'])
-        async def endpoint():
+        def endpoint():
             return {"status": "ok"}
     """
     if methods is not None:
@@ -106,12 +106,12 @@ def jwt_required_custom(optional=False, verify_type=True):
     Example:
         @app.route('/protected')
         @jwt_required_custom()
-        async def protected_endpoint():
+        def protected_endpoint():
             user_id = get_jwt_identity()
             return {"user_id": user_id}
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             try:
                 # Verificar token JWT
                 token = get_jwt()
@@ -119,18 +119,18 @@ def jwt_required_custom(optional=False, verify_type=True):
                     raise AuthenticationError("Token obrigatório")
 
                 # Verificar se token está na blacklist
-                if token and await is_token_revoked(token):
+                if token and is_token_revoked(token):
                     raise AuthenticationError("Token revogado")
 
                 # Verificar expiração
                 if token and is_token_expired(token):
                     raise AuthenticationError("Token expirado")
 
-                return await func(*args, **kwargs)
+                return func(*args, **kwargs)
 
             except JWTError as e:
                 if optional:
-                    return await func(*args, **kwargs)
+                    return func(*args, **kwargs)
                 raise AuthenticationError(f"Token inválido: {e}")
 
         return wrapper
@@ -153,19 +153,19 @@ def require_permissions(*required_permissions):
         @app.route('/admin/users')
         @jwt_required_custom()
         @require_permissions('admin', 'user_management')
-        async def admin_users():
+        def admin_users():
             return {"users": []}
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             user_id = get_jwt_identity()
-            user_permissions = await get_user_permissions(user_id)
+            user_permissions = get_user_permissions(user_id)
 
             for permission in required_permissions:
                 if permission not in user_permissions:
                     raise PermissionError(f"Permissão '{permission}' necessária")
 
-            return await func(*args, **kwargs)
+            return func(*args, **kwargs)
         return wrapper
     return decorator
 ```
@@ -188,11 +188,11 @@ def log_execution(level='INFO', include_args=False, include_result=False):
 
     Example:
         @log_execution(level='DEBUG', include_args=True)
-        async def important_function(param1, param2):
+        def important_function(param1, param2):
             return {"result": "success"}
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             logger = get_logger(func.__module__)
 
             start_time = time.time()
@@ -206,7 +206,7 @@ def log_execution(level='INFO', include_args=False, include_result=False):
             logger.log(getattr(logging, level), log_msg)
 
             try:
-                result = await func(*args, **kwargs)
+                result = func(*args, **kwargs)
 
                 # Log de sucesso
                 duration = time.time() - start_time
@@ -244,18 +244,18 @@ def audit_log(action, resource_type):
 
     Example:
         @audit_log('CREATE', 'USER')
-        async def create_user(user_data):
+        def create_user(user_data):
             return new_user
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             user_id = get_jwt_identity() if has_request_context() else None
 
             try:
-                result = await func(*args, **kwargs)
+                result = func(*args, **kwargs)
 
                 # Log de auditoria para sucesso
-                await create_audit_log({
+                create_audit_log({
                     'user_id': user_id,
                     'action': action,
                     'resource_type': resource_type,
@@ -268,7 +268,7 @@ def audit_log(action, resource_type):
 
             except Exception as e:
                 # Log de auditoria para erro
-                await create_audit_log({
+                create_audit_log({
                     'user_id': user_id,
                     'action': action,
                     'resource_type': resource_type,
@@ -300,24 +300,24 @@ def cache_result(ttl=300, key_prefix=None, cache_backend='redis'):
 
     Example:
         @cache_result(ttl=600, key_prefix='user_data')
-        async def get_user_data(user_id):
+        def get_user_data(user_id):
             return expensive_database_query(user_id)
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             # Gerar chave de cache
             cache_key = generate_cache_key(func, args, kwargs, key_prefix)
 
             # Tentar obter do cache
-            cached_result = await get_from_cache(cache_key, cache_backend)
+            cached_result = get_from_cache(cache_key, cache_backend)
             if cached_result is not None:
                 return cached_result
 
             # Executar função
-            result = await func(*args, **kwargs)
+            result = func(*args, **kwargs)
 
             # Armazenar no cache
-            await set_in_cache(cache_key, result, ttl, cache_backend)
+            set_in_cache(cache_key, result, ttl, cache_backend)
 
             return result
 
@@ -350,16 +350,16 @@ def validate_json(schema):
         }
 
         @validate_json(user_schema)
-        async def create_user():
+        def create_user():
             data = request.get_json()  # Já validado
             return create_user_logic(data)
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             if not request.is_json:
                 raise ValidationError("Content-Type deve ser application/json")
 
-            data = await request.get_json()
+            data = request.get_json()
 
             # Validar contra schema
             try:
@@ -367,7 +367,7 @@ def validate_json(schema):
             except ValidationError as e:
                 raise ValidationError(f"Dados inválidos: {e.message}")
 
-            return await func(*args, **kwargs)
+            return func(*args, **kwargs)
 
         return wrapper
     return decorator
@@ -390,11 +390,11 @@ def rate_limit(requests_per_minute=60, per_user=True):
 
     Example:
         @rate_limit(requests_per_minute=30)
-        async def api_endpoint():
+        def api_endpoint():
             return {"data": "response"}
     """
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             # Identificar cliente
             if per_user and has_request_context():
                 client_id = get_jwt_identity() or request.remote_addr
@@ -402,13 +402,13 @@ def rate_limit(requests_per_minute=60, per_user=True):
                 client_id = request.remote_addr
 
             # Verificar rate limit
-            if await is_rate_limited(client_id, requests_per_minute):
+            if is_rate_limited(client_id, requests_per_minute):
                 raise RateLimitError("Muitas requisições. Tente novamente mais tarde.")
 
             # Incrementar contador
-            await increment_request_count(client_id)
+            increment_request_count(client_id)
 
-            return await func(*args, **kwargs)
+            return func(*args, **kwargs)
 
         return wrapper
     return decorator
@@ -437,7 +437,7 @@ def handle_errors(error_map=None, default_status=500):
         }
 
         @handle_errors(error_map)
-        async def api_endpoint():
+        def api_endpoint():
             # Código que pode gerar exceções
             pass
     """
@@ -445,9 +445,9 @@ def handle_errors(error_map=None, default_status=500):
         error_map = {}
 
     def decorator(func):
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             try:
-                return await func(*args, **kwargs)
+                return func(*args, **kwargs)
             except Exception as e:
                 # Verificar mapeamento de erro
                 status_code = error_map.get(type(e), default_status)
@@ -481,12 +481,12 @@ def handle_errors(error_map=None, default_status=500):
 @log_execution(level='INFO', include_args=True)
 @audit_log('EXECUTE', 'BOT')
 @handle_errors(api_error_map)
-async def execute_bot(bot_id):
+def execute_bot(bot_id):
     """Endpoint completo com todos os decoradores."""
-    data = await request.get_json()
+    data = request.get_json()
     user_id = get_jwt_identity()
 
-    result = await bot_controller.execute_bot(bot_id, user_id, data)
+    result = bot_controller.execute_bot(bot_id, user_id, data)
     return jsonify(result)
 ```
 

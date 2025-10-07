@@ -1,44 +1,121 @@
-"""Models para o aplicativo."""
+"""Módulo de gestão de Models do banco de dados."""
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from __future__ import annotations
 
-from app.models.admin.license import License
+import pathlib
+from typing import TYPE_CHECKING, TypedDict
+from uuid import uuid4
 
-from .admin import User
+import pandas as pd
+from dotenv import dotenv_values
+from flask import current_app as app
 
-__all__ = ["User"]
+from app.models.bots import (
+    BotsCrawJUD,
+    Credentials,
+    Executions,
+    ThreadBots,
+)
+from app.models.schedule import CrontabModel, ScheduleModel
+from app.models.secondaries import admins, execution_bots
+from app.models.users import LicensesUsers, SuperUser, Users
+
+if TYPE_CHECKING:
+    from flask_sqlalchemy import SQLAlchemy
+
+__all__ = [
+    "BotsCrawJUD",
+    "Credentials",
+    "CrontabModel",
+    "Executions",
+    "LicensesUsers",
+    "ScheduleModel",
+    "SuperUser",
+    "ThreadBots",
+    "Users",
+    "admins",
+    "execution_bots",
+]
+
+environ = dotenv_values()
 
 
-def init_database(app: Flask) -> None:
+class DatabaseInitEnvDict(TypedDict):
+    ROOT_USERNAME: str
+    ROOT_PASSWORD: str
+    ROOT_EMAIL: str
+    ROOT_CLIENT: str
+    ROOT_CPF_CNPJ_CLIENT: str
+
+
+def init_database() -> None:
     """Inicializa o banco de dados."""
     with app.app_context():
+        # Faz um db.drop_all()
+
+        # Faz um db.session.flush()
+
         db: SQLAlchemy = app.extensions["sqlalchemy"]
+
         db.create_all()
 
+        env = DatabaseInitEnvDict(**environ)
 
-def create_default_admin(app: Flask) -> None:
-    """Cria um usuário admin padrão se não existir."""
-    with app.app_context():
-        db: SQLAlchemy = app.extensions["sqlalchemy"]
-        users = User.query.filter_by(UserName="admin").all()
-        if not users:
-            _licenses = db.session.query(License).all()
+        username = env["ROOT_USERNAME"]
+        user = db.session.query(Users).filter(Users.login == username).first()
+        with db.session.no_autoflush:
+            bot_toadd = []
 
-            license_ = License(
-                Id=0,
-                Name="Licença Administrador",
-                Description="Licença com acesso a todos os robôs",
+            if not user:
+                user = Users(
+                    login=username,
+                    email=env["ROOT_EMAIL"],
+                    nome_usuario=env["ROOT_NAME"],
+                )
+
+                user.senhacrip = env["ROOT_PASSWORD"]
+
+                bot_toadd.append(user)
+
+            name_client = env["ROOT_CLIENT"]
+            cpf_cnpj_client = env["ROOT_CPF_CNPJ_CLIENT"]
+            license_user = LicensesUsers.query.filter(
+                LicensesUsers.name_client == name_client,
+            ).first()
+
+            if not license_user:
+                license_user = LicensesUsers(
+                    name_client=name_client,
+                    cpf_cnpj=cpf_cnpj_client,
+                    license_token=uuid4().hex,
+                )
+
+                license_user.admins = [user]
+
+                bot_toadd.append(license_user)
+
+            if not user.licenseusr:
+                user.licenseusr = license_user
+                user.licenseus_id = license_user.id
+
+            path_file = (
+                pathlib.Path(__file__).parent.resolve().joinpath("export.json")
             )
+            excel = pd.read_json(path_file).to_dict(orient="records")
 
-            admin = User(
-                Id=len(users),
-                UserName="admin",
-                DisplayName="Administrator",
-                Email="admin@robotz.dev",
-                License=license_,
-                license_id=license_.Id,
-            )
+            for row in excel:
+                bot = (
+                    db.session.query(BotsCrawJUD)
+                    .filter(BotsCrawJUD.display_name == row["display_name"])
+                    .first()
+                )
 
-            db.session.add_all([admin, license_])
+                if not bot:
+                    bot = BotsCrawJUD(**row)
+                    bot.license = [license_user]
+                    bot_toadd.append(bot)
+
+            if bot_toadd:
+                db.session.add_all(bot_toadd)
+
             db.session.commit()
