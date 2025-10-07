@@ -1,7 +1,7 @@
 from typing import cast
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped  # noqa: F401
+from sqlalchemy.orm import Mapped
 
 from app.config.extensions import db
 
@@ -16,6 +16,9 @@ class User(db.Model):
     Email = Column("email", String(64), nullable=False)
 
     license_id = Column(
-        "license_id", Integer, db.ForeignKey("licenses.id"), nullable=False
+        "license_id",
+        Integer,
+        db.ForeignKey("licenses.id"),
+        nullable=False,
     )
     License: Mapped["License"] = cast(Mapped["License"], db.relationship())
