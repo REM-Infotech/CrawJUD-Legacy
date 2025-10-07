@@ -1,15 +1,25 @@
 """Módulo do Modelo License."""
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import MappedAsDataclass
+from sqlalchemy.orm import Mapped
 
-from app.resources.extensions import db
+from app.base import Model
 
 
-class License(db.Model, MappedAsDataclass):
-    """Modelo User."""
+class License(Model):
+    """Modelo License."""
 
     __tablename__ = "licenses"
-    Id = Column("id", Integer, primary_key=True, nullable=False, unique=True)
-    Name = Column("name", String(128), nullable=False)
-    Description = Column("description", String(256), nullable=False)
+    Id: Mapped[int] = Column(
+        "id",
+        Integer,
+        primary_key=True,
+        nullable=False,
+        unique=True,
+    )
+    Name: Mapped[str] = Column("name", String(128), nullable=False)
+    Description: Mapped[str] = Column(
+        "description",
+        String(256),
+        nullable=False,
+    )

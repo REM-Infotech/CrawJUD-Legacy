@@ -9,16 +9,22 @@ from flask_mail import Mail
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from app.base import Model, Query
+
+db = None
 cors = CORS()
 jwt = JWTManager()
 mail = Mail()
 sess = Session()
 
+__all__ = ["db", "cors", "jwt", "mail", "sess", "start_extensions"]
+
 
 def start_extensions(app: Flask) -> None:
     """Inicializa as extensões do Flask."""
     with app.app_context():
+        global db
+        db = SQLAlchemy(model_class=Model, query_class=Query)  # pyright: ignore[reportArgumentType]
         db.init_app(app)
         cors.init_app(app)
         jwt.init_app(app)
