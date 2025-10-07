@@ -21,13 +21,12 @@ def create_default_admin(app: Flask) -> None:
     """Cria um usuário admin padrão se não existir."""
     with app.app_context():
         db: SQLAlchemy = app.extensions["sqlalchemy"]
-
         users = User.query.filter_by(UserName="admin").all()
         if not users:
-            licenses = License.query.all()
+            _licenses = db.session.query(License).all()
 
             license_ = License(
-                Id=len(licenses),
+                Id=0,
                 Name="Licença Administrador",
                 Description="Licença com acesso a todos os robôs",
             )

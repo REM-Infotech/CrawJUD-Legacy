@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Self, cast
+from typing import TYPE_CHECKING, ClassVar, Self, cast
 
 from flask import abort
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +7,6 @@ from flask_sqlalchemy.pagination import Pagination as FSAPagination
 from flask_sqlalchemy.pagination import QueryPagination as FSAQueryPagination
 from sqlalchemy import exc as sa_exc
 from sqlalchemy.orm import Query as SAQuery
-from sqlalchemy.orm.session import Session
 from sqlalchemy.sql._typing import (
     _ColumnExpressionArgument,
     _ColumnsClauseArgument,
@@ -34,8 +33,7 @@ class QueryProperty[T]:
         _owner = owner
 
         with app.app_context():
-            statement = cls.get_column_statement()
-            return Query(statement, cls.__fsa__.session())
+            return Query(cls, cls.__fsa__.session())
 
 
 class Pagination[T](FSAPagination):
@@ -49,12 +47,18 @@ class QueryPagination[T](FSAQueryPagination):
 class Query[T](SAQuery):
     """Dummy class to represent the Query type with a generic parameter."""
 
-    def __init__(
-        self,
-        entities: _Entities,
-        session: Session | None = None,
-    ) -> None:
-        super().__init__(entities=entities, session=session)
+    _total: ClassVar[int] = 0
+
+    def len(self) -> int:
+        return self._total
+
+    @property
+    def total(self) -> int:
+        return self._total
+
+    @total.setter
+    def total(self, new_total: int) -> None:
+        self._total = new_total
 
     def filter(self, *criterion: _ColumnExpressionArgument) -> Self:
         return super().filter(*criterion)
@@ -63,10 +67,14 @@ class Query[T](SAQuery):
         return super().filter_by(**kwargs)
 
     def first(self) -> T | None:
+        self._total = 1
         return super().first()
 
     def all(self) -> list[T]:
-        return super().all()
+        all_results = super().all()
+        self._total = len(all_results)
+
+        return all_results
 
     def get_or_404(self, ident: MyAny, description: str | None = None) -> T:
         """Results or 404.
@@ -87,6 +95,7 @@ class Query[T](SAQuery):
         if rv is None:
             abort(404, description=description)
 
+        self._total = 1
         return rv
 
     def first_or_404(self, description: str | None = None) -> T:
@@ -106,6 +115,7 @@ class Query[T](SAQuery):
         if rv is None:
             abort(404, description=description)
 
+        self._total = 1
         return rv
 
     def one_or_404(self, description: str | None = None) -> T:
@@ -122,6 +132,7 @@ class Query[T](SAQuery):
 
         """
         try:
+            self._total = 1
             return self.one()
         except (sa_exc.NoResultFound, sa_exc.MultipleResultsFound):
             abort(404, description=description)

@@ -2,10 +2,10 @@ from contextlib import suppress
 from typing import ClassVar, Self, cast
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
-from sqlalchemy.sql.elements import KeyedColumnElement
+from flask_sqlalchemy.model import Model as FSA_Model
 
 from app._types import MyAny
+from app.resources import camel_to_snake
 
 from ._query import Query, QueryProperty
 
@@ -28,26 +28,26 @@ class FSAProperty:
         return self.fsa_instante
 
 
-class Model(MappedAsDataclass, DeclarativeBase):
+class FSATableName:
+    _tablename: ClassVar[str] = ""
+
+    def __set__(self, *args) -> None:
+        self._tablename = args[1]
+
+    def __get__(
+        self,
+        cls: Model | None = None,
+        *args: MyAny,
+        **kwargs: MyAny,
+    ) -> str:
+        if cls:
+            snake_cased = camel_to_snake(cls.__class__.__name__)
+            cls.__name__ = cls.__tablename__ or snake_cased
+
+        return self._tablename
+
+
+class Model(FSA_Model):
     query: ClassVar[Query[Self]] = cast(Query[Self], QueryProperty())
-
     __fsa__: ClassVar[SQLAlchemy] = cast(SQLAlchemy, FSAProperty())
-
-    def __init_subclass__(cls, **kw: MyAny) -> None:
-        def camel_to_snake(name: str) -> str:
-            import re
-
-            s1 = re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", name)
-            return re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
-
-        snake_cased = camel_to_snake(cls.__class__.__name__)
-        cls.__name__ = cls.__tablename__ or snake_cased
-
-        super().__init_subclass__(**kw)
-
-    @classmethod
-    def get_column_statement(cls) -> list[KeyedColumnElement[Self]]:
-        if not hasattr(cls, "__table__"):
-            return []
-
-        return list(cls.__table__.columns)
+    __tablename__: ClassVar[str] = FSAProperty()

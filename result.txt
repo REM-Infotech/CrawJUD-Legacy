@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "C:\Github\my_project\app\__main__.py", line 11, in <module>
+    app = create_app()
+  File "C:\Github\my_project\app\__init__.py", line 35, in create_app
+    app.config.load_extensions()  # pyright: ignore[reportAttributeAccessIssue]
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Github\my_project\.venv\Lib\site-packages\dynaconf\contrib\flask_dynaconf.py", line 231, in load_extensions
+    initializer(app)
+    ~~~~~~~~~~~^^^^^
+  File "C:\Github\my_project\app\routes\__init__.py", line 14, in register_routes
+    app.register_blueprint(blueprint)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "c:\Github\my_project\.venv\Lib\site-packages\flask\sansio\scaffold.py", line 47, in wrapper_func
+    return f(self, *args, **kwargs)
+  File "c:\Github\my_project\.venv\Lib\site-packages\flask\sansio\app.py", line 595, in register_blueprint
+    blueprint.register(self, options)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "c:\Github\my_project\.venv\Lib\site-packages\flask\sansio\blueprints.py", line 310, in register
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: The name 'auth' is already registered for this blueprint. Use 'name=' to provide a unique name.

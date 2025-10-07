@@ -23,15 +23,12 @@ def create_app(config_name: ConfigNames = "DevelopmentConfig") -> Flask:
 
     """
     global app
-
-    FlaskDynaconf(
-        app,
-        instance_relative_config=True,
-        extensions_list="EXTENSIONS",  # pyright: ignore[reportArgumentType]
-        dynaconf_instance=settings,
-    )
-
     with app.app_context():
-        app.config.load_extensions()  # pyright: ignore[reportAttributeAccessIssue]
+        FlaskDynaconf(
+            app,
+            instance_relative_config=True,
+            extensions_list="EXTENSIONS",  # pyright: ignore[reportArgumentType]
+            dynaconf_instance=settings,
+        )
 
     return app

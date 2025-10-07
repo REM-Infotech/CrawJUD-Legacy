@@ -4,8 +4,7 @@
       "name": "Python Debugger: Module",
       "type": "debugpy",
       "request": "launch",
-      "module": "app",
-      "debugAdapterPath": "${workspaceFolder}/.venv/Lib/site-packages/debugpy/launcher"
+      "module": "app"
     },
     {
       "name": "Python Debugger: Remote Attach",
