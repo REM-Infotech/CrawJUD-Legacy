@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "aether",
+    "bcrypt>=5.0.0",
     "blinker==1.9.0",
     "clear==2.0.0",
     "click==8.3.0",
