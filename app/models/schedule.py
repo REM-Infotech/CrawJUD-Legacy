@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from app.api import db
+from app.resources.extensions import db
 
 if TYPE_CHECKING:
     from datetime import datetime

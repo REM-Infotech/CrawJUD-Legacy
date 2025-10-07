@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar
-from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 import bcrypt
 from flask_jwt_extended import get_current_user
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped
 
 from app.resources.extensions import db, jwt
 
@@ -62,16 +62,17 @@ def user_lookup_callback[T](*args: T) -> Users | None:
 class TokenBlocklist(db.Model):
     """Database model for token blocklist."""
 
-    id: int = db.Column(db.Integer, primary_key=True)
-    jti: str = db.Column(db.String(36), nullable=False, index=True)
-    type: str = db.Column(db.String(16), nullable=False)
-    user_id = db.Column(
+    id: int = Column(Integer, primary_key=True)
+    jti: str = Column(String(36), nullable=False, index=True)
+    type: str = Column(String(16), nullable=False)
+    user_id = Column(
         db.ForeignKey("users.id"),
         default=lambda: get_current_user().id,
         nullable=False,
     )
-    created_at = db.Column(
-        db.DateTime,
+    user: Mapped[Users] = db.relationship()
+    created_at = Column(
+        DateTime,
         server_default=datetime.now(ZoneInfo("America/Manaus")).isoformat(),
         nullable=False,
     )
@@ -81,41 +82,28 @@ class SuperUser(db.Model):
     """Database model for a super user."""
 
     __tablename__ = "superuser"
-    id: int = db.Column(db.Integer, primary_key=True)
-    users_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
-    users = db.relationship("Users", backref=db.backref("supersu", lazy=True))
+    id: int = Column(Integer, primary_key=True)
+    users_id: int = Column(Integer, db.ForeignKey("users.id"))
+    users: Mapped[Users] = db.relationship(
+        "Users",
+        backref=db.backref("supersu", lazy=True),
+    )
 
 
 class Users(db.Model):
     """Database model for application users."""
 
     __tablename__ = "users"
-    id: int = db.Column(db.Integer, primary_key=True)
-    login: str = db.Column(db.String(length=30), nullable=False, unique=True)
-    nome_usuario: str = db.Column(
-        db.String(length=64),
+    id: int = Column(Integer, primary_key=True)
+    login: str = Column(String(length=30), nullable=False, unique=True)
+    nome_usuario: str = Column(
+        String(length=64),
         nullable=False,
         unique=True,
     )
-    email: str = db.Column(db.String(length=50), nullable=False, unique=True)
-    password: str = db.Column(db.String(length=60), nullable=False)
-    login_time: ClassVar[datetime] = db.Column(
-        db.DateTime,
-        default=datetime.now(ZoneInfo("America/Manaus")),
-    )
-    verification_code: str = db.Column(db.String(length=45), unique=True)
-    login_id: str = db.Column(
-        db.String(length=64),
-        nullable=False,
-        default=str(uuid4()),
-    )
-    filename: str = db.Column(db.String(length=128))
-    blob_doc = db.Column(db.LargeBinary(length=(2**32) - 1))
-
-    licenseus_id: int = db.Column(
-        db.Integer,
-        db.ForeignKey("licenses_users.id"),
-    )
+    email: str = Column(String(length=50), nullable=False, unique=True)
+    password: str = Column(String(length=60), nullable=False)
+    licenseus_id: int = Column(Integer, ForeignKey("licenses_users.id"))
     licenseusr = db.relationship("LicensesUsers", backref="user")
 
     def __init__(
@@ -137,7 +125,7 @@ class Users(db.Model):
         self.email = email
 
     @property
-    def senhacrip(self) -> any:
+    def senhacrip(self) -> str:
         """Get the encrypted password.
 
         Returns:
@@ -173,48 +161,20 @@ class Users(db.Model):
             self.password.encode("utf-8"),
         )
 
-    @property
-    def dict_query(self) -> dict[str, str | int]:
-        """Return a dictionary representation of selected user attributes.
-
-        Returns:
-            dict: Dictionary of user attributes.
-
-        """
-        data = {
-            "id": self.id,
-            "login": self.login,
-            "nome_usuario": self.nome_usuario,
-            "email": self.email,
-        }
-
-        if len(self.admin) > 0:
-            data.update({"tipo_user": "admin"})
-
-        if len(self.supersu) > 0:
-            data.update({"tipo_user": "supersu"})
-            data.update({"licenses": self.licenseusr.license_token})
-
-        return data
-
 
 class LicensesUsers(db.Model):
     """Database model representing license users."""
 
     __tablename__ = "licenses_users"
-    id: int = db.Column(db.Integer, primary_key=True)
-    name_client: str = db.Column(
-        db.String(length=60),
+    Id: int = Column("id", Integer, primary_key=True)
+    name_client: str = Column(String(length=60), nullable=False, unique=True)
+    cpf_cnpj: str = Column(
+        String(length=30),
         nullable=False,
         unique=True,
     )
-    cpf_cnpj: str = db.Column(
-        db.String(length=30),
-        nullable=False,
-        unique=True,
-    )
-    license_token: str = db.Column(
-        db.String(length=512),
+    license_token: str = Column(
+        String(length=512),
         nullable=False,
         unique=True,
     )

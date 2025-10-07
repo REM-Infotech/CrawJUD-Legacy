@@ -3,18 +3,20 @@
 Provides structures for bot configurations, credentials, and execution logging.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from app.api import db
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Mapped
+
+from app.resources.extensions import db
+
+from .users import LicensesUsers
 
 if TYPE_CHECKING:
     from collections.abc import Buffer
 
-backref_exc = db.backref("executions", lazy=True)
 now_ = datetime.now(ZoneInfo("America/Manaus"))
 
 
@@ -35,15 +37,15 @@ class BotsCrawJUD(db.Model):
     """
 
     __tablename__ = "bots"
-    id: int = db.Column(db.Integer, primary_key=True)
-    display_name: str = db.Column(db.String(length=64), nullable=False)
-    system: str = db.Column(db.String(length=64), nullable=False)
-    state: str = db.Column(db.String(length=64), nullable=False)
-    client: str = db.Column(db.String(length=64), nullable=False)
-    type: str = db.Column(db.String(length=64), nullable=False)
-    form_cfg: str = db.Column(db.String(length=64), nullable=False)
-    classification: str = db.Column(db.String(length=64), nullable=False)
-    text: str = db.Column(db.String(length=512), nullable=False)
+    id: int = Column(Integer, primary_key=True)
+    display_name: str = Column(String(length=64), nullable=False)
+    system: str = Column(String(length=64), nullable=False)
+    state: str = Column(String(length=64), nullable=False)
+    client: str = Column(String(length=64), nullable=False)
+    type: str = Column(String(length=64), nullable=False)
+    form_cfg: str = Column(String(length=64), nullable=False)
+    classification: str = Column(String(length=64), nullable=False)
+    text: str = Column(String(length=512), nullable=False)
 
 
 class Credentials(db.Model):
@@ -64,21 +66,18 @@ class Credentials(db.Model):
     """
 
     __tablename__ = "credentials"
-    id: int = db.Column(db.Integer, primary_key=True)
-    nome_credencial: str = db.Column(db.String(length=64), nullable=False)
-    system: str = db.Column(db.String(length=64), nullable=False)
-    login_method: str = db.Column(db.String(length=64), nullable=False)
-    login: str = db.Column(db.String(length=64), nullable=False)
-    password: str = db.Column(db.String(length=64))
-    key: str = db.Column(db.String(length=64))
-    certficate: str = db.Column(db.String(length=64))
-    certficate_blob: Buffer = db.Column(db.LargeBinary(length=(2**32) - 1))
+    id: int = Column(Integer, primary_key=True)
+    nome_credencial: str = Column(String(length=64), nullable=False)
+    system: str = Column(String(length=64), nullable=False)
+    login_method: str = Column(String(length=64), nullable=False)
+    login: str = Column(String(length=64), nullable=False)
+    password: str = Column(String(length=64))
+    key: str = Column(String(length=64))
+    certficate: str = Column(String(length=64))
+    certficate_blob: Buffer = Column(db.LargeBinary(length=(2**32) - 1))
 
-    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
-    license_usr = db.relationship(
-        "LicensesUsers",
-        backref=db.backref("credentials", lazy=True),
-    )
+    license_id: int = Column(Integer, db.ForeignKey("licenses_users.id"))
+    license_usr: Mapped[LicensesUsers] = db.relationship()
 
 
 class Executions(db.Model):
@@ -101,37 +100,12 @@ class Executions(db.Model):
     """
 
     __tablename__ = "executions"
-    pid: str = db.Column(db.String(length=64), nullable=False)
-    id: int = db.Column(db.Integer, primary_key=True)
-    status: str = db.Column(db.String(length=64), nullable=False)
-    file_output: str = db.Column(db.String(length=512))
-    total_rows: str = db.Column(db.String(length=64))
-    url_socket: str = db.Column(db.String(length=64))
-    data_execucao: datetime = db.Column(db.DateTime, default=now_)
-    data_finalizacao: datetime = db.Column(db.DateTime, default=now_)
-    arquivo_xlsx: str = db.Column(db.String(length=64))
-
-    bot_id: int = db.Column(db.Integer, db.ForeignKey("bots.id"))
-    bot = db.relationship(BotsCrawJUD, backref=backref_exc)
-
-    user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
-    user = db.relationship("Users", backref=backref_exc)
-
-    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
-    license_usr = db.relationship("LicensesUsers", backref=backref_exc)
-
-
-class ThreadBots(db.Model):
-    """Manages thread references linked to bot processes.
-
-    Attributes:
-        id (int): Primary key for the thread reference.
-        pid (str): Process identifier for the thread.
-        processID (str): Unique ID referencing the system process.
-
-    """
-
-    __tablename__ = "thread_bots"
-    id = db.Column(db.Integer, primary_key=True)
-    pid: str = db.Column(db.String(length=12), nullable=False)
-    processID: str = db.Column(db.String(length=64), nullable=False)
+    pid: str = Column(String(length=64), nullable=False)
+    id: int = Column(Integer, primary_key=True)
+    status: str = Column(String(length=64), nullable=False)
+    file_output: str = Column(String(length=512))
+    total_rows: str = Column(String(length=64))
+    url_socket: str = Column(String(length=64))
+    data_execucao: datetime = Column(db.DateTime, default=now_)
+    data_finalizacao: datetime = Column(db.DateTime, default=now_)
+    arquivo_xlsx: str = Column(String(length=64))

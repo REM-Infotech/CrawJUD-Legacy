@@ -5,7 +5,7 @@ These tables establish many-to-many relationships between users, licenses, and b
 
 from __future__ import annotations
 
-from app.api import db
+from app.resources.extensions import db
 
 admins = db.Table(
     "admins",
