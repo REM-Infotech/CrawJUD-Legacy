@@ -3,16 +3,36 @@ name = "my_project"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "aether",
-    "flask>=3.1.2",
-    "flask-sqlalchemy>=3.1.1",
-    "python-dotenv>=1.1.1",
+    "blinker==1.9.0",
+    "click==8.3.0",
+    "colorama==0.4.6",
+    "flask==3.1.2",
+    "flask-sqlalchemy==3.1.1",
+    "greenlet==3.2.4",
+    "itsdangerous==2.2.0",
+    "jinja2==3.1.6",
+    "markdown-it-py>=4.0.0",
+    "markupsafe>=3.0.3",
+    "mdurl==0.1.2",
+    "pygments==2.19.2",
+    "python-dotenv==1.1.1",
+    "rich==14.1.0",
+    "shellingham==1.5.4",
+    "sqlalchemy==2.0.43",
+    "termcolor==3.1.0",
+    "threaderwsgi",
+    "tqdm==4.67.1",
+    "typer==0.19.2",
+    "typing-extensions==4.15.0",
+    "werkzeug==3.1.3",
 ]
 
 [tool.uv.sources]
 aether = { git = "https://github.com/Robotz213/Aether.git" }
+threaderwsgi = { git = "https://github.com/Robotz213/ThreaderWSGI.git", rev = "8d9f616f99c3c9e4549c17f93ee3e7b21202e2b0" }
 
 [dependency-groups]
 dev = ["debugpy>=1.8.17"]
