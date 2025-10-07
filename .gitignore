@@ -25,6 +25,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+secrets.*
 
 # PyInstaller
 #   Usually these files are written by a python script from a template
@@ -431,3 +432,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Ignore dynaconf secret files
+.secrets.*

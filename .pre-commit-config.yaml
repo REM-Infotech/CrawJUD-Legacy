@@ -1,0 +1,10 @@
+default_install_hook_types: [pre-commit, pre-push, commit-msg]
+repos:
+  # 1. Faz linting e correções adicionais no final
+  - repo: "https://github.com/astral-sh/ruff-pre-commit"
+    rev: "v0.9.3"
+    hooks:
+      - id: "ruff"
+        args: [--fix]
+
+      - id: ruff-format

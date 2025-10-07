@@ -10,7 +10,12 @@ dependencies = [
     "clear==2.0.0",
     "click==8.3.0",
     "colorama==0.4.6",
+    "dynaconf[all]>=3.2.11",
     "flask==3.1.2",
+    "flask-cors>=6.0.1",
+    "flask-jwt-extended>=4.7.1",
+    "flask-mail>=0.10.0",
+    "flask-session>=0.8.0",
     "flask-sqlalchemy==3.1.1",
     "greenlet==3.2.4",
     "itsdangerous==2.2.0",
@@ -21,6 +26,9 @@ dependencies = [
     "mysql-connector-python==9.4.0",
     "pygments==2.19.2",
     "python-dotenv==1.1.1",
+    "pyyaml>=6.0.3",
+    "pyyaml-env-tag>=1.1",
+    "redis>=6.4.0",
     "rich==14.1.0",
     "shellingham==1.5.4",
     "sqlalchemy==2.0.43",
@@ -32,7 +40,10 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["debugpy>=1.8.17"]
+dev = [
+    "debugpy>=1.8.17",
+    "pre-commit>=4.3.0",
+]
 
 [tool.uv.sources]
 aether = { git = "https://github.com/Robotz213/Aether.git", rev = "a55223259116a16a4d7542d7d938b85735607ecc" }

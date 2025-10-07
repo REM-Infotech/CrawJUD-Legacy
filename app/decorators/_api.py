@@ -17,7 +17,7 @@ from flask import (
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from _types import Methods, P, T
+    from app._types import Methods, P, T
 
 
 class CrossDomain:
@@ -54,11 +54,12 @@ class CrossDomain:
         self.max_age = 21600
         self.attach_to_all = attach_to_all
         self.automatic_options = automatic_options
+        self.current_request_method = None
 
     def __call__(
         self,
         wrapped_function: Callable[P, T],
-    ) -> Callable[P, Callable[P, T | None]]:
+    ) -> Callable[P, Response]:
         """Adiciona cabeçalhos CORS à resposta HTTP.
 
         Args:
@@ -103,6 +104,8 @@ class CrossDomain:
                     *args,
                     **kwargs,
                 )
+            else:
+                abort(405)  # Method Not Allowed
 
             if not self.attach_to_all and request.method != "OPTIONS":
                 return resp
@@ -116,10 +119,9 @@ class CrossDomain:
             )
             return resp
 
-        wrapped_function.provide_automatic_options = self.automatic_options
         return _wrapped
 
-    def _normalize_methods(self, methods: list[str] | None) -> str | None:
+    def _normalize_methods(self, methods: list[Methods] | None) -> str | None:
         """Normaliza os métodos HTTP para cabeçalho CORS.
 
         Args:
@@ -129,7 +131,9 @@ class CrossDomain:
             str | None: Métodos HTTP normalizados em string ou None.
 
         """
-        return ", ".join(sorted(x.upper() for x in methods)) if methods else None
+        return (
+            ", ".join(sorted(x.upper() for x in methods)) if methods else None
+        )
 
     def _normalize_headers(self, headers: list[str] | None) -> str | None:
         """Normaliza os cabeçalhos para CORS.
@@ -141,9 +145,9 @@ class CrossDomain:
             str | None: Cabeçalhos normalizados em string ou None.
 
         """
-        if headers and not isinstance(headers, str):
+        if headers is not None:
             return ", ".join(x.upper() for x in headers)
-        return headers
+        return None
 
     def _normalize_origin(self, origin: str | None) -> str | None:
         """Normaliza a origem para CORS.
@@ -172,7 +176,9 @@ class CrossDomain:
 
         """
         return (
-            int(max_age.total_seconds()) if isinstance(max_age, timedelta) else max_age
+            int(max_age.total_seconds())
+            if isinstance(max_age, timedelta)
+            else max_age
         )
 
     def _get_methods(self, normalized_methods: str | None) -> str:
@@ -216,7 +222,9 @@ class CrossDomain:
             _header_xsrf_name = current_app.config.get(
                 "JWT_ACCESS_CSRF_HEADER_NAME",
             )
-            xsrf_token = request.cookies.get(cookie_xsrf_name, None)
+            xsrf_token = None
+            if isinstance(cookie_xsrf_name, str):
+                xsrf_token = request.cookies.get(cookie_xsrf_name, None)
             if not xsrf_token and self.current_request_method != "GET":
                 abort(401, message="Missing XSRF Token")
 

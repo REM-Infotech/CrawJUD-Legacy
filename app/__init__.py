@@ -1,20 +1,34 @@
+"""Api CrawJUD."""
+
+from dynaconf import FlaskDynaconf
 from flask import Flask
 
-from app import conf
 from app._types import ConfigNames
-from app.config.extensions import start_extensions
 
 app = Flask(__name__)
 
 
 def create_app(config_name: ConfigNames = "DevelopmentConfig") -> Flask:
-    global app
-    config_class = getattr(conf, config_name, conf.DevelopmentConfig)
-    app.config.from_object(config_class)
+    """Create Flask application.
 
-    start_extensions(app)
+    Args:
+        config_name (ConfigNames): Configuration name.
+
+    Returns:
+        Flask: Flask application.
+
+    """
+    global app
+
+    FlaskDynaconf(
+        app,
+        extensions_list="EXTENSIONS",  # pyright: ignore[reportArgumentType]
+        settings_files=["settings.yaml"],
+        load_dotenv=True,
+        environments=True,
+    )
 
     with app.app_context():
-        from app.routes import register_routes
+        app.config.load_extensions()  # pyright: ignore[reportAttributeAccessIssue]
 
-        return register_routes(app)
+    return app

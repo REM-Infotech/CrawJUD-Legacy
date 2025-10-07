@@ -1,14 +1,18 @@
+"""Módulo do Modelo User."""
+
 from typing import cast
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, MappedAsDataclass
 
-from app.config.extensions import db
+from app.resources.extensions import db
 
 from .license import License
 
 
-class User(db.Model):
+class User(db.Model, MappedAsDataclass):
+    """Modelo User."""
+
     __tablename__ = "users"
     Id = Column("id", Integer, primary_key=True, nullable=False, unique=True)
     UserName = Column("username", String(128), nullable=False)
@@ -21,4 +25,4 @@ class User(db.Model):
         db.ForeignKey("licenses.id"),
         nullable=False,
     )
-    License: Mapped["License"] = cast(Mapped["License"], db.relationship())
+    License: Mapped[License] = cast(Mapped["License"], db.relationship())

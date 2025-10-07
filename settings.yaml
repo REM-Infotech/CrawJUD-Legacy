@@ -1,0 +1,96 @@
+default:
+  # Configurações específicas para o ambiente de produção
+  EXTENSIONS:
+    [
+      "app.routes:register_routes",
+      "app.resources.extensions:start_extensions",
+      "app.models:init_database",
+      "app.models:create_default_admin"
+    ]
+
+  ## Configurações do Flask
+  PROPAGATE_EXCEPTIONS: True
+  TRAP_HTTP_EXCEPTIONS: True
+  TRAP_BAD_REQUEST_ERRORS: True
+  SECRET_KEY: "@str @format {env[DYNACONF_SECRET_KEY]}"
+  SESSION_COOKIE_NAME: "session"
+  SESSION_COOKIE_DOMAIN: "@str @format {env[DYNACONF_APP_DOMAIN]}"
+  SESSION_COOKIE_HTTPONLY: True
+  SESSION_COOKIE_SAMESITE: "None"
+  SESSION_COOKIE_SECURE: True
+  SESSION_COOKIE_PARTITIONED: True
+  PERMANENT_SESSION_LIFETIME: 604800
+  SESSION_REFRESH_EACH_REQUEST: True
+  USE_X_SENDFILE: False
+  SEND_FILE_MAX_AGE_DEFAULT: 2592000
+  SERVER_NAME: "@str @format {env[DYNACONF_APP_DOMAIN]}"
+  APPLICATION_ROOT: "/api/v1"
+  PREFERRED_URL_SCHEME: "https"
+  MAX_CONTENT_LENGTH: 5368709120
+  MAX_FORM_MEMORY_SIZE: 67108864
+  MAX_FORM_PARTS: 1000
+  TEMPLATES_AUTO_RELOAD: True
+  EXPLAIN_TEMPLATE_LOADING: True
+  MAX_COOKIE_SIZE: 4093
+  PROVIDE_AUTOMATIC_OPTIONS: True
+  TRUSTED_HOSTS:
+    - localhost
+    - 127.0.0.1
+    - crawjud.robotz.dev
+    - app.robotz.dev
+
+    - "*.reminfotech.net.br"
+    - "*.rhsolut.com.br"
+    - "*.robotz.dev"
+
+  # ✅ Configurações SQLAlchemy
+  SQLALCHEMY_DATABASE_URI: "@str @format {env[DYNACONF_DATABASE_URI]}"
+  SQLALCHEMY_POOL_SIZE: 30
+  SQLALCHEMY_MAX_OVERFLOW: 10
+  SQLALCHEMY_POOL_TIMEOUT: 30
+  SQLALCHEMY_POOL_RECYCLE: 1800
+  SQLALCHEMY_POOL_PRE_PING: true
+  SQLALCHEMY_TRACK_MODIFICATIONS: false
+  SQLALCHEMY_ENGINE_OPTIONS:
+    pool_pre_ping: true
+    pool_recycle: 1800
+    pool_size: 30
+
+  # ✅ Configurações Redis
+  SESSION_TYPE: "sqlalchemy"
+  SESSION_SQLALCHEMY: "@str @format {env[DYNACONF_DATABASE_URI]}"
+  SESSION_SQLALCHEMY_TABLE: "sessions"
+  SESSION_SQLALCHEMY_SEQUENCE: "session_id_seq"
+  SESSION_USE_SIGNER: true
+  SESSION_KEY_PREFIX: "session:"
+  SESSION_ID_LENGTH: 32
+  SESSION_SERIALIZATION_FORMAT: "json"
+
+  # ✅ Configurações Flask Mail
+  MAIL_SERVER: "@str @format {env[DYNACONF_MAIL_SERVER]}"
+  MAIL_PORT: "@int @format {env[DYNACONF_MAIL_PORT]}"
+  MAIL_USE_TLS: "@bool @format {env[DYNACONF_MAIL_USE_TLS]}"
+  MAIL_USE_SSL: "@bool @format {env[DYNACONF_MAIL_USE_SSL]}"
+  MAIL_USERNAME: "@str @format {env[DYNACONF_MAIL_USERNAME]}"
+  MAIL_PASSWORD: "@str @format {env[DYNACONF_MAIL_PASSWORD]}"
+  MAIL_DEBUG: "@bool @format {env[DYNACONF_MAIL_DEBUG]}"
+  MAIL_DEFAULT_SENDER: "@str @format {env[DYNACONF_MAIL_DEFAULT_SENDER]}"
+  MAIL_MAX_EMAILS: "@int @format {env[DYNACONF_MAIL_MAX_EMAILS]}"
+  MAIL_SUPPRESS_SEND: "@bool @format {env[DYNACONF_MAIL_SUPPRESS_SEND]}"
+  MAIL_ASCII_ATTACHMENTS: "@bool @format {env[DYNACONF_MAIL_ASCII_ATTACHMENTS]}"
+
+  # ✅ Configurações Celery
+  broker_url: "@str @format {env[DYNACONF_BROKER_URL]}"
+  result_backend: "@str @format {env[DYNACONF_RESULT_BACKEND]}"
+  task_serializer: "json"
+  result_serializer: "json"
+  accept_content:
+    - "json"
+  enable_utc: true
+  timezone: "America/Sao_Paulo"
+  worker_concurrency: 8
+  worker_pool: "threads"
+  task_default_queue: "celery"
+  task_default_exchange: "celery"
+  task_default_exchange_type: "direct"
+  task_default_routing_key: "celery"
