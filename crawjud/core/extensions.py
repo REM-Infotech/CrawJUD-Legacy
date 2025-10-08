@@ -25,7 +25,7 @@ async def init_extensions(app: Quart) -> AsyncServer:
     db.init_app(app)
     login_manager.init_app(app)
 
-    redis_manager = AsyncRedisManager(url=f"redis://{host_redis}:{port_redis}/{database_redis_io}")
+    redis_manager = AsyncRedisManager(url=f"redis://:{pass_redis}@{host_redis}:{port_redis}/{database_redis_io}")
     io = AsyncServer(
         async_mode="asgi",
         cors_allowed_origins=check_allowed_origin,
