@@ -37,7 +37,8 @@ default:
     - 127.0.0.1
     - crawjud.robotz.dev
     - app.robotz.dev
-
+    - "195.200.1.226"
+    - "zenith-vps.reminfotech.net.br"
     - "*.reminfotech.net.br"
     - "*.rhsolut.com.br"
     - "*.robotz.dev"

@@ -6,5 +6,14 @@ from app import create_app
 
 app = create_app()
 
-with ThreadPoolWSGIServer("localhost", 5000, app, max_workers=64) as th:
+
+server_thread = ThreadPoolWSGIServer(
+    host="0.0.0.0",  # noqa: S104
+    port=5000,
+    app=app,
+    poll_interval=0.25,
+    max_workers=64,
+)
+
+with server_thread as th:
     th.run()

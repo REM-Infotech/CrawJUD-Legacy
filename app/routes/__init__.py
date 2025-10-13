@@ -14,7 +14,6 @@ from flask import (
     jsonify,
     make_response,
 )
-from flask_jwt_extended import jwt_required
 
 if TYPE_CHECKING:
     from flask_sqlalchemy import SQLAlchemy
@@ -25,8 +24,7 @@ if TYPE_CHECKING:
 def register_routes(app: Flask) -> None:
     """Função de registro de rotas."""
 
-    @app.route("/", methods=["GET"], websocket=True)
-    @jwt_required
+    @app.route("/", methods=["GET"])
     def index() -> Response:
         """Redirect to the authentication login page.
 
