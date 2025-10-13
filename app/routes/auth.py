@@ -22,12 +22,8 @@ Dependencies:
 
 from __future__ import annotations
 
-import json
-from dataclasses import dataclass
-from datetime import datetime
 from traceback import format_exception
-from typing import TYPE_CHECKING
-from zoneinfo import ZoneInfo
+from typing import TYPE_CHECKING, cast
 
 from flask import (
     Blueprint,
@@ -37,42 +33,22 @@ from flask import (
     jsonify,
     make_response,
     request,
-    session,
 )
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
     unset_jwt_cookies,
 )
+from flask_sqlalchemy import SQLAlchemy
 
-from app.models.users import User
+from app._types import LoginForm
+from app.models import User
 
 if TYPE_CHECKING:
-    from flask_sqlalchemy import SQLAlchemy
+    pass
 
 
-auth = Blueprint("auth", __name__)
-
-usr = None
-
-
-@dataclass
-class LoginForm:
-    """Represents the data required for user login.
-
-    Attributes:
-        login (str): The user's login identifier (e.g., username or email).
-        password (str): The user's password.
-        remember_me (bool): Indicates whether the user should remain
-            logged in across sessions.
-
-    """
-
-    """Dataclass for the login form."""
-
-    login: str
-    password: str
-    remember_me: bool
+auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @auth.post("/login")
@@ -84,64 +60,31 @@ def login() -> Response:
             the login template.
 
     """
+    response: Response = make_response(jsonify(message="responsta vazia"), 201)
+
     try:
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
-        request_json: dict[str, str] = (
-            request.json or request.form or request.data
+        data = cast(LoginForm, request.get_json())
+
+        if not data.get("login") or not data.get("password"):
+            abort(400, description="Login e senha são obrigatórios.")
+
+        authenticated = User.authenticate(data["login"], data["password"])
+        if not authenticated:
+            abort(401, description="Credenciais inválidas.")
+
+        user = db.session.query(User).filter_by(login=data["login"]).first()
+        response = make_response(
+            jsonify(message="Login efetuado com sucesso!"),
         )
-        if request.method == "OPTIONS":
-            return make_response(jsonify({"message": "OK"}), 200)
+        access_token = create_access_token(identity=user)
 
-        if isinstance(request_json, bytes):
-            request_json = json.loads(request_json.decode("utf-8"))
-
-        if not request_json:
-            return make_response(
-                jsonify({"message": "Erro ao efetuar login!"}),
-                400,
-            )
-
-        username = request_json.get("login", request_json.get("email"))
-        password = request_json.get("password")
-        remember = request_json.get("remember_me")
-        form = LoginForm(username, password, remember)
-
-        from sqlalchemy import or_
-
-        usr = (
-            db.session.query(User)
-            .filter(or_(User.login == form.login, User.email == form.login))
-            .first()
-        )
-        if usr and usr.check_password(form.password):
-            is_admin = bool(usr.admin or usr.supersu)
-
-            usr.login_time = datetime.now(tz=ZoneInfo("America/Manaus"))
-            db.session.commit()
-
-            resp = make_response(
-                jsonify({
-                    "message": "Login Efetuado com sucesso!",
-                    "isAdmin": is_admin,
-                }),
-                200,
-            )
-
-            access_token = create_access_token(identity=usr)
-            set_access_cookies(resp, access_token)
-
-            session.permanent = remember
-
-            return resp
-
-        if not usr or not usr.check_password(form.password):
-            resp = jsonify({"message": "Usuário ou senha incorretos!"})
-            resp.status_code = 401
-            resp.headers = {"Content-Type": "application/json"}
-            return resp
+        set_access_cookies(response, access_token)
 
     except ValueError as e:
         abort(500, description="\n".join(format_exception(e)))
+
+    return response
 
 
 @auth.route("/logout", methods=["POST"])

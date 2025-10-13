@@ -1,4 +1,4 @@
-"""Module for user-related models and authentication utilities."""
+"""Módulo de controle de models de usuários."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ class LicenseUser(db.Model):
 
 
 class User(db.Model):
-    """Database model for application users."""
+    """Model para controle da tabela users."""
 
     __tablename__ = "users"
     id: int = Column(Integer, primary_key=True)
@@ -93,3 +93,18 @@ class User(db.Model):
             senha_texto_claro.encode("utf-8"),
             self.password.encode("utf-8"),
         )
+
+    @classmethod
+    def authenticate(cls, username: str, password: str) -> bool:
+        """Autenticação do usuário.
+
+        Arguments:
+            username (str): Nome de usuário.
+            password (str): Senha do usuário.
+
+        Returns:
+            bool: True se autenticado, False caso contrário.
+
+        """
+        user = db.session.query(cls).filter(cls.login == username).first()
+        return user is not None and user.check_password(password)

@@ -17,3 +17,9 @@ class HealtCheck(TypedDict):
     status: str
     database: str
     timestamp: str
+
+
+class LoginForm(TypedDict):
+    login: str
+    password: str
+    remember: bool
