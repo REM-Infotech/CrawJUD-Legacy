@@ -79,6 +79,12 @@ default:
   MAIL_SUPPRESS_SEND: "@format {env[CRAWJUD_MAIL_SUPPRESS_SEND]}"
   MAIL_ASCII_ATTACHMENTS: "@format {env[CRAWJUD_MAIL_ASCII_ATTACHMENTS]}"
 
+  ROOT_USERNAME: "@format {env[CRAWJUD_ROOT_USERNAME]} @default 'admin'"
+  ROOT_PASSWORD: "@format {env[CRAWJUD_ROOT_PASSWORD]} @default 'admin'"
+  ROOT_EMAIL: "@format {env[CRAWJUD_ROOT_EMAIL]} @default 'admin@example.com'"
+  ROOT_CLIENT: "@format {env[CRAWJUD_ROOT_CLIENT]} @default 'Example'"
+  ROOT_CPF_CNPJ_CLIENT: "@format {env[CRAWJUD_ROOT_CPF_CNPJ_CLIENT]} @default '00'"
+
   # ✅ Configurações Celery
   broker_url: "@format {env[CRAWJUD_BROKER_URL]}"
   result_backend: "@format {env[CRAWJUD_RESULT_BACKEND]}"
