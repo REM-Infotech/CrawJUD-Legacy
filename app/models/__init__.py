@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TypedDict
 
 from dotenv import dotenv_values
-from flask import current_app as app
+from flask import Flask
 
 from app.models.users import LicenseUser, User
 from app.resources.extensions import db
@@ -26,7 +26,7 @@ class DatabaseInitEnvDict(TypedDict):
     ROOT_CPF_CNPJ_CLIENT: str
 
 
-def init_database() -> None:
+def init_database(app: Flask) -> None:
     """Inicializa o banco de dados."""
     with app.app_context():
         db.create_all()
