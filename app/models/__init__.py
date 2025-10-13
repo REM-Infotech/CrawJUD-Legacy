@@ -9,9 +9,12 @@ from flask import Flask
 from app.models.users import LicenseUser, User
 from app.resources.extensions import db
 
+from ._jwt import TokenBlocklist
+
 __all__ = [
     "LicenseUser",
     "User",
+    "TokenBlocklist",
 ]
 
 
@@ -35,13 +38,14 @@ def init_database(app: Flask) -> None:
 
         if not usr_check:
             to_add = []
-            root_user = User(
-                login=cfg["ROOT_USERNAME"],
-                password=cfg["ROOT_PASSWORD"],
-                email=cfg["ROOT_EMAIL"],
-                client=cfg["ROOT_CLIENT"],
-                cpf_cnpj_client=cfg["ROOT_CPF_CNPJ_CLIENT"],
-            )
+
+            data = {
+                "login": cfg["ROOT_USERNAME"],
+                "password": cfg["ROOT_PASSWORD"],
+                "email": cfg["ROOT_EMAIL"],
+                "nome_usuario": "Root User",
+            }
+            root_user = User(**data)
             lic = db.session.query(LicenseUser)
             lic = lic.filter_by(desc="Root License")
             lic = lic.first()

@@ -18,7 +18,7 @@ admins = db.Table(
     db.Column(
         "license_user_id",
         db.Integer,
-        db.ForeignKey("licenses_users.id"),
+        db.ForeignKey("licenses.id"),
         primary_key=True,
     ),
 )
@@ -34,7 +34,7 @@ execution_bots = db.Table(
     db.Column(
         "licenses_users_id",
         db.Integer,
-        db.ForeignKey("licenses_users.id"),
+        db.ForeignKey("licenses.id"),
         primary_key=True,
     ),
 )

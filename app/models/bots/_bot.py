@@ -20,10 +20,18 @@ class Bots(db.Model):
     """Bots Model."""
 
     __tablename__ = "bots"
-    id: int = Column(Integer, primary_key=True)
-    display_name: str = Column(String(length=64), nullable=False)
-    system: str = Column(String(length=64), nullable=False)
-    type: str = Column(String(length=64), nullable=False)
-    form_cfg: str = Column(String(length=64), nullable=False)
-    classification: str = Column(String(length=64), nullable=False)
-    text: str = Column(String(length=512), nullable=False)
+    Id: int = Column("id", Integer, primary_key=True)
+    display_name: str = Column(
+        "display_name",
+        String(length=64),
+        nullable=False,
+    )
+    system: str = Column("system", String(length=64), nullable=False)
+    type: str = Column("type", String(length=64), nullable=False)
+    form_cfg: str = Column("form_cfg", String(length=64), nullable=False)
+    classification: str = Column(
+        "classification",
+        String(length=64),
+        nullable=False,
+    )
+    text: str = Column("text", String(length=512), nullable=False)

@@ -2,10 +2,9 @@ default:
   # Configurações específicas para o ambiente de produção
   EXTENSIONS:
     [
-      "app.routes:register_routes",
       "app.resources.extensions:start_extensions",
       "app.models:init_database",
-      "app.models:create_default_admin"
+      "app.routes:register_routes"
     ]
 
   ## Configurações do Flask

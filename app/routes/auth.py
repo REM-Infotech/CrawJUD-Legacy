@@ -45,8 +45,7 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
 )
 
-from app.models.users import TokenBlocklist as TokenBlocklist
-from app.models.users import Users
+from app.models.users import User
 
 if TYPE_CHECKING:
     from flask_sqlalchemy import SQLAlchemy
@@ -110,8 +109,8 @@ def login() -> Response:
         from sqlalchemy import or_
 
         usr = (
-            db.session.query(Users)
-            .filter(or_(Users.login == form.login, Users.email == form.login))
+            db.session.query(User)
+            .filter(or_(User.login == form.login, User.email == form.login))
             .first()
         )
         if usr and usr.check_password(form.password):

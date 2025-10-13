@@ -12,7 +12,7 @@ from sqlalchemy.orm import Mapped
 
 from app.resources.extensions import db, jwt
 
-from .users import Users
+from .users import User
 
 salt = bcrypt.gensalt()
 
@@ -25,12 +25,12 @@ def user_identity_lookup[T](*args: T) -> int:
         int: The user's ID.
 
     """
-    user: Users = args[0]
+    user: User = args[0]
 
     return user.id
 
 
-@jwt.token_in_blacklist_loader
+@jwt.token_in_blocklist_loader
 def check_if_token_revoked(
     jwt_data: dict,
     *args: str,
@@ -48,23 +48,24 @@ def check_if_token_revoked(
     return token is not None
 
 
-@jwt.user_loader_callback_loader
-def user_lookup_callback[T](*args: T) -> Users | None:
+@jwt.user_lookup_loader
+def user_lookup_callback[T](*args: T) -> User | None:
     """Get the user from the JWT data.
 
     Returns:
-        Users | None: The user object or None if not found.
+        User | None: The user object or None if not found.
 
     """
     id_: int = args[0]
 
-    return db.session.query(Users).filter_by(id=id_).one_or_none()
+    return db.session.query(User).filter_by(id=id_).one_or_none()
 
 
 class TokenBlocklist(db.Model):
     """Database model for token blocklist."""
 
-    id: int = Column(Integer, primary_key=True)
+    __tablename__ = "token_blocklist"
+    Id: int = Column(Integer, primary_key=True)
     jti: str = Column(String(36), nullable=False, index=True)
     type: str = Column(String(16), nullable=False)
     user_id = Column(
@@ -72,7 +73,7 @@ class TokenBlocklist(db.Model):
         default=lambda: get_current_user().id,
         nullable=False,
     )
-    user: Mapped[Users] = db.relationship()
+    user: Mapped[User] = db.relationship()
     created_at = Column(
         DateTime,
         default=lambda: datetime.now(ZoneInfo("America/Manaus")),

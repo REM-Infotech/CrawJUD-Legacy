@@ -28,5 +28,5 @@ class CredenciaisRobo(db.Model):
     login: str = Column(String(length=64), nullable=False)
     password: str = Column(String(length=64))
 
-    license_id: int = Column(Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = Column(Integer, db.ForeignKey("licenses.id"))
     license_usr: Mapped[LicenseUser] = db.relationship()

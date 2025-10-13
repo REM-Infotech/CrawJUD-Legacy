@@ -56,7 +56,7 @@ class ScheduleModel(db.Model):
     )  # JSON para kwargs
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
 
-    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses.id"))
     license_usr = db.relationship(
         "LicensesUsers",
         backref=db.backref("scheduled_execution", lazy=True),
@@ -64,7 +64,7 @@ class ScheduleModel(db.Model):
 
     user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship(
-        "Users",
+        "User",
         backref=db.backref("scheduled_execution", lazy=True),
     )
 
