@@ -84,7 +84,7 @@ A API é organizada em camadas:
 ## Uso
 
 ```python
-from crawjud.api import create_app
+from app import create_app
 
 # Criar aplicação
 app = await create_app()

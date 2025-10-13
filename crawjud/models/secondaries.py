@@ -5,7 +5,7 @@ These tables establish many-to-many relationships between users, licenses, and b
 
 from __future__ import annotations
 
-from crawjud.api import db
+from app import db
 
 admins = db.Table(
     "admins",

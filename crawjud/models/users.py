@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 import bcrypt
 from quart_jwt_extended import get_current_user
 
-from crawjud.api import db, jwt
+from app import db, jwt
 
 salt = bcrypt.gensalt()
 
@@ -41,7 +41,9 @@ def check_if_token_revoked(
 
     """
     jti = jwt_data["jti"] or kwargs.get("jti") or args[0].get("jti")
-    token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+    token = (
+        db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+    )
 
     return token is not None
 
@@ -72,7 +74,9 @@ class TokenBlocklist(db.Model):
     )
     created_at = db.Column(
         db.DateTime,
-        server_default=datetime.now(ZoneInfo("America/Manaus")).isoformat(),
+        server_default=datetime.now(
+            ZoneInfo("America/Manaus")
+        ).isoformat(),
         nullable=False,
     )
 
@@ -83,7 +87,9 @@ class SuperUser(db.Model):
     __tablename__ = "superuser"
     id: int = db.Column(db.Integer, primary_key=True)
     users_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
-    users = db.relationship("Users", backref=db.backref("supersu", lazy=True))
+    users = db.relationship(
+        "Users", backref=db.backref("supersu", lazy=True)
+    )
 
 
 class Users(db.Model):
@@ -91,19 +97,25 @@ class Users(db.Model):
 
     __tablename__ = "users"
     id: int = db.Column(db.Integer, primary_key=True)
-    login: str = db.Column(db.String(length=30), nullable=False, unique=True)
+    login: str = db.Column(
+        db.String(length=30), nullable=False, unique=True
+    )
     nome_usuario: str = db.Column(
         db.String(length=64),
         nullable=False,
         unique=True,
     )
-    email: str = db.Column(db.String(length=50), nullable=False, unique=True)
+    email: str = db.Column(
+        db.String(length=50), nullable=False, unique=True
+    )
     password: str = db.Column(db.String(length=60), nullable=False)
     login_time: ClassVar[datetime] = db.Column(
         db.DateTime,
         default=datetime.now(ZoneInfo("America/Manaus")),
     )
-    verification_code: str = db.Column(db.String(length=45), unique=True)
+    verification_code: str = db.Column(
+        db.String(length=45), unique=True
+    )
     login_id: str = db.Column(
         db.String(length=64),
         nullable=False,
@@ -154,7 +166,9 @@ class Users(db.Model):
             senha_texto (str): Plain text password.
 
         """
-        self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode(
+        self.password = bcrypt.hashpw(
+            senha_texto.encode(), salt
+        ).decode(
             "utf-8",
         )
 
@@ -220,7 +234,9 @@ class LicensesUsers(db.Model):
     )
 
     # Relacionamento de muitos para muitos com users
-    admins = db.relationship("Users", secondary="admins", backref="admin")
+    admins = db.relationship(
+        "Users", secondary="admins", backref="admin"
+    )
     bots = db.relationship(
         "BotsCrawJUD",
         secondary="execution_bots",

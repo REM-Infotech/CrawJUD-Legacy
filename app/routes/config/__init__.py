@@ -9,7 +9,7 @@ admin = Blueprint("admin", __name__)
 
 def import_routes() -> None:
     """Import routes."""
-    from crawjud.api.routes.config import users
+    from app.routes.config import users
 
     return users
 

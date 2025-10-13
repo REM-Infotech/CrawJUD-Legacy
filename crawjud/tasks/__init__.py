@@ -30,7 +30,11 @@ def _query_info(
         .filter(BotsCrawJUD.id == bot_execution_id)
         .first()
     )
-    exc = db.session.query(Executions).filter(Executions.pid == pid).first()
+    exc = (
+        db.session.query(Executions)
+        .filter(Executions.pid == pid)
+        .first()
+    )
 
     return (bot, exc)
 
@@ -63,7 +67,7 @@ async def save_database(
     total_rows: int | None = None,
 ) -> None:
     """Salva o estado atual do banco de dados."""
-    from crawjud.api import create_app
+    from app import create_app
 
     app = await create_app()
     db: SQLAlchemy = app.extensions["sqlalchemy"]

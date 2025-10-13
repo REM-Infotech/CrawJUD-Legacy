@@ -121,8 +121,8 @@ Todas as rotas são configuradas com:
 ## Uso
 
 ```python
-from crawjud.api.routes.bot import bot
-from crawjud.api.routes.auth import auth
+from app.routes.bot import bot
+from app.routes.auth import auth
 
 # Registrar blueprints
 app.register_blueprint(bot)

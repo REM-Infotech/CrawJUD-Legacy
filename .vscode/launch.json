@@ -30,9 +30,7 @@
       "name": "Quart",
       "type": "debugpy",
       "request": "launch",
-      "module": "quart",
-      "env": { "QUART_APP": "crawjud.api", "QUART_DEBUG": "1" },
-      "args": ["start"]
+      "module": "app"
     },
     {
       "name": "Celery",

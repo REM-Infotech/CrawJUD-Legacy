@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from crawjud.api import db
+from app import db
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -41,7 +41,9 @@ class ScheduleModel(db.Model):
         db.ForeignKey("crontab_model.id"),
         nullable=False,
     )
-    schedule = db.relationship("CrontabModel", backref="schedule", lazy=True)
+    schedule = db.relationship(
+        "CrontabModel", backref="schedule", lazy=True
+    )
 
     args: str = db.Column(
         db.Text,
@@ -56,7 +58,9 @@ class ScheduleModel(db.Model):
     )  # JSON para kwargs
     last_run_at: datetime = db.Column(db.DateTime, nullable=True)
 
-    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(
+        db.Integer, db.ForeignKey("licenses_users.id")
+    )
     license_usr = db.relationship(
         "LicensesUsers",
         backref=db.backref("scheduled_execution", lazy=True),

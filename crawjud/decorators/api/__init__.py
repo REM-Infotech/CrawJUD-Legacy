@@ -41,7 +41,9 @@ def verify_jwt_websocket(func: Callable[P, T]) -> Callable[P, T]:
     """
 
     @functools.wraps(func)
-    async def decorated_function(*args: P.args, **kwargs: P.kwargs) -> T:
+    async def decorated_function(
+        *args: P.args, **kwargs: P.kwargs
+    ) -> T:
         valid = False
         with suppress(Exception):
             valid = True
@@ -52,7 +54,7 @@ def verify_jwt_websocket(func: Callable[P, T]) -> Callable[P, T]:
             valid = True
 
         if not valid:
-            from crawjud.api import io
+            from app import io
 
             await io.emit("not_logged", namespace="/master")
             return []

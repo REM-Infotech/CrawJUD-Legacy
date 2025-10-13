@@ -39,7 +39,7 @@ async def send_email(
     cc: list[str] | None = None,
 ) -> None:
     """Envia um e-mail utilizando as configurações do servidor SMTP."""
-    from crawjud.api import app
+    from app import app
 
     async with app.app_context():
         mail: Mail = app.extensions["mail"]
@@ -48,7 +48,9 @@ async def send_email(
 
         url_web = environ["URL_WEB"]
         default_sender = environ["MAIL_DEFAULT_SENDER"]
-        message.subject = f"Notificação de {email_type} - {bot_name.upper()}"
+        message.subject = (
+            f"Notificação de {email_type} - {bot_name.upper()}"
+        )
         message.sender = f"Notificação Robô <{default_sender}>"
         message.cc = cc
         message.recipients = [email_target]

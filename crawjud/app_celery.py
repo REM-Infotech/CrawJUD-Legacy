@@ -77,7 +77,7 @@ def make_celery() -> Celery:
 
 def start_worker() -> None:
     """Start the Celery Worker."""
-    from crawjud.api import create_app
+    from app import create_app
 
     environ.update({"APPLICATION_APP": "worker"})
     worker_name = environ["WORKER_NAME"]
@@ -213,7 +213,10 @@ def main() -> None:  # pragma: no cover
                 break
 
             if result.get("option_server") == opt_1:
-                process_celery = restart_service(callable_obj, process_celery)
+                process_celery = restart_service(
+                    callable_obj,
+                    process_celery,
+                )
 
             elif result.get("option_server") == opt_2:
                 process_running = stop_service(process_celery)

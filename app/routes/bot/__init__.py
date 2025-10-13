@@ -13,7 +13,7 @@ from quart import (
 )
 from werkzeug.exceptions import HTTPException
 
-from crawjud.api.routes.bot.launch import LoadForm
+from app.routes.bot.launch import LoadForm
 from crawjud.decorators.api import CrossDomain
 from crawjud.utils.xlsx_generator import MakeTemplates as MakeTemplates
 
@@ -37,7 +37,9 @@ async def start_bot() -> None:
         )
 
     except HTTPException as e:
-        current_app.logger.error("\n".join(traceback.format_exception(e)))
+        current_app.logger.error(
+            "\n".join(traceback.format_exception(e))
+        )
         return await make_response(jsonify(error="erro"), 500)
 
 

@@ -1,25 +1,23 @@
 """Quart application package."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
-import asyncio
+
+import quart_flask_patch as quart_patch
 import logging
 import re
 from contextlib import suppress
 from importlib import import_module
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-import quart_flask_patch as quart_patch
+
 from dotenv import dotenv_values
 from flask_mail import Mail
-from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from quart import Quart
 from quart_cors import cors
 from quart_jwt_extended import JWTManager
 from quart_socketio import SocketIO
-
 from crawjud.app_celery import make_celery
 from crawjud.resources import check_cors_allowed_origins, workdir
 from crawjud.utils.logger import dict_config
@@ -27,6 +25,22 @@ from crawjud.utils.middleware import ProxyHeadersMiddleware
 
 if TYPE_CHECKING:
     from crawjud.interfaces.types import ConfigName
+
+
+environ = dotenv_values()
+
+jwt = JWTManager()
+db = SQLAlchemy()
+mail = Mail()
+
+io = SocketIO(
+    async_mode="asgi",
+    launch_mode="uvicorn",
+    cookie="access",
+)
+
+config_name = environ.get("FLASK_ENV", "default")
+app = Quart(__name__)
 
 
 async def create_app(config_name: ConfigName = "default") -> Quart:
@@ -39,7 +53,6 @@ async def create_app(config_name: ConfigName = "default") -> Quart:
         ASGIApp: The ASGI application instance with CORS and middleware applied.
 
     """
-    app = Quart(__name__)
     file_config = workdir.joinpath("crawjud", "quartconf.py")
     app.config.from_pyfile(file_config)
 
@@ -48,7 +61,7 @@ async def create_app(config_name: ConfigName = "default") -> Quart:
         await register_routes(app)
 
     app.asgi_app = ProxyHeadersMiddleware(app.asgi_app)
-    return cors(
+    cors(
         app,
         allow_origin=[re.compile(r"^https?:\/\/[^\/]+")],
         allow_headers=[
@@ -60,6 +73,7 @@ async def create_app(config_name: ConfigName = "default") -> Quart:
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_credentials=True,
     )
+    return app
 
 
 async def register_routes(app: Quart) -> None:
@@ -79,14 +93,14 @@ async def register_routes(app: Quart) -> None:
 
     """
     async with app.app_context():
-        from crawjud.api.routes.auth import auth
-        from crawjud.api.routes.bot import bot
-        from crawjud.api.routes.config import admin
-        from crawjud.api.routes.credentials import cred
-        from crawjud.api.routes.execution import exe
+        from app.routes.auth import auth
+        from app.routes.bot import bot
+        from app.routes.config import admin
+        from app.routes.credentials import cred
+        from app.routes.execution import exe
 
         # Dynamically import additional route modules as needed.
-        import_module("crawjud.api.routes", package=__package__)
+        import_module("app.routes", package=__package__)
 
         list_blueprints = [bot, auth, exe, cred, admin]
 
@@ -104,42 +118,25 @@ async def init_extensions(app: Quart) -> None:
     async with app.app_context():
         db.init_app(app)
         jwt.init_app(app)
-        sess.init_app(app)
         mail.init_app(app)
         app.extensions["celery"] = make_celery()
 
 
-environ = dotenv_values()
-sess = Session()
-
-jwt = JWTManager()
-db = SQLAlchemy()
-mail = Mail()
-
-io = SocketIO(
-    async_mode="asgi",
-    launch_mode="uvicorn",
-    cookie="access",
-)
-
-config_name = environ.get("FLASK_ENV", "default")
-app = asyncio.run(create_app(config_name=config_name))
-
-
-async def main_app() -> None:
+async def main_app() -> Quart:
     """Asynchronously initializes and runs the main application.
 
-    This function performs the following steps:
-    1. Creates the application instance using `create_app()`.
-    2. Initializes the I/O subsystem with the created app.
-    3. Retrieves the host and port from environment variables,
-        defaulting to "127.0.0.1" and 5000 if not set.
-    4. Runs the application using the I/O subsystem on the specified host and port.
+    Returns:
+        Quart: The initialized Quart application instance.
 
     """
     with suppress(KeyboardInterrupt):
+        app = await create_app(config_name=config_name)
         async with app.app_context():
-            from crawjud.api.namespaces import register_namespaces
+            # Obtém o diretório raiz do projeto de forma síncrona
+            from pathlib import Path as SyncPath
+
+            root_path = SyncPath(__file__).parent
+            from app.namespaces import register_namespaces
 
             await io.init_app(
                 app,
@@ -151,7 +148,7 @@ async def main_app() -> None:
             host = environ.get("API_HOST", "127.0.0.1")
             port = int(environ.get("API_PORT", 5000))
 
-            log_folder = Path(__file__).cwd().joinpath("temp", "logs")
+            log_folder = root_path.joinpath("temp", "logs")
             log_folder.mkdir(exist_ok=True, parents=True)
             log_file = str(log_folder.joinpath(f"{__package__}.log"))
             cfg, _ = dict_config(
@@ -161,16 +158,7 @@ async def main_app() -> None:
             )
 
             # Executa o servidor sem SSL para evitar erros de requisição HTTP inválida
-            await io.run(
-                app,
-                host=host,
-                port=port,
-                log_config=cfg,
-                log_level=logging.INFO,
-                ssl_keyfile=None,
-                ssl_certfile=None,
-            )
+            return app
 
 
-import_module("._command", package=__package__)
 __all__ = ["quart_patch"]

@@ -8,8 +8,8 @@ from __future__ import annotations
 from quart import request, websocket
 from quart_socketio import Namespace, SocketIO
 
-from crawjud.api.namespaces.bots import BotsNamespace
-from crawjud.api.namespaces.system import SystemNamespace
+from app.namespaces.bots import BotsNamespace
+from app.namespaces.system import SystemNamespace
 
 from .files import FilesNamespace
 from .logs import LogsNamespace

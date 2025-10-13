@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from crawjud.api import db
+from app import db
 
 if TYPE_CHECKING:
     from collections.abc import Buffer
@@ -42,7 +42,9 @@ class BotsCrawJUD(db.Model):
     client: str = db.Column(db.String(length=64), nullable=False)
     type: str = db.Column(db.String(length=64), nullable=False)
     form_cfg: str = db.Column(db.String(length=64), nullable=False)
-    classification: str = db.Column(db.String(length=64), nullable=False)
+    classification: str = db.Column(
+        db.String(length=64), nullable=False
+    )
     text: str = db.Column(db.String(length=512), nullable=False)
 
 
@@ -65,16 +67,22 @@ class Credentials(db.Model):
 
     __tablename__ = "credentials"
     id: int = db.Column(db.Integer, primary_key=True)
-    nome_credencial: str = db.Column(db.String(length=64), nullable=False)
+    nome_credencial: str = db.Column(
+        db.String(length=64), nullable=False
+    )
     system: str = db.Column(db.String(length=64), nullable=False)
     login_method: str = db.Column(db.String(length=64), nullable=False)
     login: str = db.Column(db.String(length=64), nullable=False)
     password: str = db.Column(db.String(length=64))
     key: str = db.Column(db.String(length=64))
     certficate: str = db.Column(db.String(length=64))
-    certficate_blob: Buffer = db.Column(db.LargeBinary(length=(2**32) - 1))
+    certficate_blob: Buffer = db.Column(
+        db.LargeBinary(length=(2**32) - 1)
+    )
 
-    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(
+        db.Integer, db.ForeignKey("licenses_users.id")
+    )
     license_usr = db.relationship(
         "LicensesUsers",
         backref=db.backref("credentials", lazy=True),
@@ -117,7 +125,9 @@ class Executions(db.Model):
     user_id: int = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("Users", backref=backref_exc)
 
-    license_id: int = db.Column(db.Integer, db.ForeignKey("licenses_users.id"))
+    license_id: int = db.Column(
+        db.Integer, db.ForeignKey("licenses_users.id")
+    )
     license_usr = db.relationship("LicensesUsers", backref=backref_exc)
 
 
