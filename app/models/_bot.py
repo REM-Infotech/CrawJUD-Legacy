@@ -17,8 +17,6 @@ now_ = datetime.now(ZoneInfo("America/Manaus"))
 
 
 class Bots(db.Model):
-    """Bots Model."""
-
     __tablename__ = "bots"
     Id: int = Column("id", Integer, primary_key=True)
     display_name: str = Column(

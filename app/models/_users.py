@@ -1,5 +1,3 @@
-"""Módulo de controle de models de usuários."""
-
 from __future__ import annotations
 
 import bcrypt
@@ -8,7 +6,7 @@ from sqlalchemy.orm import Mapped
 
 from app.resources.extensions import db
 
-from .bots._bot import Bots
+from ._bot import Bots
 
 salt = bcrypt.gensalt()
 
@@ -57,6 +55,21 @@ class User(db.Model):
 
     admin: bool = Column("admin", Boolean, default=False)
 
+    @classmethod
+    def authenticate(cls, username: str, password: str) -> bool:
+        """Autenticação do usuário.
+
+        Arguments:
+            username (str): Nome de usuário.
+            password (str): Senha do usuário.
+
+        Returns:
+            bool: True se autenticado, False caso contrário.
+
+        """
+        user = db.session.query(cls).filter(cls.login == username).first()
+        return user is not None and user.check_password(password)
+
     @property
     def senhacrip(self) -> str:
         """Get the encrypted password.
@@ -93,18 +106,3 @@ class User(db.Model):
             senha_texto_claro.encode("utf-8"),
             self.password.encode("utf-8"),
         )
-
-    @classmethod
-    def authenticate(cls, username: str, password: str) -> bool:
-        """Autenticação do usuário.
-
-        Arguments:
-            username (str): Nome de usuário.
-            password (str): Senha do usuário.
-
-        Returns:
-            bool: True se autenticado, False caso contrário.
-
-        """
-        user = db.session.query(cls).filter(cls.login == username).first()
-        return user is not None and user.check_password(password)

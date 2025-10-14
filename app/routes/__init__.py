@@ -56,9 +56,10 @@ def register_routes(app: Flask) -> None:
             "timestamp": str(db.func.now()),
         }
 
-    from .auth import auth
+    from ._auth import auth
+    from ._bots import bot
 
-    blueprints = [auth]
+    blueprints = [auth, bot]
 
     for i in blueprints:
         app.register_blueprint(i)

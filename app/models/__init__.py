@@ -6,7 +6,7 @@ from typing import TypedDict
 
 from flask import Flask
 
-from app.models.users import LicenseUser, User
+from app.models._users import LicenseUser, User
 from app.resources.extensions import db
 
 from ._jwt import TokenBlocklist
@@ -44,6 +44,9 @@ def init_database(app: Flask) -> None:
                 email=app.config["ROOT_EMAIL"],
                 nome_usuario="Root User",
             )
+
+            root_user.admin = True
+
             root_license = (
                 db.session.query(LicenseUser)
                 .filter_by(desc="Root License")

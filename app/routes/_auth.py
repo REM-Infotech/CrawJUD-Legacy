@@ -22,7 +22,6 @@ Dependencies:
 
 from __future__ import annotations
 
-from traceback import format_exception
 from typing import TYPE_CHECKING, cast
 
 from flask import (
@@ -75,14 +74,16 @@ def login() -> Response:
 
         user = db.session.query(User).filter_by(login=data["login"]).first()
         response = make_response(
-            jsonify(message="Login efetuado com sucesso!"),
+            jsonify(
+                message="Login efetuado com sucesso!",
+            ),
         )
         access_token = create_access_token(identity=user)
 
         set_access_cookies(response, access_token)
 
-    except ValueError as e:
-        abort(500, description="\n".join(format_exception(e)))
+    except Exception:
+        abort(500, description="Erro na autenticação")
 
     return response
 
@@ -95,11 +96,6 @@ def logout() -> Response:
         Response: Redirect response to the login page.
 
     """
-    response = make_response(jsonify(msg="Logout efetuado com sucesso!"))
-    try:
-        unset_jwt_cookies(response)
-
-    except ValueError as e:
-        abort(500, description="\n".join(format_exception(e)))
-
+    response = make_response(jsonify(message="Logout efetuado com sucesso!"))
+    unset_jwt_cookies(response)
     return response
