@@ -1,23 +1,27 @@
+import heroImage from "@/assets/hero-legal-automation.jpg";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "next-themes";
-import { 
-  Bot, 
-  Database, 
-  Zap, 
-  Shield, 
-  Clock, 
-  FileText,
+import {
   ArrowRight,
+  Bot,
   CheckCircle2,
+  Clock,
+  Database,
+  FileText,
   Moon,
-  Sun
+  Shield,
+  Sun,
+  Zap
 } from "lucide-react";
-import heroImage from "@/assets/hero-legal-automation.jpg";
+import { useTheme } from "next-themes";
+import { useNavigate } from "react-router-dom";
+
+const UrlApp = import.meta.env.VITE_APP_URL || "http://localhost:5173"
+
+const MailTo = "mailto:contato@reminfotech.net.br?subject=Quero%20automatizar%20meu%20escritório%20com%20CrawJUD&body=Olá,%20tenho%20interesse%20em%20automatizar%20meu%20escritório%20com%20CrawJUD.%20Gostaria%20de%20receber%20mais%20informações%20e%20agendar%20uma%20demonstração."
 
 const Index = () => {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { theme, setTheme } = useTheme();
 
   const features = [
@@ -97,7 +101,7 @@ const Index = () => {
                 <span className="sr-only">Alternar tema</span>
               </Button>
               <Button 
-                onClick={() => navigate("/login")}
+                onClick={() => window.location.href = UrlApp}
                 className="bg-primary hover:bg-primary-light transition-all duration-300 shadow-lg hover:shadow-primary/30"
               >
                 Entrar
@@ -143,18 +147,11 @@ const Index = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  onClick={() => navigate("/login")}
+                  onClick={() => window.location.href = MailTo}
                   className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary-glow text-primary-foreground shadow-lg hover:shadow-primary/30 transition-all duration-300 group"
                 >
                   Começar Agora
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/10"
-                >
-                  Saiba Mais
                 </Button>
               </div>
             </div>
@@ -270,14 +267,14 @@ const Index = () => {
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
             Junte-se aos escritórios de advocacia que já otimizaram suas operações com o CrawJUD
           </p>
-          <Button 
-            size="lg"
-            onClick={() => navigate("/login")}
-            className="bg-background text-primary hover:bg-background/90 shadow-xl hover:shadow-2xl transition-all duration-300 group"
-          >
-            Começar Gratuitamente
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
+            <Button 
+              size="lg"
+              onClick={() => window.location.href = MailTo}
+              className="bg-background text-primary hover:bg-background/90 shadow-xl hover:shadow-2xl transition-all duration-300 group"
+            >
+              Fale com a gente!
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
         </div>
       </section>
 
