@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "aether",
+    "argon2-cffi>=25.1.0",
     "bcrypt>=5.0.0",
     "blinker==1.9.0",
     "clear==2.0.0",
@@ -28,6 +29,7 @@ dependencies = [
     "mdurl==0.1.2",
     "mysql-connector-python==9.4.0",
     "pandas>=2.3.3",
+    "passlib[all,full]>=1.7.4",
     "pygments==2.19.2",
     "python-dotenv==1.1.1",
     "pyyaml>=6.0.3",

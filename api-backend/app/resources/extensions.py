@@ -11,9 +11,18 @@ from flask_sqlalchemy import SQLAlchemy
 from app.base import Model, Query
 
 db = SQLAlchemy(model_class=Model, query_class=Query)  # pyright: ignore[reportArgumentType]
-cors = CORS()
 jwt = JWTManager()
 mail = Mail()
+cors = CORS(
+    allow_headers=["Content-Type", "Authorization"],
+    supports_credentials=True,
+    origins=[
+        "localhost",
+        "http://localhost:5173",
+        "http://127.0.0.1:1473",
+        "http://localhost:1474",  # Adiciona a origem necessária para evitar erro CORS
+    ],
+)
 
 __all__ = ["db", "cors", "jwt", "mail", "start_extensions"]
 

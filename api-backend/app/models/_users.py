@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-import bcrypt
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped
 
+from app import crypt_context
 from app.resources.extensions import db
 
 from ._bot import Bots
-
-salt = bcrypt.gensalt()
 
 
 class LicenseUser(db.Model):
@@ -22,8 +20,12 @@ class LicenseUser(db.Model):
 class User(db.Model):
     __tablename__ = "users"
     id: int = Column(Integer, primary_key=True)
-    login: str = Column("username", String(length=30), nullable=False, unique=True)
-    nome_usuario: str = Column("display_name", String(length=64), nullable=False)
+    login: str = Column(
+        "username", String(length=30), nullable=False, unique=True
+    )
+    nome_usuario: str = Column(
+        "display_name", String(length=64), nullable=False
+    )
     email: str = Column("email", String(length=50), nullable=False, unique=True)
     password: str = Column("password", String(length=64), nullable=False)
 
@@ -43,10 +45,17 @@ class User(db.Model):
 
     @senhacrip.setter
     def senhacrip(self, senha_texto: str) -> None:
-        self.password = bcrypt.hashpw(senha_texto.encode(), salt).decode("utf-8")
+        self.password = crypt_context.hash(senha_texto)
 
     def check_password(self, senha_texto_claro: str) -> bool:
-        return bcrypt.checkpw(
-            senha_texto_claro.encode("utf-8"),
-            self.password.encode("utf-8"),
-        )
+        valid_hash = crypt_context.verify(senha_texto_claro, self.password)
+
+        if valid_hash:
+            if crypt_context.needs_update(self.password):
+                self.password = crypt_context.hash(senha_texto_claro)
+                db.session.add(self)
+                db.session.commit()
+
+            return True
+
+        return False

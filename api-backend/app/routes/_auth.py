@@ -61,29 +61,25 @@ def login() -> Response:
     """
     response: Response = make_response(jsonify(message="responsta vazia"), 201)
 
-    try:
-        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
-        data = cast(LoginForm, request.get_json())
+    db: SQLAlchemy = current_app.extensions["sqlalchemy"]
+    data = cast(LoginForm, request.get_json())
 
-        if not data.get("login") or not data.get("password"):
-            abort(400, description="Login e senha são obrigatórios.")
+    if not data.get("login") or not data.get("password"):
+        abort(400, description="Login e senha são obrigatórios.")
 
-        authenticated = User.authenticate(data["login"], data["password"])
-        if not authenticated:
-            abort(401, description="Credenciais inválidas.")
+    authenticated = User.authenticate(data["login"], data["password"])
+    if not authenticated:
+        abort(401, description="Credenciais inválidas.")
 
-        user = db.session.query(User).filter_by(login=data["login"]).first()
-        response = make_response(
-            jsonify(
-                message="Login efetuado com sucesso!",
-            ),
-        )
-        access_token = create_access_token(identity=user)
+    user = db.session.query(User).filter_by(login=data["login"]).first()
+    response = make_response(
+        jsonify(
+            message="Login efetuado com sucesso!",
+        ),
+    )
+    access_token = create_access_token(identity=user)
 
-        set_access_cookies(response, access_token)
-
-    except Exception:
-        abort(500, description="Erro na autenticação")
+    set_access_cookies(response, access_token)
 
     return response
 

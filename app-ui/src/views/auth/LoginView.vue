@@ -20,8 +20,20 @@ async function handleSubmit(e: Event) {
   showOverlay.value = true;
   let message = "Erro ao realizar login";
   let isLogged = false;
+
+  const formdata = new FormData();
+
+  formdata.append("login", Form.login);
+  formdata.append("password", Form.password);
+  formdata.append("remember_me", Form.remember_me ? "true" : "false");
+
   try {
-    const response = await api.request({ method: "POST", data: Form, url: "/login" });
+    const response = await api.post("/auth/login", formdata, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
     const data = response.data;
 
     message = data.message;
