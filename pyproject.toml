@@ -50,4 +50,4 @@ dev = [
 ]
 
 [tool.uv.sources]
-aether = { git = "https://github.com/Robotz213/Aether.git", rev = "a55223259116a16a4d7542d7d938b85735607ecc" }
+aether = { git = "https://github.com/Robotz213/Aether.git" }

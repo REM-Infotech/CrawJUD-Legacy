@@ -30,30 +30,25 @@ def init_database(app: Flask) -> None:
     """Inicializa o banco de dados."""
     with app.app_context(), db.session.no_autoflush:
         db.create_all()
-        cfg = app.config
 
         user = (
             db.session.query(User)
-            .filter_by(login=cfg["ROOT_USERNAME"])
+            .filter_by(login=app.config["ROOT_USERNAME"])
             .first()
         )
 
         if not user:
-            data = {
-                "login": cfg["ROOT_USERNAME"],
-                "password": cfg["ROOT_PASSWORD"],
-                "email": cfg["ROOT_EMAIL"],
-                "nome_usuario": "Root User",
-            }
-            root_user = User(**data)
+            root_user = User(
+                login=app.config["ROOT_USERNAME"],
+                password=app.config["ROOT_PASSWORD"],
+                email=app.config["ROOT_EMAIL"],
+                nome_usuario="Root User",
+            )
             root_license = (
                 db.session.query(LicenseUser)
                 .filter_by(desc="Root License")
                 .first()
-            )
-
-            if not root_license:
-                root_license = LicenseUser(desc="Root License")
+            ) or LicenseUser(desc="Root License")
 
             root_user.license_id = root_license.Id
             db.session.add_all([root_license, root_user])

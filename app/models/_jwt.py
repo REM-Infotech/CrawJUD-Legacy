@@ -10,6 +10,7 @@ from flask_jwt_extended import get_current_user
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import Mapped
 
+from app._types import MyAny
 from app.resources.extensions import db, jwt
 
 from .users import User
@@ -18,7 +19,7 @@ salt = bcrypt.gensalt()
 
 
 @jwt.user_identity_loader
-def user_identity_lookup[T](*args: T) -> int:
+def user_identity_lookup(*args: MyAny) -> int:
     """Get the user's identity.
 
     Returns:
@@ -49,7 +50,7 @@ def check_if_token_revoked(
 
 
 @jwt.user_lookup_loader
-def user_lookup_callback[T](*args: T) -> User | None:
+def user_lookup_callback(*args: MyAny) -> User | None:
     """Get the user from the JWT data.
 
     Returns:
