@@ -13,6 +13,8 @@ from flask import (
     current_app,
     jsonify,
     make_response,
+    request,
+    send_from_directory,
 )
 
 if TYPE_CHECKING:
@@ -42,8 +44,8 @@ def register_routes(app: Flask) -> None:
             HealtCheck: HealtCheck
 
         """
+        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         try:
-            db: SQLAlchemy = current_app.extensions["sqlalchemy"]
             # Testa conexão com banco de dados
             db.session.execute(db.text("SELECT 1"))
             db_status = "ok"
@@ -53,8 +55,12 @@ def register_routes(app: Flask) -> None:
         return {
             "status": "ok" if db_status == "ok" else "erro",
             "database": db_status,
-            "timestamp": str(db.func.now()),
+            "timestamp": str(db.func.now()),  # pyright: ignore[reportPossiblyUnboundVariable]
         }
+
+    @app.route("/robots.txt")
+    def static_from_root() -> Response:
+        return send_from_directory(app.static_folder, request.path[1:])  # pyright: ignore[reportArgumentType]
 
     from ._auth import auth
     from ._bots import bot
