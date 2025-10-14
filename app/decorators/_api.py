@@ -131,9 +131,7 @@ class CrossDomain:
             str | None: Métodos HTTP normalizados em string ou None.
 
         """
-        return (
-            ", ".join(sorted(x.upper() for x in methods)) if methods else None
-        )
+        return ", ".join(sorted(x.upper() for x in methods)) if methods else None
 
     def _normalize_headers(self, headers: list[str] | None) -> str | None:
         """Normaliza os cabeçalhos para CORS.
@@ -175,11 +173,7 @@ class CrossDomain:
             int: Tempo máximo de cache em segundos.
 
         """
-        return (
-            int(max_age.total_seconds())
-            if isinstance(max_age, timedelta)
-            else max_age
-        )
+        return int(max_age.total_seconds()) if isinstance(max_age, timedelta) else max_age
 
     def _get_methods(self, normalized_methods: str | None) -> str:
         """Obtém os métodos permitidos para CORS.

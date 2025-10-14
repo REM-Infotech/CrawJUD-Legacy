@@ -13,7 +13,7 @@ from sqlalchemy.orm import Mapped
 from app._types import MyAny
 from app.resources.extensions import db, jwt
 
-from .users import User
+from ._users import User
 
 salt = bcrypt.gensalt()
 

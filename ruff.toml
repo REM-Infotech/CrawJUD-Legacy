@@ -1,6 +1,6 @@
 preview = true
 extend-include = ["*.ipynb"]
-line-length = 79
+line-length = 90
 indent-width = 4
 
 [lint]
@@ -51,7 +51,17 @@ extend-select = [
     "RUF",
 ]
 
-ignore = ["ARG002", "FBT003", "RUF022", "D203", "D213", "TC", "FA102", "F821"]
+ignore = [
+    "ARG002",
+    "FBT003",
+    "RUF022",
+    "D203",
+    "D213",
+    "TC",
+    "FA102",
+    "F821",
+    "COM812",
+]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 unfixable = ["B", "S", "D203", "D213", "D211"]

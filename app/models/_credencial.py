@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import TYPE_CHECKING
-from zoneinfo import ZoneInfo
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Mapped
@@ -13,9 +11,6 @@ from app.resources.extensions import db
 
 if TYPE_CHECKING:
     from app.models import LicenseUser
-
-
-now_ = datetime.now(ZoneInfo("America/Manaus"))
 
 
 class CredenciaisRobo(db.Model):
