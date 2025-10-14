@@ -4,17 +4,15 @@
       "name": "Python Debugger: Module",
       "type": "debugpy",
       "request": "launch",
-      "module": "app"
+      "module": "app",
+      "justMyCode": false
     },
     {
       "name": "Python Debugger: Remote Attach",
       "type": "debugpy",
       "request": "attach",
       "connect": { "host": "localhost", "port": 5678 },
-      "pathMappings": [
-        { "localRoot": "${workspaceFolder}", "remoteRoot": "." }
-      ],
-      "justMyCode": true
+      "pathMappings": [{ "localRoot": "${workspaceFolder}", "remoteRoot": "." }]
     }
   ]
 }
