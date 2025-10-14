@@ -1,18 +1,33 @@
 {
+  "compounds": [
+    {
+      "name": "React Home",
+      "configurations": ["Debug Vite App (React)", "Attach to Vite App (React)"]
+    }
+  ],
   "configurations": [
     {
-      "name": "Python Debugger: Module",
+      "name": "Debug API Backend",
       "type": "debugpy",
       "request": "launch",
-      "module": "api-backend.app",
+      "cwd": "${workspaceFolder}/api-backend",
+      "module": "app",
       "justMyCode": false
     },
     {
-      "name": "Python Debugger: Remote Attach",
-      "type": "debugpy",
-      "request": "attach",
-      "connect": { "host": "localhost", "port": 5678 },
-      "pathMappings": [{ "localRoot": "${workspaceFolder}", "remoteRoot": "." }]
+      "name": "Debug Vite App (React)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/home-ui",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"]
+    },
+    {
+      "name": "Attach to Vite App (React)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8081",
+      "webRoot": "${workspaceFolder}/home-ui"
     }
   ]
 }
