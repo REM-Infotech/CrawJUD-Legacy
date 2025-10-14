@@ -32,7 +32,7 @@ class FSATableName:
     _tablename: ClassVar[str] = ""
 
     def __set__(self, *args) -> None:
-        self._tablename = args[1]
+        self._tablename = args[1]  # pyright: ignore[reportAttributeAccessIssue]
 
     def __get__(
         self,
@@ -42,12 +42,12 @@ class FSATableName:
     ) -> str:
         if cls:
             snake_cased = camel_to_snake(cls.__class__.__name__)
-            cls.__name__ = cls.__tablename__ or snake_cased
+            cls.__name__ = cls.__tablename__ or snake_cased  # pyright: ignore[reportAttributeAccessIssue]
 
         return self._tablename
 
 
 class Model(FSA_Model):
-    query: ClassVar[Query[Self]] = cast(Query[Self], QueryProperty())
+    query: ClassVar[Query[Self]] = cast(Query[Self], QueryProperty())  # pyright: ignore[reportIncompatibleVariableOverride]
     __fsa__: ClassVar[SQLAlchemy] = cast(SQLAlchemy, FSAProperty())
     __tablename__: ClassVar[str] = FSAProperty()

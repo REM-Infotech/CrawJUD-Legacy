@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app.base import Model, Query
 
-db = SQLAlchemy(model_class=Model, query_class=Query)
+db = SQLAlchemy(model_class=Model, query_class=Query)  # pyright: ignore[reportArgumentType]
 cors = CORS()
 jwt = JWTManager()
 mail = Mail()
