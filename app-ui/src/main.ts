@@ -1,24 +1,29 @@
-import "@/assets/css/main.css";
+import "@/assets/js/color-modes.js";
+import "@/assets/scss/main.scss";
+import "@/res/axios";
+import "@/res/socketio";
+
+import { createBootstrap } from "bootstrap-vue-next";
+import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
+import "bootstrap/dist/css/bootstrap.css";
+
+import DataTablesCore from "datatables.net-bs5";
+import DataTable from "datatables.net-vue3";
 
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
+// Main App
 import App from "./App.vue";
 import router from "./router";
 
-import Aura from "@primeuix/themes/aura";
-import PrimeVue from "primevue/config";
+// Configure DataTables
+DataTable.use(DataTablesCore);
 
 const app = createApp(App);
-const pinia = createPinia();
+export const pinia = createPinia();
 
 app.use(pinia);
 app.use(router);
-
-app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-  },
-});
-
+app.use(createBootstrap()); // Important
 app.mount("#app");
