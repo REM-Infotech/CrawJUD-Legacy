@@ -8,7 +8,6 @@ from flask import Flask
 from flask_socketio import SocketIO
 from passlib.context import CryptContext
 
-from app._types import ConfigNames
 from app.config import settings
 
 app = Flask(__name__)
@@ -16,11 +15,10 @@ io = SocketIO(async_mode="threading", cors_allowed_origins="*")
 load_dotenv()
 
 path_passlib_config = str(Path.cwd().joinpath("passlib.conf"))
-
 crypt_context = CryptContext.from_path(path_passlib_config)
 
 
-def create_app(config_name: ConfigNames = "DevelopmentConfig") -> Flask:
+def create_app() -> Flask:
     """Create Flask application.
 
     Args:
