@@ -15,12 +15,7 @@ class LicenseUser(db.Model):
     __tablename__ = "licenses"
     Id: int = Column("id", Integer, primary_key=True, nullable=False)
     desc: int = Column("description", String(length=256), nullable=False)
-    Bot_Id: int = Column(
-        "bot_id",
-        Integer,
-        ForeignKey("bots.id"),
-        nullable=False,
-    )
+    Bot_Id: int = Column("bot_id", Integer, ForeignKey("bots.id"))
     Bots: Mapped[Bots] = db.relationship()
 
 
