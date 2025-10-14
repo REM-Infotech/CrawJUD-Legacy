@@ -32,13 +32,13 @@ def init_database(app: Flask) -> None:
         db.create_all()
         cfg = app.config
 
-        usr_check = db.session.query(User)
-        usr_check = usr_check.filter_by(login=cfg["ROOT_USERNAME"])
-        usr_check = usr_check.first()
+        user = (
+            db.session.query(User)
+            .filter_by(login=cfg["ROOT_USERNAME"])
+            .first()
+        )
 
-        if not usr_check:
-            to_add = []
-
+        if not user:
             data = {
                 "login": cfg["ROOT_USERNAME"],
                 "password": cfg["ROOT_PASSWORD"],
@@ -46,17 +46,15 @@ def init_database(app: Flask) -> None:
                 "nome_usuario": "Root User",
             }
             root_user = User(**data)
-            lic = db.session.query(LicenseUser)
-            lic = lic.filter_by(desc="Root License")
-            lic = lic.first()
+            root_license = (
+                db.session.query(LicenseUser)
+                .filter_by(desc="Root License")
+                .first()
+            )
 
-            to_add.append(root_user)
-
-            if lic:
+            if not root_license:
                 root_license = LicenseUser(desc="Root License")
-                root_user.license_id = root_license.Id
 
-                to_add.append(root_license)
-
-            db.session.add_all(to_add)
+            root_user.license_id = root_license.Id
+            db.session.add_all([root_license, root_user])
             db.session.commit()
