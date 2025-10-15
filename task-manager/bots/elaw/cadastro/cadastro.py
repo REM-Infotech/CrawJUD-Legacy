@@ -5,7 +5,7 @@ import time
 from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 
-from bots.elaw.cadastro import ElawCadastro
+from bots.elaw.cadastro._master import ElawCadastro
 
 
 class Cadastro(ElawCadastro):

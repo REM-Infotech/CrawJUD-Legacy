@@ -1,18 +1,12 @@
 """Módulo para a classe de controle dos robôs CAIXA."""
 
-import platform
 from contextlib import suppress
 from datetime import datetime
-from time import perf_counter, sleep
-from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from controllers._master import CrawJUD
-
-if TYPE_CHECKING:
-    from crawjud.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -28,36 +22,6 @@ CSS_INPUT_PROCESSO = {
 
 class CaixaBot(CrawJUD):
     """Classe de controle para robôs do Caixa."""
-
-    def __init__(
-        self,
-        storage_folder_name: str | None = None,
-        name: str | None = None,
-        system: str | None = None,
-        *args: T,
-        **kwargs: T,
-    ) -> None:
-        """Instancia a classe."""
-        self.botname = name
-        self.botsystem = system
-
-        self.folder_storage = storage_folder_name
-
-        self.start_time = perf_counter()
-
-        selected_browser = "chrome"
-        if platform.system() == "Linux":
-            selected_browser = "firefox"
-
-        super().__init__(selected_browser=selected_browser, *args, **kwargs)
-
-        for k, v in kwargs.copy().items():
-            setattr(self, k, v)
-
-        self.download_files()
-
-        sleep(0.5)
-        self.print_msg(message="Execução inicializada!", type_log="info")
 
     def wait_caixa(self) -> None:
         """Wait until a modal dialog (caixa) is displayed on the page."""

@@ -15,21 +15,20 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from app.bots.elaw.solicita_pagamento._condenacao import ElawCondenacao
-from app.bots.elaw.solicita_pagamento._custas import ElawCustas
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError
-from app.interfaces.types.bots import DataSucesso
+from common import _raise_execution_error
+from common.exceptions import ExecutionError
 from resources.elements import elaw as el
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from bots.elaw.solicita_pagamento._condenacao import ElawCondenacao
+from bots.elaw.solicita_pagamento._custas import ElawCustas
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from app.utils.webdriver import WebElementBot as WebElement
 type_doc = {11: "cpf", 14: "cnpj"}
 
 

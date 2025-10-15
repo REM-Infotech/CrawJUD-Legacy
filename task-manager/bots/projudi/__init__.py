@@ -3,7 +3,7 @@
 Manage initialization and execution of various Projudi bot types within CrawJUD-Bots.
 """
 
-from app.bots.projudi import (
+from bots.projudi import (
     capa,
     intimacoes,
     movimentacao,

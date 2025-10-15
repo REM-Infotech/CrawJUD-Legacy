@@ -18,7 +18,7 @@ from threading import Semaphore, Thread
 from time import sleep
 from typing import ClassVar
 
-from common.exceptions.bot import (
+from common.exceptions import (
     ExecutionError,
     FileUploadError,
 )
@@ -148,7 +148,7 @@ class Capa(PjeBot):
 
     def queue(
         self,
-        item: BotData,
+        item: dict,
         client: Client,
         regiao: str,
     ) -> None:

@@ -2,7 +2,7 @@
 
 from typing import NoReturn
 
-from common.exceptions.bot import ExecutionError
+from common.exceptions import ExecutionError
 from controllers.jusds import JusdsBot
 from resources.elements import jusds as el  # noqa: F401
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401

@@ -1,36 +1,24 @@
 """Módulo para a classe de controle dos robôs PROJUDI."""
 
-import platform
 from contextlib import suppress
 from datetime import datetime
-from time import perf_counter, sleep
-from typing import TYPE_CHECKING
+from time import sleep
 from zoneinfo import ZoneInfo
 
-from common.exceptions.bot import (
+from common.exceptions import (
     ExecutionError,
     LoginSystemError,
-    raise_start_error,
 )
-from crawjud.resources.elements import projudi as el
+from resources.elements import projudi as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from controllers._master import CrawJUD
 
-if TYPE_CHECKING:
-    from crawjud.interfaces.types import T
-    from selenium.webdriver.common.alert import Alert
-    from selenium.webdriver.remote.webdriver import WebDriver
-
-DictData = dict[str, str | datetime]
-ListData = list[DictData]
-
-
-HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
-COUNT_TRYS = 15
 CSS_INPUT_PROCESSO = {
     "1": "#numeroProcesso",
     "2": "#numeroRecurso",
@@ -39,45 +27,6 @@ CSS_INPUT_PROCESSO = {
 
 class ProjudiBot(CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
-
-    def __init__(
-        self,
-        storage_folder_name: str | None = None,
-        name: str | None = None,
-        system: str | None = None,
-        *args: T,
-        **kwargs: T,
-    ) -> None:
-        """Instancia a classe."""
-        self.botname = name
-        self.botsystem = system
-
-        self.folder_storage = storage_folder_name
-
-        self.start_time = perf_counter()
-
-        selected_browser = "chrome"
-        if platform.system() == "Linux":
-            selected_browser = "firefox"
-
-        super().__init__(selected_browser=selected_browser, *args, **kwargs)
-
-        for k, v in kwargs.copy().items():
-            setattr(self, k, v)
-
-        self.download_files()
-
-        if not self.auth():
-            with suppress(Exception):
-                self.driver.quit()
-
-            raise_start_error("Falha na autenticação.")
-
-        self.print_msg(message="Sucesso na autenticação!", type_log="info")
-        self._frame = self.load_data()
-
-        sleep(0.5)
-        self.print_msg(message="Execução inicializada!", type_log="info")
 
     def search(self) -> bool:
         """Procura processos no PROJUDI.

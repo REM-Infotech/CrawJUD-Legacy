@@ -4,6 +4,6 @@ Provide a class interface to run the Emissor bot, handle exceptions, and
 configure logging. This file follows Google/PEP 257 docstring guidelines.
 """
 
-from app.bots.caixa.emissor import Emissor
+from bots.caixa.emissor import Emissor
 
 __all__ = ["Emissor"]

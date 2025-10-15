@@ -4,7 +4,7 @@ default:
     [
       "app.resources.extensions:start_extensions",
       "app.models:init_database",
-      "app.routes:register_routes"
+      "app.routes:register_routes",
     ]
 
   ## Configurações do Flask
@@ -86,7 +86,16 @@ default:
   ROOT_CLIENT: "@format {env[CRAWJUD_ROOT_CLIENT]} @default 'Example'"
   ROOT_CPF_CNPJ_CLIENT: "@format {env[CRAWJUD_ROOT_CPF_CNPJ_CLIENT]} @default '00'"
 
-  # ✅ Configurações Celery
+  JWT_ACCESS_COOKIE_NAME: "access_token_cookie"
+  JWT_COOKIE_DOMAIN: "@format {env[CRAWJUD_APP_DOMAIN]}"
+  JWT_COOKIE_SAMESITE: Lax
+  JWT_ACCESS_CSRF_COOKIE_NAME: "X-Xsrf-Token"
+  JWT_ACCESS_CSRF_HEADER_NAME: "X-Xsrf-Token"
+  JWT_TOKEN_LOCATION:
+    - "cookies"
+    - "headers"
+
+CELERY:
   broker_url: "@format {env[CRAWJUD_BROKER_URL]}"
   result_backend: "@format {env[CRAWJUD_RESULT_BACKEND]}"
   task_serializer: "json"
@@ -101,12 +110,3 @@ default:
   task_default_exchange: "celery"
   task_default_exchange_type: "direct"
   task_default_routing_key: "celery"
-
-  JWT_ACCESS_COOKIE_NAME: "access_token_cookie"
-  JWT_COOKIE_DOMAIN: "@format {env[CRAWJUD_APP_DOMAIN]}"
-  JWT_COOKIE_SAMESITE: Lax
-  JWT_ACCESS_CSRF_COOKIE_NAME: "X-Xsrf-Token"
-  JWT_ACCESS_CSRF_HEADER_NAME: "X-Xsrf-Token"
-  JWT_TOKEN_LOCATION:
-    - "cookies"
-    - "headers"

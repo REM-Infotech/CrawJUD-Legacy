@@ -1,28 +1,15 @@
 """Módulo para a classe de controle dos robôs PJe."""
 
 import json.decoder
-import platform
 from contextlib import suppress
 from datetime import datetime
 from threading import Lock
-from time import perf_counter, sleep
+from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-from common.exceptions.bot import (
-    raise_start_error,
-)
-from crawjud.common.exceptions.validacao import ValidacaoStringError
-from crawjud.interfaces.types import BotData
-from crawjud.interfaces.types.bots.pje import (
-    DictResults,
-    DictSeparaRegiao,
-    Processo,
-)
-from crawjud.interfaces.types.custom import StrProcessoCNJ
-from crawjud.resources.elements import pje as el
-from crawjud.utils.iterators import RegioesIterator
-from crawjud.utils.models.logs import CachedExecution
+from common.exceptions.validacao import ValidacaoStringError
 from dotenv import dotenv_values
+from resources.elements import pje as el
 from selenium.common.exceptions import (
     TimeoutException,
     UnexpectedAlertPresentException,
@@ -34,9 +21,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
-    from crawjud.interfaces.dict.bot import BotData
-    from crawjud.interfaces.types import T
     from httpx import Client
+
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
@@ -49,56 +35,6 @@ COUNT_TRYS = 15
 
 class PjeBot(CrawJUD):
     """Classe de controle para robôs do PJe."""
-
-    def __init__(
-        self,
-        storage_folder_name: str | None = None,
-        name: str | None = None,
-        system: str | None = None,
-        *args: T,
-        **kwargs: T,
-    ) -> None:
-        """Instancia a classe."""
-        self.botname = name
-        self.botsystem = system
-
-        self.folder_storage = storage_folder_name
-
-        self.start_time = perf_counter()
-
-        selected_browser = "chrome"
-        if platform.system() == "Linux":
-            selected_browser = "firefox"
-
-        super().__init__(
-            selected_browser=selected_browser,
-            with_proxy=True,
-            *args,
-            **kwargs,
-        )
-
-        for k, v in kwargs.copy().items():
-            setattr(self, k, v)
-
-        self.download_files()
-
-        if not self.auth():
-            with suppress(Exception):
-                self.driver.quit()
-
-            raise_start_error("Falha na autenticação.")
-
-        self.print_msg(
-            message="Sucesso na autenticação!",
-            type_log="info",
-        )
-        self._frame = self.load_data()
-
-        sleep(0.5)
-        self.print_msg(
-            message="Execução inicializada!",
-            type_log="info",
-        )
 
     def get_headers_cookies(
         self,
@@ -128,7 +64,7 @@ class PjeBot(CrawJUD):
 
     def search(
         self,
-        data: BotData,
+        data: dict,
         row: int,
         client: Client,
         regiao: str,

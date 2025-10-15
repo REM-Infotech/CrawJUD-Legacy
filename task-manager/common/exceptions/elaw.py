@@ -3,7 +3,7 @@
 import logging
 import traceback
 
-from app.common.exceptions import BaseCrawJUDError
+from common.exceptions import BaseCrawJUDError
 
 
 class ElawError(BaseCrawJUDError):

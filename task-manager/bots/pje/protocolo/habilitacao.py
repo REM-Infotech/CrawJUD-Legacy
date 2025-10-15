@@ -7,11 +7,10 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 """
 
 from time import sleep
-from typing import TYPE_CHECKING
 
 import dotenv
-from app.resources import format_string
 from controllers.pje import PjeBot
+from resources import format_string
 from resources.elements import pje as el
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -19,16 +18,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-if TYPE_CHECKING:
-    from app.interfaces.dict.bot import BotData
-
 dotenv.load_dotenv()
 
 
 class HabilitiacaoPJe(PjeBot):
     """Controle de funções de Protocolo de Habilitação de processos PJe."""
 
-    def protocolar_habilitacao(self, bot_data: BotData, regiao: str) -> None:
+    def protocolar_habilitacao(self, bot_data: dict, regiao: str) -> None:
         """Empty."""
         link_habilitacao = (
             f"https://pje.trt{regiao}.jus.br/pjekz/habilitacao-autos"

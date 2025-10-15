@@ -13,7 +13,7 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from app.common.exceptions.bot import ExecutionError
+from common.exceptions import ExecutionError
 from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.webdriver.common.by import By

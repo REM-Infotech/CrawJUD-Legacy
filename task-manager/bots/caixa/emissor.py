@@ -9,7 +9,7 @@ import shutil
 from contextlib import suppress
 from time import sleep
 
-from app.common.exceptions.bot import ExecutionError
+from common.exceptions import ExecutionError
 from controllers.caixa import CaixaBot
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By

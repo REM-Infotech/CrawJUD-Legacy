@@ -7,7 +7,7 @@ from contextlib import suppress
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from common.exceptions.bot import ExecutionError
+from common.exceptions import ExecutionError
 from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
 from selenium.common.exceptions import (

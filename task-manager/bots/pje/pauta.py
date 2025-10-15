@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from time import sleep
 
-from common.exceptions.bot import ExecutionError
+from common.exceptions import ExecutionError
 from controllers.pje import PjeBot
 from resources.elements import pje as el
 from selenium.common.exceptions import (

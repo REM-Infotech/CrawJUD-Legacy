@@ -8,7 +8,7 @@ from typing import NoReturn
 
 
 def _raise_execution_error(message: str) -> NoReturn:
-    from app.common.exceptions.bot import ExecutionError
+    from common.exceptions import ExecutionError
 
     raise ExecutionError(message=message)
 

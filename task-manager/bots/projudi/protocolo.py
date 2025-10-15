@@ -7,8 +7,7 @@ from contextlib import suppress
 from time import sleep
 from typing import NoReturn
 
-from common.exceptions.bot import FileError
-from common.exceptions.bot.projudi import PasswordTokenError
+from common.exceptions import FileError, PasswordTokenError
 from common.exceptions.selenium_webdriver import SeleniumError
 from controllers.projudi import ProjudiBot
 from PIL import Image

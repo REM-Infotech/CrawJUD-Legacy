@@ -4,7 +4,7 @@ This module configures and initializes the ESaj bot components including BuscaPa
 Capa, Emissao, Movimentacao, and Protocolo. It sets logging and error handling.
 """
 
-from app.bots.esaj import (
+from bots.esaj import (
     busca_pags,
     capa,
     emissao,
