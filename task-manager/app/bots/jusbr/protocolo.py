@@ -19,7 +19,6 @@ from tqdm import tqdm
 from app.common import _raise_execution_error
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.jusbr import JusBrBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources import format_string

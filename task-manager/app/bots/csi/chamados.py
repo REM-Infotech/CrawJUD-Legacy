@@ -17,7 +17,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
 from app.controllers.csi import CsiBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task, wrap_cls
 from app.resources.elements import csi as el
 

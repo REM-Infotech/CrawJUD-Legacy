@@ -25,7 +25,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.elaw import ElawBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources.elements import elaw as el

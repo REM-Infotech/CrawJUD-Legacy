@@ -25,7 +25,6 @@ from app.common.exceptions.bot import FileError
 from app.common.exceptions.bot.projudi import PasswordTokenError
 from app.common.exceptions.selenium_webdriver import SeleniumError
 from app.controllers.projudi import ProjudiBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.interfaces.types.bots import DataSucesso

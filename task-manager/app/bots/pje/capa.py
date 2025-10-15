@@ -30,7 +30,6 @@ from app.common.exceptions.bot import (
     FileUploadError,
 )
 from app.controllers.pje import PjeBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task, wrap_cls
 from app.interfaces.pje import (
     AssuntosProcessoPJeDict,

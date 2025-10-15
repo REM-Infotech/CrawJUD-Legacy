@@ -11,7 +11,6 @@ import pandas as pd
 from celery.result import AsyncResult
 from clear import clear
 
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.resources import format_string
 from app.utils.models.logs import CachedExecution

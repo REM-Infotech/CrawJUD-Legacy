@@ -22,7 +22,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.pje import PjeBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.resources._varas_dict import varas as varas_pje
 from app.resources.elements import pje as el

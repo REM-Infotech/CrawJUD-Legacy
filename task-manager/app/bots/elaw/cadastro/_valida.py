@@ -8,7 +8,6 @@ from selenium.webdriver.common.by import By
 
 from app.common import _raise_execution_error
 from app.controllers.elaw import ElawBot
-from app.custom.task import ContextTask as ContextTask
 from app.decorators import shared_task as shared_task
 from app.decorators.bot import wrap_cls as wrap_cls
 from app.resources.elements import elaw as el

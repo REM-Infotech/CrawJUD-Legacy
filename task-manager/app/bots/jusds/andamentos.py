@@ -8,7 +8,6 @@ from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
 
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.jusds import JusdsBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources.elements import jusds as el  # noqa: F401

@@ -7,7 +7,6 @@ import time
 from selenium.webdriver.common.by import By
 
 from app.bots.elaw.cadastro._master import ElawCadastro
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources.elements import elaw as el

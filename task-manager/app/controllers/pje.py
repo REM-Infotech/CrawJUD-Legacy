@@ -39,9 +39,8 @@ from app.utils.models.logs import CachedExecution
 if TYPE_CHECKING:
     from httpx import Client
 
-    from app.custom.task import ContextTask
     from app.interfaces.dict.bot import BotData
-    from app.interfaces.types import T
+
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

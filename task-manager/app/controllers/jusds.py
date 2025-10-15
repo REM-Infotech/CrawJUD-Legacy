@@ -6,7 +6,7 @@ import platform
 from contextlib import suppress
 from pathlib import Path
 from time import perf_counter, sleep
-from typing import TYPE_CHECKING, TypeVar
+from typing import TypeVar
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -17,9 +17,6 @@ from app.common.exceptions.bot import raise_start_error
 from app.controllers.main import CrawJUD
 from app.interfaces.types.bots import DataSucesso
 from app.resources.elements import jusds as el
-
-if TYPE_CHECKING:
-    from app.custom.task import ContextTask
 
 workdir = Path(__file__).cwd()
 

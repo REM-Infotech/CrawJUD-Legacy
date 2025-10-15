@@ -21,9 +21,8 @@ from app.controllers.main import CrawJUD
 from app.resources.elements import jusbr as el
 
 if TYPE_CHECKING:
-    from app.custom.task import ContextTask
     from app.interfaces.dict.bot import BotData
-    from app.interfaces.types import T
+
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

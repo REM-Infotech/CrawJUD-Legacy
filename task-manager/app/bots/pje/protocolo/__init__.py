@@ -18,7 +18,6 @@ from httpx import Client
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
 
 from app.bots.pje.protocolo.habilitacao import HabilitiacaoPJe
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 

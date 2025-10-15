@@ -15,7 +15,6 @@ from selenium.webdriver.support.ui import Select
 
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.projudi import ProjudiBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources.elements import projudi as el

@@ -7,16 +7,11 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import perf_counter, sleep
-from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from app.controllers.main import CrawJUD
-
-if TYPE_CHECKING:
-    from app.custom.task import ContextTask
-    from app.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

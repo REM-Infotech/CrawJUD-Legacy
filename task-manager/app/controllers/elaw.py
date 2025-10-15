@@ -24,8 +24,6 @@ from app.interfaces.types.bots import DataSucesso
 from app.resources.elements import elaw as el
 
 if TYPE_CHECKING:
-    from app.custom.task import ContextTask
-    from app.interfaces.types import T
     from app.utils.webdriver.web_element import WebElementBot
 
 

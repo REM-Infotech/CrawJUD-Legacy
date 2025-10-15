@@ -27,20 +27,11 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
     from selenium.webdriver.remote.webdriver import WebDriver
 
-    from app.custom.task import ContextTask
-    from app.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]
 
 workdir = Path(__file__).cwd()
-
-HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
-COUNT_TRYS = 15
-CSS_INPUT_PROCESSO = {
-    "1": "#numeroProcesso",
-    "2": "#numeroRecurso",
-}
 
 
 class ProjudiBot(CrawJUD):
@@ -48,7 +39,6 @@ class ProjudiBot(CrawJUD):
 
     def __init__(
         self,
-        current_task: ContextTask = None,
         storage_folder_name: str | None = None,
         name: str | None = None,
         system: str | None = None,
@@ -60,9 +50,7 @@ class ProjudiBot(CrawJUD):
         self.botsystem = system
 
         self.folder_storage = storage_folder_name
-        self.current_task = current_task
         self.start_time = perf_counter()
-        self.pid = str(current_task.request.id)
 
         selected_browser = "chrome"
         if platform.system() == "Linux":

@@ -15,7 +15,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.esaj import ESajBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources.elements import esaj as el

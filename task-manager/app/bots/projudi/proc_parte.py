@@ -16,7 +16,6 @@ from selenium.webdriver.common.by import By
 
 from app.common.exceptions.bot import ExecutionError
 from app.controllers.projudi import ProjudiBot
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 from app.resources.elements import projudi as el
@@ -25,7 +24,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
-@shared_task(name="projudi.busca_parte", bind=True, base=ContextTask)
+@shared_task(name="projudi.busca_parte", bind=True)
 @wrap_cls
 class ProcParte(ProjudiBot):
     """Handle participant processing in Projudi with detailed queue management and error handling.

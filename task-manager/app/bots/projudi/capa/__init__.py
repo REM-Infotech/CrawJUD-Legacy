@@ -19,7 +19,6 @@ from app.bots.projudi.capa._1 import PrimeiraInstancia
 from app.bots.projudi.capa._2 import SegundaInstancia
 from app.common import _raise_execution_error
 from app.common.exceptions.bot import ExecutionError
-from app.custom.task import ContextTask
 from app.decorators import shared_task
 from app.decorators.bot import wrap_cls
 

@@ -8,7 +8,6 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from time import perf_counter, sleep
-from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -18,10 +17,6 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from app.common.exceptions.bot import raise_start_error
 from app.controllers.main import CrawJUD
 from app.resources.elements import esaj as el
-
-if TYPE_CHECKING:
-    from app.custom.task import ContextTask
-    from app.interfaces.types import T
 
 DictData = dict[str, str | datetime]
 ListData = list[DictData]

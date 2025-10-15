@@ -10,7 +10,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from app.common import _raise_execution_error
 from app.common.exceptions.bot import ExecutionError as ExecutionError
-from app.custom.task import ContextTask as ContextTask
 from app.decorators import shared_task as shared_task
 from app.decorators.bot import wrap_cls as wrap_cls
 from app.resources.elements import elaw as el
