@@ -11,6 +11,7 @@ type ConfigNames = Literal[
     "TestingConfig",
     "ProductionConfig",
 ]
+type ModeMiddleware = Literal["legacy", "modern"]
 
 
 class HealtCheck(TypedDict):

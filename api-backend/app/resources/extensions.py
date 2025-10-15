@@ -6,6 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 
 from app.base import Model, Query
@@ -23,7 +24,7 @@ cors = CORS(
         "http://localhost:1474",  # Adiciona a origem necessária para evitar erro CORS
     ],
 )
-
+io = SocketIO(async_mode="threading", cors_allowed_origins="*")
 __all__ = ["db", "cors", "jwt", "mail", "start_extensions"]
 
 
@@ -35,3 +36,4 @@ def start_extensions(app: Flask) -> None:
         cors.init_app(app)
         jwt.init_app(app)
         mail.init_app(app)
+        io.init_app(app)
