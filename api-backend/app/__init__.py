@@ -8,7 +8,7 @@ from flask import Flask
 from passlib.context import CryptContext
 
 from app._types import MyAny as MyAny
-from app.config import settings
+from config import settings
 
 app = Flask(__name__)
 

@@ -10,6 +10,7 @@ dependencies = [
     "asgiref>=3.10.0",
     "bcrypt>=5.0.0",
     "blinker==1.9.0",
+    "celery>=5.5.3",
     "clear==2.0.0",
     "click==8.3.0",
     "colorama==0.4.6",
