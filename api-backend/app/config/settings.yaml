@@ -101,3 +101,12 @@ default:
   task_default_exchange: "celery"
   task_default_exchange_type: "direct"
   task_default_routing_key: "celery"
+
+  JWT_ACCESS_COOKIE_NAME: "access_token_cookie"
+  JWT_COOKIE_DOMAIN: "@format {env[CRAWJUD_APP_DOMAIN]}"
+  JWT_COOKIE_SAMESITE: Lax
+  JWT_ACCESS_CSRF_COOKIE_NAME: "X-Xsrf-Token"
+  JWT_ACCESS_CSRF_HEADER_NAME: "X-Xsrf-Token"
+  JWT_TOKEN_LOCATION:
+    - "cookies"
+    - "headers"

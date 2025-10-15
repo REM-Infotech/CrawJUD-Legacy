@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aether",
     "argon2-cffi>=25.1.0",
     "asgiref>=3.10.0",
     "bcrypt>=5.0.0",
@@ -53,3 +54,6 @@ dev = [
     "debugpy>=1.8.17",
     "pre-commit>=4.3.0",
 ]
+
+[tool.uv.sources]
+aether = { git = "https://github.com/Robotz213/Aether.git" }

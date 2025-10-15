@@ -48,7 +48,9 @@ class User(db.Model):
         self.password = crypt_context.hash(senha_texto)
 
     def check_password(self, senha_texto_claro: str) -> bool:
-        valid_hash = crypt_context.verify(senha_texto_claro, self.password)
+        valid_hash = crypt_context.verify(
+            senha_texto_claro, self.password, scheme="argon2"
+        )
 
         if valid_hash:
             if crypt_context.needs_update(self.password):

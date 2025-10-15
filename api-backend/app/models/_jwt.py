@@ -26,9 +26,7 @@ def user_identity_lookup(*args: MyAny) -> int:
         int: The user's ID.
 
     """
-    user: User = args[0]
-
-    return user.id
+    return args[0]
 
 
 @jwt.token_in_blocklist_loader

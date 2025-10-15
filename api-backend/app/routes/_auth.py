@@ -22,8 +22,9 @@ Dependencies:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
+import jwt
 from flask import (
     Blueprint,
     Response,
@@ -35,12 +36,10 @@ from flask import (
 )
 from flask_jwt_extended import (
     create_access_token,
-    set_access_cookies,
     unset_jwt_cookies,
 )
 from flask_sqlalchemy import SQLAlchemy
 
-from app._types import LoginForm
 from app.models import User
 
 if TYPE_CHECKING:
@@ -59,12 +58,11 @@ def login() -> Response:
             the login template.
 
     """
-    response: Response = make_response(jsonify(message="responsta vazia"), 201)
-
     db: SQLAlchemy = current_app.extensions["sqlalchemy"]
-    data = cast(LoginForm, request.get_json())
+    data = request.get_json(force=True)  # força o parsing do JSON
 
-    if not data.get("login") or not data.get("password"):
+    # Verifica se os campos obrigatórios estão presentes
+    if not data or not data.get("login") or not data.get("password"):
         abort(400, description="Login e senha são obrigatórios.")
 
     authenticated = User.authenticate(data["login"], data["password"])
@@ -72,14 +70,38 @@ def login() -> Response:
         abort(401, description="Credenciais inválidas.")
 
     user = db.session.query(User).filter_by(login=data["login"]).first()
-    response = make_response(
-        jsonify(
-            message="Login efetuado com sucesso!",
-        ),
-    )
-    access_token = create_access_token(identity=user)
+    if not user:
+        abort(404, description="Usuário não encontrado.")
 
-    set_access_cookies(response, access_token)
+    response = make_response(
+        jsonify(message="Login efetuado com sucesso!"), 200
+    )
+    access_token = create_access_token(identity=user.id)
+
+    decoded_token = jwt.decode(
+        access_token, options={"verify_signature": False}
+    )
+
+    response.set_cookie(
+        current_app.config["JWT_ACCESS_COOKIE_NAME"],
+        value=access_token,
+        max_age=3600 * 24 * 7,
+        secure=current_app.config["JWT_COOKIE_SECURE"],
+        httponly=True,
+        domain=current_app.config["SERVER_NAME"],
+        path=current_app.config["JWT_ACCESS_COOKIE_PATH"],
+        samesite=current_app.config["JWT_COOKIE_SAMESITE"],
+    )
+    response.set_cookie(
+        current_app.config["JWT_ACCESS_CSRF_COOKIE_NAME"],
+        value=decoded_token["csrf"],
+        max_age=3600 * 24 * 7,
+        secure=current_app.config["JWT_COOKIE_SECURE"],
+        httponly=False,
+        domain=current_app.config["SERVER_NAME"],
+        path="/",
+        samesite=current_app.config["JWT_COOKIE_SAMESITE"],
+    )
 
     return response
 
