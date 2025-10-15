@@ -20,7 +20,18 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/task-manager",
       "module": "celery",
-      "args": ["-A", "app", "worker", "-P", "threads", "-c", "16", "-E"]
+      "args": [
+        "-A",
+        "app",
+        "worker",
+        "-P",
+        "threads",
+        "-c",
+        "16",
+        "-E",
+        "--loglevel",
+        "DEBUG"
+      ]
     },
     {
       "name": "Debug Vite App (Vue)",
