@@ -4,8 +4,6 @@ Este pacote contém módulos utilitários e funções compartilhadas entre
 diferentes partes do sistema.
 """
 
-from __future__ import annotations
-
 from typing import NoReturn
 
 

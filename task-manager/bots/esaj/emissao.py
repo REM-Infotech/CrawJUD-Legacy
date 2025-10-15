@@ -4,8 +4,6 @@ This module executes the emission workflow by generating PDF documents,
 navigating forms, and extracting barcodes following the ESaj requirements.
 """
 
-from __future__ import annotations
-
 import platform
 import re
 from contextlib import suppress

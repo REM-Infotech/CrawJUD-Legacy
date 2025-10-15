@@ -1,7 +1,5 @@
 """Elementos sistema JUSDS."""
 
-from __future__ import annotations
-
 URL_LOGIN_JUSDS = "https://infraero.jusds.com.br/JRD/openform.do?sys=JRD&action=openform&formID=464569215&firstLoad=true"
 URL_CONFIRMA_LOGIN = "https://infraero.jusds.com.br/JRD/open.do?sys=JRD"
 

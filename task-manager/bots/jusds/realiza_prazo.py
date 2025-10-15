@@ -1,7 +1,5 @@
 """empty."""
 
-from __future__ import annotations
-
 from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING

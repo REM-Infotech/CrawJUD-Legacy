@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from bs4 import BeautifulSoup
 from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el

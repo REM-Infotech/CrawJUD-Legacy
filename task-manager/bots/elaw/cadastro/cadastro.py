@@ -1,7 +1,5 @@
 """Modulo Elaw Pré Cadastro."""
 
-from __future__ import annotations
-
 import time
 
 from app.bots.elaw.cadastro._master import ElawCadastro

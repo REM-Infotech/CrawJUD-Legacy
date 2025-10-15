@@ -1,7 +1,5 @@
 """empty."""
 
-from __future__ import annotations
-
 from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo

@@ -3,8 +3,6 @@
 This module handles calculations related to the TJD-Federal Tribunal within the CrawJUD-Bots application.
 """
 
-from __future__ import annotations
-
 import base64
 from contextlib import suppress
 from pathlib import Path

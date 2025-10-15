@@ -3,8 +3,6 @@
 This module manages movement operations on the Esaj system using the CrawJUD framework.
 """
 
-from __future__ import annotations
-
 import re
 from contextlib import suppress
 from datetime import datetime

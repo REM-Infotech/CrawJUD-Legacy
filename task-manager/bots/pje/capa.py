@@ -6,8 +6,6 @@ dos processos e salvar os resultados no storage.
 
 """
 
-from __future__ import annotations
-
 import secrets
 import traceback
 from concurrent.futures import (
@@ -16,52 +14,28 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
-from pathlib import Path
 from threading import Semaphore, Thread
 from time import sleep
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
-from app.common.exceptions.bot import (
+from common.exceptions.bot import (
     ExecutionError,
     FileUploadError,
 )
-from app.decorators import shared_task, wrap_cls
-from app.interfaces.pje import (
-    AssuntosProcessoPJeDict,
-    AudienciaProcessoPjeDict,
-    CapaProcessualPJeDict,
-    PartesProcessoPJeDict,
-    RepresentantePartesPJeDict,
-)
-from app.interfaces.types import BotData
-from app.interfaces.types.bots.pje import (
-    DictResults,
-)
-from app.utils.formatadores import formata_tempo
 from controllers.pje import PjeBot
 from dotenv import load_dotenv
 from httpx import Client, Response
 from resources.elements import pje as el
 from tqdm import tqdm
 
-if TYPE_CHECKING:
-    from app.interfaces.pje import ProcessoJudicialDict
-    from app.interfaces.pje.assuntos import AssuntoDict, ItemAssuntoDict
-    from app.interfaces.pje.audiencias import AudienciaDict
-    from app.interfaces.pje.partes import ParteDict, PartesJsonDict
-    from app.interfaces.types import BotData, DictType
-    from app.interfaces.types.bots.pje import DictResults
-    from httpx import Response
 load_dotenv()
 
 SENTINELA = None
-workdir = Path(__file__).cwd()
+
 semaforo_arquivo: Semaphore = Semaphore(10)
 semaforo_processo: Semaphore = Semaphore(10)
 
 
-@shared_task(name="pje.capa", bind=True)
-@wrap_cls
 class Capa(PjeBot):
     """Gerencia autenticação, enfileiramento e processamento de processos PJE.
 
@@ -70,12 +44,6 @@ class Capa(PjeBot):
     resultados no armazenamento definido.
 
     """
-
-    to_add_partes: ClassVar[list[PartesProcessoPJeDict]] = []
-    to_add_processos: ClassVar[list[CapaProcessualPJeDict]] = []
-    to_add_assuntos: ClassVar[list[AssuntosProcessoPJeDict]] = []
-    to_add_audiencias: ClassVar[list[AudienciaProcessoPjeDict]] = []
-    to_add_representantes: ClassVar[list[RepresentantePartesPJeDict]] = []
 
     futures_download_file: ClassVar[list[Future]] = []
 

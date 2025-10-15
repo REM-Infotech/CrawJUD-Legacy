@@ -3,8 +3,6 @@
 Extract and manage process details from Projudi by scraping and formatting data.
 """
 
-from __future__ import annotations
-
 import shutil
 import time
 from contextlib import suppress
@@ -12,24 +10,20 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 
-from app.bots.projudi.capa._1 import PrimeiraInstancia
-from app.bots.projudi.capa._2 import SegundaInstancia
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common import _raise_execution_error
+from common.exceptions.bot import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from bots.projudi.capa._1 import PrimeiraInstancia
+from bots.projudi.capa._2 import SegundaInstancia
 
 if TYPE_CHECKING:
     from datetime import datetime
 
-    from app.interfaces.types import ListPartes, ProcessInfo
     from selenium.webdriver.remote.webelement import WebElement  # noqa: F401
 
 
-@shared_task(name="projudi.capa", bind=True)
-@wrap_cls
 class Capa(PrimeiraInstancia, SegundaInstancia):
     """Extract process information from Projudi and populate structured data.
 
@@ -37,13 +31,13 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
     extract process data and participant details, and format them accordingly.
     """
 
-    to_add_partes: ClassVar[list[ProcessInfo]] = []
-    to_add_assuntos: ClassVar[list[ProcessInfo]] = []
-    to_add_processos: ClassVar[list[ProcessInfo]] = []
-    to_add_audiencias: ClassVar[list[ProcessInfo]] = []
-    to_add_representantes: ClassVar[list[ProcessInfo]] = []
+    to_add_partes: ClassVar[list[dict]] = []
+    to_add_assuntos: ClassVar[list[dict]] = []
+    to_add_processos: ClassVar[list[dict]] = []
+    to_add_audiencias: ClassVar[list[dict]] = []
+    to_add_representantes: ClassVar[list[dict]] = []
 
-    list_partes: ClassVar[ListPartes] = []
+    list_partes: ClassVar[list] = []
 
     def execution(self) -> None:
         """Execute the main processing loop to extract process information.
@@ -158,7 +152,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             _raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
-        process_info: ProcessInfo = {"Número do processo": numero_processo}
+        process_info: dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_primeiro_grau())
         process_info.update(self._info_processual_primeiro_grau())
 
@@ -166,7 +160,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         self.to_add_processos_primeiro_grau.append(process_info)
 
     def segundo_grau(self, numero_processo: str) -> None:
-        process_info: ProcessInfo = {"Número do processo": numero_processo}
+        process_info: dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_segundo_grau())
         process_info.update(self._info_processual_segundo_grau())
 

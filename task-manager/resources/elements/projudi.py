@@ -6,8 +6,6 @@ de documentos no Projudi.
 
 """
 
-from __future__ import annotations
-
 url_login = (
     "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
 )

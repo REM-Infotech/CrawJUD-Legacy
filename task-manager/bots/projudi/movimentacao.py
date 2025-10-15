@@ -3,8 +3,6 @@
 Handle movement-related operations in the Projudi system with data scraping and reporting.
 """
 
-from __future__ import annotations
-
 from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar

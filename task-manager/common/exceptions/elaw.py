@@ -1,7 +1,5 @@
 """Módulo de exceptions elaw."""
 
-from __future__ import annotations
-
 import logging
 import traceback
 

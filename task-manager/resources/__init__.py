@@ -3,8 +3,6 @@
 Contém arquivos e utilitários de recursos compartilhados.
 """
 
-from __future__ import annotations
-
 from unicodedata import combining, normalize
 
 from werkzeug.utils import secure_filename

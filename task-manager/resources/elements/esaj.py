@@ -7,8 +7,6 @@ Este módulo contém:
 
 """
 
-from __future__ import annotations
-
 type_docscss = {
     "custas_iniciais": {
         "cnpj": [

@@ -5,8 +5,6 @@ pautas de audiências judiciais utilizando Selenium, além de tratar erros e ger
 durante a execução automatizada das tarefas.
 """
 
-from __future__ import annotations
-
 from contextlib import suppress
 from datetime import datetime, timedelta
 from pathlib import Path

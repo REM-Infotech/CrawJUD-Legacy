@@ -3,8 +3,6 @@
 Extract and manage process details from esaj by scraping and formatting data.
 """
 
-from __future__ import annotations
-
 import shutil
 import time
 from contextlib import suppress

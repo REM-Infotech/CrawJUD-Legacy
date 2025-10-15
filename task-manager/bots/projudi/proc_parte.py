@@ -3,8 +3,6 @@
 Manage participant processing in the Projudi system by interacting with process lists and varas.
 """
 
-from __future__ import annotations
-
 from contextlib import suppress
 from pathlib import Path
 from typing import TYPE_CHECKING

@@ -6,8 +6,6 @@ de documentos no Projudi.
 
 """
 
-from __future__ import annotations
-
 URL_LOGIN = "https://csi.infraero.gov.br/citsmart/webmvc/login"
 URL_BUSCA_CHAMADO = "https://csi.infraero.gov.br/citsmart/pages/pesquisaSolicitacoesServicos/pesquisaSolicitacoesServicos.load"
 URL_CONFIRMA_LOGIN = (

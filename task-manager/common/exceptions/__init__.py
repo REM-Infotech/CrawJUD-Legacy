@@ -1,7 +1,5 @@
 """Módulo de tratamento de exceptions do robô."""
 
-from __future__ import annotations
-
 
 class BaseCrawJUDError(Exception):
     """Base exception class for CrawJUD-specific errors."""

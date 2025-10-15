@@ -15,8 +15,6 @@ Módulos disponíveis:
     - calculadoras: Bots para cálculos automáticos
 """
 
-from __future__ import annotations
-
 from . import csi, elaw, esaj, jusbr, jusds, pje, projudi
 
 __all__ = ["csi", "elaw", "esaj", "jusbr", "pje", "projudi", "jusds"]

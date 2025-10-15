@@ -6,8 +6,6 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 
 """
 
-from __future__ import annotations
-
 import traceback
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress

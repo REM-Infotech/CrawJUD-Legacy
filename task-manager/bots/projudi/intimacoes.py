@@ -3,8 +3,6 @@
 Extract and manage process intimation information from the Projudi system.
 """
 
-from __future__ import annotations
-
 import time
 from contextlib import suppress
 from typing import TYPE_CHECKING

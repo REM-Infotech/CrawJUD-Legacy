@@ -7,8 +7,6 @@ Classes:
     Download: Manages document downloads by extending the CrawJUD base class
 """
 
-from __future__ import annotations
-
 import os
 import shutil
 from contextlib import suppress

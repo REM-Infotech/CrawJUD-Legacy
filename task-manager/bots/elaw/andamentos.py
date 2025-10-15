@@ -1,7 +1,5 @@
 """Robô de automação elaw andamentos."""
 
-from __future__ import annotations
-
 from time import sleep
 from typing import NoReturn
 

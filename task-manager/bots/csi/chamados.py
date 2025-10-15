@@ -6,8 +6,6 @@ tratamento de contexto e execução assíncrona de tarefas.
 
 """
 
-from __future__ import annotations
-
 from time import sleep
 
 from app.decorators import shared_task, wrap_cls

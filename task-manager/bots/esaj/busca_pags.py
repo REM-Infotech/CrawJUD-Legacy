@@ -3,8 +3,6 @@
 This module manages page search operations for paid costs in the CrawJUD-Bots app.
 """
 
-from __future__ import annotations
-
 from contextlib import suppress
 from datetime import datetime
 from typing import TYPE_CHECKING

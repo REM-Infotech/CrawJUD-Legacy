@@ -12,8 +12,6 @@ Attributes:
 
 """
 
-from __future__ import annotations
-
 from app.bots.elaw import (
     andamentos,
     cadastro,

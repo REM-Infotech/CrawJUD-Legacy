@@ -1,7 +1,5 @@
 """CrawJUD - Sistema de Automação Jurídica."""
 
-from __future__ import annotations
-
 import importlib
 
 from celery import Celery

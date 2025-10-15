@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from contextlib import suppress
 from time import sleep
 from traceback import format_exception_only

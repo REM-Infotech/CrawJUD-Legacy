@@ -3,8 +3,6 @@
 This module provides selectors for automating ELAW operations.
 """
 
-from __future__ import annotations
-
 LINK_PROCESSO_LIST = "https://amazonas.elaw.com.br/processoList.elaw"
 
 

@@ -1,7 +1,5 @@
 """empty."""
 
-from __future__ import annotations
-
 from typing import NoReturn
 
 from app.common.exceptions.bot import ExecutionError

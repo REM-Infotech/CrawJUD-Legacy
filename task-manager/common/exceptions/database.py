@@ -5,8 +5,6 @@ inserção de registros, detalhando o rastreamento de exceções originais.
 
 """
 
-from __future__ import annotations
-
 import traceback
 
 

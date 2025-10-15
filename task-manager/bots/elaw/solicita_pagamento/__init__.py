@@ -11,8 +11,6 @@ Attributes:
 
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from app.bots.elaw.solicita_pagamento._master import ElawPagamentos

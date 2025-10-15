@@ -11,8 +11,6 @@ Attributes:
 
 """
 
-from __future__ import annotations
-
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
