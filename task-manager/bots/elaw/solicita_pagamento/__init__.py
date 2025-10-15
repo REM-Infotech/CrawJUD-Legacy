@@ -13,17 +13,12 @@ Attributes:
 
 from typing import TYPE_CHECKING
 
-from app.bots.elaw.solicita_pagamento._master import ElawPagamentos
-from app.common import _raise_execution_error
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from bots.elaw.solicita_pagamento._master import ElawPagamentos
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-@shared_task(name="elaw.solicita_pagamento")
-@wrap_cls
 class SolicitaPgto(ElawPagamentos):
     """Gerencie solicitações de pagamento automatizadas no sistema ELAW.
 

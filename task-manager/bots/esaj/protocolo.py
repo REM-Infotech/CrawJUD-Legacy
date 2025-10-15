@@ -9,10 +9,7 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions import ExecutionError
 from controllers.esaj import ESajBot
 from resources.elements import esaj as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -22,8 +19,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-@shared_task(name="esaj.protocolo", bind=True)
-@wrap_cls
 class Protocolo(ESajBot):
     """Class Protocolo.
 

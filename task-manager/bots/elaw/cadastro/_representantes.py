@@ -1,10 +1,6 @@
 from contextlib import suppress
 from time import sleep
-from typing import TYPE_CHECKING
 
-from app.common import _raise_execution_error
-from app.decorators import shared_task as shared_task
-from app.decorators.bot import wrap_cls as wrap_cls
 from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -12,9 +8,6 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot as WebElement
 
 
 class ElawRepresentantes(ElawBot):

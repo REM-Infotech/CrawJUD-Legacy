@@ -5,33 +5,22 @@ Automatiza o protocolo de processos no sistema Projudi.
 
 from contextlib import suppress
 from time import sleep
-from typing import TYPE_CHECKING, NoReturn
+from typing import NoReturn
 
-import dotenv
-from app.common.exceptions.bot import FileError
-from app.common.exceptions.bot.projudi import PasswordTokenError
-from app.common.exceptions.selenium_webdriver import SeleniumError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
-from app.interfaces.types.bots import DataSucesso
-from app.resources import format_string
+from common.exceptions.bot import FileError
+from common.exceptions.bot.projudi import PasswordTokenError
+from common.exceptions.selenium_webdriver import SeleniumError
 from controllers.projudi import ProjudiBot
 from PIL import Image
+from resources import format_string
 from resources.elements import projudi as el
-from selenium.common.exceptions import (
-    TimeoutException,
-)
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot
-
-dotenv.load_dotenv()
 
 
 def raise_password_token() -> NoReturn:
@@ -44,8 +33,6 @@ def raise_password_token() -> NoReturn:
     raise PasswordTokenError(message="Senha Incorreta!")
 
 
-@shared_task(name="projudi.protocolo", bind=True)
-@wrap_cls
 class Protocolo(ProjudiBot):
     """Executa o protocolo de processos no Projudi.
 

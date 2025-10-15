@@ -7,28 +7,14 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 """
 
 from contextlib import suppress
-from typing import TYPE_CHECKING
 
-import dotenv
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
-from app.resources import format_string
 from controllers.jusbr import JusBrBot
 from resources.elements import jusbr as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
 
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot
 
-dotenv.load_dotenv()
-
-
-@shared_task(name="jusbr.protocolo", bind=True)
-@wrap_cls
 class Protocolo(JusBrBot):
     """Gerencia o protocolo de petições no sistema JusBr."""
 

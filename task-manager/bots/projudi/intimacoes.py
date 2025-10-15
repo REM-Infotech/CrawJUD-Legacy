@@ -7,9 +7,7 @@ import time
 from contextlib import suppress
 from typing import TYPE_CHECKING
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions import ExecutionError
 from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
 from selenium.webdriver.common.by import By
@@ -20,8 +18,6 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
-@shared_task(name="projudi.intimacoes", bind=True)
-@wrap_cls
 class Intimacoes(ProjudiBot):
     """Extract and process intimations in Projudi by navigating pages and extracting data.
 

@@ -1,10 +1,9 @@
 """Download de anexos de chamados do CSI."""
 
 from contextlib import suppress
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
 import httpx
-from app.decorators import shared_task, wrap_cls
 from controllers.csi import CsiBot
 from dotenv import load_dotenv
 from resources.elements import csi as el
@@ -13,16 +12,11 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot
-
 load_dotenv()
 
 T = TypeVar("TDownloadDocumento", bound=Any)
 
 
-@shared_task(name="csi.download_documento", bind=True)
-@wrap_cls
 class DownloadDocumento(CsiBot):
     """Robô de download de documentos do CSI."""
 

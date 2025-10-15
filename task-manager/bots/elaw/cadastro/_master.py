@@ -1,10 +1,5 @@
 from contextlib import suppress
-from typing import TYPE_CHECKING
 
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError as ExecutionError
-from app.decorators import shared_task as shared_task
-from app.decorators.bot import wrap_cls as wrap_cls
 from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -18,9 +13,6 @@ from ._processo import ElawInformacoesProcesso
 from ._representantes import ElawRepresentantes
 from ._valida import ElawValidacao
 from ._valor import ElawValores
-
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot as WebElement
 
 
 class ElawCadastro(

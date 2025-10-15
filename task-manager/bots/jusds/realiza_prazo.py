@@ -2,11 +2,7 @@
 
 from contextlib import suppress
 from time import sleep
-from typing import TYPE_CHECKING
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
 from controllers.jusds import JusdsBot
 from resources.elements import jusds as el
 from selenium.webdriver import Keys
@@ -15,12 +11,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot
 
-
-@shared_task(name="jusds.realiza_prazo", bind=True, context=ContextTask)
-@wrap_cls
 class RealizaPrazos(JusdsBot):
     """empty."""
 

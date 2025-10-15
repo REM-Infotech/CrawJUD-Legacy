@@ -2,18 +2,15 @@
 
 import time
 
-from app.bots.elaw.cadastro._master import ElawCadastro
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
 from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from bots.elaw.cadastro._master import ElawCadastro
+
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-@shared_task(name="elaw.complementar_cadastro", bind=True, context=ContextTask)
-@wrap_cls
 class Complement(ElawCadastro):
     """Empty."""
 

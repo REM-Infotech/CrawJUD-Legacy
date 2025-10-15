@@ -8,7 +8,6 @@ tratamento de contexto e execução assíncrona de tarefas.
 
 from time import sleep
 
-from app.decorators import shared_task, wrap_cls
 from controllers.csi import CsiBot
 from dotenv import load_dotenv
 from resources.elements import csi as el
@@ -20,8 +19,6 @@ from tqdm import tqdm
 load_dotenv()
 
 
-@shared_task(name="csi.chamados", bind=True)
-@wrap_cls
 class Chamados[T](CsiBot):
     """Gerencia chamados CSI para execução de tarefas automatizadas.
 

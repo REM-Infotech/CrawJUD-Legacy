@@ -4,9 +4,6 @@ from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
 from controllers.jusds import JusdsBot
 from resources.elements import jusds as el
 from selenium.webdriver.common.by import By
@@ -14,8 +11,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-@shared_task(name="jusds.prazos", bind=True, context=ContextTask)
-@wrap_cls
 class Prazos(JusdsBot):
     """empty."""
 

@@ -2,15 +2,12 @@
 
 import time
 
-from app.bots.elaw.cadastro._master import ElawCadastro
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
 from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 
+from bots.elaw.cadastro import ElawCadastro
 
-@shared_task(name="elaw.cadastro", bind=True, context=ContextTask)
-@wrap_cls
+
 class Cadastro(ElawCadastro):
     """The Cadastro class extends CrawJUD to manage registration tasks within the application.
 

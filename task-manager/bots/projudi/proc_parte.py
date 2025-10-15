@@ -7,9 +7,7 @@ from contextlib import suppress
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions.bot import ExecutionError
 from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
 from selenium.common.exceptions import (
@@ -21,8 +19,6 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
-@shared_task(name="projudi.busca_parte", bind=True)
-@wrap_cls
 class ProcParte(ProjudiBot):
     """Handle participant processing in Projudi with detailed queue management and error handling.
 

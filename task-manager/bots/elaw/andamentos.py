@@ -3,9 +3,7 @@
 from time import sleep
 from typing import NoReturn
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions import ExecutionError
 from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.webdriver import Keys
@@ -24,8 +22,6 @@ def raise_error(message: str) -> NoReturn:
     raise ExecutionError(message=message)
 
 
-@shared_task(name="elaw.andamentos", bind=True, context=ContextTask)
-@wrap_cls
 class Andamentos(ElawBot):
     """The Andamentos class manages the andamento tracking bot."""
 

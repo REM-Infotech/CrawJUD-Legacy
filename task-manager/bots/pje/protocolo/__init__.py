@@ -9,23 +9,15 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 import traceback
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
-from typing import TYPE_CHECKING
 
 import dotenv
-from app.bots.pje.protocolo.habilitacao import HabilitiacaoPJe
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
 from httpx import Client
-from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
 
-if TYPE_CHECKING:
-    from app.interfaces.dict.bot import BotData
+from bots.pje.protocolo.habilitacao import HabilitiacaoPJe
 
 dotenv.load_dotenv()
 
 
-@shared_task(name="pje.protocolo", bind=True)
-@wrap_cls
 class Protocolo(HabilitiacaoPJe):
     """Gerencia o protocolo de petições no sistema JusBr."""
 

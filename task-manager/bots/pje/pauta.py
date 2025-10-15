@@ -10,9 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from time import sleep
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.resources._varas_dict import varas as varas_pje
+from common.exceptions.bot import ExecutionError
 from controllers.pje import PjeBot
 from resources.elements import pje as el
 from selenium.common.exceptions import (
@@ -24,7 +22,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 
-@shared_task(name="pje.pauta", bind=True)
 class Pauta(PjeBot):
     """Implemente a automação para buscar e processar pautas de audiências judiciais.
 

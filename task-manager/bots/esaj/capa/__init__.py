@@ -8,40 +8,22 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar
 
-from app.bots.esaj.capa._1 import PrimeiraInstancia
-from app.bots.esaj.capa._2 import SegundaInstancia
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common import _raise_execution_error
+from common.exceptions.bot import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    from app.interfaces.types import ListPartes, ProcessInfo
-    from selenium.webdriver.remote.webelement import WebElement  # noqa: F401
+from bots.esaj.capa._1 import PrimeiraInstancia
+from bots.esaj.capa._2 import SegundaInstancia
 
 
-@shared_task(name="esaj.capa", bind=True)
-@wrap_cls
 class Capa(PrimeiraInstancia, SegundaInstancia):
     """Extract process information from Esaj and populate structured data.
 
     This class extends CrawJUD to click through information panels,
     extract process data and participant details, and format them accordingly.
     """
-
-    to_add_partes: ClassVar[list[ProcessInfo]] = []
-    to_add_assuntos: ClassVar[list[ProcessInfo]] = []
-    to_add_processos: ClassVar[list[ProcessInfo]] = []
-    to_add_audiencias: ClassVar[list[ProcessInfo]] = []
-    to_add_representantes: ClassVar[list[ProcessInfo]] = []
-
-    list_partes: ClassVar[ListPartes] = []
 
     def execution(self) -> None:
         """Execute the main processing loop to extract process information.

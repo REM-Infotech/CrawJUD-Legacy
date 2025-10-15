@@ -7,12 +7,9 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions import ExecutionError
 from controllers.projudi import ProjudiBot
 from httpx import Client
-from pypdf import PdfReader, PdfWriter
 from resources.elements import projudi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -21,11 +18,7 @@ from selenium.webdriver.support.ui import Select
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from app.utils.webdriver.web_element import WebElementBot
 
-
-@shared_task(name="projudi.movimentacao", bind=True)
-@wrap_cls
 class Movimentacao(ProjudiBot):
     """Gerencie movimentações no Projudi por raspagem e registro de ações processuais.
 

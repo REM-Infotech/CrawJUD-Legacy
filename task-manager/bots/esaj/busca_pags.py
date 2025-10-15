@@ -8,9 +8,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions import ExecutionError
 from controllers.esaj import ESajBot
 from resources.elements import esaj as el
 from selenium.webdriver.common.by import By
@@ -20,8 +18,6 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement
 
 
-@shared_task(name="esaj.busca_pags", bind=True)
-@wrap_cls
 class BuscaPags(ESajBot):
     """Class BuscaPags.
 

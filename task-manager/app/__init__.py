@@ -19,7 +19,7 @@ def make_celery() -> Celery:
         Celery: Configured Celery instance.
 
     """
-    importlib.import_module("app.tasks", __package__)
+    importlib.import_module("tasks", __package__)
     app.config_from_object(settings)
     return app
 

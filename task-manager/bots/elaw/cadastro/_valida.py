@@ -1,9 +1,6 @@
 from contextlib import suppress
 from time import sleep
 
-from app.common import _raise_execution_error
-from app.decorators import shared_task as shared_task
-from app.decorators.bot import wrap_cls as wrap_cls
 from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException

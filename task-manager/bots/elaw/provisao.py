@@ -14,11 +14,7 @@ Attributes:
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
-from typing import TYPE_CHECKING
 
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
 from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -26,14 +22,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-if TYPE_CHECKING:
-    from app.utils.webdriver.web_element import WebElementBot as WebElement
 
-type_doc = {11: "cpf", 14: "cnpj"}
-
-
-@shared_task(name="elaw.provisao", bind=True, context=ContextTask)
-@wrap_cls
 class Provisao(ElawBot):
     """Gerencie entradas e atualizações de provisão no sistema ELAW de forma automatizada.
 

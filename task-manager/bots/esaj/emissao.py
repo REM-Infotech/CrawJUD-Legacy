@@ -11,10 +11,7 @@ from pathlib import Path
 from time import sleep
 
 import requests
-from app.common import _raise_execution_error
-from app.common.exceptions.bot import ExecutionError
-from app.decorators import shared_task
-from app.decorators.bot import wrap_cls
+from common.exceptions import ExecutionError
 from controllers.esaj import ESajBot
 from pypdf import PdfReader
 from resources.elements import esaj as el
@@ -24,8 +21,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-@shared_task(name="esaj.emissao", bind=True)
-@wrap_cls
 class Emissao(ESajBot):
     """Perform emission tasks by generating docs and extracting PDF barcodes.
 
