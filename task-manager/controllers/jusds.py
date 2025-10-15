@@ -1,8 +1,9 @@
 """Módulo para a classe de controle dos robôs Jusds."""
 
 from contextlib import suppress
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
+from _interfaces import DataSucesso
 from resources.elements import jusds as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -13,12 +14,6 @@ from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
     pass
-
-
-HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
-COUNT_TRYS = 15
-
-T_JusdsBot = TypeVar("JusdsBot")
 
 
 class JusdsBot(CrawJUD):
