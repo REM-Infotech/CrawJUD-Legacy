@@ -6,9 +6,10 @@ from datetime import datetime
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING
 
-from crawjud.controllers.main import CrawJUD
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+
+from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
     from crawjud.interfaces.types import T

@@ -8,13 +8,14 @@ from pathlib import Path
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING
 
-from crawjud.common.exceptions.bot import raise_start_error
-from crawjud.controllers.main import CrawJUD
+from common.exceptions.bot import raise_start_error
 from crawjud.resources.elements import esaj as el
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
+
+from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
     from crawjud.interfaces.types import T

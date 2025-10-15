@@ -8,11 +8,10 @@ from threading import Lock
 from time import perf_counter, sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-from crawjud.common.exceptions.bot import (
+from common.exceptions.bot import (
     raise_start_error,
 )
 from crawjud.common.exceptions.validacao import ValidacaoStringError
-from crawjud.controllers.main import CrawJUD
 from crawjud.interfaces.types import BotData
 from crawjud.interfaces.types.bots.pje import (
     DictResults,
@@ -31,6 +30,8 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+
+from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
     from crawjud.interfaces.dict.bot import BotData

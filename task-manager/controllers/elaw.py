@@ -15,10 +15,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from controllers.main import CrawJUD
+from controllers._master import CrawJUD
 
-HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
-COUNT_TRYS = 15
+cidades_amazonas = {}
 
 
 class ElawBot(CrawJUD):
@@ -209,24 +208,6 @@ class ElawBot(CrawJUD):
 
             if progress_bar is None:
                 break
-
-    def print_comprovante(self, message: str) -> None:
-        numero_processo = self.bot_data.get("NUMERO_PROCESSO")
-        name_comprovante = f"Comprovante - {numero_processo} - {self.pid}.png"
-        savecomprovante = self.output_dir_path.joinpath(name_comprovante)
-
-        with savecomprovante.open("wb") as fp:
-            fp.write(self.driver.get_screenshot_as_png())
-
-        data = DataSucesso(
-            NUMERO_PROCESSO=numero_processo,
-            MENSAGEM=message,
-            NOME_COMPROVANTE=name_comprovante,
-            NOME_COMPROVANTE_2="",
-        )
-        self.append_success(data=data)
-
-        self.print_msg(message=message, type_log="success", row=self.row)
 
     def screenshot_iframe(self, url_page: str, path_comprovante: Path) -> None:
         driver = self.driver

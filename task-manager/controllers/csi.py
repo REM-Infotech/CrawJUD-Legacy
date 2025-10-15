@@ -1,78 +1,16 @@
 """Módulo para a classe de controle dos robôs PROJUDI."""
 
-import platform
 from contextlib import suppress
-from time import perf_counter, sleep
-from typing import TYPE_CHECKING
 
-from crawjud.common.exceptions.bot import raise_start_error
-from crawjud.controllers.main import CrawJUD
-from crawjud.resources.elements import csi as el
+from resources.elements import csi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-if TYPE_CHECKING:
-    from crawjud.interfaces.types import T
-
-
-HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
-COUNT_TRYS = 15
-CSS_INPUT_PROCESSO = {
-    "1": "#numeroProcesso",
-    "2": "#numeroRecurso",
-}
+from controllers._master import CrawJUD
 
 
 class CsiBot(CrawJUD):
-    """Classe de controle para robôs do PROJUDI."""
-
-    def __init__(
-        self,
-        storage_folder_name: str | None = None,
-        name: str | None = None,
-        system: str | None = None,
-        *args: T,
-        **kwargs: T,
-    ) -> None:
-        """Instancia a classe."""
-        self.botname = name
-        self.botsystem = system
-
-        self.folder_storage = storage_folder_name
-
-        self.start_time = perf_counter()
-
-        selected_browser = "chrome"
-        if platform.system() == "Linux":
-            selected_browser = "firefox"
-
-        super().__init__(selected_browser=selected_browser, *args, **kwargs)
-
-        for k, v in kwargs.copy().items():
-            setattr(self, k, v)
-
-        self.download_files()
-
-        self._frame = self.load_data()
-        self.total_rows = len(self._frame)
-
-        if not self.auth():
-            self.error = self.total_rows
-
-            self.print_msg(
-                message="Falha na autenticação!",
-                type_log="error",
-            )
-
-            with suppress(Exception):
-                self.driver.quit()
-
-            raise_start_error("Falha na autenticação.")
-
-        self.print_msg(message="Sucesso na autenticação!", type_log="info")
-
-        sleep(0.5)
-        self.print_msg(message="Execução inicializada!", type_log="info")
+    """Classe de controle para robôs do CSI."""
 
     def search(self) -> bool:
         _url_search = el.url_busca

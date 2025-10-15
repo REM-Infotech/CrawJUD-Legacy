@@ -7,17 +7,18 @@ from time import perf_counter, sleep
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from crawjud.common.exceptions.bot import (
+from common.exceptions.bot import (
     ExecutionError,
     LoginSystemError,
     raise_start_error,
 )
-from crawjud.controllers.main import CrawJUD
 from crawjud.resources.elements import projudi as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
+
+from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
     from crawjud.interfaces.types import T
