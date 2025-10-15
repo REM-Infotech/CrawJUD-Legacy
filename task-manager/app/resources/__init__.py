@@ -6,15 +6,11 @@ Contém arquivos e utilitários de recursos compartilhados.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 from unicodedata import combining, normalize
 
 from werkzeug.utils import secure_filename
 
 from . import _varas_dict
-
-if TYPE_CHECKING:
-    from app.interfaces.types import T
 
 workdir = Path(__file__).cwd()
 

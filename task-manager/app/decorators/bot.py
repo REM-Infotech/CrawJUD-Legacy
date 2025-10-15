@@ -12,10 +12,9 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.controllers.main import CrawJUD
-    from app.interfaces.types import T
 
 
-def wrap_init(cls: type[CrawJUD]) -> type[T]:
+def wrap_init[T](cls: type[CrawJUD]) -> type[T]:
     """Decora o método __init__ de uma classe para exibir informações de instancia.
 
     Args:

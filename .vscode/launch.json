@@ -15,6 +15,14 @@
       "justMyCode": false
     },
     {
+      "name": "Debug Celery",
+      "type": "debugpy",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/task-manager",
+      "module": "celery",
+      "args": ["-A", "app", "worker", "-P", "threads"]
+    },
+    {
       "name": "Debug Vite App (Vue)",
       "type": "node",
       "request": "launch",
