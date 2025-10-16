@@ -7,7 +7,7 @@ from contextlib import suppress
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from __types import P, T
+from __types import MessageType, P, T
 from _interfaces import ColorsDict
 from celery import Task
 from constants import WORKDIR
@@ -37,6 +37,18 @@ class CrawJUD(Task):
 
     _task: Callable[P, T]
 
+    @property
+    def pid(self) -> str:
+        return self.request.id or "unknown"
+
+    def print_msg(self, message: str, msg_type: MessageType = "info") -> None:
+        """Print mensagem."""
+        self.app.tasks["print_msg"]()
+
+    @property
+    def output_dir_path(self) -> Path:
+        return WORKDIR.joinpath("output", self.pid)
+
     def __init__(self) -> None:
         self._task = self.run
         self.run = self.__call__
@@ -51,7 +63,6 @@ class CrawJUD(Task):
         user_data_dir = WORKDIR.joinpath("chrome-data", self.request.id)
         user_data_dir.mkdir(parents=True, exist_ok=True)
         options.add_argument(f"--user-data-dir={user_data_dir!s}")
-        options.add_argument("--headless")
 
         user_data_dir.chmod(0o775)
 
@@ -66,12 +77,11 @@ class CrawJUD(Task):
 
     def download_files(self) -> None:
         uri = self.app.conf["app_domain"]
-        client = Minio(
+        _client = Minio(
             endpoint=f"{uri}:19000",
             credentials=EnvMinioProvider(),
             secure=False,
         )
-        client.list_buckets()
 
     def zip_result(self) -> Path:
         zip_filename = f"{self.pid[:6].upper()}.zip"

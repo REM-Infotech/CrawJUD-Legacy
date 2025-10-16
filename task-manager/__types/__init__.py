@@ -6,7 +6,7 @@ type AnyType = Any
 P = ParamSpec("P", bound=Any)
 T = TypeVar("T", bound=AnyType)
 
-
+type MessageType = Literal["info", "log", "error", "warning", "success"]
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 type MethodsSearch = Literal["peticionamento", "consulta"]
 type PolosProcessuais = Literal["Passivo", "Ativo"]
