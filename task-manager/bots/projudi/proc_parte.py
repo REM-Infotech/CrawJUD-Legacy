@@ -5,18 +5,13 @@ Manage participant processing in the Projudi system by interacting with process 
 
 from contextlib import suppress
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from common.exceptions import ExecutionError
 from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
-from selenium.common.exceptions import (
-    NoSuchElementException,
-)
+from resources.web_element import WebElementBot as WebElement
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-
-if TYPE_CHECKING:
-    from selenium.webdriver.remote.webelement import WebElement
 
 
 class ProcParte(ProjudiBot):

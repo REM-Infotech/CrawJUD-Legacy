@@ -7,12 +7,14 @@ from contextlib import suppress
 from time import sleep
 from typing import NoReturn
 
+from _interfaces import DataSucesso
 from common.exceptions import FileError, PasswordTokenError
 from common.exceptions.selenium_webdriver import SeleniumError
 from controllers.projudi import ProjudiBot
 from PIL import Image
 from resources import format_string
 from resources.elements import projudi as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.alert import Alert

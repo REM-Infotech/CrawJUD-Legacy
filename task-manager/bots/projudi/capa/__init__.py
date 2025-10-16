@@ -8,7 +8,7 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
 from common import _raise_execution_error
 from common.exceptions import ExecutionError
@@ -17,11 +17,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from bots.projudi.capa._1 import PrimeiraInstancia
 from bots.projudi.capa._2 import SegundaInstancia
-
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    from selenium.webdriver.remote.webelement import WebElement  # noqa: F401
 
 
 class Capa(PrimeiraInstancia, SegundaInstancia):

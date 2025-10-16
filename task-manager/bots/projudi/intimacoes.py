@@ -5,17 +5,14 @@ Extract and manage process intimation information from the Projudi system.
 
 import time
 from contextlib import suppress
-from typing import TYPE_CHECKING
 
 from common.exceptions import ExecutionError
 from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
+from resources.web_element import WebElementBot as WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
-
-if TYPE_CHECKING:
-    from selenium.webdriver.remote.webelement import WebElement
 
 
 class Intimacoes(ProjudiBot):
