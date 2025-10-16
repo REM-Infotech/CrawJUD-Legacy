@@ -67,19 +67,6 @@ default:
   SESSION_ID_LENGTH: 32
   SESSION_SERIALIZATION_FORMAT: "json"
 
-  # ✅ Configurações Flask Mail
-  MAIL_SERVER: "@format {env[CRAWJUD_MAIL_SERVER]}"
-  MAIL_PORT: "@format {env[CRAWJUD_MAIL_PORT]}"
-  MAIL_USE_TLS: "@format {env[CRAWJUD_MAIL_USE_TLS]}"
-  MAIL_USE_SSL: "@format {env[CRAWJUD_MAIL_USE_SSL]}"
-  MAIL_USERNAME: "@format {env[CRAWJUD_MAIL_USERNAME]}"
-  MAIL_PASSWORD: "@format {env[CRAWJUD_MAIL_PASSWORD]}"
-  MAIL_DEBUG: "@format {env[CRAWJUD_MAIL_DEBUG]}"
-  MAIL_DEFAULT_SENDER: "@format {env[CRAWJUD_MAIL_DEFAULT_SENDER]}"
-  MAIL_MAX_EMAILS: "@format {env[CRAWJUD_MAIL_MAX_EMAILS]}"
-  MAIL_SUPPRESS_SEND: "@format {env[CRAWJUD_MAIL_SUPPRESS_SEND]}"
-  MAIL_ASCII_ATTACHMENTS: "@format {env[CRAWJUD_MAIL_ASCII_ATTACHMENTS]}"
-
   ROOT_USERNAME: "@format {env[CRAWJUD_ROOT_USERNAME]} @default 'admin'"
   ROOT_PASSWORD: "@format {env[CRAWJUD_ROOT_PASSWORD]} @default 'admin'"
   ROOT_EMAIL: "@format {env[CRAWJUD_ROOT_EMAIL]} @default 'admin@example.com'"
@@ -95,7 +82,18 @@ default:
     - "cookies"
     - "headers"
 
-CELERY:
+celery:
+  MAIL_SERVER: "@format {env[CRAWJUD_MAIL_SERVER]}"
+  MAIL_PORT: "@format {env[CRAWJUD_MAIL_PORT]}"
+  MAIL_USE_TLS: "@format {env[CRAWJUD_MAIL_USE_TLS]}"
+  MAIL_USE_SSL: "@format {env[CRAWJUD_MAIL_USE_SSL]}"
+  MAIL_USERNAME: "@format {env[CRAWJUD_MAIL_USERNAME]}"
+  MAIL_PASSWORD: "@format {env[CRAWJUD_MAIL_PASSWORD]}"
+  MAIL_DEBUG: "@format {env[CRAWJUD_MAIL_DEBUG]}"
+  MAIL_DEFAULT_SENDER: "@format {env[CRAWJUD_MAIL_DEFAULT_SENDER]}"
+  MAIL_MAX_EMAILS: "@format {env[CRAWJUD_MAIL_MAX_EMAILS]}"
+  MAIL_SUPPRESS_SEND: "@format {env[CRAWJUD_MAIL_SUPPRESS_SEND]}"
+  MAIL_ASCII_ATTACHMENTS: "@format {env[CRAWJUD_MAIL_ASCII_ATTACHMENTS]}"
   broker_url: "@format {env[CRAWJUD_BROKER_URL]}"
   result_backend: "@format {env[CRAWJUD_RESULT_BACKEND]}"
   task_serializer: "json"

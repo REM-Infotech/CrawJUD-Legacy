@@ -1,11 +1,26 @@
 """CrawJUD - Sistema de Automação Jurídica."""
 
 import importlib
+from pathlib import Path
 
 import resources._hook as _
 from celery import Celery
+from dynaconf import Dynaconf
 
-from config import settings
+settings = Dynaconf(
+    lowercase_read=False,
+    root_path=str(Path.cwd().parent.joinpath("config").resolve()),
+    envvar_prefix="CRAWJUD",
+    settings_files=["settings.yaml"],
+    environments=True,
+    load_dotenv=True,
+    commentjson_enabled=True,
+    merge_enabled=True,
+    dotenv_override=True,
+    env="CELERY",
+    default_env="api",
+)
+
 
 __all__ = ["_"]
 
