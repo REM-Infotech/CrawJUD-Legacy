@@ -3,11 +3,42 @@ import importlib.util
 import json
 import mimetypes
 import sys
+import weakref
 from pathlib import Path
+from types import MethodType
 from typing import Any
 
 type ModuleType = sys
 type MyAny = Any
+
+
+class Legacy(importlib.abc.SourceLoader):
+    def get_data(self, path: str) -> str:
+        with Path(path).open("r", encoding="utf-8") as f:
+            return f.read()
+
+    def get_filename(self, fullname: str) -> str:
+        return fullname + ".json"
+
+    def exec_module(self, module: ModuleType) -> None:
+        setattr(module, "_saferef", self.safe_ref)  # noqa: B010
+
+    def safe_ref(self, target: MyAny) -> MyAny:
+        """Implementa referência fraca segura para funções e métodos.
+
+        Args:
+            target (types.FunctionType | types.MethodType): Função ou método alvo
+
+        Returns:
+            callable: Função que retorna o alvo se ainda existir, senão None
+
+        """
+        # Se for método, use WeakMethod
+        if isinstance(target, MethodType):
+            ref = weakref.WeakMethod(target)
+        else:
+            ref = weakref.ref(target)
+        return ref
 
 
 class JSONLoader(importlib.abc.SourceLoader):
@@ -56,6 +87,9 @@ class JSONFinder(importlib.abc.MetaPathFinder):
             return importlib.util.spec_from_file_location(
                 fullname, filename, loader=JSONLoader()
             )
+
+        if fullname == "blinker._saferef":
+            return importlib.util.spec_from_loader(fullname, loader=Legacy())
         return None
 
     def guess(self, path: Path) -> bool:

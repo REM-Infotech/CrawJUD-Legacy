@@ -90,6 +90,8 @@ ignore = [
     "PERF203",
 ]
 
+"*/_hook.py" = ["INP001"]
+
 
 [format]
 # Like Black, use double quotes for strings.

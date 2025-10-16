@@ -3,7 +3,7 @@
 import importlib
 from pathlib import Path
 
-import resources._hook as _
+import _hook as _
 from celery import Celery
 from dynaconf import Dynaconf
 
