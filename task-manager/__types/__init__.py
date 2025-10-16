@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
-from typing import Any, Literal
+from typing import Any, Literal, ParamSpec, TypeVar
 
 type AnyType = Any
+
+P = ParamSpec("P", bound=Any)
+T = TypeVar("T", bound=AnyType)
+
 
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 type MethodsSearch = Literal["peticionamento", "consulta"]
