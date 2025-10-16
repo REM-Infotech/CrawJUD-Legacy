@@ -1,6 +1,8 @@
 """Módulo para a classe de controle dos robôs PJe."""
 
 import json.decoder
+from _types import AnyType
+from _types._custom import StrProcessoCNJ
 from contextlib import suppress
 from datetime import datetime
 from threading import Lock
@@ -9,8 +11,6 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 
 from _interfaces import BotData
 from _interfaces.pje import DictResults, DictSeparaRegiao
-from _types import AnyType
-from _types._custom import StrProcessoCNJ
 from common.exceptions.validacao import ValidacaoStringError
 from dotenv import dotenv_values
 from resources import RegioesIterator
