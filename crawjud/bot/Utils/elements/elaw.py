@@ -60,10 +60,9 @@ class ELAW_AME(Configuracao):  # noqa: N801
     tipo_empresa_input = '//select[contains(@id, "j_id_3y_4_2_2_4_9_2_5_input")]'
     tipo_parte_contraria_input = "//select[contains(@id, 'j_id_3y_4_2_2_5_9_9_4_2_m_input')]"
     select_tipo_doc = "//select[contains(@id, 'tipoDocumentoInput_input')]"
-    combo_rito = '//select[contains(@id, "comboRito_input")]'
 
-    numero_processo = "input[id='j_id_3y_1:j_id_3y_4_2_2_2_9_f_2:txtNumeroMask']"
-    css_campo_doc = 'input[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:cpfCnpjInput"]'
+    numero_processo = "input[id*=':txtNumeroMask']"
+    css_campo_doc = 'input[id*=":cpfCnpjInput"]'
     css_search_button = 'button[id="j_id_3y_1:j_id_3y_4_2_2_5_9_9_1:j_id_3y_4_2_2_5_9_9_4_2_f"]'
 
     select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
