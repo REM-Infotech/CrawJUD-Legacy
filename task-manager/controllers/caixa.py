@@ -1,16 +1,11 @@
 """Módulo para a classe de controle dos robôs CAIXA."""
 
 from contextlib import suppress
-from datetime import datetime
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from controllers._master import CrawJUD
-
-DictData = dict[str, str | datetime]
-ListData = list[DictData]
-
 
 HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15

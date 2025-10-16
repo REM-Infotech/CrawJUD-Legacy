@@ -1,13 +1,8 @@
 """Módulo de agrupamento de Iterators para o CrawJUD."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from _interfaces import BotData
-    from _interfaces.pje import DictSeparaRegiao
-    from controllers._master import CrawJUD
+from _interfaces import BotData
+from _interfaces.pje import DictSeparaRegiao
+from controllers._master import CrawJUD
 
 
 class RegioesIterator:

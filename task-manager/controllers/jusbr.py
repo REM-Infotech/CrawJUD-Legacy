@@ -1,9 +1,9 @@
 """Módulo para a classe de controle dos robôs PROJUDI."""
 
+from _types import MethodsSearch
 from contextlib import suppress
-from datetime import datetime
 from time import sleep
-from typing import ClassVar, Literal
+from typing import ClassVar
 
 from resources.elements import jusbr as el
 from selenium.webdriver.common.by import By
@@ -12,12 +12,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from controllers._master import CrawJUD
-
-DictData = dict[str, str | datetime]
-ListData = list[DictData]
-
-
-type MethodsSearch = Literal["peticionamento", "consulta"]
 
 
 class JusBrBot(CrawJUD):

@@ -4,7 +4,6 @@ import json.decoder
 from _types import AnyType
 from _types._custom import StrProcessoCNJ
 from contextlib import suppress
-from datetime import datetime
 from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
@@ -12,7 +11,6 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 from _interfaces import BotData
 from _interfaces.pje import DictResults, DictSeparaRegiao
 from common.exceptions.validacao import ValidacaoStringError
-from dotenv import dotenv_values
 from resources import RegioesIterator
 from resources.elements import pje as el
 from selenium.common.exceptions import (
@@ -27,15 +25,6 @@ from controllers._master import CrawJUD
 
 if TYPE_CHECKING:
     from httpx import Client
-
-
-DictData = dict[str, str | datetime]
-ListData = list[DictData]
-
-
-environ = dotenv_values()
-HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
-COUNT_TRYS = 15
 
 
 class PjeBot(CrawJUD):

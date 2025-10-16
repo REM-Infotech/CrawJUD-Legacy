@@ -9,6 +9,7 @@ from common.exceptions import (
     ExecutionError,
     LoginSystemError,
 )
+from constants import CSS_INPUT_PROCESSO
 from resources.elements import projudi as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.alert import Alert
@@ -18,11 +19,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from controllers._master import CrawJUD
-
-CSS_INPUT_PROCESSO = {
-    "1": "#numeroProcesso",
-    "2": "#numeroRecurso",
-}
 
 
 class ProjudiBot(CrawJUD):

@@ -1,7 +1,6 @@
 """Módulo para a classe de controle dos robôs Jusds."""
 
 from contextlib import suppress
-from typing import TYPE_CHECKING
 
 from _interfaces import DataSucesso
 from resources.elements import jusds as el
@@ -11,9 +10,6 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from controllers._master import CrawJUD
-
-if TYPE_CHECKING:
-    pass
 
 
 class JusdsBot(CrawJUD):
