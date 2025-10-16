@@ -2,9 +2,12 @@
 
 import importlib
 
+import resources._hook as _
 from celery import Celery
 
 from config import settings
+
+__all__ = ["_"]
 
 
 def make_celery() -> Celery:

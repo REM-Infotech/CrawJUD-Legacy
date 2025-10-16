@@ -5,13 +5,13 @@ pautas de audiências judiciais utilizando Selenium, além de tratar erros e ger
 durante a execução automatizada das tarefas.
 """
 
-from _json.varas_pje import VARAS
 from contextlib import suppress
 from datetime import datetime, timedelta
 from pathlib import Path
 from time import sleep
 
 from common.exceptions import ExecutionError
+from constants.data._bots.varas import varas_pje
 from controllers.pje import PjeBot
 from resources.elements import pje as el
 from selenium.common.exceptions import (
@@ -44,11 +44,11 @@ class Pauta(PjeBot):
         varas_ = self.varas
 
         if "TODAS AS VARAS" in varas_:
-            varas = VARAS
+            varas = varas_pje
             list_varas = list(varas.items())
 
         elif "TODAS AS VARAS" not in varas_:
-            varas = {k: v for k, v in VARAS.items() if v in varas_}
+            varas = {k: v for k, v in varas_pje.items() if v in varas_}
             list_varas = list(varas.items())
 
         self.total_rows = len(list_varas)
