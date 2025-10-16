@@ -8,6 +8,8 @@ from pathlib import Path
 from types import MethodType
 from typing import Any
 
+from packaging.version import parse
+
 type ModuleType = sys
 type MyAny = Any
 
@@ -22,6 +24,7 @@ class Legacy(importlib.abc.SourceLoader):
 
     def exec_module(self, module: ModuleType) -> None:
         setattr(module, "_saferef", self.safe_ref)  # noqa: B010
+        setattr(module, "parse_version", parse)  # noqa: B010
 
     def safe_ref(self, target: MyAny) -> MyAny:
         """Implementa referência fraca segura para funções e métodos.
@@ -90,10 +93,21 @@ class JSONFinder(importlib.abc.MetaPathFinder):
 
         if fullname == "blinker._saferef":
             return importlib.util.spec_from_loader(fullname, loader=Legacy())
+
+        if fullname.startswith("pkg_resources"):
+            return importlib.util.spec_from_loader(fullname, loader=Legacy())
+
         return None
 
     def guess(self, path: Path) -> bool:
         return mimetypes.guess_type(path)[0] == "application/json"
 
 
-sys.meta_path.append(JSONFinder())
+# Insere o JSONFinder na primeira posição do sys.meta_path para interceptar
+# todas as tentativas de importação antes dos outros finders padrão do Python.
+# Isso garante que até instruções como "from module import object" sejam capturadas.
+sys.meta_path.insert(0, JSONFinder())
+sys.meta_path.insert(1, JSONFinder())
+# Limpa o cache de importação para garantir que as alterações no meta_path sejam
+# reconhecidas imediatamente.
+importlib.invalidate_caches()
