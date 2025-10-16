@@ -4,7 +4,7 @@ from app import bots_app
 
 
 def _register_routes() -> None:
-    from ._pje import pje
+    from .pje import pje
 
     bots_app.register_blueprint(pje)
 

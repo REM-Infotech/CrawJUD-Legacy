@@ -3,15 +3,33 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from contextlib import suppress
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from __types import P, T
+from _interfaces import ColorsDict
 from celery import Task
 from constants import WORKDIR
+from minio import Minio
+from minio.credentials.providers import EnvMinioProvider
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
+
+func_dict_check = {
+    "bot": ["execution"],
+    "search": ["buscar_processo"],
+}
+
+
+COLORS_DICT: ColorsDict = {
+    "info": "cyan",
+    "log": "yellow",
+    "error": "red",
+    "warning": "magenta",
+    "success": "green",
+}
 
 
 class CrawJUD(Task):
@@ -29,8 +47,31 @@ class CrawJUD(Task):
 
     def setup(self) -> None:
         options = ChromeOptions()
+
+        user_data_dir = WORKDIR.joinpath("chrome-data", self.request.id)
+        user_data_dir.mkdir(parents=True, exist_ok=True)
+        options.add_argument(f"--user-data-dir={user_data_dir!s}")
+        options.add_argument("--headless")
+
+        user_data_dir.chmod(0o775)
+
         self.driver = Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 30)
+
+        self.download_files()
+
+        if not self.auth():
+            with suppress(Exception):
+                self.driver.quit()
+
+    def download_files(self) -> None:
+        uri = self.app.conf["app_domain"]
+        client = Minio(
+            endpoint=f"{uri}:19000",
+            credentials=EnvMinioProvider(),
+            secure=False,
+        )
+        client.list_buckets()
 
     def zip_result(self) -> Path:
         zip_filename = f"{self.pid[:6].upper()}.zip"

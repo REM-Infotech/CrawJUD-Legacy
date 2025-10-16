@@ -70,3 +70,6 @@ def register_blueprint() -> None:
     blueprints = [auth]
     for blueprint in blueprints:
         root_app.register_blueprint(blueprint)
+
+
+register_blueprint()

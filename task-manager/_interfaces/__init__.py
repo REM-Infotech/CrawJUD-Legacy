@@ -1,6 +1,14 @@
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 from __types import PolosProcessuais
+
+
+class ColorsDict(TypedDict):
+    info: Literal["cyan"]
+    log: Literal["yellow"]
+    error: Literal["red"]
+    warning: Literal["magenta"]
+    success: Literal["green"]
 
 
 class DataSucesso(TypedDict):
