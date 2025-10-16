@@ -6,6 +6,7 @@ from pathlib import Path
 from time import sleep
 from typing import Self, TypedDict
 
+from __types import AnyType
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
@@ -26,7 +27,7 @@ class RectWebElement(TypedDict):
     y: float
 
 
-class WebElementBot[T](WebElement):
+class WebElementBot(WebElement):
     """Gerencie e estenda funcionalidades de elementos WebDriver para automação web.
 
     Esta classe fornece métodos utilitários para interação avançada com elementos
@@ -89,18 +90,18 @@ class WebElementBot[T](WebElement):
     def find_element(
         self,
         by: str = By.ID,
-        value: T | None = None,
+        value: AnyType | None = None,
     ) -> WebElementBot:
         return super().find_element(by=by, value=value)
 
     def find_elements(
         self,
         by: str = By.ID,
-        value: T | None = None,
+        value: AnyType | None = None,
     ) -> list[WebElementBot]:
         return super().find_elements(by=by, value=value)
 
-    def send_keys(self, word: T) -> None:
+    def send_keys(self, word: AnyType) -> None:
         send = False
         for key in dir(Keys):
             if getattr(Keys, key) == word:

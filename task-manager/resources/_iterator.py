@@ -1,7 +1,7 @@
 """Módulo de agrupamento de Iterators para o CrawJUD."""
 
 from _interfaces import BotData
-from _interfaces.pje import DictSeparaRegiao
+from _interfaces._pje import DictSeparaRegiao
 from controllers._master import CrawJUD
 
 

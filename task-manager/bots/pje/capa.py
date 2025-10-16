@@ -18,17 +18,29 @@ from threading import Semaphore, Thread
 from time import sleep
 from typing import ClassVar
 
+from __types import Dict
+from _interfaces import BotData
+from _interfaces._pje import (
+    AssuntosProcessoPJeDict,
+    AudienciaProcessoPjeDict,
+    CapaProcessualPJeDict,
+    DictResults,
+    PartesProcessoPJeDict,
+    ProcessoJudicialDict,
+    RepresentantePartesPJeDict,
+)
+from _interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
+from _interfaces._pje.audiencias import AudienciaDict
+from _interfaces._pje.partes import ParteDict, PartesJsonDict
 from common.exceptions import (
     ExecutionError,
     FileUploadError,
 )
+from constants import WORKDIR
 from controllers.pje import PjeBot
-from dotenv import load_dotenv
 from httpx import Client, Response
 from resources.elements import pje as el
 from tqdm import tqdm
-
-load_dotenv()
 
 SENTINELA = None
 
@@ -55,8 +67,8 @@ class Capa(PjeBot):
             system (str | None): Sistema do bot.
             current_task (ContextTask): Tarefa atual do Celery.
             storage_folder_name (str): Nome da pasta de armazenamento.
-            *args (T): Argumentos variáveis.
-            **kwargs (T): Argumentos nomeados variáveis.
+            *args: Argumentos variáveis.
+            **kwargs: Argumentos nomeados variáveis.
 
         """
         generator_regioes = self.regioes()
@@ -111,8 +123,8 @@ class Capa(PjeBot):
         self,
         regiao: str,
         data_regiao: list[BotData],
-        headers: DictType,
-        cookies: DictType,
+        headers: Dict,
+        cookies: Dict,
         pos: int,
     ) -> None:
         pool_exe = ThreadPoolExecutor(max_workers=16)
@@ -409,9 +421,7 @@ class Capa(PjeBot):
             SIGLA_CLASSE=result["classeJudicial"]["sigla"],
             ORGAO_JULGADOR=result["orgaoJulgador"]["descricao"],
             SIGLA_ORGAO_JULGADOR=result["orgaoJulgador"]["sigla"],
-            DATA_DISTRIBUICAO=formata_tempo(result["distribuidoEm"])
-            if "distribuidoEm" in result
-            else "",
+            DATA_DISTRIBUICAO=result.get("distribuidoEm", ""),
             STATUS_PROCESSO=result["labelStatusProcesso"],
             SEGREDO_JUSTIÇA=result["segredoDeJustica"],
             VALOR_CAUSA=result["valorDaCausa"],
@@ -504,7 +514,7 @@ class Capa(PjeBot):
 
         """
         try:
-            path_temp = workdir.joinpath("temp", self.pid.upper())
+            path_temp = WORKDIR.joinpath("temp", self.pid.upper())
 
             path_temp.mkdir(parents=True, exist_ok=True)
 

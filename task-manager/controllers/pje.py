@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 from __types import AnyType
 from __types._custom import StrProcessoCNJ
 from _interfaces import BotData
-from _interfaces.pje import DictResults, DictSeparaRegiao
+from _interfaces._pje import DictResults, DictSeparaRegiao
 from common.exceptions.validacao import ValidacaoStringError
 from resources import RegioesIterator
 from resources.elements import pje as el

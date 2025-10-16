@@ -11,9 +11,10 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
 
 import dotenv
+from _interfaces import BotData
 from httpx import Client
 
-from bots.pje.protocolo.habilitacao import HabilitiacaoPJe
+from .habilitacao import HabilitiacaoPJe
 
 dotenv.load_dotenv()
 
@@ -22,17 +23,6 @@ class Protocolo(HabilitiacaoPJe):
     """Gerencia o protocolo de petições no sistema JusBr."""
 
     def execution(self) -> None:
-        """Executa o fluxo principal de processamento da capa dos processos PJE.
-
-        Args:
-            name (str | None): Nome do bot.
-            system (str | None): Sistema do bot.
-            current_task (ContextTask): Tarefa atual do Celery.
-            storage_folder_name (str): Nome da pasta de armazenamento.
-            *args (T): Argumentos variáveis.
-            **kwargs (T): Argumentos nomeados variáveis.
-
-        """
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 

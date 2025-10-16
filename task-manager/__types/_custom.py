@@ -7,8 +7,10 @@ from typing import NoReturn
 from common.exceptions.validacao import ValidacaoStringError
 from constants import PADRAO_CNJ
 
+from __types import AnyType
 
-class StrProcessoCNJ[T](UserString):
+
+class StrProcessoCNJ(UserString):
     """Classe(str) StrProcessoCNJ para processos no padrão CNJ.
 
     Esta classe permite criar e verificar se o valor corresponde ao
@@ -81,11 +83,11 @@ class StrProcessoCNJ[T](UserString):
         """
         return self
 
-    def __instancecheck__(self, instance: T) -> bool:
+    def __instancecheck__(self, instance: AnyType) -> bool:
         """Verifique se a instância corresponde a padrões de string CNJ.
 
         Args:
-            instance (T): Instância a ser verificada.
+            instance: Instância a ser verificada.
 
         Returns:
             bool: Indica se a instância corresponde a algum dos padrões de string CNJ.

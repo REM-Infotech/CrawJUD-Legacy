@@ -8,6 +8,7 @@ tratamento de contexto e execução assíncrona de tarefas.
 
 from time import sleep
 
+from __types import AnyType
 from controllers.csi import CsiBot
 from dotenv import load_dotenv
 from resources.elements import csi as el
@@ -19,13 +20,13 @@ from tqdm import tqdm
 load_dotenv()
 
 
-class Chamados[T](CsiBot):
+class Chamados(CsiBot):
     """Gerencia chamados CSI para execução de tarefas automatizadas.
 
     Herda de CsiBot e implementa métodos de execução de chamados.
     """
 
-    def execution(self, *args: T, **kwargs: T) -> None:
+    def execution(self, *args: AnyType, **kwargs: AnyType) -> None:
         tqdm.write("OK")
 
         frame = self.frame

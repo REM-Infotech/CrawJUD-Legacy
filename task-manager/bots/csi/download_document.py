@@ -1,12 +1,13 @@
 """Download de anexos de chamados do CSI."""
 
 from contextlib import suppress
-from typing import Any, TypeVar
 
 import httpx
+from __types import AnyType
 from controllers.csi import CsiBot
 from dotenv import load_dotenv
 from resources.elements import csi as el
+from resources.web_element import WebElementBot
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -14,17 +15,11 @@ from tqdm import tqdm
 
 load_dotenv()
 
-T = TypeVar("TDownloadDocumento", bound=Any)
-
 
 class DownloadDocumento(CsiBot):
     """Robô de download de documentos do CSI."""
 
-    def execution(
-        self,
-        *args: T,
-        **kwargs: T,
-    ) -> None:
+    def execution(self, *args: AnyType, **kwargs: AnyType) -> None:
         tqdm.write("OK")
 
         frame = self.frame
