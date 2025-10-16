@@ -6,5 +6,9 @@
     {
       "text": "Use conventional commit message format."
     }
-  ]
+  ],
+  "explorer.fileNesting.patterns": {
+    "varas.pyi": "varas.json",
+    "cidades.pyi": "cidades.json"
+  }
 }
