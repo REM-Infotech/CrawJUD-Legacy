@@ -13,7 +13,7 @@ from app._types import MyAny as MyAny
 app = Flask(__name__)
 root_app = Flask("root_app")
 bots_app = Flask("bots_app")
-load_dotenv()
+load_dotenv(Path.cwd().parent)
 
 path_passlib_config = str(Path.cwd().joinpath("passlib.conf"))
 crypt_context = CryptContext.from_path(path_passlib_config)
