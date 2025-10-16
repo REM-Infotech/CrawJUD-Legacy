@@ -1,5 +1,5 @@
 import re
-from collections.abc import UserString
+from collections import UserString
 from contextlib import suppress
 from re import Pattern
 from typing import NoReturn

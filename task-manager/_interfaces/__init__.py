@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from _types import PolosProcessuais
+from __types import PolosProcessuais
 
 
 class DataSucesso(TypedDict):

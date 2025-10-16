@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TypedDict
 
-from _types import Dict
+from __types import Dict
 
 from _interfaces import BotData
 

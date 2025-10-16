@@ -1,10 +1,10 @@
 """Módulo para a classe de controle dos robôs PROJUDI."""
 
-from _types import MethodsSearch
 from contextlib import suppress
 from time import sleep
 from typing import ClassVar
 
+from __types import MethodsSearch
 from resources.elements import jusbr as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys

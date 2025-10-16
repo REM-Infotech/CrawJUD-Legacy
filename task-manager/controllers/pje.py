@@ -1,13 +1,13 @@
 """Módulo para a classe de controle dos robôs PJe."""
 
 import json.decoder
-from _types import AnyType
-from _types._custom import StrProcessoCNJ
 from contextlib import suppress
 from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
+from __types import AnyType
+from __types._custom import StrProcessoCNJ
 from _interfaces import BotData
 from _interfaces.pje import DictResults, DictSeparaRegiao
 from common.exceptions.validacao import ValidacaoStringError
