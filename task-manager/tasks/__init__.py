@@ -1,5 +1,5 @@
 """Task module for Celery."""
 
-from . import _bots
+import bots as _bots
 
 __all__ = ["_bots"]

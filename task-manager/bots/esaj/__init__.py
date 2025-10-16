@@ -1,21 +1,32 @@
-"""Initialize and run the ESaj bot for CrawJUD-Bots.
+"""Pacote de bots Esaj."""
 
-This module configures and initializes the ESaj bot components including BuscaPags,
-Capa, Emissao, Movimentacao, and Protocolo. It sets logging and error handling.
-"""
+from celery import shared_task
 
-from bots.esaj import (
-    busca_pags,
-    capa,
-    emissao,
-    movimentacao,
-    protocolo,
-)
+from bots.esaj.capa import Capa as EsajCapa
+from bots.esaj.emissao import Emissao as EsajEmissao
+from bots.esaj.movimentacao import Movimentacao as EsajMovimentacao
+from bots.esaj.protocolo import Protocolo as EsajProtocolo
 
-__all__ = [
-    "busca_pags",
-    "capa",
-    "emissao",
-    "movimentacao",
-    "protocolo",
-]
+
+@shared_task(name="esaj.capa", bind=True, base=EsajCapa)
+def esaj_capa(self: EsajCapa) -> None:
+    """Task Esaj Capa."""
+    self.execution()
+
+
+@shared_task(name="esaj.movimentacao", bind=True, base=EsajMovimentacao)
+def esaj_movimentacao(self: EsajMovimentacao) -> None:
+    """Task Esaj Movimentação."""
+    self.execution()
+
+
+@shared_task(name="esaj.protocolo", bind=True, base=EsajProtocolo)
+def esaj_protocolo(self: EsajProtocolo) -> None:
+    """Task Esaj Protocolo."""
+    self.execution()
+
+
+@shared_task(name="esaj.emissao", bind=True, base=EsajEmissao)
+def esaj_emissao(self: EsajEmissao) -> None:
+    """Task Esaj Emissão."""
+    self.execution()

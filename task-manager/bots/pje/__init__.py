@@ -1,5 +1,11 @@
-"""Pacote público para funcionalidades do PJeBot."""
+"""Pacote de bots PJe."""
 
-from bots.pje import capa, pauta, protocolo
+from celery import shared_task
 
-__all__ = ["capa", "pauta", "protocolo"]
+from bots.pje.capa import Capa as PjeCapa
+
+
+@shared_task(name="pje.capa", bind=True, base=PjeCapa)
+def pje_capa(self: PjeCapa) -> None:
+    """Task PJe Capa."""
+    self.execution()
