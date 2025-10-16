@@ -1,16 +1,6 @@
-"""Fornece funcionalidades comuns para o aplicativo CrawJUD.
+"""Fornece funcionalidades comuns para o aplicativo CrawJUD."""
 
-Este pacote contém módulos utilitários e funções compartilhadas entre
-diferentes partes do sistema.
-"""
+from ._raises import raise_execution_error as _raise_execution_error
+from ._raises import raise_password_token
 
-from typing import NoReturn
-
-
-def _raise_execution_error(message: str) -> NoReturn:
-    from common.exceptions import ExecutionError
-
-    raise ExecutionError(message=message)
-
-
-__all__ = ["_raise_execution_error"]
+__all__ = ["_raise_execution_error", "raise_password_token"]

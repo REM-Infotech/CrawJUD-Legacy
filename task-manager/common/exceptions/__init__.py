@@ -1,7 +1,7 @@
 """Módulo de tratamento de exceptions do robô."""
 
 import traceback
-from typing import Literal, NoReturn
+from typing import ClassVar, Literal, NoReturn
 
 MessageError = "Erro ao executar operaçao: "
 type MessageTokenError = Literal["Senha do Token Incorreta"]

@@ -5,9 +5,9 @@ Automatiza o protocolo de processos no sistema Projudi.
 
 from contextlib import suppress
 from time import sleep
-from typing import NoReturn
 
 from _interfaces import DataSucesso
+from common import raise_password_token
 from common.exceptions import FileError, PasswordTokenError
 from common.exceptions.selenium_webdriver import SeleniumError
 from controllers.projudi import ProjudiBot
@@ -22,16 +22,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-
-
-def raise_password_token() -> NoReturn:
-    """Password token error.
-
-    Raises:
-        PasswordTokenError: PasswordTokenError
-
-    """
-    raise PasswordTokenError(message="Senha Incorreta!")
 
 
 class Protocolo(ProjudiBot):
