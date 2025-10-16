@@ -5,67 +5,9 @@ This module defines global routes, context processors, and custom error handling
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from . import _bots, _root
 
-from flask import (
-    Flask,
-    Response,
-    current_app,
-    jsonify,
-    make_response,
-    request,
-    send_from_directory,
-)
-
-if TYPE_CHECKING:
-    from flask_sqlalchemy import SQLAlchemy
-
-    from app._types import HealtCheck
+__all__ = ["_bots", "_root"]
 
 
-def register_routes(app: Flask) -> None:
-    """Função de registro de rotas."""
-
-    @app.route("/", methods=["GET"])
-    def index() -> Response:
-        """Redirect to the authentication login page.
-
-        Returns:
-            Response: A Quart redirect response to the login page.
-
-        """
-        return make_response(jsonify(message="ok"), 200)
-
-    @app.route("/api/health")
-    def health_check() -> HealtCheck:
-        """Verifique status de saúde da aplicação.
-
-        Returns:
-            HealtCheck: HealtCheck
-
-        """
-        db: SQLAlchemy = current_app.extensions["sqlalchemy"]
-        try:
-            # Testa conexão com banco de dados
-            db.session.execute(db.text("SELECT 1"))
-            db_status = "ok"
-        except Exception:
-            db_status = "erro"
-
-        return {
-            "status": "ok" if db_status == "ok" else "erro",
-            "database": db_status,
-            "timestamp": str(db.func.now()),  # pyright: ignore[reportPossiblyUnboundVariable]
-        }
-
-    @app.route("/robots.txt")
-    def static_from_root() -> Response:
-        return send_from_directory(app.static_folder, request.path[1:])  # pyright: ignore[reportArgumentType]
-
-    from ._auth import auth
-    from ._bots import bot
-
-    blueprints = [auth, bot]
-
-    for i in blueprints:
-        app.register_blueprint(i)
+def register_routes(*args) -> None: ...

@@ -35,7 +35,6 @@ __all__ = ["db", "cors", "jwt", "mail", "start_extensions"]
 def start_extensions(app: Flask) -> None:
     """Inicializa as extensões do Flask."""
     with app.app_context():
-        global db
         db.init_app(app)
         cors.init_app(app)
         jwt.init_app(app)

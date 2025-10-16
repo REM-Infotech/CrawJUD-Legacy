@@ -11,8 +11,7 @@
       "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceFolder}/api-backend",
-      "module": "app",
-      "justMyCode": false
+      "module": "app"
     },
     {
       "name": "Debug Celery",

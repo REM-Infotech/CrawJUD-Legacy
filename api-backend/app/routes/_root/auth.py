@@ -1,25 +1,3 @@
-"""Module for authentication routes.
-
-This module defines the authentication-related routes for the API, including
-    user login, logout, and token refresh functionality.
-    It utilizes Quart for asynchronous HTTP handling and flask_jwt_extended for
-    JWT-based authentication. The module provides endpoints
-    for user authentication, session management, and secure token handling.
-
-Routes:
-    /login (GET, POST, OPTIONS): Authenticates a user and issues JWT tokens.
-    /logout (POST): Logs out the current user and clears JWT cookies.
-    /refresh (POST): Refreshes the access token using a valid refresh token.
-Classes:
-    LoginForm: Dataclass representing the structure of the login form data.
-Dependencies:
-    - Quart
-    - flask_jwt_extended
-    - SQLAlchemy (for database access)
-    - api.models.users (for user and token blocklist models)
-
-"""
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -51,13 +29,6 @@ auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth.post("/login")
 def login() -> Response:
-    """Authenticate the user and start a session.
-
-    Returns:
-        Response: HTTP response redirecting on success or rendering
-            the login template.
-
-    """
     db: SQLAlchemy = current_app.extensions["sqlalchemy"]
     data = request.get_json(force=True)  # força o parsing do JSON
 
@@ -108,12 +79,6 @@ def login() -> Response:
 
 @auth.route("/logout", methods=["POST"])
 def logout() -> Response:
-    """Log out the current user and clear session cookies.
-
-    Returns:
-        Response: Redirect response to the login page.
-
-    """
     response = make_response(jsonify(message="Logout efetuado com sucesso!"))
     unset_jwt_cookies(response)
     return response
