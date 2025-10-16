@@ -7,6 +7,8 @@ from unicodedata import combining, normalize
 
 from werkzeug.utils import secure_filename
 
+from ._iterator import RegioesIterator
+
 
 def format_string(string: str) -> str:  # noqa: D103
     normalized_string = "".join([
@@ -19,3 +21,6 @@ def format_string(string: str) -> str:  # noqa: D103
         .replace("_", " ")
         .split(),
     )
+
+
+__all__ = ["RegioesIterator", "format_string"]

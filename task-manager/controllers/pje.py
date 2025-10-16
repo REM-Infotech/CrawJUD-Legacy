@@ -7,8 +7,13 @@ from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
+from _interfaces import BotData
+from _interfaces.pje import DictResults, DictSeparaRegiao
+from _types import AnyType
+from _types._custom import StrProcessoCNJ
 from common.exceptions.validacao import ValidacaoStringError
 from dotenv import dotenv_values
+from resources import RegioesIterator
 from resources.elements import pje as el
 from selenium.common.exceptions import (
     TimeoutException,
@@ -106,7 +111,7 @@ class PjeBot(CrawJUD):
         with suppress(json.decoder.JSONDecodeError, KeyError):
             data_request = response.json()
             if isinstance(data_request, list):
-                data_request: dict[str, T] = data_request[0]
+                data_request: dict[str, AnyType] = data_request[0]
             id_processo = data_request.get("id", "")
 
         if not id_processo:
@@ -218,27 +223,6 @@ class PjeBot(CrawJUD):
 
         """
         return RegioesIterator(self)
-
-    def save_success_cache(
-        self,
-        data: Processo,
-        processo: StrProcessoCNJ | None = None,
-    ) -> None:
-        """Salva os resultados em cache Redis.
-
-        Arguments:
-            data (Processo): Mapping com as informações extraídas do processo
-            processo (StrProcessoCNJ): Número do Processo
-
-
-        """
-        with suppress(Exception):
-            cache = CachedExecution(
-                processo=processo.data,
-                data=data,
-                pid=self.pid,
-            )
-            cache.save()
 
     def separar_regiao(self) -> DictSeparaRegiao:
         """Separa os processos por região a partir do número do processo.
