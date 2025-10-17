@@ -22,7 +22,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from .master import ProjudiBot
+from bots.projudi.master import ProjudiBot
 
 
 class Protocolo(ProjudiBot):

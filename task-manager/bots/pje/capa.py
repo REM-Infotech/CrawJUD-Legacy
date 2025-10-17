@@ -41,7 +41,7 @@ from httpx import Client, Response
 from resources.elements import pje as el
 from tqdm import tqdm
 
-from .master import PjeBot
+from bots.pje.master import PjeBot
 
 SENTINELA = None
 

@@ -12,7 +12,7 @@ from resources.web_element import WebElementBot as WebElement
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from .master import ProjudiBot
+from bots.projudi.master import ProjudiBot
 
 
 class ProcParte(ProjudiBot):

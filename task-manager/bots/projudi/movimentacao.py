@@ -17,7 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
-from .master import ProjudiBot
+from bots.projudi.master import ProjudiBot
 
 
 class Movimentacao(ProjudiBot):
