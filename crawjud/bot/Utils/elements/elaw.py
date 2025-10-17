@@ -57,8 +57,8 @@ class ELAW_AME(Configuracao):  # noqa: N801
     foro_input = "//select[contains(@id, 'comboForoTribunal_input')]"
     vara_input = "//select[contains(@id, 'comboVara_input')]"
     empresa_input = "//select[contains(@id, 'comboClientProcessoParte_input')]"
-    tipo_empresa_input = '//select[contains(@id, "j_id_3y_4_2_2_4_9_2_5_input")]'
-    tipo_parte_contraria_input = "//select[contains(@id, 'j_id_3y_4_2_2_5_9_9_4_2_m_input')]"
+    tipo_empresa_input = '//select[contains(@id, "j_id_4c_5_2_2_4_9_2_6")]'
+    tipo_parte_contraria_input = "//select[contains(@id, 'j_id_4c_5_2_2_5_9_8_5_2_n_input')]"
     select_tipo_doc = "//select[contains(@id, 'tipoDocumentoInput_input')]"
 
     numero_processo = "input[id*=':txtNumeroMask']"
