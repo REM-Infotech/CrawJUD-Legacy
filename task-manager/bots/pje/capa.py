@@ -174,7 +174,7 @@ class Capa(PjeBot):
                 )
                 sleep(0.5)
                 if not isinstance(resultados, dict):
-                    self.print_msg(
+                    self.print_message(
                         message=str(resultados),
                         type_log="error",
                         row=row,
@@ -214,7 +214,7 @@ class Capa(PjeBot):
                         "regiao": regiao,
                     })
 
-                self.print_msg(
+                self.print_message(
                     message=message,
                     type_log=type_log,
                     row=row,
@@ -222,7 +222,7 @@ class Capa(PjeBot):
 
         except Exception as e:
             tqdm.write("\n".join(traceback.format_exception(e)))
-            self.print_msg(
+            self.print_message(
                 message="Erro ao extrair informações do processo",
                 type_log="error",
                 row=row,
@@ -446,7 +446,7 @@ class Capa(PjeBot):
                     id_processo: str = data.get("id_processo")
                     regiao: str = data.get("regiao")
 
-                    self.print_msg(
+                    self.print_message(
                         message=f"Baixando arquivo do processo n.{processo}",
                         type_log="log",
                         row=row,
@@ -468,7 +468,7 @@ class Capa(PjeBot):
                     )
                     message = f"Baixando arquivo do processo n.{processo}"
                     sleep(0.50)
-                    self.print_msg(
+                    self.print_message(
                         message=message,
                         row=row,
                         type_log="log",
@@ -483,14 +483,14 @@ class Capa(PjeBot):
                         )
 
             except ExecutionError as e:
-                self.print_msg(
+                self.print_message(
                     message="\n".join(traceback.format_exception(e)),
                     row=row,
                     type_log="info",
                 )
 
                 msg = "Erro ao baixar arquivo"
-                self.print_msg(message=msg, row=row, type_log="info")
+                self.print_message(message=msg, row=row, type_log="info")
 
             finally:
                 self.queue_files.task_done()
@@ -539,7 +539,7 @@ class Capa(PjeBot):
         except (FileUploadError, Exception) as e:
             str_exc = "\n".join(traceback.format_exception_only(e))
             message = "Não foi possível baixar o arquivo. " + str_exc
-            self.print_msg(
+            self.print_message(
                 row=row,
                 message=message,
                 type_log="info",
@@ -547,7 +547,7 @@ class Capa(PjeBot):
 
         finally:
             message = f"Arquivo do processo n.{processo} baixado com sucesso!"
-            self.print_msg(
+            self.print_message(
                 row=row,
                 message=message,
                 type_log="success",

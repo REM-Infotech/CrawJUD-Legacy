@@ -70,7 +70,7 @@ class Protocolo(HabilitiacaoPJe):
             )
 
         except Exception as e:
-            self.print_msg(
+            self.print_message(
                 message="\n".join(traceback.format_exception(e)),
                 type_log="info",
             )
@@ -105,7 +105,7 @@ class Protocolo(HabilitiacaoPJe):
                             client=client,
                         )
 
-                    self.print_msg(
+                    self.print_message(
                         "Protocolo efetuado com sucesso!",
                         row=row,
                         type_log="success",
@@ -114,7 +114,7 @@ class Protocolo(HabilitiacaoPJe):
                 except (KeyError, Exception) as e:
                     exc_message = "\n".join(traceback.format_exception_only(e))
 
-                    self.print_msg(
+                    self.print_message(
                         message=f"Erro ao protocolar processo. Erro: {exc_message}",
                         type_log="error",
                         row=row,

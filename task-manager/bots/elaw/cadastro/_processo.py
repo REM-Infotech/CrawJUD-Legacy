@@ -15,7 +15,7 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Informando número do processo"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         campo_processo: WebElement = self.wait.until(
             ec.presence_of_element_located((
@@ -35,13 +35,13 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Número do processo informado!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def area_direito(self) -> None:
         wait = self.wait
         message = "Informando área do direito"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
         text = str(self.bot_data.get("AREA_DIREITO"))
         sleep(0.5)
 
@@ -56,13 +56,13 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Área do direito selecionada!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def subarea_direito(self) -> None:
         wait = self.wait
         message = "Informando sub-área do direito"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         text = str(self.bot_data.get("SUBAREA_DIREITO"))
         sleep(0.5)
@@ -78,7 +78,7 @@ class ElawInformacoesProcesso(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
         message = "Sub-Área do direito selecionada!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def fase(self) -> None:
         element_select = self.wait.until(
@@ -88,14 +88,14 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Informando fase do processo"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Fase informada!"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def provimento(self) -> None:
         text = self.bot_data.get("PROVIMENTO")
@@ -105,19 +105,19 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Informando provimento antecipatório"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Provimento antecipatório informado!"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def fato_gerador(self) -> None:
         message = "Informando fato gerador"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         element_select = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.fato_gerador_input)),
@@ -130,7 +130,7 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Fato gerador informado!"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def desc_objeto(self) -> None:
         input_descobjeto = self.wait.until(
@@ -154,7 +154,7 @@ class ElawInformacoesProcesso(ElawBot):
     def objeto(self) -> None:
         message = "Informando objeto do processo"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         element_select = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.objeto_input)),
@@ -166,12 +166,12 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Objeto do processo informado!"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def acao(self) -> None:
         message = "Informando ação do processo"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         div_comboProcessoTipo: WebElement = self.wait.until(  # noqa: N806
             ec.presence_of_element_located((
@@ -198,4 +198,4 @@ class ElawInformacoesProcesso(ElawBot):
 
         message = "Ação informada!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)

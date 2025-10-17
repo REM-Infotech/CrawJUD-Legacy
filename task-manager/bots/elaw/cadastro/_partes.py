@@ -22,7 +22,7 @@ class ElawPartesPrincipais(ElawBot):
 
         message = "Informando Empresa"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         element_select.select2(text)
 
@@ -30,12 +30,12 @@ class ElawPartesPrincipais(ElawBot):
 
         message = "Empresa informada!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def tipo_empresa(self) -> None:
         message = "Informando classificação da Empresa"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         key = "TIPO_EMPRESA"
         element_select = self.wait.until(
@@ -51,7 +51,7 @@ class ElawPartesPrincipais(ElawBot):
 
         message = "Classificação da Empresa informada"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         self.tipo_contingencia()
 
@@ -61,7 +61,7 @@ class ElawPartesPrincipais(ElawBot):
 
         message = "Informando contingenciamento"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         text = ["Passiva", "Passivo"]
         if str(bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -82,12 +82,12 @@ class ElawPartesPrincipais(ElawBot):
 
         message = "Contingenciamento informado!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def parte_contraria(self) -> None:
         message = "Preechendo informações da parte contrária"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
         wait = self.wait
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
         element_select: WebElement = wait.until(
@@ -149,13 +149,13 @@ class ElawPartesPrincipais(ElawBot):
 
         self.messsage = "Parte adicionada!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def cadastro_parte_contraria(self) -> None:
         try:
             message = "Cadastrando parte"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             wait = self.wait
             driver = self.driver
@@ -270,7 +270,7 @@ class ElawPartesPrincipais(ElawBot):
 
             message = "Parte cadastrada!"
             type_log = "info"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
             driver.close()
 
             driver.switch_to.window(main_window)

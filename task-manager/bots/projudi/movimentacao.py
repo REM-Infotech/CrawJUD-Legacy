@@ -57,7 +57,9 @@ class Movimentacao(ProjudiBot):
             except (ExecutionError, Exception) as e:
                 message_error = str(e)
 
-                self.print_msg(message=f"{message_error}.", type_log="error")
+                self.print_message(
+                    message=f"{message_error}.", type_log="error"
+                )
                 self.append_error(self.bot_data)
 
                 self.message_error = None
@@ -88,7 +90,7 @@ class Movimentacao(ProjudiBot):
                 if value is None:
                     self.bot_data.pop(key)
 
-            self.print_msg(
+            self.print_message(
                 message=f"Buscando processo {bot_data['NUMERO_PROCESSO']}",
                 type_log="log",
                 row=self.row,
@@ -97,14 +99,14 @@ class Movimentacao(ProjudiBot):
             search = self.search()
 
             if search is not True:
-                self.print_msg(
+                self.print_message(
                     message="Processo não encontrado!",
                     row=self.row,
                     type_log="error",
                 )
                 return
 
-            self.print_msg(
+            self.print_message(
                 message="Processo Encontrado! Buscando movimentações...",
                 type_log="log",
                 row=self.row,
@@ -205,14 +207,14 @@ class Movimentacao(ProjudiBot):
         )
 
         if not self.movimentacao_encontrada:
-            self.print_msg(
+            self.print_message(
                 message="Nenhuma movimentação encontrada!",
                 row=self.row,
                 type_log="error",
             )
             return
 
-        self.print_msg(
+        self.print_message(
             message="Movimentações extraídas com sucesso!",
             row=self.row,
             type_log="success",
@@ -244,7 +246,7 @@ class Movimentacao(ProjudiBot):
             if com_documento:
                 message = f"Foram encontradas {qtd_movimentacoes} movimentações com arquivos!"
 
-            self.print_msg(
+            self.print_message(
                 message=message,
                 row=self.row,
                 type_log="info",

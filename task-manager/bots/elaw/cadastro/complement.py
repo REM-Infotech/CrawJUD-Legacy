@@ -35,7 +35,7 @@ class Complement(ElawCadastro):
             search = self.search(bot_data=self.bot_data)
 
             if not search:
-                self.print_msg(
+                self.print_message(
                     message="Processo não encontrado",
                     type_log="error",
                     row=self.row,
@@ -46,7 +46,7 @@ class Complement(ElawCadastro):
             start_time = time.perf_counter()
             message = "Inicializando complemento de cadastro"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             lista1 = list(self.bot_data.keys())
             check_esfera = self.wait.until(
@@ -75,7 +75,7 @@ class Complement(ElawCadastro):
 
             message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             self.validar_campos()
             self.validar_advs_participantes()

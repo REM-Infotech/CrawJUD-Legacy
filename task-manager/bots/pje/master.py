@@ -81,7 +81,7 @@ class PjeBot(CrawJUD):
         trt_id = regiao
         numero_processo = data["NUMERO_PROCESSO"]
         message = f"Buscando processo {numero_processo}"
-        self.print_msg(
+        self.print_message(
             message=message,
             row=row,
             type_log="log",
@@ -156,7 +156,7 @@ class PjeBot(CrawJUD):
                 driver.refresh()
 
         except Exception:
-            self.print_msg(
+            self.print_message(
                 "Erro ao realizar autenticação",
                 type_log="error",
             )

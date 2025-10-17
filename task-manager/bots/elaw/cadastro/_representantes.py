@@ -20,7 +20,7 @@ class ElawRepresentantes(ElawBot):
         bot_data = self.bot_data
         message = "Informando Adv. Parte contrária"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         campo_adv: WebElementBot = wait.until(
             ec.presence_of_element_located((
@@ -72,7 +72,7 @@ class ElawRepresentantes(ElawBot):
 
             message = "Adv. parte contrária informado!"
             type_log = "info"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             return
 
@@ -84,7 +84,7 @@ class ElawRepresentantes(ElawBot):
 
         message = "Adv. parte contrária informado!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def advogado_interno(self) -> None:
         wait = self.wait
@@ -94,7 +94,7 @@ class ElawRepresentantes(ElawBot):
 
         message = "informando advogado interno"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         input_adv_responsavel: WebElementBot = wait.until(
             ec.presence_of_element_located((
@@ -148,7 +148,7 @@ class ElawRepresentantes(ElawBot):
 
         message = "Advogado interno informado!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def escritorio_externo(self) -> None:
         wait = self.wait
@@ -156,7 +156,7 @@ class ElawRepresentantes(ElawBot):
 
         message = "Informando Escritório Externo"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         div_escritrorioexterno: WebElementBot = wait.until(
             ec.presence_of_element_located((
@@ -180,7 +180,7 @@ class ElawRepresentantes(ElawBot):
 
         message = "Escritório externo informado!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def cadastro_advogado_contra(self) -> None:
         try:
@@ -191,7 +191,7 @@ class ElawRepresentantes(ElawBot):
 
             message = "Cadastrando advogado"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             add_parte: WebElementBot = wait.until(
                 ec.presence_of_element_located((
@@ -267,7 +267,7 @@ class ElawRepresentantes(ElawBot):
 
             message = "Advogado cadastrado!"
             type_log = "info"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             driver.close()
             driver.switch_to.window(main_window)

@@ -32,7 +32,7 @@ class ElawCondenacao(ElawBot):
     def condenacao(self) -> None:
         message = "Informando o valor da guia"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         text = self.bot_data.get("VALOR_GUIA")
         element: WebElement = self.wait.until(
@@ -72,7 +72,7 @@ class ElawCondenacao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
         message = "Enviando guia"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         docs = [self.bot_data.get("DOC_GUIA")]
         calculo = self.bot_data.get("DOC_CALCULO", None)
@@ -101,7 +101,7 @@ class ElawCondenacao(ElawBot):
 
         message = "Informando tipo de condenação"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
         div_condenacao_type: WebElement = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
@@ -129,7 +129,7 @@ class ElawCondenacao(ElawBot):
 
         message = "Informando descrição do pagamento"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         desc_pagamento = str(self.bot_data.get("DESC_PAGAMENTO"))
 
@@ -151,7 +151,7 @@ class ElawCondenacao(ElawBot):
 
         message = "Informando data para pagamento"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         data_lancamento: WebElement = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_data)),
@@ -166,7 +166,7 @@ class ElawCondenacao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
         message = "Informando favorecido"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         input_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
             ec.element_to_be_clickable((
@@ -193,7 +193,7 @@ class ElawCondenacao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
         message = "Informando forma de pagamento"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         label_forma_pgto = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -224,7 +224,7 @@ class ElawCondenacao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
         message = "Informando centro de custas"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         centro_custas: WebElement = self.wait.until(
             ec.element_to_be_clickable((
@@ -242,7 +242,7 @@ class ElawCondenacao(ElawBot):
         sleep(1)
         message = "Informando conta para débito"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         div_conta_debito: WebElement = self.wait.until(
             ec.element_to_be_clickable((

@@ -33,7 +33,7 @@ class ElawValidacao(ElawBot):
     def validar_campos(self) -> None:
         message = "Validando campos"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         validar: dict[str, str] = {
             "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
@@ -53,7 +53,9 @@ class ElawValidacao(ElawBot):
                     )
 
                 message = f'Campo "{campo}" Validado | Texto: {element}'
-                self.print_msg(message=message, type_log="info", row=self.row)
+                self.print_message(
+                    message=message, type_log="info", row=self.row
+                )
 
             except Exception as e:
                 try:
@@ -66,7 +68,7 @@ class ElawValidacao(ElawBot):
 
                 message = message
                 type_log = "info"
-                self.print_msg(
+                self.print_message(
                     message=message,
                     type_log=type_log,
                     row=self.row,
@@ -75,12 +77,12 @@ class ElawValidacao(ElawBot):
         self.append_validarcampos([validar])
         message = "Campos validados!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def validar_advogado(self) -> str:
         message = "Validando advogado responsável"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         campo_validar = el.DICT_CAMPOS_VALIDAR.get(
             "advogado_interno",
@@ -94,7 +96,7 @@ class ElawValidacao(ElawBot):
 
         message = f'Campo "Advogado Responsável" | Texto: {element}'
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         sleep(0.5)
 
@@ -110,7 +112,7 @@ class ElawValidacao(ElawBot):
 
         message = "Validando advogados participantes"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         tabela_advogados = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -142,4 +144,4 @@ class ElawValidacao(ElawBot):
 
         message = "Advogados participantes validados"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)

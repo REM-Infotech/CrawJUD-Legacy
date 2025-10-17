@@ -43,7 +43,7 @@ class DownloadDocumento(CsiBot):
 
             message = "Chamado encontrado!"
             type_log = "info"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
             self.download_anexos_chamado()
 
         except Exception as e:
@@ -54,7 +54,7 @@ class DownloadDocumento(CsiBot):
 
         message = f"Buscando chamado pelo n.{numero_chamado}"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         self.driver.get(url=el.URL_BUSCA_CHAMADO)
         wait = WebDriverWait(self.driver, 10)
@@ -82,7 +82,7 @@ class DownloadDocumento(CsiBot):
     def download_anexos_chamado(self) -> None:
         message = "Baixando anexos..."
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         wait = WebDriverWait(self.driver, 10)
         self.swtich_iframe_anexos(wait)
@@ -113,7 +113,7 @@ class DownloadDocumento(CsiBot):
 
                 message = f"Baixando arquivo {anexo_info.text}"
                 type_log = "log"
-                self.print_msg(
+                self.print_message(
                     message=message,
                     type_log=type_log,
                     row=self.row,
@@ -132,7 +132,7 @@ class DownloadDocumento(CsiBot):
 
                 message = "Arquivo baixado com sucesso!"
                 type_log = "info"
-                self.print_msg(
+                self.print_message(
                     message=message,
                     type_log=type_log,
                     row=self.row,
@@ -142,7 +142,7 @@ class DownloadDocumento(CsiBot):
 
         message = "Anexos Baixados com sucesso!"
         type_log = "success"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def swtich_iframe_anexos(self, wait: WebDriverWait) -> None:
         self.driver.execute_script(

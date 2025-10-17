@@ -87,7 +87,7 @@ class Protocolo(ProjudiBot):
 
     def __entra_pagina_protocolo(self) -> None:
         """Empty."""
-        self.print_msg(
+        self.print_message(
             message="Inicializando Protocolo",
             type_log="log",
             row=self.row,
@@ -108,7 +108,7 @@ class Protocolo(ProjudiBot):
         """Empty."""
         bot_data = self.bot_data
 
-        self.print_msg(
+        self.print_message(
             message="Informando Tipo da movimentação",
             type_log="log",
             row=self.row,
@@ -132,7 +132,7 @@ class Protocolo(ProjudiBot):
 
     def __seleciona_parte_interessada(self) -> None:
         """Empty."""
-        self.print_msg(
+        self.print_message(
             message="Selecionando parte representada",
             type_log="log",
             row=self.row,
@@ -165,7 +165,7 @@ class Protocolo(ProjudiBot):
     def __adicionar_arquivos(self) -> None:
         """Empty."""
         bot_data = self.bot_data
-        self.print_msg(
+        self.print_message(
             message="Adicionando arquivos...",
             type_log="log",
             row=self.row,
@@ -233,7 +233,7 @@ class Protocolo(ProjudiBot):
     def __peticao_principal(self) -> None:
         """Empty."""
         bot_data = self.bot_data
-        self.print_msg(
+        self.print_message(
             message="Enviando petição principal.",
             type_log="log",
             row=self.row,
@@ -247,7 +247,7 @@ class Protocolo(ProjudiBot):
             peticao_principal=True,
         )
 
-        self.print_msg(
+        self.print_message(
             message="Petição principal enviada!",
             type_log="info",
             row=self.row,
@@ -255,7 +255,7 @@ class Protocolo(ProjudiBot):
 
     def __anexos_adicionais(self) -> None:
         """Empty."""
-        self.print_msg(
+        self.print_message(
             message="Enviando anexos...",
             type_log="log",
             row=self.row,
@@ -271,7 +271,7 @@ class Protocolo(ProjudiBot):
         )
 
         for pos, nome_arquivo in enumerate(anexos):
-            self.print_msg(
+            self.print_message(
                 message=f'Enviando anexo "{nome_arquivo}"',
                 type_log="log",
                 row=self.row,
@@ -281,7 +281,7 @@ class Protocolo(ProjudiBot):
                 nome_arquivo=nome_arquivo,
                 tipo_arquivo=tipo_arquivo,
             )
-            self.print_msg(
+            self.print_message(
                 message="Anexo enviado!",
                 type_log="info",
                 row=self.row,
@@ -443,7 +443,7 @@ class Protocolo(ProjudiBot):
     def __finaliza_peticionamento(self) -> None:
         message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         finish_button = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -518,7 +518,7 @@ class Protocolo(ProjudiBot):
 
         message = f"Peticionamento do processo Nº{self.bot_data.get('NUMERO_PROCESSO')} concluído com sucesso!"
         type_log = "success"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         return DataSucesso(
             NUMERO_PROCESSO=numero_processo,

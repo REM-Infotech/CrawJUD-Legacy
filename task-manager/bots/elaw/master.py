@@ -54,7 +54,7 @@ class ElawBot(CrawJUD):
 
         message = f"Buscando processo {numero_processo}"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         self.driver.implicitly_wait(5)
 
@@ -75,7 +75,7 @@ class ElawBot(CrawJUD):
         except TimeoutException:
             message = "Processo não encontrado!"
             type_log = "error"
-            self.print_msg(
+            self.print_message(
                 message=message,
                 type_log=type_log,
                 row=self.row,
@@ -244,6 +244,6 @@ class ElawBot(CrawJUD):
 
         message = "Processo encontrado!"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         return True

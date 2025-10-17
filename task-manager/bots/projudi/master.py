@@ -66,7 +66,7 @@ class ProjudiBot(CrawJUD):
         driver = self.driver
 
         numero_processo = bot_data["NUMERO_PROCESSO"]
-        self.print_msg(
+        self.print_message(
             message=f"Buscando processo {numero_processo}",
             type_log="log",
             row=self.row,
@@ -111,7 +111,7 @@ class ProjudiBot(CrawJUD):
                     detect_intimacao(driver=driver)
                     allow_access(driver=driver)
 
-                    self.print_msg(
+                    self.print_message(
                         "Processo Encontrado!",
                         type_log="info",
                         row=self.row,
@@ -121,7 +121,7 @@ class ProjudiBot(CrawJUD):
 
         type_log = "error"
         message = "Processo não encontrado!"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         return False
 

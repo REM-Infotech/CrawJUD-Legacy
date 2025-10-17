@@ -47,7 +47,7 @@ class RealizaPrazos(JusdsBot):
 
         id_prazo = self.bot_data["NUMERO_COMPROMISSO"]
 
-        self.print_msg(
+        self.print_message(
             message=f"Buscando compromisso pelo id {id_prazo}",
             type_log="log",
             row=self.row,
@@ -59,7 +59,7 @@ class RealizaPrazos(JusdsBot):
             prazo = self.find_prazo(id_prazo=id_prazo)
             if prazo:
                 if not message_prazo_encontrado:
-                    self.print_msg(
+                    self.print_message(
                         message="Compromisso encontrado!",
                         type_log="info",
                         row=self.row,

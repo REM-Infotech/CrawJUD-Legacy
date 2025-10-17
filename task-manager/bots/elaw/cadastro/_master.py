@@ -44,7 +44,7 @@ class ElawCadastro(
                 message="Erro ao encontrar elemento",
             )
 
-            self.print_msg(
+            self.print_message(
                 message="Processo salvo com sucesso!",
                 type_log="log",
                 row=self.row,
@@ -80,6 +80,6 @@ class ElawCadastro(
 
         message = "Salvando processo novo"
         type_log = "info"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         salvartudo.click()

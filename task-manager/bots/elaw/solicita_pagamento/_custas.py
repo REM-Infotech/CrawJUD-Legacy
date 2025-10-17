@@ -31,7 +31,7 @@ class ElawCustas(ElawBot):
     def custas(self) -> None:
         message = "Informando valor da guia"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         valor_doc = self.bot_data.get("VALOR_GUIA").replace(".", ",")
 
@@ -63,7 +63,7 @@ class ElawCustas(ElawBot):
         sleep(2)
         message = "Inserindo documento"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         docs = [self.bot_data.get("DOC_GUIA")]
 
@@ -108,7 +108,7 @@ class ElawCustas(ElawBot):
 
         message = "Informando tipo de guia"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         sleep(1)
 
@@ -124,7 +124,7 @@ class ElawCustas(ElawBot):
         sleep(1)
         message = "Informando data para pagamento"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         data_vencimento = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -161,7 +161,7 @@ class ElawCustas(ElawBot):
 
         message = "Informando favorecido"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         sleep(2)
         input_favorecido: WebElement = self.wait.until(
@@ -191,7 +191,7 @@ class ElawCustas(ElawBot):
 
         message = "Informando centro de custas"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         sleep(1)
 
@@ -206,7 +206,7 @@ class ElawCustas(ElawBot):
 
         message = "Informando conta débito"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         div_conta_debito: WebElement = self.wait.until(
             ec.presence_of_element_located((

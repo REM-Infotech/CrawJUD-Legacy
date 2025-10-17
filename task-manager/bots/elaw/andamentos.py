@@ -87,7 +87,7 @@ class Andamentos(ElawBot):
         try:
             message = "Informando data"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
             css_campo_data = el.input_data
             campo_data = self.wait.until(
                 ec.presence_of_element_located((
@@ -119,7 +119,7 @@ class Andamentos(ElawBot):
         try:
             message = "Informando ocorrência"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             ocorrencia = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -148,7 +148,7 @@ class Andamentos(ElawBot):
         try:
             message = "Informando observação"
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             observacao = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -187,7 +187,7 @@ class Andamentos(ElawBot):
         try:
             message = "Salvando andamento..."
             type_log = "log"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
             sleep(1)
             self.link = self.driver.current_url
             save_button = self.driver.find_element(

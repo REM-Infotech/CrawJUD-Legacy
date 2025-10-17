@@ -16,7 +16,7 @@ class ElawInformacaoInterna(ElawBot):
     def unidade_consumidora(self) -> None:
         message = "Informando unidade consumidora"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         input_uc: WebElement = self.wait.until(
             ec.presence_of_element_located((
@@ -32,12 +32,12 @@ class ElawInformacaoInterna(ElawBot):
 
         message = "Unidade consumidora informada!"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
     def divisao(self) -> None:
         message = "Informando divisão"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         sleep(0.5)
         text = str(self.bot_data.get("DIVISAO"))
@@ -50,4 +50,4 @@ class ElawInformacaoInterna(ElawBot):
 
         message = "Divisão informada!"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)

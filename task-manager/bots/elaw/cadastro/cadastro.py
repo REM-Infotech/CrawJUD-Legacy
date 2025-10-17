@@ -46,7 +46,7 @@ class Cadastro(ElawCadastro):
 
             message = "Processo não encontrado, inicializando cadastro..."
             type_log = "log"
-            self.print_msg(
+            self.print_message(
                 message=message,
                 type_log=type_log,
                 row=self.row,
@@ -89,7 +89,7 @@ class Cadastro(ElawCadastro):
 
             message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
             type_log = "log"
-            self.print_msg(
+            self.print_message(
                 message=message,
                 type_log=type_log,
                 row=self.row,

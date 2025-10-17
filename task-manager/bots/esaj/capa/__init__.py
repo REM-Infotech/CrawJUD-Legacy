@@ -51,7 +51,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             except ExecutionError as e:
                 message_error = str(e)
 
-                self.print_msg(
+                self.print_message(
                     message=f"{message_error}.",
                     type_log="error",
                 )
@@ -85,7 +85,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             driver = self.driver
             bot_data = self.bot_data
 
-            self.print_msg(
+            self.print_message(
                 message=f"Buscando processo {bot_data['NUMERO_PROCESSO']}",
                 row=self.row,
                 type_log="log",
@@ -94,14 +94,14 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             search = self.search()
             trazer_copia = bot_data.get("TRAZER_COPIA", "não")
             if not search:
-                self.print_msg(
+                self.print_message(
                     message="Processo não encontrado.",
                     row=self.row,
                     type_log="error",
                 )
                 return
 
-            self.print_msg(
+            self.print_message(
                 message="Processo encontrado! Extraindo informações...",
                 row=self.row,
                 type_log="info",
@@ -113,7 +113,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             if trazer_copia and trazer_copia.lower() == "sim":
                 data = self.copia_pdf(data)
 
-            self.print_msg(
+            self.print_message(
                 message="Informações extraídas com sucesso!",
                 row=self.row,
                 type_log="success",
@@ -134,7 +134,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 numero_processo=numero_processo,
             )
 
-        except (ExecutionError, Exception):
+        except ExecutionError, Exception:
             _raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
@@ -204,7 +204,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             ).click()
 
         def export() -> None:
-            self.print_msg(
+            self.print_message(
                 message="Baixando cópia integral do processo...",
                 type_log="log",
             )

@@ -38,7 +38,9 @@ class Protocolo(JusBrBot):
             except (ExecutionError, Exception) as e:
                 message_error = str(e)
 
-                self.print_msg(message=f"{message_error}.", type_log="error")
+                self.print_message(
+                    message=f"{message_error}.", type_log="error"
+                )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(self.bot_data)
@@ -53,7 +55,7 @@ class Protocolo(JusBrBot):
         search = self.search(method="peticionamento")
 
         if not search:
-            self.print_msg(
+            self.print_message(
                 message="Processo não encontrado!",
                 type_log="error",
                 row=self.row,

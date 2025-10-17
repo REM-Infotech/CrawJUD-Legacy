@@ -58,7 +58,7 @@ class Provisao(ElawBot):
 
             type_log = "log"
             message = "Processo encontrado! Informando valores..."
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
             calls = self.setup_calls()
 
@@ -108,7 +108,7 @@ class Provisao(ElawBot):
         if is_valores_and_possivel:
             message = "Aviso: Já existe uma provisão possível cadastrada."
             type_log = "info"
-            self.print_msg(message=message, type_log=type_log, row=self.row)
+            self.print_message(message=message, type_log=type_log, row=self.row)
 
         edit_button = self.wait.until(
             ec.presence_of_element_located((
@@ -231,7 +231,7 @@ class Provisao(ElawBot):
         self.sleep_load('div[id="j_id_3q"]')
         message = "Informando valores"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         for row_valor in self.__tabela_valores():
             campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[
@@ -264,7 +264,7 @@ class Provisao(ElawBot):
     def atualiza_risco(self) -> None:
         message = "Alterando risco"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         for row_risco in self.__tabela_valores():
             selector_filter_risco = (
@@ -297,7 +297,7 @@ class Provisao(ElawBot):
     def informar_datas(self) -> None:
         message = "Alterando datas de correção base e juros"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
 
         data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
         data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
@@ -326,7 +326,7 @@ class Provisao(ElawBot):
 
         message = "Informando justificativa"
         type_log = "log"
-        self.print_msg(message=message, type_log=type_log, row=self.row)
+        self.print_message(message=message, type_log=type_log, row=self.row)
         informa_justificativa = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
