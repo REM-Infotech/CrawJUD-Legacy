@@ -40,8 +40,8 @@ class PrintMessage:
         self.message_locker = Lock()
         self.queue = Queue()
 
-        th = Thread(target=self.queue_message)
-        th.start()
+        self.th = Thread(target=self.queue_message)
+        self.th.start()
 
     def __call__(self, message: str, message_type: MessageType) -> None:
         self.message_type = message_type
@@ -72,7 +72,7 @@ class PrintMessage:
             self.bot_stopped.set()
 
         with ThreadPoolExecutor(max_workers=4) as pool:
-            while not self.bot_stopped.is_set():
+            while not self.event_queue_bot.is_set():
                 data: Message = None
                 with suppress(Empty):
                     data = cast("Message", self.queue.get_nowait())
@@ -161,3 +161,7 @@ class PrintMessage:
                 self.COUNTS["remainign_count"] = to_subtract
 
             self.COUNTS["remainign_count"] -= to_subtract
+
+    @property
+    def event_queue_bot(self) -> Event:
+        return self.bot.queue_control.event_queue_bot

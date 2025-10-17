@@ -101,17 +101,6 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
 
                 self.message_error = None
 
-        for to_save, sheet_name in [
-            (self.to_add_processos_primeiro_grau, "Capa Primeiro Grau"),
-            (self.to_add_processos_segundo_grau, "Capa Segundo Grau"),
-            (self.to_add_partes, "Partes"),
-            (self.to_add_representantes, "Representantes"),
-        ]:
-            self.queue_save_xlsx.put({
-                "to_save": to_save,
-                "sheet_name": sheet_name,
-            })
-
         self.finalize_execution()
 
     def get_process_informations(self) -> None:

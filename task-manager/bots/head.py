@@ -20,7 +20,8 @@ from constants import WORKDIR
 from minio import Minio
 from minio.credentials.providers import EnvMinioProvider
 from pandas import Timestamp, read_excel
-from resources.print_message import PrintMessage
+from resources.queues import BotQueues
+from resources.queues.print_message import PrintMessage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
@@ -49,7 +50,6 @@ class CrawJUD(Task):
     app: Celery
     var_store: ClassVar[Dict] = {}
     _bot_stopped: Event
-    cls_print_message: PrintMessage
     _frame: list[BotData] = None
     _xlsx: str = None
     _bot_data: BotData = None
@@ -62,7 +62,7 @@ class CrawJUD(Task):
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
         self._bot_stopped = Event()
-        self.cls_print_message = PrintMessage(self)
+        self.queue_control = BotQueues(self)
         self.setup()
 
         return self._task(*args, **kwargs)
@@ -183,7 +183,7 @@ class CrawJUD(Task):
 
     @property
     def print_message(self) -> PrintMessage:
-        return self.cls_print_message
+        return self.queue_control.print_message
 
     @property
     def bot_stopped(self) -> Event:
