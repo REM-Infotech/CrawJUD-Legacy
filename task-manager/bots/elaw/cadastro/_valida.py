@@ -5,7 +5,7 @@ from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 type ListStr = list[str]
 campos_validar: ListStr = [

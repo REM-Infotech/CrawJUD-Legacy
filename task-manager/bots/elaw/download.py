@@ -18,7 +18,7 @@ from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 
 class Download(ElawBot):

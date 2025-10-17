@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
-from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from bots.projudi.master import ProjudiBot
 
 
 class PrimeiraInstancia(ProjudiBot):

@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 
 def raise_error(message: str) -> NoReturn:

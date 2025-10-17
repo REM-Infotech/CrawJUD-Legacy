@@ -16,12 +16,13 @@ from datetime import datetime
 from time import sleep
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 
 class Provisao(ElawBot):
@@ -78,7 +79,7 @@ class Provisao(ElawBot):
         )
 
         if label_classificacao_risco.text == "Risco Quebrado":
-            element_select: WebElement = self.wait.until(
+            element_select: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.CSS_SELETOR_TIPO_RISCO,
@@ -278,7 +279,7 @@ class Provisao(ElawBot):
                 id_selector=id_selector,
             )
 
-            element_select: WebElement = self.wait.until(
+            element_select: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, css_element)),
             )
 
@@ -391,7 +392,7 @@ class Provisao(ElawBot):
         )
         self.sleep_load('div[id="j_id_3q"]')
 
-    def __tabela_valores(self) -> list[WebElement]:
+    def __tabela_valores(self) -> list[WebElementBot]:
         tabela_valores = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,

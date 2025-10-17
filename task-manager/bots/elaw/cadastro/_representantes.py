@@ -2,13 +2,14 @@ from contextlib import suppress
 from time import sleep
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 
 class ElawRepresentantes(ElawBot):
@@ -21,7 +22,7 @@ class ElawRepresentantes(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        campo_adv: WebElement = wait.until(
+        campo_adv: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_input_adv,
@@ -95,7 +96,7 @@ class ElawRepresentantes(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        input_adv_responsavel: WebElement = wait.until(
+        input_adv_responsavel: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.adv_responsavel,
@@ -115,7 +116,7 @@ class ElawRepresentantes(ElawBot):
         wait_adv = None
 
         with suppress(TimeoutException):
-            wait_adv: WebElement = WebDriverWait(driver, 25).until(
+            wait_adv: WebElementBot = WebDriverWait(driver, 25).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     css_wait_adv,
@@ -130,7 +131,7 @@ class ElawRepresentantes(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         self.sleep_load('div[id="j_id_4p"]')
-        element_select: WebElement = wait.until(
+        element_select: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.select_advogado_responsavel,
@@ -157,7 +158,7 @@ class ElawRepresentantes(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        div_escritrorioexterno: WebElement = wait.until(
+        div_escritrorioexterno: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.escritrorio_externo,
@@ -168,7 +169,7 @@ class ElawRepresentantes(ElawBot):
         sleep(1)
 
         text = bot_data.get("ESCRITORIO_EXTERNO")
-        select_escritorio: WebElement = wait.until(
+        select_escritorio: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.select_escritorio,
@@ -192,7 +193,7 @@ class ElawRepresentantes(ElawBot):
             type_log = "log"
             self.print_msg(message=message, type_log=type_log, row=self.row)
 
-            add_parte: WebElement = wait.until(
+            add_parte: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.XPATH,
                     el.btn_novo_advogado_contra,
@@ -205,7 +206,7 @@ class ElawRepresentantes(ElawBot):
 
             main_window = driver.current_window_handle
 
-            iframe: WebElement = WebDriverWait(driver, 10).until(
+            iframe: WebElementBot = WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.iframe_cadastro_advogado_contra,
@@ -218,7 +219,7 @@ class ElawRepresentantes(ElawBot):
 
             sleep(0.5)
 
-            naoinfomadoc: WebElement = wait.until(
+            naoinfomadoc: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.css_naoinfomadoc,
@@ -228,7 +229,7 @@ class ElawRepresentantes(ElawBot):
             naoinfomadoc.click()
 
             sleep(0.5)
-            continuebutton: WebElement = wait.until(
+            continuebutton: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.botao_continuar,
@@ -240,7 +241,7 @@ class ElawRepresentantes(ElawBot):
             self.sleep_load('div[id="j_id_1o"]')
             sleep(0.5)
 
-            input_nomeadv: WebElement = wait.until(
+            input_nomeadv: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.css_input_nomeadv,
@@ -255,7 +256,7 @@ class ElawRepresentantes(ElawBot):
             )
 
             sleep(0.05)
-            salvar: WebElement = wait.until(
+            salvar: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.salvarcss,

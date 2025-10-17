@@ -1,11 +1,12 @@
 from time import sleep
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 
 class ElawValores(ElawBot):
@@ -16,7 +17,7 @@ class ElawValores(ElawBot):
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
         self.sleep_load('div[id="j_id_4p"]')
-        data_distribuicao: WebElement = self.wait.until(
+        data_distribuicao: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
                 el.css_data_distribuicao,
@@ -44,7 +45,7 @@ class ElawValores(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        valor_causa: WebElement = wait.until(
+        valor_causa: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.valor_causa)),
             message="Erro ao encontrar elemento",
         )
@@ -71,7 +72,7 @@ class ElawValores(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        data_citacao: WebElement = self.wait.until(
+        data_citacao: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.data_citacao,

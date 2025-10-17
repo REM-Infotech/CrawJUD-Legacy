@@ -6,9 +6,10 @@ from abc import abstractmethod
 from collections.abc import Callable
 from contextlib import suppress
 from pathlib import Path
+from threading import Event
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from __types import P, T
+from __types import Dict, P, T
 from _interfaces import ColorsDict
 from celery import Celery, Task
 from constants import WORKDIR
@@ -36,8 +37,22 @@ COLORS_DICT: ColorsDict = {
 class CrawJUD(Task):
     """Classe CrawJUD."""
 
-    _task: Callable[P, T]
+    _task: Callable
     app: Celery
+    var_store: Dict
+    _bot_stopped: Event
+
+    @property
+    def bot_stopped(self) -> Event:
+        return self._bot_stopped
+
+    @property
+    def row(self) -> int:
+        return self.var_store.get("row", 0)
+
+    @row.setter
+    def row(self, _new_row: int) -> None:
+        self.var_store["row"] = _new_row
 
     @property
     def pid(self) -> str:
@@ -47,12 +62,21 @@ class CrawJUD(Task):
     def output_dir_path(self) -> Path:
         return WORKDIR.joinpath("output", self.pid)
 
+    @property
+    def total_rows(self) -> int:
+        return self.var_store.get("total_rows", 0)
+
+    @total_rows.setter
+    def total_rows(self, _total_rows: int) -> None:
+        self.var_store["total_rows"] = _total_rows
+
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
         self._task = self.run
         self.run = self.__call__
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
+        self._bot_stopped = Event()
         self.setup()
         return self._task(*args, **kwargs)
 

@@ -58,7 +58,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "debugpy>=1.8.17",
-    "pre-commit>=4.3.0",
+    "ruff>=0.14.1",
 ]
 
 [tool.uv.sources]

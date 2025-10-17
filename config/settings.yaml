@@ -108,3 +108,4 @@ celery:
   task_default_exchange: "celery"
   task_default_exchange_type: "direct"
   task_default_routing_key: "celery"
+  SOCKETIO_SERVER: "@format {env[CRAWJUD_APP_DOMAIN]}"

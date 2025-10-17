@@ -1,11 +1,12 @@
 from time import sleep
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from .master import ElawBot
+from bots.elaw.master import ElawBot
 
 
 class ElawLocalidade(ElawBot):
@@ -42,7 +43,7 @@ class ElawLocalidade(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        element_select: WebElement = self.wait.until(
+        element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.css_esfera_judge)),
         )
 
@@ -62,7 +63,7 @@ class ElawLocalidade(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        element_select: WebElement = self.wait.until(
+        element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.estado_input)),
         )
 
@@ -79,7 +80,7 @@ class ElawLocalidade(ElawBot):
         message = "Informando comarca do processo"
         type_log = "log"
 
-        element_select: WebElement = self.wait.until(
+        element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.comarca_input)),
         )
         self.print_msg(message=message, type_log=type_log, row=self.row)
@@ -99,7 +100,7 @@ class ElawLocalidade(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        element_select: WebElement = self.wait.until(
+        element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.foro_input)),
         )
         element_select.select2(text)
@@ -117,7 +118,7 @@ class ElawLocalidade(ElawBot):
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
 
-        element_select: WebElement = wait.until(
+        element_select: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.vara_input)),
         )
 
@@ -133,7 +134,7 @@ class ElawLocalidade(ElawBot):
         message = "Preenchendo UF Processo..."
         type_log = "log"
         self.print_msg(message=message, type_log=type_log, row=self.row)
-        element_select: WebElement = self.driver.find_element(
+        element_select: WebElementBot = self.driver.find_element(
             By.XPATH,
             el.select_uf_proc,
         )
@@ -144,7 +145,7 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
-            other_location: WebElement = self.wait.until(
+            other_location: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.css_other_location,
