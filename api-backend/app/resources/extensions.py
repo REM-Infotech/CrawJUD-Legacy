@@ -24,11 +24,18 @@ cors = CORS(
         "http://localhost:1474",  # Adiciona a origem necessária para evitar erro CORS
     ],
 )
+
+
+def cors_origin(*args, **kwargs):
+    return True
+
+
 io = SocketIO(
     async_mode="threading",
-    cors_allowed_origins="*",
-    transports=["polling"],  # pyright: ignore[reportCallIssue]
+    cors_allowed_origins=cors_origin,
 )
+
+
 __all__ = ["db", "cors", "jwt", "mail", "start_extensions"]
 
 

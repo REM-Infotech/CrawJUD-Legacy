@@ -22,9 +22,6 @@ crypt_context = CryptContext.from_path(path_passlib_config)
 def create_app() -> Flask:
     """Create Flask application.
 
-    Args:
-        config_name (ConfigNames): Configuration name.
-
     Returns:
         Flask: Flask application.
 

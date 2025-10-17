@@ -10,5 +10,6 @@
   "explorer.fileNesting.patterns": {
     "varas.pyi": "varas.json",
     "cidades.pyi": "cidades.json"
-  }
+  },
+  "python.REPL.enableREPLSmartSend": false
 }

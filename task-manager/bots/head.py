@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from abc import abstractmethod
 from collections.abc import Callable
 from contextlib import suppress
@@ -9,16 +10,19 @@ from pathlib import Path
 from threading import Event
 from zipfile import ZIP_DEFLATED, ZipFile
 
+import _hook
 from __types import Dict, P, T
 from _interfaces import ColorsDict
 from celery import Celery, Task
 from constants import WORKDIR
 from minio import Minio
 from minio.credentials.providers import EnvMinioProvider
+from resources.print_message import PrintMessage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
 
+__all__ = ["_hook"]
 func_dict_check = {
     "bot": ["execution"],
     "search": ["buscar_processo"],
@@ -41,6 +45,90 @@ class CrawJUD(Task):
     app: Celery
     var_store: Dict
     _bot_stopped: Event
+    cls_print_message: PrintMessage
+
+    def __init__(self) -> None:
+        """Inicializa o CrawJUD."""
+        self._task = self.run
+        self.run = self.__call__
+
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
+        self._bot_stopped = Event()
+        self.cls_print_message = PrintMessage(self)
+        self.setup()
+
+        return self._task(*args, **kwargs)
+
+    def setup(self) -> None:
+        options = ChromeOptions()
+
+        user_data_dir = WORKDIR.joinpath("chrome-data", self.request.id)
+        user_data_dir.mkdir(parents=True, exist_ok=True)
+        options.add_argument(f"--user-data-dir={user_data_dir!s}")
+
+        user_data_dir.chmod(0o775)
+
+        self.driver = Chrome(options=options)
+        self.wait = WebDriverWait(self.driver, 30)
+
+        self.download_files()
+        self.load_config()
+
+        if not self.auth():
+            with suppress(Exception):
+                self.driver.quit()
+
+    def load_config(self) -> None:
+        json_config = self.output_dir_path.joinpath(
+            self.pid, "configuration.json"
+        )
+
+        with json_config.open("rb") as fp:
+            data = json.load(fp)
+
+            for k, v in list(data.items()):
+                setattr(self, k, v)
+
+    def download_files(self) -> None:
+        uri = self.app.conf["app_domain"]
+        client = Minio(
+            endpoint=f"{uri}:19000",
+            credentials=EnvMinioProvider(),
+            secure=False,
+        )
+
+        for item in client.list_objects(
+            "outputexec-bots",
+            prefix=self.request.kwargs["cod_rastreio"],
+            recursive=True,
+        ):
+            file_path = str(
+                self.output_dir_path.joinpath(
+                    self.pid, Path(item.object_name).name
+                ),
+            )
+            client.fget_object(item.bucket_name, item.object_name, file_path)
+
+    def zip_result(self) -> Path:
+        zip_filename = f"{self.pid[:6].upper()}.zip"
+        source_dir = self.output_dir_path
+        output_dir = WORKDIR.joinpath("archives", zip_filename)
+
+        output_dir.parent.mkdir(exist_ok=True, parents=True)
+
+        with ZipFile(output_dir, "w", ZIP_DEFLATED) as zipfile:
+            for root, _, files in source_dir.walk():
+                for file in files:
+                    if self.pid in file and ".log" not in file:
+                        file_path = root.joinpath(file)
+                        arcname = file_path.relative_to(source_dir)
+                        zipfile.write(file_path, arcname)
+
+        return output_dir
+
+    @property
+    def print_message(self) -> PrintMessage:
+        return self.cls_print_message
 
     @property
     def bot_stopped(self) -> Event:
@@ -69,59 +157,6 @@ class CrawJUD(Task):
     @total_rows.setter
     def total_rows(self, _total_rows: int) -> None:
         self.var_store["total_rows"] = _total_rows
-
-    def __init__(self) -> None:
-        """Inicializa o CrawJUD."""
-        self._task = self.run
-        self.run = self.__call__
-
-    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
-        self._bot_stopped = Event()
-        self.setup()
-        return self._task(*args, **kwargs)
-
-    def setup(self) -> None:
-        options = ChromeOptions()
-
-        user_data_dir = WORKDIR.joinpath("chrome-data", self.request.id)
-        user_data_dir.mkdir(parents=True, exist_ok=True)
-        options.add_argument(f"--user-data-dir={user_data_dir!s}")
-
-        user_data_dir.chmod(0o775)
-
-        self.driver = Chrome(options=options)
-        self.wait = WebDriverWait(self.driver, 30)
-
-        self.download_files()
-
-        if not self.auth():
-            with suppress(Exception):
-                self.driver.quit()
-
-    def download_files(self) -> None:
-        uri = self.app.conf["app_domain"]
-        _client = Minio(
-            endpoint=f"{uri}:19000",
-            credentials=EnvMinioProvider(),
-            secure=False,
-        )
-
-    def zip_result(self) -> Path:
-        zip_filename = f"{self.pid[:6].upper()}.zip"
-        source_dir = self.output_dir_path
-        output_dir = WORKDIR.joinpath("archives", zip_filename)
-
-        output_dir.parent.mkdir(exist_ok=True, parents=True)
-
-        with ZipFile(output_dir, "w", ZIP_DEFLATED) as zipfile:
-            for root, _, files in source_dir.walk():
-                for file in files:
-                    if self.pid in file and ".log" not in file:
-                        file_path = root.joinpath(file)
-                        arcname = file_path.relative_to(source_dir)
-                        zipfile.write(file_path, arcname)
-
-        return output_dir
 
     @abstractmethod
     def auth(self) -> bool:

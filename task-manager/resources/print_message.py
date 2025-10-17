@@ -2,14 +2,21 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
+from os import environ
+from pathlib import Path
 from queue import Empty, Queue
 from threading import Event, Lock, Thread
-from typing import TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 from __types import MessageType, StatusBot
 from _interfaces import Message
-from bots.head import CrawJUD
+from dotenv import load_dotenv
 from socketio import Client
+
+load_dotenv(Path.cwd().parent)
+
+if TYPE_CHECKING:
+    from bots.head import CrawJUD
 
 
 class Count(TypedDict):
@@ -52,16 +59,14 @@ class PrintMessage:
         self.queue.put_nowait(msg)
 
     def queue_message(self) -> None:
-        uri = f"http://{self.bot.app.conf['SOCKETIO_SERVER']}"
-        self.sio.connect(
-            uri,
-            namespaces=["/bot_logs"],
-            headers={"bypass_bot": True},
-            wait_timeout=5,
-            retry=True,
-        )
+        uri = f"http://{environ['SOCKETIO_SERVER']}"
+        self.sio.connect(uri, namespaces=["/bot_logs"])
         self.COUNTS = Count()
         Thread(target=self.sio.wait).start()
+
+        @self.sio.event("bot_stop")
+        def stop_bot() -> None:
+            self.bot_stopped.set()
 
         with ThreadPoolExecutor(max_workers=4) as pool:
             while not self.bot_stopped.is_set():

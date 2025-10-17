@@ -10,7 +10,7 @@ from bots.projudi.protocolo import Protocolo as ProjudiProtocolo
 
 
 @shared_task(name="projudi.capa", bind=True, base=ProjudiCapa)
-def projudi_capa(self: ProjudiCapa) -> None:
+def projudi_capa(self: ProjudiCapa, cod_rastreio: str) -> None:
     """Task Projudi Capa."""
     self.execution()
 
