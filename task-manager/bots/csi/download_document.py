@@ -28,7 +28,7 @@ class DownloadDocumento(CsiBot):
         self.total_rows = len(frame)
 
         for pos, item in enumerate(frame):
-            if self.event_stop_bot.is_set():
+            if self.bot_stopped.is_set():
                 break
 
             self.bot_data = item
@@ -107,7 +107,7 @@ class DownloadDocumento(CsiBot):
             for anexo in wait.until(
                 ec.presence_of_element_located((By.TAG_NAME, "tbody")),
             ).find_elements(By.TAG_NAME, "tr")[1:]:
-                if self.event_stop_bot.is_set():
+                if self.bot_stopped.is_set():
                     break
 
                 with suppress(Exception):

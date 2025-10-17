@@ -36,7 +36,7 @@ class PrintMessage:
     def __init__(self, bot: CrawJUD) -> None:
         """Inicializa o PrintMessage."""
         self.bot = bot
-        self.sio = Client()
+        self.COUNTS = Count(success_count=0, error_count=0, remainign_count=0)
         self.message_locker = Lock()
         self.queue = Queue()
 
@@ -59,11 +59,15 @@ class PrintMessage:
 
     def queue_message(self) -> None:
         uri = f"http://{environ['SOCKETIO_SERVER']}"
-        self.sio.connect(uri, namespaces=["/bot_logs"])
-        self.COUNTS = Count()
-        Thread(target=self.sio.wait).start()
 
-        @self.sio.event("bot_stop")
+        sio = Client()
+        sio.connect(uri, namespaces=["/bot_logs"])
+
+        self.sio = sio
+
+        Thread(target=sio.wait).start()
+
+        @sio.on("bot_stop", namespace="/bot_logs")
         def stop_bot() -> None:
             self.bot_stopped.set()
 

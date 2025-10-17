@@ -79,7 +79,7 @@ class Capa(PjeBot):
             for pos, t_regiao in enumerate(lista_nova):
                 regiao, data_regiao = t_regiao
 
-                if self.event_stop_bot.is_set():
+                if self.bot_stopped.is_set():
                     break
 
                 url = el.LINK_AUTENTICACAO_SSO.format(regiao=regiao)
@@ -140,7 +140,7 @@ class Capa(PjeBot):
         with client_context as client, pool_exe as executor:
             futures: list[Future] = []
             for item in data_regiao:
-                if self.event_stop_bot.is_set():
+                if self.bot_stopped.is_set():
                     break
 
                 futures.append(
@@ -163,7 +163,7 @@ class Capa(PjeBot):
         regiao: str,
     ) -> None:
         try:
-            if not self.event_stop_bot.is_set():
+            if not self.bot_stopped.is_set():
                 processo = item["NUMERO_PROCESSO"]
                 row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
                 resultados: DictResults = self.search(

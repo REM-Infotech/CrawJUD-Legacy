@@ -44,7 +44,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         self._total_rows = len(frame)
 
         for pos, value in enumerate(frame):
-            if self.event_stop_bot.is_set():
+            if self.bot_stopped.is_set():
                 break
 
             self.row = pos + 1

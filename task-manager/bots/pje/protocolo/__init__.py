@@ -29,7 +29,7 @@ class Protocolo(HabilitiacaoPJe):
         with ThreadPoolExecutor(max_workers=1) as executor:
             futures: list[Future] = []
             for regiao, data_regiao in lista_nova:
-                if self.event_stop_bot.is_set():
+                if self.bot_stopped.is_set():
                     break
 
                 futures.append(
@@ -48,7 +48,7 @@ class Protocolo(HabilitiacaoPJe):
 
     def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
         try:
-            if self.event_stop_bot.is_set():
+            if self.bot_stopped.is_set():
                 return
 
             _grau_text = {
@@ -84,7 +84,7 @@ class Protocolo(HabilitiacaoPJe):
         with client_context as client:
             for data in data_regiao:
                 try:
-                    if self.event_stop_bot.is_set():
+                    if self.bot_stopped.is_set():
                         return
 
                     row = self.posicoes_processos[data["NUMERO_PROCESSO"]] + 1

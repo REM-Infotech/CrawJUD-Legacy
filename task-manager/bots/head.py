@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-import datetime
 import json
 from abc import abstractmethod
 from collections.abc import Callable
 from contextlib import suppress
+from datetime import datetime
 from pathlib import Path
 from threading import Event
+from typing import ClassVar
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import _hook
@@ -46,30 +47,13 @@ class CrawJUD(Task):
 
     _task: Callable
     app: Celery
-    var_store: Dict
+    var_store: ClassVar[Dict] = {}
     _bot_stopped: Event
     cls_print_message: PrintMessage
+    _frame: list[BotData] = None
     _xlsx: str = None
-    _bot_data: list[BotData] = None
-
-    @property
-    def xlsx(self) -> str:
-        return self._xlsx
-
-    @xlsx.setter
-    def xlsx(self, _xlsx: str) -> None:
-        self._xlsx = secure_filename(_xlsx)
-
-    @property
-    def bot_data(self) -> list[BotData]:
-        if not self._bot_data:
-            self._bot_data = self.load_data()
-
-        return self._bot_data
-
-    @bot_data.setter
-    def bot_data(self, new_data: list[BotData]) -> None:
-        self._bot_data = new_data
+    _bot_data: BotData = None
+    _total_rows: int = None
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -161,7 +145,7 @@ class CrawJUD(Task):
         """
         self.path_planilha = self.output_dir_path.joinpath(self.xlsx)
 
-        df = read_excel(self.path_planilha)
+        df = read_excel(self.path_planilha, engine="openpyxl")
         df.columns = df.columns.str.upper()
 
         def format_data(x: AnyType) -> str:
@@ -229,7 +213,42 @@ class CrawJUD(Task):
     def total_rows(self, _total_rows: int) -> None:
         self.var_store["total_rows"] = _total_rows
 
+    @property
+    def xlsx(self) -> str:
+        return self._xlsx
+
+    @xlsx.setter
+    def xlsx(self, _xlsx: str) -> None:
+        self._xlsx = secure_filename(_xlsx)
+
+    @property
+    def bot_data(self) -> BotData:
+        return self._bot_data
+
+    @bot_data.setter
+    def bot_data(self, new_data: BotData) -> None:
+        self._bot_data = new_data
+
+    @property
+    def frame(self) -> list[BotData]:
+        if not self._frame:
+            self._frame = self.load_data()
+
+        return self._frame
+
+    @property
+    def total_rows(self) -> int:
+        return self._total_rows
+
+    @total_rows.setter
+    def total_rows(self, _total_rows: int) -> None:
+        self._total_rows = _total_rows
+
     @abstractmethod
     def auth(self) -> bool:
         """Autenticação no sistema."""
         ...
+
+    @property
+    def botname(self) -> str:
+        return str(self.name.split(".")[-1])

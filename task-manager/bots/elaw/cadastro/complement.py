@@ -22,7 +22,7 @@ class Complement(ElawCadastro):
             self.row = pos + 1
             self.bot_data = self.elaw_formats(value)
 
-            if self.event_stop_bot.is_set():
+            if self.bot_stopped.is_set():
                 self.success = self.total_rows - pos
                 break
 

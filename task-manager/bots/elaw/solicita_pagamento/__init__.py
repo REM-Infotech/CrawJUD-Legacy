@@ -40,7 +40,7 @@ class SolicitaPgto(ElawPagamentos):
         for pos, value in enumerate(frame):
             self.row = pos + 1
             self.bot_data = self.elawFormats(value)
-            if self.event_stop_bot.is_set():
+            if self.bot_stopped.is_set():
                 break
 
             self.queue()
