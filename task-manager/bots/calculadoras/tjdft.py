@@ -9,13 +9,14 @@ from pathlib import Path
 from time import sleep
 
 from common.exceptions import ExecutionError
-from controllers.main import CrawJUD
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+
+from bots.head import CrawJUD
 
 cookieaceito = []
 
