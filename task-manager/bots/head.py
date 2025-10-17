@@ -20,7 +20,7 @@ from constants import WORKDIR
 from minio import Minio
 from minio.credentials.providers import EnvMinioProvider
 from pandas import Timestamp, read_excel
-from resources.queues import BotQueues
+from resources.queues import BotQueues, SaveError, SaveSuccess
 from resources.queues.print_message import PrintMessage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -252,3 +252,11 @@ class CrawJUD(Task):
     @property
     def botname(self) -> str:
         return str(self.name.split(".")[-1])
+
+    @property
+    def append_success(self) -> SaveSuccess:
+        return self.queue_control.save_success
+
+    @property
+    def append_error(self) -> SaveError:
+        return self.queue_control.save_error
