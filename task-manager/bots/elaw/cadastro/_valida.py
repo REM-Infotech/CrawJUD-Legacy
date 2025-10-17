@@ -1,6 +1,7 @@
 from contextlib import suppress
 from time import sleep
 
+from common._raises import raise_execution_error
 from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -51,7 +52,7 @@ class ElawValidacao(ElawBot):
                 element = self.driver.execute_script(command)
 
                 if not element or element.lower() == "selecione":
-                    _raise_execution_error(
+                    raise_execution_error(
                         message=f'Campo "{campo}" não preenchido',
                     )
 
@@ -101,7 +102,7 @@ class ElawValidacao(ElawBot):
 
         if not element or element.lower() == "selecione":
             message = 'Campo "Advogado Responsável" não preenchido'
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)
 
         message = f'Campo "Advogado Responsável" | Texto: {element}'
         message_type = "info"
@@ -120,7 +121,7 @@ class ElawValidacao(ElawBot):
 
         if not adv_name.strip():
             message = "Necessário advogado interno para validação!"
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)
 
         message = "Validando advogados participantes"
         message_type = "log"
@@ -144,7 +145,7 @@ class ElawValidacao(ElawBot):
 
         if not_adv is not None:
             message = "Sem advogados participantes!"
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)
 
         advs = tabela_advogados.find_elements(By.TAG_NAME, "tr")
 
@@ -155,7 +156,7 @@ class ElawValidacao(ElawBot):
 
         else:
             message = "Advogado responsável não encontrado na lista de advogados participantes!"
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)
 
         message = "Advogados participantes validados"
         message_type = "info"

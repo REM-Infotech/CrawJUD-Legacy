@@ -9,7 +9,8 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 
-from common import _raise_execution_error
+from __types import Dict
+from common import raise_execution_error
 from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -131,10 +132,10 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             )
 
         except ExecutionError, Exception:
-            _raise_execution_error("Erro ao executar operação")
+            raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
-        process_info: ProcessInfo = {"Número do processo": numero_processo}
+        process_info: Dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_primeiro_grau())
         process_info.update(self._info_processual_primeiro_grau())
 
@@ -142,7 +143,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         self.to_add_processos_primeiro_grau.append(process_info)
 
     def segundo_grau(self, numero_processo: str) -> None:
-        process_info: ProcessInfo = {"Número do processo": numero_processo}
+        process_info: Dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_segundo_grau())
         process_info.update(self._info_processual_segundo_grau())
 

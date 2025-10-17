@@ -12,9 +12,9 @@ Attributes:
 """
 
 from time import sleep
-from typing import TYPE_CHECKING
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -22,8 +22,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.elaw.master import ElawBot
 
-if TYPE_CHECKING:
-    from app.utils.webdriver import WebElementBot as WebElement
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
@@ -38,7 +36,7 @@ class ElawCustas(ElawBot):
 
         valor_doc = self.bot_data.get("VALOR_GUIA").replace(".", ",")
 
-        element: WebElement = self.wait.until(
+        element: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, el.valor_guia)),
         )
         element.click()
@@ -54,7 +52,7 @@ class ElawCustas(ElawBot):
 
         sleep(0.5)
 
-        list_tipo_doc: WebElement = self.wait.until(
+        list_tipo_doc: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, el.type_doc_css)),
         )
         list_tipo_doc.click()
@@ -75,7 +73,7 @@ class ElawCustas(ElawBot):
 
         for doc in docs:
             doc = self.format_string(doc)
-            insert_doc: WebElement = self.wait.until(
+            insert_doc: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.editar_pagamento,
@@ -83,7 +81,7 @@ class ElawCustas(ElawBot):
             )
             insert_doc.send_keys(f"{self.output_dir_path}/{doc}")
 
-            wait_upload: WebElement = (
+            wait_upload: WebElementBot = (
                 WebDriverWait(self.driver, 20)
                 .until(
                     ec.presence_of_element_located((
@@ -101,7 +99,7 @@ class ElawCustas(ElawBot):
 
         solicitante = str(self.bot_data.get("SOLICITANTE")).lower()
         if solicitante == "monitoria" or solicitante.lower() == "monitória":
-            desc_pgto: WebElement = self.wait.until(
+            desc_pgto: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.css_desc_pgto,
@@ -122,7 +120,7 @@ class ElawCustas(ElawBot):
         sleep(1)
 
         tipo_guia = str(self.bot_data.get("TIPO_GUIA"))
-        list_tipo_custa: WebElement = self.wait.until(
+        list_tipo_custa: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_listcusta,
@@ -161,7 +159,7 @@ class ElawCustas(ElawBot):
 
         self.interact.sleep_load('div[id="j_id_2x"]')
 
-        campo_cod_barras: WebElement = self.wait.until(
+        campo_cod_barras: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, el.css_cod_bars)),
         )
         campo_cod_barras.click()
@@ -179,7 +177,7 @@ class ElawCustas(ElawBot):
         )
 
         sleep(2)
-        input_favorecido: WebElement = self.wait.until(
+        input_favorecido: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_inputfavorecido,
@@ -193,7 +191,7 @@ class ElawCustas(ElawBot):
             self.bot_data.get("CNPJ_FAVORECIDO", "04.812.509/0001-90"),
         )
 
-        result_favorecido: WebElement = self.wait.until(
+        result_favorecido: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.resultado_favorecido,
@@ -213,7 +211,7 @@ class ElawCustas(ElawBot):
 
         sleep(1)
 
-        centro_custas: WebElement = self.wait.until(
+        centro_custas: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_centro_custas,
@@ -229,7 +227,7 @@ class ElawCustas(ElawBot):
             message_type=message_type,
         )
 
-        div_conta_debito: WebElement = self.wait.until(
+        div_conta_debito: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_div_conta_debito,

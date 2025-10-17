@@ -1,6 +1,7 @@
 from contextlib import suppress
 from time import sleep
 
+from common._raises import raise_execution_error
 from resources.elements import elaw as el
 from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -138,7 +139,7 @@ class ElawRepresentantes(ElawBot):
         if wait_adv:
             wait_adv.click()
         elif not wait_adv:
-            _raise_execution_error(message="Advogado interno não encontrado")
+            raise_execution_error(message="Advogado interno não encontrado")
 
         self.sleep_load('div[id="j_id_4p"]')
 
@@ -310,7 +311,7 @@ class ElawRepresentantes(ElawBot):
 
         except Exception:
             message = "Não foi possível cadastrar advogado"
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)
 
     def check_part_found(self) -> str | None:
         name_parte = None

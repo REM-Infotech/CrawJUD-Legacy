@@ -15,6 +15,7 @@ from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
+from common.exceptions import ExecutionError
 from resources.elements import elaw as el
 from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException

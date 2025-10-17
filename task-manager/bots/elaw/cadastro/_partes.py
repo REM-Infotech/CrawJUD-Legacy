@@ -2,7 +2,9 @@ from contextlib import suppress
 from time import sleep
 from traceback import format_exception_only
 
+from common._raises import raise_execution_error
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -16,7 +18,7 @@ type_doc = {"11": "cpf", "14": "cnpj"}
 class ElawPartesPrincipais(ElawBot):
     def empresa(self) -> None:
         text = self.bot_data.get("EMPRESA")
-        element_select: WebElement = self.wait.until(
+        element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.empresa_input)),
         )
 
@@ -82,10 +84,10 @@ class ElawPartesPrincipais(ElawBot):
         if str(bot_data.get("TIPO_EMPRESA")).lower() == "autor":
             text = ["Ativa", "Ativo"]
 
-        select_contigencia: WebElement = wait.until(
+        select_contigencia: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.contingencia)),
         )
-        select_polo: WebElement = wait.until(
+        select_polo: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.tipo_polo)),
         )
 
@@ -111,7 +113,7 @@ class ElawPartesPrincipais(ElawBot):
         )
         wait = self.wait
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
-        element_select: WebElement = wait.until(
+        element_select: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.XPATH_TIPO_PARTE_CONTRARIA,
@@ -126,13 +128,13 @@ class ElawPartesPrincipais(ElawBot):
             ),
         )
         tipo_doc = type_doc.get(str(len(doc_to_list)))
-        select_tipo_doc: WebElement = wait.until(
+        select_tipo_doc: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.select_tipo_doc)),
         )
         select_tipo_doc.select2(tipo_doc)
 
         self.sleep_load('div[id="j_id_4p"]')
-        campo_doc: WebElement = self.wait.until(
+        campo_doc: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_campo_doc,
@@ -146,7 +148,7 @@ class ElawPartesPrincipais(ElawBot):
         campo_doc.send_keys(self.bot_data.get("DOC_PARTE_CONTRARIA"))
         self.sleep_load('div[id="j_id_4p"]')
 
-        search_button_parte: WebElement = self.wait.until(
+        search_button_parte: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_search_button,
@@ -166,7 +168,7 @@ class ElawPartesPrincipais(ElawBot):
 
             except Exception:
                 message = "Não foi possível cadastrar parte"
-                _raise_execution_error(message=message)
+                raise_execution_error(message=message)
 
         self.messsage = "Parte adicionada!"
         message_type = "info"
@@ -189,7 +191,7 @@ class ElawPartesPrincipais(ElawBot):
 
             bot_data = self.bot_data
 
-            add_parte: WebElement = wait.until(
+            add_parte: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.XPATH,
                     el.parte_contraria,
@@ -204,7 +206,7 @@ class ElawPartesPrincipais(ElawBot):
 
             main_window = driver.current_window_handle
 
-            iframe: WebElement = WebDriverWait(driver, 10).until(
+            iframe: WebElementBot = WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.iframe_cadastro_parte_contraria,
@@ -216,7 +218,7 @@ class ElawPartesPrincipais(ElawBot):
             driver.get(link_iframe)
             sleep(0.5)
             with suppress(TimeoutException, NoSuchElementException):
-                set_infomar_cpf: WebElement = (
+                set_infomar_cpf: WebElementBot = (
                     wait.until(
                         ec.presence_of_element_located((
                             By.CSS_SELECTOR,
@@ -242,7 +244,7 @@ class ElawPartesPrincipais(ElawBot):
             )
             tipo_doc = type_doc.get(str(len(doc_to_list)), "cpf")
             select_tipo_doc = el.tipo_cpf_cnpj
-            element_select: WebElement = wait.until(
+            element_select: WebElementBot = wait.until(
                 ec.presence_of_element_located((By.XPATH, select_tipo_doc)),
             )
             element_select.select2(tipo_doc.upper())
@@ -254,7 +256,7 @@ class ElawPartesPrincipais(ElawBot):
             if tipo_doc == "cnpj":
                 css_input_doc = el.tipo_cnpj
 
-            input_doc: WebElement = wait.until(
+            input_doc: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     css_input_doc,
@@ -272,7 +274,7 @@ class ElawPartesPrincipais(ElawBot):
             continuar.click()
 
             self.sleep_load('div[id="j_id_1o"]')
-            name_parte: WebElement = wait.until(
+            name_parte: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.css_name_parte,
@@ -286,7 +288,7 @@ class ElawPartesPrincipais(ElawBot):
                 f"document.querySelector('{el.css_name_parte}').blur()",
             )
 
-            save_parte: WebElement = wait.until(
+            save_parte: WebElementBot = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.css_save_button,
@@ -315,4 +317,4 @@ class ElawPartesPrincipais(ElawBot):
 
         except Exception as e:
             message = "\n".join(format_exception_only(e))
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)

@@ -15,9 +15,11 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common import _raise_execution_error
+from _interfaces import DataSucesso
+from common import raise_execution_error
 from common.exceptions import ExecutionError
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -41,7 +43,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
         """
         try:
-            tab_pagamentos: WebElement = self.wait.until(
+            tab_pagamentos: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.valor_pagamento,
@@ -49,7 +51,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
             )
             tab_pagamentos.click()
 
-            novo_pgto: WebElement = self.wait.until(
+            novo_pgto: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.botao_novo_pagamento,
@@ -68,7 +70,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
             message_type=message_type,
         )
 
-        type_itens: WebElement = self.wait.until(
+        type_itens: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_typeitens,
@@ -78,7 +80,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
         sleep(0.5)
 
-        list_itens: WebElement = self.wait.until(
+        list_itens: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.listitens_css,
@@ -87,7 +89,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         list_itens = list_itens.find_elements(By.TAG_NAME, "li")
 
         for item in list_itens:
-            item: WebElement = item
+            item: WebElementBot = item
 
             normalizado_text = self.format_string(item.text)
 
@@ -102,7 +104,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
                         item.click()
                         return
 
-        _raise_execution_error(message="Tipo de Pagamento não encontrado")
+        raise_execution_error(message="Tipo de Pagamento não encontrado")
 
     def save_changes(self) -> None:
         try:
@@ -112,7 +114,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
                 message=message,
                 message_type=message_type,
             )
-            save: WebElement = self.wait.until(
+            save: WebElementBot = self.wait.until(
                 ec.element_to_be_clickable((
                     By.CSS_SELECTOR,
                     el.botao_salvar_pagamento,
@@ -130,7 +132,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
         message = "Pagamento não encontrado!"
 
-        tab_pagamentos: WebElement = self.wait.until(
+        tab_pagamentos: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.valor_pagamento,
@@ -138,7 +140,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         )
         tab_pagamentos.click()
 
-        check_solicitacoes: list[WebElement] = (
+        check_solicitacoes: list[WebElementBot] = (
             self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
@@ -173,7 +175,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
         for pos, item in enumerate(check_solicitacoes):
             if item.text == "Nenhum registro encontrado!":
-                _raise_execution_error(message=message)
+                raise_execution_error(message=message)
 
             id_task = item.find_elements(By.TAG_NAME, "td")[2].text
 
@@ -221,7 +223,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
             close_context(main_frame)
 
         if not data:
-            _raise_execution_error(message=message)
+            raise_execution_error(message=message)
 
         self.append_success(data=data)
         self.print_message(
@@ -232,7 +234,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
     def __get_frame_pgto(
         self,
         pos: int,
-    ) -> tuple[WebElement, Callable[[str], None]]:
+    ) -> tuple[WebElementBot, Callable[[str], None]]:
         close_context = self.wait.until(
             ec.presence_of_element_located(
                 (

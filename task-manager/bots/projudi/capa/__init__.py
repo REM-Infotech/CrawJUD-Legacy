@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
 
-from common import _raise_execution_error
+from common import raise_execution_error
 from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -127,7 +127,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             )
 
         except ExecutionError, Exception:
-            _raise_execution_error("Erro ao executar operação")
+            raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
         process_info: dict = {"Número do processo": numero_processo}

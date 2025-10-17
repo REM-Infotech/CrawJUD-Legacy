@@ -8,7 +8,11 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 
 from contextlib import suppress
 
+from common._raises import raise_execution_error
+from common.exceptions import ExecutionError
+from resources import format_string
 from resources.elements import jusbr as el
+from resources.web_element import WebElementBot
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
@@ -98,7 +102,7 @@ class Protocolo(JusBrBot):
         )
 
         if len(filter_tipo) == 0:
-            _raise_execution_error(message="Tipo de protocolo não encontrado!")
+            raise_execution_error(message="Tipo de protocolo não encontrado!")
 
         filter_tipo[-1].click()
 
@@ -146,7 +150,7 @@ class Protocolo(JusBrBot):
         )
 
         if len(filter_tipo) == 0:
-            _raise_execution_error(message="Tipo de protocolo não encontrado!")
+            raise_execution_error(message="Tipo de protocolo não encontrado!")
 
         filter_tipo[-1].click()
 

@@ -1,6 +1,7 @@
 from time import sleep
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -20,7 +21,7 @@ class ElawInformacoesProcesso(ElawBot):
             message_type=message_type,
         )
 
-        campo_processo: WebElement = self.wait.until(
+        campo_processo: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 css_campo_processo,
@@ -54,7 +55,7 @@ class ElawInformacoesProcesso(ElawBot):
         text = str(self.bot_data.get("AREA_DIREITO"))
         sleep(0.5)
 
-        element_area_direito: WebElement = wait.until(
+        element_area_direito: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.css_label_area,
@@ -82,7 +83,7 @@ class ElawInformacoesProcesso(ElawBot):
         text = str(self.bot_data.get("SUBAREA_DIREITO"))
         sleep(0.5)
 
-        element_subarea: WebElement = wait.until(
+        element_subarea: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.comboareasub_css,
@@ -218,7 +219,7 @@ class ElawInformacoesProcesso(ElawBot):
             message_type=message_type,
         )
 
-        div_comboProcessoTipo: WebElement = self.wait.until(  # noqa: N806
+        div_comboProcessoTipo: WebElementBot = self.wait.until(  # noqa: N806
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.combo_processo_tipo,

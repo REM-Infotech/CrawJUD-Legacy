@@ -11,6 +11,7 @@ from pathlib import Path
 from time import sleep
 
 import requests
+from common._raises import raise_execution_error
 from common.exceptions import ExecutionError
 from pypdf import PdfReader
 from resources.elements import esaj as el
@@ -245,7 +246,7 @@ class Emissao(ESajBot):
             ).text
 
         elif portal == "não informado":
-            _raise_execution_error(
+            raise_execution_error(
                 message="Informar portal do processo na planilha (PROJUDI ou ESAJ)",
             )
 
@@ -313,7 +314,7 @@ class Emissao(ESajBot):
             self.driver.close()
             sleep(0.7)
             self.driver.switch_to.window(original_window)
-            _raise_execution_error(message="Esaj não gerou a guia")
+            raise_execution_error(message="Esaj não gerou a guia")
 
         return f"https://consultasaj.tjam.jus.br{url}"
 

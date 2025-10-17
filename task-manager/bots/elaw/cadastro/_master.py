@@ -1,6 +1,8 @@
 from contextlib import suppress
 
+from common._raises import raise_execution_error
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -25,7 +27,7 @@ class ElawCadastro(
     ElawValidacao,
 ):
     def next_page(self) -> None:
-        next_page: WebElement = self.wait.until(
+        next_page: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_button,
@@ -62,13 +64,13 @@ class ElawCadastro(
                 .text
             )
 
-        return _raise_execution_error(msg_erro)
+        return raise_execution_error(msg_erro)
 
     def salvar_tudo(self) -> None:
         wait = self.wait
 
         self.sleep_load('div[id="j_id_4p"]')
-        salvartudo: WebElement = wait.until(
+        salvartudo: WebElementBot = wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.css_salvar_proc,

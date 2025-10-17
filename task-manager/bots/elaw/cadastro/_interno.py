@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from bots.elaw.master import ElawBot
 
 if TYPE_CHECKING:
-    from app.utils.webdriver import WebElementBot as WebElement
+    from resources.web_element import WebElementBot
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
@@ -21,7 +21,7 @@ class ElawInformacaoInterna(ElawBot):
             message_type=message_type,
         )
 
-        input_uc: WebElement = self.wait.until(
+        input_uc: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.XPATH,
                 el.css_input_uc,

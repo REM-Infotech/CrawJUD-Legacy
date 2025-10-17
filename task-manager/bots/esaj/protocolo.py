@@ -9,6 +9,7 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
+from common._raises import raise_execution_error
 from common.exceptions import ExecutionError
 from resources.elements import esaj as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -320,7 +321,7 @@ class Protocolo(ESajBot):
                 )
 
             if file_uploaded == "":
-                _raise_execution_error(message="Erro ao enviar petição")
+                raise_execution_error(message="Erro ao enviar petição")
 
             self.prt.print_log(
                 "log",
@@ -405,7 +406,7 @@ class Protocolo(ESajBot):
                                 break
 
             elif not partes:
-                _raise_execution_error(
+                raise_execution_error(
                     message="Não foi possivel vincular parte a petição",
                 )
 

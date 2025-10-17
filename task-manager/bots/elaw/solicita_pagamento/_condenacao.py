@@ -12,18 +12,15 @@ Attributes:
 """
 
 from time import sleep
-from typing import TYPE_CHECKING
 
 from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.elaw.master import ElawBot
-
-if TYPE_CHECKING:
-    from app.utils.webdriver import WebElementBot as WebElement
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -38,7 +35,7 @@ class ElawCondenacao(ElawBot):
         )
 
         text = self.bot_data.get("VALOR_GUIA")
-        element: WebElement = self.wait.until(
+        element: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_element)),
         )
 
@@ -52,13 +49,13 @@ class ElawCondenacao(ElawBot):
 
         self.interact.sleep_load('div[id="j_id_2x"]')
 
-        div_type_doc: WebElement = self.wait.until(
+        div_type_doc: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, el.type_doc_css)),
         )
         div_type_doc.click()
         sleep(0.5)
 
-        list_type_doc: WebElement = self.wait.until(
+        list_type_doc: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.list_type_doc_css,
@@ -67,7 +64,7 @@ class ElawCondenacao(ElawBot):
         list_type_doc = list_type_doc.find_elements(By.TAG_NAME, "li")
 
         for item in list_type_doc:
-            item: WebElement = item
+            item: WebElementBot = item
             if item.text.lower() == "guia de pagamento":
                 item.click()
                 break
@@ -93,7 +90,7 @@ class ElawCondenacao(ElawBot):
 
         for doc in docs:
             doc = self.format_string(doc.upper())
-            insert_doc: WebElement = self.wait.until(
+            insert_doc: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.editar_pagamento,
@@ -111,7 +108,7 @@ class ElawCondenacao(ElawBot):
             message=message,
             message_type=message_type,
         )
-        div_condenacao_type: WebElement = self.wait.until(
+        div_condenacao_type: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
                 el.css_div_condenacao_type,
@@ -145,7 +142,7 @@ class ElawCondenacao(ElawBot):
 
         desc_pagamento = str(self.bot_data.get("DESC_PAGAMENTO"))
 
-        desc_pgto: WebElement = self.wait.until(
+        desc_pgto: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_desc_pgto)),
         )
         desc_pgto.click()
@@ -168,7 +165,7 @@ class ElawCondenacao(ElawBot):
             message_type=message_type,
         )
 
-        data_lancamento: WebElement = self.wait.until(
+        data_lancamento: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_data)),
         )
         data_lancamento.click()
@@ -186,7 +183,7 @@ class ElawCondenacao(ElawBot):
             message_type=message_type,
         )
 
-        input_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
+        input_favorecido: WebElementBot = WebDriverWait(self.driver, 10).until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
                 el.css_inputfavorecido,
@@ -200,7 +197,7 @@ class ElawCondenacao(ElawBot):
             self.bot_data.get("CNPJ_FAVORECIDO", "00.360.305/0001-04"),
         )
 
-        result_favorecido: WebElement = WebDriverWait(self.driver, 10).until(
+        result_favorecido: WebElementBot = WebDriverWait(self.driver, 10).until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.resultado_favorecido,
@@ -228,7 +225,7 @@ class ElawCondenacao(ElawBot):
 
         self.interact.sleep_load('div[id="j_id_2x"]')
 
-        campo_cod_barras: WebElement = self.wait.until(
+        campo_cod_barras: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_cod_bars)),
         )
         campo_cod_barras.click()
@@ -250,7 +247,7 @@ class ElawCondenacao(ElawBot):
             message_type=message_type,
         )
 
-        centro_custas: WebElement = self.wait.until(
+        centro_custas: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
                 el.css_centro_custas,
@@ -271,7 +268,7 @@ class ElawCondenacao(ElawBot):
             message_type=message_type,
         )
 
-        div_conta_debito: WebElement = self.wait.until(
+        div_conta_debito: WebElementBot = self.wait.until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
                 el.css_div_conta_debito,

@@ -13,6 +13,8 @@ Attributes:
 
 from typing import TYPE_CHECKING
 
+from common._raises import raise_execution_error
+
 from bots.elaw.solicita_pagamento._master import ElawPagamentos
 
 if TYPE_CHECKING:
@@ -50,7 +52,7 @@ class SolicitaPgto(ElawPagamentos):
             search = self.search()
 
             if not search:
-                _raise_execution_error(message="Processo não encontrado!")
+                raise_execution_error(message="Processo não encontrado!")
             namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO"))
             self.novo_pagamento()
             self.seleciona_tipo_pagamento(namedef)

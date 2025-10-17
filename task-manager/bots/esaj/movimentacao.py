@@ -9,8 +9,10 @@ from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
 
+from common._raises import raise_execution_error
 from common.exceptions import ExecutionError
 from resources.elements import esaj as el
+from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -100,7 +102,7 @@ class Movimentacao(ESajBot):
             search = self.search()
 
             if search is not True:
-                _raise_execution_error(message="Processo não encontrado!")
+                raise_execution_error(message="Processo não encontrado!")
 
             self.message = "Buscando movimentações"
             self.message_type = "log"
