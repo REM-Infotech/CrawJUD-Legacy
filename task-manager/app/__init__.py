@@ -28,9 +28,6 @@ __all__ = ["_"]
 def make_celery() -> Celery:
     """Create and configure a Celery instance with Quart application context.
 
-    Args:
-        app (Quart): The Quart application instance.
-
     Returns:
         Celery: Configured Celery instance.
 
