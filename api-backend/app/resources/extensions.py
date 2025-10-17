@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -26,7 +28,7 @@ cors = CORS(
 )
 
 
-def cors_origin(*args, **kwargs):
+def cors_origin(*args, **kwargs) -> Literal[True]:
     return True
 
 

@@ -58,12 +58,10 @@ class Pauta(PjeBot):
             self.row = pos + 1
 
             message = "Buscando pautas na vara: " + vara_name
-            type_log = "log"
+            message_type = "log"
             self.prt.print_message(
                 message=message,
-                pid=self.pid,
-                row=self.row,
-                type_log=type_log,
+                message_type=message_type,
             )
 
             if self.is_stoped:
@@ -100,12 +98,10 @@ class Pauta(PjeBot):
             while self.current_date <= self.data_fim:
                 current_date_ = self.current_date.strftime("%d/%m/%Y")
                 message = f"Buscando pautas na data {current_date_}"
-                type_log = "log"
+                message_type = "log"
                 self.prt.print_message(
                     message=message,
-                    pid=self.pid,
-                    row=self.row,
-                    type_log=type_log,
+                    message_type=message_type,
                 )
 
                 if self.is_stoped:
@@ -145,12 +141,10 @@ class Pauta(PjeBot):
 
             elif len(data_append) == 0:
                 message = "Nenhuma pauta encontrada"
-                type_log = "error"
+                message_type = "error"
                 self.prt.print_message(
                     message=message,
-                    pid=self.pid,
-                    row=self.row,
-                    type_log=type_log,
+                    message_type=message_type,
                 )
 
         except ExecutionError as e:
@@ -195,12 +189,10 @@ class Pauta(PjeBot):
 
             if itens_pautas:
                 message = "Pautas encontradas!"
-                type_log = "log"
+                message_type = "log"
                 self.prt.print_message(
                     message=message,
-                    pid=self.pid,
-                    row=self.row,
-                    type_log=type_log,
+                    message_type=message_type,
                 )
 
                 times = 6
@@ -236,12 +228,10 @@ class Pauta(PjeBot):
                         message = (
                             f"Processo {appends['NUMERO_PROCESSO']} adicionado!"
                         )
-                        type_log = "info"
+                        message_type = "info"
                         self.prt.print_message(
                             message=message,
-                            pid=self.pid,
-                            row=self.row,
-                            type_log=type_log,
+                            message_type=message_type,
                         )
 
                 try:

@@ -60,8 +60,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
 
                 self.print_message(
                     message=f"Buscando processo {bot_data['NUMERO_PROCESSO']}",
-                    row=self.row,
-                    type_log="log",
+                    message_type="log",
                 )
 
                 search = self.search()
@@ -69,15 +68,13 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 if not search:
                     self.print_message(
                         message="Processo não encontrado.",
-                        row=self.row,
-                        type_log="error",
+                        message_type="error",
                     )
                     return
 
                 self.print_message(
                     message="Processo encontrado! Extraindo informações...",
-                    row=self.row,
-                    type_log="info",
+                    message_type="info",
                 )
 
                 driver.refresh()
@@ -88,8 +85,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
 
                 self.print_message(
                     message="Informações extraídas com sucesso!",
-                    row=self.row,
-                    type_log="success",
+                    message_type="success",
                 )
 
             except ExecutionError as e:
@@ -97,7 +93,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
 
                 self.print_message(
                     message=f"{message_error}.",
-                    type_log="error",
+                    message_type="error",
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -202,7 +198,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         def export() -> None:
             self.print_message(
                 message="Baixando cópia integral do processo...",
-                type_log="log",
+                message_type="log",
             )
 
             time.sleep(5)

@@ -45,12 +45,8 @@ class Cadastro(ElawCadastro):
                 return
 
             message = "Processo não encontrado, inicializando cadastro..."
-            type_log = "log"
-            self.print_message(
-                message=message,
-                type_log=type_log,
-                row=self.row,
-            )
+            message_type = "log"
+            self.print_message(message=message, message_type=message_type)
 
             btn_newproc = driver.find_element(
                 By.CSS_SELECTOR,
@@ -88,12 +84,8 @@ class Cadastro(ElawCadastro):
             seconds = int(float(f"0.{splitcalc[1]}") * 60)
 
             message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
-            type_log = "log"
-            self.print_message(
-                message=message,
-                type_log=type_log,
-                row=self.row,
-            )
+            message_type = "log"
+            self.print_message(message=message, message_type=message_type)
 
             self.salvar_tudo()
 

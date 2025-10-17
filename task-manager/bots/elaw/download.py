@@ -56,7 +56,7 @@ class Download(ElawBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -77,7 +77,7 @@ class Download(ElawBot):
             search = self.search()
             if search is True:
                 self.message = "Processo encontrado!"
-                self.type_log = "log"
+                self.message_type = "log"
                 self.prt()
                 self.buscar_doc()
                 self.download_docs()
@@ -93,7 +93,7 @@ class Download(ElawBot):
 
             elif not search:
                 self.message = "Processo não encontrado!"
-                self.type_log = "error"
+                self.message_type = "error"
                 self.prt()
                 self.append_error([
                     self.bot_data.get("NUMERO_PROCESSO"),
@@ -106,7 +106,7 @@ class Download(ElawBot):
     def buscar_doc(self) -> None:
         """Access the attachments page."""
         self.message = "Acessando página de anexos"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         anexosbutton = self.wait.until(
             ec.presence_of_element_located((
@@ -117,7 +117,7 @@ class Download(ElawBot):
         anexosbutton.click()
         sleep(1.5)
         self.message = "Acessando tabela de documentos"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
     def download_docs(self) -> None:
@@ -142,7 +142,7 @@ class Download(ElawBot):
             termos = [str(self.bot_data.get("TERMOS"))]
 
         self.message = f'Buscando documentos que contenham "{self.bot_data.get("TERMOS").__str__().replace(",", ", ")}"'
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
         for item in table_doc:
@@ -160,7 +160,7 @@ class Download(ElawBot):
                     self.message = (
                         f'Arquivo com termo de busca "{termo}" encontrado!'
                     )
-                    self.type_log = "log"
+                    self.message_type = "log"
                     self.prt()
 
                     baixar = item.find_elements(By.TAG_NAME, "td")[
@@ -173,7 +173,7 @@ class Download(ElawBot):
 
                     self.rename_doc(get_name_file)
                     self.message = "Arquivo baixado com sucesso!"
-                    self.type_log = "info"
+                    self.message_type = "info"
                     self.prt()
 
     def rename_doc(self, namefile: str) -> None:

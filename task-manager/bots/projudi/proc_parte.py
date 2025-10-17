@@ -40,7 +40,7 @@ class ProcParte(ProjudiBot):
                 old = self.message
                 message_error = str(e)
 
-                self.type_log = "error"
+                self.message_type = "error"
                 self.message_error = f"{message_error}. | Operação: {old}"
                 self.prt()
 
@@ -67,7 +67,9 @@ class ProcParte(ProjudiBot):
         except ExecutionError as e:
             message_error = str(e)
 
-            self.print_message(message=f"{message_error}.", type_log="error")
+            self.print_message(
+                message=f"{message_error}.", message_type="error"
+            )
 
             self.bot_data.update({"MOTIVO_ERRO": message_error})
             self.append_error(self.bot_data)
@@ -110,7 +112,7 @@ class ProcParte(ProjudiBot):
                         el.exception_arrow,
                     )
 
-                self.type_log = "info"
+                self.message_type = "info"
                 self.append_success(
                     self.data_append,
                     "Processos salvos na planilha!",
@@ -171,5 +173,5 @@ class ProcParte(ProjudiBot):
             )
             self.row += 1
             self.message = f"Processo {numero_processo} salvo!"
-            self.type_log = "success"
+            self.message_type = "success"
             self.prt()

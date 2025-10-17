@@ -42,8 +42,11 @@ class DownloadDocumento(CsiBot):
             self.busca_chamado()
 
             message = "Chamado encontrado!"
-            type_log = "info"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "info"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
             self.download_anexos_chamado()
 
         except Exception as e:
@@ -53,8 +56,11 @@ class DownloadDocumento(CsiBot):
         numero_chamado = self.bot_data["NUMERO_CHAMADO"]
 
         message = f"Buscando chamado pelo n.{numero_chamado}"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         self.driver.get(url=el.URL_BUSCA_CHAMADO)
         wait = WebDriverWait(self.driver, 10)
@@ -81,8 +87,11 @@ class DownloadDocumento(CsiBot):
 
     def download_anexos_chamado(self) -> None:
         message = "Baixando anexos..."
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         wait = WebDriverWait(self.driver, 10)
         self.swtich_iframe_anexos(wait)
@@ -112,11 +121,10 @@ class DownloadDocumento(CsiBot):
                 link_anexo = anexo_info.get_attribute("href")
 
                 message = f"Baixando arquivo {anexo_info.text}"
-                type_log = "log"
+                message_type = "log"
                 self.print_message(
                     message=message,
-                    type_log=type_log,
-                    row=self.row,
+                    message_type=message_type,
                 )
 
                 with (
@@ -131,18 +139,20 @@ class DownloadDocumento(CsiBot):
                         fp.write(chunk)
 
                 message = "Arquivo baixado com sucesso!"
-                type_log = "info"
+                message_type = "info"
                 self.print_message(
                     message=message,
-                    type_log=type_log,
-                    row=self.row,
+                    message_type=message_type,
                 )
 
         self.driver.switch_to.default_content()
 
         message = "Anexos Baixados com sucesso!"
-        type_log = "success"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "success"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def swtich_iframe_anexos(self, wait: WebDriverWait) -> None:
         self.driver.execute_script(

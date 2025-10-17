@@ -70,7 +70,7 @@ class Movimentacao(ESajBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -103,23 +103,23 @@ class Movimentacao(ESajBot):
                 _raise_execution_error(message="Processo não encontrado!")
 
             self.message = "Buscando movimentações"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             self.setup_config()
 
             if len(self.appends) > 0:
-                self.type_log = "log"
+                self.message_type = "log"
                 self.append_success(self.appends)
 
             if len(self.another_append) > 0:
                 for data, msg, file_name_save in self.another_append:
-                    self.type_log = "info"
+                    self.message_type = "info"
                     self.append_success([data], msg, file_name_save)
 
             elif len(self.appends) == 0 and len(self.another_append) == 0:
                 self.message = "Nenhuma movimentação encontrada"
-                self.type_log = "error"
+                self.message_type = "error"
                 self.prt()
                 data = self.bot_data
                 data.update({"MOTIVO_ERRO": self.message})
@@ -352,7 +352,7 @@ class Movimentacao(ESajBot):
                 )
                 message_.append(_msg_)
         self.message = "".join(message_)
-        self.type_log = "info"
+        self.message_type = "info"
         self.prt()
 
     def _check_others(
@@ -440,7 +440,7 @@ class Movimentacao(ESajBot):
         if keyword != "*":
             ms_.append(f" Parâmetro: {keyword}")
         self.message = "".join(ms_)
-        self.type_log = "info"
+        self.message_type = "info"
         self.prt()
         self.appends.append(data)
 
@@ -531,7 +531,7 @@ class Movimentacao(ESajBot):
 
         for termo in termos:
             self.message = f'Buscando movimentações que contenham "{termo}"'
-            self.type_log = "log"
+            self.message_type = "log"
 
             for item in itens:
                 td_tr = item.find_elements(By.TAG_NAME, "td")

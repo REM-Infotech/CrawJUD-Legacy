@@ -67,7 +67,7 @@ class Emissao(ESajBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -112,7 +112,7 @@ class Emissao(ESajBot):
         self.driver.get(el.url_custas_ini)
 
         self.message = "Informando foro"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
         set_foro = self.wait.until(
@@ -348,7 +348,7 @@ class Emissao(ESajBot):
         sleep(0.7)
         self.driver.switch_to.window(self.original_window)
         self.message = f"Boleto Nº{self.bot_data.get('NUMERO_PROCESSO')} emitido com sucesso!"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
     def get_barcode(self) -> None:
@@ -363,7 +363,7 @@ class Emissao(ESajBot):
         """
         try:
             self.message = "Extraindo código de barras"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             sleep(2)

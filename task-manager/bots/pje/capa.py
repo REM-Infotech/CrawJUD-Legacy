@@ -176,7 +176,7 @@ class Capa(PjeBot):
                 if not isinstance(resultados, dict):
                     self.print_message(
                         message=str(resultados),
-                        type_log="error",
+                        message_type="error",
                         row=row,
                     )
 
@@ -198,11 +198,11 @@ class Capa(PjeBot):
                     row=row,
                 )
 
-                type_log = "success"
+                message_type = "success"
                 message = "Execução Efetuada com sucesso!"
 
                 if item.get("TRAZER_COPIA", "N").lower() == "s":
-                    type_log = "info"
+                    message_type = "info"
 
                     file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
                     self.queue_files.put({
@@ -216,7 +216,7 @@ class Capa(PjeBot):
 
                 self.print_message(
                     message=message,
-                    type_log=type_log,
+                    message_type=message_type,
                     row=row,
                 )
 
@@ -224,7 +224,7 @@ class Capa(PjeBot):
             tqdm.write("\n".join(traceback.format_exception(e)))
             self.print_message(
                 message="Erro ao extrair informações do processo",
-                type_log="error",
+                message_type="error",
                 row=row,
             )
 
@@ -448,7 +448,7 @@ class Capa(PjeBot):
 
                     self.print_message(
                         message=f"Baixando arquivo do processo n.{processo}",
-                        type_log="log",
+                        message_type="log",
                         row=row,
                     )
 
@@ -471,7 +471,7 @@ class Capa(PjeBot):
                     self.print_message(
                         message=message,
                         row=row,
-                        type_log="log",
+                        message_type="log",
                     )
 
                     with client.stream("get", url=link) as response:
@@ -486,11 +486,11 @@ class Capa(PjeBot):
                 self.print_message(
                     message="\n".join(traceback.format_exception(e)),
                     row=row,
-                    type_log="info",
+                    message_type="info",
                 )
 
                 msg = "Erro ao baixar arquivo"
-                self.print_message(message=msg, row=row, type_log="info")
+                self.print_message(message=msg, row=row, message_type="info")
 
             finally:
                 self.queue_files.task_done()
@@ -542,7 +542,7 @@ class Capa(PjeBot):
             self.print_message(
                 row=row,
                 message=message,
-                type_log="info",
+                message_type="info",
             )
 
         finally:
@@ -550,5 +550,5 @@ class Capa(PjeBot):
             self.print_message(
                 row=row,
                 message=message,
-                type_log="success",
+                message_type="success",
             )

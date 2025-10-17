@@ -61,7 +61,7 @@ class Tjdft(CrawJUD):
                 message_error = str(e=e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -104,7 +104,7 @@ class Tjdft(CrawJUD):
         """
         try:
             self.message = "Acessando Página de cálculo.."
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             self.driver.get(
                 "https://www.tjdft.jus.br/servicos/atualizacao-monetaria-1/calculo",
@@ -149,7 +149,7 @@ class Tjdft(CrawJUD):
         try:
             sleep(2)
             self.message = "Informando numero do processo"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
             get_input_process = self.wait.until(
@@ -162,7 +162,7 @@ class Tjdft(CrawJUD):
             get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
 
             self.message = "numero do processo informado"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -184,7 +184,7 @@ class Tjdft(CrawJUD):
             sleep(2)
             css_name_requerente = 'input[name="requerente"][id="requerente"]'
             self.message = "Informando requerente"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             get_name_requerente = self.wait.until(
                 ec.presence_of_element_located((
@@ -196,7 +196,7 @@ class Tjdft(CrawJUD):
             get_name_requerente.send_keys(self.bot_data.get("REQUERENTE"))
 
             self.message = "Nome do requerente informado"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -215,7 +215,7 @@ class Tjdft(CrawJUD):
             sleep(2)
             css_name_requerido = 'input[name="requerido"][id="requerido"]'
             self.message = "Informado requerido"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             get_name_requerido = self.wait.until(
                 ec.presence_of_element_located((
@@ -227,7 +227,7 @@ class Tjdft(CrawJUD):
             get_name_requerido.send_keys(self.bot_data.get("REQUERIDO"))
 
             self.message = "Nome do requerido informado"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -244,7 +244,7 @@ class Tjdft(CrawJUD):
         """
         try:
             self.message = "Informando incidencia de juros e data de incidencia"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             juros_partir = str(self.bot_data.get("JUROS_PARTIR")).upper()
@@ -315,7 +315,7 @@ class Tjdft(CrawJUD):
                 'input[id="data-0"][name="parcela_data:list"]'
             )
             self.message = "Informando data valor devido"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             data_valor_devido = self.wait.until(
                 ec.presence_of_element_located((
@@ -329,7 +329,7 @@ class Tjdft(CrawJUD):
             sleep(2)
             css_valor_devido = 'input[id="valor-0"][name="parcela_valor:list"]'
             self.message = "Informando valor devido"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             valor_devido = self.wait.until(
                 ec.presence_of_element_located((
@@ -344,7 +344,7 @@ class Tjdft(CrawJUD):
             valor_devido.send_keys(valor)
 
             self.message = "valor devido informado"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -438,7 +438,7 @@ class Tjdft(CrawJUD):
                 'input[name="multa_percent"][id="multa_percent"]'
             )
             self.message = "Informando multa percentual"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             if self.bot_data.get("MULTA_PERCENTUAL", None):
@@ -474,7 +474,7 @@ class Tjdft(CrawJUD):
                 self.interact.send_keys(multa_valor, valor)
 
             self.message = "Multa informada"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -494,7 +494,7 @@ class Tjdft(CrawJUD):
                 'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
             )
             self.message = "Informando Honorários de Sucumbência"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             disabled_state = ""
@@ -552,7 +552,7 @@ class Tjdft(CrawJUD):
                 )
 
             self.message = "Percentual Honorários de Sucumbência informado"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -592,7 +592,7 @@ class Tjdft(CrawJUD):
         try:
             css_honorario_exec = 'input[id="honor_exec_percent"]'
             self.message = "Informando Honorários de Cumprimento"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             disabled_state = ""
@@ -652,7 +652,7 @@ class Tjdft(CrawJUD):
                 )
 
             self.message = "Informado Honorários de Cumprimento"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:
@@ -670,7 +670,7 @@ class Tjdft(CrawJUD):
         try:
             css_data_custas = 'input[id="custas-data-0"]'
             self.message = "Informando valor custas"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             data_custas = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -682,7 +682,7 @@ class Tjdft(CrawJUD):
             sleep(2)
             css_custas_valor = 'input[id="custas-valor-0"]'
             self.message = "Informando valor devido"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             custas_valor = self.driver.find_element(
                 By.CSS_SELECTOR,
@@ -695,7 +695,7 @@ class Tjdft(CrawJUD):
             custas_valor.send_keys(valor)
 
             self.message = "Valor custas informado"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
         except ExecutionError as e:

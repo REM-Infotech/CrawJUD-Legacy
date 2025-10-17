@@ -58,7 +58,7 @@ class Movimentacao(ProjudiBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
                 self.append_error(self.bot_data)
 
@@ -92,8 +92,7 @@ class Movimentacao(ProjudiBot):
 
             self.print_message(
                 message=f"Buscando processo {bot_data['NUMERO_PROCESSO']}",
-                type_log="log",
-                row=self.row,
+                message_type="log",
             )
 
             search = self.search()
@@ -101,15 +100,13 @@ class Movimentacao(ProjudiBot):
             if search is not True:
                 self.print_message(
                     message="Processo não encontrado!",
-                    row=self.row,
-                    type_log="error",
+                    message_type="error",
                 )
                 return
 
             self.print_message(
                 message="Processo Encontrado! Buscando movimentações...",
-                type_log="log",
-                row=self.row,
+                message_type="log",
             )
 
             self.set_page_size()
@@ -209,15 +206,13 @@ class Movimentacao(ProjudiBot):
         if not self.movimentacao_encontrada:
             self.print_message(
                 message="Nenhuma movimentação encontrada!",
-                row=self.row,
-                type_log="error",
+                message_type="error",
             )
             return
 
         self.print_message(
             message="Movimentações extraídas com sucesso!",
-            row=self.row,
-            type_log="success",
+            message_type="success",
         )
         self.movimentacao_encontrada = False
 
@@ -248,8 +243,7 @@ class Movimentacao(ProjudiBot):
 
             self.print_message(
                 message=message,
-                row=self.row,
-                type_log="info",
+                message_type="info",
             )
 
         for item in filtered_moves:

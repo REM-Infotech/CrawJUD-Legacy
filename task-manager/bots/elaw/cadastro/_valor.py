@@ -13,8 +13,11 @@ class ElawValores(ElawBot):
     def data_distribuicao(self) -> None:
         self.sleep_load('div[id="j_id_4p"]')
         message = "Informando data de distribuição"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         self.sleep_load('div[id="j_id_4p"]')
         data_distribuicao: WebElementBot = self.wait.until(
@@ -32,8 +35,11 @@ class ElawValores(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Data de distribuição informada!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def valor_causa(self) -> None:
         wait = self.wait
@@ -42,8 +48,11 @@ class ElawValores(ElawBot):
         bot_data = self.bot_data
 
         message = "Informando valor da causa"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         valor_causa: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.valor_causa)),
@@ -64,13 +73,19 @@ class ElawValores(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Valor da causa informado!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def data_citacao(self) -> None:
         message = "Informando data de citação"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         data_citacao: WebElementBot = self.wait.until(
             ec.presence_of_element_located((
@@ -89,5 +104,8 @@ class ElawValores(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Data de citação informada!"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )

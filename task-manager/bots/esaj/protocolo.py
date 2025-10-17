@@ -78,7 +78,7 @@ class Protocolo(ESajBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})

@@ -56,9 +56,12 @@ class Provisao(ElawBot):
             if not search:
                 return
 
-            type_log = "log"
+            message_type = "log"
             message = "Processo encontrado! Informando valores..."
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             calls = self.setup_calls()
 
@@ -107,8 +110,11 @@ class Provisao(ElawBot):
 
         if is_valores_and_possivel:
             message = "Aviso: Já existe uma provisão possível cadastrada."
-            type_log = "info"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "info"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
         edit_button = self.wait.until(
             ec.presence_of_element_located((
@@ -230,8 +236,11 @@ class Provisao(ElawBot):
     def atualiza_valores(self) -> None:
         self.sleep_load('div[id="j_id_3q"]')
         message = "Informando valores"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         for row_valor in self.__tabela_valores():
             campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[
@@ -263,8 +272,11 @@ class Provisao(ElawBot):
 
     def atualiza_risco(self) -> None:
         message = "Alterando risco"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         for row_risco in self.__tabela_valores():
             selector_filter_risco = (
@@ -296,8 +308,11 @@ class Provisao(ElawBot):
 
     def informar_datas(self) -> None:
         message = "Alterando datas de correção base e juros"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         data_base_correcao = self.bot_data.get("DATA_BASE_CORRECAO")
         data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
@@ -325,8 +340,11 @@ class Provisao(ElawBot):
         self.sleep_load('div[id="j_id_3q"]')
 
         message = "Informando justificativa"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
         informa_justificativa = self.wait.until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,

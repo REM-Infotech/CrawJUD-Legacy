@@ -19,8 +19,11 @@ class ElawRepresentantes(ElawBot):
 
         bot_data = self.bot_data
         message = "Informando Adv. Parte contrária"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         campo_adv: WebElementBot = wait.until(
             ec.presence_of_element_located((
@@ -71,8 +74,11 @@ class ElawRepresentantes(ElawBot):
             self.sleep_load('div[id="j_id_4p"]')
 
             message = "Adv. parte contrária informado!"
-            type_log = "info"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "info"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             return
 
@@ -83,8 +89,11 @@ class ElawRepresentantes(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Adv. parte contrária informado!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def advogado_interno(self) -> None:
         wait = self.wait
@@ -93,8 +102,11 @@ class ElawRepresentantes(ElawBot):
         bot_data = self.bot_data
 
         message = "informando advogado interno"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         input_adv_responsavel: WebElementBot = wait.until(
             ec.presence_of_element_located((
@@ -147,16 +159,22 @@ class ElawRepresentantes(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Advogado interno informado!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def escritorio_externo(self) -> None:
         wait = self.wait
         bot_data = self.bot_data
 
         message = "Informando Escritório Externo"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         div_escritrorioexterno: WebElementBot = wait.until(
             ec.presence_of_element_located((
@@ -179,8 +197,11 @@ class ElawRepresentantes(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Escritório externo informado!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def cadastro_advogado_contra(self) -> None:
         try:
@@ -190,8 +211,11 @@ class ElawRepresentantes(ElawBot):
             bot_data = self.bot_data
 
             message = "Cadastrando advogado"
-            type_log = "log"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "log"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             add_parte: WebElementBot = wait.until(
                 ec.presence_of_element_located((
@@ -266,8 +290,11 @@ class ElawRepresentantes(ElawBot):
             salvar.click()
 
             message = "Advogado cadastrado!"
-            type_log = "info"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "info"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             driver.close()
             driver.switch_to.window(main_window)

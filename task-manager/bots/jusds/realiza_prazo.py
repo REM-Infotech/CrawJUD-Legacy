@@ -49,8 +49,7 @@ class RealizaPrazos(JusdsBot):
 
         self.print_message(
             message=f"Buscando compromisso pelo id {id_prazo}",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         message_prazo_encontrado = False
@@ -61,8 +60,7 @@ class RealizaPrazos(JusdsBot):
                 if not message_prazo_encontrado:
                     self.print_message(
                         message="Compromisso encontrado!",
-                        type_log="info",
-                        row=self.row,
+                        message_type="info",
                     )
                     message_prazo_encontrado = True
 

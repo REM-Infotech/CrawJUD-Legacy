@@ -51,7 +51,7 @@ class Intimacoes(ProjudiBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -131,7 +131,7 @@ class Intimacoes(ProjudiBot):
         """
         try:
             self.message = "Buscando intimações..."
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
             name_colunas, intimacoes = self.get_intimacoes(
                 self.aba_initmacoes(),
@@ -177,7 +177,7 @@ class Intimacoes(ProjudiBot):
             )
 
             self.message = f"Intimação do processo {itens[0]} encontrada!"
-            self.type_log = "log"
+            self.message_type = "log"
             self.prt()
 
             with suppress(IndexError):

@@ -12,8 +12,11 @@ from bots.elaw.master import ElawBot
 class ElawLocalidade(ElawBot):
     def localidade(self) -> None:
         message = "Informando localidade"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         localidade = self.bot_data.get("LOCALIDADE")
 
@@ -33,15 +36,21 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Localidade informada!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def esfera(self, text: str = "Judicial") -> None:
         text = "Judicial"
 
         message = "Informando esfera do processo"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.css_esfera_judge)),
@@ -51,8 +60,11 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Esfera Informada!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def estado(self) -> None:
         key = "ESTADO"
@@ -60,8 +72,11 @@ class ElawLocalidade(ElawBot):
         text = str(self.bot_data.get(key, None))
 
         message = "Informando estado do processo"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.estado_input)),
@@ -71,34 +86,46 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Estado do processo informado!"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def comarca(self) -> None:
         text = str(self.bot_data.get("COMARCA"))
 
         message = "Informando comarca do processo"
-        type_log = "log"
+        message_type = "log"
 
         element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.comarca_input)),
         )
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         element_select.select2(text)
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Comarca do processo informado!"
-        type_log = "log"
+        message_type = "log"
 
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def foro(self) -> None:
         text = str(self.bot_data.get("FORO"))
 
         message = "Informando foro do processo"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         element_select: WebElementBot = self.wait.until(
             ec.presence_of_element_located((By.XPATH, el.foro_input)),
@@ -107,16 +134,22 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Foro do processo informado!"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def vara(self) -> None:
         text = self.bot_data.get("VARA")
 
         wait = self.wait
         message = "Informando vara do processo"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         element_select: WebElementBot = wait.until(
             ec.presence_of_element_located((By.XPATH, el.vara_input)),
@@ -127,13 +160,19 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Vara do processo informado!"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def capital_interior(self) -> None:
         message = "Preenchendo UF Processo..."
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
         element_select: WebElementBot = self.driver.find_element(
             By.XPATH,
             el.select_uf_proc,
@@ -170,8 +209,11 @@ class ElawLocalidade(ElawBot):
 
         """
         message = "Informando bairro"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         bairro_ = self.bot_data.get("BAIRRO")
 
@@ -191,5 +233,8 @@ class ElawLocalidade(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Bairro informado!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )

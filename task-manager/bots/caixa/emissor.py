@@ -70,7 +70,7 @@ class Emissor(CaixaBot):
         deposit type for further processing.
         """
         self.message = "Acessando página de emissão"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
         self.driver.get(
@@ -136,7 +136,7 @@ class Emissor(CaixaBot):
         self.interact.wait_caixa()
 
         self.message = "Informando tribunal"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
         lista_tribunal = self.wait.until(
@@ -156,7 +156,7 @@ class Emissor(CaixaBot):
         self.interact.wait_caixa()
 
         self.message = "Informando comarca"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
         lista_comarca = self.wait.until(
@@ -173,7 +173,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando vara"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         lista_vara = self.wait.until(
             ec.presence_of_element_located((
@@ -189,7 +189,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando agencia"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         lista_agencia = self.wait.until(
             ec.presence_of_element_located((
@@ -216,7 +216,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando numero do processo"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         num_process = self.wait.until(
             ec.presence_of_element_located(
@@ -230,7 +230,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando tipo da ação do processo"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         list_type_acao_process = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -244,7 +244,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando natureza tributaria"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         natureza_tributaria = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -260,7 +260,7 @@ class Emissor(CaixaBot):
         """
         self.interact.wait_caixa()
         self.message = "Informando nome do autor"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         campo_nome_autor = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -270,7 +270,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando tipo de documento do autor"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         doct_type = self.count_doc(self.bot_data.get("CPF_CNPJ_AUTOR"))
 
@@ -290,7 +290,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando documento do autor"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
 
         self.interact.wait_caixa()
@@ -308,7 +308,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.meesage = "Informando réu"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         campo_nome_reu = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -337,7 +337,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando tipo de documento réu"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         campo_doc_reu = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -359,7 +359,7 @@ class Emissor(CaixaBot):
         """
         self.interact.wait_caixa()
         self.message = "Informando indicador depositante"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         indicador_depositante = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -373,7 +373,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Informando valor do depósito"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         campo_val_deposito = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -394,7 +394,7 @@ class Emissor(CaixaBot):
         """
         self.interact.wait_caixa()
         self.message = "Gerando documento"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         make_id = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -404,7 +404,7 @@ class Emissor(CaixaBot):
 
         self.interact.wait_caixa()
         self.message = "Baixando documento"
-        self.type_log = "log"
+        self.message_type = "log"
         self.prt()
         download_pdf = self.driver.find_element(
             By.CSS_SELECTOR,

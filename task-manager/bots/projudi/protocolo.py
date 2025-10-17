@@ -89,8 +89,7 @@ class Protocolo(ProjudiBot):
         """Empty."""
         self.print_message(
             message="Inicializando Protocolo",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         wait = WebDriverWait(self.driver, 10)
@@ -110,8 +109,7 @@ class Protocolo(ProjudiBot):
 
         self.print_message(
             message="Informando Tipo da movimentação",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         wait = WebDriverWait(self.driver, 10)
@@ -134,8 +132,7 @@ class Protocolo(ProjudiBot):
         """Empty."""
         self.print_message(
             message="Selecionando parte representada",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         bot_data = self.bot_data
@@ -167,8 +164,7 @@ class Protocolo(ProjudiBot):
         bot_data = self.bot_data
         self.print_message(
             message="Adicionando arquivos...",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         wait = WebDriverWait(self.driver, 10)
@@ -235,8 +231,7 @@ class Protocolo(ProjudiBot):
         bot_data = self.bot_data
         self.print_message(
             message="Enviando petição principal.",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         nome_arquivo = bot_data["PETICAO_PRINCIPAL"]
@@ -249,16 +244,14 @@ class Protocolo(ProjudiBot):
 
         self.print_message(
             message="Petição principal enviada!",
-            type_log="info",
-            row=self.row,
+            message_type="info",
         )
 
     def __anexos_adicionais(self) -> None:
         """Empty."""
         self.print_message(
             message="Enviando anexos...",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
         bot_data = self.bot_data
         anexos_data = bot_data["ANEXOS"]
@@ -273,8 +266,7 @@ class Protocolo(ProjudiBot):
         for pos, nome_arquivo in enumerate(anexos):
             self.print_message(
                 message=f'Enviando anexo "{nome_arquivo}"',
-                type_log="log",
-                row=self.row,
+                message_type="log",
             )
             tipo_arquivo = tipo_anexos[pos]
             self.__envia_arquivo(
@@ -283,8 +275,7 @@ class Protocolo(ProjudiBot):
             )
             self.print_message(
                 message="Anexo enviado!",
-                type_log="info",
-                row=self.row,
+                message_type="info",
             )
 
     def __envia_arquivo(
@@ -442,8 +433,11 @@ class Protocolo(ProjudiBot):
 
     def __finaliza_peticionamento(self) -> None:
         message = f"Concluindo peticionamento do processo {self.bot_data.get('NUMERO_PROCESSO')}"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         finish_button = self.driver.find_element(
             By.CSS_SELECTOR,
@@ -517,8 +511,11 @@ class Protocolo(ProjudiBot):
             fp.write(self.driver.get_screenshot_as_png())
 
         message = f"Peticionamento do processo Nº{self.bot_data.get('NUMERO_PROCESSO')} concluído com sucesso!"
-        type_log = "success"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "success"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         return DataSucesso(
             NUMERO_PROCESSO=numero_processo,

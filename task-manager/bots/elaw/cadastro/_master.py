@@ -45,9 +45,7 @@ class ElawCadastro(
             )
 
             self.print_message(
-                message="Processo salvo com sucesso!",
-                type_log="log",
-                row=self.row,
+                message="Processo salvo com sucesso!", message_type="log"
             )
             return True
 
@@ -79,7 +77,10 @@ class ElawCadastro(
         )
 
         message = "Salvando processo novo"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         salvartudo.click()

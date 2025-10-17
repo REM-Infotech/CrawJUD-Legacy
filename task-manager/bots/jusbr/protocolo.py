@@ -39,7 +39,7 @@ class Protocolo(JusBrBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -57,8 +57,7 @@ class Protocolo(JusBrBot):
         if not search:
             self.print_message(
                 message="Processo não encontrado!",
-                type_log="error",
-                row=self.row,
+                message_type="error",
             )
             return
 

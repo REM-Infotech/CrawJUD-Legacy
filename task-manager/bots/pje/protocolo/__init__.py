@@ -72,7 +72,7 @@ class Protocolo(HabilitiacaoPJe):
         except Exception as e:
             self.print_message(
                 message="\n".join(traceback.format_exception(e)),
-                type_log="info",
+                message_type="info",
             )
 
     def queue(
@@ -108,7 +108,7 @@ class Protocolo(HabilitiacaoPJe):
                     self.print_message(
                         "Protocolo efetuado com sucesso!",
                         row=row,
-                        type_log="success",
+                        message_type="success",
                     )
 
                 except (KeyError, Exception) as e:
@@ -116,6 +116,6 @@ class Protocolo(HabilitiacaoPJe):
 
                     self.print_message(
                         message=f"Erro ao protocolar processo. Erro: {exc_message}",
-                        type_log="error",
+                        message_type="error",
                         row=row,
                     )

@@ -48,7 +48,6 @@ class PrintMessage:
 
         msg = Message(
             row=self.row,
-            pid=self.pid,
             message=message,
             message_type=message_type,
             status=self.status,

@@ -84,7 +84,7 @@ class PjeBot(CrawJUD):
         self.print_message(
             message=message,
             row=row,
-            type_log="log",
+            message_type="log",
         )
 
         link = el.LINK_DADOS_BASICOS.format(
@@ -158,7 +158,7 @@ class PjeBot(CrawJUD):
         except Exception:
             self.print_message(
                 "Erro ao realizar autenticação",
-                type_log="error",
+                message_type="error",
             )
             return False
 

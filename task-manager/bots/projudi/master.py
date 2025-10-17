@@ -68,8 +68,7 @@ class ProjudiBot(CrawJUD):
         numero_processo = bot_data["NUMERO_PROCESSO"]
         self.print_message(
             message=f"Buscando processo {numero_processo}",
-            type_log="log",
-            row=self.row,
+            message_type="log",
         )
 
         grau = bot_data.get("GRAU", 1) or 1
@@ -112,16 +111,17 @@ class ProjudiBot(CrawJUD):
                     allow_access(driver=driver)
 
                     self.print_message(
-                        "Processo Encontrado!",
-                        type_log="info",
-                        row=self.row,
+                        "Processo Encontrado!", message_type="info"
                     )
 
                     return True
 
-        type_log = "error"
+        message_type = "error"
         message = "Processo não encontrado!"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         return False
 

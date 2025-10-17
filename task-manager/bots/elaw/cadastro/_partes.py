@@ -21,21 +21,30 @@ class ElawPartesPrincipais(ElawBot):
         )
 
         message = "Informando Empresa"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         element_select.select2(text)
 
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Empresa informada!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def tipo_empresa(self) -> None:
         message = "Informando classificação da Empresa"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         key = "TIPO_EMPRESA"
         element_select = self.wait.until(
@@ -50,8 +59,11 @@ class ElawPartesPrincipais(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Classificação da Empresa informada"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         self.tipo_contingencia()
 
@@ -60,8 +72,11 @@ class ElawPartesPrincipais(ElawBot):
         bot_data = self.bot_data
 
         message = "Informando contingenciamento"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         text = ["Passiva", "Passivo"]
         if str(bot_data.get("TIPO_EMPRESA")).lower() == "autor":
@@ -81,13 +96,19 @@ class ElawPartesPrincipais(ElawBot):
         self.sleep_load('div[id="j_id_4p"]')
 
         message = "Contingenciamento informado!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def parte_contraria(self) -> None:
         message = "Preechendo informações da parte contrária"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
         wait = self.wait
         text = self.bot_data.get("TIPO_PARTE_CONTRARIA")
         element_select: WebElement = wait.until(
@@ -148,14 +169,20 @@ class ElawPartesPrincipais(ElawBot):
                 _raise_execution_error(message=message)
 
         self.messsage = "Parte adicionada!"
-        type_log = "info"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "info"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
     def cadastro_parte_contraria(self) -> None:
         try:
             message = "Cadastrando parte"
-            type_log = "log"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "log"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             wait = self.wait
             driver = self.driver
@@ -269,8 +296,11 @@ class ElawPartesPrincipais(ElawBot):
             save_parte.click()
 
             message = "Parte cadastrada!"
-            type_log = "info"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "info"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
             driver.close()
 
             driver.switch_to.window(main_window)

@@ -72,7 +72,7 @@ class BuscaPags(ESajBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", type_log="error"
+                    message=f"{message_error}.", message_type="error"
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
@@ -140,7 +140,7 @@ class BuscaPags(ESajBot):
 
             if "Lista de custas pagas" in nomediv:
                 self.message = "Extraindo dados..."
-                self.type_log = "log"
+                self.message_type = "log"
                 self.prt()
 
                 find_table_pgmt = divcorreta.find_element(

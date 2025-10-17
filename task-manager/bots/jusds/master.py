@@ -60,9 +60,12 @@ class JusdsBot(CrawJUD):
 
         """
         message = f"Buscando processo {self.bot_data['NUMERO_PROCESSO']}"
-        type_log = "log"
+        message_type = "log"
 
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         if not self.window_busca_processo:
             not_mainwindow = list(
@@ -166,20 +169,18 @@ class JusdsBot(CrawJUD):
                 el.URL_INFORMACOES_PROCESSO.format(args_url=args_url),
             )
             message = "Processo encontrado!"
-            type_log = "info"
+            message_type = "info"
             self.print_message(
                 message=message,
-                type_log=type_log,
-                row=self.row,
+                message_type=message_type,
             )
             return True
 
         message = "Processo não encontrado!"
-        type_log = "error"
+        message_type = "error"
         self.print_message(
             message=message,
-            type_log=type_log,
-            row=self.row,
+            message_type=message_type,
         )
 
         return False
@@ -200,7 +201,10 @@ class JusdsBot(CrawJUD):
         )
         self.append_success(data=data)
 
-        self.print_message(message=message, type_log="success", row=self.row)
+        self.print_message(
+            message=message,
+            message_type="success",
+        )
 
     def exit_iframe(self) -> None:
         if ".jsp" in self.driver.current_url:

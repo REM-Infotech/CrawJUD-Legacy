@@ -62,8 +62,11 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
     def seleciona_tipo_pagamento(self, namedef: str) -> None:
         message = "Informando tipo de pagamento"
-        type_log = "log"
-        self.print_message(message=message, type_log=type_log, row=self.row)
+        message_type = "log"
+        self.print_message(
+            message=message,
+            message_type=message_type,
+        )
 
         type_itens: WebElement = self.wait.until(
             ec.presence_of_element_located((
@@ -104,8 +107,11 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
     def save_changes(self) -> None:
         try:
             message = "Salvando alterações"
-            type_log = "log"
-            self.print_message(message=message, type_log=type_log, row=self.row)
+            message_type = "log"
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
             save: WebElement = self.wait.until(
                 ec.element_to_be_clickable((
                     By.CSS_SELECTOR,
@@ -218,7 +224,10 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
             _raise_execution_error(message=message)
 
         self.append_success(data=data)
-        self.print_message(message=message, type_log="success", row=self.row)
+        self.print_message(
+            message=message,
+            message_type="success",
+        )
 
     def __get_frame_pgto(
         self,
