@@ -21,7 +21,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from controllers._master import CrawJUD
+from bots.head import CrawJUD
 
 if TYPE_CHECKING:
     from httpx import Client

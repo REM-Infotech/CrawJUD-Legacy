@@ -7,11 +7,12 @@ from contextlib import suppress
 from pathlib import Path
 
 from common.exceptions import ExecutionError
-from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
 from resources.web_element import WebElementBot as WebElement
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+
+from .master import ProjudiBot
 
 
 class ProcParte(ProjudiBot):

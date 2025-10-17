@@ -12,7 +12,6 @@ from time import sleep
 
 from common.exceptions import ExecutionError
 from constants.data._bots.varas import varas_pje
-from controllers.pje import PjeBot
 from resources.elements import pje as el
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -21,6 +20,8 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import PjeBot
 
 
 class Pauta(PjeBot):

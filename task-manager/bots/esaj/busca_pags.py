@@ -9,10 +9,11 @@ from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from common.exceptions import ExecutionError
-from controllers.esaj import ESajBot
 from resources.elements import esaj as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import ESajBot
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement

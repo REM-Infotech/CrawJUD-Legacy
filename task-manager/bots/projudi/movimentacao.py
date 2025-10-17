@@ -9,7 +9,6 @@ from time import sleep
 from typing import ClassVar
 
 from common.exceptions import ExecutionError
-from controllers.projudi import ProjudiBot
 from httpx import Client
 from pypdf import PdfReader, PdfWriter
 from resources.elements import projudi as el
@@ -17,6 +16,8 @@ from resources.web_element import WebElementBot
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
+
+from .master import ProjudiBot
 
 
 class Movimentacao(ProjudiBot):

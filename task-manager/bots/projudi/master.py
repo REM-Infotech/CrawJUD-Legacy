@@ -18,7 +18,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from controllers._master import CrawJUD
+from bots.head import CrawJUD
 
 
 class ProjudiBot(CrawJUD):

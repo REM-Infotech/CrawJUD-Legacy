@@ -10,10 +10,11 @@ from contextlib import suppress
 from time import sleep
 
 from common.exceptions import ExecutionError
-from controllers.caixa import CaixaBot
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import CaixaBot
 
 
 class Emissor(CaixaBot):

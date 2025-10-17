@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from collections.abc import Callable
 from contextlib import suppress
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from __types import MessageType, P, T
+from __types import P, T
 from _interfaces import ColorsDict
-from celery import Task
+from celery import Celery, Task
 from constants import WORKDIR
 from minio import Minio
 from minio.credentials.providers import EnvMinioProvider
@@ -36,20 +37,18 @@ class CrawJUD(Task):
     """Classe CrawJUD."""
 
     _task: Callable[P, T]
+    app: Celery
 
     @property
     def pid(self) -> str:
         return self.request.id or "unknown"
-
-    def print_msg(self, message: str, msg_type: MessageType = "info") -> None:
-        """Print mensagem."""
-        self.app.tasks["print_msg"]()
 
     @property
     def output_dir_path(self) -> Path:
         return WORKDIR.joinpath("output", self.pid)
 
     def __init__(self) -> None:
+        """Inicializa o CrawJUD."""
         self._task = self.run
         self.run = self.__call__
 
@@ -99,3 +98,8 @@ class CrawJUD(Task):
                         zipfile.write(file_path, arcname)
 
         return output_dir
+
+    @abstractmethod
+    def auth(self) -> bool:
+        """Autenticação no sistema."""
+        ...

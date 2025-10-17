@@ -6,7 +6,7 @@ from resources.elements import csi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from controllers._master import CrawJUD
+from bots.head import CrawJUD
 
 
 class CsiBot(CrawJUD):

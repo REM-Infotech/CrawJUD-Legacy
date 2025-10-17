@@ -15,12 +15,13 @@ from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
-from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import ElawBot
 
 
 class Provisao(ElawBot):

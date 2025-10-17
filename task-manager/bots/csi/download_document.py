@@ -4,7 +4,6 @@ from contextlib import suppress
 
 import httpx
 from __types import AnyType
-from controllers.csi import CsiBot
 from dotenv import load_dotenv
 from resources.elements import csi as el
 from resources.web_element import WebElementBot
@@ -12,6 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
+
+from .master import CsiBot
 
 load_dotenv()
 

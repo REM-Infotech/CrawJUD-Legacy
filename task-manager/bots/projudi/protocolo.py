@@ -10,7 +10,6 @@ from _interfaces import DataSucesso
 from common import raise_password_token
 from common.exceptions import FileError, PasswordTokenError
 from common.exceptions.selenium_webdriver import SeleniumError
-from controllers.projudi import ProjudiBot
 from PIL import Image
 from resources import format_string
 from resources.elements import projudi as el
@@ -22,6 +21,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+
+from .master import ProjudiBot
 
 
 class Protocolo(ProjudiBot):

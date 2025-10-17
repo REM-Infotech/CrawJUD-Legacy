@@ -3,9 +3,10 @@
 from typing import NoReturn
 
 from common.exceptions import ExecutionError
-from controllers.jusds import JusdsBot
 from resources.elements import jusds as el  # noqa: F401
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
+
+from .master import JusdsBot
 
 
 def raise_error(message: str) -> NoReturn:

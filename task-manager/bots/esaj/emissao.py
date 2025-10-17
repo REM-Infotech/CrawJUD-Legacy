@@ -12,13 +12,14 @@ from time import sleep
 
 import requests
 from common.exceptions import ExecutionError
-from controllers.esaj import ESajBot
 from pypdf import PdfReader
 from resources.elements import esaj as el
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+
+from .master import ESajBot
 
 
 class Emissao(ESajBot):

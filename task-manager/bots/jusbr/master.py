@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from controllers._master import CrawJUD
+from bots.head import CrawJUD
 
 
 class JusBrBot(CrawJUD):

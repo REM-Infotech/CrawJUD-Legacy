@@ -5,7 +5,7 @@ from contextlib import suppress
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from controllers._master import CrawJUD
+from bots.head import CrawJUD
 
 HTTP_STATUS_FORBIDDEN = 403  # Constante para status HTTP Forbidden
 COUNT_TRYS = 15

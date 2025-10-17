@@ -14,10 +14,11 @@ from pathlib import Path
 from time import sleep
 
 from common.exceptions import ExecutionError
-from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import ElawBot
 
 
 class Download(ElawBot):

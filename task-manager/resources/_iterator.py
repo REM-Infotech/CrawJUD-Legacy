@@ -2,7 +2,7 @@
 
 from _interfaces import BotData
 from _interfaces._pje import DictSeparaRegiao
-from controllers._master import CrawJUD
+from bots.head import CrawJUD
 
 
 class RegioesIterator:

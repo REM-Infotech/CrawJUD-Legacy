@@ -1,10 +1,11 @@
 from time import sleep
 from typing import TYPE_CHECKING
 
-from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import ElawBot
 
 if TYPE_CHECKING:
     from app.utils.webdriver import WebElementBot as WebElement

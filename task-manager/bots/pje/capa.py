@@ -14,7 +14,7 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
-from threading import Semaphore, Thread
+from threading import Thread
 from time import sleep
 from typing import ClassVar
 
@@ -37,15 +37,13 @@ from common.exceptions import (
     FileUploadError,
 )
 from constants import WORKDIR
-from controllers.pje import PjeBot
 from httpx import Client, Response
 from resources.elements import pje as el
 from tqdm import tqdm
 
-SENTINELA = None
+from .master import PjeBot
 
-semaforo_arquivo: Semaphore = Semaphore(10)
-semaforo_processo: Semaphore = Semaphore(10)
+SENTINELA = None
 
 
 class Capa(PjeBot):

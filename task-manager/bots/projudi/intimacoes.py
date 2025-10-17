@@ -7,12 +7,13 @@ import time
 from contextlib import suppress
 
 from common.exceptions import ExecutionError
-from controllers.projudi import ProjudiBot
 from resources.elements import projudi as el
 from resources.web_element import WebElementBot as WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
+
+from .master import ProjudiBot
 
 
 class Intimacoes(ProjudiBot):

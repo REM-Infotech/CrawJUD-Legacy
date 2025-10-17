@@ -10,11 +10,12 @@ from time import sleep
 from zoneinfo import ZoneInfo
 
 from common.exceptions import ExecutionError
-from controllers.esaj import ESajBot
 from resources.elements import esaj as el
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import ESajBot
 
 
 class Movimentacao(ESajBot):

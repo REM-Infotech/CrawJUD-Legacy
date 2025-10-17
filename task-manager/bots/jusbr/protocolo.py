@@ -8,11 +8,12 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 
 from contextlib import suppress
 
-from controllers.jusbr import JusBrBot
 from resources.elements import jusbr as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
+
+from .master import JusBrBot
 
 
 class Protocolo(JusBrBot):

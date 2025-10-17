@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
-from controllers.esaj import ESajBot
 from resources.elements import projudi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from .master import ESajBot
 
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 

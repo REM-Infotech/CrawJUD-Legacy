@@ -4,12 +4,13 @@ from time import sleep
 from typing import NoReturn
 
 from common.exceptions import ExecutionError
-from controllers.elaw import ElawBot
 from resources.elements import elaw as el
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+
+from .master import ElawBot
 
 
 def raise_error(message: str) -> NoReturn:
