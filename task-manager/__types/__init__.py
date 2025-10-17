@@ -14,3 +14,4 @@ type PyNumbers = int | float | complex | datetime | timedelta
 type PyStrings = str | bytes
 type Dict = dict[str, PyStrings | PyNumbers]
 type ListDict = list[Dict]
+type StatusBot = Literal["Inicializando", "Em Execução", "Finalizado"]
