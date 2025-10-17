@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 import json
 from abc import abstractmethod
 from collections.abc import Callable
@@ -11,16 +12,18 @@ from threading import Event
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import _hook
-from __types import Dict, P, T
-from _interfaces import ColorsDict
+from __types import AnyType, Dict, P, T
+from _interfaces import BotData, ColorsDict
 from celery import Celery, Task
 from constants import WORKDIR
 from minio import Minio
 from minio.credentials.providers import EnvMinioProvider
+from pandas import Timestamp, read_excel
 from resources.print_message import PrintMessage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
+from werkzeug.utils import secure_filename
 
 __all__ = ["_hook"]
 func_dict_check = {
@@ -46,6 +49,27 @@ class CrawJUD(Task):
     var_store: Dict
     _bot_stopped: Event
     cls_print_message: PrintMessage
+    _xlsx: str = None
+    _bot_data: list[BotData] = None
+
+    @property
+    def xlsx(self) -> str:
+        return self._xlsx
+
+    @xlsx.setter
+    def xlsx(self, _xlsx: str) -> None:
+        self._xlsx = secure_filename(_xlsx)
+
+    @property
+    def bot_data(self) -> list[BotData]:
+        if not self._bot_data:
+            self._bot_data = self.load_data()
+
+        return self._bot_data
+
+    @bot_data.setter
+    def bot_data(self, new_data: list[BotData]) -> None:
+        self._bot_data = new_data
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -79,9 +103,7 @@ class CrawJUD(Task):
                 self.driver.quit()
 
     def load_config(self) -> None:
-        json_config = self.output_dir_path.joinpath(
-            self.pid, "configuration.json"
-        )
+        json_config = self.output_dir_path.joinpath("configuration.json")
 
         with json_config.open("rb") as fp:
             data = json.load(fp)
@@ -104,7 +126,7 @@ class CrawJUD(Task):
         ):
             file_path = str(
                 self.output_dir_path.joinpath(
-                    self.pid, Path(item.object_name).name
+                    secure_filename(Path(item.object_name).name)
                 ),
             )
             client.fget_object(item.bucket_name, item.object_name, file_path)
@@ -125,6 +147,55 @@ class CrawJUD(Task):
                         zipfile.write(file_path, arcname)
 
         return output_dir
+
+    def load_data(self) -> list[BotData]:
+        """Convert an Excel file to a list of dictionaries with formatted data.
+
+        Reads an Excel file, processes the data by formatting dates and floats,
+        and returns the data as a list of dictionaries.
+
+
+        Returns:
+            list[BotData]: A record list from the processed Excel file.
+
+        """
+        self.path_planilha = self.output_dir_path.joinpath(self.xlsx)
+
+        df = read_excel(self.path_planilha)
+        df.columns = df.columns.str.upper()
+
+        def format_data(x: AnyType) -> str:
+            if str(x) == "NaT" or str(x) == "nan":
+                return ""
+
+            if isinstance(x, (datetime, Timestamp)):
+                return x.strftime("%d/%m/%Y")
+
+            return x
+
+        def format_float(x: AnyType) -> str:
+            return f"{x:.2f}".replace(".", ",")
+
+        for col in df.columns:
+            df[col] = df[col].apply(format_data)
+
+        for col in df.select_dtypes(include=["float"]).columns:
+            df[col] = df[col].apply(format_float)
+
+        data_bot = []
+
+        for item in [
+            BotData(list(item.items())) for item in df.to_dict(orient="records")
+        ]:
+            dt = {}
+
+            for k, v in list(item.items()):
+                dt[k.upper()] = v
+
+            if dt:
+                data_bot.append(dt)
+
+        return data_bot
 
     @property
     def print_message(self) -> PrintMessage:
