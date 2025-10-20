@@ -2,11 +2,13 @@
 
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
+from datetime import datetime
 from os import environ
 from pathlib import Path
 from queue import Empty, Queue
 from threading import Lock, Thread
 from typing import TYPE_CHECKING, TypedDict, cast
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from socketio import Client
@@ -49,6 +51,10 @@ class PrintMessage(BotQueues):
     def __call__(self, message: str, message_type: MessageType) -> None:
         self.message_type = message_type
 
+        mini_pid = self.pid[:6].upper()
+        tz = ZoneInfo("America/Sao_Paulo")
+        time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
+        message = f"[({mini_pid}, {message_type}, {self.row}, {time_exec})> {message}]"
         msg = Message(
             row=self.row,
             message=message,
@@ -85,6 +91,7 @@ class PrintMessage(BotQueues):
 
     def print_message(self, **kwargs) -> None:
         data: Message = kwargs
+
         with self.message_locker, suppress(Exception):
             self.sio.emit(
                 "join_room",
@@ -92,4 +99,4 @@ class PrintMessage(BotQueues):
                 namespace="/bot_logs",
             )
 
-            self.sio.emit("log_bot", data=data, namespace="/bot_logs")
+            self.sio.emit("logbot", data=data, namespace="/bot_logs")

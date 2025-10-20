@@ -39,7 +39,7 @@ class SaveSuccess(BotQueues):
         **kwargs,
     ) -> None:
         _kwarg = kwargs
-        self.queue.put({
+        self.queue.put_nowait({
             "work_sheet": work_sheet,
             "data_save": data_save,
         })
@@ -52,18 +52,70 @@ class SaveSuccess(BotQueues):
         xlsx_file = self.bot.output_dir_path.joinpath(xlsx_name)
         xlsx_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with ExcelWriter(xlsx_file, "openpyxl", mode="w") as writer:
-            DataFrame().to_excel(excel_writer=writer)
+        while not self.event_queue_bot.is_set():
+            data = None
+            with suppress(Empty):
+                data = self.queue.get_nowait()
 
-        with ExcelWriter(xlsx_file, "openpyxl", mode="a") as writer:
-            while not self.event_queue_bot.is_set():
-                data = None
-                with suppress(Empty):
-                    data = self.queue.get_nowait()
+            if data:
+                list_data = data["data_save"]
+                sheet = data["work_sheet"]
+                df = DataFrame(list_data)
+                for col in df.columns:
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_localize(None)
+                            if hasattr(x, "tz_localize")
+                            else x,
+                        )
+                        continue
 
-                if data:
-                    df = DataFrame(data["data_save"])
-                    df.to_excel(writer, data["work_sheet"])
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_convert(None)
+                            if hasattr(x, "tz_convert")
+                            else x,
+                        )
+                # --- APPEND na mesma aba, calculando a próxima linha ---
+                if not xlsx_file.exists():
+                    # primeira escrita cria arquivo e cabeçalho
+                    with ExcelWriter(
+                        path=xlsx_file,
+                        mode="w",
+                        engine="openpyxl",
+                    ) as writer:
+                        df.to_excel(
+                            excel_writer=writer,
+                            sheet_name=sheet,
+                            index=False,
+                        )
+
+                    continue
+
+                with ExcelWriter(
+                    path=xlsx_file,
+                    mode="a",
+                    engine="openpyxl",
+                    if_sheet_exists="overlay",
+                ) as writer:
+                    # pega a aba (se existir) e calcula a próxima linha
+                    wb = writer.book
+                    ws = (
+                        wb[sheet]
+                        if sheet in wb.sheetnames
+                        else wb.create_sheet(sheet)
+                    )
+                    startrow = (
+                        int(ws.max_row) if int(ws.max_row) > 1 else 0
+                    )  # 0 => escreve com header
+                    write_header = int(startrow) == 0
+                    df.to_excel(
+                        excel_writer=writer,
+                        sheet_name=sheet,
+                        index=False,
+                        header=write_header,
+                        startrow=startrow,
+                    )
 
 
 class SaveError(BotQueues):
@@ -83,7 +135,7 @@ class SaveError(BotQueues):
         *args,
         **kwargs,
     ) -> None:
-        self.queue.put({
+        self.queue.put_nowait({
             "work_sheet": work_sheet,
             "data_save": data_save,
         })
@@ -96,15 +148,67 @@ class SaveError(BotQueues):
         xlsx_file = self.bot.output_dir_path.joinpath(xlsx_name)
         xlsx_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with ExcelWriter(xlsx_file, "openpyxl", mode="w") as writer:
-            DataFrame().to_excel(excel_writer=writer)
+        while not self.event_queue_bot.is_set():
+            data = None
+            with suppress(Empty):
+                data = self.queue.get_nowait()
 
-        with ExcelWriter(xlsx_file, "openpyxl", mode="a") as writer:
-            while not self.event_queue_bot.is_set():
-                data = None
-                with suppress(Empty):
-                    data = self.queue.get_nowait()
+            if data:
+                list_data = data["data_save"]
+                sheet = data["work_sheet"]
+                df = DataFrame(list_data)
+                for col in df.columns:
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_localize(None)
+                            if hasattr(x, "tz_localize")
+                            else x,
+                        )
+                        continue
 
-                if data:
-                    df = DataFrame(data["data_save"])
-                    df.to_excel(writer, data["work_sheet"])
+                    with suppress(Exception):
+                        df[col] = df[col].apply(
+                            lambda x: x.tz_convert(None)
+                            if hasattr(x, "tz_convert")
+                            else x,
+                        )
+                # --- APPEND na mesma aba, calculando a próxima linha ---
+                if not xlsx_file.exists():
+                    # primeira escrita cria arquivo e cabeçalho
+                    with ExcelWriter(
+                        path=xlsx_file,
+                        mode="w",
+                        engine="openpyxl",
+                    ) as writer:
+                        df.to_excel(
+                            excel_writer=writer,
+                            sheet_name=sheet,
+                            index=False,
+                        )
+
+                    continue
+
+                with ExcelWriter(
+                    path=xlsx_file,
+                    mode="a",
+                    engine="openpyxl",
+                    if_sheet_exists="overlay",
+                ) as writer:
+                    # pega a aba (se existir) e calcula a próxima linha
+                    wb = writer.book
+                    ws = (
+                        wb[sheet]
+                        if sheet in wb.sheetnames
+                        else wb.create_sheet(sheet)
+                    )
+                    startrow = (
+                        int(ws.max_row) if int(ws.max_row) > 1 else 0
+                    )  # 0 => escreve com header
+                    write_header = int(startrow) == 0
+                    df.to_excel(
+                        excel_writer=writer,
+                        sheet_name=sheet,
+                        index=False,
+                        header=write_header,
+                        startrow=startrow,
+                    )
