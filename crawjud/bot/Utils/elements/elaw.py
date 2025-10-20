@@ -68,15 +68,20 @@ class ELAW_AME(Configuracao):  # noqa: N801
     select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
     select_field = "".join(
         (
-            'div[id="j_id_3y_1:j_id_3y_4_2_2_9_9_44_2:j_id_3y_4_2_2_9_9_44',
-            '_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]',
+            'div[id="j_id_4c_1:',
+            "j_id_4c_5_2_2_9_9_45_2:",
+            "j_id_4c_5_2_2_9_9_45_3_1_2_2_2_1:",
+            'fieldid_9240pgTypeSelectField1CombosCombo_panel"]',
         ),
     )
     css_other_location = "".join(
         (
-            'input[id="j_id_3y_1:j_id_3y_4_2_2_9_9_46_2:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_1:',
-            "j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_c:j_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_f:0:j",
-            '_id_3y_4_2_2_9_9_46_3_1_2_2_2_2_1_1g:fieldText"]',
+            'input[id="j_id_4c_1:',
+            "j_id_4c_5_2_2_9_9_45_2:",
+            "j_id_4c_5_2_2_9_9_45_3_1_2_2_2_1:",
+            "j_id_4c_5_2_2_9_9_45_3_1_2_2_2_2_1_c:",
+            "j_id_4c_5_2_2_9_9_45_3_1_2_2_2_2_1_f:0:",
+            'j_id_4c_5_2_2_9_9_45_3_1_2_2_2_2_1_1g:fieldText"]',
         ),
     )
     comboProcessoTipo = 'div[id*=":comboProcessoTipo"]'  # noqa: N815
