@@ -9,11 +9,13 @@ import HeaderView from "./components/header/HeaderView.vue";
   <BApp>
     <div class="content">
       <HeaderView />
-      <RouterView v-slot="{ Component }">
-        <Transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </Transition>
-      </RouterView>
+      <div class="main">
+        <RouterView v-slot="{ Component }">
+          <Transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </Transition>
+        </RouterView>
+      </div>
       <FooterView />
     </div>
   </BApp>
@@ -24,6 +26,15 @@ import HeaderView from "./components/header/HeaderView.vue";
   min-height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.main {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  text-align: center;
 }
 
 .fade-enter-active,

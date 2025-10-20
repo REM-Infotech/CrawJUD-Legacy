@@ -43,6 +43,7 @@ default:
     - "*.reminfotech.net.br"
     - "*.rhsolut.com.br"
     - "*.robotz.dev"
+    - "betatest.robotz.dev"
 
   # ✅ Configurações SQLAlchemy
   SQLALCHEMY_DATABASE_URI: "@format {env[CRAWJUD_DATABASE_URI]}"

@@ -19,6 +19,7 @@ mail = Mail()
 cors = CORS(
     allow_headers=["Content-Type", "Authorization"],
     supports_credentials=True,
+    transports=["websocket"],
     origins=[
         "localhost",
         "http://localhost:5173",
