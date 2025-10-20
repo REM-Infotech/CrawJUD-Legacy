@@ -5,17 +5,14 @@ import "bootstrap/dist/js/bootstrap.js";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import MaterialSymbolsChecklistRtlRounded from "~icons/material-symbols/checklist-rtl-rounded?width=24px&height=24px";
-import MaterialSymbolsKeyOutlineRounded from "~icons/material-symbols/key-outline-rounded?width=24px&height=24px";
-import MaterialSymbolsSettings from "~icons/material-symbols/settings";
 import MaterialSymbolsTableOutline from "~icons/material-symbols/table-outline?width=24px&height=24px";
 import RiRobot2Line from "~icons/ri/robot-2-line?width=24px&height=24px";
 import RiSpeedUpFill from "~icons/ri/speed-up-fill?width=24px&height=24px";
-import { disconnectSocket } from "../main";
+
 const router = useRouter();
 
 async function handleLogout(e: Event) {
   e.preventDefault();
-  disconnectSocket();
   try {
     const resp = await api.post("/logout");
 
@@ -69,20 +66,6 @@ const list_opts = [
     name: "system",
     text: "Sistema",
     tag: "div",
-  },
-  {
-    id: 6,
-    name: "configuracoes",
-    text: "Configurações de Usuários",
-    icon: MaterialSymbolsSettings,
-    tag: "li",
-  },
-  {
-    id: 7,
-    name: "credentials",
-    text: "Credenciais",
-    icon: MaterialSymbolsKeyOutlineRounded,
-    tag: "li",
   },
 ];
 
