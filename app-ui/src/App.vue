@@ -1,11 +1,30 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { mainSocket } from "@/main";
+import { useMessageStore } from "@/stores/message";
+import { storeToRefs } from "pinia";
+import { RouterView } from "vue-router";
+import MainFrame from "./components/MainFrame.vue";
+import router from "./router";
+
+const { message } = storeToRefs(useMessageStore());
+mainSocket.on("not_logged", () => {
+  message.value = "Sessão expirada. Faça login novamente.";
+  router.push({ name: "login" });
+});
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <RouterView v-slot="{ Component }" class="hide-scroll">
+    <MainFrame>
+      <Transition name="fade" mode="out-in">
+        <component :is="Component"></component>
+      </Transition>
+    </MainFrame>
+  </RouterView>
 </template>
 
-<style scoped></style>
+<style lang="css" scoped>
+.hide-scroll {
+  scrollbar-width: none;
+}
+</style>

@@ -1,0 +1,46 @@
+{
+  "compounds": [
+    {
+      "configurations": ["Celery", "Quart", "Launch via PNPM", "Launch App Web"],
+      "name": "Debug CrawJUD",
+      "presentation": {
+        "group": "Debug CrawJUD",
+        "hidden": false,
+        "order": 1
+      },
+      "stopAll": true
+    }
+  ],
+  "configurations": [
+    {
+      "command": "pnpm dev",
+      "name": "Launch via PNPM",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+
+    {
+      "name": "Launch App Web",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:1474",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Quart",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app"
+    },
+    {
+      "name": "Celery",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "celery",
+      "env": { "CELERY_APP": "celery_app" },
+      "args": ["worker", "-P", "threads", "-E"]
+    }
+  ],
+
+  "version": "0.2.0"
+}
