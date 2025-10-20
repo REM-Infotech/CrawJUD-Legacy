@@ -1,0 +1,26 @@
+[project]
+name = "api-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "celery>=5.5.3",
+    "clear==2.0.0",
+    "dynaconf[all]>=3.2.11",
+    "flask==3.1.2",
+    "flask-cors>=6.0.1",
+    "flask-jwt-extended>=4.7.1",
+    "flask-mail>=0.10.0",
+    "flask-socketio>=5.5.1",
+    "flask-sqlalchemy==3.1.1",
+    "hypercorn>=0.17.3",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.3",
+    "passlib[argon2,bcrypt]>=1.7.4",
+    "python-dotenv==1.1.1",
+    "redis>=6.4.0",
+    "sqlalchemy==2.0.43",
+    "tqdm==4.67.1",
+    "uvicorn>=0.37.0",
+]

@@ -1,0 +1,25 @@
+[project]
+name = "task-manager"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "bs4>=0.0.2",
+    "celery>=5.5.3",
+    "clear==2.0.0",
+    "httpx>=0.28.1",
+    "minio>=7.2.18",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.3",
+    "pillow>=12.0.0",
+    "pypdf>=6.1.1",
+    "python-dotenv==1.1.1",
+    "python-socketio>=5.14.1",
+    "rich==14.1.0",
+    "selenium>=4.36.0",
+    "selenium-wire>=5.1.0",
+    "termcolor==3.1.0",
+    "tqdm==4.67.1",
+    "werkzeug==3.1.3",
+]
