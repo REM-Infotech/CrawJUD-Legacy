@@ -1,6 +1,8 @@
 {
   "recommendations": [
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
     "EditorConfig.EditorConfig",
-    "charliermarsh.ruff"
+    "esbenp.prettier-vscode"
   ]
 }

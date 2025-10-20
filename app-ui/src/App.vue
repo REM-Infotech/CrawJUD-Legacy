@@ -1,20 +1,11 @@
-<script setup lang="ts">
-import { RouterView } from "vue-router";
-import MainFrame from "./components/MainFrame.vue";
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <RouterView v-slot="{ Component }" class="hide-scroll">
-    <MainFrame>
-      <Transition name="fade" mode="out-in">
-        <component :is="Component"></component>
-      </Transition>
-    </MainFrame>
-  </RouterView>
+  <h1>You did it!</h1>
+  <p>
+    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
+    documentation
+  </p>
 </template>
 
-<style lang="css" scoped>
-.hide-scroll {
-  scrollbar-width: none;
-}
-</style>
+<style scoped></style>

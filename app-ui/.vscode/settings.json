@@ -1,71 +1,13 @@
 {
-  "remote.autoForwardPorts": false,
-  "remote.restoreForwardedPorts": false,
-  "remote.portsAttributes": {
-    "1-65000": {
-      "label": "Application",
-      "onAutoForward": "ignore"
-    }
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc][typescript][javascript][vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "cmake.ignoreCMakeListsMissing": true,
-  "css.lint.unknownProperties": "ignore",
-  "debug.javascript.terminalOptions": {
-    "resolveSourceMapLocations": [
-      "${workspaceFolder}/**",
-      "!**/node_modules/**",
-      "**/node_modules/.vite-temp/**"
-    ]
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "always"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig",
-    "pyproject.toml": "poetry.lock, poetry.*, ruff.*, bandit.*, requirements.txt, .pre-commit-config.yaml",
-    "tsconfig.json": "tsconfig.*.json, env.d.ts, forge.config.ts, components.d.ts",
-    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*, vite.config.main.*, vite.config.preload.*, vite.config.renderer.*"
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*",
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig"
   },
-  "python.analysis.typeCheckingMode": "off",
-  "github.copilot.chat.commitMessageGeneration.instructions": [
-    {
-      "file": ".github/copilot-commit-message-instructions.md"
-    }
-  ],
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
   },
-  "sonarlint.connectedMode.project": {
-    "connectionId": "https-sonar-robotz-dev-",
-    "projectKey": "REM-Infotech_CrawJUD-Reestruturado_e3fe9c30-c5d7-41d7-b7bd-66b10317a92f"
-  },
-  "sonarlint.analyzerProperties": {
-    "sonar.exclusions": "**/bin/**, **/.venv/**, **/__pycache__/**, **/tests/**, **/.vscode/**, **/Lib/**, **/lib/**",
-    "sonar.python.coverage.reportPaths": "coverage-reports/*coverage-*.xml"
-  },
-  "python.testing.pytestArgs": ["tests"],
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "python.testing.promptToConfigure": true,
-  "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
-  },
-  "[dockercompose]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
-  }
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
