@@ -216,15 +216,11 @@ class CrawJUD(Task):
         message = "Fim da execução"
         self.print_message(message=message, message_type="success")
 
-        message = f"Sucessos: {self.success} | Erros: {self.error}"
-        self.print_message(message=message, row=self.row, message_type="info")
-
         zip_file = self.zip_result()
-
         link = self.upload_file(zipfile=zip_file)
 
         message = f"Baixe os resultados aqui: {link}"
-        self.print_message(message=message, row=self.row, type_log="info")
+        self.print_message(message=message, message_type="info")
 
         self.queue_control.stop_queues()
 
