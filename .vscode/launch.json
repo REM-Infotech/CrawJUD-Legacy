@@ -21,18 +21,7 @@
       "cwd": "${workspaceFolder}/task-manager",
       "env": { "PYTHON_GIL": "0" },
       "module": "celery",
-      "args": [
-        "-A",
-        "app",
-        "worker",
-        "-P",
-        "threads",
-        "-c",
-        "16",
-        "-E",
-        "--loglevel",
-        "INFO"
-      ]
+      "args": ["-A", "app", "worker", "-P", "threads", "-c", "16", "-E"]
     },
     {
       "name": "Debug Vite App (Vue)",
