@@ -17,7 +17,7 @@ from flask import (
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from app._types import Methods, P, T
+    from __types import Methods, P, T
 
 
 class CrossDomain:

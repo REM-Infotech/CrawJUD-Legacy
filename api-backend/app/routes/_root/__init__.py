@@ -1,20 +1,17 @@
+from __types import HealtCheck
 from flask import (
     Response,
-    current_app,
     jsonify,
     make_response,
     redirect,
-    request,
-    send_from_directory,
     url_for,
 )
 
-from app import app, root_app
-from app._types import HealtCheck
+from app import app
 from app.resources.extensions import db
 
 
-@root_app.route("/health")
+@app.route("/health")
 def health_check() -> HealtCheck:
     """Verifique status de saúde da aplicação.
 
@@ -42,7 +39,7 @@ def health_check() -> HealtCheck:
     )
 
 
-@root_app.route("/", methods=["GET"])
+@app.route("/", methods=["GET"])
 def index() -> Response:
     """Redirect to the authentication login page.
 
@@ -53,13 +50,8 @@ def index() -> Response:
     return make_response(redirect(url_for("health_check")))
 
 
-@root_app.route("/robots.txt")
-def static_from_root() -> Response:
-    return send_from_directory(current_app.static_folder, request.path[1:])  # pyright: ignore[reportArgumentType]
-
-
 def register_blueprint() -> None:
-    """Register a blueprint to the root_app.
+    """Register a blueprint to the app.
 
     Args:
         blueprint: The blueprint to register.
@@ -69,7 +61,7 @@ def register_blueprint() -> None:
 
     blueprints = [auth]
     for blueprint in blueprints:
-        root_app.register_blueprint(blueprint)
+        app.register_blueprint(blueprint)
 
 
 register_blueprint()

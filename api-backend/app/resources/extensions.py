@@ -4,12 +4,15 @@ from __future__ import annotations
 
 from typing import Literal
 
+from __types import MyAny
+from _interfaces import Message
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room
 from flask_sqlalchemy import SQLAlchemy
+from tqdm import tqdm
 
 from app.base import Model, Query
 
@@ -34,8 +37,25 @@ def cors_origin(*args, **kwargs) -> Literal[True]:
 
 io = SocketIO(
     async_mode="threading",
-    cors_allowed_origins=cors_origin,
+    cors_allowed_origins="*",
 )
+
+
+@io.on("connect", namespace="/bot_logs")
+def connected(*args: MyAny, **kwargs: MyAny) -> None:
+    """Log bot."""
+
+
+@io.on("join_room", namespace="/bot_logs")
+def join_room_bot(data: dict[str, str]) -> None:
+    """Log bot."""
+    join_room(data["room"])
+
+
+@io.on("logbot", namespace="/bot_logs")
+def log_bot(data: Message) -> None:
+    """Log bot."""
+    tqdm.write(data["message"])
 
 
 __all__ = ["db", "cors", "jwt", "mail", "start_extensions"]

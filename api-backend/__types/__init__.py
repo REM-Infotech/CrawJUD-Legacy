@@ -4,7 +4,8 @@ P = ParamSpec("P")
 T = TypeVar("T")
 
 MyAny = Any
-
+type StatusBot = Literal["Inicializando", "Em Execução", "Finalizado"]
+type MessageType = Literal["info", "log", "error", "warning", "success"]
 type Methods = Literal["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
 type ConfigNames = Literal[
     "DevelopmentConfig",

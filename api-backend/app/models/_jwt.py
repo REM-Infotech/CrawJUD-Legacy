@@ -6,11 +6,11 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 import bcrypt
+from __types import MyAny
 from flask_jwt_extended import get_current_user
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import Mapped
 
-from app._types import MyAny
 from app.resources.extensions import db, jwt
 
 from ._users import User

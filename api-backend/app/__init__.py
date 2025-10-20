@@ -2,17 +2,13 @@
 
 from pathlib import Path
 
+from __types import MyAny as MyAny
 from dotenv import load_dotenv
 from dynaconf import Dynaconf, FlaskDynaconf
 from flask import Flask
 from passlib.context import CryptContext
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-
-from app._types import MyAny as MyAny
 
 app = Flask(__name__)
-root_app = Flask("root_app")
-bots_app = Flask("bots_app")
 load_dotenv(Path.cwd().parent)
 
 path_passlib_config = str(Path.cwd().joinpath("passlib.conf"))
@@ -39,18 +35,10 @@ def create_app() -> Flask:
         env="celery",
     )
 
-    config = FlaskDynaconf(
+    FlaskDynaconf(
+        app=app,
         instance_relative_config=True,
         extensions_list="EXTENSIONS",  # pyright: ignore[reportArgumentType]
         dynaconf_instance=settings,
     )
-    config.init_app(app)
-    config.init_app(root_app)
-    config.init_app(bots_app)
-
-    app.wsgi_app = DispatcherMiddleware(
-        app.wsgi_app,
-        {"/api/v1": root_app.wsgi_app, "/api/v1/bots": bots_app.wsgi_app},
-    )
-
     return app

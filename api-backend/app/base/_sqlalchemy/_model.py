@@ -1,10 +1,10 @@
 from contextlib import suppress
 from typing import ClassVar, Self, cast
 
+from __types import MyAny
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model as FSA_Model
 
-from app._types import MyAny
 from app.resources import camel_to_snake
 
 from ._query import Query, QueryProperty

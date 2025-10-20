@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, ClassVar, Self, cast
 
+from __types import MyAny, T
 from flask import abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.pagination import Pagination as FSAPagination
@@ -11,8 +12,6 @@ from sqlalchemy.sql._typing import (
     _ColumnExpressionArgument,
     _ColumnsClauseArgument,
 )
-
-from app._types import MyAny, T
 
 _Entities = _ColumnsClauseArgument[T] | Sequence[_ColumnsClauseArgument[T]]
 if TYPE_CHECKING:
