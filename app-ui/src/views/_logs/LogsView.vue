@@ -1,5 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { BButton } from "bootstrap-vue-next";
+</script>
 
 <template>
-  <div>Hello!</div>
+  <div>
+    <div>Hello!</div>
+    <BButton> OK </BButton>
+  </div>
 </template>

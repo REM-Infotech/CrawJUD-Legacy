@@ -1,4 +1,20 @@
-* {
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
+@import "./base.css";
+
+body {
+  background-color: var(--color-electric-violet-300);
+}
+
+#app {
+  width: 100dvw;
+  height: 100dvh;
+}
+
+@media (prefers-color-scheme: dark) {
+  #app > * {
+    color: whitesmoke;
+  }
+
+  body {
+    background-color: var(--color-electric-violet-950);
+  }
 }

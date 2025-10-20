@@ -1,0 +1,18 @@
+* {
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  --color-electric-violet-50: #fbf3ff;
+  --color-electric-violet-100: #f6e3ff;
+  --color-electric-violet-200: #efcdff;
+  --color-electric-violet-300: #e2a5ff;
+  --color-electric-violet-400: #d16cff;
+  --color-electric-violet-500: #c035ff;
+  --color-electric-violet-600: #b10fff;
+  --color-electric-violet-700: #a600ff;
+  --color-electric-violet-800: #8406c3;
+  --color-electric-violet-900: #6c079c;
+  --color-electric-violet-950: #4b0076;
+}

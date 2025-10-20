@@ -1,7 +1,7 @@
-import "@/assets/css/main.css";
-
 import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 import "bootstrap/dist/css/bootstrap.css";
+
+import "@/assets/css/main.css";
 
 import { createPinia } from "pinia";
 import { createApp } from "vue";
