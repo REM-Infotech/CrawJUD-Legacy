@@ -112,7 +112,7 @@ class Interact(CrawJUD):
         element.clear()
         sleep(1)
 
-    def sleep_load(self, element: str = 'div[id="j_id_4b"]') -> None:
+    def sleep_load(self, element: str = 'div[id="j_id_4p"]') -> None:
         """Wait until the loading indicator for a specific element is hidden.
 
         Args:
