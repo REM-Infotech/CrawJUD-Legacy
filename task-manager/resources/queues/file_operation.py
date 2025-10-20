@@ -3,10 +3,12 @@
 from contextlib import suppress
 from queue import Empty, Queue
 from threading import Event, Thread
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from _interfaces import BotData, DataSucesso
-from bots.head import CrawJUD
+
+if TYPE_CHECKING:
+    from bots.head import CrawJUD
 
 
 class SaveSuccess:
@@ -33,7 +35,7 @@ class SaveSuccess:
 
     @property
     def event_queue_bot(self) -> Event:
-        return self.bot.queue_control.event_queue_bot
+        return self.bot.event_queue_bot
 
 
 class SaveError:
@@ -60,4 +62,4 @@ class SaveError:
 
     @property
     def event_queue_bot(self) -> Event:
-        return self.bot.queue_control.event_queue_bot
+        return self.bot.event_queue_bot

@@ -17,6 +17,7 @@ class BotQueues:
 
     def __init__(self, bot: CrawJUD) -> None:
         """Instância das queues para execução dos bots."""
+        self.bot = bot
         self.event_queue_bot = Event()
 
         self.print_message = PrintMessage(self)
@@ -34,3 +35,11 @@ class BotQueues:
 
         for th in self.threads:
             th.join(30)
+
+    @property
+    def event_queue_bot(self) -> Event:
+        return self.bot.event_queue_bot
+
+    @event_queue_bot.setter
+    def event_queue_bot(self, event: Event) -> None:
+        self.bot.event_queue_bot = event

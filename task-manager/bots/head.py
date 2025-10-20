@@ -46,6 +46,7 @@ COLORS_DICT: ColorsDict = {
 class CrawJUD(Task):
     """Classe CrawJUD."""
 
+    _event_queue_bot: Event = None
     _task: Callable
     app: Celery
     var_store: ClassVar[Dict] = {}
@@ -260,3 +261,11 @@ class CrawJUD(Task):
     @property
     def append_error(self) -> SaveError:
         return self.queue_control.save_error
+
+    @property
+    def event_queue_bot(self) -> Event:
+        return self._event_queue_bot
+
+    @event_queue_bot.setter
+    def event_queue_bot(self, event: Event) -> None:
+        self._event_queue_bot = event

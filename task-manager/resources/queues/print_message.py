@@ -164,4 +164,4 @@ class PrintMessage:
 
     @property
     def event_queue_bot(self) -> Event:
-        return self.bot.queue_control.event_queue_bot
+        return self.bot.event_queue_bot
