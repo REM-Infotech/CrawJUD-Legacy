@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { api } from "@/controllers/axios";
+import { api } from "@/resources/axios";
 import { useMessageStore } from "@/stores/message";
 
 import { storeToRefs } from "pinia";

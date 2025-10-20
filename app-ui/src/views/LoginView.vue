@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import logoCrawJUD from "@/assets/img/crawjud2.png";
-import { api } from "@/controllers/axios";
+import { api } from "@/resources/axios";
 import { useMessageStore } from "@/stores/message";
 
 import { isAxiosError } from "axios";

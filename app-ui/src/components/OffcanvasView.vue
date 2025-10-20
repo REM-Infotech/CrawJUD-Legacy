@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { api } from "@/controllers/axios";
+import { api } from "@/resources/axios";
 import { useMessageStore } from "@/stores/message";
 import "bootstrap/dist/js/bootstrap.js";
 import { storeToRefs } from "pinia";

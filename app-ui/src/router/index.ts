@@ -32,6 +32,11 @@ const router = createRouter({
         name: "dashboard",
       },
     },
+    {
+      path: "/bots",
+      name: "bots",
+      component: () => import("@/views/bots/BotsView.vue"),
+    },
   ],
 });
 

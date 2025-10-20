@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { api } from "@/controllers/axios";
+import { api } from "@/resources/axios";
 import router from "@/router";
 import DataTablesCore from "datatables.net-bs5";
 import DataTable from "datatables.net-vue3";
