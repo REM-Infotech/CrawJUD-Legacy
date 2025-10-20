@@ -5,18 +5,21 @@ from contextlib import suppress
 from os import environ
 from pathlib import Path
 from queue import Empty, Queue
-from threading import Event, Lock, Thread
+from threading import Lock, Thread
 from typing import TYPE_CHECKING, TypedDict, cast
 
-from __types import MessageType, StatusBot
-from _interfaces import Message
 from dotenv import load_dotenv
 from socketio import Client
 
-load_dotenv(Path.cwd().parent)
+from __types import MessageType
+from _interfaces import Message
+
+from .head import BotQueues
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
+
+load_dotenv(Path.cwd().parent)
 
 
 class Count(TypedDict):
@@ -27,7 +30,7 @@ class Count(TypedDict):
     error_count: int = 0
 
 
-class PrintMessage:
+class PrintMessage(BotQueues):
     """Envio de logs para o FrontEnd."""
 
     bot: CrawJUD
@@ -90,78 +93,3 @@ class PrintMessage:
             )
 
             self.sio.emit("log_bot", data=data, namespace="/bot_logs")
-
-    @property
-    def row(self) -> int:
-        return self.bot.row
-
-    @property
-    def total_rows(self) -> int:
-        return self.bot.total_rows
-
-    @property
-    def pid(self) -> str:
-        return self.bot.pid
-
-    @property
-    def bot_stopped(self) -> Event:
-        return self.bot.bot_stopped
-
-    @property
-    def status(self) -> StatusBot:
-        if self.total_rows == 0:
-            return "Inicializando"
-
-        if self.bot_stopped.is_set():
-            return "Finalizado"
-
-        return "Em Execução"
-
-    @property
-    def message_type(self) -> MessageType:
-        return self._message_type
-
-    @message_type.setter
-    def message_type(self, _message_type: MessageType) -> None:
-        self._message_type = _message_type
-
-    @property
-    def error_count(self) -> int:
-        if self.status == "Inicializando":
-            return 0
-
-        if self.message_type == "error":
-            self.remaining_count -= 1
-            self.COUNTS["error_count"] += 1
-
-        return self.COUNTS["error_count"]
-
-    @property
-    def success_count(self) -> int:
-        if self.status == "Inicializando":
-            return 0
-
-        if self.message_type == "success":
-            self.remaining_count -= 1
-            self.COUNTS["success_count"] += 1
-
-        return self.COUNTS["success_count"]
-
-    @property
-    def remainign_count(self) -> int:
-        return self.COUNTS["remainign_count"]
-
-    @remainign_count.setter
-    def remaining_count(self, to_subtract: int) -> None:
-        if self.COUNTS["remainign_count"] == 0:
-            self.COUNTS["remainign_count"] = self.total_rows
-
-        if self.status == "Em Execução":
-            if self.COUNTS["remainign_count"] == 0:
-                self.COUNTS["remainign_count"] = to_subtract
-
-            self.COUNTS["remainign_count"] -= to_subtract
-
-    @property
-    def event_queue_bot(self) -> Event:
-        return self.bot.event_queue_bot

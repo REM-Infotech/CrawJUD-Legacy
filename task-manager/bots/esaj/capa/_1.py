@@ -1,9 +1,9 @@
 from bs4 import BeautifulSoup
-from resources.elements import projudi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.esaj.master import ESajBot
+from resources.elements import projudi as el
 
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 
@@ -129,5 +129,5 @@ class PrimeiraInstancia(ESajBot):
                     "Endereco": endereco,
                 })
 
-        self.to_add_partes.extend(partes)
-        self.to_add_representantes.extend(advogados)
+        self.append_success(work_sheet="Partes", data_save=partes)
+        self.append_success(work_sheet="Representantes", data_save=advogados)

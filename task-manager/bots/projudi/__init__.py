@@ -2,6 +2,7 @@
 
 from celery import shared_task
 
+from __types import Dict
 from bots.projudi.capa import Capa as ProjudiCapa
 from bots.projudi.intimacoes import Intimacoes as ProjudiIntimacoes
 from bots.projudi.movimentacao import Movimentacao as ProjudiMovimentacao
@@ -10,7 +11,9 @@ from bots.projudi.protocolo import Protocolo as ProjudiProtocolo
 
 
 @shared_task(name="projudi.capa", bind=True, base=ProjudiCapa)
-def projudi_capa(self: ProjudiCapa, cod_rastreio: str) -> None:
+def projudi_capa(
+    self: ProjudiCapa, cod_rastreio: str, config: Dict, xlsx_data: list[Dict]
+) -> None:
     """Task Projudi Capa."""
     self.execution()
 

@@ -10,13 +10,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
 
-from common import raise_execution_error
-from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.projudi.capa._1 import PrimeiraInstancia
 from bots.projudi.capa._2 import SegundaInstancia
+from common import raise_execution_error
+from common.exceptions import ExecutionError
 
 
 class Capa(PrimeiraInstancia, SegundaInstancia):
@@ -115,24 +115,30 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 numero_processo=numero_processo,
             )
 
-        except ExecutionError, Exception:
+        except (ExecutionError, Exception):
             raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
+        self.to_add_processos_primeiro_grau = []
+
         process_info: dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_primeiro_grau())
         process_info.update(self._info_processual_primeiro_grau())
 
         self._partes_primeiro_grau(numero_processo=numero_processo)
-        self.to_add_processos_primeiro_grau.append(process_info)
+        self.append_success(
+            "Primeiro Grau", self.to_add_processos_primeiro_grau
+        )
 
     def segundo_grau(self, numero_processo: str) -> None:
+        self.to_add_processos_segundo_grau = []
+
         process_info: dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_segundo_grau())
         process_info.update(self._info_processual_segundo_grau())
 
         self._partes_segundo_grau(numero_processo=numero_processo)
-        self.to_add_processos_segundo_grau.append(process_info)
+        self.append_success("Segundo Grau", self.to_add_processos_segundo_grau)
 
     def copia_pdf(
         self,

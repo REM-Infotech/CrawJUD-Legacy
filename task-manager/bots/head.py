@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from abc import abstractmethod
 from collections.abc import Callable
 from contextlib import suppress
@@ -12,20 +11,23 @@ from threading import Event
 from typing import ClassVar
 from zipfile import ZIP_DEFLATED, ZipFile
 
-import _hook
-from __types import AnyType, Dict, P, T
-from _interfaces import BotData, ColorsDict
 from celery import Celery, Task
-from constants import WORKDIR
 from minio import Minio
 from minio.credentials.providers import EnvMinioProvider
-from pandas import Timestamp, read_excel
-from resources.queues import BotQueues, SaveError, SaveSuccess
-from resources.queues.print_message import PrintMessage
+from pandas import DataFrame, Timestamp
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
 from werkzeug.utils import secure_filename
+
+import _hook
+from __types import AnyType, Dict, P, T
+from _interfaces import BotData, ColorsDict
+from constants import WORKDIR
+from constants.webdriver import ARGUMENTS, PREFERENCES, SETTINGS
+from resources.queues.file_operation import SaveError, SaveSuccess
+from resources.queues.head import BotQueues
+from resources.queues.print_message import PrintMessage
 
 __all__ = ["_hook"]
 func_dict_check = {
@@ -46,6 +48,8 @@ COLORS_DICT: ColorsDict = {
 class CrawJUD(Task):
     """Classe CrawJUD."""
 
+    _pid: str
+    driver: Chrome
     _event_queue_bot: Event = None
     _task: Callable
     app: Celery
@@ -55,6 +59,10 @@ class CrawJUD(Task):
     _xlsx: str = None
     _bot_data: BotData = None
     _total_rows: int = None
+    _otherfiles: list[str] = None
+
+    _xlsx_data: list[Dict] = None
+    _config: Dict = None
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -62,6 +70,11 @@ class CrawJUD(Task):
         self.run = self.__call__
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
+        self.pid = self.request.id
+
+        for k, v in list(kwargs.items()):
+            setattr(self, k, v)
+
         self._bot_stopped = Event()
         self.queue_control = BotQueues(self)
         self.setup()
@@ -73,14 +86,28 @@ class CrawJUD(Task):
 
         user_data_dir = WORKDIR.joinpath("chrome-data", self.request.id)
         user_data_dir.mkdir(parents=True, exist_ok=True)
+        user_data_dir.chmod(0o775)
+
         options.add_argument(f"--user-data-dir={user_data_dir!s}")
 
-        user_data_dir.chmod(0o775)
+        for argument in ARGUMENTS:
+            options.add_argument(argument)
+
+        download_dir = str(self.output_dir_path)
+        preferences = PREFERENCES
+        preferences.update({
+            "download.default_directory": download_dir,
+            "printing.print_preview_sticky_settings.appState": SETTINGS,
+        })
+
+        options.add_experimental_option("prefs", preferences)
 
         self.driver = Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 30)
 
-        self.download_files()
+        if self.otherfiles:
+            self.download_files()
+
         self.load_config()
 
         if not self.auth():
@@ -88,13 +115,8 @@ class CrawJUD(Task):
                 self.driver.quit()
 
     def load_config(self) -> None:
-        json_config = self.output_dir_path.joinpath("configuration.json")
-
-        with json_config.open("rb") as fp:
-            data = json.load(fp)
-
-            for k, v in list(data.items()):
-                setattr(self, k, v)
+        for k, v in list(self.config.items()):
+            setattr(self, k, v)
 
     def download_files(self) -> None:
         uri = self.app.conf["app_domain"]
@@ -144,9 +166,7 @@ class CrawJUD(Task):
             list[BotData]: A record list from the processed Excel file.
 
         """
-        self.path_planilha = self.output_dir_path.joinpath(self.xlsx)
-
-        df = read_excel(self.path_planilha, engine="openpyxl")
+        df = DataFrame(self.xlsx_data)
         df.columns = df.columns.str.upper()
 
         def format_data(x: AnyType) -> str:
@@ -182,6 +202,46 @@ class CrawJUD(Task):
 
         return data_bot
 
+    def finalize_execution(self) -> None:
+        """Finalize bot execution by closing browsers and logging total time.
+
+        Performs cookie cleanup, quits the driver, and prints summary logs.
+        """
+        with suppress(Exception):
+            window_handles = self.driver.window_handles
+            if window_handles:
+                self.driver.delete_all_cookies()
+                self.driver.quit()
+
+        message = "Fim da execução"
+        self.print_message(message=message, message_type="success")
+
+        message = f"Sucessos: {self.success} | Erros: {self.error}"
+        self.print_message(message=message, row=self.row, message_type="info")
+
+        zip_file = self.zip_result()
+
+        link = self.upload_file(zipfile=zip_file)
+
+        message = f"Baixe os resultados aqui: {link}"
+        self.print_message(message=message, row=self.row, type_log="info")
+
+        self.queue_control.stop_queues()
+
+    def upload_file(self, zipfile: Path) -> str:
+        uri = self.app.conf["app_domain"]
+        client = Minio(
+            endpoint=f"{uri}:19000",
+            credentials=EnvMinioProvider(),
+            secure=False,
+        )
+
+        client.fput_object("outputexec-bots", zipfile.name, str(zipfile))
+
+        return client.get_presigned_url(
+            "GET", "outputexec-bots", object_name=zipfile.name
+        )
+
     @property
     def print_message(self) -> PrintMessage:
         return self.queue_control.print_message
@@ -200,7 +260,11 @@ class CrawJUD(Task):
 
     @property
     def pid(self) -> str:
-        return self.request.id or "unknown"
+        return self._pid
+
+    @pid.setter
+    def pid(self, _pid: str) -> None:
+        self._pid = _pid
 
     @property
     def output_dir_path(self) -> Path:
@@ -269,3 +333,27 @@ class CrawJUD(Task):
     @event_queue_bot.setter
     def event_queue_bot(self, event: Event) -> None:
         self._event_queue_bot = event
+
+    @property
+    def otherfiles(self) -> list[str]:
+        return self._otherfiles
+
+    @otherfiles.setter
+    def otherfiles(self, _other_files: list[str]) -> None:
+        self._otherfiles = _other_files
+
+    @property
+    def config(self) -> Dict:
+        return self._config
+
+    @config.setter
+    def config(self, _config: Dict) -> None:
+        self._config = _config
+
+    @property
+    def xlsx_data(self) -> list[Dict]:
+        return self._xlsx_data
+
+    @xlsx_data.setter
+    def xlsx_data(self, _xlsx_data: list[Dict]) -> None:
+        self._xlsx_data = _xlsx_data

@@ -1,9 +1,9 @@
 from bs4 import BeautifulSoup
-from resources.elements import projudi as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.projudi.master import ProjudiBot
+from resources.elements import projudi as el
 
 
 class SegundaInstancia(ProjudiBot):
@@ -133,5 +133,5 @@ class SegundaInstancia(ProjudiBot):
                     "Endereco": limpa_campo(endereco),
                 })
 
-        self.to_add_partes.extend(partes)
-        self.to_add_representantes.extend(advogados)
+        self.append_success(work_sheet="Partes", data_save=partes)
+        self.append_success(work_sheet="Representantes", data_save=advogados)

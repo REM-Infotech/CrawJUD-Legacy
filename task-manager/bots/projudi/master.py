@@ -5,12 +5,8 @@ from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
 
-from common.exceptions import (
-    ExecutionError,
-    LoginSystemError,
-)
-from constants import CSS_INPUT_PROCESSO
-from resources.elements import projudi as el
+from bs4 import BeautifulSoup
+from bs4.element import PageElement
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
@@ -19,6 +15,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from bots.head import CrawJUD
+from common.exceptions import (
+    ExecutionError,
+    LoginSystemError,
+)
+from constants import CSS_INPUT_PROCESSO
+from resources.elements import projudi as el
 
 
 class ProjudiBot(CrawJUD):
@@ -279,6 +281,46 @@ class ProjudiBot(CrawJUD):
             raise LoginSystemError(exception=e) from e
 
         return check_login is not None
+
+    def parse_data(self, inner_html: str) -> dict[str, str]:
+        soup = BeautifulSoup(inner_html, "html.parser")
+        dados = {}
+        # percorre todas as linhas <tr>
+
+        def normalize(txt: str) -> str:
+            # Junta quebras de linha/tabs/múltiplos espaços em espaço simples
+            return " ".join(txt.split())
+
+        def get_text(td: PageElement) -> str:
+            # Usa separador " " para não colar palavras; strip nas bordas
+            return normalize(td.get_text(" ", strip=True))
+
+        for tr in soup.find_all("tr"):
+            tds = tr.find_all("td")
+            i = 0
+            while i < len(tds):
+                td = tds[i]
+                lbl_tag = td.find("label")
+                if lbl_tag:
+                    label = normalize(lbl_tag.get_text().rstrip(":"))
+                    # avançar para o próximo td que tenha conteúdo real (pule espaçadores)
+                    j = i + 1
+                    valor = ""
+                    while j < len(tds):
+                        texto = get_text(tds[j])
+                        # considera vazio se for "&nbsp;" ou string vazia
+                        if texto and texto != " ":  # &nbsp; vira U+00A0
+                            valor = texto
+                            break
+                        j += 1
+                    if label and valor and ":" not in valor:
+                        dados[label] = valor
+                    # continue a partir do td seguinte ao que usamos como valor
+                    i = j + 1
+                else:
+                    i += 1
+
+        return dados
 
 
 def detect_intimacao(driver: WebDriver) -> None:

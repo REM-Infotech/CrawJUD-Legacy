@@ -2,14 +2,12 @@
   "github.copilot.chat.commitMessageGeneration.instructions": [
     {
       "file": ".github/.copilot-commit-message-instructions.md"
-    },
-    {
-      "text": "Use conventional commit message format."
     }
   ],
   "explorer.fileNesting.patterns": {
     "varas.pyi": "varas.json",
     "cidades.pyi": "cidades.json"
   },
-  "python.REPL.enableREPLSmartSend": false
+  "python.REPL.enableREPLSmartSend": false,
+  "python.analysis.autoImportCompletions": true
 }
