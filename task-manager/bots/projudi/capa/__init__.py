@@ -119,26 +119,22 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
-        self.to_add_processos_primeiro_grau = []
-
         process_info: dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_primeiro_grau())
         process_info.update(self._info_processual_primeiro_grau())
 
         self._partes_primeiro_grau(numero_processo=numero_processo)
         self.append_success(
-            "Primeiro Grau", self.to_add_processos_primeiro_grau
+            work_sheet="Primeiro Grau", data_save=[process_info]
         )
 
     def segundo_grau(self, numero_processo: str) -> None:
-        self.to_add_processos_segundo_grau = []
-
         process_info: dict = {"Número do processo": numero_processo}
         process_info.update(self._informacoes_gerais_segundo_grau())
         process_info.update(self._info_processual_segundo_grau())
 
         self._partes_segundo_grau(numero_processo=numero_processo)
-        self.append_success("Segundo Grau", self.to_add_processos_segundo_grau)
+        self.append_success(work_sheet="Segundo Grau", data_save=[process_info])
 
     def copia_pdf(
         self,
