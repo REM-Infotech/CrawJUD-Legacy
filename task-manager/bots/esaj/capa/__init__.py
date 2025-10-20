@@ -9,14 +9,14 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 
-from __types import Dict
-from common import raise_execution_error
-from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from __types import Dict
 from bots.esaj.capa._1 import PrimeiraInstancia
 from bots.esaj.capa._2 import SegundaInstancia
+from common import raise_execution_error
+from common.exceptions import ExecutionError
 
 
 class Capa(PrimeiraInstancia, SegundaInstancia):
@@ -61,17 +61,6 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 self.append_error(self.bot_data)
 
                 self.message_error = None
-
-        for to_save, sheet_name in [
-            (self.to_add_processos_primeiro_grau, "Capa Primeiro Grau"),
-            (self.to_add_processos_segundo_grau, "Capa Segundo Grau"),
-            (self.to_add_partes, "Partes"),
-            (self.to_add_representantes, "Representantes"),
-        ]:
-            self.queue_save_xlsx.put({
-                "to_save": to_save,
-                "sheet_name": sheet_name,
-            })
 
         self.finalize_execution()
 
@@ -140,7 +129,9 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(self._info_processual_primeiro_grau())
 
         self._partes_primeiro_grau(numero_processo=numero_processo)
-        self.to_add_processos_primeiro_grau.append(process_info)
+        self.append_success(
+            work_sheet="Primeiro Grau", data_save=[process_info]
+        )
 
     def segundo_grau(self, numero_processo: str) -> None:
         process_info: Dict = {"Número do processo": numero_processo}
@@ -148,7 +139,9 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(self._info_processual_segundo_grau())
 
         self._partes_segundo_grau(numero_processo=numero_processo)
-        self.to_add_processos_segundo_grau.append(process_info)
+        self.append_success(
+            work_sheet="Primeiro Grau", data_save=[process_info]
+        )
 
     def copia_pdf(
         self,
