@@ -3,7 +3,7 @@
  * - useBotFormState.ts para estado
  * - useBotFormSetup.ts para setup principal
  * - useBotFormComponents.ts para componentes
- * 
+ *
  * Para compatibilidade temporária, este setup ainda funciona mas redireciona para os novos composables.
  */
 
@@ -13,7 +13,11 @@ import { useRouter } from "vue-router";
 import { inject } from "vue";
 import varas from "../json/varas.json";
 import componentsSetup from "./componentsSetup";
-import { BOT_FORM_STATE_KEY, BOT_FORM_REFS_KEY, BOT_FORM_OPTIONS_KEY } from "@/composables/useBotFormState";
+import {
+  BOT_FORM_STATE_KEY,
+  BOT_FORM_REFS_KEY,
+  BOT_FORM_OPTIONS_KEY,
+} from "@/composables/useBotFormState";
 import type { BotFormState, BotFormRefs, BotFormOptions } from "@/composables/useBotFormState";
 
 type TratamentoArquivosParams = {
@@ -27,16 +31,16 @@ type TratamentoArquivosParams = {
  */
 export default function () {
   const router = useRouter();
-  
+
   // Injeta o estado dos novos composables se disponível
   const formState = inject<BotFormState>(BOT_FORM_STATE_KEY);
   const formRefs = inject<BotFormRefs>(BOT_FORM_REFS_KEY);
   const formOptions = inject<BotFormOptions>(BOT_FORM_OPTIONS_KEY);
-  
+
   if (!formState || !formRefs || !formOptions) {
     throw new Error(
-      'formSetup legado deve ser usado apenas em componentes que recebem o estado via provide/inject. ' +
-      'Para componentes principais, use useBotFormState e useBotFormSetup diretamente.'
+      "formSetup legado deve ser usado apenas em componentes que recebem o estado via provide/inject. " +
+        "Para componentes principais, use useBotFormState e useBotFormSetup diretamente.",
     );
   }
 
@@ -151,7 +155,7 @@ export default function () {
       form.value.otherfiles = newFileList;
     }
   }
-  
+
   return {
     progressBar,
     message,

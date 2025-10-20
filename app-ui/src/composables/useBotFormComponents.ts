@@ -40,13 +40,13 @@ export interface BotFormComponents {
 
 /**
  * Composable que centraliza o registro de todos os componentes do formulário do bot
- * 
+ *
  * Esta abordagem:
  * - Centraliza todas as importações em um local
  * - Facilita a manutenção e organização
  * - Torna claro quais componentes estão disponíveis
  * - Permite tree-shaking eficiente
- * 
+ *
  * @returns Objeto contendo todos os componentes do formulário
  */
 export function useBotFormComponents(): BotFormComponents {

@@ -17,7 +17,7 @@ type TratamentoArquivosParams = {
 /**
  * Composable para setup principal do formulário do bot
  * Centraliza a lógica de inicialização, lifecycle hooks e submissão do formulário
- * 
+ *
  * @param formState - Estado do formulário injetado
  * @param formRefs - Referências do formulário injetadas
  * @param formOptions - Opções do formulário injetadas
@@ -26,21 +26,13 @@ type TratamentoArquivosParams = {
 export function useBotFormSetup(
   formState: BotFormState,
   formRefs: BotFormRefs,
-  _formOptions: BotFormOptions
+  _formOptions: BotFormOptions,
 ) {
   const router = useRouter();
-  
-  const {
-    bot,
-    form,
-    enabledInputs,
-    message,
-  } = formState;
-  
-  const {
-    overlayFormSubmit,
-    courtOptions,
-  } = formRefs;
+
+  const { bot, form, enabledInputs, message } = formState;
+
+  const { overlayFormSubmit, courtOptions } = formRefs;
 
   /**
    * Configura os inputs habilitados baseado na configuração do bot
@@ -85,7 +77,7 @@ export function useBotFormSetup(
 
   /**
    * Trata os arquivos antes do envio
-   * 
+   *
    * @param params - Parâmetros contendo os arquivos xlsx e outros arquivos
    */
   async function tratamentoArquivos(params: TratamentoArquivosParams) {
@@ -96,7 +88,7 @@ export function useBotFormSetup(
       const file = f as File;
       form.value.xlsx = file.name;
     }
-    
+
     if (otherfiles) {
       const newFileList = [];
       const otherFilesList = Array.isArray(otherfiles) ? otherfiles : [otherfiles];
@@ -110,7 +102,7 @@ export function useBotFormSetup(
 
   /**
    * Manipula a submissão do formulário
-   * 
+   *
    * @param e - Evento de submissão do formulário
    */
   async function handleSubmit(e: Event) {
@@ -122,7 +114,7 @@ export function useBotFormSetup(
     form.value.bot_id = bot.value.id;
     let msg = "Erro ao Iniciar o robô";
     let _isStarted = false;
-    
+
     try {
       if (enabledInputs.xlsx) {
         await tratamentoArquivos({

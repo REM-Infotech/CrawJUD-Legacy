@@ -1,39 +1,10 @@
 {
   "JURIDICO": {
-    "only_auth": [
-      "creds",
-      "state",
-      "periodic_task"
-    ],
-    "file_auth": [
-      "xlsx",
-      "creds",
-      "state",
-      "confirm_fields",
-      "periodic_task"
-    ],
-    "multipe_files": [
-      "xlsx",
-      "creds",
-      "state",
-      "otherfiles",
-      "confirm_fields",
-      "periodic_task"
-    ],
-    "only_file": [
-      "xlsx",
-      "state",
-      "confirm_fields",
-      "periodic_task"
-    ],
-    "pautas": [
-      "data_inicio",
-      "data_fim",
-      "creds",
-      "state",
-      "varas",
-      "periodic_task"
-    ],
+    "only_auth": ["creds", "state", "periodic_task"],
+    "file_auth": ["xlsx", "creds", "state", "confirm_fields", "periodic_task"],
+    "multipe_files": ["xlsx", "creds", "state", "otherfiles", "confirm_fields", "periodic_task"],
+    "only_file": ["xlsx", "state", "confirm_fields", "periodic_task"],
+    "pautas": ["data_inicio", "data_fim", "creds", "state", "varas", "periodic_task"],
     "proc_parte": [
       "parte_name",
       "doc_parte",
@@ -45,45 +16,15 @@
       "creds",
       "periodic_task"
     ],
-    "pje": [
-      "xlsx",
-      "confirm_fields",
-      "periodic_task"
-    ],
-    "jusbr_protocolo": [
-      "xlsx",
-      "otherfiles",
-      "confirm_fields",
-      "periodic_task"
-    ],
-    "pje_protocolo": [
-      "xlsx",
-      "otherfiles",
-      "confirm_fields",
-      "periodic_task"
-    ]
+    "pje": ["xlsx", "confirm_fields", "periodic_task"],
+    "jusbr_protocolo": ["xlsx", "otherfiles", "confirm_fields", "periodic_task"],
+    "pje_protocolo": ["xlsx", "otherfiles", "confirm_fields", "periodic_task"]
   },
   "ADMINISTRATIVO": {
-    "file_auth": [
-      "xlsx",
-      "creds",
-      "client",
-      "confirm_fields",
-      "periodic_task"
-    ],
-    "multipe_files": [
-      "xlsx",
-      "creds",
-      "client",
-      "otherfiles",
-      "confirm_fields",
-      "periodic_task"
-    ]
+    "file_auth": ["xlsx", "creds", "client", "confirm_fields", "periodic_task"],
+    "multipe_files": ["xlsx", "creds", "client", "otherfiles", "confirm_fields", "periodic_task"]
   },
   "INTERNO": {
-    "multipe_files": [
-      "xlsx",
-      "otherfiles"
-    ]
+    "multipe_files": ["xlsx", "otherfiles"]
   }
 }
