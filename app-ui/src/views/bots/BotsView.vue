@@ -5,14 +5,13 @@ import logoJusBr from "@/assets/img/jusbr.png";
 import logoElaw from "@/assets/img/logoelaw.png";
 import logoPJE1 from "@/assets/img/pje.png";
 import logoProjudi from "@/assets/img/projudilogo.png";
-import { socketBots } from "@/main";
+
 import { storeBot } from "@/stores/bot";
-import { useCredentialsStore } from "@/stores/credentials";
 import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
-const { credentialsSelector } = storeToRefs(useCredentialsStore());
+
 const { bot, botList } = storeToRefs(storeBot());
 const query = ref("");
 const filterBots = computed(() =>
@@ -75,12 +74,6 @@ function getClassImgLogo(system: string) {
   return class_logo[system] || "card-img-top p-4 img-thumbnail imgBot";
 }
 
-socketBots.emit("bots_list", (botData: BotRecord[]) => {
-  botList.value = botData;
-});
-socketBots.emit("bot_credentials_select", (credentialsData: CredentialsSelectorRecord) => {
-  credentialsSelector.value = credentialsData;
-});
 document.title = "CrawJUD - Robôs";
 
 // Cria uma referência reativa para a largura da janela
