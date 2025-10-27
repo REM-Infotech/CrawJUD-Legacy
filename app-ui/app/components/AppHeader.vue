@@ -115,6 +115,6 @@ const isLogged = computed(() => route.name !== "index");
 }
 
 .p-menubar {
-  background-color: var(--color-violet-eggplant-800);
+  background-color: var(--color-violet-eggplant-950);
 }
 </style>
