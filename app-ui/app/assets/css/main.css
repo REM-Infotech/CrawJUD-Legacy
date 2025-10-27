@@ -2,55 +2,34 @@
 @import "tailwindcss-primeui";
 
 @theme {
-  --color-violet-50: #9300ce;
-  --color-violet-100: #9300ce;
-  --color-violet-200: #8c00c4;
-  --color-violet-300: #8800bf;
-  --color-violet-400: #8100b5;
-  --color-violet-500: #7d00b0;
-  --color-violet-600: #61008a;
-  --color-violet-700: #4a006b;
-  --color-violet-800: #310048;
-  --color-violet-900: #180026;
-  --color-violet-950: #000000;
-  --color-ocean-50: #2910bb;
-  --color-ocean-100: #2910bb;
-  --color-ocean-200: #270fb5;
-  --color-ocean-300: #270fb5;
-  --color-ocean-400: #250eaf;
-  --color-ocean-500: #250eaf;
-  --color-ocean-600: #240da9;
-  --color-ocean-700: #240da9;
-  --color-ocean-800: #220ca3;
-  --color-ocean-900: #120569;
-  --color-ocean-950: #090247;
+  --color-maroon-50: oklch(0.596 0.273 310.05);
+  --color-maroon-100: oklch(0.588 0.274 310.28);
+  --color-maroon-200: oklch(0.551 0.257 309.96);
+  --color-maroon-300: oklch(0.525 0.244 310.3);
+  --color-maroon-400: oklch(0.487 0.227 309.93);
+  --color-maroon-500: oklch(0.46 0.214 310.04);
+  --color-maroon-600: oklch(0.422 0.197 310.02);
+  --color-maroon-700: oklch(0.394 0.184 310.16);
+  --color-maroon-800: oklch(0.367 0.172 309.94);
+  --color-maroon-900: oklch(0.331 0.154 310.63);
+  --color-maroon-950: oklch(0.321 0.15 309.97);
 }
 
 :root {
-  --p-ocean-50: #2910bb;
-  --p-ocean-100: #2910bb;
-  --p-ocean-200: #270fb5;
-  --p-ocean-300: #270fb5;
-  --p-ocean-400: #250eaf;
-  --p-ocean-500: #250eaf;
-  --p-ocean-600: #240da9;
-  --p-ocean-700: #240da9;
-  --p-ocean-800: #220ca3;
-  --p-ocean-900: #120569;
-  --p-ocean-950: #090247;
-  --p-violet-50: #fcf3ff;
-  --p-violet-100: #f8e4ff;
-  --p-violet-200: #f2cdff;
-  --p-violet-300: #e9a6ff;
-  --p-violet-400: #db6eff;
-  --p-violet-500: #ce37ff;
-  --p-violet-600: #c111ff;
-  --p-violet-700: #ac02ee;
-  --p-violet-800: #9208c4;
-  --p-violet-900: #75089b;
-  --p-violet-950: #530075;
+  --p-maroon-50: oklch(0.596 0.273 310.05);
+  --p-maroon-100: oklch(0.588 0.274 310.28);
+  --p-maroon-200: oklch(0.551 0.257 309.96);
+  --p-maroon-300: oklch(0.525 0.244 310.3);
+  --p-maroon-400: oklch(0.487 0.227 309.93);
+  --p-maroon-500: oklch(0.46 0.214 310.04);
+  --p-maroon-600: oklch(0.422 0.197 310.02);
+  --p-maroon-700: oklch(0.394 0.184 310.16);
+  --p-maroon-800: oklch(0.367 0.172 309.94);
+  --p-maroon-900: oklch(0.331 0.154 310.63);
+  --p-maroon-950: #4a0b6a;
 }
 
 body {
-  overflow-y: hidden;
+  background-color: #0c1920;
+  overflow: hidden;
 }
