@@ -114,7 +114,7 @@ const isLogged = computed(() => route.name !== "index");
 
 .v-enter-from,
 .v-leave-to {
-  transform: translateY(-60px) scaleY(0.7);
+  transform: translateY(-60px) scaleY(0.2);
 }
 
 .v-enter-to,

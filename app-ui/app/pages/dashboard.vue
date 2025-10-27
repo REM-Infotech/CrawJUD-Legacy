@@ -11,8 +11,8 @@ onMounted(() => {
 const products = ref();
 </script>
 <template>
-  <div style="padding: 6.5rem">
-    <Card style="height: 75%">
+  <div>
+    <Card>
       <template #content>
         <DataTable :value="products" tableStyle="min-width: 50rem">
           <Column field="code" header="Code"></Column>
