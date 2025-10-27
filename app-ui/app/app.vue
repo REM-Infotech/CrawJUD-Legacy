@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const { $toast } = useNuxtApp();
+import { BOrchestrator } from "bootstrap-vue-next";
 </script>
 <template>
-  <Toast />
+  <BToast />
+  <BOrchestrator />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

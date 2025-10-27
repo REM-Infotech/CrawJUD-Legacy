@@ -5,7 +5,7 @@ class Authentication {
     const { $api, $toast, $router } = useNuxtApp();
 
     let message: string = "Erro ao realizar login";
-    let message_type: string = "error";
+    let message_type: string = "danger";
     let message_summary: string = "Erro";
 
     try {
@@ -20,11 +20,11 @@ class Authentication {
       //
     }
 
-    $toast.add({
-      severity: message_type,
-      summary: message_summary,
-      detail: message,
-      life: 3000,
+    $toast.create({
+      variant: message_type,
+      title: message_summary,
+      body: message,
+      position: "bottom-center",
     });
 
     if (message_type === "success") {
@@ -37,15 +37,17 @@ class Authentication {
 
     try {
       await $api.post("/auth/logout");
-    } catch {
+    } catch (err) {
+      console.log(err);
       //
     }
 
     $toast.add({
-      severity: "info",
-      summary: "Info",
-      detail: "Sessão encerrada!",
-      life: 3000,
+      variant: "info",
+      title: "Info",
+      body: "Sessão encerrada!",
+      "close-countdown": 3000,
+      position: "bottom-center",
     });
 
     $router.push({ name: "index" });

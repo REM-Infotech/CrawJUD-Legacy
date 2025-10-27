@@ -1,6 +1,6 @@
 <template>
   <div class="card flex justify-center">
-    <Menu :model="items" class="w-full md:w-60" :popup="true" ref="menu">
+    <Menu ref="menu" :model="items" class="w-full md:w-60" :popup="true">
       <template #start>
         <span class="inline-flex items-center gap-1 px-2 py-2">
           <svg
