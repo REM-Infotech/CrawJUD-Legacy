@@ -1,47 +1,6 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import profileStore from "~/stores/profileStore";
-
-const profile = profileStore();
-const route = useRoute();
-const items = ref([
-  {
-    label: "Home",
-    icon: "pi pi-home",
-  },
-  {
-    label: "Projects",
-    icon: "pi pi-search",
-    badge: 3,
-    items: [
-      {
-        label: "Core",
-        icon: "pi pi-bolt",
-        shortcut: "⌘+S",
-      },
-      {
-        label: "Blocks",
-        icon: "pi pi-server",
-        shortcut: "⌘+B",
-      },
-      {
-        separator: true,
-      },
-      {
-        label: "UI Kit",
-        icon: "pi pi-pencil",
-        shortcut: "⌘+U",
-      },
-    ],
-  },
-]);
-
-const isLogged = computed(() => route.name !== "index");
-</script>
-
 <template>
   <Transition>
-    <div class="card" v-if="isLogged">
+    <div class="header-content" v-if="isLogged" style="height: 100%; max-height: 70px">
       <Menubar :model="items">
         <template #start>
           <svg
@@ -103,6 +62,47 @@ const isLogged = computed(() => route.name !== "index");
     </div>
   </Transition>
 </template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import profileStore from "~/stores/profileStore";
+
+const profile = profileStore();
+const route = useRoute();
+const items = ref([
+  {
+    label: "Home",
+    icon: "pi pi-home",
+  },
+  {
+    label: "Projects",
+    icon: "pi pi-search",
+    badge: 3,
+    items: [
+      {
+        label: "Core",
+        icon: "pi pi-bolt",
+        shortcut: "⌘+S",
+      },
+      {
+        label: "Blocks",
+        icon: "pi pi-server",
+        shortcut: "⌘+B",
+      },
+      {
+        separator: true,
+      },
+      {
+        label: "UI Kit",
+        icon: "pi pi-pencil",
+        shortcut: "⌘+U",
+      },
+    ],
+  },
+]);
+
+const isLogged = computed(() => route.name !== "index");
+</script>
 
 <style lang="css" scoped>
 /* we will explain what these classes do next! */

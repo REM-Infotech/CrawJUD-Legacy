@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background: var(--color-violet-eggplant-950)">
     <AppHeader />
     <div class="content">
       <slot></slot>
@@ -13,9 +13,10 @@
   height: 100dvh;
   min-width: 100%;
   min-height: 100%;
-  margin-top: 20px;
-  overflow-y: hidden;
+  overflow-x: hidden;
   display: flex;
+  padding: 5px;
+  margin-top:;
   flex-direction: column;
 }
 </style>
