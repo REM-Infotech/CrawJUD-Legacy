@@ -7,27 +7,27 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "format": "prettier --write app/"
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@pinia/nuxt": "0.11.2",
-    "@primeuix/themes": "^1.2.5",
-    "@tailwindcss/vite": "^4.1.16",
+    "@nuxt/eslint": "1.9.0",
     "axios": "^1.13.0",
+    "eslint": "^9.38.0",
     "nuxt": "^4.2.0",
-    "pinia": "^3.0.3",
-    "primevue": "^4.4.1",
-    "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "tailwindcss": "^4.1.16",
-    "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.9.0",
-    "@primevue/nuxt-module": "^4.4.1",
-    "prettier": "^3.6.2"
+    "@bootstrap-vue-next/nuxt": "^0.40.7",
+    "@iconify-json/bi": "^1.2.6",
+    "@vue/compiler-sfc": "^3.5.22",
+    "bootstrap": "^5.3.8",
+    "bootstrap-vue-next": "^0.40.7",
+    "unplugin-icons": "^22.5.0",
+    "unplugin-vue-components": "^30.0.0"
+  },
+  "overrides": {
+    "@types/parse-path": "latest"
   }
 }

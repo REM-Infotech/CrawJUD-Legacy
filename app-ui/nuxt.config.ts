@@ -1,27 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite";
-import crawjud from "./theme/crawjud";
-
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  modules: ["@primevue/nuxt-module", "@pinia/nuxt"],
-  primevue: {
-    options: {
-      ripple: true,
-      theme: {
-        preset: crawjud,
-      },
-    },
-  },
-  css: ["~/assets/css/main.css"],
   devtools: { enabled: true },
-  vite: {
-    plugins: [tailwindcss()],
-    build: {
-      sourcemap: true,
-    },
-  },
-  app: {
-    pageTransition: { name: "page", mode: "out-in" },
+  modules: ["@nuxt/eslint", "@bootstrap-vue-next/nuxt"],
+  telemetry: false,
+  bootstrapVueNext: {
+    composables: true, // Will include all composables
+    // composables: {useBreadcrumb: true, useColorMode: true, all: false}, // Will include only useBreadcrumb & useColorMode
+    // composables: {useBreadcrumb: false, useColorMode: false, all: true} // Will include everything except useBreadcrumb & useColorMode
+    directives: { all: true }, // Will include all directives
+    css: true, // Will include the module's CSS. If set to false, you can add the CSS manually in the 'css' property below
   },
 });
