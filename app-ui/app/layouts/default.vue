@@ -13,10 +13,11 @@
   height: 100dvh;
   min-width: 100%;
   min-height: 100%;
-  align-items: center;
+  margin-top: 20px;
   overflow-y: hidden;
-  justify-content: center;
   display: flex;
   flex-direction: column;
+
+  padding: 2.5rem;
 }
 </style>

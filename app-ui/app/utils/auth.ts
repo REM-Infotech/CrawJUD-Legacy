@@ -26,7 +26,7 @@ class Authentication {
     });
 
     if (message_type === "success") {
-      $router.push({ name: "terminal" });
+      $router.push({ name: "dashboard" });
     }
   }
 }

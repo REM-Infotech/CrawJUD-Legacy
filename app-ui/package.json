@@ -10,10 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "0.11.2",
     "@primeuix/themes": "^1.2.5",
     "@tailwindcss/vite": "^4.1.16",
     "axios": "^1.13.0",
     "nuxt": "^4.2.0",
+    "pinia": "^3.0.3",
     "primevue": "^4.4.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",

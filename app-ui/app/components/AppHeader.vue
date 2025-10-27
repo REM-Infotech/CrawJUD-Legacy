@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import profileStore from "~/stores/profileStore";
 
+const profile = profileStore();
 const route = useRoute();
 const items = ref([
   {
@@ -85,10 +87,16 @@ const isLogged = computed(() => route.name !== "index");
         <template #end>
           <div class="flex items-center gap-2">
             <InputText placeholder="Search" type="text" class="w-32 sm:w-auto" />
+
             <Avatar
               image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
               shape="circle"
+              type="button"
+              @click="profile.toggle"
+              aria-haspopup="true"
+              aria-controls="overlay_menu"
             />
+            <ProfileHeader />
           </div>
         </template>
       </Menubar>
