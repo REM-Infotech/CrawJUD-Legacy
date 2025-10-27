@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import crawjud from "./theme/crawjud";
+import Aura from "@primeuix/themes/aura";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   primevue: {
     options: {
       theme: {
-        preset: crawjud,
+        preset: Aura,
       },
     },
   },
