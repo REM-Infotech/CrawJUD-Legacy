@@ -113,4 +113,8 @@ const isLogged = computed(() => route.name !== "index");
 .v-leave-from {
   transform: translateY(0) scaleY(1);
 }
+
+.p-menubar {
+  background-color: var(--color-violet-eggplant-800);
+}
 </style>
