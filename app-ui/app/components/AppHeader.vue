@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div class="header-content" v-if="isLogged" style="height: 100%; max-height: 70px">
+    <div v-if="isLogged" style="height: 100%; max-height: 70px">
       <Menubar :model="items">
         <template #start>
           <svg
@@ -123,6 +123,6 @@ const isLogged = computed(() => route.name !== "index");
 }
 
 .p-menubar {
-  background-color: var(--color-violet-eggplant-950);
+  background: var(--color-violet-950);
 }
 </style>
