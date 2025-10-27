@@ -22,10 +22,20 @@ async function onSubmitted(ev) {
         <div class="d-flex justify-content-center align-items-center">
           <BForm @submit="onSubmitted">
             <BFormFloatingLabel label="Email address" label-for="floatingEmail" class="my-2">
-              <BFormInput id="floatingEmail" type="text" placeholder="Email address" />
+              <BFormInput
+                id="floatingEmail"
+                v-model="FormLogin.login"
+                type="text"
+                placeholder="Email address"
+              />
             </BFormFloatingLabel>
             <BFormFloatingLabel label="Password" label-for="floatingPassword" class="my-2">
-              <BFormInput id="floatingPassword" type="password" placeholder="Password" />
+              <BFormInput
+                id="floatingPassword"
+                v-model="FormLogin.password"
+                type="password"
+                placeholder="Password"
+              />
             </BFormFloatingLabel>
             <BButton type="submit">Ok</BButton>
           </BForm>

@@ -5,7 +5,7 @@ class Authentication {
     const { $api, $toast, $router } = useNuxtApp();
 
     let message: string = "Erro ao realizar login";
-    let message_type: string = "danger";
+    let message_type: "danger" | "success" = "danger";
     let message_summary: string = "Erro";
 
     try {
@@ -24,7 +24,6 @@ class Authentication {
       variant: message_type,
       title: message_summary,
       body: message,
-      position: "bottom-center",
     });
 
     if (message_type === "success") {
