@@ -8,7 +8,7 @@ const FormLogin = reactive({
 const onSubmitted = async (_: Event) => {
   const form = new FormData();
   Object.entries(FormLogin).forEach(([key, val]) => form.append(key, String(val)));
-  await auth.authenticate(form);
+  await auth.login(form);
 };
 </script>
 

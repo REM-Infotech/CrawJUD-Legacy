@@ -1,11 +1,13 @@
 class Authentication {
   constructor() {}
 
-  async authenticate(form: FormData) {
+  async login(form: FormData) {
     const { $api, $toast, $router } = useNuxtApp();
+
     let message: string = "Erro ao realizar login";
     let message_type: string = "error";
     let message_summary: string = "Erro";
+
     try {
       const resp = await $api.post("/auth/login", form);
 
@@ -28,6 +30,25 @@ class Authentication {
     if (message_type === "success") {
       $router.push({ name: "dashboard" });
     }
+  }
+
+  async logout() {
+    const { $api, $toast, $router } = useNuxtApp();
+
+    try {
+      await $api.post("/auth/logout");
+    } catch {
+      //
+    }
+
+    $toast.add({
+      severity: "info",
+      summary: "Info",
+      detail: "Sessão encerrada!",
+      life: 3000,
+    });
+
+    $router.push({ name: "index" });
   }
 }
 

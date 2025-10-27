@@ -97,6 +97,9 @@ const items = ref([
         label: "Logout",
         icon: "pi pi-sign-out",
         shortcut: "⌘+Q",
+        command: async () => {
+          await auth.logout();
+        },
       },
     ],
   },

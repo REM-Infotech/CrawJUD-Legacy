@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   modules: ["@primevue/nuxt-module", "@pinia/nuxt"],
   primevue: {
     options: {
+      ripple: true,
       theme: {
         preset: Aura,
       },
