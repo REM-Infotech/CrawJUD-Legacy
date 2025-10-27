@@ -4,3 +4,32 @@
 body {
   overflow-y: hidden;
 }
+
+@theme {
+  --color-violet-eggplant-50: #fcf3ff;
+  --color-violet-eggplant-100: #f8e4ff;
+  --color-violet-eggplant-200: #f2cdff;
+  --color-violet-eggplant-300: #e9a6ff;
+  --color-violet-eggplant-400: #db6eff;
+  --color-violet-eggplant-500: #ce37ff;
+  --color-violet-eggplant-600: #c111ff;
+  --color-violet-eggplant-700: #ac02ee;
+  --color-violet-eggplant-800: #9208c4;
+  --color-violet-eggplant-900: #75089b;
+  --color-violet-eggplant-950: #530075;
+}
+
+:root {
+  --p-violet-eggplant-50: #fcf3ff;
+  --p-violet-eggplant-100: #f8e4ff;
+  --p-violet-eggplant-200: #f2cdff;
+  --p-violet-eggplant-300: #e9a6ff;
+  --p-violet-eggplant-400: #db6eff;
+  --p-violet-eggplant-500: #ce37ff;
+  --p-violet-eggplant-600: #c111ff;
+  --p-violet-eggplant-700: #ac02ee;
+  --p-violet-eggplant-800: #9208c4;
+  --p-violet-eggplant-900: #75089b;
+  --p-violet-eggplant-950: #530075;
+  --p-dark-950: black;
+}

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-surface-50 dark:bg-surface-950">
     <AppHeader />
     <div class="content">
       <slot></slot>

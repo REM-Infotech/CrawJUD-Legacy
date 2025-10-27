@@ -27,7 +27,13 @@ function commandHandler(text: string) {
 <template>
   <div>
     <div style="min-width: 600px">
-      <Terminal aria-label="PrimeVue Terminal Service" />
+      <Terminal class="bg-black" aria-label="PrimeVue Terminal Service" />
     </div>
   </div>
 </template>
+
+<style>
+.p-terminal {
+  background-color: black;
+}
+</style>
