@@ -1,5 +1,11 @@
+<script setup lang="ts">
+const { $toast } = useNuxtApp();
+</script>
 <template>
-  <NuxtPage />
+  <Toast />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 <style>
 .page-enter-active,

@@ -1,17 +1,3 @@
-<template>
-  <NuxtLayout>
-    <template #header>
-      <AppHeader />
-    </template>
-    <template #body>
-      <div style="min-width: 600px">
-        <Terminal aria-label="PrimeVue Terminal Service" />
-      </div>
-      <Button label="Show" @click="show()" />
-    </template>
-  </NuxtLayout>
-</template>
-
 <script setup lang="ts">
 import TerminalService from "primevue/terminalservice";
 import { onBeforeUnmount, onMounted } from "vue";
@@ -23,8 +9,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   TerminalService.off("command", commandHandler);
 });
-
-const { $toast } = useNuxtApp();
 
 function commandHandler(text: string) {
   let response: string | number;
@@ -38,7 +22,12 @@ function commandHandler(text: string) {
 
   TerminalService.emit("response", response);
 }
-function show() {
-  $toast.add({ severity: "info", summary: "Info", detail: "Message Content", life: 3000 });
-}
 </script>
+
+<template>
+  <div>
+    <div style="min-width: 600px">
+      <Terminal aria-label="PrimeVue Terminal Service" />
+    </div>
+  </div>
+</template>

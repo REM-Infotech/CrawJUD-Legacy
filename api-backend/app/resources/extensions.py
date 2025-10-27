@@ -22,6 +22,7 @@ cors = CORS(
     transports=["websocket"],
     origins=[
         "localhost",
+        "http://localhost:3000",
         "http://localhost:5173",
         "http://127.0.0.1:1473",
         "http://localhost:1474",  # Adiciona a origem necessária para evitar erro CORS
