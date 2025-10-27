@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import Aura from "@primeuix/themes/aura";
+
 import tailwindcss from "@tailwindcss/vite";
-import crawjud from "./theme/crawjud";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -9,7 +10,7 @@ export default defineNuxtConfig({
     options: {
       ripple: true,
       theme: {
-        preset: crawjud,
+        preset: Aura,
       },
     },
   },

@@ -1,34 +1,56 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
 
-body {
-  overflow-y: hidden;
-}
-
 @theme {
-  --color-violet-eggplant-50: #fcf3ff;
-  --color-violet-eggplant-100: #f8e4ff;
-  --color-violet-eggplant-200: #f2cdff;
-  --color-violet-eggplant-300: #e9a6ff;
-  --color-violet-eggplant-400: #db6eff;
-  --color-violet-eggplant-500: #ce37ff;
-  --color-violet-eggplant-600: #c111ff;
-  --color-violet-eggplant-700: #ac02ee;
-  --color-violet-eggplant-800: #9208c4;
-  --color-violet-eggplant-900: #75089b;
-  --color-violet-eggplant-950: #530075;
+  --color-violet-50: #9300ce;
+  --color-violet-100: #9300ce;
+  --color-violet-200: #8c00c4;
+  --color-violet-300: #8800bf;
+  --color-violet-400: #8100b5;
+  --color-violet-500: #7d00b0;
+  --color-violet-600: #61008a;
+  --color-violet-700: #4a006b;
+  --color-violet-800: #310048;
+  --color-violet-900: #180026;
+  --color-violet-950: #000000;
+  --color-ocean-50: #2910bb;
+  --color-ocean-100: #2910bb;
+  --color-ocean-200: #270fb5;
+  --color-ocean-300: #270fb5;
+  --color-ocean-400: #250eaf;
+  --color-ocean-500: #250eaf;
+  --color-ocean-600: #240da9;
+  --color-ocean-700: #240da9;
+  --color-ocean-800: #220ca3;
+  --color-ocean-900: #120569;
+  --color-ocean-950: #090247;
 }
 
 :root {
-  --p-violet-eggplant-50: #fcf3ff;
-  --p-violet-eggplant-100: #f8e4ff;
-  --p-violet-eggplant-200: #f2cdff;
-  --p-violet-eggplant-300: #e9a6ff;
-  --p-violet-eggplant-400: #db6eff;
-  --p-violet-eggplant-500: #ce37ff;
-  --p-violet-eggplant-600: #c111ff;
-  --p-violet-eggplant-700: #ac02ee;
-  --p-violet-eggplant-800: #9208c4;
-  --p-violet-eggplant-900: #75089b;
-  --p-violet-eggplant-950: #2c023d;
+  --p-ocean-50: #2910bb;
+  --p-ocean-100: #2910bb;
+  --p-ocean-200: #270fb5;
+  --p-ocean-300: #270fb5;
+  --p-ocean-400: #250eaf;
+  --p-ocean-500: #250eaf;
+  --p-ocean-600: #240da9;
+  --p-ocean-700: #240da9;
+  --p-ocean-800: #220ca3;
+  --p-ocean-900: #120569;
+  --p-ocean-950: #090247;
+  --p-violet-50: #fcf3ff;
+  --p-violet-100: #f8e4ff;
+  --p-violet-200: #f2cdff;
+  --p-violet-300: #e9a6ff;
+  --p-violet-400: #db6eff;
+  --p-violet-500: #ce37ff;
+  --p-violet-600: #c111ff;
+  --p-violet-700: #ac02ee;
+  --p-violet-800: #9208c4;
+  --p-violet-900: #75089b;
+  --p-violet-950: #530075;
+}
+
+body {
+  overflow-y: hidden;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div style="background: var(--color-violet-eggplant-950)">
+  <div style="background: var(--color-violet-eggplant-600)">
     <AppHeader />
     <div class="content">
       <slot></slot>
