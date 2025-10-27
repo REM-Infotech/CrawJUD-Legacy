@@ -1,6 +1,9 @@
 <template>
+  <div>
+    <slot name="header"></slot>
+  </div>
   <div class="content">
-    <slot />
+    <slot name="body" />
   </div>
 </template>
 
@@ -11,9 +14,7 @@
   min-width: 100%;
   min-height: 100%;
   align-items: center;
-
   overflow-y: hidden;
-
   justify-content: center;
   display: flex;
   flex-direction: column;

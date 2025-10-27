@@ -1,11 +1,14 @@
 <template>
-  <AppHeader />
-  <Toast />
   <NuxtLayout>
-    <div style="min-width: 600px">
-      <Terminal aria-label="PrimeVue Terminal Service" />
-    </div>
-    <Button label="Show" @click="show()" />
+    <template #header>
+      <AppHeader />
+    </template>
+    <template #body>
+      <div style="min-width: 600px">
+        <Terminal aria-label="PrimeVue Terminal Service" />
+      </div>
+      <Button label="Show" @click="show()" />
+    </template>
   </NuxtLayout>
 </template>
 

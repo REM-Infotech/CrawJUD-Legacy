@@ -17,5 +17,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      sourcemap: true,
+    },
+  },
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
   },
 });
