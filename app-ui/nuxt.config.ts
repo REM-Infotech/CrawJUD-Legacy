@@ -10,6 +10,9 @@ export default defineNuxtConfig({
     // composables: {useBreadcrumb: false, useColorMode: false, all: true} // Will include everything except useBreadcrumb & useColorMode
     directives: { all: true }, // Will include all directives
   },
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
   css: ["bootstrap/dist/css/bootstrap.min.css", "~/assets/css/main.css"],
   plugins: ["~/plugins/bootstrap.client.ts", "~/plugins/datatables.client.ts"],
   vite: {

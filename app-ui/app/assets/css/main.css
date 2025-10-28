@@ -13,7 +13,8 @@
 }
 
 body {
-  background-color: #0c1920;
+  /* background-color: #0c1920; */
+  background-color: var(--p-maroon-950);
   overflow: hidden;
 }
 

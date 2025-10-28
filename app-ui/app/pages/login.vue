@@ -17,7 +17,7 @@ async function onSubmitted(ev: Event) {
 
 <template>
   <BContainer class="mt-auto mb-auto">
-    <div class="card">
+    <div class="card card-login">
       <div class="card-body align-self-center">
         <BForm class="form-signin" @submit="onSubmitted">
           <img
@@ -93,7 +93,7 @@ async function onSubmitted(ev: Event) {
   max-width: 420px;
 }
 
-.card {
-  background-color: #4a0b6ab6;
+.card-login {
+  background-color: #240135cb;
 }
 </style>

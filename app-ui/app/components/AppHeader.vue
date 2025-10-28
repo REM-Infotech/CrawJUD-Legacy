@@ -1,7 +1,7 @@
 <template>
-  <div class="heading p-2">
+  <div class="heading p-2" data-bs-theme="dark">
     <Transition>
-      <nav v-if="!isLogged" class="navbar navbar-expand-lg bg-body-secondary rounded">
+      <nav v-if="!isLogged" class="navbar navbar-expand-lg bg-dark rounded">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Navbar</a>
           <button
@@ -18,10 +18,14 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <NuxtLink class="nav-link" :to="{ name: 'dashboard' }" active-class="active">
+                  Dashboard
+                </NuxtLink>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <NuxtLink class="nav-link" :to="{ name: 'bots' }" active-class="active">
+                  Robôs
+                </NuxtLink>
               </li>
               <li class="nav-item dropdown">
                 <a
