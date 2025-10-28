@@ -1,15 +1,17 @@
 class ProductService {
   constructor() {}
 
-  async getProductsMini() {
-    return [
-      {
-        code: 1,
-        name: "teste",
-        category: "teste",
-        quantity: 1,
-      },
-    ];
+  getProductsMini() {
+    return {
+      data: [
+        {
+          id: 1,
+          name: "teste",
+          category: "teste",
+          quantity: 1,
+        },
+      ],
+    };
   }
 }
 

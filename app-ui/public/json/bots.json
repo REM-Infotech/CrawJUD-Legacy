@@ -1,0 +1,246 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "display_name": "PROJUDI - CAPA",
+      "system": "PROJUDI",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "CAPA",
+      "form_cfg": "file_auth",
+      "classification": "JURIDICO",
+      "text": "Extrai a capa do processo e exporta em uma planilha"
+    },
+    {
+      "id": "2",
+      "display_name": "PROJUDI - PROTOCOLO",
+      "system": "PROJUDI",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "PROTOCOLO",
+      "form_cfg": "multipe_files",
+      "classification": "JURIDICO",
+      "text": "Peticionamento em lotes de processos "
+    },
+    {
+      "id": "3",
+      "display_name": "PROJUDI - INTIMAÇÕES",
+      "system": "PROJUDI",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "INTIMACOES",
+      "form_cfg": "only_auth",
+      "classification": "JURIDICO",
+      "text": "Extrai intimações do painel do advogado e exporta em uma planilha"
+    },
+    {
+      "id": "4",
+      "display_name": "PROJUDI - MOVIMENTAÇÕES",
+      "system": "PROJUDI",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "MOVIMENTACAO",
+      "form_cfg": "file_auth",
+      "classification": "JURIDICO",
+      "text": "Extrator de movimentações processuais "
+    },
+    {
+      "id": "5",
+      "display_name": "ESAJ - CAPA",
+      "system": "ESAJ",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "CAPA",
+      "form_cfg": "file_auth",
+      "classification": "JURIDICO",
+      "text": "Extrai a capa do processo e exporta em uma planilha"
+    },
+    {
+      "id": "6",
+      "display_name": "ESAJ - PROTOCOLO",
+      "system": "ESAJ",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "PROTOCOLO",
+      "form_cfg": "multipe_files",
+      "classification": "JURIDICO",
+      "text": "Peticionamento em lotes de processos "
+    },
+    {
+      "id": "7",
+      "display_name": "ESAJ - MOVIMENTAÇÕES",
+      "system": "ESAJ",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "MOVIMENTACAO",
+      "form_cfg": "file_auth",
+      "classification": "JURIDICO",
+      "text": "Extrator de movimentações processuais "
+    },
+    {
+      "id": "8",
+      "display_name": "ESAJ - BUSCA PAGAMENTOS",
+      "system": "ESAJ",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "BUSCA_PAGS",
+      "form_cfg": "file_auth",
+      "classification": "JURIDICO",
+      "text": "Robô responsável por buscar pagamentos feitos em processos"
+    },
+    {
+      "id": "9",
+      "display_name": "ESAJ - BUSCA PROCESSOS",
+      "system": "ESAJ",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "PROC_PARTE",
+      "form_cfg": "proc_parte",
+      "classification": "JURIDICO",
+      "text": "Busca processos por nome da parte e exporta em uma planilha"
+    },
+    {
+      "id": "10",
+      "display_name": "ESAJ - EMISSÃO GUIAS",
+      "system": "ESAJ",
+      "state": "AM",
+      "client": "EVERYONE",
+      "type": "EMISSOR",
+      "form_cfg": "file_auth",
+      "classification": "JURIDICO",
+      "text": "Emissor de guias de pagamento ESAJ"
+    },
+    {
+      "id": "11",
+      "display_name": "PJE - CAPA",
+      "system": "PJE",
+      "state": "EVERYONE",
+      "client": "EVERYONE",
+      "type": "CAPA",
+      "form_cfg": "pje",
+      "classification": "JURIDICO",
+      "text": "Extrai a capa do processo e exporta em uma planilha"
+    },
+    {
+      "id": "12",
+      "display_name": "PJE - PROTOCOLO",
+      "system": "PJE",
+      "state": "EVERYONE",
+      "client": "EVERYONE",
+      "type": "PROTOCOLO",
+      "form_cfg": "pje_protocolo",
+      "classification": "JURIDICO",
+      "text": "Peticionamento em lotes de processos "
+    },
+    {
+      "id": "13",
+      "display_name": "CAIXA - EMISSÃO GUIAS",
+      "system": "CAIXA",
+      "state": "AM",
+      "client": "GLOBAL",
+      "type": "EMISSOR",
+      "form_cfg": "only_file",
+      "classification": "JURIDICO",
+      "text": "Robô responsável por emissão de guias"
+    },
+    {
+      "id": "14",
+      "display_name": "TJDFT - CALCULADORA",
+      "system": "TJDFT",
+      "state": "EVERYONE",
+      "client": "EVERYONE",
+      "type": "CALCULO",
+      "form_cfg": "only_file",
+      "classification": "JURIDICO",
+      "text": "Robô de emissão de cálculo de atualização monetária"
+    },
+    {
+      "id": "15",
+      "display_name": "ELAW - DOWNLOAD ARQ.",
+      "system": "ELAW",
+      "state": "EVERYONE",
+      "client": "AME - AMAZONAS ENERGIA",
+      "type": "DOWNLOAD",
+      "form_cfg": "file_auth",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por baixar documentos"
+    },
+    {
+      "id": "16",
+      "display_name": "ELAW - PAGAMENTOS",
+      "system": "ELAW",
+      "state": "EVERYONE",
+      "client": "AME - AMAZONAS ENERGIA",
+      "type": "SOLICITA_PAGAMENTO",
+      "form_cfg": "multipe_files",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por solicitação de pagamentos"
+    },
+    {
+      "id": "17",
+      "display_name": "ELAW - CADASTRO",
+      "system": "ELAW",
+      "state": "EVERYONE",
+      "client": "AME - AMAZONAS ENERGIA",
+      "type": "CADASTRO",
+      "form_cfg": "file_auth",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por realizar cadastro de processos"
+    },
+    {
+      "id": "18",
+      "display_name": "ELAW - PROVISIONAMENTO",
+      "system": "ELAW",
+      "state": "EVERYONE",
+      "client": "AME - AMAZONAS ENERGIA",
+      "type": "PROVISAO",
+      "form_cfg": "file_auth",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por provisionar valores"
+    },
+    {
+      "id": "19",
+      "display_name": "ELAW - ANDAMENTOS",
+      "system": "ELAW",
+      "state": "EVERYONE",
+      "client": "AME - AMAZONAS ENERGIA",
+      "type": "ANDAMENT",
+      "form_cfg": "multipe_files",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por inserção de andamentos"
+    },
+    {
+      "id": "20",
+      "display_name": "ELAW - COMPLEMENTAR CADASTRO",
+      "system": "ELAW",
+      "state": "EVERYONE",
+      "client": "AME - AMAZONAS ENERGIA",
+      "type": "COMPLEMENTAR_CADASTRO",
+      "form_cfg": "file_auth",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por realizar complemento de cadastro nos processos"
+    },
+    {
+      "id": "21",
+      "display_name": "JUSDS - Realizar Compromisso",
+      "system": "JUSDS",
+      "state": "EVERYONE",
+      "client": "INFRAERO",
+      "type": "REALIZA_PRAZO",
+      "form_cfg": "multipe_files",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por realizar compromissos no JUSDS"
+    },
+    {
+      "id": "22",
+      "display_name": "CSI - Download Documentos",
+      "system": "CSI",
+      "state": "EVERYONE",
+      "client": "INFRAERO",
+      "type": "DOWNLOAD_DOCUMENTO",
+      "form_cfg": "file_auth",
+      "classification": "ADMINISTRATIVO",
+      "text": "Robô responsável por realizar o download de documentos no CSI"
+    }
+  ]
+}

@@ -30,10 +30,14 @@
   "devDependencies": {
     "@bootstrap-vue-next/nuxt": "^0.40.7",
     "@iconify-json/bi": "^1.2.6",
+    "@tsconfig/node22": "^22.0.2",
     "@types/bootstrap": "^5.2.10",
+    "@types/jsdom": "^27.0.0",
+    "@types/node": "^24.9.1",
     "@vue/compiler-sfc": "^3.5.22",
     "bootstrap": "^5.3.8",
     "bootstrap-vue-next": "^0.40.7",
+    "jsdom": "^27.0.1",
     "prettier": "^3.6.2",
     "unplugin-icons": "^22.5.0",
     "unplugin-vue-components": "^30.0.0"

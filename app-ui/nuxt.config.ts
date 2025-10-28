@@ -12,4 +12,9 @@ export default defineNuxtConfig({
   },
   css: ["bootstrap/dist/css/bootstrap.min.css", "~/assets/css/main.css"],
   plugins: ["~/plugins/bootstrap.client.ts", "~/plugins/datatables.client.ts"],
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
 });
