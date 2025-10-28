@@ -41,12 +41,10 @@ class Authentication {
       //
     }
 
-    $toast.add({
+    $toast.create({
       variant: "info",
       title: "Info",
       body: "Sessão encerrada!",
-      "close-countdown": 3000,
-      position: "bottom-center",
     });
 
     $router.push({ name: "index" });
