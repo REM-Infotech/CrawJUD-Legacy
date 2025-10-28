@@ -59,29 +59,25 @@ class ColorModeBootstrap {
 
   public async setup() {
     if (document) {
-      (() => {
-        this.setTheme(this.getPreferredTheme());
+      this.setTheme(this.getPreferredTheme());
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        const storedTheme = this.getStoredTheme();
+        if (storedTheme !== "light" && storedTheme !== "dark") {
+          this.setTheme(this.getPreferredTheme());
+        }
+      });
+      window.addEventListener("DOMContentLoaded", () => {
+        this.showActiveTheme(this.getPreferredTheme());
 
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-          const storedTheme = this.getStoredTheme();
-          if (storedTheme !== "light" && storedTheme !== "dark") {
-            this.setTheme(this.getPreferredTheme());
-          }
-        });
-
-        window.addEventListener("DOMContentLoaded", () => {
-          this.showActiveTheme(this.getPreferredTheme());
-
-          document.querySelectorAll("[data-bs-theme-value]").forEach((toggle) => {
-            toggle.addEventListener("click", () => {
-              const theme: string = toggle.getAttribute("data-bs-theme-value") as string;
-              this.setStoredTheme(theme);
-              this.setTheme(theme);
-              this.showActiveTheme(theme, true);
-            });
+        document.querySelectorAll("[data-bs-theme-value]").forEach((toggle) => {
+          toggle.addEventListener("click", () => {
+            const theme: string = toggle.getAttribute("data-bs-theme-value") as string;
+            this.setStoredTheme(theme);
+            this.setTheme(theme);
+            this.showActiveTheme(theme, true);
           });
         });
-      })();
+      });
     }
   }
 }
