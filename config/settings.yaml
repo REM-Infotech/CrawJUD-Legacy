@@ -44,6 +44,7 @@ default:
     - "*.rhsolut.com.br"
     - "*.robotz.dev"
     - "betatest.robotz.dev"
+    - "fronttest.robotz.dev"
 
   # ✅ Configurações SQLAlchemy
   SQLALCHEMY_DATABASE_URI: "@format {env[CRAWJUD_DATABASE_URI]}"
@@ -76,7 +77,7 @@ default:
 
   JWT_ACCESS_COOKIE_NAME: "access_token_cookie"
   JWT_COOKIE_DOMAIN: "@format {env[CRAWJUD_APP_DOMAIN]}"
-  JWT_COOKIE_SAMESITE: Lax
+  JWT_COOKIE_SECURE: true
   JWT_ACCESS_CSRF_COOKIE_NAME: "X-Xsrf-Token"
   JWT_ACCESS_CSRF_HEADER_NAME: "X-Xsrf-Token"
   JWT_TOKEN_LOCATION:
