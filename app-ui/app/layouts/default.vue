@@ -1,7 +1,7 @@
 <template>
   <div style="background: var(--color-violet-eggplant-600)">
     <AppHeader />
-    <div class="content p-5 d-flex flex-column justify-content-center align-items-center">
+    <div class="content p-5 d-flex flex-column container-fluid">
       <slot />
     </div>
   </div>

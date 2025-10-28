@@ -14,8 +14,13 @@
   },
   "dependencies": {
     "@pinia/nuxt": "0.11.2",
+    "@types/jquery": "^3.5.33",
     "axios": "^1.13.0",
+    "datatables.net-bs5": "^2.3.4",
+    "datatables.net-dt": "^2.3.4",
+    "datatables.net-vue3": "^3.0.4",
     "eslint": "^9.38.0",
+    "jquery": "^3.7.1",
     "nuxt": "^4.2.0",
     "pinia": "^3.0.3",
     "socket.io-client": "^4.8.1",

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { DataTable } from "datatables.net-vue3";
 import { onMounted, ref } from "vue";
+import AppCard from "~/components/AppCard.vue";
 import ProductService from "~/service/ProductService";
 
 onMounted(() => {
@@ -9,5 +11,11 @@ onMounted(() => {
 const products = ref();
 </script>
 <template>
-  <div></div>
+  <div>
+    <AppCard>
+      <template #body>
+        <DataTable> </DataTable>
+      </template>
+    </AppCard>
+  </div>
 </template>

@@ -11,5 +11,5 @@ export default defineNuxtConfig({
     directives: { all: true }, // Will include all directives
   },
   css: ["bootstrap/dist/css/bootstrap.min.css", "~/assets/css/main.css"],
-  plugins: ["~/plugins/bootstrap.client.ts"],
+  plugins: ["~/plugins/bootstrap.client.ts", "~/plugins/datatables.client.ts"],
 });
