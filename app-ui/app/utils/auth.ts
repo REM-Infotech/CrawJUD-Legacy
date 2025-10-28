@@ -25,8 +25,10 @@ class Authentication {
       variant: message_type,
       title: message_summary,
       body: message,
+      noCloseButton: true,
+      noAnimation: true,
       noProgress: true,
-      modelValue: 1000,
+      modelValue: 1500,
     });
   }
 
@@ -42,6 +44,10 @@ class Authentication {
       variant: "info",
       title: "Info",
       body: "Sessão encerrada!",
+      noCloseButton: true,
+      noAnimation: true,
+      noProgress: true,
+      modelValue: 1500,
     });
     $router.push({ name: "index" });
   }

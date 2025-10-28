@@ -29,6 +29,7 @@ api.interceptors.response.use(
         noCloseButton: true,
         noAnimation: true,
         noProgress: true,
+        modelValue: 1500,
       });
 
       router.push({ name: "login" });
