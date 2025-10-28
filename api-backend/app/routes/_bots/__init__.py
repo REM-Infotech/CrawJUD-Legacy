@@ -21,7 +21,7 @@ def listagem() -> Response:
     code = 201
     if file_path.exists():
         code = 200
-        with file_path.open("r") as f:
+        with file_path.open("r", encoding="utf-8") as f:
             data.update({"listagem": json.load(f)})
 
     return make_response(jsonify(data), code)
