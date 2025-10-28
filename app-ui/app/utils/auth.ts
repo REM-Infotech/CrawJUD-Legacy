@@ -10,7 +10,7 @@ class Authentication {
 
     try {
       const resp = await api.post("/auth/login", form);
-
+      $router.push({ name: "dashboard" });
       if (resp.data.message) {
         message = resp.data.message;
         message_type = "success";
@@ -25,10 +25,6 @@ class Authentication {
       title: message_summary,
       body: message,
     });
-
-    if (message_type === "success") {
-      $router.push({ name: "dashboard" });
-    }
   }
 
   async logout() {
@@ -36,17 +32,14 @@ class Authentication {
 
     try {
       await api.post("/auth/logout");
-    } catch (err) {
-      console.log(err);
+    } catch {
       //
     }
-
     $toast.create({
       variant: "info",
       title: "Info",
       body: "Sessão encerrada!",
     });
-
     $router.push({ name: "index" });
   }
 }
