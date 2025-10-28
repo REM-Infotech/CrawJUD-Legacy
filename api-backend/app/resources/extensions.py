@@ -21,6 +21,7 @@ cors = CORS(
     supports_credentials=True,
     transports=["websocket"],
     origins=[
+        "https://fronttest.robotz.dev",
         "localhost",
         "http://localhost:3000",
         "http://localhost:5173",

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import suppress
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -19,21 +20,20 @@ salt = bcrypt.gensalt()
 
 
 @jwt.user_identity_loader
-def user_identity_lookup(*args: MyAny) -> int:
+def user_identity_lookup(usr_id: int, *args: MyAny) -> int:
     """Get the user's identity.
 
     Returns:
         int: The user's ID.
 
     """
-    return args[0]
+    return usr_id
 
 
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(
-    jwt_data: dict,
     *args: str,
-    **kwargs: object,
+    **kwargs: MyAny,
 ) -> bool:
     """Check if the token is in the blocklist.
 
@@ -41,23 +41,33 @@ def check_if_token_revoked(
         bool: True if the token is revoked, False otherwise.
 
     """
-    jti = jwt_data["jti"] or kwargs.get("jti") or args[0].get("jti")
-    token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+    jwt_data = {}
+    for item in args:
+        jwt_data.update(item)
+
+    token = None
+    with suppress(Exception):
+        jti = jwt_data["jti"]
+        token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
 
     return token is not None
 
 
 @jwt.user_lookup_loader
-def user_lookup_callback(*args: MyAny) -> User | None:
+def user_lookup_callback(*args: MyAny, **kwargs: MyAny) -> User | None:
     """Get the user from the JWT data.
 
     Returns:
         User | None: The user object or None if not found.
 
     """
-    id_: int = args[0]
+    jwt_data = {}
+    for item in args:
+        jwt_data.update(item)
 
-    return db.session.query(User).filter_by(id=id_).one_or_none()
+    return (
+        db.session.query(User).filter_by(id=int(jwt_data["sub"])).one_or_none()
+    )
 
 
 class TokenBlocklist(db.Model):

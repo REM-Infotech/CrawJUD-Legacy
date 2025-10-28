@@ -1,10 +1,12 @@
+from datetime import datetime, timedelta
 from typing import Any, Literal, ParamSpec, TypedDict, TypeVar
 
-P = ParamSpec("P")
-T = TypeVar("T")
-
 MyAny = Any
-type StatusBot = Literal["Inicializando", "Em Execução", "Finalizado"]
+
+P = ParamSpec("P", bound=MyAny)
+T = TypeVar("T", bound=MyAny)
+
+
 type MessageType = Literal["info", "log", "error", "warning", "success"]
 type Methods = Literal["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
 type ConfigNames = Literal[
@@ -13,6 +15,16 @@ type ConfigNames = Literal[
     "ProductionConfig",
 ]
 type ModeMiddleware = Literal["legacy", "modern"]
+
+
+type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
+type MethodsSearch = Literal["peticionamento", "consulta"]
+type PolosProcessuais = Literal["Passivo", "Ativo"]
+type PyNumbers = int | float | complex | datetime | timedelta
+type PyStrings = str | bytes
+type Dict = dict[str, PyStrings | PyNumbers]
+type ListDict = list[Dict]
+type StatusBot = Literal["Inicializando", "Em Execução", "Finalizado"]
 
 
 class HealtCheck(TypedDict):

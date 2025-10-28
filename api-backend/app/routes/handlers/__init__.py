@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 from app.resources.extensions import io
 
 
-@io.on("connect", namespace="*")
+@io.on("connect", namespace="/")
 def connected(*args: MyAny, **kwargs: MyAny) -> None:
     """Log bot."""
     tqdm.write("ok")
