@@ -3,12 +3,6 @@ import DataTable from "datatables.net-vue3";
 import jQuery from "jquery";
 
 // Adiciona as propriedades jQuery e $ ao tipo Window
-declare global {
-  interface Window {
-    jQuery: typeof jQuery;
-    $: typeof jQuery;
-  }
-}
 
 export default defineNuxtPlugin(() => {
   // Garante que o jQuery está no window
