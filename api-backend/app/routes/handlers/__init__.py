@@ -12,9 +12,10 @@ from werkzeug.utils import secure_filename
 from app.resources.extensions import io
 
 
-@io.on("connect", namespace="/bot_logs")
+@io.on("connect", namespace="*")
 def connected(*args: MyAny, **kwargs: MyAny) -> None:
     """Log bot."""
+    tqdm.write("ok")
 
 
 @io.on("join_room", namespace="/bot_logs")
