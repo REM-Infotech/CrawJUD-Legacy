@@ -25,6 +25,8 @@ class Authentication {
       variant: message_type,
       title: message_summary,
       body: message,
+      noProgress: true,
+      modelValue: 1000,
     });
   }
 
