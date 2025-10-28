@@ -44,11 +44,27 @@ class Bots {
   }
 
   handleBotSelected(botInfo: BotInfo) {
-    const { $router: router } = useNuxtApp();
+    const { $router: router, $pinia } = useNuxtApp();
+
+    const store = botStore($pinia);
+    store.bot = botInfo;
 
     router.push({
       name: `bots-system-type`,
       params: { system: botInfo.system.toLowerCase(), type: botInfo.bot_type.toLowerCase() },
+    });
+  }
+
+  async startBot(ev: Event) {
+    ev.preventDefault();
+
+    const { $toast } = useNuxtApp();
+
+    $toast.create({
+      title: "Robô inicializado!",
+      body: "Código de execução: A1B2C3",
+      variant: "success",
+      modelValue: 3500,
     });
   }
 }

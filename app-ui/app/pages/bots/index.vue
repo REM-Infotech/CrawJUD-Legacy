@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const bot_card_class = ref("col-md-3 p-4");
 const botList = ref<BotInfo[]>([]);
 const filterBotList = computed(() => botList.value);
 onMounted(async () => {
