@@ -1,14 +1,14 @@
 :root {
-  --p-maroon-50: oklch(0.596 0.273 310.05);
-  --p-maroon-100: oklch(0.588 0.274 310.28);
-  --p-maroon-200: oklch(0.551 0.257 309.96);
-  --p-maroon-300: oklch(0.525 0.244 310.3);
-  --p-maroon-400: oklch(0.487 0.227 309.93);
-  --p-maroon-500: oklch(0.46 0.214 310.04);
-  --p-maroon-600: oklch(0.422 0.197 310.02);
-  --p-maroon-700: oklch(0.394 0.184 310.16);
-  --p-maroon-800: oklch(0.367 0.172 309.94);
-  --p-maroon-900: oklch(0.331 0.154 310.63);
+  --p-maroon-50: #b02cf4;
+  --p-maroon-100: #ae27f1;
+  --p-maroon-200: #9f23de;
+  --p-maroon-300: #9520cf;
+  --p-maroon-400: #861cbc;
+  --p-maroon-500: #7c19ae;
+  --p-maroon-600: #6e159b;
+  --p-maroon-700: #64128d;
+  --p-maroon-800: #5a0f80;
+  --p-maroon-900: #4e0c6e;
   --p-maroon-950: #4a0b6a;
 }
 

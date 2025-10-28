@@ -1,3 +1,1 @@
-export default defineNuxtRouteMiddleware((to) => {
-  console.log(to);
-});
+export default defineNuxtRouteMiddleware((_) => {});
