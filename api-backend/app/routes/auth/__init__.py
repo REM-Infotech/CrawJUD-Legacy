@@ -1,3 +1,5 @@
+"""Módulo de controle das rotas de autenticação da API."""
+
 import traceback
 
 from flask import (
@@ -23,6 +25,12 @@ auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth.post("/login")
 def login() -> Response:
+    """Rota de autenticação da api.
+
+    Returns:
+        Response: Response da autenticação
+
+    """
     response = {}
     try:
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
@@ -55,6 +63,12 @@ def login() -> Response:
 
 @auth.route("/logout", methods=["POST"])
 def logout() -> Response:
+    """Rota de logout.
+
+    Returns:
+        Response: Response do logout.
+
+    """
     response = make_response(jsonify(message="Logout efetuado com sucesso!"))
     unset_jwt_cookies(response)
     return response
