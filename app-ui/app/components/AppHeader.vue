@@ -1,7 +1,7 @@
 <template>
   <Transition>
     <div v-if="isLogged" class="header-content">
-      <BNavbar v-b-color-mode="'dark'" toggleable="lg" variant="primary">
+      <BNavbar v-b-color-mode="'dark'" toggleable="lg" variant="secondary" class="rounded">
         <BNavbarBrand href="#navbar-overview">NavBar</BNavbarBrand>
         <BNavbarToggle target="nav-collapse" />
         <BCollapse id="nav-collapse" is-nav>
