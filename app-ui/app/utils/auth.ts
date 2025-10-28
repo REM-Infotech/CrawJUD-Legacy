@@ -2,14 +2,14 @@ class Authentication {
   constructor() {}
 
   async login(form: FormData) {
-    const { $api, $toast, $router } = useNuxtApp();
+    const { $toast, $router } = useNuxtApp();
 
     let message: string = "Erro ao realizar login";
     let message_type: "danger" | "success" = "danger";
     let message_summary: string = "Erro";
 
     try {
-      const resp = await $api.post("/auth/login", form);
+      const resp = await api.post("/auth/login", form);
 
       if (resp.data.message) {
         message = resp.data.message;
@@ -32,10 +32,10 @@ class Authentication {
   }
 
   async logout() {
-    const { $api, $toast, $router } = useNuxtApp();
+    const { $toast, $router } = useNuxtApp();
 
     try {
-      await $api.post("/auth/logout");
+      await api.post("/auth/logout");
     } catch (err) {
       console.log(err);
       //

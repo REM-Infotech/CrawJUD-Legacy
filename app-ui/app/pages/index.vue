@@ -1,4 +1,4 @@
-<script setup lang="jsx">
+<script setup lang="ts">
 // Define o estado do formulário de login
 const FormLogin = reactive({
   login: "",
@@ -7,7 +7,7 @@ const FormLogin = reactive({
 });
 
 // Executa o login ao submeter o formulário
-async function onSubmitted(ev) {
+async function onSubmitted(ev: Event) {
   ev.preventDefault();
   const form = new FormData();
   Object.entries(FormLogin).forEach(([key, val]) => form.append(key, String(val)));
