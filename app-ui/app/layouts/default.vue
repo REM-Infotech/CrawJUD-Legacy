@@ -1,6 +1,6 @@
 <template>
   <AppHeader />
-  <div data-bs-theme="dark">
+  <div>
     <div class="content p-5 d-flex flex-column container-fluid overflow-y-auto">
       <slot />
     </div>

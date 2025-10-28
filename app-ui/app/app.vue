@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { BOrchestrator } from "bootstrap-vue-next";
+
+const { $colormode } = useNuxtApp();
+
+onBeforeMount(async () => {
+  await $colormode.setup();
+});
 </script>
 <template>
   <BToast />

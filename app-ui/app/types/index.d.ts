@@ -1,7 +1,8 @@
 interface Window {
   jQuery: typeof jQuery;
   $: typeof jQuery;
-  axios: typeof Axios;
+  axios: typeof AxiosInstance;
+  matchMedia: typeof window.matchMedia;
 }
 
 interface ImportMetaEnv {
@@ -11,4 +12,8 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+}
+
+interface Element {
+  focus(): void;
 }

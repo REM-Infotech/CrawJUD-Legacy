@@ -1,7 +1,7 @@
 <template>
-  <div class="heading p-2" data-bs-theme="dark">
+  <div class="heading p-2">
     <Transition>
-      <nav v-if="!isLogged" class="navbar navbar-expand-lg bg-dark rounded">
+      <nav v-if="!isLogged" class="navbar navbar-expand-lg bg-body-tertiary rounded">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Navbar</a>
           <button
