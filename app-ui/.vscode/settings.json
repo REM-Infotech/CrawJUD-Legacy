@@ -1,0 +1,6 @@
+{
+  "explorer.fileNesting.patterns": {
+    "crawjud.png": "crawjud.d.ts",
+    "projudilogo.png": "projudilogo.d.ts"
+  }
+}
