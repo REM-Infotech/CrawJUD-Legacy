@@ -45,6 +45,7 @@ class Bots {
 
   handleBotSelected(botInfo: BotInfo) {
     const { $router: router } = useNuxtApp();
+
     router.push({
       name: `bots-system-type`,
       params: { system: botInfo.system.toLowerCase(), type: botInfo.bot_type.toLowerCase() },
