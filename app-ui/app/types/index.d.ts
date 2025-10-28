@@ -1,6 +1,7 @@
 interface Window {
   jQuery: typeof jQuery;
   $: typeof jQuery;
+  axios: typeof Axios;
 }
 
 interface ImportMetaEnv {
