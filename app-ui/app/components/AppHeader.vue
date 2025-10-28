@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div v-if="isLogged" class="header-content">
+    <div v-if="isLogged" class="p-2">
       <nav class="navbar navbar-expand-lg bg-body-secondary rounded">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Navbar</a>
@@ -86,11 +86,5 @@ const isLogged = computed(() => route.name !== "index");
 .p-menubar {
   background: var(--color-maroon-950);
   padding: 5px;
-}
-
-.header-content {
-  height: 100%;
-  max-height: 70px;
-  padding: 0.3em;
 }
 </style>
