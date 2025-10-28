@@ -32,15 +32,18 @@ class Bots {
       }
     } catch {}
 
-    return [];
+    return [] as BotInfo[];
   }
 
   getClassImgLogo(system: system_bots) {
-    return this.class_logo[system] || "card-img-top p-4 img-thumbnail imgBot";
+    return (
+      this.class_logo[system.toUpperCase() as system_bots] ||
+      "card-img-top p-4 img-thumbnail imgBot"
+    );
   }
 
   getLogo(system: system_bots) {
-    return this.imagesSrc[system] || crawjud;
+    return this.imagesSrc[system.toUpperCase() as system_bots] || crawjud;
   }
 
   handleBotSelected(botInfo: BotInfo) {
