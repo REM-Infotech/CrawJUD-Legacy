@@ -1,50 +1,11 @@
 {
-  "compounds": [
-    {
-      "name": "React Home",
-      "configurations": ["Debug Vite App (React)", "Attach to Vite App (React)"]
-    }
-  ],
   "configurations": [
     {
       "name": "Debug API Backend",
       "type": "debugpy",
       "request": "launch",
       "env": { "PYTHON_GIL": "0" },
-      "cwd": "${workspaceFolder}/api-backend",
       "module": "app"
-    },
-    {
-      "name": "Debug Celery",
-      "type": "debugpy",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/task-manager",
-      "env": { "PYTHON_GIL": "0" },
-      "module": "celery",
-      "args": ["-A", "app", "worker", "-P", "threads", "-c", "16", "-E"]
-    },
-    {
-      "name": "Debug Vite App (Vue)",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/app-ui",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"]
-    },
-    {
-      "name": "Debug Vite App (React)",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/home-ui",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"]
-    },
-    {
-      "name": "Attach to Vite App (React)",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:8081",
-      "webRoot": "${workspaceFolder}/home-ui"
     }
   ]
 }
