@@ -1,7 +1,7 @@
 <template>
-  <Transition>
-    <div v-if="isLogged" class="p-2">
-      <nav class="navbar navbar-expand-lg bg-body-secondary rounded">
+  <div class="heading p-2">
+    <Transition>
+      <nav v-if="!isLogged" class="navbar navbar-expand-lg bg-body-secondary rounded">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Navbar</a>
           <button
@@ -56,13 +56,13 @@
           </div>
         </div>
       </nav>
-    </div>
-  </Transition>
+    </Transition>
+  </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute();
-const isLogged = computed(() => route.name !== "index");
+const isLogged = computed(() => route.name === "login" || route.name === "index");
 </script>
 
 <style lang="css" scoped>
@@ -85,6 +85,12 @@ const isLogged = computed(() => route.name !== "index");
 
 .p-menubar {
   background: var(--color-maroon-950);
-  padding: 5px;
+}
+
+.heading {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1;
 }
 </style>

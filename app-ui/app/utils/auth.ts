@@ -10,11 +10,12 @@ class Authentication {
 
     try {
       const resp = await api.post("/auth/login", form);
-      $router.push({ name: "dashboard" });
+      console.log(resp);
       if (resp.data.message) {
         message = resp.data.message;
         message_type = "success";
         message_summary = "Sucesso!";
+        $router.push({ name: "dashboard" });
       }
     } catch {
       //
