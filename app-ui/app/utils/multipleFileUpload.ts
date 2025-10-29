@@ -2,43 +2,82 @@ import type { Socket } from "socket.io-client";
 
 class multipleFileUpload {
   private files: File[];
-  private totalSlice: number;
-  private sliceSize: number = 1024 * 1024;
-  private currentSlice: number = 0;
+  private totalSent: number = 0;
+  private totalFilesSizes: number = 0;
+
   private fileSocket: Socket;
 
   constructor(files: File[]) {
-    // randomly picked 1MB slices,
-    // I don't think this size is important for this experiment
-    this.totalSlice = 0;
-    this.files = files;
-    this.files.forEach((file) => {
-      this.totalSlice = Math.ceil(file.size / (1024 * 1024));
-    });
-
     this.fileSocket = socketio.socket("/files");
-  }
-
-  private slices(file: File) {
-    return Math.ceil(file.size / this.sliceSize);
-  }
-  private getNextSlice(file: File) {
-    var start = this.currentSlice * this.sliceSize;
-    var end = Math.min((this.currentSlice + 1) * this.sliceSize, file.size);
-    ++this.currentSlice;
-
-    return file.slice(start, end);
-  }
-
-  public async uploadFiles() {
     this.fileSocket.connect();
-    this.files.forEach((file) => {
-      this.currentSlice = 0;
-      this.totalSlice = Math.ceil(file.size / (1024 * 1024));
-      for (let i = 0; i < this.slices(file); i++) {
-        this.fileSocket.emit("add_file", { name: file.name, chunk: this.getNextSlice(file) });
+
+    this.files = files;
+    this.files.forEach((file) => (this.totalFilesSizes += file.size));
+  }
+  async upload() {
+    const {
+      store: { progressBarValue },
+    } = bots.loadPlugins();
+
+    progressBarValue.value = 0.1;
+
+    for (let i = 0; i < this.files.length; i++) {
+      setTimeout(async () => {
+        const file = this.files[i] as File;
+        await this.sendFileInChunks(file); // Envia o arquivo em chunks de 80KB
+      }, 500);
+    }
+
+    await new Promise((r) => setTimeout(r, 5000));
+    progressBarValue.value = 0;
+  }
+  private async sendFileInChunks(file: File) {
+    const {
+      store: { progressBarValue },
+    } = bots.loadPlugins();
+
+    const chunkSize = 1024;
+    const fileSize = file.size;
+    const totalChunks = Math.ceil(fileSize / chunkSize);
+
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(file.size, start + chunkSize);
+
+      const chunk = file.slice(start, end);
+      const arrayBuffer = await chunk.arrayBuffer();
+      const currentSize = arrayBuffer.byteLength;
+
+      this.totalSent += currentSize;
+
+      await new Promise<void>((resolve, reject) => {
+        setTimeout(() => {
+          this.fileSocket.emit(
+            "add_file",
+            {
+              name: file.name,
+              chunk: arrayBuffer,
+              current_size: currentSize,
+            },
+            (err: Error | null) => {
+              if (err) reject(err);
+              else resolve();
+            },
+          );
+        }, 20);
+      });
+
+      // Atualiza a progressbar lentamente
+      const currentProgress = progressBarValue.value;
+      const targetProgress = Math.round((this.totalSent / this.totalFilesSizes) * 100);
+
+      const step = targetProgress > currentProgress ? 1 : -1;
+
+      while (progressBarValue.value !== targetProgress) {
+        progressBarValue.value += step;
+        await new Promise((r) => setTimeout(r, 20));
       }
-    });
+    }
   }
 }
 
