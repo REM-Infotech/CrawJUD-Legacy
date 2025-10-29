@@ -85,3 +85,31 @@ def create_bots(app: Flask) -> None:
 
             db.session.add_all(list_bot_add)
             db.session.commit()
+
+
+def load_credentials(app: Flask) -> None:
+    path_credentials = Path(__file__).parent.joinpath("credentials.json")
+
+    if path_credentials.exists():
+        with (
+            app.app_context(),
+            path_credentials.open("r", encoding="utf-8") as fp,
+        ):
+            lic = (
+                db.session.query(LicenseUser)
+                .filter(LicenseUser.Nome == "Root License")
+                .first()
+            )
+            list_data: list[Dict] = json.load(fp)
+
+            list_cred_add = [
+                CredenciaisRobo(**cred)
+                for cred in list_data
+                if not db.session.query(CredenciaisRobo)
+                .filter(CredenciaisRobo.Id == cred["Id"])
+                .first()
+            ]
+
+            lic.credenciais.extend(list_cred_add)
+            db.session.add_all(list_cred_add)
+            db.session.commit()

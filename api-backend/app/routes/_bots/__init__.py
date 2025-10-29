@@ -15,10 +15,11 @@ def listagem() -> Response:
         jsonify({
             "listagem": [
                 {
-                    "id": bot.Id,
+                    "Id": bot.Id,
                     "display_name": bot.display_name,
                     "sistema": bot.sistema,
                     "categoria": bot.categoria,
+                    "configuracao_form": bot.configuracao_form,
                     "descricao": bot.descricao,
                 }
                 for bot in user.license_.bots

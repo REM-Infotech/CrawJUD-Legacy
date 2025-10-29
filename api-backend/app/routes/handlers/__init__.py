@@ -32,17 +32,19 @@ def log_bot(data: Message) -> None:
 
 
 @io.on("add_file", namespace="/files")
-def add_file(data: MyAny) -> None:
+def add_file(data: MyAny = None) -> None:
     """Log bot."""
-    sid = request.sid
-    path_file = Path.cwd().joinpath(
-        "output", sid, secure_filename(data["name"])
-    )
-    path_file.parent.mkdir(exist_ok=True, parents=True)
+    print(data)
+    if data:
+        sid = request.sid
+        path_file = Path.cwd().joinpath(
+            "output", sid, secure_filename(data["name"])
+        )
+        path_file.parent.mkdir(exist_ok=True, parents=True)
 
-    mode = "ab"
-    if not path_file.exists():
-        mode = "wb"
+        mode = "ab"
+        if not path_file.exists():
+            mode = "wb"
 
-    with path_file.open(mode=mode) as fp:
-        fp.write(data["chunk"])
+        with path_file.open(mode=mode) as fp:
+            fp.write(data["chunk"])

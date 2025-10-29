@@ -1,156 +1,178 @@
 [
   {
-    "Id": 1,
+    "Id": "1",
     "display_name": "PROJUDI - CAPA",
     "sistema": "PROJUDI",
     "categoria": "CAPA",
+    "configuracao_form": "file_auth",
     "descricao": "Extrai a capa do processo e exporta em uma planilha"
   },
   {
-    "Id": 2,
+    "Id": "2",
     "display_name": "PROJUDI - PROTOCOLO",
     "sistema": "PROJUDI",
     "categoria": "PROTOCOLO",
+    "configuracao_form": "multipe_files",
     "descricao": "Peticionamento em lotes de processos "
   },
   {
-    "Id": 3,
+    "Id": "3",
     "display_name": "PROJUDI - INTIMAÇÕES",
     "sistema": "PROJUDI",
     "categoria": "INTIMACOES",
+    "configuracao_form": "only_auth",
     "descricao": "Extrai intimações do painel do advogado e exporta em uma planilha"
   },
   {
-    "Id": 4,
+    "Id": "4",
     "display_name": "PROJUDI - MOVIMENTAÇÕES",
     "sistema": "PROJUDI",
     "categoria": "MOVIMENTACAO",
+    "configuracao_form": "file_auth",
     "descricao": "Extrator de movimentações processuais "
   },
   {
-    "Id": 5,
+    "Id": "5",
     "display_name": "ESAJ - CAPA",
     "sistema": "ESAJ",
     "categoria": "CAPA",
+    "configuracao_form": "file_auth",
     "descricao": "Extrai a capa do processo e exporta em uma planilha"
   },
   {
-    "Id": 6,
+    "Id": "6",
     "display_name": "ESAJ - PROTOCOLO",
     "sistema": "ESAJ",
     "categoria": "PROTOCOLO",
+    "configuracao_form": "multipe_files",
     "descricao": "Peticionamento em lotes de processos "
   },
   {
-    "Id": 7,
+    "Id": "7",
     "display_name": "ESAJ - MOVIMENTAÇÕES",
     "sistema": "ESAJ",
     "categoria": "MOVIMENTACAO",
+    "configuracao_form": "file_auth",
     "descricao": "Extrator de movimentações processuais "
   },
   {
-    "Id": 8,
+    "Id": "8",
     "display_name": "ESAJ - BUSCA PAGAMENTOS",
     "sistema": "ESAJ",
     "categoria": "BUSCA_PAGS",
+    "configuracao_form": "file_auth",
     "descricao": "Robô responsável por buscar pagamentos feitos em processos"
   },
   {
-    "Id": 9,
+    "Id": "9",
     "display_name": "ESAJ - BUSCA PROCESSOS",
     "sistema": "ESAJ",
     "categoria": "PROC_PARTE",
+    "configuracao_form": "proc_parte",
     "descricao": "Busca processos por nome da parte e exporta em uma planilha"
   },
   {
-    "Id": 10,
+    "Id": "10",
     "display_name": "ESAJ - EMISSÃO GUIAS",
     "sistema": "ESAJ",
     "categoria": "EMISSOR",
+    "configuracao_form": "file_auth",
     "descricao": "Emissor de guias de pagamento ESAJ"
   },
   {
-    "Id": 11,
+    "Id": "11",
     "display_name": "PJE - CAPA",
     "sistema": "PJE",
     "categoria": "CAPA",
+    "configuracao_form": "pje",
     "descricao": "Extrai a capa do processo e exporta em uma planilha"
   },
   {
-    "Id": 12,
+    "Id": "12",
     "display_name": "PJE - PROTOCOLO",
     "sistema": "PJE",
     "categoria": "PROTOCOLO",
+    "configuracao_form": "pje_protocolo",
     "descricao": "Peticionamento em lotes de processos "
   },
   {
-    "Id": 13,
+    "Id": "13",
     "display_name": "CAIXA - EMISSÃO GUIAS",
     "sistema": "CAIXA",
     "categoria": "EMISSOR",
+    "configuracao_form": "only_file",
     "descricao": "Robô responsável por emissão de guias"
   },
   {
-    "Id": 14,
+    "Id": "14",
     "display_name": "TJDFT - CALCULADORA",
     "sistema": "TJDFT",
     "categoria": "CALCULO",
+    "configuracao_form": "only_file",
     "descricao": "Robô de emissão de cálculo de atualização monetária"
   },
   {
-    "Id": 15,
+    "Id": "15",
     "display_name": "ELAW - DOWNLOAD ARQ.",
     "sistema": "ELAW",
     "categoria": "DOWNLOAD",
+    "configuracao_form": "file_auth",
     "descricao": "Robô responsável por baixar documentos"
   },
   {
-    "Id": 16,
+    "Id": "16",
     "display_name": "ELAW - PAGAMENTOS",
     "sistema": "ELAW",
     "categoria": "SOLICITA_PAGAMENTO",
+    "configuracao_form": "multipe_files",
     "descricao": "Robô responsável por solicitação de pagamentos"
   },
   {
-    "Id": 17,
+    "Id": "17",
     "display_name": "ELAW - CADASTRO",
     "sistema": "ELAW",
     "categoria": "CADASTRO",
+    "configuracao_form": "file_auth",
     "descricao": "Robô responsável por realizar cadastro de processos"
   },
   {
-    "Id": 18,
+    "Id": "18",
     "display_name": "ELAW - PROVISIONAMENTO",
     "sistema": "ELAW",
     "categoria": "PROVISAO",
+    "configuracao_form": "file_auth",
     "descricao": "Robô responsável por provisionar valores"
   },
   {
-    "Id": 19,
+    "Id": "19",
     "display_name": "ELAW - ANDAMENTOS",
     "sistema": "ELAW",
     "categoria": "ANDAMENT",
+    "configuracao_form": "multipe_files",
     "descricao": "Robô responsável por inserção de andamentos"
   },
   {
-    "Id": 20,
+    "Id": "20",
     "display_name": "ELAW - COMPLEMENTAR CADASTRO",
     "sistema": "ELAW",
     "categoria": "COMPLEMENTAR_CADASTRO",
+    "configuracao_form": "file_auth",
     "descricao": "Robô responsável por realizar complemento de cadastro nos processos"
   },
   {
-    "Id": 21,
+    "Id": "21",
     "display_name": "JUSDS - Realizar Compromisso",
     "sistema": "JUSDS",
     "categoria": "REALIZA_PRAZO",
+    "configuracao_form": "multipe_files",
     "descricao": "Robô responsável por realizar compromissos no JUSDS"
   },
   {
-    "Id": 22,
+    "Id": "22",
     "display_name": "CSI - Download Documentos",
     "sistema": "CSI",
     "categoria": "DOWNLOAD_DOCUMENTO",
+    "configuracao_form": "file_auth",
     "descricao": "Robô responsável por realizar o download de documentos no CSI"
   }
 ]

@@ -6,10 +6,10 @@ from app.models import User
 projudi = Blueprint("projudi", __name__, url_prefix="/bot/projudi")
 
 
-@projudi.post("/run/<int:bot_id>")
+@projudi.post("/run")
 @jwt_required
-def run_bot(bot_id: int) -> str:
-    return f"Running bot with ID: {bot_id}"
+def run_bot() -> str:
+    return "Running bot with ID: "
 
 
 @projudi.get("/credenciais")
@@ -23,7 +23,7 @@ def provide_credentials() -> Response:
         {"value": credential.Id, "text": credential.nome_credencial}
         for credential in list(
             filter(
-                lambda credential: credential.system == "projudi",
+                lambda credential: credential.sistema == "PROJUDI",
                 lic.credenciais,
             )
         )
