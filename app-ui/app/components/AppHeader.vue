@@ -3,7 +3,14 @@
     <Transition>
       <nav v-if="!isLogged" class="navbar navbar-expand-lg bg-body-tertiary rounded">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
+          <NuxtLink
+            class="navbar-brand align-text-center"
+            :to="{ name: 'dashboard' }"
+            active-class="active"
+          >
+            <img src="/img/crawjud.png" alt="" width="45" />
+          </NuxtLink>
+
           <button
             class="navbar-toggler"
             type="button"

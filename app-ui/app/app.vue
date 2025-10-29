@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { useHead } from "#app";
 import { BOrchestrator } from "bootstrap-vue-next";
-
 const { $colormode } = useNuxtApp();
 
 onBeforeMount(async () => {
   await $colormode.setup();
+});
+
+useHead({
+  title: "CrawJUD",
 });
 </script>
 <template>

@@ -18,8 +18,8 @@ api.interceptors.response.use(
   function (response) {
     return response;
   },
-  function (error) {
-    if (401 === error.response.status) {
+  async function (error) {
+    if (error.response.status && 401 === error.response.status) {
       const { $toast: toast, $router: router } = useNuxtApp();
 
       toast.create({
@@ -31,6 +31,8 @@ api.interceptors.response.use(
         noProgress: true,
         modelValue: 1500,
       });
+
+      await api.post("/auth/logout");
 
       router.push({ name: "login" });
     } else {

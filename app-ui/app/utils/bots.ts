@@ -4,6 +4,8 @@ import logoJusBr from "~/assets/img/jusbr.png";
 import logoElaw from "~/assets/img/logoelaw.png";
 import logoPJE1 from "~/assets/img/pje.png";
 import logoProjudi from "~/assets/img/projudilogo.png";
+import capa from "./_forms/capa.vue";
+import protocolo from "./_forms/protocolo.vue";
 
 class Bots {
   private class_logo: Record<system_bots, string> = {
@@ -21,11 +23,16 @@ class Bots {
     JUSDS: logoJusBr,
   };
 
+  private forms = {
+    capa: capa,
+    protocolo: protocolo,
+  };
+
   constructor() {}
 
   async listagemBots() {
     try {
-      const response: BotResponse = await api.get("/bots/listagem");
+      const response = await api.get<BotPayload>("/bots/listagem", { withCredentials: true });
 
       if (response.data) {
         return response.data.listagem;
@@ -46,21 +53,30 @@ class Bots {
     return this.imagesSrc[system.toUpperCase() as system_bots] || crawjud;
   }
 
-  handleBotSelected(botInfo: BotInfo) {
+  handleBotSelected(bot_selected: BotInfo) {
     const { $router: router, $pinia } = useNuxtApp();
 
-    const store = botStore($pinia);
-    store.bot = botInfo;
+    const { bot } = storeToRefs(botStore($pinia));
+    bot.value = bot_selected;
 
     router.push({
       name: `bots-system-type`,
-      params: { system: botInfo.system.toLowerCase(), type: botInfo.bot_type.toLowerCase() },
+      params: {
+        system: bot_selected.sistema.toLowerCase(),
+        type: bot_selected.categoria.toLowerCase(),
+      },
     });
   }
 
-  async startBot(ev: Event) {
-    ev.preventDefault();
+  getComponent() {
+    const { $router: router } = useNuxtApp();
+    const route = useRoute();
+    const comp = this.forms[route.params.type as "capa"];
+    if (!comp) router.push({ name: "bots" });
+    return comp;
+  }
 
+  async startBot(form: FormData) {
     const { $toast } = useNuxtApp();
 
     $toast.create({

@@ -10,7 +10,7 @@ class Authentication {
 
     try {
       const resp = await api.post("/auth/login", form);
-      console.log(resp);
+
       if (resp.data.message) {
         message = resp.data.message;
         message_type = "success";

@@ -3,13 +3,20 @@ type system_bots = "PROJUDI" | "ESAJ" | "ELAW" | "JUSDS" | "PJE";
 interface BotInfo {
   id: number;
   display_name: string;
-  system: system_bots;
+  sistema: system_bots;
   descricao: string;
-  bot_type: string;
+  categoria: string;
 }
 
-interface BotResponse extends AxiosResponse {
-  data?: {
-    listagem: BotInfo[];
-  };
+interface BotPayload {
+  listagem: BotInfo[];
+}
+
+interface CredenciaisSelect {
+  value: number | null | undefined;
+  text: string;
+}
+
+interface CredenciaisPayload {
+  credenciais: CredenciaisSelect[];
 }

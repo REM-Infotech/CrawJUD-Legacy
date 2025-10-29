@@ -1,11 +1,5 @@
 <script setup lang="ts">
-const ex1Options = [
-  { value: null, text: "Selecione" },
-  { value: "a", text: "This is First option" },
-  { value: "b", text: "Selected Option" },
-  { value: { C: "3PO" }, text: "This is an option with object value" },
-  { value: "d", text: "This one is disabled", disabled: true },
-];
+const { bot, opcoesCredenciais } = botStore();
 
 const selected = ref(null);
 </script>
@@ -23,7 +17,7 @@ const selected = ref(null);
     </BCol>
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Credencial" label-size="lg">
-        <BFormSelect v-model="selected" :options="ex1Options" size="lg" class="mt-3" />
+        <BFormSelect v-model="selected" :options="opcoesCredenciais" size="lg" class="mt-3" />
       </BFormGroup>
     </BCol>
   </div>
