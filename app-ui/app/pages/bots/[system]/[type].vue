@@ -1,35 +1,27 @@
 <script setup lang="ts">
 import { useHead } from "#app";
-
-const { bot, botForm, opcoesCredenciais } = botStore();
-
 const { $router } = useNuxtApp();
+const {
+  store: { bot, botForm, btnConfirm, confirmedState },
+} = bots.loadPlugins();
 
 onMounted(() => {
-  if (!bot) $router.push({ name: "bots" });
-});
-
-const btnConfirm = ref(false);
-const confirmedState = computed(() => btnConfirm.value);
-
-useHead({
-  title: bot?.display_name,
+  if (!bot.value) $router.push({ name: "bots" });
+  botForm.value = new FormData();
 });
 
 onBeforeMount(async () => {
-  if (!bot) return;
+  await bots.loadCredentials();
+});
 
-  const resp = await api.get<CredenciaisPayload>(`/bot/${bot.sistema.toLowerCase()}/credenciais`);
-
-  if (resp.data) {
-    opcoesCredenciais.push(...resp.data.credenciais);
-  }
+useHead({
+  title: bot.value?.display_name,
 });
 
 function handleSubmit(ev: Event) {
   ev.preventDefault();
 
-  bots.startBot(botForm as FormData);
+  bots.startBot(botForm.value as FormData);
 }
 </script>
 

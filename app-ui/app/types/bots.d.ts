@@ -1,9 +1,11 @@
-type system_bots = "PROJUDI" | "ESAJ" | "ELAW" | "JUSDS" | "PJE";
+type SytemBots = "PROJUDI" | "ESAJ" | "ELAW" | "JUSDS" | "PJE";
+type ConfigForm = "file_auth" | "multipe_files" | "only_auth" | "proc_parte" | "only_file";
 
 interface BotInfo {
   id: number;
+  configuracao_form: ConfigForm;
   display_name: string;
-  sistema: system_bots;
+  sistema: SytemBots;
   descricao: string;
   categoria: string;
 }
@@ -19,4 +21,11 @@ interface CredenciaisSelect {
 
 interface CredenciaisPayload {
   credenciais: CredenciaisSelect[];
+}
+
+interface StartBotPayload {
+  pid: string;
+  title: string;
+  message: string;
+  status: "success" | "danger";
 }
