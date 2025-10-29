@@ -5,6 +5,7 @@ default:
       "app.resources.extensions:start_extensions",
       "app.models:init_database",
       "app.routes:register_routes",
+      "app.models:create_bots",
     ]
 
   ## Configurações do Flask
@@ -74,7 +75,8 @@ default:
   ROOT_EMAIL: "@format {env[CRAWJUD_ROOT_EMAIL]} @default 'admin@example.com'"
   ROOT_CLIENT: "@format {env[CRAWJUD_ROOT_CLIENT]} @default 'Example'"
   ROOT_CPF_CNPJ_CLIENT: "@format {env[CRAWJUD_ROOT_CPF_CNPJ_CLIENT]} @default '00'"
-
+  JWT_ACCESS_TOKEN_EXPIRES: 86400
+  JWT_CSRF_IN_COOKIES: true
   JWT_ACCESS_COOKIE_NAME: "access_token_cookie"
   JWT_COOKIE_DOMAIN: "@format {env[CRAWJUD_APP_DOMAIN]}"
   JWT_COOKIE_SAMESITE: None
