@@ -6,6 +6,7 @@ default:
       "app.models:init_database",
       "app.routes:register_routes",
       "app.models:create_bots",
+      "app.models:load_credentials",
     ]
 
   ## Configurações do Flask
