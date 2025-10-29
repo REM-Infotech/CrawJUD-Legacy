@@ -7,12 +7,10 @@ const selectedCredencial = ref<string>(null as unknown as string);
 const arquivo_xlsx = ref<File>();
 
 watch(selectedCredencial, (selectedOpt) => {
-  console.log(selectedOpt);
   botForm.value?.append("credencial_id", selectedOpt);
 });
 
 watch(arquivo_xlsx, async (arquivoXlsx) => {
-  console.log(arquivoXlsx);
   botForm.value?.append("xlsx", arquivoXlsx?.name as string);
 
   const uploader = new fileUpload(arquivoXlsx as File);
