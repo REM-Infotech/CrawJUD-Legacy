@@ -22,21 +22,18 @@ class multipleFileUpload {
     progressBarValue.value = 0.1;
 
     for (let i = 0; i < this.files.length; i++) {
-      setTimeout(async () => {
-        const file = this.files[i] as File;
-        await this.sendFileInChunks(file); // Envia o arquivo em chunks de 80KB
-      }, 500);
+      const file = this.files[i] as File;
+      await this.sendFileInChunks(file);
     }
 
     await new Promise((r) => setTimeout(r, 5000));
-    progressBarValue.value = 0;
   }
   private async sendFileInChunks(file: File) {
     const {
       store: { progressBarValue },
     } = bots.loadPlugins();
 
-    const chunkSize = 1024;
+    const chunkSize = 1024 * 1024;
     const fileSize = file.size;
     const totalChunks = Math.ceil(fileSize / chunkSize);
 
@@ -75,6 +72,7 @@ class multipleFileUpload {
 
       while (progressBarValue.value !== targetProgress) {
         progressBarValue.value += step;
+        console.log(progressBarValue.value);
         await new Promise((r) => setTimeout(r, 20));
       }
     }

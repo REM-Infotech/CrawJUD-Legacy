@@ -1,9 +1,6 @@
 import type { Socket } from "socket.io-client";
 
 class fileUploader {
-  private chunkSize: number = 1024;
-  private totalChunks: number;
-
   private file: File;
   private fileSize: number;
 
@@ -18,8 +15,6 @@ class fileUploader {
     this.fileSocket.connect();
     this.file = file;
     this.fileSize = file.size;
-
-    this.totalChunks = Math.ceil(file.size / this.chunkSize);
   }
   async upload() {
     setTimeout(async () => {
@@ -27,13 +22,15 @@ class fileUploader {
     }, 500);
   }
   private async sendFileInChunks() {
+    const chunkSize = 1024 * 1024;
+    const totalChunks = Math.ceil(this.file.size / chunkSize);
     const {
       store: { progressBarValue },
     } = bots.loadPlugins();
 
-    for (let i = 0; i < this.totalChunks; i++) {
-      const start = i * this.chunkSize;
-      const end = Math.min(this.file.size, start + this.chunkSize);
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(this.file.size, start + chunkSize);
 
       const chunk = this.file.slice(start, end);
       const arrayBuffer = await chunk.arrayBuffer();
@@ -66,8 +63,6 @@ class fileUploader {
         progressBarValue.value += step;
         await new Promise((r) => setTimeout(r, 20)); // delay entre cada incremento
       }
-
-      console.log(progressBarValue.value);
 
       if (end >= this.file.size) {
         await new Promise((r) => setTimeout(r, 5000));

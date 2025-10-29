@@ -19,7 +19,7 @@ watch(arquivo_xlsx, async (arquivoXlsx) => {
 </script>
 
 <template>
-  <div class="row g-5 p-3">
+  <div class="row g-2 p-3">
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Planilha Xlsx" label-size="lg">
         <BFormFile

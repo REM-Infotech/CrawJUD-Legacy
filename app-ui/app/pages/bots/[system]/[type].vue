@@ -14,6 +14,10 @@ onBeforeMount(async () => {
   await bots.loadCredentials();
 });
 
+onUnmounted(() => {
+  botForm.value = undefined;
+});
+
 useHead({
   title: bot.value?.display_name,
 });
