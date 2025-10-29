@@ -66,7 +66,7 @@ def user_lookup_callback(*args: MyAny, **kwargs: MyAny) -> User | None:
         jwt_data.update(item)
 
     return (
-        db.session.query(User).filter_by(id=int(jwt_data["sub"])).one_or_none()
+        db.session.query(User).filter_by(Id=int(jwt_data["sub"])).one_or_none()
     )
 
 

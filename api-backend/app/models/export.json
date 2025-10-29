@@ -1,0 +1,156 @@
+[
+  {
+    "Id": 1,
+    "display_name": "PROJUDI - CAPA",
+    "sistema": "PROJUDI",
+    "categoria": "CAPA",
+    "descricao": "Extrai a capa do processo e exporta em uma planilha"
+  },
+  {
+    "Id": 2,
+    "display_name": "PROJUDI - PROTOCOLO",
+    "sistema": "PROJUDI",
+    "categoria": "PROTOCOLO",
+    "descricao": "Peticionamento em lotes de processos "
+  },
+  {
+    "Id": 3,
+    "display_name": "PROJUDI - INTIMAÇÕES",
+    "sistema": "PROJUDI",
+    "categoria": "INTIMACOES",
+    "descricao": "Extrai intimações do painel do advogado e exporta em uma planilha"
+  },
+  {
+    "Id": 4,
+    "display_name": "PROJUDI - MOVIMENTAÇÕES",
+    "sistema": "PROJUDI",
+    "categoria": "MOVIMENTACAO",
+    "descricao": "Extrator de movimentações processuais "
+  },
+  {
+    "Id": 5,
+    "display_name": "ESAJ - CAPA",
+    "sistema": "ESAJ",
+    "categoria": "CAPA",
+    "descricao": "Extrai a capa do processo e exporta em uma planilha"
+  },
+  {
+    "Id": 6,
+    "display_name": "ESAJ - PROTOCOLO",
+    "sistema": "ESAJ",
+    "categoria": "PROTOCOLO",
+    "descricao": "Peticionamento em lotes de processos "
+  },
+  {
+    "Id": 7,
+    "display_name": "ESAJ - MOVIMENTAÇÕES",
+    "sistema": "ESAJ",
+    "categoria": "MOVIMENTACAO",
+    "descricao": "Extrator de movimentações processuais "
+  },
+  {
+    "Id": 8,
+    "display_name": "ESAJ - BUSCA PAGAMENTOS",
+    "sistema": "ESAJ",
+    "categoria": "BUSCA_PAGS",
+    "descricao": "Robô responsável por buscar pagamentos feitos em processos"
+  },
+  {
+    "Id": 9,
+    "display_name": "ESAJ - BUSCA PROCESSOS",
+    "sistema": "ESAJ",
+    "categoria": "PROC_PARTE",
+    "descricao": "Busca processos por nome da parte e exporta em uma planilha"
+  },
+  {
+    "Id": 10,
+    "display_name": "ESAJ - EMISSÃO GUIAS",
+    "sistema": "ESAJ",
+    "categoria": "EMISSOR",
+    "descricao": "Emissor de guias de pagamento ESAJ"
+  },
+  {
+    "Id": 11,
+    "display_name": "PJE - CAPA",
+    "sistema": "PJE",
+    "categoria": "CAPA",
+    "descricao": "Extrai a capa do processo e exporta em uma planilha"
+  },
+  {
+    "Id": 12,
+    "display_name": "PJE - PROTOCOLO",
+    "sistema": "PJE",
+    "categoria": "PROTOCOLO",
+    "descricao": "Peticionamento em lotes de processos "
+  },
+  {
+    "Id": 13,
+    "display_name": "CAIXA - EMISSÃO GUIAS",
+    "sistema": "CAIXA",
+    "categoria": "EMISSOR",
+    "descricao": "Robô responsável por emissão de guias"
+  },
+  {
+    "Id": 14,
+    "display_name": "TJDFT - CALCULADORA",
+    "sistema": "TJDFT",
+    "categoria": "CALCULO",
+    "descricao": "Robô de emissão de cálculo de atualização monetária"
+  },
+  {
+    "Id": 15,
+    "display_name": "ELAW - DOWNLOAD ARQ.",
+    "sistema": "ELAW",
+    "categoria": "DOWNLOAD",
+    "descricao": "Robô responsável por baixar documentos"
+  },
+  {
+    "Id": 16,
+    "display_name": "ELAW - PAGAMENTOS",
+    "sistema": "ELAW",
+    "categoria": "SOLICITA_PAGAMENTO",
+    "descricao": "Robô responsável por solicitação de pagamentos"
+  },
+  {
+    "Id": 17,
+    "display_name": "ELAW - CADASTRO",
+    "sistema": "ELAW",
+    "categoria": "CADASTRO",
+    "descricao": "Robô responsável por realizar cadastro de processos"
+  },
+  {
+    "Id": 18,
+    "display_name": "ELAW - PROVISIONAMENTO",
+    "sistema": "ELAW",
+    "categoria": "PROVISAO",
+    "descricao": "Robô responsável por provisionar valores"
+  },
+  {
+    "Id": 19,
+    "display_name": "ELAW - ANDAMENTOS",
+    "sistema": "ELAW",
+    "categoria": "ANDAMENT",
+    "descricao": "Robô responsável por inserção de andamentos"
+  },
+  {
+    "Id": 20,
+    "display_name": "ELAW - COMPLEMENTAR CADASTRO",
+    "sistema": "ELAW",
+    "categoria": "COMPLEMENTAR_CADASTRO",
+    "descricao": "Robô responsável por realizar complemento de cadastro nos processos"
+  },
+  {
+    "Id": 21,
+    "display_name": "JUSDS - Realizar Compromisso",
+    "sistema": "JUSDS",
+    "categoria": "REALIZA_PRAZO",
+    "descricao": "Robô responsável por realizar compromissos no JUSDS"
+  },
+  {
+    "Id": 22,
+    "display_name": "CSI - Download Documentos",
+    "sistema": "CSI",
+    "categoria": "DOWNLOAD_DOCUMENTO",
+    "descricao": "Robô responsável por realizar o download de documentos no CSI"
+  }
+]

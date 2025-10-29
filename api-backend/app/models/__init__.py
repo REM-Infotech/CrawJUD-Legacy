@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
+from __types import Dict
 from flask import Flask
 
+from app.models._bot import Bots, CredenciaisRobo, ExecucoesBot
 from app.models._users import LicenseUser, User
 from app.resources.extensions import db
 
@@ -13,6 +18,9 @@ __all__ = [
     "LicenseUser",
     "User",
     "TokenBlocklist",
+    "Bots",
+    "ExecucoesBot",
+    "CredenciaisRobo",
 ]
 
 
@@ -38,13 +46,42 @@ def init_database(app: Flask) -> None:
 
             root_license = (
                 db.session.query(LicenseUser)
-                .filter_by(desc="Root License")
+                .filter(LicenseUser.Nome == "Root License")
                 .first()
             )
             if not root_license:
-                root_license = LicenseUser(desc="Root License")
+                root_license = LicenseUser(
+                    Nome="Root License",
+                    descricao="Root License",
+                )
 
-            root_user.license_id = root_license.Id
-            root_user.License = root_license
+            root_license.usuarios.append(root_user)
             db.session.add_all([root_license, root_user])
+            db.session.commit()
+
+
+def create_bots(app: Flask) -> None:
+    with app.app_context():
+        path_export = Path(__file__).parent.joinpath("export.json")
+
+        lic = (
+            db.session.query(LicenseUser)
+            .filter(LicenseUser.Nome == "Root License")
+            .first()
+        )
+
+        with path_export.open("r", encoding="utf-8") as fp:
+            list_data: list[Dict] = json.load(fp)
+
+            list_bot_add = [
+                Bots(**bot)
+                for bot in list_data
+                if not db.session.query(Bots)
+                .filter(Bots.Id == bot["Id"])
+                .first()
+            ]
+
+            lic.bots.extend(list_bot_add)
+
+            db.session.add_all(list_bot_add)
             db.session.commit()

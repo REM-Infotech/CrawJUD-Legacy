@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from dynaconf import Dynaconf, FlaskDynaconf
 from flask import Flask
 from passlib.context import CryptContext
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 load_dotenv(Path.cwd().parent)
@@ -40,5 +41,9 @@ def create_app() -> Flask:
         instance_relative_config=True,
         extensions_list="EXTENSIONS",  # pyright: ignore[reportArgumentType]
         dynaconf_instance=settings,
+    )
+
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
     )
     return app
