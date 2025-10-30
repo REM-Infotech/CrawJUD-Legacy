@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io-client";
+import crawjud2 from "~/assets/img/crawjud2.png";
 
 class fileSheetUpload {
   private file: File;
@@ -74,6 +75,11 @@ class fileSheetUpload {
           body: `Arquivo ${this.file.name} enviado!`,
           variant: "success",
           modelValue: 5000,
+        });
+
+        new Notification("CrawJUD", {
+          body: `Arquivo ${this.file.name} enviado!`,
+          icon: crawjud2,
         });
 
         await new Promise((r) => setTimeout(r, 2000));

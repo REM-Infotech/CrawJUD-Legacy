@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io-client";
+import crawjud2 from "~/assets/img/crawjud2.png";
 
 class multipleFileUpload {
   private files: File[];
@@ -32,6 +33,11 @@ class multipleFileUpload {
       body: `Seus ${this.files.length} foram enviados com sucesso!`,
       variant: "success",
       modelValue: 5000,
+    });
+
+    new Notification("CrawJUD", {
+      body: `Seus ${this.files.length} foram enviados com sucesso!`,
+      icon: crawjud2,
     });
 
     await new Promise((r) => setTimeout(r, 2000));

@@ -4,6 +4,7 @@ import { BOrchestrator } from "bootstrap-vue-next";
 const { $colormode } = useNuxtApp();
 
 onBeforeMount(async () => {
+  await Notification.requestPermission();
   await $colormode.setup();
 });
 

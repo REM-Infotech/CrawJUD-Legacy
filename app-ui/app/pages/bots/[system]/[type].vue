@@ -2,7 +2,7 @@
 import { useHead } from "#app";
 const { $router } = useNuxtApp();
 const {
-  store: { bot, botForm, btnConfirm, confirmedState },
+  store: { bot, botForm, btnConfirm, confirmedState, progressBar },
 } = bots.loadPlugins();
 
 onMounted(() => {
@@ -55,11 +55,16 @@ function handleSubmit(ev: Event) {
                 Confirmo que os dados enviados estão corretos.
               </BFormCheckbox>
               <Transition name="startbot" mode="out-in">
-                <BButton size="lg" v-if="confirmedState" type="submit" variant="outline-success">
+                <BButton
+                  size="lg"
+                  v-if="confirmedState && progressBar === 0"
+                  type="submit"
+                  variant="outline-success"
+                >
                   Inicializar robô
                 </BButton>
               </Transition>
-              <BButton size="lg" variant="primary"> Gerar planilha Modelo </BButton>
+              <BButton size="lg" variant="outline-primary"> Gerar planilha Modelo </BButton>
             </div>
           </template>
         </AppCard>
