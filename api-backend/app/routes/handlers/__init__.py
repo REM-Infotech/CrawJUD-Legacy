@@ -2,13 +2,13 @@
 
 from pathlib import Path
 
-from __types import MyAny
-from _interfaces import Message
 from flask import request
 from flask_socketio import join_room
 from tqdm import tqdm
 from werkzeug.utils import secure_filename
 
+from __types import MyAny
+from _interfaces import Message
 from app.resources.extensions import io
 
 
@@ -34,7 +34,6 @@ def log_bot(data: Message) -> None:
 @io.on("add_file", namespace="/files")
 def add_file(data: MyAny = None) -> None:
     """Log bot."""
-    print(data)
     if data:
         sid = request.sid
         path_file = Path.cwd().joinpath(
