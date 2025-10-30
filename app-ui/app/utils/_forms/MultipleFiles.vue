@@ -1,48 +1,15 @@
 <script setup lang="ts">
-const {
-  store: { botForm, opcoesCredenciais, progressBar, sidXlsxFile, sidUploadFiles },
-} = bots.loadPlugins();
+const { progressBar, opcoesCredenciais } = storeToRefs(botStore());
 
-const selectedCredencial = ref<string>(null as unknown as string);
-const arquivo_xlsx = ref<File>();
-const outros_arquivos = ref<File[]>();
-
-watch(selectedCredencial, (selectedOpt) => {
-  botForm.value?.append("credencial_id", selectedOpt);
+const MultipleFilesForm = reactive<RecordMultipleFilesForm>({
+  ArquivoXlsx: undefined,
+  Credential: null,
+  OutrosArquivos: undefined,
 });
 
-watch(arquivo_xlsx, async (arquivoXlsx) => {
-  if (arquivoXlsx) {
-    botForm.value?.append("xlsx", arquivoXlsx?.name as string);
-    const uploader = new fileSheetUpload(arquivoXlsx as File);
-    await uploader.upload();
-  }
-});
-
-watch(outros_arquivos, async (outrosArquivos) => {
-  const arquivos: string[] = [];
-  if (outrosArquivos) {
-    Array.from(outrosArquivos).forEach((file) => {
-      arquivos.push(file.name);
-    });
-
-    botForm.value?.append("outros_arquivos", arquivos as unknown as string);
-    const uploader = new multipleFileUpload(outrosArquivos);
-    await uploader.upload();
-  }
-});
-
-watch(sidXlsxFile, (newSid) => {
-  if (newSid) {
-    botForm.value?.append("xlsx_sid", newSid);
-  }
-});
-
-watch(sidUploadFiles, (newSid) => {
-  if (newSid) {
-    botForm.value?.append("outros_arquivos_sid", newSid);
-  }
-});
+watch(() => MultipleFilesForm.ArquivoXlsx, FormManager.uploadXlsx);
+watch(() => MultipleFilesForm.OutrosArquivos, FormManager.uploadMultipleFiles);
+watch(() => MultipleFilesForm.Credential, FormManager.LoadCredential);
 </script>
 
 <template>
@@ -51,7 +18,7 @@ watch(sidUploadFiles, (newSid) => {
       <BFormGroup label="Planilha Xlsx" label-size="lg">
         <BFormFile
           :disabled="progressBar > 0"
-          v-model="arquivo_xlsx"
+          v-model="MultipleFilesForm.ArquivoXlsx"
           class="mt-3"
           size="lg"
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -63,7 +30,7 @@ watch(sidUploadFiles, (newSid) => {
         <BFormFile
           :disabled="progressBar > 0"
           multiple
-          v-model="outros_arquivos"
+          v-model="MultipleFilesForm.OutrosArquivos"
           class="mt-3"
           size="lg"
           accept="application/pdf"
@@ -80,7 +47,7 @@ watch(sidUploadFiles, (newSid) => {
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Credencial" label-size="lg">
         <BFormSelect
-          v-model="selectedCredencial"
+          v-model="MultipleFilesForm.Credential"
           :options="opcoesCredenciais"
           size="lg"
           class="mt-3"

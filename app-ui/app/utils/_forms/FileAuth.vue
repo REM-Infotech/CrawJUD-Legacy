@@ -1,55 +1,42 @@
 <script setup lang="ts">
-const {
-  store: { botForm, opcoesCredenciais, progressBar, sidXlsxFile },
-} = bots.loadPlugins();
+const { progressBar, opcoesCredenciais } = storeToRefs(botStore());
 
-const selectedCredencial = ref<string>(null as unknown as string);
-const arquivo_xlsx = ref<File>();
-
-watch(selectedCredencial, (selectedOpt) => {
-  botForm.value?.append("credencial_id", selectedOpt);
+const FormFileAuth = reactive<RecordFileAuthForm>({
+  ArquivoXlsx: undefined,
+  Credential: null,
 });
 
-watch(arquivo_xlsx, async (arquivoXlsx) => {
-  botForm.value?.append("xlsx", arquivoXlsx?.name as string);
-
-  const uploader = new fileSheetUpload(arquivoXlsx as File);
-  await uploader.upload();
-});
-
-watch(sidXlsxFile, (newSid) => {
-  if (newSid) {
-    botForm.value?.append("xlsx_sid", newSid);
-  }
-});
+watch(() => FormFileAuth.ArquivoXlsx, FormManager.uploadXlsx);
+watch(() => FormFileAuth.Credential, FormManager.LoadCredential);
 </script>
 
 <template>
   <div class="row g-2 p-3">
-    <BCol md="12" lg="12" xl="12" sm="12">
+    <BCol md="12" lg="12" xl="12" sm="12" class="container rounded rounded-4">
       <BFormGroup label="Planilha Xlsx" label-size="lg">
         <BFormFile
-          v-model="arquivo_xlsx"
+          v-model="FormFileAuth.ArquivoXlsx"
           class="mt-3"
           size="lg"
           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          required
         />
       </BFormGroup>
-    </BCol>
-    <BCol md="12" lg="12" xl="12" sm="12">
       <Transition name="page" mode="in-out">
         <div v-if="progressBar > 0" class="d-grid">
           <BProgress :value="progressBar" :max="100" />
         </div>
       </Transition>
     </BCol>
+    <BCol md="12" lg="12" xl="12" sm="12"> </BCol>
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Credencial" label-size="lg">
         <BFormSelect
-          v-model="selectedCredencial"
+          v-model="FormFileAuth.Credential"
           :options="opcoesCredenciais"
           size="lg"
           class="mt-3"
+          required
         />
       </BFormGroup>
     </BCol>

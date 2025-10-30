@@ -2,7 +2,7 @@ type SytemBots = "PROJUDI" | "ESAJ" | "ELAW" | "JUSDS" | "PJE";
 type ConfigForm = "file_auth" | "multipe_files" | "only_auth" | "proc_parte" | "only_file";
 
 interface BotInfo {
-  id: number;
+  Id: number;
   configuracao_form: ConfigForm;
   display_name: string;
   sistema: SytemBots;
@@ -27,5 +27,5 @@ interface StartBotPayload {
   pid: string;
   title: string;
   message: string;
-  status: "success" | "danger";
+  status: MessageType;
 }

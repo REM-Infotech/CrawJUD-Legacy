@@ -14,6 +14,8 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
+type MessageType = "success" | "info" | "error" | "warning";
+
 interface Element {
   focus(): void;
 }
@@ -31,6 +33,8 @@ interface NotificationOptions {
   tag?: string;
 }
 type KeywordArgs = {
-  title?: string;
-  options: NotificationOptions;
+  title: string;
+  message: string;
+  type: MessageType;
+  duration: number;
 };

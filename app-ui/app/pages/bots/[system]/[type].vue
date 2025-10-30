@@ -1,37 +1,19 @@
 <script setup lang="ts">
 import { useHead } from "#app";
 const { $router } = useNuxtApp();
-const {
-  store: { bot, botForm, btnConfirm, confirmedState, progressBar },
-} = bots.loadPlugins();
 
-onMounted(() => {
-  if (!bot.value) $router.push({ name: "bots" });
-  botForm.value = new FormData();
-});
+const { bot, btnConfirm, confirmedState, progressBar } = storeToRefs(botStore());
 
-onBeforeMount(async () => {
-  await bots.loadCredentials();
-});
-
-onUnmounted(() => {
-  botForm.value = undefined;
-});
+onBeforeMount(FormManager.RetrieveCredentials);
 
 useHead({
   title: bot.value?.display_name,
 });
-
-function handleSubmit(ev: Event) {
-  ev.preventDefault();
-
-  bots.startBot(botForm.value as FormData);
-}
 </script>
 
 <template>
   <div>
-    <BForm @submit="handleSubmit">
+    <BForm @submit="FormManager.HandleSubmit">
       <BContainer fluid="md">
         <AppCard class="form-card">
           <template #header>
@@ -40,7 +22,7 @@ function handleSubmit(ev: Event) {
             </span>
           </template>
           <template #body>
-            <component :is="bots.getComponent()" />
+            <component :is="FormManager.getForm()" />
           </template>
           <template #footer>
             <div class="d-grid gap-3">
