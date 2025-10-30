@@ -1,17 +1,24 @@
+import { storeToRefs } from "pinia";
 import type { Socket } from "socket.io-client";
 
 class FileUploader {
   public FormBot: FormData;
-  private totalSent: number = 0;
-  private chunkSize: number = 0;
+  private totalSent: number;
+  private chunkSize: number;
   public fileSocket?: Socket = undefined;
 
   constructor() {
+    this.totalSent = 0;
+    this.chunkSize = 1024 * 80;
+    this.fileSocket = socketio.socket("/files");
+
+    this.fileSocket?.connect();
     this.FormBot = new FormData();
   }
 
   public async uploadXlsx(file: File | undefined): Promise<void> {
     this.totalSent = 0;
+
     if (file) {
       await this.uploadInChunks(file, file.size);
 
@@ -48,7 +55,7 @@ class FileUploader {
     for (let i = 0; i < totalChunks; i++) {
       const start = i * this.chunkSize;
       const end = Math.min(file.size, start + this.chunkSize);
-
+      console.log(i);
       const chunk = file.slice(start, end);
       const arrayBuffer = await chunk.arrayBuffer();
       const currentSize = arrayBuffer.byteLength;

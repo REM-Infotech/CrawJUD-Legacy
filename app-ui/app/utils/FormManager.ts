@@ -1,3 +1,4 @@
+import { storeToRefs } from "pinia";
 import FileAuth from "./_forms/FileAuth.vue";
 import MultipleFiles from "./_forms/MultipleFiles.vue";
 import FileUploader from "./interfaces/FileUploader";
@@ -13,9 +14,6 @@ const FormComponents: FormComponentRecord = {
 class FormManager extends FileUploader {
   constructor() {
     super();
-
-    this.fileSocket = socketio.socket("/files");
-    this.fileSocket?.connect();
   }
 
   public async HandleSubmit(ev: Event) {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "#app";
+import { storeToRefs } from "pinia";
 const { $router } = useNuxtApp();
 
 const { bot, btnConfirm, confirmedState, progressBar } = storeToRefs(botStore());
@@ -13,7 +14,7 @@ useHead({
 
 <template>
   <div>
-    <BForm @submit="FormManager.HandleSubmit">
+    <BForm @submit="(ev: Event) => FormManager.HandleSubmit(ev)">
       <BContainer fluid="md">
         <AppCard class="form-card">
           <template #header>
