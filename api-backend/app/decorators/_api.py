@@ -76,10 +76,10 @@ class CrossDomain:
             Callable: Decorador que adiciona cabeçalhos CORS à resposta.
 
         """
-        normalized_methods = self._normalize_methods(self.methods)
-        normalized_headers = self._normalize_headers(self.headers)
-        normalized_origin = self._normalize_origin(self.origin)
-        normalized_max_age = self._normalize_max_age(self.max_age)
+        _normalized_methods = self._normalize_methods(self.methods)
+        _normalized_headers = self._normalize_headers(self.headers)
+        _normalized_origin = self._normalize_origin(self.origin)
+        _normalized_max_age = self._normalize_max_age(self.max_age)
 
         @wraps(wrapped_function)
         def _wrapped(
@@ -110,13 +110,6 @@ class CrossDomain:
             if not self.attach_to_all and request.method != "OPTIONS":
                 return resp
 
-            self._set_cors_headers(
-                resp,
-                normalized_origin,
-                normalized_methods,
-                normalized_headers,
-                normalized_max_age,
-            )
             return resp
 
         return _wrapped
@@ -219,15 +212,19 @@ class CrossDomain:
             cookie_xsrf_name = current_app.config.get(
                 "JWT_ACCESS_CSRF_COOKIE_NAME",
             )
-            _header_xsrf_name = current_app.config.get(
-                "JWT_ACCESS_CSRF_HEADER_NAME",
+            header_xsrf_name = current_app.config.get(
+                "JWT_ACCESS_CSRF_HEADER_NAME", "X-Xsrf-Token"
             )
             xsrf_token = None
             if isinstance(cookie_xsrf_name, str):
                 xsrf_token = request.cookies.get(cookie_xsrf_name, None)
             if not xsrf_token and self.current_request_method != "GET":
-                abort(401, message="Missing XSRF Token")
+                abort(401, description="Missing XSRF Token")
 
+            else:
+                request.headers.environ.update({
+                    f"HTTP_{header_xsrf_name.replace('-', '_')}".upper(): xsrf_token
+                })
         return make_response(f(*args, **kwargs))
 
     def _set_cors_headers(

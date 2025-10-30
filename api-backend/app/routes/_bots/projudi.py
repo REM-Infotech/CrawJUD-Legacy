@@ -1,15 +1,27 @@
-from flask import Blueprint, Response, jsonify, make_response
+from uuid import uuid4
+
+from flask import Blueprint, Response, jsonify, make_response, request
 from flask_jwt_extended import get_current_user, jwt_required
 
+from app.decorators import CrossDomain
 from app.models import User
 
 projudi = Blueprint("projudi", __name__, url_prefix="/bot/projudi")
 
 
 @projudi.post("/run")
-@jwt_required
-def run_bot() -> str:
-    return "Running bot with ID: "
+@CrossDomain(origin="*", methods=["get", "post", "options"])
+@jwt_required()
+def run_bot() -> Response:
+    _request = request
+    return make_response(
+        jsonify({
+            "title": "Sucesso",
+            "message": "Robô inicializado com sucesso!",
+            "status": "success",
+            "pid": uuid4().hex[:6].upper(),
+        })
+    )
 
 
 @projudi.get("/credenciais")
