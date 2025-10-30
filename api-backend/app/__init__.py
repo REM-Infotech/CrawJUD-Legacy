@@ -3,12 +3,13 @@
 from pathlib import Path
 
 from dotenv import load_dotenv
-from dynaconf import Dynaconf, FlaskDynaconf
+from dynaconf import FlaskDynaconf
 from flask import Flask
 from passlib.context import CryptContext
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from __types import MyAny as MyAny
+from app.settings import settings
 
 app = Flask(__name__)
 load_dotenv()
@@ -24,18 +25,6 @@ def create_app() -> Flask:
         Flask: Flask application.
 
     """
-    settings = Dynaconf(
-        lowercase_read=False,
-        envvar_prefix="CRAWJUD",
-        settings_files=["settings.yaml"],
-        environments=True,
-        load_dotenv=True,
-        commentjson_enabled=True,
-        merge_enabled=True,
-        dotenv_override=True,
-        env="celery",
-    )
-
     FlaskDynaconf(
         app=app,
         instance_relative_config=True,
