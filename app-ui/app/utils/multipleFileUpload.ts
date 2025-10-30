@@ -12,28 +12,36 @@ class multipleFileUpload {
     this.fileSocket.connect();
 
     this.files = files;
-    this.files.forEach((file) => (this.totalFilesSizes += file.size));
+    // soma o tamanho total de todos os arquivos
+    this.totalFilesSizes = this.files.reduce((acc, f) => acc + f.size, 0);
   }
   async upload() {
     const {
       store: { progressBarValue },
+      toast,
     } = bots.loadPlugins();
 
-    progressBarValue.value = 0.1;
-
-    for (let i = 0; i < this.files.length; i++) {
-      const file = this.files[i] as File;
+    for (const file of this.files) {
       await this.sendFileInChunks(file);
     }
 
-    await new Promise((r) => setTimeout(r, 5000));
+    toast.create({
+      title: "Sucesso!",
+      body: `Seus ${this.files.length} foram enviados com sucesso!`,
+      variant: "success",
+      modelValue: 5000,
+    });
+
+    await new Promise((r) => setTimeout(r, 2000));
+    progressBarValue.value = 0;
   }
   private async sendFileInChunks(file: File) {
     const {
       store: { progressBarValue },
+      toast,
     } = bots.loadPlugins();
 
-    const chunkSize = 1024 * 1024;
+    const chunkSize = 1024 * 500;
     const fileSize = file.size;
     const totalChunks = Math.ceil(fileSize / chunkSize);
 
@@ -67,7 +75,6 @@ class multipleFileUpload {
       // Atualiza a progressbar lentamente
       const currentProgress = progressBarValue.value;
       const targetProgress = Math.round((this.totalSent / this.totalFilesSizes) * 100);
-
       const step = targetProgress > currentProgress ? 1 : -1;
 
       while (progressBarValue.value !== targetProgress) {
@@ -76,6 +83,12 @@ class multipleFileUpload {
         await new Promise((r) => setTimeout(r, 20));
       }
     }
+    toast.create({
+      title: "Sucesso!",
+      body: `Arquivo ${file.name} enviado!`,
+      variant: "primary",
+      modelValue: 3000,
+    });
   }
 }
 

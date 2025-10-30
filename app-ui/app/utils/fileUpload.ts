@@ -22,10 +22,11 @@ class fileUploader {
     }, 500);
   }
   private async sendFileInChunks() {
-    const chunkSize = 1024 * 1024;
+    const chunkSize = 1024 * 50;
     const totalChunks = Math.ceil(this.file.size / chunkSize);
     const {
       store: { progressBarValue },
+      toast,
     } = bots.loadPlugins();
 
     for (let i = 0; i < totalChunks; i++) {
@@ -65,7 +66,13 @@ class fileUploader {
       }
 
       if (end >= this.file.size) {
-        await new Promise((r) => setTimeout(r, 5000));
+        toast.create({
+          title: "Sucesso!",
+          body: `Arquivo ${this.file.name} enviado!`,
+          variant: "primary",
+          modelValue: 5000,
+        });
+        await new Promise((r) => setTimeout(r, 2000));
         progressBarValue.value = 0;
         break;
       }
