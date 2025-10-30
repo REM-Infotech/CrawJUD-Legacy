@@ -18,9 +18,7 @@ class fileSheetUpload {
     this.fileSize = file.size;
   }
   async upload() {
-    setTimeout(async () => {
-      await this.sendFileInChunks(); // Envia o arquivo em chunks de 80KB
-    }, 500);
+    await this.sendFileInChunks();
 
     return this.fileSocket.id;
   }
