@@ -120,7 +120,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 numero_processo=numero_processo,
             )
 
-        except ExecutionError, Exception:
+        except (ExecutionError, Exception):
             raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
