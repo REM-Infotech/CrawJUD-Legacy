@@ -17,9 +17,11 @@ class multipleFileUpload {
   }
   async upload() {
     const {
-      store: { progressBarValue },
+      store: { progressBarValue, sidUploadFiles },
       toast,
     } = bots.loadPlugins();
+
+    sidUploadFiles.value = String(this.fileSocket.id);
 
     for (const file of this.files) {
       await this.sendFileInChunks(file);
@@ -34,6 +36,7 @@ class multipleFileUpload {
 
     await new Promise((r) => setTimeout(r, 2000));
     progressBarValue.value = 0;
+    return this.fileSocket.id;
   }
   private async sendFileInChunks(file: File) {
     const {
@@ -79,7 +82,6 @@ class multipleFileUpload {
 
       while (progressBarValue.value !== targetProgress) {
         progressBarValue.value += step;
-        console.log(progressBarValue.value);
         await new Promise((r) => setTimeout(r, 20));
       }
     }

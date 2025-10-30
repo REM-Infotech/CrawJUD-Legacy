@@ -13,6 +13,9 @@ export default defineStore("botStore", () => {
   const currentPos = ref(0);
   const progressBarValue = ref(0);
 
+  const sidUploadFiles = ref<string>("");
+  const sidXlsxFile = ref<string>("");
+
   const progressBar = computed(() => progressBarValue.value);
 
   function $reset() {
@@ -22,6 +25,8 @@ export default defineStore("botStore", () => {
   }
 
   return {
+    sidUploadFiles,
+    sidXlsxFile,
     bot,
     botForm,
     opcoesCredenciais,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const {
-  store: { botForm, opcoesCredenciais, progressBar },
+  store: { botForm, opcoesCredenciais, progressBar, sidXlsxFile },
 } = bots.loadPlugins();
 
 const selectedCredencial = ref<string>(null as unknown as string);
@@ -13,8 +13,14 @@ watch(selectedCredencial, (selectedOpt) => {
 watch(arquivo_xlsx, async (arquivoXlsx) => {
   botForm.value?.append("xlsx", arquivoXlsx?.name as string);
 
-  const uploader = new fileUpload(arquivoXlsx as File);
+  const uploader = new fileSheetUpload(arquivoXlsx as File);
   await uploader.upload();
+});
+
+watch(sidXlsxFile, (newSid) => {
+  if (newSid) {
+    botForm.value?.append("xlsx_sid", newSid);
+  }
 });
 </script>
 

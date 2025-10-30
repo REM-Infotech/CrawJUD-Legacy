@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const {
-  store: { botForm, opcoesCredenciais, progressBar },
+  store: { botForm, opcoesCredenciais, progressBar, sidXlsxFile, sidUploadFiles },
 } = bots.loadPlugins();
 
 const selectedCredencial = ref<string>(null as unknown as string);
@@ -14,7 +14,7 @@ watch(selectedCredencial, (selectedOpt) => {
 watch(arquivo_xlsx, async (arquivoXlsx) => {
   if (arquivoXlsx) {
     botForm.value?.append("xlsx", arquivoXlsx?.name as string);
-    const uploader = new fileUpload(arquivoXlsx as File);
+    const uploader = new fileSheetUpload(arquivoXlsx as File);
     await uploader.upload();
   }
 });
@@ -31,6 +31,18 @@ watch(outros_arquivos, async (outrosArquivos) => {
     await uploader.upload();
   }
 });
+
+watch(sidXlsxFile, (newSid) => {
+  if (newSid) {
+    botForm.value?.append("xlsx_sid", newSid);
+  }
+});
+
+watch(sidUploadFiles, (newSid) => {
+  if (newSid) {
+    botForm.value?.append("outros_arquivos_sid", newSid);
+  }
+});
 </script>
 
 <template>
@@ -38,6 +50,7 @@ watch(outros_arquivos, async (outrosArquivos) => {
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Planilha Xlsx" label-size="lg">
         <BFormFile
+          :disabled="progressBar > 0"
           v-model="arquivo_xlsx"
           class="mt-3"
           size="lg"
@@ -48,6 +61,7 @@ watch(outros_arquivos, async (outrosArquivos) => {
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Anexos" label-size="lg">
         <BFormFile
+          :disabled="progressBar > 0"
           multiple
           v-model="outros_arquivos"
           class="mt-3"

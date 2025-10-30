@@ -1,6 +1,6 @@
 import type { Socket } from "socket.io-client";
 
-class fileUploader {
+class fileSheetUpload {
   private file: File;
   private fileSize: number;
 
@@ -20,14 +20,18 @@ class fileUploader {
     setTimeout(async () => {
       await this.sendFileInChunks(); // Envia o arquivo em chunks de 80KB
     }, 500);
+
+    return this.fileSocket.id;
   }
   private async sendFileInChunks() {
     const chunkSize = 1024 * 50;
     const totalChunks = Math.ceil(this.file.size / chunkSize);
     const {
-      store: { progressBarValue },
+      store: { progressBarValue, sidXlsxFile },
       toast,
     } = bots.loadPlugins();
+
+    sidXlsxFile.value = String(this.fileSocket.id);
 
     for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
@@ -37,7 +41,6 @@ class fileUploader {
       const arrayBuffer = await chunk.arrayBuffer();
       const currentSize = arrayBuffer.byteLength;
       this.totalSent += currentSize;
-
       await new Promise<void>((resolve, reject) => {
         setTimeout(() => {
           this.fileSocket.emit(
@@ -69,15 +72,17 @@ class fileUploader {
         toast.create({
           title: "Sucesso!",
           body: `Arquivo ${this.file.name} enviado!`,
-          variant: "primary",
+          variant: "success",
           modelValue: 5000,
         });
+
         await new Promise((r) => setTimeout(r, 2000));
         progressBarValue.value = 0;
+
         break;
       }
     }
   }
 }
 
-export default fileUploader;
+export default fileSheetUpload;
