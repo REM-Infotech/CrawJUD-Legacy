@@ -35,9 +35,12 @@ class multipleFileUpload {
       modelValue: 5000,
     });
 
-    new Notification("CrawJUD", {
-      body: `Seus ${this.files.length} foram enviados com sucesso!`,
-      icon: crawjud2,
+    notify.show({
+      title: "CrawJUD",
+      options: {
+        body: `Seus ${this.files.length} foram enviados com sucesso!`,
+        icon: crawjud2,
+      },
     });
 
     await new Promise((r) => setTimeout(r, 2000));

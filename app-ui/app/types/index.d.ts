@@ -17,3 +17,20 @@ interface ImportMeta {
 interface Element {
   focus(): void;
 }
+
+type NotificationDirection = "auto" | "ltr" | "rtl";
+interface NotificationOptions {
+  badge?: string;
+  body?: string;
+  data?: any;
+  dir?: NotificationDirection;
+  icon?: string;
+  lang?: string;
+  requireInteraction?: boolean;
+  silent?: boolean | null;
+  tag?: string;
+}
+type KeywordArgs = {
+  title?: string;
+  options: NotificationOptions;
+};

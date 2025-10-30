@@ -77,9 +77,12 @@ class fileSheetUpload {
           modelValue: 5000,
         });
 
-        new Notification("CrawJUD", {
-          body: `Arquivo ${this.file.name} enviado!`,
-          icon: crawjud2,
+        notify.show({
+          title: "CrawJUD",
+          options: {
+            body: `Arquivo ${this.file.name} enviado!`,
+            icon: crawjud2,
+          },
         });
 
         await new Promise((r) => setTimeout(r, 2000));

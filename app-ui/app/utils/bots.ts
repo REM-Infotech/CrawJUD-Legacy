@@ -95,7 +95,9 @@ class Bots {
       toast,
     } = this.loadPlugins();
 
-    const endpoint = `/bot/${bot.value?.sistema.toLowerCase()}/run/${bot.value?.id}`;
+    form.append("bot_id", bot.value?.id as unknown as string);
+
+    const endpoint = `/bot/${bot.value?.sistema.toLowerCase()}/run`;
     const resp = await api.post<StartBotPayload>(endpoint, form);
     const data = resp.data;
     toast.create({
@@ -104,6 +106,8 @@ class Bots {
       variant: data.status,
       modelValue: 5000,
     });
+
+    notify.show({ options: { body: data.message } });
   }
 
   async loadCredentials() {
