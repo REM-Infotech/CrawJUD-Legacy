@@ -1,11 +1,14 @@
 import type { Socket } from "socket.io-client";
 
 class FileUploader {
+  public FormBot: FormData;
   private totalSent: number = 0;
   private chunkSize: number = 0;
   public fileSocket?: Socket = undefined;
 
-  constructor() {}
+  constructor() {
+    this.FormBot = new FormData();
+  }
 
   public async uploadXlsx(file: File | undefined): Promise<void> {
     this.totalSent = 0;
@@ -13,6 +16,8 @@ class FileUploader {
       await this.uploadInChunks(file, file.size);
 
       // Notifica o enio
+      this.FormBot.append("xlsx", file);
+      this.FormBot.append("file_sid", this.fileSocket?.id as string);
       this.clearProgressBar(`Arquivo ${file.name} carregado!`);
     }
   }
@@ -20,7 +25,6 @@ class FileUploader {
     this.totalSent = 0;
     if (FileList) {
       const totalFilesSizes = FileList.reduce((acc, f) => acc + f.size, 0);
-
       for (const file of FileList) {
         await this.uploadInChunks(file, totalFilesSizes);
 
@@ -33,6 +37,8 @@ class FileUploader {
         });
       }
 
+      this.FormBot.append("outros_arquivos", FileList.toString());
+      this.FormBot.append("outros_arquivos_sid", this.fileSocket?.id as string);
       this.clearProgressBar(`Seus ${FileList.length} foram carregados!`);
     }
   }

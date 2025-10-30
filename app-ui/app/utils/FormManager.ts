@@ -11,12 +11,11 @@ const FormComponents: FormComponentRecord = {
 };
 
 class FormManager extends FileUploader {
-  private FormBot: FormData;
-
   constructor() {
     super();
-    this.FormBot = new FormData();
+
     this.fileSocket = socketio.socket("/files");
+    this.fileSocket?.connect();
   }
 
   public async HandleSubmit(ev: Event) {
