@@ -1,5 +1,7 @@
 type FormComponentRecord = Record<ConfigForm, Component | undefined>;
 type RecordFileAuthForm = { ArquivoXlsx: File | undefined; Credential: string | null };
+type RecordOnlyFileForm = { ArquivoXlsx: File | undefined };
+type RecordOnlyAuthForm = { Credential: string | null };
 type RecordMultipleFilesForm = {
   ArquivoXlsx: File | undefined;
   OutrosArquivos: File[] | undefined;

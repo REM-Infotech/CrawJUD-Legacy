@@ -24,30 +24,38 @@ useHead({
           </template>
           <template #body>
             <component :is="FormManager.getForm()" />
-          </template>
-          <template #footer>
-            <div class="d-grid gap-3">
+            <div class="box">
               <BFormCheckbox
                 id="checkbox-1"
                 name="checkbox-1"
                 value="accepted"
                 :unchecked-value="false"
                 v-model="btnConfirm"
-                class="mt-3 mb-4 fs-4"
+                class="mt-3 mb-4"
               >
-                Confirmo que os dados enviados estão corretos.
+                <span class="fs-6 fw-bold"> Confirmo que os dados enviados estão corretos. </span>
               </BFormCheckbox>
-              <Transition name="startbot" mode="out-in">
-                <BButton
-                  size="lg"
-                  v-if="confirmedState && progressBar === 0"
-                  type="submit"
-                  variant="outline-success"
-                >
-                  Inicializar robô
+            </div>
+          </template>
+          <template #footer>
+            <div class="d-grid gap-2" style="height: 6.5em">
+              <div class="box d-grid">
+                <Transition name="startbot" mode="out-in">
+                  <BButton
+                    size="md"
+                    v-if="confirmedState && progressBar === 0"
+                    type="submit"
+                    variant="outline-success"
+                  >
+                    <span class="fs-6 fw-bold"> Inicializar robô </span>
+                  </BButton>
+                </Transition>
+              </div>
+              <div class="box d-grid">
+                <BButton size="md" variant="outline-primary">
+                  <span class="fs-6 fw-bold"> Gerar planilha Modelo </span>
                 </BButton>
-              </Transition>
-              <BButton size="lg" variant="outline-primary"> Gerar planilha Modelo </BButton>
+              </div>
             </div>
           </template>
         </AppCard>
@@ -69,5 +77,9 @@ useHead({
 .startbot-leave-to {
   opacity: 0;
   filter: blur(1rem);
+}
+
+.box {
+  height: 2.5em;
 }
 </style>

@@ -30,7 +30,7 @@ watch(
 );
 watch(
   () => MultipleFilesForm.Credential,
-  async (newVal) => FormManager.LoadCredential,
+  async (newVal) => FormManager.LoadCredential(newVal),
 );
 </script>
 
