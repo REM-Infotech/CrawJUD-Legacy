@@ -5,7 +5,6 @@ This module defines global routes, context processors, and custom error handling
 
 from __future__ import annotations
 
-from __types import HealtCheck
 from flask import (
     Flask,
     Response,
@@ -17,6 +16,7 @@ from flask import (
     url_for,
 )
 
+from __types import HealtCheck
 from app import app
 from app.resources.extensions import db
 
@@ -76,12 +76,9 @@ def register_routes(app: Flask) -> None:
         app: app.
 
     """
-    from ._bots import _register_routes_bots
+    from ._bots import bots
     from .auth import auth
 
-    blueprints = [auth]
+    blueprints = [auth, bots]
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
-
-    with app.app_context():
-        _register_routes_bots(app)

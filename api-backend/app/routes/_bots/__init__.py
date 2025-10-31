@@ -3,7 +3,6 @@ from uuid import uuid4
 
 from flask import (
     Blueprint,
-    Flask,
     Response,
     jsonify,
     make_response,
@@ -11,11 +10,12 @@ from flask import (
 )
 from flask_jwt_extended import get_current_user, jwt_required
 
-from __types import Sistemas
+from __types import Dict, Sistemas
+from app._forms.head import FormBot
 from app.decorators import CrossDomain
 from app.models import User
+from constants import SISTEMAS
 
-SISTEMAS = {"projudi", "elaw", "esaj", "pje", "jusds", "csi"}
 bots = Blueprint("bots", __name__, url_prefix="/bot")
 
 
@@ -82,7 +82,18 @@ def run_bot(sistema: Sistemas) -> Response:
     }
 
     if is_sistema(sistema):
-        _data = json.loads(request.get_data())
+        request_data: Dict = json.loads(request.get_data())
+        data = {
+            k: v
+            for k, v in list(request_data.items())
+            if k != "configuracao_form"
+        }
+
+        form = FormBot.load_form(
+            request_data["configuracao_form"], data
+        )
+        _dict_form = form.to_dict()
+
         payload = {
             "title": "Sucesso",
             "message": "Robô inicializado com sucesso!",
@@ -91,7 +102,3 @@ def run_bot(sistema: Sistemas) -> Response:
         }
 
     return make_response(jsonify(payload), 201)
-
-
-def _register_routes_bots(app: Flask) -> None:
-    app.register_blueprint(bots)
