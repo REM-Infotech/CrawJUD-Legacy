@@ -10,7 +10,7 @@ const columns = [
 ];
 
 async function get_bot(_: unknown, callback: Function, __: unknown) {
-  const resp = await api.get("/bots/listagem");
+  const resp = await api.get("/bot/listagem");
   return callback(resp.data);
 }
 </script>

@@ -61,7 +61,7 @@ class FormManager extends FileUploader {
     optCredenciais.value = [{ value: null, text: "Selecione" }];
 
     const resp = await api.get<CredenciaisPayload>(
-      `/bots/${bot.value?.sistema.toLowerCase()}/credenciais`,
+      `/bot/${bot.value?.sistema.toLowerCase()}/credenciais`,
     );
     if (resp.data) {
       optCredenciais.value.push(...resp.data.credenciais);

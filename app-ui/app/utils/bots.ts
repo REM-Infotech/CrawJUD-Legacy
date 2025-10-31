@@ -32,7 +32,7 @@ class Bots {
   }
 
   async listagemBots() {
-    const response = await api.get<BotPayload>("/bots/listagem", { withCredentials: true });
+    const response = await api.get<BotPayload>("/bot/listagem", { withCredentials: true });
     return response.data.listagem;
   }
 
