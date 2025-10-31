@@ -14,10 +14,12 @@ from flask import (
     request,
 )
 
+from __types import MyAny
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from __types import Methods, P, T
+    from __types import Methods, P
 
 
 class CrossDomain:
@@ -56,7 +58,7 @@ class CrossDomain:
         self.automatic_options = automatic_options
         self.current_request_method = None
 
-    def __call__(
+    def __call__[T](
         self,
         wrapped_function: Callable[P, T],
     ) -> Callable[P, Response]:
@@ -114,7 +116,9 @@ class CrossDomain:
 
         return _wrapped
 
-    def _normalize_methods(self, methods: list[Methods] | None) -> str | None:
+    def _normalize_methods(
+        self, methods: list[Methods] | None
+    ) -> str | None:
         """Normaliza os métodos HTTP para cabeçalho CORS.
 
         Args:
@@ -125,10 +129,14 @@ class CrossDomain:
 
         """
         return (
-            ", ".join(sorted(x.upper() for x in methods)) if methods else None
+            ", ".join(sorted(x.upper() for x in methods))
+            if methods
+            else None
         )
 
-    def _normalize_headers(self, headers: list[str] | None) -> str | None:
+    def _normalize_headers(
+        self, headers: list[str] | None
+    ) -> str | None:
         """Normaliza os cabeçalhos para CORS.
 
         Args:
@@ -198,8 +206,8 @@ class CrossDomain:
     def _handle_request(
         self,
         f: Callable,
-        *args: T,
-        **kwargs: T,
+        *args: MyAny,
+        **kwargs: MyAny,
     ) -> Response:
         """Processa requisição com verificação de XSRF.
 

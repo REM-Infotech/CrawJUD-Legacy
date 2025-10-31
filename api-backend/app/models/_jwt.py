@@ -7,11 +7,11 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 import bcrypt
-from __types import MyAny
 from flask_jwt_extended import get_current_user
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import Mapped
 
+from __types import MyAny
 from app.resources.extensions import db, jwt
 
 from ._users import User
@@ -48,7 +48,11 @@ def check_if_token_revoked(
     token = None
     with suppress(Exception):
         jti = jwt_data["jti"]
-        token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+        token = (
+            db.session.query(TokenBlocklist.Id)
+            .filter_by(jti=jti)
+            .scalar()
+        )
 
     return token is not None
 
@@ -66,7 +70,9 @@ def user_lookup_callback(*args: MyAny, **kwargs: MyAny) -> User | None:
         jwt_data.update(item)
 
     return (
-        db.session.query(User).filter_by(Id=int(jwt_data["sub"])).one_or_none()
+        db.session.query(User)
+        .filter_by(Id=int(jwt_data["sub"]))
+        .one_or_none()
     )
 
 
@@ -86,6 +92,8 @@ class TokenBlocklist(db.Model):
     created_at = Column(
         DateTime,
         default=lambda: datetime.now(ZoneInfo("America/Manaus")),
-        server_default=datetime.now(ZoneInfo("America/Manaus")).isoformat(),
+        server_default=datetime.now(
+            ZoneInfo("America/Manaus")
+        ).isoformat(),
         nullable=False,
     )

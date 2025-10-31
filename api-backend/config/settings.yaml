@@ -72,11 +72,20 @@ default:
   SESSION_ID_LENGTH: 32
   SESSION_SERIALIZATION_FORMAT: "json"
 
+  # ✅ Configurações MinIO
+  MINIO_ENDPOINT: "@format {env[CRAWJUD_MINIO_ENDPOINT]}"
+  MINIO_ACCESS_KEY: "@format {env[CRAWJUD_MINIO_ACCESS_KEY]}"
+  MINIO_SECRET_KEY: "@format {env[CRAWJUD_MINIO_SECRET_KEY]}"
+  MINIO_BUCKET_NAME: "@format {env[CRAWJUD_MINIO_BUCKET_NAME]}"
+
+  # Configurações App
   ROOT_USERNAME: "@format {env[CRAWJUD_ROOT_USERNAME]} @default 'admin'"
   ROOT_PASSWORD: "@format {env[CRAWJUD_ROOT_PASSWORD]} @default 'admin'"
   ROOT_EMAIL: "@format {env[CRAWJUD_ROOT_EMAIL]} @default 'admin@example.com'"
   ROOT_CLIENT: "@format {env[CRAWJUD_ROOT_CLIENT]} @default 'Example'"
   ROOT_CPF_CNPJ_CLIENT: "@format {env[CRAWJUD_ROOT_CPF_CNPJ_CLIENT]} @default '00'"
+
+  # ✅ Configurações JWT
   JWT_ACCESS_TOKEN_EXPIRES: 86400
   JWT_CSRF_IN_COOKIES: true
   JWT_ACCESS_COOKIE_NAME: "access_token_cookie"
@@ -89,6 +98,7 @@ default:
     - "cookies"
     - "headers"
 
+  # ✅ Configurações Flask-Mail
   MAIL_SERVER: "@format {env[CRAWJUD_MAIL_SERVER]}"
   MAIL_PORT: "@format {env[CRAWJUD_MAIL_PORT]}"
   MAIL_USE_TLS: "@format {env[CRAWJUD_MAIL_USE_TLS]}"
@@ -100,6 +110,8 @@ default:
   MAIL_MAX_EMAILS: "@format {env[CRAWJUD_MAIL_MAX_EMAILS]}"
   MAIL_SUPPRESS_SEND: "@format {env[CRAWJUD_MAIL_SUPPRESS_SEND]}"
   MAIL_ASCII_ATTACHMENTS: "@format {env[CRAWJUD_MAIL_ASCII_ATTACHMENTS]}"
+
+  # ✅ Configurações Celery
   broker_url: "@format {env[CRAWJUD_BROKER_URL]}"
   result_backend: "@format {env[CRAWJUD_RESULT_BACKEND]}"
   task_serializer: "json"
@@ -115,6 +127,8 @@ default:
   task_default_exchange_type: "direct"
   task_default_routing_key: "celery"
   SOCKETIO_SERVER: "@format {env[CRAWJUD_APP_DOMAIN]}"
+
+  # ✅ Configurações CORS
   CORS_ORIGINS:
     - "https://fronttest.robotz.dev"
     - "localhost"

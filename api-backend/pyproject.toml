@@ -16,6 +16,7 @@ dependencies = [
     "flask-sqlalchemy==3.1.1",
     "hvac>=2.3.0",
     "hypercorn>=0.17.3",
+    "minio>=7.2.18",
     "openpyxl>=3.1.5",
     "pandas>=2.3.3",
     "passlib[argon2,bcrypt]>=1.7.4",

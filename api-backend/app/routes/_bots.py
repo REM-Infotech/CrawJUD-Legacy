@@ -1,4 +1,6 @@
 import json
+import traceback
+from concurrent.futures import ThreadPoolExecutor
 from uuid import uuid4
 
 from flask import (
@@ -9,6 +11,7 @@ from flask import (
     request,
 )
 from flask_jwt_extended import get_current_user, jwt_required
+from tqdm import tqdm
 
 from __types import Dict, Sistemas
 from app._forms.head import FormBot
@@ -17,6 +20,10 @@ from app.models import User
 from constants import SISTEMAS
 
 bots = Blueprint("bots", __name__, url_prefix="/bot")
+
+Pool = ThreadPoolExecutor(max_workers=8)
+
+future_set = set()
 
 
 def is_sistema(valor: Sistemas) -> bool:
@@ -94,17 +101,22 @@ def run_bot(sistema: Sistemas) -> Response:
             form = FormBot.load_form(
                 request_data["configuracao_form"], data
             )
-            _dict_form = form.to_dict()
+
+            pid_exec = uuid4().hex.upper()
+            future = Pool.submit(form.handle_task, pid_exec=pid_exec)
+            future.add_done_callback(lambda ft: future_set.discard(ft))
 
             payload = {
                 "title": "Sucesso",
                 "message": "Robô inicializado com sucesso!",
                 "status": "success",
-                "pid": uuid4().hex[:6].upper(),
+                "pid": pid_exec,
+                "pid_resumido": pid_exec[:6],
             }
             code = 200
 
         except Exception as e:
-            print(e)
+            exc = "\n".join(traceback.format_exception(e))
+            tqdm.write(exc)
 
     return make_response(jsonify(payload), code)

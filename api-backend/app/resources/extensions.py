@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from celery import Celery
+from dynaconf.contrib import DynaconfConfig
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -12,7 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from socketio.redis_manager import RedisManager
 
 from app.base import Model, Query
-from app.settings import settings
+from app.resources._minio import Minio
 
 celery = Celery(__name__)
 db = SQLAlchemy(model_class=Model, query_class=Query)  # pyright: ignore[reportArgumentType]
@@ -20,7 +21,7 @@ jwt = JWTManager()
 mail = Mail()
 io = SocketIO()
 cors = CORS()
-
+storage = Minio()
 
 __all__ = ["db", "cors", "jwt", "mail", "start_extensions"]
 
@@ -44,5 +45,12 @@ def start_extensions(app: Flask) -> None:
             supports_credentials=True,
             transports=["websocket"],
         )
+        storage.init_app(app)
 
-        celery.config_from_object(settings)
+        class CeleryConfig:
+            def __init__(self, values: DynaconfConfig) -> None:
+                for k, v in list(values.items()):
+                    if str(k).isupper():
+                        setattr(self, k, v)
+
+        celery.config_from_object(CeleryConfig(app.config))
