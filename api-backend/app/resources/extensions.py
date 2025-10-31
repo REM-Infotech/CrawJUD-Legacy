@@ -43,14 +43,6 @@ def start_extensions(app: Flask) -> None:
             allow_headers=["Content-Type", "Authorization"],
             supports_credentials=True,
             transports=["websocket"],
-            origins=[
-                "https://fronttest.robotz.dev",
-                "localhost",
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://127.0.0.1:1473",
-                "http://localhost:1474",  # Adiciona a origem necessária para evitar erro CORS
-            ],
         )
 
         celery.config_from_object(settings)

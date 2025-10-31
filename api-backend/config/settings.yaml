@@ -47,6 +47,7 @@ default:
     - "*.robotz.dev"
     - "betatest.robotz.dev"
     - "fronttest.robotz.dev"
+    - betatest2.robotz.dev
 
   # ✅ Configurações SQLAlchemy
   SQLALCHEMY_DATABASE_URI: "@format {env[CRAWJUD_DATABASE_URI]}"
@@ -114,3 +115,11 @@ default:
   task_default_exchange_type: "direct"
   task_default_routing_key: "celery"
   SOCKETIO_SERVER: "@format {env[CRAWJUD_APP_DOMAIN]}"
+  CORS_ORIGINS:
+    - "https://fronttest.robotz.dev"
+    - "localhost"
+    - "http://localhost:3000"
+    - "http://localhost:5173"
+    - "http://127.0.0.1:1473"
+    - "http://localhost:1474"
+    - "https://betatest2.robotz.dev"
