@@ -67,9 +67,10 @@ class FileUploader {
         this.fileSocket.emit(
           "add_file",
           {
-            name: file.name,
+            name: Utils.formatString(file.name),
             chunk: arrayBuffer,
             current_size: currentSize,
+            fileSize: file.size,
           },
           (err: Error | null) => {
             if (err) reject(err);

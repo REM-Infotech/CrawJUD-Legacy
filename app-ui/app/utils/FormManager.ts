@@ -27,10 +27,10 @@ class FormManager extends FileUploader {
         Object.entries(form)
           .map(([key, value]) => {
             const isArrayFiles = Array.isArray(value) && value.every((v) => v instanceof File);
-            const k = ObjectUtils.camelToSnake(key);
-            if (!value) throw Error(`Campo ${ObjectUtils.camelToWords(key)} não informado!`);
-            if (value instanceof File) return [k, value.name];
-            else if (isArrayFiles) return [k, value.map((file) => file.name)];
+            const k = Utils.camelToSnake(key);
+            if (!value) throw Error(`Campo ${Utils.camelToWords(key)} não informado!`);
+            if (value instanceof File) return [k, Utils.formatString(value.name)];
+            else if (isArrayFiles) return [k, value.map((file) => Utils.formatString(file.name))];
             return [k, value];
           })
           .filter((entry): entry is [string, any] => Array.isArray(entry) && entry.length === 2),
