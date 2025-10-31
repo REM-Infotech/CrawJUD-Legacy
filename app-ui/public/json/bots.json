@@ -18,7 +18,7 @@
       "state": "AM",
       "client": "EVERYONE",
       "type": "PROTOCOLO",
-      "form_cfg": "multipe_files",
+      "form_cfg": "multiple_files",
       "classification": "JURIDICO",
       "text": "Peticionamento em lotes de processos "
     },
@@ -62,7 +62,7 @@
       "state": "AM",
       "client": "EVERYONE",
       "type": "PROTOCOLO",
-      "form_cfg": "multipe_files",
+      "form_cfg": "multiple_files",
       "classification": "JURIDICO",
       "text": "Peticionamento em lotes de processos "
     },
@@ -172,7 +172,7 @@
       "state": "EVERYONE",
       "client": "AME - AMAZONAS ENERGIA",
       "type": "SOLICITA_PAGAMENTO",
-      "form_cfg": "multipe_files",
+      "form_cfg": "multiple_files",
       "classification": "ADMINISTRATIVO",
       "text": "Robô responsável por solicitação de pagamentos"
     },
@@ -205,7 +205,7 @@
       "state": "EVERYONE",
       "client": "AME - AMAZONAS ENERGIA",
       "type": "ANDAMENT",
-      "form_cfg": "multipe_files",
+      "form_cfg": "multiple_files",
       "classification": "ADMINISTRATIVO",
       "text": "Robô responsável por inserção de andamentos"
     },
@@ -227,7 +227,7 @@
       "state": "EVERYONE",
       "client": "INFRAERO",
       "type": "REALIZA_PRAZO",
-      "form_cfg": "multipe_files",
+      "form_cfg": "multiple_files",
       "classification": "ADMINISTRATIVO",
       "text": "Robô responsável por realizar compromissos no JUSDS"
     },

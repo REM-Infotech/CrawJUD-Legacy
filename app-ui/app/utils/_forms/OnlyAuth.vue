@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-const { opcoesCredenciais } = storeToRefs(botStore());
+const { opcoesCredenciais, botForm } = storeToRefs(botStore());
 
 const OnlyAuthForm = reactive<RecordOnlyAuthForm>({
-  Credential: null,
+  Credencial: null,
 });
 
-watch(
-  () => OnlyAuthForm.Credential,
-  async (newVal) => FormManager.LoadCredential(newVal),
-);
+watch(OnlyAuthForm, (newValue) => (botForm.value = newValue));
 </script>
 
 <template>
@@ -18,7 +15,7 @@ watch(
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Credencial" label-size="lg">
         <BFormSelect
-          v-model="OnlyAuthForm.Credential"
+          v-model="OnlyAuthForm.Credencial"
           :options="opcoesCredenciais"
           size="lg"
           class="mt-3"

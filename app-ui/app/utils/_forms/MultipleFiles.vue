@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-const { progressBar, opcoesCredenciais } = storeToRefs(botStore());
+const { progressBar, opcoesCredenciais, botForm } = storeToRefs(botStore());
 
 const MultipleFilesForm = reactive<RecordMultipleFilesForm>({
-  ArquivoXlsx: undefined,
-  Credential: null,
-  OutrosArquivos: undefined,
+  PlanilhaXlsx: undefined,
+  Credencial: null,
+  Anexos: undefined,
 });
 
 const XlsxFileUpload = ref(false);
 const OutrosArquivosUpload = ref(false);
 
 watch(
-  () => MultipleFilesForm.ArquivoXlsx,
+  () => MultipleFilesForm.PlanilhaXlsx,
   async (newVal) => {
     XlsxFileUpload.value = true;
     await FormManager.uploadXlsx(newVal);
@@ -21,17 +21,15 @@ watch(
   },
 );
 watch(
-  () => MultipleFilesForm.OutrosArquivos,
+  () => MultipleFilesForm.Anexos,
   async (newVal) => {
     OutrosArquivosUpload.value = true;
     await FormManager.uploadMultipleFiles(newVal);
     OutrosArquivosUpload.value = false;
   },
 );
-watch(
-  () => MultipleFilesForm.Credential,
-  async (newVal) => FormManager.LoadCredential(newVal),
-);
+
+watch(MultipleFilesForm, (newValue) => (botForm.value = newValue));
 </script>
 
 <template>
@@ -41,7 +39,7 @@ watch(
         <BFormGroup label="Planilha Xlsx" class="mb-2" label-size="lg">
           <BFormFile
             :disabled="progressBar > 0"
-            v-model="MultipleFilesForm.ArquivoXlsx"
+            v-model="MultipleFilesForm.PlanilhaXlsx"
             class="mt-3"
             size="lg"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -60,7 +58,7 @@ watch(
           <BFormFile
             :disabled="progressBar > 0"
             multiple
-            v-model="MultipleFilesForm.OutrosArquivos"
+            v-model="MultipleFilesForm.Anexos"
             class="mt-3"
             size="lg"
             accept="application/pdf"
@@ -77,7 +75,7 @@ watch(
     <BCol md="12" lg="12" xl="12" sm="12">
       <BFormGroup label="Credencial" label-size="lg">
         <BFormSelect
-          v-model="MultipleFilesForm.Credential"
+          v-model="MultipleFilesForm.Credencial"
           :options="opcoesCredenciais"
           size="lg"
           class="mt-3"

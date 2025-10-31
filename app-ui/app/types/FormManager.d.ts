@@ -1,12 +1,18 @@
 type FormComponentRecord = Record<ConfigForm, Component | undefined>;
-type RecordFileAuthForm = { ArquivoXlsx: File | undefined; Credential: string | null };
-type RecordOnlyFileForm = { ArquivoXlsx: File | undefined };
-type RecordOnlyAuthForm = { Credential: string | null };
+type RecordFileAuthForm = { PlanilhaXlsx: File | undefined; Credencial: string | null };
+type RecordOnlyFileForm = { PlanilhaXlsx: File | undefined };
+type RecordOnlyAuthForm = { Credencial: string | null };
 type RecordMultipleFilesForm = {
-  ArquivoXlsx: File | undefined;
-  OutrosArquivos: File[] | undefined;
-  Credential: string | null;
+  PlanilhaXlsx: File | undefined;
+  Anexos: File[] | undefined;
+  Credencial: string | null;
 };
+
+type FormBot =
+  | RecordFileAuthForm
+  | RecordMultipleFilesForm
+  | RecordOnlyAuthForm
+  | RecordOnlyFileForm;
 
 interface formManager {
   FormBot: FormData;

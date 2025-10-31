@@ -5,26 +5,20 @@ class FileUploader {
   public FormBot: FormData;
   private totalSent: number;
   private chunkSize: number;
-  public fileSocket?: Socket = undefined;
+  public fileSocket: Socket;
 
   constructor() {
     this.totalSent = 0;
     this.chunkSize = 1024 * 80;
     this.fileSocket = socketio.socket("/files");
-
-    this.fileSocket?.connect();
+    this.fileSocket.connect();
     this.FormBot = new FormData();
   }
 
   public async uploadXlsx(file: File | undefined): Promise<void> {
     this.totalSent = 0;
-
     if (file) {
       await this.uploadInChunks(file, file.size);
-
-      // Notifica o enio
-      this.FormBot.append("xlsx", file);
-      this.FormBot.append("file_sid", this.fileSocket?.id as string);
       this.clearProgressBar(`Arquivo ${file.name} carregado!`);
     }
   }
@@ -43,9 +37,6 @@ class FileUploader {
           duration: 5000,
         });
       }
-
-      this.FormBot.append("outros_arquivos", FileList.toString());
-      this.FormBot.append("outros_arquivos_sid", this.fileSocket?.id as string);
       this.clearProgressBar(`Seus ${FileList.length} foram carregados!`);
     }
   }
@@ -55,7 +46,6 @@ class FileUploader {
     for (let i = 0; i < totalChunks; i++) {
       const start = i * this.chunkSize;
       const end = Math.min(file.size, start + this.chunkSize);
-      console.log(i);
       const chunk = file.slice(start, end);
       const arrayBuffer = await chunk.arrayBuffer();
       const currentSize = arrayBuffer.byteLength;
@@ -74,7 +64,7 @@ class FileUploader {
   private async uploadToSocketIo(file: File, arrayBuffer: ArrayBuffer, currentSize: number) {
     await new Promise<void>((resolve, reject) => {
       setTimeout(() => {
-        this.fileSocket?.emit(
+        this.fileSocket.emit(
           "add_file",
           {
             name: file.name,

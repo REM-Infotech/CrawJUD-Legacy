@@ -1,5 +1,5 @@
 type SytemBots = "PROJUDI" | "ESAJ" | "ELAW" | "JUSDS" | "PJE";
-type ConfigForm = "file_auth" | "multipe_files" | "only_auth" | "proc_parte" | "only_file";
+type ConfigForm = "file_auth" | "multiple_files" | "only_auth" | "proc_parte" | "only_file";
 
 interface BotInfo {
   Id: number;

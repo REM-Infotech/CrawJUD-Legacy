@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-const { progressBar, opcoesCredenciais } = storeToRefs(botStore());
+const { progressBar, opcoesCredenciais, botForm } = storeToRefs(botStore());
 
 const FormFileAuth = reactive<RecordFileAuthForm>({
-  ArquivoXlsx: undefined,
-  Credential: null,
+  PlanilhaXlsx: undefined,
+  Credencial: null,
 });
 
 watch(
-  () => FormFileAuth.ArquivoXlsx,
+  () => FormFileAuth.PlanilhaXlsx,
   async (newVal) => FormManager.uploadXlsx(newVal),
 );
-watch(
-  () => FormFileAuth.Credential,
-  async (newVal) => FormManager.LoadCredential(newVal),
-);
+
+watch(FormFileAuth, (newValue) => (botForm.value = newValue));
 </script>
 
 <template>
@@ -24,7 +22,7 @@ watch(
       <div class="container-fluid rounded rounded-4 border p-3" style="height: 8.5rem">
         <BFormGroup label="Planilha Xlsx" label-size="lg" class="mb-2">
           <BFormFile
-            v-model="FormFileAuth.ArquivoXlsx"
+            v-model="FormFileAuth.PlanilhaXlsx"
             class="mt-3"
             size="lg"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -42,7 +40,7 @@ watch(
       <div class="container-fluid rounded rounded-4 border p-3" style="height: 8.5rem">
         <BFormGroup label="Credencial" label-size="lg">
           <BFormSelect
-            v-model="FormFileAuth.Credential"
+            v-model="FormFileAuth.Credencial"
             :options="opcoesCredenciais"
             size="lg"
             class="mt-3"

@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-const { progressBar, opcoesCredenciais } = storeToRefs(botStore());
+const { progressBar, botForm } = storeToRefs(botStore());
 
-const FormFileAuth = reactive<RecordOnlyFileForm>({
-  ArquivoXlsx: undefined,
+const OnlyFile = reactive<RecordOnlyFileForm>({
+  PlanilhaXlsx: undefined,
 });
 
 watch(
-  () => FormFileAuth.ArquivoXlsx,
+  () => OnlyFile.PlanilhaXlsx,
   async (newVal) => FormManager.uploadXlsx(newVal),
 );
+
+watch(OnlyFile, (newValue) => (botForm.value = newValue));
 </script>
 
 <template>
@@ -19,7 +21,7 @@ watch(
       <div class="container-fluid rounded rounded-4 border p-3" style="height: 8.5rem">
         <BFormGroup label="Planilha Xlsx" label-size="lg" class="mb-2">
           <BFormFile
-            v-model="FormFileAuth.ArquivoXlsx"
+            v-model="OnlyFile.PlanilhaXlsx"
             class="mt-3"
             size="lg"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

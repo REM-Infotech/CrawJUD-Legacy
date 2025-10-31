@@ -6,7 +6,7 @@ import FileUploader from "./interfaces/FileUploader";
 
 const FormComponents: FormComponentRecord = {
   file_auth: FileAuth,
-  multipe_files: MultipleFiles,
+  multiple_files: MultipleFiles,
   only_auth: OnlyAuth,
   proc_parte: undefined,
   only_file: undefined,
@@ -17,23 +17,56 @@ class FormManager extends FileUploader {
     super();
   }
 
-  public async HandleSubmit(ev: Event) {
+  public async HandleSubmit(ev: Event, form: FormBot) {
     ev.preventDefault();
-
+    console.log(form);
     const { bot } = storeToRefs(botStore());
 
-    this.FormBot.append("bot_id", bot.value?.Id as unknown as string);
+    try {
+      const FormBot = Object.fromEntries(
+        Object.entries(form)
+          .map(([key, value]) => {
+            const isArrayFiles = Array.isArray(value) && value.every((v) => v instanceof File);
+            const k = ObjectUtils.camelToSnake(key);
+            if (!value) throw Error(`Campo ${ObjectUtils.camelToWords(key)} não informado!`);
+            if (value instanceof File) return [k, value.name];
+            else if (isArrayFiles) return [k, value.map((file) => file.name)];
+            return [k, value];
+          })
+          .filter((entry): entry is [string, any] => Array.isArray(entry) && entry.length === 2),
+      );
 
-    const endpoint = `/bot/${bot.value?.sistema.toLowerCase()}/run`;
-    const resp = await api.post<StartBotPayload>(endpoint, this.FormBot);
-    const data = resp.data;
+      FormBot["bot_id"] = bot.value?.Id;
+      FormBot["configuracao_form"] = bot.value?.configuracao_form;
+      FormBot["sid_filesocket"] = this.fileSocket.id;
 
-    notify.show({
-      title: data.title,
-      message: data.message,
-      type: data.status,
-      duration: 5000,
-    });
+      const endpoint = `/bot/${bot.value?.sistema.toLowerCase()}/run`;
+      const resp = await api.post<StartBotPayload>(endpoint, FormBot, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = resp.data;
+
+      this.FormBot.delete("bot_id");
+      this.FormBot.delete("configuracao_form");
+
+      notify.show({
+        title: data.title,
+        message: data.message,
+        type: data.status,
+        duration: 5000,
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        notify.show({
+          title: "Erro",
+          message: err.message,
+          type: "error",
+          duration: 5000,
+        });
+      }
+    }
   }
 
   public getForm() {
@@ -48,12 +81,6 @@ class FormManager extends FileUploader {
     this.FormBot = new FormData();
     const comp = FormComponents[bot.value.configuracao_form];
     return comp;
-  }
-
-  public LoadCredential(credentialId: string | null): void {
-    if (credentialId) {
-      this.FormBot.append("credencial_id", credentialId);
-    }
   }
 
   public async RetrieveCredentials() {

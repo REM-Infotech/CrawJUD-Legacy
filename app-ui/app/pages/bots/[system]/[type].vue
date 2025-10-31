@@ -3,7 +3,7 @@ import { useHead } from "#app";
 import { storeToRefs } from "pinia";
 const { $router } = useNuxtApp();
 
-const { bot, btnConfirm, confirmedState, progressBar } = storeToRefs(botStore());
+const { bot, btnConfirm, confirmedState, progressBar, botForm } = storeToRefs(botStore());
 
 onBeforeMount(FormManager.RetrieveCredentials);
 
@@ -14,7 +14,7 @@ useHead({
 
 <template>
   <div>
-    <BForm @submit="(ev: Event) => FormManager.HandleSubmit(ev)">
+    <BForm @submit="(ev: Event) => FormManager.HandleSubmit(ev, botForm as FormBot)">
       <BContainer fluid="md">
         <AppCard class="form-card">
           <template #header>
