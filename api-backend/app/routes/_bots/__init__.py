@@ -1,11 +1,22 @@
-from flask import Blueprint, Flask, Response, jsonify, make_response
+import json
+from uuid import uuid4
+
+from flask import (
+    Blueprint,
+    Flask,
+    Response,
+    jsonify,
+    make_response,
+    request,
+)
 from flask_jwt_extended import get_current_user, jwt_required
 
 from __types import Sistemas
+from app.decorators import CrossDomain
 from app.models import User
 
 SISTEMAS = {"projudi", "elaw", "esaj", "pje", "jusds", "csi"}
-bots = Blueprint("bots", __name__, url_prefix="/bots")
+bots = Blueprint("bots", __name__, url_prefix="/bot")
 
 
 def is_sistema(valor: Sistemas) -> bool:
@@ -60,9 +71,27 @@ def provide_credentials(sistema: Sistemas) -> Response:
     )
 
 
-def _register_routes_bots(app: Flask) -> None:
-    from .pje import pje
-    from .projudi import projudi
+@bots.post("/<string:sistema>/run")
+@CrossDomain(origin="*", methods=["get", "post", "options"])
+@jwt_required()
+def run_bot(sistema: Sistemas) -> Response:
+    payload = {
+        "title": "Erro",
+        "message": "Erro ao iniciar robô",
+        "status": "error",
+    }
 
-    for blueprint in [projudi, pje, bots]:
-        app.register_blueprint(blueprint)
+    if is_sistema(sistema):
+        _data = json.loads(request.get_data())
+        payload = {
+            "title": "Sucesso",
+            "message": "Robô inicializado com sucesso!",
+            "status": "success",
+            "pid": uuid4().hex[:6].upper(),
+        }
+
+    return make_response(jsonify(payload), 201)
+
+
+def _register_routes_bots(app: Flask) -> None:
+    app.register_blueprint(bots)
