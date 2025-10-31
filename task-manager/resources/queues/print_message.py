@@ -4,7 +4,6 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import suppress
 from datetime import datetime
 from os import environ
-from pathlib import Path
 from queue import Empty, Queue
 from threading import Lock, Thread
 from typing import TYPE_CHECKING, TypedDict, cast
@@ -21,7 +20,7 @@ from .head import BotQueues
 if TYPE_CHECKING:
     from bots.head import CrawJUD
 
-load_dotenv(Path.cwd().parent)
+load_dotenv()
 
 
 class Count(TypedDict):

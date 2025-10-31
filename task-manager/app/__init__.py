@@ -3,13 +3,15 @@
 import importlib
 from pathlib import Path
 
-import _hook as _
 from celery import Celery
 from dynaconf import Dynaconf
 
+import _hook as _
+
+setting_file = str(Path.cwd().joinpath("config", "settings.yaml"))
 settings = Dynaconf(
     lowercase_read=False,
-    root_path=str(Path.cwd().parent.joinpath("config").resolve()),
+    root_path=setting_file,
     envvar_prefix="CRAWJUD",
     settings_files=["settings.yaml"],
     environments=True,

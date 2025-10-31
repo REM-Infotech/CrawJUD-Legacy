@@ -4,9 +4,6 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from constants.data._bots.cidades import cidades_amazonas
-from resources.elements import elaw as el
-from resources.web_element import WebElementBot
 from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
@@ -17,6 +14,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.head import CrawJUD
+from constants.data._bots.cidades import cidades_amazonas
+from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 
 
 class ElawBot(CrawJUD):
