@@ -82,23 +82,29 @@ def run_bot(sistema: Sistemas) -> Response:
     }
 
     if is_sistema(sistema):
-        request_data: Dict = json.loads(request.get_data())
-        data = {
-            k: v
-            for k, v in list(request_data.items())
-            if k != "configuracao_form"
-        }
+        code = 201
+        try:
+            request_data: Dict = json.loads(request.get_data())
+            data = {
+                k: v
+                for k, v in list(request_data.items())
+                if k != "configuracao_form"
+            }
 
-        form = FormBot.load_form(
-            request_data["configuracao_form"], data
-        )
-        _dict_form = form.to_dict()
+            form = FormBot.load_form(
+                request_data["configuracao_form"], data
+            )
+            _dict_form = form.to_dict()
 
-        payload = {
-            "title": "Sucesso",
-            "message": "Robô inicializado com sucesso!",
-            "status": "success",
-            "pid": uuid4().hex[:6].upper(),
-        }
+            payload = {
+                "title": "Sucesso",
+                "message": "Robô inicializado com sucesso!",
+                "status": "success",
+                "pid": uuid4().hex[:6].upper(),
+            }
+            code = 200
 
-    return make_response(jsonify(payload), 201)
+        except Exception as e:
+            print(e)
+
+    return make_response(jsonify(payload), code)

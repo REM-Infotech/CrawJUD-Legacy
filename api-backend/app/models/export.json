@@ -12,7 +12,7 @@
     "display_name": "PROJUDI - PROTOCOLO",
     "sistema": "PROJUDI",
     "categoria": "PROTOCOLO",
-    "configuracao_form": "multipe_files",
+    "configuracao_form": "multiple_files",
     "descricao": "Peticionamento em lotes de processos "
   },
   {
@@ -44,7 +44,7 @@
     "display_name": "ESAJ - PROTOCOLO",
     "sistema": "ESAJ",
     "categoria": "PROTOCOLO",
-    "configuracao_form": "multipe_files",
+    "configuracao_form": "multiple_files",
     "descricao": "Peticionamento em lotes de processos "
   },
   {
@@ -124,7 +124,7 @@
     "display_name": "ELAW - PAGAMENTOS",
     "sistema": "ELAW",
     "categoria": "SOLICITA_PAGAMENTO",
-    "configuracao_form": "multipe_files",
+    "configuracao_form": "multiple_files",
     "descricao": "Robô responsável por solicitação de pagamentos"
   },
   {
@@ -148,7 +148,7 @@
     "display_name": "ELAW - ANDAMENTOS",
     "sistema": "ELAW",
     "categoria": "ANDAMENT",
-    "configuracao_form": "multipe_files",
+    "configuracao_form": "multiple_files",
     "descricao": "Robô responsável por inserção de andamentos"
   },
   {
@@ -164,7 +164,7 @@
     "display_name": "JUSDS - Realizar Compromisso",
     "sistema": "JUSDS",
     "categoria": "REALIZA_PRAZO",
-    "configuracao_form": "multipe_files",
+    "configuracao_form": "multiple_files",
     "descricao": "Robô responsável por realizar compromissos no JUSDS"
   },
   {

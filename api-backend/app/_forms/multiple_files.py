@@ -6,10 +6,7 @@ from .head import FormBot
 @dataclass
 class MultipleFiles(FormBot):
     bot_id: str
-    credencial_id: str
-
-    xlsx: str
-    xlsx_sid: str
-
-    outros_arquivos: list[str]
-    outros_arquivos_sid: str
+    sid_filesocket: str
+    credencial: str
+    planilha_xlsx: str
+    anexos: list[str]

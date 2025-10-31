@@ -6,5 +6,5 @@ from .head import FormBot
 @dataclass
 class OnlyFile(FormBot):
     bot_id: str
-    xlsx: str
-    xlsx_sid: str
+    sid_filesocket: str
+    planilha_xlsx: str

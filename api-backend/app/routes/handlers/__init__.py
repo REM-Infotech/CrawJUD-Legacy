@@ -28,7 +28,9 @@ def join_room_bot(data: dict[str, str]) -> None:
 def log_bot(data: Message) -> None:
     """Log bot."""
     tqdm.write(data["message"])
-    io.emit("logbot", data=data, room=data["pid"], namespace="/bot_logs")
+    io.emit(
+        "logbot", data=data, room=data["pid"], namespace="/bot_logs"
+    )
 
 
 @io.on("add_file", namespace="/files")

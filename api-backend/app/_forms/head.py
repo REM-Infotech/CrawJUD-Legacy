@@ -14,7 +14,9 @@ class FormBot:
         return {
             key.lower(): getattr(self, key, None)
             for key in dir(self)
-            if not key.startswith("_")
+            if getattr(self, key, None)
+            and not key.startswith("_")
+            and not callable(getattr(self, key, None))
         }
 
     def __init_subclass__(cls: type[Self]) -> None:
