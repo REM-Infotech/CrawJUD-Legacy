@@ -15,7 +15,6 @@ from app.resources.extensions import io, storage
 
 
 @io.on("connect", namespace="/")
-@jwt_required()
 def connected(*args: MyAny, **kwargs: MyAny) -> None:
     """Log bot."""
     tqdm.write("ok")
@@ -28,7 +27,6 @@ def join_room_bot(data: dict[str, str]) -> None:
 
 
 @io.on("logbot", namespace="/bot_logs")
-@jwt_required()
 def log_bot(data: Message) -> None:
     """Log bot."""
     tqdm.write(data["message"])

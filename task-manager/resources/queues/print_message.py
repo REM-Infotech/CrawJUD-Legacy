@@ -55,6 +55,7 @@ class PrintMessage(BotQueues):
         time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
         message = f"[({mini_pid}, {message_type}, {self.row}, {time_exec})> {message}]"
         msg = Message(
+            pid=self.pid,
             row=self.row,
             message=message,
             message_type=message_type,

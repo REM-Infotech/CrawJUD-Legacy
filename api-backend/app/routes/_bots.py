@@ -89,7 +89,7 @@ def run_bot(sistema: Sistemas) -> Response:
     }
 
     if is_sistema(sistema):
-        code = 201
+        code = 500
         try:
             request_data: Dict = json.loads(request.get_data())
             data = {

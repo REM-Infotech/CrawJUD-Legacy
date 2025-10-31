@@ -21,13 +21,13 @@ class FormBot:
             from app.resources.extensions import celery, db
 
             kwargs = self.to_dict()
-
+            kwargs["pid"] = pid_exec
             bot = (
                 db.session.query(Bots)
                 .filter(Bots.Id == self.bot_id)
                 .first()
             )
-            task_name = f"{bot.sistema.lower()}_{bot.categoria.lower()}"
+            task_name = f"{bot.sistema.lower()}.{bot.categoria.lower()}"
 
             celery.send_task(task_name, kwargs=kwargs)
 

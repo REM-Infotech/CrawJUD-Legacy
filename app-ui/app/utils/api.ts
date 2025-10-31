@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 const url = new URL("", import.meta.env.VITE_API_URL).toString();
 
@@ -19,22 +19,39 @@ api.interceptors.response.use(
     return response;
   },
   async function (error) {
-    if (error.response.status && 401 === error.response.status) {
+    if (isAxiosError(error)) {
       const { $toast: toast, $router: router } = useNuxtApp();
+      if (error.response) {
+        if (error.response.status && 401 === error.response.status) {
+          toast.create({
+            title: "Erro",
+            body: error.response.data.message,
+            variant: "danger",
+            noCloseButton: true,
+            noAnimation: true,
+            noProgress: true,
+            modelValue: 5000,
+          });
 
-      toast.create({
-        title: "Sessão expirada!",
-        body: "Sua sessão foi expirada.",
-        variant: "warning",
-        noCloseButton: true,
-        noAnimation: true,
-        noProgress: true,
-        modelValue: 1500,
-      });
-
-      await api.post("/auth/logout");
-
-      router.push({ name: "login" });
+          await api.post("/auth/logout");
+          router.push({ name: "login" });
+          return;
+        }
+      } else if (error.code === "ERR_NETWORK") {
+        toast.create({
+          title: "Erro do servidor",
+          body: "Servidor fora do ar, tente novamente mais tarde",
+          variant: "danger",
+          noCloseButton: true,
+          noAnimation: true,
+          noProgress: true,
+          modelValue: 5000,
+        });
+        router.push({ name: "login" });
+        return;
+      } else {
+        return Promise.reject(error);
+      }
     } else {
       return Promise.reject(error);
     }

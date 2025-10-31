@@ -6,7 +6,6 @@ from pathlib import Path
 from time import sleep
 from typing import Self, TypedDict
 
-from __types import AnyType
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
@@ -16,6 +15,8 @@ from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
+
+from __types import AnyType
 
 
 class RectWebElement(TypedDict):
@@ -111,7 +112,7 @@ class WebElementBot(WebElement):
 
         if not send:
             for c in str(word):
-                sleep(0.009)
+                sleep(0.01)
                 super().send_keys(c)
 
     def send_file(self, file: str | Path) -> None:

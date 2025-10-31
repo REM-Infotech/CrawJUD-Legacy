@@ -31,31 +31,47 @@ def login() -> Response:
         Response: Response da autenticação
 
     """
-    response = {}
     try:
         db: SQLAlchemy = current_app.extensions["sqlalchemy"]
         data = request.get_json(force=True)  # força o parsing do JSON
 
         # Verifica se os campos obrigatórios estão presentes
-        if not data or not data.get("login") or not data.get("password"):
+        if (
+            not data
+            or not data.get("login")
+            or not data.get("password")
+        ):
             abort(400, description="Login e senha são obrigatórios.")
 
-        authenticated = User.authenticate(data["login"], data["password"])
+        user = (
+            db.session.query(User)
+            .filter_by(login=data["login"])
+            .first()
+        )
+        authenticated = User.authenticate(
+            data["login"], data["password"]
+        )
         if not authenticated:
-            abort(401, description="Credenciais inválidas.")
+            return make_response(
+                jsonify({"message": "Credenciais inválidas"}), 401
+            )
 
-        user = db.session.query(User).filter_by(login=data["login"]).first()
         if not user:
-            abort(404, description="Usuário não encontrado.")
+            return make_response(
+                jsonify({"message": "Usuário não encontrado."}), 401
+            )
 
         response = make_response(
             jsonify(message="Login efetuado com sucesso!"), 200
         )
         access_token = create_access_token(identity=str(user.Id))
-        set_access_cookies(response=response, encoded_access_token=access_token)
+        set_access_cookies(
+            response=response, encoded_access_token=access_token
+        )
 
     except Exception as e:
         _exc = traceback.format_exception(e)
+        abort(500)
 
     return response
 
@@ -68,6 +84,8 @@ def logout() -> Response:
         Response: Response do logout.
 
     """
-    response = make_response(jsonify(message="Logout efetuado com sucesso!"))
+    response = make_response(
+        jsonify(message="Logout efetuado com sucesso!")
+    )
     unset_jwt_cookies(response)
     return response

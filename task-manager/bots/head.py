@@ -12,9 +12,8 @@ from typing import ClassVar
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from celery import Celery, Task
-from minio import Minio
-from minio.credentials.providers import EnvMinioProvider
-from pandas import DataFrame, Timestamp
+from celery.worker.request import Request
+from pandas import DataFrame, Timestamp, read_excel
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
@@ -25,9 +24,12 @@ from __types import AnyType, Dict, P, T
 from _interfaces import BotData, ColorsDict
 from constants import WORKDIR
 from constants.webdriver import ARGUMENTS, PREFERENCES, SETTINGS
+from resources import format_string
+from resources._minio import Minio
 from resources.queues.file_operation import SaveError, SaveSuccess
 from resources.queues.head import BotQueues
 from resources.queues.print_message import PrintMessage
+from resources.web_element import WebElementBot
 
 __all__ = ["_hook"]
 func_dict_check = {
@@ -60,9 +62,11 @@ class CrawJUD(Task):
     _bot_data: BotData = None
     _total_rows: int = None
     _otherfiles: list[str] = None
-
+    _anexos: list[str] = None
     _xlsx_data: list[Dict] = None
-    _config: Dict = None
+    _credenciais: Dict = None
+    _planilha_xlsx: str = None
+    request: Request
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -101,38 +105,55 @@ class CrawJUD(Task):
         options.add_experimental_option("prefs", preferences)
 
         self.driver = Chrome(options=options)
+        self.driver._web_element_cls = WebElementBot
         self.wait = WebDriverWait(self.driver, 30)
 
         self.download_files()
-        self.load_config()
+        if self.credenciais:
+            self.load_credenciais()
+
+        if self.planilha_xlsx:
+            self.load_xlsx()
 
         if not self.auth():
             with suppress(Exception):
                 self.driver.quit()
 
-    def load_config(self) -> None:
-        for k, v in list(self.config.items()):
+        if self.anexos:
+            self._anexos = [
+                format_string(anexo) for anexo in list(self._anexos)
+            ]
+
+    def load_credenciais(self) -> None:
+        for k, v in list(self.credenciais.items()):
             setattr(self, k, v)
 
-    def download_files(self) -> None:
-        uri = self.app.conf["app_domain"]
-        client = Minio(
-            endpoint=f"{uri}:19000",
-            credentials=EnvMinioProvider(),
-            secure=False,
+    def load_xlsx(self) -> None:
+        path_xlsx = self.output_dir_path.joinpath(
+            format_string(self.planilha_xlsx),
         )
+
+        with path_xlsx.open("rb") as fp:
+            self.xlsx_data = read_excel(fp, engine="openpyxl").to_dict(
+                orient="records"
+            )
+
+    def download_files(self) -> None:
+        client = Minio()
 
         for item in client.list_objects(
             "outputexec-bots",
-            prefix=self.request.kwargs["cod_rastreio"],
+            prefix=self.request.kwargs["folder_objeto_minio"],
             recursive=True,
         ):
             file_path = str(
                 self.output_dir_path.joinpath(
-                    secure_filename(Path(item.object_name).name)
+                    format_string(Path(item.object_name).name)
                 ),
             )
-            client.fget_object(item.bucket_name, item.object_name, file_path)
+            _obj = client.fget_object(
+                item.bucket_name, item.object_name, file_path
+            )
 
     def zip_result(self) -> Path:
         zip_filename = f"{self.pid[:6].upper()}.zip"
@@ -221,12 +242,7 @@ class CrawJUD(Task):
         self.queue_control.stop_queues()
 
     def upload_file(self, zipfile: Path) -> str:
-        uri = self.app.conf["app_domain"]
-        client = Minio(
-            endpoint=f"{uri}:19000",
-            credentials=EnvMinioProvider(),
-            secure=False,
-        )
+        client = Minio()
 
         client.fput_object("outputexec-bots", zipfile.name, str(zipfile))
 
@@ -335,11 +351,11 @@ class CrawJUD(Task):
         self._otherfiles = _other_files
 
     @property
-    def config(self) -> Dict:
+    def credenciais(self) -> Dict:
         return self._config
 
-    @config.setter
-    def config(self, _config: Dict) -> None:
+    @credenciais.setter
+    def credenciais(self, _config: Dict) -> None:
         self._config = _config
 
     @property
@@ -349,3 +365,19 @@ class CrawJUD(Task):
     @xlsx_data.setter
     def xlsx_data(self, _xlsx_data: list[Dict]) -> None:
         self._xlsx_data = _xlsx_data
+
+    @property
+    def planilha_xlsx(self) -> str:
+        return self._planilha_xlsx
+
+    @planilha_xlsx.setter
+    def planilha_xlsx(self, new_val: str) -> None:
+        self._planilha_xlsx = new_val
+
+    @property
+    def anexos(self) -> list[str]:
+        return self._anexos
+
+    @anexos.setter
+    def anexos(self, anexos: str) -> None:
+        self._anexos = anexos
