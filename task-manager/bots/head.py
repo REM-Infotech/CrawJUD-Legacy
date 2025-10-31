@@ -70,8 +70,6 @@ class CrawJUD(Task):
         self.run = self.__call__
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
-        self.pid = self.request.id
-
         for k, v in list(kwargs.items()):
             setattr(self, k, v)
 
@@ -105,9 +103,7 @@ class CrawJUD(Task):
         self.driver = Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 30)
 
-        if self.otherfiles:
-            self.download_files()
-
+        self.download_files()
         self.load_config()
 
         if not self.auth():

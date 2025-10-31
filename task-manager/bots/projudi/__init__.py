@@ -11,9 +11,7 @@ from bots.projudi.protocolo import Protocolo as ProjudiProtocolo
 
 
 @shared_task(name="projudi.capa", bind=True, base=ProjudiCapa)
-def projudi_capa(
-    self: ProjudiCapa, cod_rastreio: str, config: Dict, xlsx_data: list[Dict]
-) -> None:
+def projudi_capa(self: ProjudiCapa, config: Dict) -> None:
     """Task Projudi Capa."""
     self.execution()
 
