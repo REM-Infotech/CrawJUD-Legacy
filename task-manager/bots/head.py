@@ -14,9 +14,13 @@ from zipfile import ZIP_DEFLATED, ZipFile
 from celery import Celery, Task
 from celery.worker.request import Request
 from pandas import DataFrame, Timestamp, read_excel
+from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
-from seleniumwire.webdriver import Chrome
+from seleniumwire.webdriver import Chrome as ChromeWired
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.driver_cache import DriverCacheManager
 from werkzeug.utils import secure_filename
 
 import _hook
@@ -96,6 +100,9 @@ class CrawJUD(Task):
         for argument in ARGUMENTS:
             options.add_argument(argument)
 
+        if "projudi" in self.name:
+            options.add_argument("--incognito")
+
         download_dir = str(self.output_dir_path)
         preferences = PREFERENCES
         preferences.update({
@@ -109,7 +116,15 @@ class CrawJUD(Task):
             for file in filter(lambda x: x.endswith(".crx"), files):
                 options.add_extension(str(root.joinpath(file)))
 
-        self.driver = Chrome(options=options)
+        if "pje" not in self.name:
+            cache_manager = DriverCacheManager()
+            driver_manager = ChromeDriverManager(cache_manager=cache_manager)
+            service = Service(executable_path=driver_manager.install())
+            self.driver = Chrome(options=options, service=service)
+
+        else:
+            self.driver = ChromeWired(options=options)
+
         self.driver._web_element_cls = WebElementBot
         self.wait = WebDriverWait(self.driver, 30)
 

@@ -78,10 +78,10 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 )
 
                 driver.refresh()
-                data = self.get_process_informations()
+                self.get_process_informations()
 
                 if trazer_copia and trazer_copia.lower() == "sim":
-                    data = self.copia_pdf(data)
+                    self.copia_pdf()
 
                 self.print_message(
                     message="Informações extraídas com sucesso!",

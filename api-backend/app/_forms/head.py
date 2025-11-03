@@ -14,7 +14,7 @@ class FormBot:
 
     @classmethod
     def load_form(cls, form_name: str, kwargs: Dict) -> Self:
-        return cls._subclass[form_name](**kwargs)
+        return cls._subclass[form_name.replace("_", "")](**kwargs)
 
     def handle_task(self, pid_exec: str) -> None:
         try:

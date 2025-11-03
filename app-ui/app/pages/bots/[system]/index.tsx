@@ -4,6 +4,6 @@ export default defineNuxtComponent({
     router.push({ name: "bots" });
   },
   render() {
-    return null;
+    return <></>;
   },
 });

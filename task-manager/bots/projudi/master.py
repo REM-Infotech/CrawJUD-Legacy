@@ -26,6 +26,8 @@ from resources.elements import projudi as el
 class ProjudiBot(CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
+    url_segunda_instancia: str = None
+
     def search(self) -> bool:
         """Procura processos no PROJUDI.
 
