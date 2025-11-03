@@ -35,10 +35,7 @@ class SaveSuccess(BotQueues):
         self,
         work_sheet: str = "Sucessos",
         data_save: list[Dict] = DATASAVE,
-        *args,
-        **kwargs,
     ) -> None:
-        _kwarg = kwargs
         self.queue.put_nowait({
             "work_sheet": work_sheet,
             "data_save": data_save,

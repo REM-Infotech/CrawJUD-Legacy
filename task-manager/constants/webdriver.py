@@ -16,7 +16,6 @@ ARGUMENTS = [
     "--window-size=1280,720",
     "--no-sandbox",
     "--kiosk-printing",
-    "--incognito",
     "--disable-gpu",
     "--disable-dev-shm-usage",
     "--disable-software-rasterizer",

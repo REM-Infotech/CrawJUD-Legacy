@@ -2,6 +2,7 @@ import { storeToRefs } from "pinia";
 import FileAuth from "./_forms/FileAuth.vue";
 import MultipleFiles from "./_forms/MultipleFiles.vue";
 import OnlyAuth from "./_forms/OnlyAuth.vue";
+import OnlyFile from "./_forms/OnlyFile.vue";
 import FileUploader from "./interfaces/FileUploader";
 
 const FormComponents: FormComponentRecord = {
@@ -9,7 +10,8 @@ const FormComponents: FormComponentRecord = {
   multiple_files: MultipleFiles,
   only_auth: OnlyAuth,
   proc_parte: undefined,
-  only_file: undefined,
+  only_file: OnlyFile,
+  pje: OnlyFile,
 };
 
 class FormManager extends FileUploader {

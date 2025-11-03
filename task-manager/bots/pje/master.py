@@ -6,13 +6,6 @@ from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-from __types import AnyType
-from __types._custom import StrProcessoCNJ
-from _interfaces import BotData
-from _interfaces._pje import DictResults, DictSeparaRegiao
-from common.exceptions.validacao import ValidacaoStringError
-from resources import RegioesIterator
-from resources.elements import pje as el
 from selenium.common.exceptions import (
     TimeoutException,
     UnexpectedAlertPresentException,
@@ -21,7 +14,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from __types import AnyType
+from __types._custom import StrProcessoCNJ
+from _interfaces import BotData
+from _interfaces._pje import DictResults, DictSeparaRegiao
 from bots.head import CrawJUD
+from common.exceptions.validacao import ValidacaoStringError
+from resources import RegioesIterator
+from resources.elements import pje as el
 
 if TYPE_CHECKING:
     from httpx import Client
@@ -35,20 +35,19 @@ class PjeBot(CrawJUD):
         regiao: str,
     ) -> tuple[dict[str, str], dict[str, str]]:
         cookies_driver = self.driver.get_cookies()
-        har_data_ = self.driver.current_har
-        entries = list(har_data_.entries)
+        har_data_ = self.driver.requests
+        entries = list(har_data_)
 
         entry_proxy = [
             item
             for item in entries
-            if f"https://pje.trt{regiao}.jus.br/pje-comum-api/"
-            in item.request.url
+            if f"https://pje.trt{regiao}.jus.br/pje-comum-api/" in item.url
         ][-1]
 
         return (
             {
-                str(header["name"]): str(header["value"])
-                for header in entry_proxy.request.headers
+                str(header): str(value)
+                for header, value in entry_proxy.headers.items()
             },
             {
                 str(cookie["name"]): str(cookie["value"])
@@ -224,7 +223,7 @@ class PjeBot(CrawJUD):
         regioes_dict: dict[str, list[BotData]] = {}
         position_process: dict[str, int] = {}
 
-        for item in self._frame:
+        for item in self.frame:
             try:
                 numero_processo = StrProcessoCNJ(
                     item["NUMERO_PROCESSO"],

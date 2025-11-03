@@ -64,10 +64,10 @@ class CrawJUD(Task):
     _otherfiles: list[str] = None
     _anexos: list[str] = None
     _xlsx_data: list[Dict] = None
-    _credenciais: Dict = None
     _planilha_xlsx: str = None
     request: Request
     queue_control: BotQueues
+    _credenciais: ClassVar[Dict] = {}
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -104,6 +104,10 @@ class CrawJUD(Task):
         })
 
         options.add_experimental_option("prefs", preferences)
+
+        for root, _, files in Path.cwd().joinpath("chrome-extensions").walk():
+            for file in filter(lambda x: x.endswith(".crx"), files):
+                options.add_extension(str(root.joinpath(file)))
 
         self.driver = Chrome(options=options)
         self.driver._web_element_cls = WebElementBot
@@ -353,11 +357,11 @@ class CrawJUD(Task):
 
     @property
     def credenciais(self) -> Dict:
-        return self._config
+        return self._credenciais
 
     @credenciais.setter
-    def credenciais(self, _config: Dict) -> None:
-        self._config = _config
+    def credenciais(self, _credenciais: Dict) -> None:
+        self._credenciais = _credenciais
 
     @property
     def xlsx_data(self) -> list[Dict]:

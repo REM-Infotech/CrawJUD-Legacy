@@ -14,9 +14,13 @@ from concurrent.futures import (
     as_completed,
 )
 from contextlib import suppress
+from queue import Queue
 from threading import Thread
 from time import sleep
 from typing import ClassVar
+
+from httpx import Client, Response
+from tqdm import tqdm
 
 from __types import Dict
 from _interfaces import BotData
@@ -32,16 +36,13 @@ from _interfaces._pje import (
 from _interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
 from _interfaces._pje.audiencias import AudienciaDict
 from _interfaces._pje.partes import ParteDict, PartesJsonDict
+from bots.pje.master import PjeBot
 from common.exceptions import (
     ExecutionError,
     FileUploadError,
 )
 from constants import WORKDIR
-from httpx import Client, Response
 from resources.elements import pje as el
-from tqdm import tqdm
-
-from bots.pje.master import PjeBot
 
 SENTINELA = None
 
@@ -55,6 +56,7 @@ class Capa(PjeBot):
 
     """
 
+    queue_files: Queue
     futures_download_file: ClassVar[list[Future]] = []
 
     def execution(self) -> None:
@@ -69,6 +71,12 @@ class Capa(PjeBot):
             **kwargs: Argumentos nomeados variáveis.
 
         """
+        self.queue_files = Queue()
+        self.to_add_processos = []
+        self.to_add_audiencias = []
+        self.to_add_assuntos = []
+        self.to_add_partes = []
+        self.to_add_representantes = []
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
@@ -109,10 +117,7 @@ class Capa(PjeBot):
             (self.to_add_partes, "Partes"),
             (self.to_add_representantes, "Representantes"),
         ]:
-            self.queue_save_xlsx.put({
-                "to_save": to_save,
-                "sheet_name": sheet_name,
-            })
+            self.append_success(work_sheet=sheet_name, data_save=to_save)
 
         self.queue_files.join()
         self.finalize_execution()
@@ -436,9 +441,12 @@ class Capa(PjeBot):
                 break
 
             try:
-                data = self.queue_files.get()
+                data = None
+                with suppress(Exception):
+                    data = self.queue_files.get_nowait()
+
                 if data:
-                    data = dict(data)
+                    data: Dict = dict(data)
                     file_name: str = data.get("file_name")
                     row: int = data.get("row")
                     processo: str = data.get("processo")

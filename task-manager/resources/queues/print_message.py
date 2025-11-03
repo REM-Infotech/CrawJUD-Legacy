@@ -47,8 +47,12 @@ class PrintMessage(BotQueues):
         self.th = Thread(target=self.queue_message)
         self.th.start()
 
-    def __call__(self, message: str, message_type: MessageType) -> None:
+    def __call__(
+        self, message: str, message_type: MessageType, row: int | None = None
+    ) -> None:
         self.message_type = message_type
+
+        row_ = row or self.row
 
         mini_pid = self.pid[:6].upper()
         tz = ZoneInfo("America/Sao_Paulo")
@@ -56,7 +60,7 @@ class PrintMessage(BotQueues):
         message = f"[({mini_pid}, {message_type}, {self.row}, {time_exec})> {message}]"
         msg = Message(
             pid=self.pid,
-            row=self.row,
+            row=row_,
             message=message,
             message_type=message_type,
             status=self.status,

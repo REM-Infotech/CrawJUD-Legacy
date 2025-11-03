@@ -6,6 +6,7 @@ from tqdm import tqdm
 
 from __types import Dict
 from app.models import LicenseUser, User, db
+from app.resources import camel_to_snake
 
 
 class FormBot:
@@ -83,4 +84,4 @@ class FormBot:
         return data
 
     def __init_subclass__(cls: type[Self]) -> None:
-        cls._subclass[cls.__module__.split(".")[-1]] = cls
+        cls._subclass[camel_to_snake(cls.__name__.lower())] = cls

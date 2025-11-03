@@ -6,7 +6,7 @@ from _interfaces import BotData
 from _interfaces._pje import DictSeparaRegiao
 
 if TYPE_CHECKING:
-    from bots.head import CrawJUD
+    from bots.pje.master import PjeBot
 
 
 class RegioesIterator:
@@ -23,7 +23,7 @@ class RegioesIterator:
 
     """
 
-    def __init__(self, bot: CrawJUD) -> None:
+    def __init__(self, bot: PjeBot) -> None:
         """Inicialize o iterador de regiões com dados do bot e processos separados.
 
         Args:
@@ -32,7 +32,6 @@ class RegioesIterator:
 
         """
         # Carrega arquivos e separa regiões
-        bot.carregar_arquivos()
         dict_processo_separado: DictSeparaRegiao = bot.separar_regiao()
         self._bot = bot
         self._regioes = list(dict_processo_separado["regioes"].items())
