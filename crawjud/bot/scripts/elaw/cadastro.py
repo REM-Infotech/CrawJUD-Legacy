@@ -920,7 +920,7 @@ class Cadastro(CrawJUD):
             )
             continuebutton.click()
 
-            interact.sleep_load('div[id="j_id_1o"]')
+            interact.sleep_load('div[id="j_id_1v"]')
             sleep(0.5)
 
             input_nomeadv: WebElement = wait.until(
@@ -1010,7 +1010,7 @@ class Cadastro(CrawJUD):
 
                 set_infomar_cpf.click()
 
-            interact.sleep_load('div[id="j_id_1o"]')
+            interact.sleep_load('div[id="j_id_1v"]')
             doc_to_list = list(
                 filter(lambda x: str.isdigit(x), ",".join(bot_data.get("DOC_PARTE_CONTRARIA")).split(","))
             )
@@ -1020,7 +1020,7 @@ class Cadastro(CrawJUD):
             select2_elaw(element_select, tipo_doc.upper())
 
             sleep(2)
-            interact.sleep_load('div[id="j_id_1o"]')
+            interact.sleep_load('div[id="j_id_1v"]')
 
             css_input_doc = elements.tipo_cpf
             if tipo_doc == "cnpj":
@@ -1037,7 +1037,7 @@ class Cadastro(CrawJUD):
             continuar = driver.find_element(By.CSS_SELECTOR, elements.botao_parte_contraria)
             continuar.click()
 
-            interact.sleep_load('div[id="j_id_1o"]')
+            interact.sleep_load('div[id="j_id_1v"]')
             name_parte: WebElement = wait.until(
                 ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_name_parte)),
                 message="Erro ao encontrar elemento",
