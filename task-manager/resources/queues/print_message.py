@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from socketio import Client
+from tqdm import tqdm
 
 from __types import MessageType
 from _interfaces import Message
@@ -69,6 +70,7 @@ class PrintMessage(BotQueues):
             error_count=self.error_count,
         )
         self.queue.put_nowait(msg)
+        tqdm.write(message)
 
     def queue_message(self) -> None:
         uri = f"http://{environ['SOCKETIO_SERVER']}"
