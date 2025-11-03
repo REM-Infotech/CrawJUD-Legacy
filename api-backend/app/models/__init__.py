@@ -88,7 +88,9 @@ def create_bots(app: Flask) -> None:
 
 
 def load_credentials(app: Flask) -> None:
-    path_credentials = Path(__file__).parent.joinpath("credentials.json")
+    path_credentials = Path(__file__).parent.joinpath(
+        "credentials.json"
+    )
 
     if path_credentials.exists():
         with (

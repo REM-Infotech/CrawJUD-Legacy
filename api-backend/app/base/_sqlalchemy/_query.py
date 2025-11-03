@@ -5,7 +5,9 @@ from __types import MyAny, T
 from flask import abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.pagination import Pagination as FSAPagination
-from flask_sqlalchemy.pagination import QueryPagination as FSAQueryPagination
+from flask_sqlalchemy.pagination import (
+    QueryPagination as FSAQueryPagination,
+)
 from sqlalchemy import exc as sa_exc
 from sqlalchemy.orm import Query as SAQuery
 from sqlalchemy.sql._typing import (
@@ -13,7 +15,9 @@ from sqlalchemy.sql._typing import (
     _ColumnsClauseArgument,
 )
 
-_Entities = _ColumnsClauseArgument[T] | Sequence[_ColumnsClauseArgument[T]]
+_Entities = (
+    _ColumnsClauseArgument[T] | Sequence[_ColumnsClauseArgument[T]]
+)
 if TYPE_CHECKING:
     from ._model import Model
 
@@ -75,7 +79,9 @@ class Query[T](SAQuery):
 
         return all_results
 
-    def get_or_404(self, ident: MyAny, description: str | None = None) -> T:
+    def get_or_404(
+        self, ident: MyAny, description: str | None = None
+    ) -> T:
         """Results or 404.
 
         Like :meth:`~sqlalchemy.orm.Query.get`

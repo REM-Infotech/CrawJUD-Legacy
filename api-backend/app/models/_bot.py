@@ -19,8 +19,12 @@ class Bots(db.Model):
     display_name: str = Column(String(64), nullable=False)
     sistema: str = Column(String(16), nullable=False)
     categoria: str = Column(String(32), nullable=False)
-    configuracao_form: str = Column(String(64), nullable=False, default="")
-    descricao: str = Column("descricao", String(length=256), nullable=False)
+    configuracao_form: str = Column(
+        String(64), nullable=False, default=""
+    )
+    descricao: str = Column(
+        "descricao", String(length=256), nullable=False
+    )
 
     license_id: int = Column(Integer, db.ForeignKey("licenses.id"))
     license_: Mapped[LicenseUser] = rel(back_populates="bots")

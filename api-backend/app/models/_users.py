@@ -30,8 +30,12 @@ def _generate_key() -> str:
 class LicenseUser(db.Model):
     __tablename__ = "licenses"
     Id: int = Column("id", Integer, primary_key=True, nullable=False)
-    ProductKey: str = Column("product_key", String(35), default=_generate_key)
-    descricao: int = Column("descricao", String(length=256), nullable=False)
+    ProductKey: str = Column(
+        "product_key", String(35), default=_generate_key
+    )
+    descricao: int = Column(
+        "descricao", String(length=256), nullable=False
+    )
     Nome: str = Column("nome", String(64))
 
     CPF: str = Column(
@@ -49,7 +53,9 @@ class LicenseUser(db.Model):
 
     bots: Mapped[list[Bots]] = rel(back_populates="license_")
     usuarios: Mapped[list[User]] = rel(back_populates="license_")
-    credenciais: Mapped[list[CredenciaisRobo]] = rel(back_populates="license_")
+    credenciais: Mapped[list[CredenciaisRobo]] = rel(
+        back_populates="license_"
+    )
 
 
 class User(db.Model):
@@ -61,18 +67,26 @@ class User(db.Model):
     nome_usuario: str = Column(
         "display_name", String(length=64), nullable=False
     )
-    email: str = Column("email", String(length=50), nullable=False, unique=True)
-    password: str = Column("password", String(length=64), nullable=False)
+    email: str = Column(
+        "email", String(length=50), nullable=False, unique=True
+    )
+    password: str = Column(
+        "password", String(length=64), nullable=False
+    )
     admin: bool = Column("admin", Boolean, default=False)
 
-    execucoes: Mapped[list[ExecucoesBot]] = rel(back_populates="usuario")
+    execucoes: Mapped[list[ExecucoesBot]] = rel(
+        back_populates="usuario"
+    )
 
     license_id: int = Column(Integer, ForeignKey("licenses.id"))
     license_: Mapped[LicenseUser] = rel(back_populates="usuarios")
 
     @classmethod
     def authenticate(cls, username: str, password: str) -> bool:
-        user = db.session.query(cls).filter(cls.login == username).first()
+        user = (
+            db.session.query(cls).filter(cls.login == username).first()
+        )
         return user is not None and user.check_password(password)
 
     @property
