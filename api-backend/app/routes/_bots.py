@@ -1,6 +1,5 @@
 import json
 import traceback
-from concurrent.futures import ThreadPoolExecutor
 from uuid import uuid4
 
 from flask import (
@@ -20,10 +19,6 @@ from app.models import User
 from constants import SISTEMAS
 
 bots = Blueprint("bots", __name__, url_prefix="/bot")
-
-Pool = ThreadPoolExecutor(max_workers=8)
-
-future_set = set()
 
 
 def is_sistema(valor: Sistemas) -> bool:
@@ -103,8 +98,8 @@ def run_bot(sistema: Sistemas) -> Response:
             )
 
             pid_exec = uuid4().hex.upper()
-            future = Pool.submit(form.handle_task, pid_exec=pid_exec)
-            future.add_done_callback(lambda ft: future_set.discard(ft))
+
+            form.handle_task(pid_exec=pid_exec)
 
             payload = {
                 "title": "Sucesso",
