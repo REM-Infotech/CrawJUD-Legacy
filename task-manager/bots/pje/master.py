@@ -14,7 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from __types import AnyType
+from __types import AnyType, Dict
 from __types._custom import StrProcessoCNJ
 from _interfaces import BotData
 from _interfaces._pje import DictResults, DictSeparaRegiao
@@ -29,6 +29,8 @@ if TYPE_CHECKING:
 
 class PjeBot(CrawJUD):
     """Classe de controle para robôs do PJe."""
+
+    posicoes_processos: ClassVar[Dict] = {}
 
     def get_headers_cookies(
         self,

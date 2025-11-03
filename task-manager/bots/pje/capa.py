@@ -80,8 +80,6 @@ class Capa(PjeBot):
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
-        self.pbar = tqdm(total=len(self._frame))
-
         with ThreadPoolExecutor(max_workers=24) as executor:
             futures: list[Future] = []
             for pos, t_regiao in enumerate(lista_nova):
@@ -435,11 +433,6 @@ class Capa(PjeBot):
     def copia_integral(self) -> None:
         """Realiza o download da cópia integral do processo e salva no storage."""
         while True:
-            empty_queue = self.queue_files.unfinished_tasks == 0
-
-            if empty_queue:
-                break
-
             try:
                 data = None
                 with suppress(Exception):
@@ -501,7 +494,8 @@ class Capa(PjeBot):
                 self.print_message(message=msg, row=row, message_type="info")
 
             finally:
-                self.queue_files.task_done()
+                with suppress(Exception):
+                    self.queue_files.task_done()
 
     def save_file_downloaded(
         self,

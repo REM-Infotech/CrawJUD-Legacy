@@ -49,16 +49,20 @@ class PrintMessage(BotQueues):
         self.th.start()
 
     def __call__(
-        self, message: str, message_type: MessageType, row: int | None = None
+        self, message: str, message_type: MessageType, row: int = 0
     ) -> None:
         self.message_type = message_type
 
-        row_ = row or self.row
+        row_ = row
+        if row == 0:
+            row_ = self.row
 
         mini_pid = self.pid[:6].upper()
         tz = ZoneInfo("America/Sao_Paulo")
         time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
-        message = f"[({mini_pid}, {message_type}, {self.row}, {time_exec})> {message}]"
+        message = (
+            f"[({mini_pid}, {message_type}, {row_}, {time_exec})> {message}]"
+        )
         msg = Message(
             pid=self.pid,
             row=row_,
