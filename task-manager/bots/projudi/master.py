@@ -19,7 +19,8 @@ from common.exceptions import (
     ExecutionError,
     LoginSystemError,
 )
-from constants import CSS_INPUT_PROCESSO
+from constants import CSS_INPUT_PROCESSO, MAIOR_60_ANOS
+from resources import format_string
 from resources.elements import projudi as el
 
 
@@ -284,7 +285,7 @@ class ProjudiBot(CrawJUD):
 
         return check_login is not None
 
-    def parse_data(self, inner_html: str) -> dict[str, str]:
+    def parse_data(self, inner_html: str) -> dict[str, str]:  # noqa: C901
         soup = BeautifulSoup(inner_html, "html.parser")
         dados = {}
         # percorre todas as linhas <tr>
@@ -316,7 +317,13 @@ class ProjudiBot(CrawJUD):
                             break
                         j += 1
                     if label and valor and ":" not in valor:
-                        dados[label] = valor
+                        if " " in label:
+                            label = "_".join(label.split(" "))
+
+                        if valor == MAIOR_60_ANOS:
+                            continue
+
+                        dados[format_string(label.upper())] = valor
                     # continue a partir do td seguinte ao que usamos como valor
                     i = j + 1
                 else:

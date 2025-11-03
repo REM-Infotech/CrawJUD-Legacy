@@ -22,3 +22,6 @@ PADRAO_DATA: list[Pattern] = [
     r"^\d{2}:\d{2}:\d{2}$",
     r"^\d{4}-\d{2}-\d{2}.\d{1,6}$",
 ]
+
+
+MAIOR_60_ANOS = "Maior que 60 anos (conforme Lei 10.741/2003)"

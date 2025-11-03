@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from __types import Dict
+from _interfaces.projudi import PartesProjudiDict, RepresentantesProjudiDict
 from bots.projudi.master import ProjudiBot
 from resources.elements import projudi as el
 
@@ -40,7 +42,9 @@ class PrimeiraInstancia(ProjudiBot):
         inner_html = table_info_processual.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
 
-    def _partes_primeiro_grau(self, numero_processo: str) -> None:
+    def _partes_primeiro_grau(
+        self, numero_processo: str
+    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
         wait = self.wait
 
         btn_partes = wait.until(
@@ -55,20 +59,33 @@ class PrimeiraInstancia(ProjudiBot):
             )),
         )
 
+        partes: list[Dict] = []
+        advogados: list[Dict] = []
+
         for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
-            self._partes_extract_primeiro_grau(
+            parte, advogado = self._partes_extract_primeiro_grau(
                 html=inner_html,
                 processo=numero_processo,
             )
 
-    def _partes_extract_primeiro_grau(self, html: str, processo: str) -> None:
+            partes.extend(parte)
+            advogados.extend(advogado)
+
+        return partes, advogados
+
+    def _partes_extract_primeiro_grau(
+        self, html: str, processo: str
+    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
         """Extraia informações das partes do processo na tabela do Projudi.
 
         Args:
             html (str): HTML da página contendo a tabela de partes.
             processo(str): Numero processo
+
+        Returns:
+            tuple: advogados e partes
 
         """
         soup = BeautifulSoup(html, "html.parser")
@@ -82,13 +99,13 @@ class PrimeiraInstancia(ProjudiBot):
             if not tds or len(tds) < 6:
                 continue
             # Extrai nome
-            nome = str(tds[1].get_text(strip=True))
+            nome_parte = str(tds[1].get_text(strip=True))
             # Extrai documento (RG ou similar)
-            documento = str(tds[2].get_text(strip=True))
+            documento_parte = str(tds[2].get_text(strip=True))
             # Extrai CPF
-            cpf = str(tds[3].get_text(strip=True))
+            cpf_cnpj_parte = str(tds[3].get_text(strip=True))
             # Extrai OABs e advogados
-            advs = ", ".join([
+            advogados_parte = ", ".join([
                 " ".join(str(li.get_text(" ", strip=True)).split())
                 for li in tds[5].find_all("li")
             ])
@@ -105,27 +122,30 @@ class PrimeiraInstancia(ProjudiBot):
                     if endereco_div:
                         endereco = str(endereco_div.get_text(" ", strip=True))
 
-            if nome != "Descrição:":
+            if nome_parte != "Descrição:":
                 for li in tds[5].find_all("li"):
                     advogado_e_oab = " ".join(
                         str(li.get_text(" ", strip=True)).split(),
                     ).split(" - ")
 
-                    advogados.append({
-                        "Número do processo": processo,
-                        "Nome": advogado_e_oab[1],
-                        "OAB": advogado_e_oab[0],
-                        "Representado": nome,
-                    })
+                    advogados.append(
+                        RepresentantesProjudiDict(
+                            NUMERO_PROCESSO=processo,
+                            NOME=advogado_e_oab[1],
+                            OAB=advogado_e_oab[0],
+                            REPRESENTADO=nome_parte,
+                        )
+                    )
 
-                partes.append({
-                    "Número do processo": processo,
-                    "Nome": nome,
-                    "Documento": documento,
-                    "Cpf": cpf,
-                    "Advogados": advs,
-                    "Endereco": endereco,
-                })
+                partes.append(
+                    PartesProjudiDict(
+                        NUMERO_PROCESSO=processo,
+                        NOME=nome_parte,
+                        DOCUMENTO=documento_parte,
+                        CPF_CNPJ=cpf_cnpj_parte,
+                        ADVOGADOS=advogados_parte,
+                        ENDERECO=endereco,
+                    )
+                )
 
-        self.append_success(work_sheet="Partes", data_save=partes)
-        self.append_success(work_sheet="Representantes", data_save=advogados)
+        return partes, advogados

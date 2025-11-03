@@ -2,8 +2,13 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from _interfaces.projudi import PartesProjudiDict, RepresentantesProjudiDict
 from bots.projudi.master import ProjudiBot
 from resources.elements import projudi as el
+
+
+def limpa_campo(valor: str) -> str:
+    return valor if ":" not in valor else ""
 
 
 class SegundaInstancia(ProjudiBot):
@@ -40,7 +45,9 @@ class SegundaInstancia(ProjudiBot):
         inner_html = table_info_processual.get_attribute("innerHTML")
         return self.parse_data(inner_html=inner_html)
 
-    def _partes_segundo_grau(self, numero_processo: str) -> None:
+    def _partes_segundo_grau(
+        self, numero_processo: str
+    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
         wait = self.wait
 
         btn_partes = wait.until(
@@ -58,20 +65,29 @@ class SegundaInstancia(ProjudiBot):
             )),
         )
 
+        partes = []
+        advogados = []
+
         for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
-            self._partes_extract_segundo_grau(
+            parte, advogado = self._partes_extract_segundo_grau(
                 html=inner_html,
                 processo=numero_processo,
             )
 
-    def _partes_extract_segundo_grau(self, html: str, processo: str) -> None:
+            partes.extend(parte)
+            advogados.extend(advogado)
+
+        return partes, advogados
+
+    def _partes_extract_segundo_grau(
+        self, html: str, processo: str
+    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
         """Extraia informações das partes do processo na tabela do Projudi.
 
-        Args:
-            html (str): HTML da página contendo a tabela de partes.
-            processo(str): Numero processo
+        Returns:
+            tuple: advogados e partes
 
         """
         soup = BeautifulSoup(html, "html.parser")
@@ -114,24 +130,24 @@ class SegundaInstancia(ProjudiBot):
                         str(li.get_text(" ", strip=True)).split(),
                     ).split(" - ")
 
-                    advogados.append({
-                        "Número do processo": processo,
-                        "Nome": advogado_e_oab[1],
-                        "OAB": advogado_e_oab[0],
-                        "Representado": nome,
-                    })
+                    advogados.append(
+                        RepresentantesProjudiDict(
+                            NUMERO_PROCESSO=processo,
+                            NOME=advogado_e_oab[1],
+                            OAB=advogado_e_oab[0],
+                            REPRESENTADO=nome,
+                        )
+                    )
 
-                def limpa_campo(valor: str) -> str:
-                    return valor if ":" not in valor else ""
+                partes.append(
+                    PartesProjudiDict(
+                        NUMERO_PROCESSO=processo,
+                        NOME=nome,
+                        DOCUMENTO=limpa_campo(documento),
+                        CPF_CNPJ=limpa_campo(cpf),
+                        ADVOGADOS=advs,
+                        ENDERECO=limpa_campo(endereco),
+                    )
+                )
 
-                partes.append({
-                    "Número do processo": processo,
-                    "Nome": nome,
-                    "Documento": limpa_campo(documento),
-                    "Cpf": limpa_campo(cpf),
-                    "Advogados": advs,
-                    "Endereco": limpa_campo(endereco),
-                })
-
-        self.append_success(work_sheet="Partes", data_save=partes)
-        self.append_success(work_sheet="Representantes", data_save=advogados)
+        return partes, advogados

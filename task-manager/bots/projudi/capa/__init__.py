@@ -8,11 +8,11 @@ import time
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
-from typing import ClassVar
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from _interfaces.projudi import CapaProjudiDict
 from bots.projudi.capa._1 import PrimeiraInstancia
 from bots.projudi.capa._2 import SegundaInstancia
 from common import raise_execution_error
@@ -25,14 +25,6 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
     This class extends CrawJUD to click through information panels,
     extract process data and participant details, and format them accordingly.
     """
-
-    to_add_partes: ClassVar[list[dict]] = []
-    to_add_assuntos: ClassVar[list[dict]] = []
-    to_add_processos: ClassVar[list[dict]] = []
-    to_add_audiencias: ClassVar[list[dict]] = []
-    to_add_representantes: ClassVar[list[dict]] = []
-
-    list_partes: ClassVar[list] = []
 
     def execution(self) -> None:
         """Execute the main processing loop to extract process information.
@@ -117,22 +109,68 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             raise_execution_error("Erro ao executar operação")
 
     def primeiro_grau(self, numero_processo: str) -> None:
-        process_info: dict = {"Número do processo": numero_processo}
-        process_info.update(self._informacoes_gerais_primeiro_grau())
-        process_info.update(self._info_processual_primeiro_grau())
+        process_info = CapaProjudiDict(NUMERO_PROCESSO=numero_processo)
 
-        self._partes_primeiro_grau(numero_processo=numero_processo)
-        self.append_success(
-            work_sheet="Primeiro Grau", data_save=[process_info]
+        list_items = dir(CapaProjudiDict)
+        for item in list_items:
+            val = process_info.get(item)
+            if (
+                not val
+                and not item.startswith("_")
+                and not callable(getattr(CapaProjudiDict, item))
+            ):
+                process_info.update({item: "Vazio"})
+
+        informacoes_gerais = self._informacoes_gerais_primeiro_grau()
+        informacao_processo = self._info_processual_primeiro_grau()
+
+        process_info.update(informacoes_gerais)
+        process_info.update(informacao_processo)
+
+        partes, advogados = self._partes_primeiro_grau(
+            numero_processo=numero_processo
         )
 
-    def segundo_grau(self, numero_processo: str) -> None:
-        process_info: dict = {"Número do processo": numero_processo}
-        process_info.update(self._informacoes_gerais_segundo_grau())
-        process_info.update(self._info_processual_segundo_grau())
+        to_add = [
+            ("Primeiro Grau", [process_info]),
+            ("Partes", partes),
+            ("Advogados", advogados),
+        ]
 
-        self._partes_segundo_grau(numero_processo=numero_processo)
-        self.append_success(work_sheet="Segundo Grau", data_save=[process_info])
+        for item in to_add:
+            self.append_success(work_sheet=item[0], data_save=item[1])
+
+    def segundo_grau(self, numero_processo: str) -> None:
+        process_info = CapaProjudiDict(NUMERO_PROCESSO=numero_processo)
+
+        list_items = dir(CapaProjudiDict)
+        for item in list_items:
+            val = process_info.get(item)
+            if (
+                not val
+                and not item.startswith("_")
+                and not callable(getattr(CapaProjudiDict, item))
+            ):
+                process_info.update({item: "Vazio"})
+
+        informacoes_gerais = self._informacoes_gerais_segundo_grau()
+        informacao_processo = self._info_processual_segundo_grau()
+
+        process_info.update(informacoes_gerais)
+        process_info.update(informacao_processo)
+
+        partes, advogados = self._partes_segundo_grau(
+            numero_processo=numero_processo
+        )
+
+        to_add = [
+            ("Segundo Grau", [process_info]),
+            ("Partes", partes),
+            ("Advogados", advogados),
+        ]
+
+        for item in to_add:
+            self.append_success(work_sheet=item[0], data_save=item[1])
 
     def copia_pdf(
         self,

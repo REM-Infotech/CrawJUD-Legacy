@@ -15,12 +15,7 @@ def format_string(string: str) -> str:  # noqa: D103
         c for c in normalize("NFKD", string) if not combining(c)
     ])
 
-    return " ".join(
-        secure_filename(normalized_string)
-        .replace("-", "")
-        .replace("_", " ")
-        .split(),
-    )
+    return secure_filename(normalized_string).upper()
 
 
 __all__ = ["RegioesIterator", "format_string"]
