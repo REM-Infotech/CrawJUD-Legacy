@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import { computed, nextTick, ref } from "vue";
 import { Doughnut } from "vue-chartjs";
 const chartData = ref([40, 20, 12]);
 
 const LogsSocket = socketio.socket("/bot_logs");
 
+const itemLog = ref<HTMLElement | null>(null); // Ref para o ul
+let pid: string;
 onMounted(() => {
   const route = useRoute();
-  console.log(route.name);
   const pid_param: string = route.params.pid as string;
-  let pid;
 
   if (pid_param) {
     pid = pid_param;
@@ -21,10 +22,19 @@ onMounted(() => {
   LogsSocket.emit("join_room", { room: pid });
 });
 
-LogsSocket.on("logbot", (data) => {
-  console.log(data);
+LogsSocket.on("logbot", async (data) => {
   receivedLogs.value.push(data);
+  Contagem.value = [data.total, data.success_count, data.error_count];
+  await nextTick();
+
+  if (itemLog.value) {
+    itemLog.value.scrollTop = itemLog.value.scrollHeight;
+  }
 });
+
+const Contagem = ref([0.1, 0.1, 0.1]);
+
+const Contador = computed(() => Contagem.value);
 
 const receivedLogs = ref([
   {
@@ -40,9 +50,13 @@ const listLogs = computed(() => receivedLogs.value);
     <BRow>
       <div class="col-6">
         <div class="card">
-          <div class="card-header"></div>
-          <div class="card-body p-5 bg-black overflow-y-auto" style="height: 37.5rem">
-            <TransitionGroup tag="ul" name="fade" ref="itemLog">
+          <div class="card-header">
+            <BButton variant="danger" @click="() => LogsSocket.emit('bot_stop', { pid: pid })">
+              Parar Execução
+            </BButton>
+          </div>
+          <div class="card-body p-5 bg-black overflow-y-auto" style="height: 37.5rem" ref="itemLog">
+            <TransitionGroup tag="ul" name="fade">
               <li
                 v-for="(item, index) in listLogs"
                 :key="index"
@@ -78,7 +92,7 @@ const listLogs = computed(() => receivedLogs.value);
                 labels: ['EXECUTADOS', 'SUCESSOS', 'ERROS'],
                 datasets: [
                   {
-                    data: chartData,
+                    data: Contador,
                     backgroundColor: ['#0096C7', '#42cf06', '#FF0000'],
                   },
                 ],
@@ -94,26 +108,33 @@ const listLogs = computed(() => receivedLogs.value);
 </template>
 <style lang="css" scoped>
 .error {
+  font-size: 1.3em;
   color: #bd0707;
   font-weight: bold;
 }
 
 .info {
-  color: #f1b00bbb;
+  color: #f1b00b;
+  font-size: 1.2em;
   font-weight: bold;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .warning {
+  font-size: 1.2em;
   color: #af3f07;
   font-weight: bold;
 }
 
 .success {
   color: #11ab5b;
+  font-size: 1.2em;
   font-weight: bold;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .log {
+  font-size: 1.1em;
   color: #ffffffa8;
   font-weight: bold;
 }

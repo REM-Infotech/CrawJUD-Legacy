@@ -65,3 +65,9 @@ def add_file(data: MyAny = None) -> None:
                     )
                 path_file.unlink()
                 path_file.parent.rmdir()
+
+
+@io.on("bot_stop", namespace="/bot_logs")
+def bot_stop(data: MyAny):
+    tqdm.write(str(data))
+    io.emit("bot_stop", room=data["pid"], namespace="/bot_logs")

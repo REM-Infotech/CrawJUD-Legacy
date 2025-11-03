@@ -15,6 +15,7 @@ from selenium.common.exceptions import (
     TimeoutException,
     UnexpectedAlertPresentException,
 )
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -150,14 +151,29 @@ class PjeBot(CrawJUD):
             path_kbdx = str(Path(environ.get("KBDX_PATH")))
 
             kp = PyKeePass(path_kbdx, password=environ.get("KBDX_PASSWORD"))
-            e = kp.find_entries(otp=".*", regex=True)
+            e = kp.find_entries(
+                otp=".*",
+                url="https://sso.cloud.pje.jus.br/",
+                regex=True,
+                first=True,
+            )
 
-            _otp = pyotp.parse_uri(e.otp).now()
+            otp = pyotp.parse_uri(e.otp).now()
+
+            input_otp = WebDriverWait(driver, 60).until(
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    'input[id="otp"]',
+                ))
+            )
+
+            input_otp.send_keys(otp)
+            input_otp.send_keys(Keys.ENTER)
 
             try:
                 WebDriverWait(
                     driver=driver,
-                    timeout=60,
+                    timeout=20,
                     poll_frequency=0.3,
                     ignored_exceptions=(UnexpectedAlertPresentException),
                 ).until(ec.url_to_be("https://www.jus.br/"))
