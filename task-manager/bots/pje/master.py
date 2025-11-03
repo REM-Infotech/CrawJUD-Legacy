@@ -2,10 +2,15 @@
 
 import json.decoder
 from contextlib import suppress
+from os import environ
+from pathlib import Path
 from threading import Lock
 from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
+import pyotp
+from dotenv import load_dotenv
+from pykeepass import PyKeePass
 from selenium.common.exceptions import (
     TimeoutException,
     UnexpectedAlertPresentException,
@@ -22,6 +27,8 @@ from bots.head import CrawJUD
 from common.exceptions.validacao import ValidacaoStringError
 from resources import RegioesIterator
 from resources.elements import pje as el
+
+load_dotenv()
 
 if TYPE_CHECKING:
     from httpx import Client
@@ -139,6 +146,14 @@ class PjeBot(CrawJUD):
             )
             event_cert = btn_certificado.get_attribute("onclick")
             driver.execute_script(event_cert)
+
+            path_kbdx = str(Path(environ.get("KBDX_PATH")))
+
+            kp = PyKeePass(path_kbdx, password=environ.get("KBDX_PASSWORD"))
+            e = kp.find_entries(otp=".*", regex=True)
+
+            _otp = pyotp.parse_uri(e.otp).now()
+
             try:
                 WebDriverWait(
                     driver=driver,
