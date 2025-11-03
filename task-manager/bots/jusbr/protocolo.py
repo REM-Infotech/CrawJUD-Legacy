@@ -8,14 +8,15 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 
 from contextlib import suppress
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as ec
+from tqdm import tqdm
+
 from common._raises import raise_execution_error
 from common.exceptions import ExecutionError
 from resources import format_string
 from resources.elements import jusbr as el
 from resources.web_element import WebElementBot
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as ec
-from tqdm import tqdm
 
 from .master import JusBrBot
 
@@ -43,13 +44,12 @@ class Protocolo(JusBrBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", message_type="error"
+                    message=f"{message_error}.",
+                    message_type="error",
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 

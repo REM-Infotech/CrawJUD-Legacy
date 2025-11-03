@@ -67,6 +67,7 @@ class CrawJUD(Task):
     _credenciais: Dict = None
     _planilha_xlsx: str = None
     request: Request
+    queue_control: BotQueues
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""

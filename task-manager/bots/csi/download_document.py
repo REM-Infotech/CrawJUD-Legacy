@@ -3,14 +3,15 @@
 from contextlib import suppress
 
 import httpx
-from __types import AnyType
 from dotenv import load_dotenv
-from resources.elements import csi as el
-from resources.web_element import WebElementBot
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
+
+from __types import AnyType
+from resources.elements import csi as el
+from resources.web_element import WebElementBot
 
 from .master import CsiBot
 
@@ -50,7 +51,15 @@ class DownloadDocumento(CsiBot):
             self.download_anexos_chamado()
 
         except Exception as e:
-            self.append_error(exc=e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])
 
     def busca_chamado(self) -> WebElementBot:
         numero_chamado = self.bot_data["NUMERO_CHAMADO"]

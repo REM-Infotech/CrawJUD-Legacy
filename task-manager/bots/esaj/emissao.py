@@ -11,16 +11,16 @@ from pathlib import Path
 from time import sleep
 
 import requests
-from common._raises import raise_execution_error
-from common.exceptions import ExecutionError
 from pypdf import PdfReader
-from resources.elements import esaj as el
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.esaj.master import ESajBot
+from common._raises import raise_execution_error
+from common.exceptions import ExecutionError
+from resources.elements import esaj as el
 
 
 class Emissao(ESajBot):
@@ -55,26 +55,15 @@ class Emissao(ESajBot):
                 self.queue()
 
             except ExecutionError as e:
-                windows = self.driver.window_handles
-
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.driver_launch(
-                            message="Webdriver encerrado inesperadamente, reinicializando...",
-                        )
-
-                    self.auth()
-
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", message_type="error"
+                    message=f"{message_error}.",
+                    message_type="error",
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 

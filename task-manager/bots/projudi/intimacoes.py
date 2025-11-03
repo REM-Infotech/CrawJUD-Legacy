@@ -6,14 +6,14 @@ Extract and manage process intimation information from the Projudi system.
 import time
 from contextlib import suppress
 
-from common.exceptions import ExecutionError
-from resources.elements import projudi as el
-from resources.web_element import WebElementBot as WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from bots.projudi.master import ProjudiBot
+from common.exceptions import ExecutionError
+from resources.elements import projudi as el
+from resources.web_element import WebElementBot as WebElement
 
 
 class Intimacoes(ProjudiBot):
@@ -51,13 +51,12 @@ class Intimacoes(ProjudiBot):
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", message_type="error"
+                    message=f"{message_error}.",
+                    message_type="error",
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 

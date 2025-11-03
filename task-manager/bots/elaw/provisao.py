@@ -15,15 +15,15 @@ from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
-from common.exceptions import ExecutionError
-from resources.elements import elaw as el
-from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.elaw.master import ElawBot
+from common.exceptions import ExecutionError
+from resources.elements import elaw as el
+from resources.web_element import WebElementBot
 
 
 class Provisao(ElawBot):
@@ -72,7 +72,15 @@ class Provisao(ElawBot):
             self.save_changes()
 
         except Exception as e:
-            self.append_error(exc=e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])
 
     def verifica_classe_risco(self) -> None:
         label_classificacao_risco = self.wait.until(

@@ -6,13 +6,13 @@ Manage participant processing in the Projudi system by interacting with process 
 from contextlib import suppress
 from pathlib import Path
 
-from common.exceptions import ExecutionError
-from resources.elements import projudi as el
-from resources.web_element import WebElementBot as WebElement
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from bots.projudi.master import ProjudiBot
+from common.exceptions import ExecutionError
+from resources.elements import projudi as el
+from resources.web_element import WebElementBot as WebElement
 
 
 class ProcParte(ProjudiBot):
@@ -37,17 +37,15 @@ class ProcParte(ProjudiBot):
                 self.queue()
 
             except ExecutionError as e:
-                old = self.message
                 message_error = str(e)
 
-                self.message_type = "error"
-                self.message_error = f"{message_error}. | Operação: {old}"
-                self.prt()
+                self.print_message(
+                    message=f"{message_error}.",
+                    message_type="error",
+                )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 
@@ -68,13 +66,12 @@ class ProcParte(ProjudiBot):
             message_error = str(e)
 
             self.print_message(
-                message=f"{message_error}.", message_type="error"
+                message=f"{message_error}.",
+                message_type="error",
             )
 
             self.bot_data.update({"MOTIVO_ERRO": message_error})
-            self.append_error(self.bot_data)
-
-            self.message_error = None
+            self.append_error(data_save=[self.bot_data])
             self.queue()
 
     def get_process_list(self) -> None:

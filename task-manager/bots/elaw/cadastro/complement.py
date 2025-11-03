@@ -2,11 +2,11 @@
 
 import time
 
-from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.elaw.cadastro._master import ElawCadastro
+from resources.elements import elaw as el
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -91,4 +91,12 @@ class Complement(ElawCadastro):
                 self.print_comprovante(message=message)
 
         except Exception as e:
-            self.append_error(exc=e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])

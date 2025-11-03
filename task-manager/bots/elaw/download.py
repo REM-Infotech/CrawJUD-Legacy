@@ -9,16 +9,15 @@ Classes:
 
 import os
 import shutil
-from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from common.exceptions import ExecutionError
-from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.elaw.master import ElawBot
+from common.exceptions import ExecutionError
+from resources.elements import elaw as el
 
 
 class Download(ElawBot):
@@ -43,26 +42,15 @@ class Download(ElawBot):
                 self.queue()
 
             except ExecutionError as e:
-                windows = self.driver.window_handles
-
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.driver_launch(
-                            message="Webdriver encerrado inesperadamente, reinicializando...",
-                        )
-
-                    self.auth()
-
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", message_type="error"
+                    message=f"{message_error}.",
+                    message_type="error",
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 
@@ -92,13 +80,15 @@ class Download(ElawBot):
                 )
 
             elif not search:
-                self.message = "Processo não encontrado!"
-                self.message_type = "error"
-                self.prt()
-                self.append_error([
-                    self.bot_data.get("NUMERO_PROCESSO"),
-                    self.message,
-                ])
+                message_error = "Processo não encontrado!"
+
+                self.print_message(
+                    message=f"{message_error}.",
+                    message_type="error",
+                )
+
+                self.bot_data.update({"MOTIVO_ERRO": message_error})
+                self.append_error(data_save=[self.bot_data])
 
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e

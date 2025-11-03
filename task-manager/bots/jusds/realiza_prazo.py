@@ -3,14 +3,15 @@
 from contextlib import suppress
 from time import sleep
 
-from common.exceptions import ExecutionError
-from resources.elements import jusds as el
-from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
+
+from common.exceptions import ExecutionError
+from resources.elements import jusds as el
+from resources.web_element import WebElementBot
 
 from .master import JusdsBot
 
@@ -41,7 +42,15 @@ class RealizaPrazos(JusdsBot):
             self.tratar_prazo()
 
         except (ExecutionError, Exception) as e:
-            self.append_error(e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])
 
     def tratar_prazo(self) -> None:
         bot_data = self.bot_data

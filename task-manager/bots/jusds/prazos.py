@@ -4,11 +4,12 @@ from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
 
-from common.exceptions import ExecutionError
-from resources.elements import jusds as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+
+from common.exceptions import ExecutionError
+from resources.elements import jusds as el
 
 from .master import JusdsBot
 
@@ -41,15 +42,30 @@ class Prazos(JusdsBot):
             confirmacao = self.confirma_salvamento()
 
             if not confirmacao:
-                message = "Não foi possível criar compromisso!"
-                self.append_error(exc=message)
+                message_error = "Não foi possível criar compromisso!"
+
+                self.print_message(
+                    message=f"{message_error}.",
+                    message_type="error",
+                )
+
+                self.bot_data.update({"MOTIVO_ERRO": message_error})
+                self.append_error(data_save=[self.bot_data])
                 return
 
             message = "Compromisso / Prazo criado com sucesso!"
             self.print_comprovante(message=message)
 
         except (ExecutionError, Exception) as e:
-            self.append_error(e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])
 
     def acesso_compromissos(self) -> None:
         wait = WebDriverWait(self.driver, 10)

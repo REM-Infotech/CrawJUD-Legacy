@@ -58,9 +58,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 

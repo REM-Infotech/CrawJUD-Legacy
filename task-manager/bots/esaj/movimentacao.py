@@ -9,15 +9,15 @@ from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
 
-from common._raises import raise_execution_error
-from common.exceptions import ExecutionError
-from resources.elements import esaj as el
-from resources.web_element import WebElementBot
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.esaj.master import ESajBot
+from common._raises import raise_execution_error
+from common.exceptions import ExecutionError
+from resources.elements import esaj as el
+from resources.web_element import WebElementBot
 
 
 class Movimentacao(ESajBot):
@@ -59,26 +59,15 @@ class Movimentacao(ESajBot):
                 self.queue()
 
             except ExecutionError as e:
-                windows = self.driver.window_handles
-
-                if len(windows) == 0:
-                    with suppress(Exception):
-                        self.driver_launch(
-                            message="Webdriver encerrado inesperadamente, reinicializando...",
-                        )
-
-                    self.auth()
-
                 message_error = str(e)
 
                 self.print_message(
-                    message=f"{message_error}.", message_type="error"
+                    message=f"{message_error}.",
+                    message_type="error",
                 )
 
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
-                self.append_error(self.bot_data)
-
-                self.message_error = None
+                self.append_error(data_save=[self.bot_data])
 
         self.finalize_execution()
 
@@ -124,8 +113,7 @@ class Movimentacao(ESajBot):
                 self.message_type = "error"
                 self.prt()
                 data = self.bot_data
-                data.update({"MOTIVO_ERRO": self.message})
-                self.append_error(data)
+                self.append_error(data_save=[self.bot_data])
 
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e

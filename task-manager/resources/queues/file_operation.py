@@ -132,17 +132,7 @@ class SaveError(BotQueues):
         self,
         work_sheet: str = "Erros",
         data_save: list[Dict] = DATASAVE,
-        *args,
-        **kwargs,
     ) -> None:
-        if isinstance(work_sheet, dict):
-            data_save = list(work_sheet)
-            work_sheet = "Erros"
-
-        elif isinstance(work_sheet, Exception):
-            data_save = list(self.bot.bot_data)
-            work_sheet = "Erros"
-
         self.queue.put_nowait({
             "work_sheet": work_sheet,
             "data_save": data_save,

@@ -9,10 +9,11 @@ import shutil
 from contextlib import suppress
 from time import sleep
 
-from common.exceptions import ExecutionError
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+
+from common.exceptions import ExecutionError
 
 from .master import CaixaBot
 
@@ -61,7 +62,15 @@ class Emissor(CaixaBot):
             self.append_success(data)
 
         except ExecutionError as e:
-            self.append_error(exc=e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])
 
     def get_site(self) -> None:
         """Access deposit site, solve CAPTCHA, and load required deposit interface.

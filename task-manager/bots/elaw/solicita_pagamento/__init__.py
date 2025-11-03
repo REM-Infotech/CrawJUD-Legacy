@@ -13,9 +13,8 @@ Attributes:
 
 from typing import TYPE_CHECKING
 
-from common._raises import raise_execution_error
-
 from bots.elaw.solicita_pagamento._master import ElawPagamentos
+from common._raises import raise_execution_error
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -63,4 +62,12 @@ class SolicitaPgto(ElawPagamentos):
             self.append_success(self.confirm_save())
 
         except Exception as e:
-            self.append_error(exc=e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])

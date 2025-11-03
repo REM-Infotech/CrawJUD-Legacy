@@ -3,14 +3,14 @@
 from time import sleep
 from typing import NoReturn
 
-from common.exceptions import ExecutionError
-from resources.elements import elaw as el
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.elaw.master import ElawBot
+from common.exceptions import ExecutionError
+from resources.elements import elaw as el
 
 
 def raise_error(message: str) -> NoReturn:
@@ -73,7 +73,15 @@ class Andamentos(ElawBot):
             self.save_andamento()
 
         except (ExecutionError, Exception) as e:
-            self.append_error(exc=e)
+            message_error = str(e)
+
+            self.print_message(
+                message=f"{message_error}.",
+                message_type="error",
+            )
+
+            self.bot_data.update({"MOTIVO_ERRO": message_error})
+            self.append_error(data_save=[self.bot_data])
 
     def info_data(self) -> None:
         """Inform the date of the andamento.
