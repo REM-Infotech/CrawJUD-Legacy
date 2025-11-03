@@ -22,6 +22,7 @@ class FormManager extends FileUploader {
   public async HandleSubmit(ev: Event, form: FormBot) {
     ev.preventDefault();
     console.log(form);
+    const { $router: router } = useNuxtApp();
     const { bot } = storeToRefs(botStore());
 
     try {
@@ -49,6 +50,10 @@ class FormManager extends FileUploader {
         },
       });
       const data = resp.data;
+
+      if (data.pid) {
+        router.push({ name: "logs-pid", params: { pid: data.pid } });
+      }
 
       this.FormBot.delete("bot_id");
       this.FormBot.delete("configuracao_form");
