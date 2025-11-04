@@ -143,36 +143,41 @@ class PjeBot(CrawJUD):
             senha_certificado = environ.get("CERTIFICADO_PASSWORD").encode()
             autenticador = AutenticadorPJe(path_certificado, senha_certificado)
 
-            uuid_sessao, desafio = autenticador.autenticar()
-
-            form = wait.until(
+            wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.CSS_FORM_LOGIN,
                 ))
             )
 
-            input_uuid = form.find_element(
-                By.CSS_SELECTOR, el.CSS_INPUT_CODIGO_PJE
+            desafio, uuid_sessao = autenticador.autenticar()
+
+            driver.execute_script(
+                "document.getElementById(arguments[0]).value = arguments[1];",
+                el.ID_INPUT_DESAFIO,
+                desafio,
             )
-            input_uuid.send_keys(uuid_sessao)
-
-            input_desafio = form.find_element(
-                By.CSS_SELECTOR, el.CSS_INPUT_DESAFIO
-            )
-            input_desafio.send_keys(desafio)
-
-            path_kbdx = str(Path(environ.get("KBDX_PATH")))
-            kp = PyKeePass(path_kbdx, password=environ.get("KBDX_PASSWORD"))
-
-            e = kp.find_entries(
-                otp=".*",
-                url="https://sso.cloud.pje.jus.br/",
-                regex=True,
-                first=True,
+            driver.execute_script(
+                "document.getElementById(arguments[0]).value = arguments[1];",
+                el.ID_INPUT_CODIGO_PJE,
+                uuid_sessao,
             )
 
-            otp = pyotp.parse_uri(e.otp).now()
+            driver.execute_script("document.forms[0].submit()")
+
+            otp = pyotp.parse_uri(
+                PyKeePass(
+                    str(Path(environ.get("KBDX_PATH"))),
+                    password=environ.get("KBDX_PASSWORD"),
+                )
+                .find_entries(
+                    otp=".*",
+                    url="https://sso.cloud.pje.jus.br/",
+                    regex=True,
+                    first=True,
+                )
+                .otp
+            ).now()
 
             input_otp = WebDriverWait(driver, 60).until(
                 ec.presence_of_element_located((

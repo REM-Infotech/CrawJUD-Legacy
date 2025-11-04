@@ -6,16 +6,7 @@
       "request": "launch",
       "env": { "PYTHON_GIL": "0" },
       "module": "celery",
-      "args": [
-        "-A",
-        "app",
-        "worker",
-        "-P",
-        "threads",
-        "-E",
-        "--loglevel",
-        "DEBUG"
-      ]
+      "args": ["-A", "app", "worker", "-P", "threads", "-E"]
     }
   ]
 }

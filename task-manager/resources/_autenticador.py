@@ -91,7 +91,7 @@ class AutenticadorPJe:
             s = chars[r] + s
         return "0." + s or "0.0"
 
-    def autenticar(self) -> tuple[str, str]:
+    def autenticar(self) -> tuple[str, str] | None:
         # enviar diretamente ao endpoint PJe (exemplo)
         desafio = self.random_base36()
         self.assinar(desafio)
@@ -109,7 +109,7 @@ class AutenticadorPJe:
         if resp.status_code == 204:
             return desafio, uuid_tarefa
 
-        return None
+        return None, None
 
     def generate_pkipath_java(self, cert_chain: list[Certificate]) -> str:
         """Gera um PKIPath (DER e Base64) chamando o código Java nativo via JPype.
