@@ -20,6 +20,11 @@ pattern_url = (
     r"\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}\/\d+(#[a-zA-Z0-9]+)?$"
 )
 
+
+CSS_FORM_LOGIN = 'form[id="kc-form-login"]'
+CSS_INPUT_CODIGO_PJE = 'input[id="pjeoffice-code"]'
+CSS_INPUT_DESAFIO = 'input[id="phrase"]'
+
 LINK_AUTENTICACAO_SSO = (
     "https://pje.trt{regiao}.jus.br/primeirograu/authenticateSSO.seam"
 )

@@ -7,6 +7,7 @@ from unicodedata import combining, normalize
 
 from werkzeug.utils import secure_filename
 
+from ._autenticador import AutenticadorPJe
 from ._iterator import RegioesIterator
 
 
@@ -18,4 +19,4 @@ def format_string(string: str) -> str:  # noqa: D103
     return secure_filename(normalized_string).upper()
 
 
-__all__ = ["RegioesIterator", "format_string"]
+__all__ = ["RegioesIterator", "format_string", "AutenticadorPJe"]

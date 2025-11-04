@@ -26,7 +26,7 @@ from _interfaces import BotData
 from _interfaces._pje import DictResults, DictSeparaRegiao
 from bots.head import CrawJUD
 from common.exceptions.validacao import ValidacaoStringError
-from resources import RegioesIterator
+from resources import AutenticadorPJe, RegioesIterator
 from resources.elements import pje as el
 
 load_dotenv()
@@ -139,18 +139,32 @@ class PjeBot(CrawJUD):
 
             sleep(5)
 
-            btn_certificado = wait.until(
+            path_certificado = Path(environ.get("CERTIFICADO_PFX"))
+            senha_certificado = environ.get("CERTIFICADO_PASSWORD").encode()
+            autenticador = AutenticadorPJe(path_certificado, senha_certificado)
+
+            uuid_sessao, desafio = autenticador.autenticar()
+
+            form = wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
-                    ('div[class="certificado"] > a'),
-                )),
+                    el.CSS_FORM_LOGIN,
+                ))
             )
-            event_cert = btn_certificado.get_attribute("onclick")
-            driver.execute_script(event_cert)
+
+            input_uuid = form.find_element(
+                By.CSS_SELECTOR, el.CSS_INPUT_CODIGO_PJE
+            )
+            input_uuid.send_keys(uuid_sessao)
+
+            input_desafio = form.find_element(
+                By.CSS_SELECTOR, el.CSS_INPUT_DESAFIO
+            )
+            input_desafio.send_keys(desafio)
 
             path_kbdx = str(Path(environ.get("KBDX_PATH")))
-
             kp = PyKeePass(path_kbdx, password=environ.get("KBDX_PASSWORD"))
+
             e = kp.find_entries(
                 otp=".*",
                 url="https://sso.cloud.pje.jus.br/",

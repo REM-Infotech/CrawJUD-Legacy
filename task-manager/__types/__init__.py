@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from os import PathLike
 from typing import Any, Literal, ParamSpec, TypeVar
 
 type AnyType = Any
@@ -15,3 +16,4 @@ type PyStrings = str | bytes
 type Dict = dict[str, PyStrings | PyNumbers]
 type ListDict = list[Dict]
 type StatusBot = Literal["Inicializando", "Em Execução", "Finalizado"]
+type StrPath = str | PathLike[str]
