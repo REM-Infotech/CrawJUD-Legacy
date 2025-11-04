@@ -18,7 +18,7 @@ from pathlib import Path
 from time import sleep
 from typing import Self
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver  # noqa: F401
@@ -1047,11 +1047,20 @@ class Cadastro(CrawJUD):
             interact.send_key(name_parte, bot_data.get("PARTE_CONTRARIA").__str__().upper())
             driver.execute_script(f"document.querySelector('{elements.css_name_parte}').blur()")
 
-            save_parte: WebElement = wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_save_button)),
-                message="Erro ao encontrar elemento",
-            )
-            save_parte.click()
+            try:
+                save_parte: WebElement = wait.until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_save_button)),
+                    message="Erro ao encontrar elemento",
+                )
+
+                save_parte.click()
+
+            except StaleElementReferenceException:
+                save_parte: WebElement = wait.until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, elements.css_save_button)),
+                    message="Erro ao encontrar elemento",
+                )
+                save_parte.click()
 
             self.message = "Parte cadastrada!"
             self.type_log = "info"
