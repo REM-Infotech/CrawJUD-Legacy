@@ -1,20 +1,10 @@
 """Sistema de envio de logs para o ClientUI."""
 
-from concurrent.futures import ThreadPoolExecutor
-from contextlib import suppress
-from datetime import datetime
-from os import environ
-from queue import Empty, Queue
-from threading import Lock, Thread
-from typing import TYPE_CHECKING, TypedDict, cast
-from zoneinfo import ZoneInfo
+from typing import TYPE_CHECKING, TypedDict
 
 from dotenv import load_dotenv
-from socketio import Client
-from tqdm import tqdm
 
-from __types import MessageType
-from _interfaces import Message
+from __types import AnyType, MessageType
 
 from .head import BotQueues
 
@@ -38,75 +28,7 @@ class PrintMessage(BotQueues):
     bot: CrawJUD
     _message_type: MessageType
 
-    def __init__(self, bot: CrawJUD) -> None:
-        """Inicializa o PrintMessage."""
-        self.bot = bot
-        self.COUNTS = Count(success_count=0, error_count=0, remainign_count=0)
-        self.message_locker = Lock()
-        self.queue = Queue()
+    def __init__(self, **kwargs: AnyType) -> None:
+        """Instancia da queue de salvamento de erros."""
 
-        self.th = Thread(target=self.queue_message)
-        self.th.start()
-
-    def __call__(
-        self, message: str, message_type: MessageType, row: int = 0
-    ) -> None:
-        self.message_type = message_type
-
-        row_ = row
-        if row == 0:
-            row_ = self.row
-
-        mini_pid = self.pid[:6].upper()
-        tz = ZoneInfo("America/Sao_Paulo")
-        time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
-        message = (
-            f"[({mini_pid}, {message_type}, {row_}, {time_exec})> {message}]"
-        )
-        msg = Message(
-            pid=self.pid,
-            row=row_,
-            message=message,
-            message_type=message_type,
-            status=self.status,
-            total=self.total_rows,
-            success_count=self.success_count,
-            error_count=self.error_count,
-        )
-        self.queue.put_nowait(msg)
-        tqdm.write(message)
-
-    def queue_message(self) -> None:
-        uri = f"http://{environ['SOCKETIO_SERVER']}"
-
-        sio = Client()
-        sio.connect(uri, namespaces=["/bot_logs"])
-
-        self.sio = sio
-
-        Thread(target=sio.wait).start()
-
-        @sio.on("bot_stop", namespace="/bot_logs")
-        def stop_bot() -> None:
-            self.bot_stopped.set()
-
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            while not self.event_queue_bot.is_set():
-                data: Message = None
-                with suppress(Empty):
-                    data = cast("Message", self.queue.get_nowait())
-
-                if data:
-                    pool.submit(self.print_message, **data)
-
-    def print_message(self, **kwargs) -> None:
-        data: Message = kwargs
-
-        with self.message_locker, suppress(Exception):
-            self.sio.emit(
-                "join_room",
-                data={"room": self.pid},
-                namespace="/bot_logs",
-            )
-
-            self.sio.emit("logbot", data=data, namespace="/bot_logs")
+    def __call__(self, **kwargs: AnyType) -> None: ...
