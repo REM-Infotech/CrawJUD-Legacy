@@ -6,21 +6,16 @@ dos processos e salvar os resultados no storage.
 
 """
 
-import secrets
-import traceback
 from concurrent.futures import (
     Future,
     ThreadPoolExecutor,
-    as_completed,
 )
 from contextlib import suppress
 from queue import Queue
-from threading import Thread
 from time import sleep
 from typing import ClassVar
 
 from httpx import Client, Response
-from tqdm import tqdm
 
 from app.interfaces import BotData
 from app.interfaces._pje import (
@@ -39,10 +34,12 @@ from app.types import Dict
 from bots.controller.pje import PjeBot
 from bots.resources.elements import pje as el
 from common.exceptions import (
-    ExecutionError,
-    FileUploadError,
+    ExecutionError as ExecutionError,
 )
-from constants import WORKDIR
+from common.exceptions import (
+    FileUploadError as FileUploadError,
+)
+from constants import WORKDIR as WORKDIR
 
 SENTINELA = None
 
@@ -84,11 +81,10 @@ class Capa(PjeBot):
             with suppress(Exception):
                 self.driver.quit()
 
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        with ThreadPoolExecutor(max_workers=4) as executor:
             futures: list[Future] = []
             for pos, t_regiao in enumerate(lista_nova):
                 regiao, data_regiao = t_regiao
-
                 if self.bot_stopped.is_set():
                     break
 
@@ -106,7 +102,6 @@ class Capa(PjeBot):
                         pos=pos,
                     ),
                 )
-                sleep(10)
 
             for future in futures:
                 with suppress(Exception):
@@ -121,7 +116,6 @@ class Capa(PjeBot):
         ]:
             self.append_success(work_sheet=sheet_name, data_save=to_save)
 
-        self.queue_files.join()
         self.finalize_execution()
 
     def queue_regiao(
@@ -130,109 +124,65 @@ class Capa(PjeBot):
         data_regiao: list[BotData],
         headers: Dict,
         cookies: Dict,
-        pos: int,
     ) -> None:
-        pool_exe = ThreadPoolExecutor(max_workers=4)
-
         client_context = Client(cookies=cookies, headers=headers)
 
-        thread_copia_integral_ = Thread(
-            target=self.copia_integral,
-            name=f"Salvar Cópia Integral Thread-{pos}",
-        )
-
-        thread_copia_integral_.start()
-
-        with client_context as client, pool_exe as executor:
-            futures: list[Future] = []
+        with client_context as client:
             for item in data_regiao:
                 if self.bot_stopped.is_set():
                     break
+                try:
+                    if not self.bot_stopped.is_set():
+                        processo = item["NUMERO_PROCESSO"]
+                        row = (
+                            self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
+                        )
+                        resultados: DictResults = self.search(
+                            data=item,
+                            row=row,
+                            client=client,
+                            regiao=regiao,
+                        )
+                        sleep(2.5)
+                        if not isinstance(resultados, dict):
+                            self.print_message(
+                                message=str(resultados),
+                                message_type="error",
+                                row=row,
+                            )
+                            continue
 
-                futures.append(
-                    executor.submit(
-                        self.queue,
-                        item=item,
-                        client=client,
-                        regiao=regiao,
-                    ),
-                )
-                sleep(2)
-            for future in as_completed(futures):
-                with suppress(Exception):
-                    future.result()
+                        self.capa_processual(
+                            result=resultados["data_request"],
+                            regiao=regiao,
+                            row=row,
+                        )
 
-    def queue(
-        self,
-        item: dict,
-        client: Client,
-        regiao: str,
-    ) -> None:
-        try:
-            if not self.bot_stopped.is_set():
-                processo = item["NUMERO_PROCESSO"]
-                row = self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
-                resultados: DictResults = self.search(
-                    data=item,
-                    row=row,
-                    client=client,
-                    regiao=regiao,
-                )
-                sleep(0.5)
-                if not isinstance(resultados, dict):
+                        sleep(2.5)
+
+                        self.outras_informacoes(
+                            numero_processo=processo,
+                            client=client,
+                            id_processo=resultados["id_processo"],
+                            regiao=regiao,
+                            row=row,
+                        )
+
+                        message_type = "success"
+                        message = "Execução Efetuada com sucesso!"
+
+                        self.print_message(
+                            message=message,
+                            message_type=message_type,
+                            row=row,
+                        )
+
+                except Exception:
                     self.print_message(
-                        message=str(resultados),
+                        message="Erro ao extrair informações do processo",
                         message_type="error",
                         row=row,
                     )
-
-                    return
-
-                self.capa_processual(
-                    result=resultados["data_request"],
-                    regiao=regiao,
-                    row=row,
-                )
-
-                sleep(0.5)
-
-                self.outras_informacoes(
-                    numero_processo=processo,
-                    client=client,
-                    id_processo=resultados["id_processo"],
-                    regiao=regiao,
-                    row=row,
-                )
-
-                message_type = "success"
-                message = "Execução Efetuada com sucesso!"
-
-                if item.get("TRAZER_COPIA", "N").lower() == "s":
-                    message_type = "info"
-
-                    file_name = f"CÓPIA INTEGRAL - {processo} - {self.pid}.pdf"
-                    self.queue_files.put({
-                        "file_name": file_name,
-                        "row": row,
-                        "client": client,
-                        "processo": processo,
-                        "id_processo": resultados["id_processo"],
-                        "regiao": regiao,
-                    })
-
-                self.print_message(
-                    message=message,
-                    message_type=message_type,
-                    row=row,
-                )
-
-        except Exception as e:
-            tqdm.write("\n".join(traceback.format_exception(e)))
-            self.print_message(
-                message="Erro ao extrair informações do processo",
-                message_type="error",
-                row=row,
-            )
 
     def outras_informacoes(
         self,
@@ -432,135 +382,3 @@ class Capa(PjeBot):
         )
 
         self.to_add_processos.append(dict_salvar_planilha)
-
-    def copia_integral(self) -> None:
-        """Realiza o download da cópia integral do processo e salva no storage."""
-        while True:
-            try:
-                data = None
-                with suppress(Exception):
-                    data = self.queue_files.get_nowait()
-
-                if data:
-                    row = data.get("row")
-
-                    def file_handler(data: Dict) -> None:
-                        data: Dict = dict(data)
-                        file_name: str = data.get("file_name")
-                        row: int = data.get("row")
-                        processo: str = data.get("processo")
-                        client: Client = data.get("client")
-                        id_processo: str = data.get("id_processo")
-                        regiao: str = data.get("regiao")
-
-                        self.print_message(
-                            message=f"Baixando arquivo do processo n.{processo}",
-                            message_type="log",
-                            row=row,
-                        )
-
-                        sleep(0.50)
-                        headers = client.headers
-                        cookies = client.cookies
-
-                        client = Client(
-                            timeout=900,
-                            headers=headers,
-                            cookies=cookies,
-                        )
-                        sleep(0.50)
-                        link = el.LINK_DOWNLOAD_INTEGRA.format(
-                            trt_id=regiao,
-                            id_processo=id_processo,
-                        )
-                        message = f"Baixando arquivo do processo n.{processo}"
-                        sleep(0.50)
-                        self.print_message(
-                            message=message,
-                            row=row,
-                            message_type="log",
-                        )
-
-                        with client.stream("get", url=link) as response:
-                            self.save_file_downloaded(
-                                file_name=file_name,
-                                response_data=response,
-                                processo=processo,
-                                row=row,
-                            )
-
-                    Thread(
-                        target=file_handler, kwargs={"data": data}, daemon=True
-                    ).start()
-
-            except ExecutionError as e:
-                self.print_message(
-                    message="\n".join(traceback.format_exception(e)),
-                    row=row,
-                    message_type="info",
-                )
-
-                msg = "Erro ao baixar arquivo"
-                self.print_message(message=msg, row=row, message_type="info")
-
-            finally:
-                with suppress(Exception):
-                    self.queue_files.task_done()
-
-    def save_file_downloaded(
-        self,
-        file_name: str,
-        response_data: Response,
-        processo: str,
-        row: int,
-    ) -> None:
-        """Envia o `arquivo baixado` no processo para o `storage`.
-
-        Arguments:
-            file_name (str): Nome do arquivo.
-            response_data (Response): response da request httpx.
-            processo (str): processo.
-            row (int): row do loop.
-
-        """
-        try:
-            path_temp = WORKDIR.joinpath("temp", self.pid.upper())
-
-            path_temp.mkdir(parents=True, exist_ok=True)
-
-            sleep_time = secrets.randbelow(7) + 2
-            sleep(sleep_time)
-
-            chunk = 8 * 1024 * 1024
-            file_path = path_temp.joinpath(file_name)
-            # Salva arquivo em chunks no storage
-            with file_path.open("wb") as f:
-                for _bytes in response_data.iter_bytes(chunk):
-                    sleep(0.5)
-                    f.write(_bytes)
-
-            """
-            >>> with suppress(Exception):
-            >>>     other_path_ = Path(environ["PATH_SRV"])
-            >>>     with other_path_.joinpath(file_name).open("wb") as f:
-            >>>         for _bytes in response_data.iter_bytes(chunk):
-            >>>             sleep(0.5)
-            >>>             f.write(_bytes)
-            """
-
-        except (FileUploadError, Exception) as e:
-            str_exc = "\n".join(traceback.format_exception_only(e))
-            message = "Não foi possível baixar o arquivo. " + str_exc
-            self.print_message(
-                row=row,
-                message=message,
-                message_type="info",
-            )
-
-        finally:
-            message = f"Arquivo do processo n.{processo} baixado com sucesso!"
-            self.print_message(
-                row=row,
-                message=message,
-                message_type="success",
-            )
