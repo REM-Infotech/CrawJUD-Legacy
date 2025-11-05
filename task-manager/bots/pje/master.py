@@ -165,7 +165,7 @@ class PjeBot(CrawJUD):
 
             driver.execute_script("document.forms[0].submit()")
 
-            otp = pyotp.parse_uri(
+            otp_codigo = str(
                 PyKeePass(
                     str(Path(environ.get("KBDX_PATH"))),
                     password=environ.get("KBDX_PASSWORD"),
@@ -177,7 +177,8 @@ class PjeBot(CrawJUD):
                     first=True,
                 )
                 .otp
-            ).now()
+            )
+            otp = pyotp.parse_uri(uri=otp_codigo).now()
 
             input_otp = WebDriverWait(driver, 60).until(
                 ec.presence_of_element_located((
