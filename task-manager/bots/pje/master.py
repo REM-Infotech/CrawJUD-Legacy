@@ -35,6 +35,19 @@ if TYPE_CHECKING:
     from httpx import Client
 
 
+def _get_otp_uri() -> str:
+    file_db = str(Path(environ.get("KBDX_PATH")))
+    file_pw = environ.get("KBDX_PASSWORD")
+    kp = PyKeePass(filename=file_db, password=file_pw)
+
+    return kp.find_entries(
+        otp=".*",
+        url="https://sso.cloud.pje.jus.br/",
+        regex=True,
+        first=True,
+    ).otp
+
+
 class PjeBot(CrawJUD):
     """Classe de controle para robôs do PJe."""
 
@@ -150,34 +163,19 @@ class PjeBot(CrawJUD):
                 ))
             )
 
-            desafio, uuid_sessao = autenticador.autenticar()
+            autenticado = autenticador.autenticar()
+            if not autenticado:
+                raise
 
-            driver.execute_script(
-                "document.getElementById(arguments[0]).value = arguments[1];",
-                el.ID_INPUT_DESAFIO,
-                desafio,
-            )
-            driver.execute_script(
-                "document.getElementById(arguments[0]).value = arguments[1];",
-                el.ID_INPUT_CODIGO_PJE,
-                uuid_sessao,
-            )
+            desafio = autenticado[0]
+            uuid_sessao = autenticado[1]
+
+            driver.execute_script(el.COMMAND, el.ID_INPUT_DESAFIO, desafio)
+            driver.execute_script(el.COMMAND, el.ID_CODIGO_PJE, uuid_sessao)
 
             driver.execute_script("document.forms[0].submit()")
 
-            otp_uri = str(
-                PyKeePass(
-                    str(Path(environ.get("KBDX_PATH"))),
-                    password=environ.get("KBDX_PASSWORD"),
-                )
-                .find_entries(
-                    otp=".*",
-                    url="https://sso.cloud.pje.jus.br/",
-                    regex=True,
-                    first=True,
-                )
-                .otp
-            )
+            otp_uri = _get_otp_uri()
             otp = str(pyotp.parse_uri(uri=otp_uri).now())
 
             input_otp = WebDriverWait(driver, 60).until(

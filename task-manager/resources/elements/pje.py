@@ -20,9 +20,9 @@ pattern_url = (
     r"\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}\/\d+(#[a-zA-Z0-9]+)?$"
 )
 
-
+COMMAND = "document.getElementById(arguments[0]).value = arguments[1];"
 CSS_FORM_LOGIN = 'form[id="kc-form-login"]'
-ID_INPUT_CODIGO_PJE = "pjeoffice-code"
+ID_CODIGO_PJE = "pjeoffice-code"
 ID_INPUT_DESAFIO = "phrase"
 
 LINK_AUTENTICACAO_SSO = (
