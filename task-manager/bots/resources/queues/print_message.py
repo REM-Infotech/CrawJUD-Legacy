@@ -12,7 +12,7 @@ from socketio import Client
 from tqdm import tqdm
 
 from app.interfaces import Message
-from app.types import AnyType, MessageType
+from app.types import MessageType
 from config import config
 
 if TYPE_CHECKING:
@@ -45,12 +45,7 @@ class PrintMessage:
         self.error_count = 0
 
     def __call__(
-        self,
-        message: str,
-        message_type: MessageType,
-        row: int = 0,
-        *args: AnyType,
-        **kwargs: AnyType,
+        self, message: str, message_type: MessageType, row: int = 0
     ) -> None:
         mini_pid = self.bot.pid[:6].upper()
         tz = ZoneInfo("America/Sao_Paulo")
