@@ -1,5 +1,7 @@
 """Sistema de envio de logs para o ClientUI."""
 
+from queue import Queue
+from threading import Thread
 from typing import TYPE_CHECKING, TypedDict
 
 from dotenv import load_dotenv
@@ -29,5 +31,8 @@ class PrintMessage:
     def __init__(self, bot: CrawJUD) -> None:
         """Instancia da queue de salvamento de sucessos."""
         self.bot = bot
+
+        self.queue_print_bot = Queue()
+        self.thread_print_bot = Thread()
 
     def __call__(self, message: str, message_type: MessageType) -> None: ...
