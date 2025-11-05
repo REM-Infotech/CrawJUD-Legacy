@@ -21,13 +21,14 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from _interfaces import DataSucesso
-from bots.elaw.solicita_pagamento._condenacao import ElawCondenacao
-from bots.elaw.solicita_pagamento._custas import ElawCustas
 from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
 from common import raise_execution_error
 from common.exceptions import ExecutionError
+
+from ._condenacao import ElawCondenacao
+from ._custas import ElawCustas
 
 if TYPE_CHECKING:
     from collections.abc import Callable

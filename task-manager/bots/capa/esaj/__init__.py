@@ -13,10 +13,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from __types import Dict
-from bots.esaj.capa._1 import PrimeiraInstancia
-from bots.esaj.capa._2 import SegundaInstancia
 from common import raise_execution_error
 from common.exceptions import ExecutionError
+
+from ._1 import PrimeiraInstancia
+from ._2 import SegundaInstancia
 
 
 class Capa(PrimeiraInstancia, SegundaInstancia):

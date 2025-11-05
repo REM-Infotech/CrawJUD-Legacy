@@ -13,9 +13,10 @@ Attributes:
 
 from typing import TYPE_CHECKING
 
-from bots.elaw.solicita_pagamento._master import ElawPagamentos
 from bots.resources._formatadores import formata_string
 from common._raises import raise_execution_error
+
+from ._master import ElawPagamentos
 
 if TYPE_CHECKING:
     from collections.abc import Callable

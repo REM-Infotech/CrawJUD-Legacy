@@ -13,12 +13,11 @@ from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from bots.head import CrawJUD
 from common.exceptions import ExecutionError
 
-from ...caixa.master import CaixaBot
 
-
-class Emissor(CaixaBot):
+class Emissor(CrawJUD):
     """Manage creation and processing of judicial deposit documents using the Emissor bot fully.
 
     Offer a range of functionalities to access deposit pages, handle login flows,

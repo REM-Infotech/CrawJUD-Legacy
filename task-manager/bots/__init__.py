@@ -15,6 +15,24 @@ Módulos disponíveis:
     - calculadoras: Bots para cálculos automáticos
 """
 
-from . import csi, elaw, esaj, jusbr, jusds, pje, projudi
+from . import (
+    admin,
+    buscadores,
+    calculadoras,
+    capa,
+    emissao,
+    intimacoes,
+    movimentacao,
+    protocolo,
+)
 
-__all__ = ["csi", "elaw", "esaj", "jusbr", "pje", "projudi", "jusds"]
+__all__ = [
+    "admin",
+    "buscadores",
+    "calculadoras",
+    "capa",
+    "emissao",
+    "intimacoes",
+    "movimentacao",
+    "protocolo",
+]

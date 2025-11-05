@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from bots.elaw.master import ElawBot
+from bots.controller.elaw import ElawBot
 from bots.resources.elements import elaw as el
 
 if TYPE_CHECKING:

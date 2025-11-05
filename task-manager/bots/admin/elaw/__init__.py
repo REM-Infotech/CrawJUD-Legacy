@@ -12,7 +12,7 @@ Attributes:
 
 """
 
-from bots.elaw import (
+from . import (
     andamentos,
     cadastro,
     download,

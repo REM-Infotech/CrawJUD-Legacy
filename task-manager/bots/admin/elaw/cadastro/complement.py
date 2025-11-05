@@ -5,8 +5,9 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from bots.elaw.cadastro._master import ElawCadastro
 from bots.resources.elements import elaw as el
+
+from ._master import ElawCadastro
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
