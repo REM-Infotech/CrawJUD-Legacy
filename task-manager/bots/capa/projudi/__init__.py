@@ -55,7 +55,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                         message="Processo não encontrado.",
                         message_type="error",
                     )
-                    return
+                    continue
 
                 self.print_message(
                     message="Processo encontrado! Extraindo informações...",

@@ -56,7 +56,7 @@ class CrawJUD:
         self.config = config
         self.bot_stopped = Event()
         self.print_message = PrintMessage(self)
-        self.append_succes = SaveSuccess(self)
+        self.append_success = SaveSuccess(self)
         self.append_error = SaveError(self)
         self.credenciais = CredencialManager(self)
         self.file_manager = FileManager(self)

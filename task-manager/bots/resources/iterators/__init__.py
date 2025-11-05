@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from bots.head import CrawJUD
 
 
-class BotIterator[T]:
+class BotIterator:
     """Iterator para os dados inputados na planilha."""
 
     def __init__(self, bot: CrawJUD) -> None:
@@ -61,7 +61,7 @@ class BotIterator[T]:
         """
         return self
 
-    def __next__(self) -> T:
+    def __next__(self) -> BotData:
         """Implementa a iteração retornando próxima região e dados associados.
 
         Returns:

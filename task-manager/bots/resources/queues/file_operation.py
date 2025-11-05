@@ -19,7 +19,7 @@ class SaveSuccess:
         """Instancia da queue de salvamento de erros."""
         self.bot = bot
 
-    def __call__(self, **kwargs: AnyType) -> None: ...
+    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None: ...
 
 
 class SaveError:
@@ -29,4 +29,4 @@ class SaveError:
         """Instancia da queue de salvamento de erros."""
         self.bot = bot
 
-    def __call__(self, **kwargs: AnyType) -> None: ...
+    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None: ...
