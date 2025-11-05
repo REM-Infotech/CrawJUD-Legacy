@@ -19,6 +19,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.elaw.master import ElawBot
+from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
 
@@ -72,7 +73,7 @@ class ElawCustas(ElawBot):
         docs = [self.bot_data.get("DOC_GUIA")]
 
         for doc in docs:
-            doc = self.format_string(doc)
+            doc = formata_string(doc)
             insert_doc: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,

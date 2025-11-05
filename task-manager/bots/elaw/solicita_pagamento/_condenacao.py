@@ -19,6 +19,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.elaw.master import ElawBot
+from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
 
@@ -89,7 +90,7 @@ class ElawCondenacao(ElawBot):
             docs.extend(calculos)
 
         for doc in docs:
-            doc = self.format_string(doc.upper())
+            doc = formata_string(doc.upper())
             insert_doc: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,

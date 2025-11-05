@@ -7,7 +7,6 @@ from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 from bs4.element import PageElement
-from resources import format_string
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
@@ -16,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from bots.head import CrawJUD
+from bots.resources._formatadores import formata_string
 from bots.resources.elements import projudi as el
 from common.exceptions import (
     ExecutionError,
@@ -323,7 +323,7 @@ class ProjudiBot(CrawJUD):
                         if valor == MAIOR_60_ANOS:
                             continue
 
-                        dados[format_string(label.upper())] = valor
+                        dados[formata_string(label.upper())] = valor
                     # continue a partir do td seguinte ao que usamos como valor
                     i = j + 1
                 else:

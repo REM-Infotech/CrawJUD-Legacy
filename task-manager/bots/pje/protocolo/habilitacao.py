@@ -9,7 +9,6 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 from time import sleep
 
 import dotenv
-from resources import format_string
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -17,6 +16,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.pje.master import PjeBot
+from bots.resources._formatadores import formata_string
 from bots.resources.elements import pje as el
 
 dotenv.load_dotenv()
@@ -184,7 +184,7 @@ class HabilitiacaoPJe(PjeBot):
             )),
         )
         sleep(1.5)
-        nome_arquivo = format_string(bot_data["PETICAO_PRINCIPAL"])
+        nome_arquivo = formata_string(bot_data["PETICAO_PRINCIPAL"])
         path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
 
         input_doc_principal.send_keys(path_input_doc)
@@ -231,7 +231,7 @@ class HabilitiacaoPJe(PjeBot):
         )
 
         for anexo in anexos:
-            nome_arquivo = format_string(anexo)
+            nome_arquivo = formata_string(anexo)
             path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
             campo_anexos.send_keys(path_input_doc)
             sleep(5.0)

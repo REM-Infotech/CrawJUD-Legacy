@@ -14,6 +14,7 @@ Attributes:
 from typing import TYPE_CHECKING
 
 from bots.elaw.solicita_pagamento._master import ElawPagamentos
+from bots.resources._formatadores import formata_string
 from common._raises import raise_execution_error
 
 if TYPE_CHECKING:
@@ -52,7 +53,7 @@ class SolicitaPgto(ElawPagamentos):
 
             if not search:
                 raise_execution_error(message="Processo não encontrado!")
-            namedef = self.format_string(self.bot_data.get("TIPO_PAGAMENTO"))
+            namedef = formata_string(self.bot_data.get("TIPO_PAGAMENTO"))
             self.novo_pagamento()
             self.seleciona_tipo_pagamento(namedef)
             pgto: Callable[..., None] = getattr(self, namedef.lower())

@@ -3,6 +3,8 @@
 from pathlib import Path
 from re import Pattern
 
+from _interfaces import ColorsDict
+
 WORKDIR = Path(__file__).cwd()
 
 HTTP_STATUS_FORBIDDEN = 403
@@ -25,3 +27,12 @@ PADRAO_DATA: list[Pattern] = [
 
 
 MAIOR_60_ANOS = "Maior que 60 anos (conforme Lei 10.741/2003)"
+
+
+COLORS_DICT: ColorsDict = {
+    "info": "cyan",
+    "log": "yellow",
+    "error": "red",
+    "warning": "magenta",
+    "success": "green",
+}

@@ -8,11 +8,11 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 
 from contextlib import suppress
 
-from resources import format_string
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from tqdm import tqdm
 
+from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import jusbr as el
 from common._raises import raise_execution_error
@@ -113,7 +113,7 @@ class Protocolo(JusBrBot):
 
         path_peticao = str(
             self.output_dir_path.joinpath(
-                format_string(bot_data["PETICAO_PRINCIPAL"]),
+                formata_string(bot_data["PETICAO_PRINCIPAL"]),
             ),
         )
 

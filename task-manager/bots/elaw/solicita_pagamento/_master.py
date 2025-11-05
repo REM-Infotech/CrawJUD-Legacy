@@ -23,6 +23,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from _interfaces import DataSucesso
 from bots.elaw.solicita_pagamento._condenacao import ElawCondenacao
 from bots.elaw.solicita_pagamento._custas import ElawCustas
+from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
 from common import raise_execution_error
@@ -91,7 +92,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         for item in list_itens:
             item: WebElementBot = item
 
-            normalizado_text = self.format_string(item.text)
+            normalizado_text = formata_string(item.text)
 
             if normalizado_text.lower() == namedef.lower():
                 item.click()
@@ -169,7 +170,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         )
         tipo_condenacao_xls = str(self.bot_data.get("TIPO_CONDENACAO", ""))
         tipo_custa_xls = str(self.bot_data.get("TIPO_GUIA", ""))
-        namedef = self.format_string(
+        namedef = formata_string(
             self.bot_data.get("TIPO_PAGAMENTO"),
         ).lower()
 

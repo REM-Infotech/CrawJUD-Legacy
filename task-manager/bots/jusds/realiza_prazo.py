@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
+from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import jusds as el
 from common.exceptions import ExecutionError
@@ -178,7 +179,7 @@ class RealizaPrazos(JusdsBot):
             )),
         )
 
-        nome_anexo_normalizado = self.format_string(anexo_nome)
+        nome_anexo_normalizado = formata_string(anexo_nome)
         path_file = self.output_dir_path.joinpath(nome_anexo_normalizado)
 
         input_file: WebElementBot = wait.until(

@@ -7,7 +7,6 @@ from contextlib import suppress
 from time import sleep
 
 from PIL import Image
-from resources import format_string
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.alert import Alert
@@ -18,6 +17,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from _interfaces import DataSucesso
 from bots.projudi.master import ProjudiBot
+from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import projudi as el
 from common import raise_password_token
@@ -298,7 +298,7 @@ class Protocolo(ProjudiBot):
 
         """
         out = self.output_dir_path
-        nome_arq_normalizado = format_string(nome_arquivo)
+        nome_arq_normalizado = formata_string(nome_arquivo)
         path_arq = out.joinpath(nome_arq_normalizado)
 
         wait = WebDriverWait(self.driver, 10)
