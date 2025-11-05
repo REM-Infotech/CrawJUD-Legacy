@@ -4,29 +4,29 @@ from typing import TYPE_CHECKING
 
 from __types import AnyType
 
-from .head import BotQueues
-
 DATASAVE = []
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
 
 
-class SaveSuccess(BotQueues):
+class SaveSuccess:
     """Controle da Queue de salvamento de sucessos."""
 
     bot: CrawJUD
 
-    def __init__(self, **kwargs: AnyType) -> None:
-        """Instancia da queue de salvamento de sucessos."""
+    def __init__(self, bot: CrawJUD) -> None:
+        """Instancia da queue de salvamento de erros."""
+        self.bot = bot
 
     def __call__(self, **kwargs: AnyType) -> None: ...
 
 
-class SaveError(BotQueues):
+class SaveError:
     """Controle da Queue de salvamento de erros."""
 
-    def __init__(self, **kwargs: AnyType) -> None:
+    def __init__(self, bot: CrawJUD) -> None:
         """Instancia da queue de salvamento de erros."""
+        self.bot = bot
 
     def __call__(self, **kwargs: AnyType) -> None: ...

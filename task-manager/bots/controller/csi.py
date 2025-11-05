@@ -24,13 +24,13 @@ class CsiBot(CrawJUD):
                 el.XPATH_CAMPO_USERNAME,
             )),
         )
-        campo_username.send_keys(self.username)
+        campo_username.send_keys(self.credenciais.username)
 
         campo_password = self.driver.find_element(
             By.XPATH,
             el.XPATH_CAMPO_SENHA,
         )
-        campo_password.send_keys(self.password)
+        campo_password.send_keys(self.credenciais.password)
 
         btn_entrar = self.driver.find_element(
             By.XPATH,

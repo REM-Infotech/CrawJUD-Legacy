@@ -28,15 +28,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
     """
 
     def execution(self) -> None:
-        """Execute the main processing loop to extract process information.
-
-        Iterates over each data row and queues process data extraction.
-        """
-        frame = self.frame
-
-        self._total_rows = len(frame)
-
-        for pos, value in enumerate(frame):
+        for pos, value in enumerate(self.frame):
             if self.bot_stopped.is_set():
                 break
 

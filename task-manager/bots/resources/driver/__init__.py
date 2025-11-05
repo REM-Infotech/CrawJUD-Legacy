@@ -1,3 +1,7 @@
+"""Gerenciador do webdriver para a execução dos bots."""
+
+from typing import TYPE_CHECKING
+
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -11,11 +15,17 @@ from constants.webdriver import ARGUMENTS, PREFERENCES, SETTINGS
 
 from .web_element import WebElementBot
 
+if TYPE_CHECKING:
+    from bots.head import CrawJUD
+
 
 class BotDriver:
-    def __init__(self, bot: object) -> None:
+    """Gerenciador do webdriver para a execução dos bots."""
+
+    def __init__(self, bot: CrawJUD) -> None:
+        """Instanciamento do gerenciador do webdriver para a execução dos bots."""
         options = Options()
-        user_data_dir = WORKDIR.joinpath("chrome-data", self.bot.pid)
+        user_data_dir = WORKDIR.joinpath("chrome-data", bot.pid)
         user_data_dir.mkdir(parents=True, exist_ok=True)
         user_data_dir.chmod(0o775)
 
@@ -24,10 +34,10 @@ class BotDriver:
         for argument in ARGUMENTS:
             options.add_argument(argument)
 
-        if "projudi" in self.bot.name:
+        if "projudi" in bot.config.get("sistema"):
             options.add_argument("--incognito")
 
-        download_dir = str(self.bot.output_dir_path)
+        download_dir = str(bot.output_dir_path)
         preferences = PREFERENCES
         preferences.update({
             "download.default_directory": download_dir,
@@ -40,7 +50,7 @@ class BotDriver:
             for file in filter(lambda x: x.endswith(".crx"), files):
                 options.add_extension(str(root.joinpath(file)))
 
-        if "pje" not in self.bot.name:
+        if bot.config.get("sistema") != "pje":
             cache_manager = DriverCacheManager()
             driver_manager = ChromeDriverManager(cache_manager=cache_manager)
             service = Service(executable_path=driver_manager.install())

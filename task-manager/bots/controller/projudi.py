@@ -54,7 +54,7 @@ class ProjudiBot(CrawJUD):
 
         driver.get(url_search)
 
-        if self.botname != "proc_parte":
+        if self.config["categoria"] != "proc_parte":
             return self.search_proc()
 
         return self.search_proc_parte()
@@ -249,13 +249,13 @@ class ProjudiBot(CrawJUD):
                     el.campo_username,
                 )),
             )
-            username.send_keys(self.username)
+            username.send_keys(self.credenciais.username)
 
             password = self.driver.find_element(
                 By.CSS_SELECTOR,
                 el.campo_2_login,
             )
-            password.send_keys(self.password)
+            password.send_keys(self.credenciais.password)
 
             entrar = self.driver.find_element(
                 By.CSS_SELECTOR,

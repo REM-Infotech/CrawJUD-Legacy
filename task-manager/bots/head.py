@@ -4,21 +4,25 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from contextlib import suppress
+from pathlib import Path
 from threading import Event
-from typing import ClassVar
+from typing import ClassVar, Self
 
 from celery import shared_task
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
+from tqdm import tqdm
 
 import _hook
 from __types import Dict
 from bots.resources.driver import BotDriver
+from bots.resources.iterators import BotIterator
 from bots.resources.managers.credencial_manager import CredencialManager
 from bots.resources.managers.file_manager import FileManager
 from bots.resources.queues.file_operation import SaveError, SaveSuccess
 from bots.resources.queues.print_message import PrintMessage
+from constants import WORKDIR
 
 __all__ = ["_hook"]
 
@@ -26,15 +30,7 @@ __all__ = ["_hook"]
 class CrawJUD:
     """Classe CrawJUD."""
 
-    bots: ClassVar[Dict] = {}
-
-    @property
-    def driver(self) -> WebDriver | Chrome:
-        return self.bot_driver.driver
-
-    @property
-    def wait(self) -> WebDriverWait[WebDriver | Chrome]:
-        return self.bot_driver.wait
+    bots: ClassVar[dict[str, type[Self]]] = {}
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -56,24 +52,27 @@ class CrawJUD:
 
         CrawJUD.bots[name_bot] = cls
 
-    def setup(self, config: Dict) -> None:
+    def setup(self, config: Dict) -> Self:
+        self.config = config
         self.bot_stopped = Event()
         self.print_message = PrintMessage(self)
         self.append_succes = SaveSuccess(self)
         self.append_error = SaveError(self)
         self.credenciais = CredencialManager(self)
         self.file_manager = FileManager(self)
-
-        self.file_manager.download_files()
-        self.credenciais.load_credenciais(config)
-
         self.bot_driver = BotDriver(self)
 
-        if not self.auth():
-            with suppress(Exception):
-                self.driver.quit()
+        if config.get("credenciais"):
+            self.credenciais.load_credenciais(self.config.get("credenciais"))
+            if not self.auth():
+                with suppress(Exception):
+                    self.driver.quit()
 
-        return self._task()
+        if config.get("planilha_xlsx"):
+            self.file_manager.download_files()
+            self.frame = BotIterator(self)
+
+        return self
 
     def finalize_execution(self) -> None:
         with suppress(Exception):
@@ -101,7 +100,41 @@ class CrawJUD:
     @abstractmethod
     def execution(self) -> None: ...
 
+    @property
+    def driver(self) -> WebDriver | Chrome:
+        return self.bot_driver.driver
+
+    @property
+    def wait(self) -> WebDriverWait[WebDriver | Chrome]:
+        return self.bot_driver.wait
+
+    @property
+    def output_dir_path(self) -> Path:
+        out_dir = WORKDIR.joinpath("output", self.pid)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        return out_dir
+
+    @property
+    def planilha_xlsx(self) -> str:
+        return self.config.get("planilha_xlsx")
+
+    @planilha_xlsx.setter
+    def planilha_xlsx(self, val: str) -> None:
+        self.config.update({"planilha_xlsx": val})
+
+    @property
+    def pid(self) -> str:
+        return self.config.get("pid")
+
+    @property
+    def anexos(self) -> list[str]:
+        return self.config.get("anexos")
+
 
 @shared_task(name="crawjud")
 def start_bot(config: Dict) -> None:
-    return CrawJUD().setup(config=config)
+    tqdm.write("Iniciado!")
+
+    bot_nome = f"{config['categoria']}_{config['sistema']}"
+    bot = CrawJUD.bots[bot_nome]()
+    return bot.setup(config=config).execution()

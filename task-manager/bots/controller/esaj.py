@@ -19,9 +19,11 @@ class ESajBot(CrawJUD):
 
     def auth(self) -> bool:
         loginuser = "".join(
-            filter(lambda x: x not in string.punctuation, self.username),
+            filter(
+                lambda x: x not in string.punctuation, self.credenciais.username
+            ),
         )
-        passuser = self.password
+        passuser = self.credenciais.password
         if self.login_method == "cert":
             self.driver.get(el.url_login_cert)
             sleep(3)

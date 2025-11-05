@@ -41,8 +41,8 @@ class JusdsBot(CrawJUD):
             ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_ENTRAR)),
         )
 
-        campo_login.send_keys(self.username)
-        campo_senha.send_keys(self.password)
+        campo_login.send_keys(self.credenciais.username)
+        campo_senha.send_keys(self.credenciais.password)
 
         btn_entrar.click()
 

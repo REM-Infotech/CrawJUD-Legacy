@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 
 from __types import AnyType, MessageType
 
-from .head import BotQueues
-
 if TYPE_CHECKING:
     from bots.head import CrawJUD
 
@@ -22,13 +20,14 @@ class Count(TypedDict):
     error_count: int = 0
 
 
-class PrintMessage(BotQueues):
+class PrintMessage:
     """Envio de logs para o FrontEnd."""
 
     bot: CrawJUD
     _message_type: MessageType
 
-    def __init__(self, **kwargs: AnyType) -> None:
-        """Instancia da queue de salvamento de erros."""
+    def __init__(self, bot: CrawJUD) -> None:
+        """Instancia da queue de salvamento de sucessos."""
+        self.bot = bot
 
     def __call__(self, **kwargs: AnyType) -> None: ...
