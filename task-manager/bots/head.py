@@ -7,20 +7,30 @@ from contextlib import suppress
 from threading import Event
 
 from celery import Task
-from resources.queues.file_operation import SaveError, SaveSuccess
-from resources.queues.print_message import PrintMessage
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
+from seleniumwire.webdriver import Chrome
 
 import _hook
-from bots.resources._formatadores import formata_string
+from bots.resources.driver import BotDriver
 from bots.resources.managers.credencial_manager import CredencialManager
 from bots.resources.managers.file_manager import FileManager
+from bots.resources.queues.file_operation import SaveError, SaveSuccess
+from bots.resources.queues.print_message import PrintMessage
 
 __all__ = ["_hook"]
 
 
-@PropertyCrawJUD()
 class CrawJUD(Task):
     """Classe CrawJUD."""
+
+    @property
+    def driver(self) -> WebDriver | Chrome:
+        return self.bot_driver.driver
+
+    @property
+    def wait(self) -> WebDriverWait[WebDriver | Chrome]:
+        return self.bot_driver.wait
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -28,7 +38,7 @@ class CrawJUD(Task):
         self.run = self.setup
 
     def setup(self) -> None:
-        self._bot_stopped = Event()
+        self.bot_stopped = Event()
         self.print_message = PrintMessage(self)
         self.append_succes = SaveSuccess(self)
         self.append_error = SaveError(self)
@@ -38,14 +48,11 @@ class CrawJUD(Task):
         self.file_manager.download_files()
         self.credenciais.load_credenciais()
 
+        self.bot_driver = BotDriver(self)
+
         if not self.auth():
             with suppress(Exception):
                 self.driver.quit()
-
-        if self.anexos:
-            self._anexos = [
-                formata_string(anexo) for anexo in list(self._anexos)
-            ]
 
         return self._task()
 
