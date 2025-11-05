@@ -28,6 +28,7 @@ class SaveSuccess:
 
         self.queue_save = Queue()
         self.thead_save = Thread(target=self.save_success, daemon=True)
+        self.thead_save.start()
 
     def __call__(self, work_sheet: str, data_save: str) -> None:
         self.queue_save.put_nowait({
@@ -44,7 +45,7 @@ class SaveSuccess:
             data: Dict | None = None
 
             with suppress(Empty):
-                data = self.queue_print_bot.get_nowait()
+                data = self.queue_save.get_nowait()
 
             if data:
                 with suppress(Exception):
@@ -74,7 +75,8 @@ class SaveError:
         """Instancia da queue de salvamento de erros."""
         self.bot = bot
         self.queue_save = Queue()
-        self.thead_save = Thread(target=self.save_error)
+        self.thead_save = Thread(target=self.save_error, daemon=True)
+        self.thead_save.start()
 
     def __call__(self, work_sheet: str, data_save: list[Dict]) -> None:
         self.queue_save.put_nowait({
@@ -91,7 +93,7 @@ class SaveError:
             data: Dict | None = None
 
             with suppress(Empty):
-                data = self.queue_print_bot.get_nowait()
+                data = self.queue_save.get_nowait()
 
             if data:
                 with suppress(Exception):
