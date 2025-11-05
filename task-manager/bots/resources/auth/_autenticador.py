@@ -7,6 +7,7 @@ from uuid import uuid4
 
 import jpype
 import requests
+from app.types import StrPath
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.serialization import (
@@ -17,8 +18,6 @@ from cryptography.x509 import Certificate
 
 # Importa classes Java
 from jpype import JArray, JByte, JClass
-
-from __types import StrPath
 
 if not jpype.isJVMStarted():
     jpype.startJVM()

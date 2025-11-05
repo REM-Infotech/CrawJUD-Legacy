@@ -8,13 +8,13 @@ from pathlib import Path
 from threading import Event
 from typing import ClassVar, Self
 
+from app.types import Dict
 from celery import shared_task
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
 
 import _hook
-from __types import Dict
 from bots.resources.driver import BotDriver
 from bots.resources.iterators import BotIterator
 from bots.resources.managers.credencial_manager import CredencialManager

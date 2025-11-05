@@ -1,12 +1,15 @@
 """Sistema de envio de logs para o ClientUI."""
 
+from datetime import datetime
 from queue import Queue
 from threading import Thread
 from typing import TYPE_CHECKING, TypedDict
+from zoneinfo import ZoneInfo
 
+from app.interfaces import Message
 from dotenv import load_dotenv
 
-from __types import MessageType
+from app.types import MessageType
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
@@ -35,4 +38,18 @@ class PrintMessage:
         self.queue_print_bot = Queue()
         self.thread_print_bot = Thread()
 
-    def __call__(self, message: str, message_type: MessageType) -> None: ...
+    def __call__(self, message: str, message_type: MessageType) -> None:
+        mini_pid = self.pid[:6].upper()
+        tz = ZoneInfo("America/Sao_Paulo")
+        time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
+        message = f"[({mini_pid}, {message_type}, {self.row}, {time_exec})> {message}]"
+        msg = Message(
+            row=self.row,
+            message=message,
+            message_type=message_type,
+            status=self.status,
+            total=self.total_rows,
+            success_count=self.success_count,
+            error_count=self.error_count,
+        )
+        self.queue.put_nowait(msg)

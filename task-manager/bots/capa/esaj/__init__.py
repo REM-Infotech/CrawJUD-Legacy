@@ -9,10 +9,10 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 
+from app.types import Dict
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from __types import Dict
 from common import raise_execution_error
 from common.exceptions import ExecutionError
 

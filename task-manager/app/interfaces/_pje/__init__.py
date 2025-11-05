@@ -1,9 +1,8 @@
 from datetime import datetime
 from typing import TypedDict
 
-from __types import Dict
-
-from _interfaces import BotData
+from app.interfaces import BotData
+from app.types import Dict
 
 
 class CapaProcessualPJeDict(TypedDict):

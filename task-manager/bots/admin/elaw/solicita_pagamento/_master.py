@@ -15,12 +15,12 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
+from app.interfaces import DataSucesso
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from _interfaces import DataSucesso
 from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el

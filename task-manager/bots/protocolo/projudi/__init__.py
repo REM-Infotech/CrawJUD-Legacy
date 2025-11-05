@@ -6,6 +6,7 @@ Automatiza o protocolo de processos no sistema Projudi.
 from contextlib import suppress
 from time import sleep
 
+from app.interfaces import DataSucesso
 from PIL import Image
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -15,7 +16,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from _interfaces import DataSucesso
 from bots.controller.projudi import ProjudiBot
 from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot

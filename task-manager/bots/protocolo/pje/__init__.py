@@ -11,7 +11,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
 
 import dotenv
-from _interfaces import BotData
+from app.interfaces import BotData
 from httpx import Client
 
 from .habilitacao import HabilitiacaoPJe

@@ -6,6 +6,7 @@ from pathlib import Path
 from time import sleep
 from typing import Self, TypedDict
 
+from app.types import AnyType
 from selenium.webdriver import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
@@ -15,8 +16,6 @@ from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
-
-from __types import AnyType
 
 
 class RectWebElement(TypedDict):

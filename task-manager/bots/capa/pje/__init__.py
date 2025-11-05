@@ -19,12 +19,8 @@ from threading import Thread
 from time import sleep
 from typing import ClassVar
 
-from httpx import Client, Response
-from tqdm import tqdm
-
-from __types import Dict
-from _interfaces import BotData
-from _interfaces._pje import (
+from app.interfaces import BotData
+from app.interfaces._pje import (
     AssuntosProcessoPJeDict,
     AudienciaProcessoPjeDict,
     CapaProcessualPJeDict,
@@ -33,9 +29,13 @@ from _interfaces._pje import (
     ProcessoJudicialDict,
     RepresentantePartesPJeDict,
 )
-from _interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
-from _interfaces._pje.audiencias import AudienciaDict
-from _interfaces._pje.partes import ParteDict, PartesJsonDict
+from app.interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
+from app.interfaces._pje.audiencias import AudienciaDict
+from app.interfaces._pje.partes import ParteDict, PartesJsonDict
+from httpx import Client, Response
+from tqdm import tqdm
+
+from app.types import Dict
 from bots.controller.pje import PjeBot
 from bots.resources.elements import pje as el
 from common.exceptions import (

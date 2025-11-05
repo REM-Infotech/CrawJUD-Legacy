@@ -9,10 +9,10 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 
+from app.interfaces.projudi import CapaProjudiDict
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from _interfaces.projudi import CapaProjudiDict
 from common import raise_execution_error
 from common.exceptions import ExecutionError
 

@@ -4,10 +4,9 @@ from contextlib import suppress
 from re import Pattern
 from typing import NoReturn
 
+from app.types import AnyType
 from common.exceptions.validacao import ValidacaoStringError
 from constants import PADRAO_CNJ
-
-from __types import AnyType
 
 
 class StrProcessoCNJ(UserString):

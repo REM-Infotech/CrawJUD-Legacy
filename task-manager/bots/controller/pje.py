@@ -9,6 +9,8 @@ from time import sleep
 from typing import TYPE_CHECKING, ClassVar, Literal
 
 import pyotp
+from app.interfaces import BotData
+from app.interfaces._pje import DictResults, DictSeparaRegiao
 from dotenv import load_dotenv
 from pykeepass import PyKeePass
 from selenium.common.exceptions import (
@@ -20,10 +22,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from __types import AnyType, Dict
-from __types._custom import StrProcessoCNJ
-from _interfaces import BotData
-from _interfaces._pje import DictResults, DictSeparaRegiao
+from app.types import AnyType, Dict
+from app.types._custom import StrProcessoCNJ
 from bots.head import CrawJUD
 from bots.resources import AutenticadorPJe, RegioesIterator
 from bots.resources.elements import pje as el

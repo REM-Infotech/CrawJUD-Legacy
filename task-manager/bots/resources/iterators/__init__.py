@@ -3,10 +3,10 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Self
 
+from app.interfaces import BotData
 from pandas import Timestamp, read_excel
 
-from __types import AnyType
-from _interfaces import BotData
+from app.types import AnyType
 from bots.resources._formatadores import formata_string
 
 if TYPE_CHECKING:

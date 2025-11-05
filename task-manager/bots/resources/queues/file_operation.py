@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from __types import AnyType
+from app.types import AnyType
 
 DATASAVE = []
 

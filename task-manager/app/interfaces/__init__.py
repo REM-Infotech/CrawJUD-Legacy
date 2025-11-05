@@ -1,6 +1,6 @@
 from typing import Literal, TypedDict
 
-from __types import MessageType, PolosProcessuais, StatusBot
+from app.types import MessageType, PolosProcessuais, StatusBot
 
 
 class Message(TypedDict, total=False):

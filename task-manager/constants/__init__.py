@@ -3,7 +3,7 @@
 from pathlib import Path
 from re import Pattern
 
-from _interfaces import ColorsDict
+from app.interfaces import ColorsDict
 
 WORKDIR = Path(__file__).cwd()
 

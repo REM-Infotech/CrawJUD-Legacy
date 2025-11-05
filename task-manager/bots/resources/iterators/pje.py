@@ -2,8 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from _interfaces import BotData
-from _interfaces._pje import DictSeparaRegiao
+from app.interfaces import BotData
+from app.interfaces._pje import DictSeparaRegiao
 
 if TYPE_CHECKING:
     from bots.controller.pje import PjeBot

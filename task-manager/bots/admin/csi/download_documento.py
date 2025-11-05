@@ -3,13 +3,13 @@
 from contextlib import suppress
 
 import httpx
+from app.types import AnyType
 from dotenv import load_dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-from __types import AnyType
 from bots.controller.csi import CsiBot
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import csi as el

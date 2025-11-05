@@ -2,12 +2,12 @@
 
 from contextlib import suppress
 
+from app.interfaces import DataSucesso
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from _interfaces import DataSucesso
 from bots.head import CrawJUD
 from bots.resources.elements import jusds as el
 
