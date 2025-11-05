@@ -7,6 +7,7 @@ from threading import Thread
 from typing import TYPE_CHECKING, NoReturn
 from zoneinfo import ZoneInfo
 
+import openpyxl
 from pandas import DataFrame, ExcelWriter, concat, read_excel
 
 from app.types import Dict
@@ -33,7 +34,7 @@ class SaveSuccess:
     def __call__(self, work_sheet: str, data_save: str) -> None:
         self.queue_save.put_nowait({
             "work_sheet": work_sheet,
-            "data_save": data_save,
+            "data_save": DataFrame(data_save).to_dict(orient="records"),
         })
 
     def save_success(self) -> NoReturn:
@@ -49,23 +50,29 @@ class SaveSuccess:
 
             if data:
                 with suppress(Exception):
-                    df = DataFrame(data["data_save"])
-                    if arquivo_sucesso.exists():
-                        df = concat([
-                            read_excel(
-                                arquivo_sucesso,
+                    if data["data_save"]:
+                        df = DataFrame(data["data_save"])
+                        if arquivo_sucesso.exists():
+                            wb = openpyxl.load_workbook(str(arquivo_sucesso))
+                            df_xlsx = read_excel(
+                                wb,
                                 engine="openpyxl",
-                                sheet_name=data["work_sheet"],
-                            ),
-                            DataFrame(data["data_save"]),
-                        ])
+                                sheet_name=str(data["work_sheet"]),
+                            )
 
-                    with ExcelWriter(
-                        arquivo_sucesso, engine="openpyxl"
-                    ) as writer:
-                        df.to_excel(
-                            excel_writer=writer, sheet_name=data["work_sheet"]
-                        )
+                            df = concat([
+                                DataFrame(df_xlsx.to_dict(orient="records")),
+                                DataFrame(data["data_save"]),
+                            ])
+
+                        with ExcelWriter(
+                            arquivo_sucesso, engine="openpyxl"
+                        ) as writer:
+                            df.to_excel(
+                                excel_writer=writer,
+                                sheet_name=data["work_sheet"],
+                                index=False,
+                            )
 
 
 class SaveError:
@@ -81,7 +88,7 @@ class SaveError:
     def __call__(self, work_sheet: str, data_save: list[Dict]) -> None:
         self.queue_save.put_nowait({
             "work_sheet": work_sheet,
-            "data_save": data_save,
+            "data_save": DataFrame(data_save).to_dict(orient="records"),
         })
 
     def save_error(self) -> NoReturn:
@@ -99,12 +106,15 @@ class SaveError:
                 with suppress(Exception):
                     df = DataFrame(data["data_save"])
                     if arquivo_sucesso.exists():
+                        wb = openpyxl.load_workbook(str(arquivo_sucesso))
+                        df_xlsx = read_excel(
+                            wb,
+                            engine="openpyxl",
+                            sheet_name=str(data["work_sheet"]),
+                        )
+
                         df = concat([
-                            read_excel(
-                                arquivo_sucesso,
-                                engine="openpyxl",
-                                sheet_name=data["work_sheet"],
-                            ),
+                            DataFrame(df_xlsx.to_dict(orient="records")),
                             DataFrame(data["data_save"]),
                         ])
 
@@ -112,5 +122,7 @@ class SaveError:
                         arquivo_sucesso, engine="openpyxl"
                     ) as writer:
                         df.to_excel(
-                            excel_writer=writer, sheet_name=data["work_sheet"]
+                            excel_writer=writer,
+                            sheet_name=data["work_sheet"],
+                            index=False,
                         )
