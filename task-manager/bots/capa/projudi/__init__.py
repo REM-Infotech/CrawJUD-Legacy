@@ -9,10 +9,10 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 
-from app.interfaces.projudi import CapaProjudiDict
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.interfaces.projudi import CapaProjudiDict
 from common import raise_execution_error
 from common.exceptions import ExecutionError
 
@@ -43,22 +43,13 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 driver = self.driver
                 bot_data = self.bot_data
 
-                self.print_message(
-                    message=f"Buscando processo {bot_data['NUMERO_PROCESSO']}",
-                    message_type="log",
-                )
-
                 search = self.search()
                 trazer_copia = bot_data.get("TRAZER_COPIA", "não")
                 if not search:
-                    self.print_message(
-                        message="Processo não encontrado.",
-                        message_type="error",
-                    )
                     continue
 
                 self.print_message(
-                    message="Processo encontrado! Extraindo informações...",
+                    message="Extraindo informações...",
                     message_type="info",
                 )
 

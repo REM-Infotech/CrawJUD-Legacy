@@ -68,6 +68,7 @@ def add_file(data: MyAny = None) -> None:
 
 
 @io.on("bot_stop", namespace="/bot_logs")
-def bot_stop(data: MyAny):
+def bot_stop(data: MyAny) -> None:
+    """Log bot."""
     tqdm.write(str(data))
     io.emit("bot_stop", room=data["pid"], namespace="/bot_logs")

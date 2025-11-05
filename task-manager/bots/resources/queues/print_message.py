@@ -1,15 +1,18 @@
 """Sistema de envio de logs para o ClientUI."""
 
+from contextlib import suppress
 from datetime import datetime
-from queue import Queue
+from queue import Empty, Queue
 from threading import Thread
 from typing import TYPE_CHECKING, TypedDict
 from zoneinfo import ZoneInfo
 
-from app.interfaces import Message
 from dotenv import load_dotenv
+from socketio import Client
 
-from app.types import MessageType
+from app.interfaces import Message
+from app.types import AnyType, MessageType
+from config import config
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
@@ -34,22 +37,49 @@ class PrintMessage:
     def __init__(self, bot: CrawJUD) -> None:
         """Instancia da queue de salvamento de sucessos."""
         self.bot = bot
-
         self.queue_print_bot = Queue()
-        self.thread_print_bot = Thread()
+        self.thread_print_bot = Thread(target=self.print_msg, daemon=True)
+        self.thread_print_bot.start()
 
-    def __call__(self, message: str, message_type: MessageType) -> None:
-        mini_pid = self.pid[:6].upper()
+    def __call__(
+        self,
+        message: str,
+        message_type: MessageType,
+        *args: AnyType,
+        **kwargs: AnyType,
+    ) -> None:
+        mini_pid = self.bot.pid[:6].upper()
         tz = ZoneInfo("America/Sao_Paulo")
         time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
-        message = f"[({mini_pid}, {message_type}, {self.row}, {time_exec})> {message}]"
+        message = f"[({mini_pid}, {message_type}, {self.bot.row}, {time_exec})> {message}]"
         msg = Message(
-            row=self.row,
+            pid=self.bot.pid,
+            row=self.bot.row,
             message=message,
             message_type=message_type,
-            status=self.status,
-            total=self.total_rows,
-            success_count=self.success_count,
-            error_count=self.error_count,
+            status="Em Execução",
+            total=self.bot.total_rows,
         )
-        self.queue.put_nowait(msg)
+        self.queue_print_bot.put_nowait(msg)
+
+    def print_msg(self) -> None:
+        socketio_server = config.get("SOCKETIO_SERVER")
+        sio = Client()
+
+        sio.on(
+            "bot_stop",
+            lambda: self.bot.bot_stopped.set(),
+            namespace="/bot_logs",
+        )
+        sio.connect(url=socketio_server, namespaces=["/bot_logs"])
+        sio.emit(
+            "join_room", data={"room": self.bot.pid}, namespace="/bot_logs"
+        )
+        while True:
+            data: Message | None = None
+
+            with suppress(Empty):
+                data = self.queue_print_bot.get_nowait()
+
+            if data:
+                sio.emit("logbot", data=data, namespace="/bot_logs")

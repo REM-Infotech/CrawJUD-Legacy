@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING
 
+from tqdm import tqdm
+
 from app.types import AnyType
 
 DATASAVE = []
@@ -19,7 +21,10 @@ class SaveSuccess:
         """Instancia da queue de salvamento de erros."""
         self.bot = bot
 
-    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None: ...
+    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None:
+        _kwarg = kwargs
+        _args = args
+        tqdm.write(str(args))
 
 
 class SaveError:
@@ -29,4 +34,7 @@ class SaveError:
         """Instancia da queue de salvamento de erros."""
         self.bot = bot
 
-    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None: ...
+    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None:
+        _kwarg = kwargs
+        _args = args
+        tqdm.write(str(args))

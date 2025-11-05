@@ -15,5 +15,4 @@ config = Dynaconf(
     commentjson_enabled=True,
     merge_enabled=True,
     dotenv_override=True,
-    default_env="api",
 )

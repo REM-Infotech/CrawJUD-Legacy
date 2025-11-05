@@ -6,15 +6,16 @@ from abc import abstractmethod
 from contextlib import suppress
 from pathlib import Path
 from threading import Event
+from time import sleep
 from typing import ClassVar, Self
 
-from app.types import Dict
 from celery import shared_task
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
 
 import _hook
+from app.types import Dict
 from bots.resources.driver import BotDriver
 from bots.resources.iterators import BotIterator
 from bots.resources.managers.credencial_manager import CredencialManager
@@ -83,13 +84,14 @@ class CrawJUD:
         message = "Fim da execução"
         self.print_message(message=message, message_type="success")
 
-        zip_file = self.zip_result()
-        link = self.upload_file(zipfile=zip_file)
+        link = self.file_manager.upload_file()
 
         message = f"Baixe os resultados aqui: {link}"
         self.print_message(message=message, message_type="info")
 
-        self.queue_control.stop_queues()
+        sleep(5)
+
+        self.print_message.queue_print_bot.shutdown()
 
     @abstractmethod
     def auth(self) -> bool:
