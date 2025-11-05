@@ -19,6 +19,9 @@ from threading import Thread
 from time import sleep
 from typing import ClassVar
 
+from httpx import Client, Response
+from tqdm import tqdm
+
 from app.interfaces import BotData
 from app.interfaces._pje import (
     AssuntosProcessoPJeDict,
@@ -32,9 +35,6 @@ from app.interfaces._pje import (
 from app.interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
 from app.interfaces._pje.audiencias import AudienciaDict
 from app.interfaces._pje.partes import ParteDict, PartesJsonDict
-from httpx import Client, Response
-from tqdm import tqdm
-
 from app.types import Dict
 from bots.controller.pje import PjeBot
 from bots.resources.elements import pje as el
@@ -80,7 +80,11 @@ class Capa(PjeBot):
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
-        with ThreadPoolExecutor(max_workers=24) as executor:
+        if not self.auth():
+            with suppress(Exception):
+                self.driver.quit()
+
+        with ThreadPoolExecutor(max_workers=8) as executor:
             futures: list[Future] = []
             for pos, t_regiao in enumerate(lista_nova):
                 regiao, data_regiao = t_regiao
@@ -128,13 +132,12 @@ class Capa(PjeBot):
         cookies: Dict,
         pos: int,
     ) -> None:
-        pool_exe = ThreadPoolExecutor(max_workers=16)
+        pool_exe = ThreadPoolExecutor(max_workers=4)
 
         client_context = Client(cookies=cookies, headers=headers)
 
         thread_copia_integral_ = Thread(
             target=self.copia_integral,
-            daemon=True,
             name=f"Salvar Cópia Integral Thread-{pos}",
         )
 
@@ -439,49 +442,56 @@ class Capa(PjeBot):
                     data = self.queue_files.get_nowait()
 
                 if data:
-                    data: Dict = dict(data)
-                    file_name: str = data.get("file_name")
-                    row: int = data.get("row")
-                    processo: str = data.get("processo")
-                    client: Client = data.get("client")
-                    id_processo: str = data.get("id_processo")
-                    regiao: str = data.get("regiao")
+                    row = data.get("row")
 
-                    self.print_message(
-                        message=f"Baixando arquivo do processo n.{processo}",
-                        message_type="log",
-                        row=row,
-                    )
+                    def file_handler(data: Dict) -> None:
+                        data: Dict = dict(data)
+                        file_name: str = data.get("file_name")
+                        row: int = data.get("row")
+                        processo: str = data.get("processo")
+                        client: Client = data.get("client")
+                        id_processo: str = data.get("id_processo")
+                        regiao: str = data.get("regiao")
 
-                    sleep(0.50)
-                    headers = client.headers
-                    cookies = client.cookies
-
-                    client = Client(
-                        timeout=900,
-                        headers=headers,
-                        cookies=cookies,
-                    )
-                    sleep(0.50)
-                    link = el.LINK_DOWNLOAD_INTEGRA.format(
-                        trt_id=regiao,
-                        id_processo=id_processo,
-                    )
-                    message = f"Baixando arquivo do processo n.{processo}"
-                    sleep(0.50)
-                    self.print_message(
-                        message=message,
-                        row=row,
-                        message_type="log",
-                    )
-
-                    with client.stream("get", url=link) as response:
-                        self.save_file_downloaded(
-                            file_name=file_name,
-                            response_data=response,
-                            processo=processo,
+                        self.print_message(
+                            message=f"Baixando arquivo do processo n.{processo}",
+                            message_type="log",
                             row=row,
                         )
+
+                        sleep(0.50)
+                        headers = client.headers
+                        cookies = client.cookies
+
+                        client = Client(
+                            timeout=900,
+                            headers=headers,
+                            cookies=cookies,
+                        )
+                        sleep(0.50)
+                        link = el.LINK_DOWNLOAD_INTEGRA.format(
+                            trt_id=regiao,
+                            id_processo=id_processo,
+                        )
+                        message = f"Baixando arquivo do processo n.{processo}"
+                        sleep(0.50)
+                        self.print_message(
+                            message=message,
+                            row=row,
+                            message_type="log",
+                        )
+
+                        with client.stream("get", url=link) as response:
+                            self.save_file_downloaded(
+                                file_name=file_name,
+                                response_data=response,
+                                processo=processo,
+                                row=row,
+                            )
+
+                    Thread(
+                        target=file_handler, kwargs={"data": data}, daemon=True
+                    ).start()
 
             except ExecutionError as e:
                 self.print_message(

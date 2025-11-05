@@ -45,16 +45,23 @@ class PrintMessage:
         self,
         message: str,
         message_type: MessageType,
+        row: int = 0,
         *args: AnyType,
         **kwargs: AnyType,
     ) -> None:
         mini_pid = self.bot.pid[:6].upper()
         tz = ZoneInfo("America/Sao_Paulo")
+
+        if not row or row == 0:
+            row = self.bot.row
+
         time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
-        message = f"[({mini_pid}, {message_type}, {self.bot.row}, {time_exec})> {message}]"
+        message = (
+            f"[({mini_pid}, {message_type}, {row}, {time_exec})> {message}]"
+        )
         msg = Message(
             pid=self.bot.pid,
-            row=self.bot.row,
+            row=row,
             message=message,
             message_type=message_type,
             status="Em Execução",

@@ -31,6 +31,7 @@ class CrawJUD:
     """Classe CrawJUD."""
 
     bots: ClassVar[dict[str, type[Self]]] = {}
+    row: int = 0
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
