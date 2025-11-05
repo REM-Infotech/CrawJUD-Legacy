@@ -155,7 +155,7 @@
     "Id": "20",
     "display_name": "ELAW - COMPLEMENTAR CADASTRO",
     "sistema": "ELAW",
-    "categoria": "COMPLEMENTAR_CADASTRO",
+    "categoria": "CADASTRO_COMPLEMENTAR",
     "configuracao_form": "file_auth",
     "descricao": "Robô responsável por realizar complemento de cadastro nos processos"
   },

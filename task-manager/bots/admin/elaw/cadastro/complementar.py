@@ -12,7 +12,7 @@ from ._master import ElawCadastro
 type_doc = {11: "cpf", 14: "cnpj"}
 
 
-class Complement(ElawCadastro):
+class Complementar(ElawCadastro):
     """Empty."""
 
     def execution(self) -> None:

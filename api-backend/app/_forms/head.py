@@ -29,8 +29,10 @@ class FormBot:
                 .first()
             )
 
-            task_name = f"{bot.sistema.lower()}.{bot.categoria.lower()}"
-            celery.send_task(task_name, kwargs={"config": kwargs})
+            kwargs["sistema"] = bot.sistema.lower()
+            kwargs["categoria"] = bot.categoria.lower()
+
+            celery.send_task("crawjud", kwargs={"config": kwargs})
 
         except Exception as e:
             exc = "\n".join(traceback.format_exception(e))

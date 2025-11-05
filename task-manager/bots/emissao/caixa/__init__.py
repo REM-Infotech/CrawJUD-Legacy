@@ -18,11 +18,7 @@ from common.exceptions import ExecutionError
 
 
 class Emissor(CrawJUD):
-    """Manage creation and processing of judicial deposit documents using the Emissor bot fully.
-
-    Offer a range of functionalities to access deposit pages, handle login flows,
-    generate PDFs, and extract relevant data for deposit operations.
-    """
+    """Emissão de guias caixa."""
 
     def execution(self) -> None:
         """Run the main operation loop and handle each DataFrame row comprehensively.

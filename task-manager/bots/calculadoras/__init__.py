@@ -4,6 +4,6 @@ Fornece módulos para cálculos automatizados e integração com recursos do TJD
 
 """
 
-from . import resources, tjdft
+from . import tjdft
 
-__all__ = ["resources", "tjdft"]
+__all__ = ["tjdft"]

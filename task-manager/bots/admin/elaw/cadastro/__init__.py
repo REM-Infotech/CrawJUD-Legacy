@@ -1,5 +1,5 @@
 """Empty."""
 
-from . import cadastro, complement
+from . import cadastro, complementar
 
-__all__ = ["cadastro", "complement"]
+__all__ = ["cadastro", "complementar"]

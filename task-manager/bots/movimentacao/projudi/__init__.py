@@ -21,11 +21,7 @@ from common.exceptions import ExecutionError
 
 
 class Movimentacao(ProjudiBot):
-    """Gerencie movimentações no Projudi por raspagem e registro de ações processuais.
-
-    Esta classe estende CrawJUD para realizar operações como busca de movimentações,
-    filtragem por palavras-chave e geração de relatórios das atividades processuais.
-    """
+    """Raspagem de movimentações projudi."""
 
     movimentacao_encontrada: ClassVar[bool] = False
     list_movimentacoes_extraidas: ClassVar[list[dict[str, str]]] = []

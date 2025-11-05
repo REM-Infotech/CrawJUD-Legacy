@@ -10,10 +10,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
 from __types import AnyType
+from bots.controller.csi import CsiBot
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import csi as el
-
-from .master import CsiBot
 
 load_dotenv()
 

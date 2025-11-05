@@ -21,22 +21,7 @@ from common.exceptions import ExecutionError
 
 
 class Movimentacao(ESajBot):
-    """Class Movimentacao.
-
-    Handles all movement-related tasks in the Esaj system.
-
-    Attributes:
-        start_time (float): Timestamp when movements begin processing.
-        appends (list): Collection of movement records.
-
-
-    Methods:
-        initialize: Create a new Movimentacao instance.
-        execution: Iterate over process rows and process movements.
-        queue: Queue tasks for retrieving and appending movements.
-        get_moves: Extract movement information from page elements.
-
-    """
+    """Raspagem de movimentações esaj."""
 
     def execution(self) -> None:
         """Execute movement processing.

@@ -5,13 +5,15 @@ from __future__ import annotations
 from abc import abstractmethod
 from contextlib import suppress
 from threading import Event
+from typing import ClassVar
 
-from celery import Task
+from celery import shared_task
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
 
 import _hook
+from __types import Dict
 from bots.resources.driver import BotDriver
 from bots.resources.managers.credencial_manager import CredencialManager
 from bots.resources.managers.file_manager import FileManager
@@ -21,8 +23,10 @@ from bots.resources.queues.print_message import PrintMessage
 __all__ = ["_hook"]
 
 
-class CrawJUD(Task):
+class CrawJUD:
     """Classe CrawJUD."""
+
+    bots: ClassVar[Dict] = {}
 
     @property
     def driver(self) -> WebDriver | Chrome:
@@ -34,10 +38,25 @@ class CrawJUD(Task):
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
-        self._task = self.run
-        self.run = self.setup
 
-    def setup(self) -> None:
+    def __init_subclass__(cls) -> None:
+        module_split = cls.__module__.split(".")
+        if (
+            "master" in module_split
+            or "controller" in module_split
+            or len(set(module_split)) != len(module_split)
+        ):
+            return
+
+        name_bot = "_".join(
+            module_split[1:] if len(module_split) == 3 else module_split[2:]
+        )
+        if "__" in name_bot:
+            return
+
+        CrawJUD.bots[name_bot] = cls
+
+    def setup(self, config: Dict) -> None:
         self.bot_stopped = Event()
         self.print_message = PrintMessage(self)
         self.append_succes = SaveSuccess(self)
@@ -46,7 +65,7 @@ class CrawJUD(Task):
         self.file_manager = FileManager(self)
 
         self.file_manager.download_files()
-        self.credenciais.load_credenciais()
+        self.credenciais.load_credenciais(config)
 
         self.bot_driver = BotDriver(self)
 
@@ -78,3 +97,11 @@ class CrawJUD(Task):
     def auth(self) -> bool:
         """Autenticação no sistema."""
         ...
+
+    @abstractmethod
+    def execution(self) -> None: ...
+
+
+@shared_task(name="crawjud")
+def start_bot(config: Dict) -> None:
+    return CrawJUD().setup(config=config)

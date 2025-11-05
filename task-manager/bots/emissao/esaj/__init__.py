@@ -24,15 +24,7 @@ from common.exceptions import ExecutionError
 
 
 class Emissao(ESajBot):
-    """Perform emission tasks by generating docs and extracting PDF barcodes.
-
-    This class executes the complete workflow for document emission. It
-    initializes drivers, navigates pages, and processes PDF files.
-
-    Attributes:
-        count_doc (callable): Utility function to count document type.
-
-    """
+    """Emissão de guias Esaj."""
 
     def execution(self) -> None:
         """Perform emission processing iterating over data rows and handling errors.
