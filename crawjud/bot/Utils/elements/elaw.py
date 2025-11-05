@@ -49,7 +49,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     comboareasub_css = '//select[contains(@id, "comboAreaSub_input")]'
     css_button = 'button[id="btnContinuar"]'
     xpath_checkadvinterno = "//*[contains(@id, 'j_id_3y_1:autoCompleteLawyer_item')]"
-    label_esfera = 'span[id="j_id_3y_1:j_id_3y_4_2_2_1_9_u_1:comboRito_label"]'
+    label_esfera = 'span[id*=":comboRito_label"]'
 
     css_esfera_judge = '//select[contains(@id, "comboRito_input")]'
     estado_input = "//select[contains(@id, 'comboEstadoVara_input')]"
@@ -66,14 +66,7 @@ class ELAW_AME(Configuracao):  # noqa: N801
     css_btn_busca_parte = 'button[id="j_id_4c_1:j_id_4c_5_2_2_5_9_8_1:j_id_4c_5_2_2_5_9_8_5_2_f"]'
 
     select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
-    select_field = "".join(
-        (
-            'div[id="j_id_4c_1:',
-            "j_id_4c_5_2_2_9_9_45_2:",
-            "j_id_4c_5_2_2_9_9_45_3_1_2_2_2_1:",
-            'fieldid_9240pgTypeSelectField1CombosCombo_panel"]',
-        ),
-    )
+    select_field = "div[id*='fieldid_9240pgTypeSelectField1CombosCombo_panel']"
     css_other_location = "".join(
         (
             'input[id="j_id_4c_1:',
