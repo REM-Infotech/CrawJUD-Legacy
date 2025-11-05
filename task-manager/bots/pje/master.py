@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, ClassVar, Literal
 import pyotp
 from dotenv import load_dotenv
 from pykeepass import PyKeePass
+from resources import AutenticadorPJe, RegioesIterator
 from selenium.common.exceptions import (
     TimeoutException,
     UnexpectedAlertPresentException,
@@ -25,9 +26,8 @@ from __types._custom import StrProcessoCNJ
 from _interfaces import BotData
 from _interfaces._pje import DictResults, DictSeparaRegiao
 from bots.head import CrawJUD
+from bots.resources.elements import pje as el
 from common.exceptions.validacao import ValidacaoStringError
-from resources import AutenticadorPJe, RegioesIterator
-from resources.elements import pje as el
 
 load_dotenv()
 

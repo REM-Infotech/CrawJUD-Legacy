@@ -15,18 +15,18 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from _interfaces import DataSucesso
-from common import raise_execution_error
-from common.exceptions import ExecutionError
-from resources.elements import elaw as el
-from resources.web_element import WebElementBot
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from _interfaces import DataSucesso
 from bots.elaw.solicita_pagamento._condenacao import ElawCondenacao
 from bots.elaw.solicita_pagamento._custas import ElawCustas
+from bots.resources.driver.web_element import WebElementBot
+from bots.resources.elements import elaw as el
+from common import raise_execution_error
+from common.exceptions import ExecutionError
 
 if TYPE_CHECKING:
     from collections.abc import Callable

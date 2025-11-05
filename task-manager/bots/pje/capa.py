@@ -37,12 +37,12 @@ from _interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
 from _interfaces._pje.audiencias import AudienciaDict
 from _interfaces._pje.partes import ParteDict, PartesJsonDict
 from bots.pje.master import PjeBot
+from bots.resources.elements import pje as el
 from common.exceptions import (
     ExecutionError,
     FileUploadError,
 )
 from constants import WORKDIR
-from resources.elements import pje as el
 
 SENTINELA = None
 

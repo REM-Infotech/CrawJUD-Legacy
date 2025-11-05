@@ -1,14 +1,14 @@
 from time import sleep
 from typing import TYPE_CHECKING
 
-from resources.elements import elaw as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.elaw.master import ElawBot
+from bots.resources.elements import elaw as el
 
 if TYPE_CHECKING:
-    from resources.web_element import WebElementBot
+    from bots.resources.driver.web_element import WebElementBot
 type_doc = {11: "cpf", 14: "cnpj"}
 
 

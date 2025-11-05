@@ -14,10 +14,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.esaj.master import ESajBot
+from bots.resources.driver.web_element import WebElementBot
+from bots.resources.elements import esaj as el
 from common._raises import raise_execution_error
 from common.exceptions import ExecutionError
-from resources.elements import esaj as el
-from resources.web_element import WebElementBot
 
 
 class Movimentacao(ESajBot):

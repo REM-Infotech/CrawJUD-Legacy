@@ -3,36 +3,23 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from collections.abc import Callable
 from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 from threading import Event
-from typing import ClassVar
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from celery import Celery
-from celery.worker.request import Request
 from pandas import DataFrame, Timestamp, read_excel
-from selenium.webdriver import Chrome
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.wait import WebDriverWait
-from seleniumwire.webdriver import Chrome as ChromeWired
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.driver_cache import DriverCacheManager
-
-import _hook
-from __types import AnyType, Dict, P, T
-from _interfaces import BotData, ColorsDict
-from constants import WORKDIR
-from constants.webdriver import ARGUMENTS, PREFERENCES, SETTINGS
-from controllers._crawjud import HeadCrawJUD
 from resources import format_string
 from resources._minio import Minio
 from resources.queues.file_operation import SaveError, SaveSuccess
 from resources.queues.print_message import PrintMessage
-from resources.web_element import WebElementBot
+
+import _hook
+from __types import AnyType, T
+from _interfaces import BotData, ColorsDict
+from constants import WORKDIR
+from controllers._crawjud import HeadCrawJUD
 
 __all__ = ["_hook"]
 func_dict_check = {
@@ -53,83 +40,22 @@ COLORS_DICT: ColorsDict = {
 class CrawJUD(HeadCrawJUD):
     """Classe CrawJUD."""
 
-    _pid: str
-    driver: Chrome
-    _event_queue_bot: Event = None
-    _task: Callable
-    app: Celery
-    var_store: ClassVar[Dict] = {}
-    _bot_stopped: Event
-    _frame: list[BotData] = None
-    _xlsx: str = None
-    _bot_data: BotData = None
-    _total_rows: int = None
-    _otherfiles: list[str] = None
-    _anexos: list[str] = None
-    _xlsx_data: list[Dict] = None
-    _planilha_xlsx: str = None
-    request: Request
-    _credenciais: ClassVar[Dict] = {}
-
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
         self._task = self.run
         self.run = self.__call__
 
-    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> T:
-        for k, v in list(kwargs.items()):
-            setattr(self, k, v)
-
+    def __call__(self) -> T:
         self._bot_stopped = Event()
-
         self.print_message = PrintMessage()
         self.append_succes = SaveSuccess()
         self.append_error = SaveError()
 
         self.setup()
 
-        return self._task(*args, **kwargs)
+        return self._task()
 
     def setup(self) -> None:
-        options = ChromeOptions()
-
-        user_data_dir = WORKDIR.joinpath("chrome-data", self.request.id)
-        user_data_dir.mkdir(parents=True, exist_ok=True)
-        user_data_dir.chmod(0o775)
-
-        options.add_argument(f"--user-data-dir={user_data_dir!s}")
-
-        for argument in ARGUMENTS:
-            options.add_argument(argument)
-
-        if "projudi" in self.name:
-            options.add_argument("--incognito")
-
-        download_dir = str(self.output_dir_path)
-        preferences = PREFERENCES
-        preferences.update({
-            "download.default_directory": download_dir,
-            "printing.print_preview_sticky_settings.appState": SETTINGS,
-        })
-
-        options.add_experimental_option("prefs", preferences)
-
-        for root, _, files in Path.cwd().joinpath("chrome-extensions").walk():
-            for file in filter(lambda x: x.endswith(".crx"), files):
-                options.add_extension(str(root.joinpath(file)))
-
-        if "pje" not in self.name:
-            cache_manager = DriverCacheManager()
-            driver_manager = ChromeDriverManager(cache_manager=cache_manager)
-            service = Service(executable_path=driver_manager.install())
-            self.driver = Chrome(options=options, service=service)
-
-        else:
-            self.driver = ChromeWired(options=options)
-
-        self.driver._web_element_cls = WebElementBot
-        self.wait = WebDriverWait(self.driver, 30)
-
         self.download_files()
         if self.credenciais:
             self.load_credenciais()

@@ -9,6 +9,7 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 from time import sleep
 
 import dotenv
+from resources import format_string
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -16,8 +17,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.pje.master import PjeBot
-from resources import format_string
-from resources.elements import pje as el
+from bots.resources.elements import pje as el
 
 dotenv.load_dotenv()
 

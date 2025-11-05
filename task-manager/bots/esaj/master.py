@@ -5,13 +5,13 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from resources.elements import esaj as el
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from bots.head import CrawJUD
+from bots.resources.elements import esaj as el
 
 
 class ESajBot(CrawJUD):

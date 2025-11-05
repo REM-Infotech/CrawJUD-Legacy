@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 from bs4.element import PageElement
+from resources import format_string
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
@@ -15,13 +16,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from bots.head import CrawJUD
+from bots.resources.elements import projudi as el
 from common.exceptions import (
     ExecutionError,
     LoginSystemError,
 )
 from constants import CSS_INPUT_PROCESSO, MAIOR_60_ANOS
-from resources import format_string
-from resources.elements import projudi as el
 
 
 class ProjudiBot(CrawJUD):

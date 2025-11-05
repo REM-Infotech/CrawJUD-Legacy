@@ -21,9 +21,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from bots.elaw.master import ElawBot
+from bots.resources.driver.web_element import WebElementBot
+from bots.resources.elements import elaw as el
 from common.exceptions import ExecutionError
-from resources.elements import elaw as el
-from resources.web_element import WebElementBot
 
 
 class Provisao(ElawBot):

@@ -11,9 +11,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from bots.projudi.master import ProjudiBot
+from bots.resources.driver.web_element import WebElementBot as WebElement
+from bots.resources.elements import projudi as el
 from common.exceptions import ExecutionError
-from resources.elements import projudi as el
-from resources.web_element import WebElementBot as WebElement
 
 
 class Intimacoes(ProjudiBot):

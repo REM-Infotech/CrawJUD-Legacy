@@ -4,14 +4,14 @@ from contextlib import suppress
 from time import sleep
 from typing import ClassVar
 
-from __types import MethodsSearch
-from resources.elements import jusbr as el
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from __types import MethodsSearch
 from bots.head import CrawJUD
+from bots.resources.elements import jusbr as el
 
 
 class JusBrBot(CrawJUD):

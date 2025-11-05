@@ -13,14 +13,14 @@ Attributes:
 
 from time import sleep
 
-from resources.elements import elaw as el
-from resources.web_element import WebElementBot
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.elaw.master import ElawBot
+from bots.resources.driver.web_element import WebElementBot
+from bots.resources.elements import elaw as el
 
 type_doc = {11: "cpf", 14: "cnpj"}
 

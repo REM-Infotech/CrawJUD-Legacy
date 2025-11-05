@@ -9,9 +9,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
+from bots.resources.driver.web_element import WebElementBot
+from bots.resources.elements import jusds as el
 from common.exceptions import ExecutionError
-from resources.elements import jusds as el
-from resources.web_element import WebElementBot
 
 from .master import JusdsBot
 

@@ -16,9 +16,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.esaj.master import ESajBot
+from bots.resources.elements import esaj as el
 from common._raises import raise_execution_error
 from common.exceptions import ExecutionError
-from resources.elements import esaj as el
 
 
 class Protocolo(ESajBot):
