@@ -108,33 +108,28 @@ const listLogs = computed(() => receivedLogs.value);
 </template>
 <style lang="css" scoped>
 .error {
-  font-size: 1.3em;
   color: #bd0707;
   font-weight: bold;
 }
 
 .info {
   color: #f1b00b;
-  font-size: 1.2em;
   font-weight: bold;
   font-family: "Times New Roman", Times, serif;
 }
 
 .warning {
-  font-size: 1.2em;
   color: #af3f07;
   font-weight: bold;
 }
 
 .success {
   color: #11ab5b;
-  font-size: 1.2em;
   font-weight: bold;
   font-family: "Times New Roman", Times, serif;
 }
 
 .log {
-  font-size: 1.1em;
   color: #ffffffa8;
   font-weight: bold;
 }
