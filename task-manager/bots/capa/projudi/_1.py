@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from __types import Dict
 from _interfaces.projudi import PartesProjudiDict, RepresentantesProjudiDict
-from bots.projudi.master import ProjudiBot
+from bots.controller.projudi import ProjudiBot
 from bots.resources.elements import projudi as el
 
 

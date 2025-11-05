@@ -6,7 +6,7 @@ from _interfaces import BotData
 from _interfaces._pje import DictSeparaRegiao
 
 if TYPE_CHECKING:
-    from bots.pje.master import PjeBot
+    from bots.controller.pje import PjeBot
 
 
 class RegioesIterator:
