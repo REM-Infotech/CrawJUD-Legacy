@@ -50,29 +50,35 @@ class SaveSuccess:
 
             if data:
                 with suppress(Exception):
-                    if data["data_save"]:
-                        df = DataFrame(data["data_save"])
-                        if arquivo_sucesso.exists():
-                            wb = openpyxl.load_workbook(str(arquivo_sucesso))
+                    df = DataFrame(data["data_save"])
+                    if arquivo_sucesso.exists():
+                        wb = openpyxl.load_workbook(str(arquivo_sucesso))
+                        writer = ExcelWriter(
+                            arquivo_sucesso,
+                            engine="openpyxl",
+                            mode="a",
+                            if_sheet_exists="replace",
+                        )
+                        # Verifica se a worksheet já existe
+                        if data["work_sheet"] in wb.sheetnames:
                             df_xlsx = read_excel(
-                                wb,
+                                arquivo_sucesso,
                                 engine="openpyxl",
-                                sheet_name=str(data["work_sheet"]),
+                                sheet_name=data["work_sheet"],
                             )
-
                             df = concat([
                                 DataFrame(df_xlsx.to_dict(orient="records")),
                                 DataFrame(data["data_save"]),
                             ])
+                    else:
+                        writer = ExcelWriter(arquivo_sucesso, engine="openpyxl")
 
-                        with ExcelWriter(
-                            arquivo_sucesso, engine="openpyxl"
-                        ) as writer:
-                            df.to_excel(
-                                excel_writer=writer,
-                                sheet_name=data["work_sheet"],
-                                index=False,
-                            )
+                    df.to_excel(
+                        excel_writer=writer,
+                        sheet_name=data["work_sheet"],
+                        index=False,
+                    )
+                    writer.close()
 
 
 class SaveError:
@@ -107,22 +113,29 @@ class SaveError:
                     df = DataFrame(data["data_save"])
                     if arquivo_sucesso.exists():
                         wb = openpyxl.load_workbook(str(arquivo_sucesso))
-                        df_xlsx = read_excel(
-                            wb,
+                        writer = ExcelWriter(
+                            arquivo_sucesso,
                             engine="openpyxl",
-                            sheet_name=str(data["work_sheet"]),
+                            mode="a",
+                            if_sheet_exists="replace",
                         )
+                        # Verifica se a worksheet já existe
+                        if data["work_sheet"] in wb.sheetnames:
+                            df_xlsx = read_excel(
+                                arquivo_sucesso,
+                                engine="openpyxl",
+                                sheet_name=data["work_sheet"],
+                            )
+                            df = concat([
+                                DataFrame(df_xlsx.to_dict(orient="records")),
+                                DataFrame(data["data_save"]),
+                            ])
+                    else:
+                        writer = ExcelWriter(arquivo_sucesso, engine="openpyxl")
 
-                        df = concat([
-                            DataFrame(df_xlsx.to_dict(orient="records")),
-                            DataFrame(data["data_save"]),
-                        ])
-
-                    with ExcelWriter(
-                        arquivo_sucesso, engine="openpyxl"
-                    ) as writer:
-                        df.to_excel(
-                            excel_writer=writer,
-                            sheet_name=data["work_sheet"],
-                            index=False,
-                        )
+                    df.to_excel(
+                        excel_writer=writer,
+                        sheet_name=data["work_sheet"],
+                        index=False,
+                    )
+                    writer.close()
