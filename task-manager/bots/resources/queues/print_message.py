@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, TypedDict
 
 from dotenv import load_dotenv
 
-from __types import AnyType, MessageType
+from __types import MessageType
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
@@ -30,4 +30,4 @@ class PrintMessage:
         """Instancia da queue de salvamento de sucessos."""
         self.bot = bot
 
-    def __call__(self, *args: AnyType, **kwargs: AnyType) -> None: ...
+    def __call__(self, message: str, message_type: MessageType) -> None: ...

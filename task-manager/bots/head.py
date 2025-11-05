@@ -12,7 +12,6 @@ from celery import shared_task
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumwire.webdriver import Chrome
-from tqdm import tqdm
 
 import _hook
 from __types import Dict
@@ -133,8 +132,6 @@ class CrawJUD:
 
 @shared_task(name="crawjud")
 def start_bot(config: Dict) -> None:
-    tqdm.write("Iniciado!")
-
     bot_nome = f"{config['categoria']}_{config['sistema']}"
     bot = CrawJUD.bots[bot_nome]()
     return bot.setup(config=config).execution()

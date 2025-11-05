@@ -1,3 +1,5 @@
+"""Empty."""
+
 import base64
 import secrets
 from pathlib import Path
