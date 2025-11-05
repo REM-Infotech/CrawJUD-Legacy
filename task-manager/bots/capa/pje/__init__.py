@@ -6,31 +6,31 @@ dos processos e salvar os resultados no storage.
 
 """
 
-from concurrent.futures import (
-    Future,
-    ThreadPoolExecutor,
-)
+import traceback
+from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
 from queue import Queue
 from time import sleep
-from typing import ClassVar
 
 from httpx import Client, Response
+from tqdm import tqdm
 
 from app.interfaces import BotData
 from app.interfaces._pje import (
     AssuntosProcessoPJeDict,
     AudienciaProcessoPjeDict,
     CapaProcessualPJeDict,
-    DictResults,
     PartesProcessoPJeDict,
     ProcessoJudicialDict,
     RepresentantePartesPJeDict,
 )
+from app.interfaces._pje import (
+    DictResults as DictResults,
+)
 from app.interfaces._pje.assuntos import AssuntoDict, ItemAssuntoDict
 from app.interfaces._pje.audiencias import AudienciaDict
 from app.interfaces._pje.partes import ParteDict, PartesJsonDict
-from app.types import Dict
+from app.types import Dict as Dict
 from bots.controller.pje import PjeBot
 from bots.resources.elements import pje as el
 from common.exceptions import (
@@ -54,7 +54,6 @@ class Capa(PjeBot):
     """
 
     queue_files: Queue
-    futures_download_file: ClassVar[list[Future]] = []
 
     def execution(self) -> None:
         """Executa o fluxo principal de processamento da capa dos processos PJE.
@@ -77,35 +76,16 @@ class Capa(PjeBot):
         generator_regioes = self.regioes()
         lista_nova = list(generator_regioes)
 
-        if not self.auth():
-            with suppress(Exception):
-                self.driver.quit()
+        self.total_rows = len(self.posicoes_processos)
 
-        with ThreadPoolExecutor(max_workers=4) as executor:
-            futures: list[Future] = []
-            for pos, t_regiao in enumerate(lista_nova):
-                regiao, data_regiao = t_regiao
-                if self.bot_stopped.is_set():
-                    break
+        for regiao, data_regiao in lista_nova:
+            self.regiao = regiao
+            if self.bot_stopped.is_set():
+                break
 
-                url = el.LINK_AUTENTICACAO_SSO.format(regiao=regiao)
-                self.driver.get(url)
-                headers, cookies = self.get_headers_cookies(regiao=regiao)
-
-                futures.append(
-                    executor.submit(
-                        self.queue_regiao,
-                        regiao=regiao,
-                        data_regiao=data_regiao,
-                        headers=headers,
-                        cookies=cookies,
-                        pos=pos,
-                    ),
-                )
-
-            for future in futures:
-                with suppress(Exception):
-                    future.result()
+            if not self.auth():
+                continue
+            self.queue_regiao(data=data_regiao)
 
         for to_save, sheet_name in [
             (self.to_add_processos, "Capa"),
@@ -118,79 +98,65 @@ class Capa(PjeBot):
 
         self.finalize_execution()
 
-    def queue_regiao(
-        self,
-        regiao: str,
-        data_regiao: list[BotData],
-        headers: Dict,
-        cookies: Dict,
-    ) -> None:
+    def queue_regiao(self, data: list[BotData]) -> None:
+        headers, cookies = self.get_headers_cookies()
         client_context = Client(cookies=cookies, headers=headers)
+        executor = ThreadPoolExecutor(16)
 
-        with client_context as client:
-            for item in data_regiao:
-                if self.bot_stopped.is_set():
-                    break
-                try:
-                    if not self.bot_stopped.is_set():
-                        processo = item["NUMERO_PROCESSO"]
-                        row = (
-                            self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1
-                        )
-                        resultados: DictResults = self.search(
-                            data=item,
-                            row=row,
-                            client=client,
-                            regiao=regiao,
-                        )
-                        sleep(2.5)
-                        if not isinstance(resultados, dict):
-                            self.print_message(
-                                message=str(resultados),
-                                message_type="error",
-                                row=row,
-                            )
-                            continue
+        with client_context as client, executor as pool:
+            futures: list[Future[None]] = []
 
-                        self.capa_processual(
-                            result=resultados["data_request"],
-                            regiao=regiao,
-                            row=row,
-                        )
+            for item in data:
+                futures.append(
+                    pool.submit(self.queue, item=item, client=client)
+                )
+                sleep(1.5)
+            _results = [future.result() for future in futures]
 
-                        sleep(2.5)
-
-                        self.outras_informacoes(
-                            numero_processo=processo,
-                            client=client,
-                            id_processo=resultados["id_processo"],
-                            regiao=regiao,
-                            row=row,
-                        )
-
-                        message_type = "success"
-                        message = "Execução Efetuada com sucesso!"
-
-                        self.print_message(
-                            message=message,
-                            message_type=message_type,
-                            row=row,
-                        )
-
-                except Exception:
+    def queue(self, item: BotData, client: Client) -> None:
+        if not self.bot_stopped.is_set():
+            sleep(0.5)
+            row = int(self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1)
+            processo = item["NUMERO_PROCESSO"]
+            try:
+                resultados = self.search(data=item, row=row, client=client)
+                if resultados:
                     self.print_message(
-                        message="Erro ao extrair informações do processo",
-                        message_type="error",
+                        message="Processo encontrado!",
+                        message_type="info",
                         row=row,
                     )
 
+                    self.capa_processual(result=resultados["data_request"])
+                    sleep(0.5)
+                    self.outras_informacoes(
+                        processo=processo,
+                        client=client,
+                        id_processo=resultados["id_processo"],
+                    )
+
+                    message_type = "success"
+                    message = "Execução Efetuada com sucesso!"
+                    self.print_message(
+                        message=message,
+                        message_type=message_type,
+                        row=row,
+                    )
+
+            except Exception as e:
+                exc = "\n".join(traceback.format_exception(e))
+                tqdm.write(exc)
+                self.print_message(
+                    message="Erro ao extrair informações do processo",
+                    message_type="error",
+                    row=row,
+                )
+
     def outras_informacoes(
         self,
-        numero_processo: str,
+        processo: str,
         client: Client,
         id_processo: str,
-        regiao: str,
-        row: int,
     ) -> None:
         request_partes: Response = None
         request_assuntos: Response = None
@@ -201,15 +167,15 @@ class Capa(PjeBot):
         data_audiencias: list[AudienciaDict] = None
 
         link_partes = el.LINK_CONSULTA_PARTES.format(
-            trt_id=regiao,
+            trt_id=self.regiao,
             id_processo=id_processo,
         )
         link_assuntos = el.LINK_CONSULTA_ASSUNTOS.format(
-            trt_id=regiao,
+            trt_id=self.regiao,
             id_processo=id_processo,
         )
         link_audiencias = el.LINK_AUDIENCIAS.format(
-            trt_id=regiao,
+            trt_id=self.regiao,
             id_processo=id_processo,
         )
 
@@ -219,7 +185,7 @@ class Capa(PjeBot):
             if request_partes:
                 data_partes: PartesJsonDict = request_partes.json()
                 self._salva_partes(
-                    numero_processo=numero_processo,
+                    processo=processo,
                     data_partes=data_partes,
                 )
 
@@ -229,7 +195,7 @@ class Capa(PjeBot):
             if request_assuntos:
                 data_assuntos = request_assuntos.json()
                 self._salva_assuntos(
-                    numero_processo=numero_processo,
+                    processo=processo,
                     data_assuntos=data_assuntos,
                 )
 
@@ -239,13 +205,13 @@ class Capa(PjeBot):
             if request_audiencias:
                 data_audiencias = request_audiencias.json()
                 self._salva_audiencias(
-                    numero_processo=numero_processo,
+                    processo=processo,
                     data_audiencia=data_audiencias,
                 )
 
     def _salva_audiencias(
         self,
-        numero_processo: str,
+        processo: str,
         data_audiencia: list[AudienciaDict],
     ) -> None:
         if data_audiencia:
@@ -254,7 +220,7 @@ class Capa(PjeBot):
             list_audiencias.extend([
                 AudienciaProcessoPjeDict(
                     ID_PJE=audiencia["id"],
-                    NUMERO_PROCESSO=numero_processo,
+                    processo=processo,
                     TIPO_AUDIENCIA=audiencia["tipo"]["descricao"],
                     MODO_AUDIENCIA="PRESENCIAL"
                     if audiencia["tipo"]["isVirtual"]
@@ -271,7 +237,7 @@ class Capa(PjeBot):
 
     def _salva_assuntos(
         self,
-        numero_processo: str,
+        processo: str,
         data_assuntos: list[ItemAssuntoDict],
     ) -> AssuntosProcessoPJeDict | None:
         list_assuntos: list[AssuntosProcessoPJeDict] = []
@@ -279,22 +245,20 @@ class Capa(PjeBot):
             list_assuntos.extend([
                 AssuntosProcessoPJeDict(
                     ID_PJE=assunto["id"],
-                    PROCESSO=numero_processo,
+                    PROCESSO=processo,
                     ASSUNTO_COMPLETO=assunto["assunto"]["assuntoCompleto"],
                     ASSUNTO_RESUMIDO=assunto["assunto"]["assuntoResumido"],
                 )
                 for assunto in data_assuntos
             ])
-
             self.to_add_assuntos.extend(list_assuntos)
-
             return list_assuntos[-1]
 
         return None
 
     def _salva_partes(
         self,
-        numero_processo: str,
+        processo: str,
         data_partes: PartesJsonDict,
     ) -> None:
         partes: list[PartesProcessoPJeDict] = []
@@ -317,7 +281,7 @@ class Capa(PjeBot):
                             TIPO_PESSOA="Física"
                             if parte.get("tipoPessoa", "f").lower() == "f"
                             else "Jurídica",
-                            PROCESSO=numero_processo,
+                            PROCESSO=processo,
                             POLO=parte.get("polo"),
                             PARTE_PRINCIPAL=parte.get("principal", False),
                         ),
@@ -328,7 +292,7 @@ class Capa(PjeBot):
                             [
                                 RepresentantePartesPJeDict(
                                     ID_PJE=representante.get("id", ""),
-                                    PROCESSO=numero_processo,
+                                    PROCESSO=processo,
                                     NOME=representante.get("nome", ""),
                                     DOCUMENTO=representante.get(
                                         "documento",
@@ -358,27 +322,21 @@ class Capa(PjeBot):
             self.to_add_partes.extend(partes)
             self.to_add_representantes.extend(representantes)
 
-    def capa_processual(
-        self,
-        result: ProcessoJudicialDict,
-        regiao: str,
-        row: int,
-    ) -> None:
+    def capa_processual(self, result: ProcessoJudicialDict) -> None:
         """Formata o resultado da busca para armazenar na planilha."""
-        link_consulta = f"https://pje.trt{regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
-
-        dict_salvar_planilha = CapaProcessualPJeDict(
-            ID_PJE=result["id"],
-            LINK_CONSULTA=link_consulta,
-            NUMERO_PROCESSO=result["numero"],
-            CLASSE=result["classeJudicial"]["descricao"],
-            SIGLA_CLASSE=result["classeJudicial"]["sigla"],
-            ORGAO_JULGADOR=result["orgaoJulgador"]["descricao"],
-            SIGLA_ORGAO_JULGADOR=result["orgaoJulgador"]["sigla"],
-            DATA_DISTRIBUICAO=result.get("distribuidoEm", ""),
-            STATUS_PROCESSO=result["labelStatusProcesso"],
-            SEGREDO_JUSTIÇA=result["segredoDeJustica"],
-            VALOR_CAUSA=result["valorDaCausa"],
+        link_consulta = f"https://pje.trt{self.regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
+        self.to_add_processos.append(
+            CapaProcessualPJeDict(
+                ID_PJE=result["id"],
+                LINK_CONSULTA=link_consulta,
+                processo=result["numero"],
+                CLASSE=result["classeJudicial"]["descricao"],
+                SIGLA_CLASSE=result["classeJudicial"]["sigla"],
+                ORGAO_JULGADOR=result["orgaoJulgador"]["descricao"],
+                SIGLA_ORGAO_JULGADOR=result["orgaoJulgador"]["sigla"],
+                DATA_DISTRIBUICAO=result.get("distribuidoEm", ""),
+                STATUS_PROCESSO=result["labelStatusProcesso"],
+                SEGREDO_JUSTIÇA=result["segredoDeJustica"],
+                VALOR_CAUSA=result["valorDaCausa"],
+            )
         )
-
-        self.to_add_processos.append(dict_salvar_planilha)

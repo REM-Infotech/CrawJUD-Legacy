@@ -5,16 +5,12 @@ from contextlib import suppress
 from os import environ
 from pathlib import Path
 from threading import Lock
-from time import sleep
-from typing import TYPE_CHECKING, ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar
 
 import pyotp
-from app.interfaces import BotData
-from app.interfaces._pje import DictResults, DictSeparaRegiao
 from dotenv import load_dotenv
 from pykeepass import PyKeePass
 from selenium.common.exceptions import (
-    TimeoutException,
     UnexpectedAlertPresentException,
 )
 from selenium.webdriver import Keys
@@ -22,6 +18,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from app.interfaces import BotData
+from app.interfaces._pje import DictResults, DictSeparaRegiao
 from app.types import AnyType, Dict
 from app.types._custom import StrProcessoCNJ
 from bots.head import CrawJUD
@@ -53,19 +51,17 @@ class PjeBot(CrawJUD):
 
     posicoes_processos: ClassVar[Dict] = {}
 
-    def get_headers_cookies(
-        self,
-        regiao: str,
-    ) -> tuple[dict[str, str], dict[str, str]]:
+    def get_headers_cookies(self) -> tuple[dict[str, str], dict[str, str]]:
         cookies_driver = self.driver.get_cookies()
         har_data_ = self.driver.requests
-        entries = list(har_data_)
 
-        entry_proxy = [
-            item
-            for item in entries
-            if f"https://pje.trt{regiao}.jus.br/pje-comum-api/" in item.url
-        ][-1]
+        entry_proxy = list(
+            filter(
+                lambda item: f"https://pje.trt{self.regiao}.jus.br/pje-comum-api/"
+                in item.url,
+                har_data_,
+            )
+        )[-1]
 
         return (
             {
@@ -83,8 +79,7 @@ class PjeBot(CrawJUD):
         data: dict,
         row: int,
         client: Client,
-        regiao: str,
-    ) -> DictResults | Literal["Nenhum processo encontrado"]:
+    ) -> DictResults | None:
         """Realize a busca de um processo no sistema PJe.
 
         Args:
@@ -100,7 +95,6 @@ class PjeBot(CrawJUD):
         """
         # Envia mensagem de log para task assíncrona
         id_processo: str
-        trt_id = regiao
         numero_processo = data["NUMERO_PROCESSO"]
         message = f"Buscando processo {numero_processo}"
         self.print_message(
@@ -110,14 +104,19 @@ class PjeBot(CrawJUD):
         )
 
         link = el.LINK_DADOS_BASICOS.format(
-            trt_id=trt_id,
+            trt_id=self.regiao,
             numero_processo=numero_processo,
         )
 
         response = client.get(url=link)
 
         if response.status_code != 200:
-            return "Nenhum processo encontrado"
+            self.print_message(
+                message="Nenhum processo encontrado",
+                message_type="error",
+                row=row,
+            )
+            return None
 
         with suppress(json.decoder.JSONDecodeError, KeyError):
             data_request = response.json()
@@ -126,37 +125,45 @@ class PjeBot(CrawJUD):
             id_processo = data_request.get("id", "")
 
         if not id_processo:
-            return "Nenhum processo encontrado"
+            self.print_message(
+                message="Nenhum processo encontrado",
+                message_type="error",
+                row=row,
+            )
+            return None
 
         url_ = el.LINK_CONSULTA_PROCESSO.format(
-            trt_id=trt_id,
+            trt_id=self.regiao,
             id_processo=id_processo,
         )
         result = client.get(url=url_)
 
         if not result:
-            return "Nenhum processo encontrado"
+            self.print_message(
+                message="Nenhum processo encontrado",
+                message_type="error",
+                row=row,
+            )
+            return None
 
         return DictResults(
             id_processo=id_processo,
             data_request=result.json(),
         )
 
-    def auth(
-        self,
-    ) -> bool:
+    def auth(self) -> bool:
         try:
-            driver = self.driver
-            wait = self.wait
-            driver.get("https://www.jus.br")
+            url = el.LINK_AUTENTICACAO_SSO.format(regiao=self.regiao)
+            self.driver.get(url)
 
-            sleep(5)
+            if "https://sso.cloud.pje.jus.br/" not in self.driver.current_url:
+                return True
 
             path_certificado = Path(environ.get("CERTIFICADO_PFX"))
             senha_certificado = environ.get("CERTIFICADO_PASSWORD").encode()
             autenticador = AutenticadorPJe(path_certificado, senha_certificado)
 
-            wait.until(
+            self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.CSS_FORM_LOGIN,
@@ -170,15 +177,17 @@ class PjeBot(CrawJUD):
             desafio = autenticado[0]
             uuid_sessao = autenticado[1]
 
-            driver.execute_script(el.COMMAND, el.ID_INPUT_DESAFIO, desafio)
-            driver.execute_script(el.COMMAND, el.ID_CODIGO_PJE, uuid_sessao)
+            self.driver.execute_script(el.COMMAND, el.ID_INPUT_DESAFIO, desafio)
+            self.driver.execute_script(
+                el.COMMAND, el.ID_CODIGO_PJE, uuid_sessao
+            )
 
-            driver.execute_script("document.forms[0].submit()")
+            self.driver.execute_script("document.forms[0].submit()")
 
             otp_uri = _get_otp_uri()
             otp = str(pyotp.parse_uri(uri=otp_uri).now())
 
-            input_otp = WebDriverWait(driver, 60).until(
+            input_otp = WebDriverWait(self.driver, 60).until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     'input[id="otp"]',
@@ -188,26 +197,16 @@ class PjeBot(CrawJUD):
             input_otp.send_keys(otp)
             input_otp.send_keys(Keys.ENTER)
 
-            try:
-                WebDriverWait(
-                    driver=driver,
-                    timeout=20,
-                    poll_frequency=0.3,
-                    ignored_exceptions=(UnexpectedAlertPresentException),
-                ).until(ec.url_to_be("https://www.jus.br/"))
-            except TimeoutException:
-                if "pjekz" not in driver.current_url:
-                    return False
-
-            if (
-                "pjekz/painel/usuario-externo" in driver.current_url
-                or "pjekz" in driver.current_url
-            ):
-                driver.refresh()
+            WebDriverWait(
+                driver=self.driver,
+                timeout=10,
+                poll_frequency=0.3,
+                ignored_exceptions=(UnexpectedAlertPresentException),
+            ).until(ec.url_contains("pjekz"))
 
         except Exception:
             self.print_message(
-                "Erro ao realizar autenticação",
+                message="Erro ao realizar autenticação",
                 message_type="error",
             )
             return False

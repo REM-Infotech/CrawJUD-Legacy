@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from socketio import Client
+from tqdm import tqdm
 
 from app.interfaces import Message
 from app.types import AnyType, MessageType
@@ -40,6 +41,8 @@ class PrintMessage:
         self.queue_print_bot = Queue()
         self.thread_print_bot = Thread(target=self.print_msg, daemon=True)
         self.thread_print_bot.start()
+        self.succcess_count = 0
+        self.error_count = 0
 
     def __call__(
         self,
@@ -59,6 +62,19 @@ class PrintMessage:
         message = (
             f"[({mini_pid}, {message_type}, {row}, {time_exec})> {message}]"
         )
+
+        if message_type == "success":
+            self.succcess_count += 1
+
+        if message_type == "error":
+            self.error_count += 1
+
+        if (
+            any([message_type == "success", message_type == "error"])
+            and self.bot.remaining > 0
+        ):
+            self.bot.remaining -= 1
+
         msg = Message(
             pid=self.bot.pid,
             row=row,
@@ -66,6 +82,9 @@ class PrintMessage:
             message_type=message_type,
             status="Em Execução",
             total=self.bot.total_rows,
+            success_count=self.succcess_count,
+            error_count=self.error_count,
+            remaining_count=self.bot.remaining,
         )
         self.queue_print_bot.put_nowait(msg)
 
@@ -89,4 +108,6 @@ class PrintMessage:
                 data = self.queue_print_bot.get_nowait()
 
             if data:
-                sio.emit("logbot", data=data, namespace="/bot_logs")
+                with suppress(Exception):
+                    sio.emit("logbot", data=data, namespace="/bot_logs")
+                    tqdm.write(data["message"])

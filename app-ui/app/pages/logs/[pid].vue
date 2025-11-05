@@ -24,8 +24,14 @@ onMounted(() => {
 
 LogsSocket.on("logbot", async (data) => {
   receivedLogs.value.push(data);
-  Contagem.value = [data.total, data.success_count, data.error_count];
+
+  Contagem.value = [data.remaining_count, data.success_count, data.error_count];
   await nextTick();
+
+  contador_reativo.total = data.total;
+  contador_reativo.sucessos = data.success_count;
+  contador_reativo.erros = data.error_count;
+  contador_reativo.restantes = data.remaining_count;
 
   if (itemLog.value) {
     itemLog.value.scrollTop = itemLog.value.scrollHeight;
@@ -33,6 +39,13 @@ LogsSocket.on("logbot", async (data) => {
 });
 
 const Contagem = ref([0.1, 0.1, 0.1]);
+
+const contador_reativo = reactive({
+  total: 0,
+  sucessos: 0,
+  erros: 0,
+  restantes: 0,
+});
 
 const Contador = computed(() => Contagem.value);
 
@@ -46,64 +59,78 @@ const listLogs = computed(() => receivedLogs.value);
 </script>
 
 <template>
-  <div>
-    <BRow>
-      <div class="col-6">
-        <div class="card">
-          <div class="card-header">
-            <BButton variant="danger" @click="() => LogsSocket.emit('bot_stop', { pid: pid })">
-              Parar Execução
-            </BButton>
-          </div>
-          <div class="card-body p-5 bg-black overflow-y-auto" style="height: 37.5rem" ref="itemLog">
-            <TransitionGroup tag="ul" name="fade">
-              <li
-                v-for="(item, index) in listLogs"
-                :key="index"
-                :id="String(index)"
-                :class="item.message_type.toLowerCase()"
-              >
-                <span v-if="item.message.includes('http')">
-                  <a :href="item.message.split(': ')[1].replace(']', '')">
-                    {{ item.message.split(": ")[0] }}]
-                  </a>
-                </span>
-                <span v-else>
-                  {{ item.message }}
-                </span>
-              </li>
-            </TransitionGroup>
-          </div>
-          <div class="card-footer"></div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="card">
-          <div class="card-header"></div>
-          <div
-            class="card-body p-5 d-flex flex-column justify-content-center align-items-center"
-            style="height: 37.5rem"
-          >
-            <Doughnut
-              :options="{
-                responsive: true,
-              }"
-              :data="{
-                labels: ['EXECUTADOS', 'SUCESSOS', 'ERROS'],
-                datasets: [
-                  {
-                    data: Contador,
-                    backgroundColor: ['#0096C7', '#42cf06', '#FF0000'],
-                  },
-                ],
-              }"
+  <div class="card">
+    <div class="card-header">
+      <BButton variant="danger" @click="() => LogsSocket.emit('bot_stop', { pid: pid })">
+        Parar Execução
+      </BButton>
+    </div>
+    <div class="card-body">
+      <BRow>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="fw-semibold"
+                >Logs Execução: <strong>{{ pid }}</strong>
+              </span>
+            </div>
+            <div
+              class="card-body p-5 bg-black overflow-y-auto"
+              style="height: 37.5rem"
+              ref="itemLog"
             >
-            </Doughnut>
+              <TransitionGroup tag="ul" name="fade">
+                <li
+                  v-for="(item, index) in listLogs"
+                  :key="index"
+                  :id="String(index)"
+                  :class="item.message_type.toLowerCase()"
+                >
+                  <span class="fw-bold">
+                    {{ item.message }}
+                  </span>
+                </li>
+              </TransitionGroup>
+            </div>
           </div>
-          <div class="card-footer"></div>
         </div>
-      </div>
-    </BRow>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <span class="fw-semibold"
+                >Logs Execução: <strong>{{ pid }}</strong>
+              </span>
+            </div>
+            <div
+              class="card-body p-5 d-flex flex-column justify-content-center align-items-center"
+              style="height: 37.5rem"
+            >
+              <Doughnut
+                :options="{
+                  responsive: true,
+                }"
+                :data="{
+                  labels: ['PENDENTES', 'SUCESSOS', 'ERROS'],
+                  datasets: [
+                    {
+                      data: Contador,
+                      backgroundColor: ['#0096C7', '#42cf06', '#FF0000'],
+                    },
+                  ],
+                }"
+              >
+              </Doughnut>
+            </div>
+          </div>
+        </div>
+      </BRow>
+    </div>
+    <div class="card-footer">
+      <span> Total: {{ contador_reativo.total }}</span>
+      <span> Sucessos: {{ contador_reativo.sucessos }}</span>
+      <span> Erros: {{ contador_reativo.erros }}</span>
+      <span> Restantes: {{ contador_reativo.restantes }}</span>
+    </div>
   </div>
 </template>
 <style lang="css" scoped>
@@ -124,13 +151,14 @@ const listLogs = computed(() => receivedLogs.value);
 }
 
 .success {
-  color: #11ab5b;
+  color: #66e96d;
   font-weight: bold;
+  text-decoration: underline wavy green 1px !important;
   font-family: "Times New Roman", Times, serif;
 }
 
 .log {
-  color: #ffffffa8;
+  color: #a146eb;
   font-weight: bold;
 }
 </style>

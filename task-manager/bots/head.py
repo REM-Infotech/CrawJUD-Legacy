@@ -32,6 +32,8 @@ class CrawJUD:
 
     bots: ClassVar[dict[str, type[Self]]] = {}
     row: int = 0
+    _total_rows: int = 0
+    remaining: int = 0
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -131,6 +133,15 @@ class CrawJUD:
     @property
     def anexos(self) -> list[str]:
         return self.config.get("anexos")
+
+    @property
+    def total_rows(self) -> int:
+        return self._total_rows
+
+    @total_rows.setter
+    def total_rows(self, value: int) -> None:
+        self.remaining = value
+        self._total_rows = value
 
 
 @shared_task(name="crawjud")
