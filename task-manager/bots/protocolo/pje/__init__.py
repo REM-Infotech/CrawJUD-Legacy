@@ -11,8 +11,9 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
 
 import dotenv
-from app.interfaces import BotData
 from httpx import Client
+
+from app.interfaces import BotData
 
 from .habilitacao import HabilitiacaoPJe
 
@@ -44,9 +45,13 @@ class Protocolo(HabilitiacaoPJe):
                 with suppress(Exception):
                     future.result()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
-    def queue_regiao(self, regiao: str, data_regiao: list[BotData]) -> None:
+    def queue_regiao(
+        self,
+        regiao: str,
+        data_regiao: list[BotData],
+    ) -> None:
         try:
             if self.bot_stopped.is_set():
                 return
@@ -87,7 +92,10 @@ class Protocolo(HabilitiacaoPJe):
                     if self.bot_stopped.is_set():
                         return
 
-                    row = self.posicoes_processos[data["NUMERO_PROCESSO"]] + 1
+                    row = (
+                        self.posicoes_processos[data["NUMERO_PROCESSO"]]
+                        + 1
+                    )
                     self.row = row
                     tipo_protocolo = data["TIPO_PROTOCOLO"]
 
@@ -112,7 +120,9 @@ class Protocolo(HabilitiacaoPJe):
                     )
 
                 except (KeyError, Exception) as e:
-                    exc_message = "\n".join(traceback.format_exception_only(e))
+                    exc_message = "\n".join(
+                        traceback.format_exception_only(e),
+                    )
 
                     self.print_message(
                         message=f"Erro ao protocolar processo. Erro: {exc_message}",

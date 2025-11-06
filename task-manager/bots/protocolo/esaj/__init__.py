@@ -9,7 +9,10 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -76,7 +79,7 @@ class Protocolo(ESajBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Queue protocol steps.
@@ -122,7 +125,9 @@ class Protocolo(ESajBot):
                 ).until(
                     ec.element_to_be_clickable((By.ID, "pbPeticionar")),
                 )
-                link = button_peticionamento.get_attribute("onclick").split(
+                link = button_peticionamento.get_attribute(
+                    "onclick",
+                ).split(
                     "'",
                 )[1]
                 self.driver.execute_script(
@@ -152,7 +157,9 @@ class Protocolo(ESajBot):
                 ).until(
                     ec.element_to_be_clickable((By.ID, "pbPeticionar")),
                 )
-                link = button_peticionamento.get_attribute("onclick").split(
+                link = button_peticionamento.get_attribute(
+                    "onclick",
+                ).split(
                     "'",
                 )[1]
                 self.driver.execute_script(
@@ -176,7 +183,10 @@ class Protocolo(ESajBot):
         """
         try:
             self.sleep_load('div[id="loadFeedback"]')
-            self.prt.print_log("log", "Informando tipo de peticionamento")
+            self.prt.print_log(
+                "log",
+                "Informando tipo de peticionamento",
+            )
             button_classification = self.wait.until(
                 ec.presence_of_element_located((
                     By.ID,
@@ -226,16 +236,21 @@ class Protocolo(ESajBot):
 
         """
         try:
-            self.prt.print_log("log", "Informando subtipo de peticionamento")
+            self.prt.print_log(
+                "log",
+                "Informando subtipo de peticionamento",
+            )
             select_categoria_peticao = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.select_categoria,
                 )),
             )
-            select_categoria_peticao = select_categoria_peticao.find_element(
-                By.CSS_SELECTOR,
-                el.toggle,
+            select_categoria_peticao = (
+                select_categoria_peticao.find_element(
+                    By.CSS_SELECTOR,
+                    el.toggle,
+                )
             )
             self.interact.click(select_categoria_peticao)
 
@@ -296,7 +311,9 @@ class Protocolo(ESajBot):
                 file = file.replace("_", "")
 
             file = unicodedata.normalize("NFKD", file)
-            file = "".join([c for c in file if not unicodedata.combining(c)])
+            file = "".join([
+                c for c in file if not unicodedata.combining(c)
+            ])
 
             input_file.send_keys(file)
 
@@ -334,7 +351,9 @@ class Protocolo(ESajBot):
         """
         try:
             parte_peticao = (
-                self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
+                self.bot_data.get("PARTE_PETICIONANTE")
+                .__str__()
+                .lower()
             )
             self.prt.print_log("log", "Vinculando parte a petição...")
             partes = self.wait.until(

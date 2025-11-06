@@ -16,8 +16,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.controller.pje import PjeBot
-from bots.resources._formatadores import formata_string
 from bots.resources.elements import pje as el
+from bots.resources.formatadores import formata_string
 
 dotenv.load_dotenv()
 
@@ -25,7 +25,11 @@ dotenv.load_dotenv()
 class HabilitiacaoPJe(PjeBot):
     """Controle de funções de Protocolo de Habilitação de processos PJe."""
 
-    def protocolar_habilitacao(self, bot_data: dict, regiao: str) -> None:
+    def protocolar_habilitacao(
+        self,
+        bot_data: dict,
+        regiao: str,
+    ) -> None:
         """Empty."""
         link_habilitacao = (
             f"https://pje.trt{regiao}.jus.br/pjekz/habilitacao-autos"
@@ -92,7 +96,10 @@ class HabilitiacaoPJe(PjeBot):
         wait = WebDriverWait(self.driver, 10)
         sleep(0.5)
         partes_grid = wait.until(
-            ec.presence_of_all_elements_located((By.TAG_NAME, tag_tables_pje)),
+            ec.presence_of_all_elements_located((
+                By.TAG_NAME,
+                tag_tables_pje,
+            )),
         )
 
         nome_parte = bot_data["PARTE_PETICIONANTE"]
@@ -185,7 +192,9 @@ class HabilitiacaoPJe(PjeBot):
         )
         sleep(1.5)
         nome_arquivo = formata_string(bot_data["PETICAO_PRINCIPAL"])
-        path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
+        path_input_doc = str(
+            self.output_dir_path.joinpath(nome_arquivo),
+        )
 
         input_doc_principal.send_keys(path_input_doc)
         sleep(10)
@@ -222,7 +231,11 @@ class HabilitiacaoPJe(PjeBot):
         sleep(0.5)
         anexos_data = bot_data["ANEXOS"]
         tipo_anexos_data = bot_data["TIPO_ANEXOS"]
-        anexos = anexos_data.split(",") if "," in anexos_data else [anexos_data]
+        anexos = (
+            anexos_data.split(",")
+            if "," in anexos_data
+            else [anexos_data]
+        )
         sleep(0.5)
         tipo_anexos = (
             tipo_anexos_data.split(",")
@@ -232,7 +245,9 @@ class HabilitiacaoPJe(PjeBot):
 
         for anexo in anexos:
             nome_arquivo = formata_string(anexo)
-            path_input_doc = str(self.output_dir_path.joinpath(nome_arquivo))
+            path_input_doc = str(
+                self.output_dir_path.joinpath(nome_arquivo),
+            )
             campo_anexos.send_keys(path_input_doc)
             sleep(5.0)
 
@@ -257,7 +272,10 @@ class HabilitiacaoPJe(PjeBot):
         wait = WebDriverWait(driver=self.driver, timeout=30)
 
         btn_assinar = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_ASSINAR)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_BTN_ASSINAR,
+            )),
         )
         btn_assinar.click()
 
@@ -272,7 +290,11 @@ class HabilitiacaoPJe(PjeBot):
         sleep(0.5)
         processo = bot_data["NUMERO_PROCESSO"]
         pid = self.pid
-        nome_comprovante = f"Comprovante Protocolo - {processo} - {pid}.png"
-        path_comprovante = self.output_dir_path.joinpath(nome_comprovante)
+        nome_comprovante = (
+            f"Comprovante Protocolo - {processo} - {pid}.png"
+        )
+        path_comprovante = self.output_dir_path.joinpath(
+            nome_comprovante,
+        )
         with path_comprovante.open("wb") as fp:
             fp.write(dialog_comprovante.screenshot_as_png)

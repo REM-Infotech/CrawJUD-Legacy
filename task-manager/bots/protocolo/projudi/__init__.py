@@ -6,7 +6,6 @@ Automatiza o protocolo de processos no sistema Projudi.
 from contextlib import suppress
 from time import sleep
 
-from app.interfaces import DataSucesso
 from PIL import Image
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -16,10 +15,11 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
+from app.interfaces import DataSucesso
 from bots.controller.projudi import ProjudiBot
-from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import projudi as el
+from bots.resources.formatadores import formata_string
 from common import raise_password_token
 from common.exceptions import FileError
 
@@ -46,7 +46,7 @@ class Protocolo(ProjudiBot):
 
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         data: DataSucesso = {}
@@ -146,7 +146,9 @@ class Protocolo(ProjudiBot):
         xpath_polo = el.XPATH_RADIO_POLO_PARTE.format(
             POLO_PARTE=polo_parte.capitalize(),
         )
-        xpath_parte = el.XPATH_CHECKBOX_PARTE.format(NOME_PARTE=nome_parte)
+        xpath_parte = el.XPATH_CHECKBOX_PARTE.format(
+            NOME_PARTE=nome_parte,
+        )
 
         radio_polo_parte = wait.until(
             ec.presence_of_element_located((By.XPATH, xpath_polo)),
@@ -180,7 +182,10 @@ class Protocolo(ProjudiBot):
 
         main_window = self.driver.current_window_handle
         wait.until(
-            ec.frame_to_be_available_and_switch_to_it((By.TAG_NAME, "iframe")),
+            ec.frame_to_be_available_and_switch_to_it((
+                By.TAG_NAME,
+                "iframe",
+            )),
         )
 
         self.__check_contains_files()
@@ -219,7 +224,10 @@ class Protocolo(ProjudiBot):
                     el.CSS_BTN_REMOVE_ARQUIVO,
                 )),
             )
-            for arquivo in table_arquivos.find_elements(By.TAG_NAME, "tr"):
+            for arquivo in table_arquivos.find_elements(
+                By.TAG_NAME,
+                "tr",
+            ):
                 tds = arquivo.find_elements(By.TAG_NAME, "td")
                 tds[0].find_element(By.TAG_NAME, "input").click()
                 btn_remove_arquivo.click()
@@ -257,7 +265,11 @@ class Protocolo(ProjudiBot):
         bot_data = self.bot_data
         anexos_data = bot_data["ANEXOS"]
         tipo_anexos_data = bot_data["TIPO_ANEXOS"]
-        anexos = anexos_data.split(",") if "," in anexos_data else [anexos_data]
+        anexos = (
+            anexos_data.split(",")
+            if "," in anexos_data
+            else [anexos_data]
+        )
         tipo_anexos = (
             tipo_anexos_data.split(",")
             if "," in tipo_anexos_data
@@ -362,13 +374,19 @@ class Protocolo(ProjudiBot):
             radio_arq = tds[0].find_element(By.TAG_NAME, "input")
             radio_arq.click()
 
-        select_tipo_arquivos = tds[2].find_element(By.TAG_NAME, "select")
+        select_tipo_arquivos = tds[2].find_element(
+            By.TAG_NAME,
+            "select",
+        )
         select = Select(select_tipo_arquivos)
 
         options_filter = list(
             filter(
                 lambda x: x.text == tipo_arquivo,
-                select_tipo_arquivos.find_elements(By.TAG_NAME, "option"),
+                select_tipo_arquivos.find_elements(
+                    By.TAG_NAME,
+                    "option",
+                ),
             ),
         )
 
@@ -459,7 +477,9 @@ class Protocolo(ProjudiBot):
         bot_data = self.bot_data
         numero_processo = bot_data["NUMERO_PROCESSO"]
 
-        comprovante1_name = f"COMPROVANTE - {numero_processo} - {pid}.png"
+        comprovante1_name = (
+            f"COMPROVANTE - {numero_processo} - {pid}.png"
+        )
         path_comprovante1 = out_dir.joinpath(comprovante1_name)
 
         comprovante2_name = f"Protocolo - {numero_processo} - {pid}.png"
@@ -468,7 +488,10 @@ class Protocolo(ProjudiBot):
         file_screenshot_0 = self.output_dir_path.joinpath("tr_0.png")
         file_screenshot_1 = self.output_dir_path.joinpath("tr_1.png")
 
-        table_moves = self.driver.find_element(By.CLASS_NAME, "resultTable")
+        table_moves = self.driver.find_element(
+            By.CLASS_NAME,
+            "resultTable",
+        )
         table_moves = table_moves.find_elements(By.XPATH, el.table_mov)
 
         with file_screenshot_0.open("wb") as fp:
