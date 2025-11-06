@@ -3,11 +3,11 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Self
 
-from app.interfaces import BotData
 from pandas import Timestamp, read_excel
 
+from app.interfaces import BotData
 from app.types import AnyType
-from bots.resources._formatadores import formata_string
+from bots.resources.formatadores import formata_string
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
@@ -38,7 +38,9 @@ class BotIterator:
 
             data_bot: list[BotData] = []
             to_dict = df.to_dict(orient="records")
-            unformatted = [BotData(list(item.items())) for item in to_dict]
+            unformatted = [
+                BotData(list(item.items())) for item in to_dict
+            ]
 
             for item in unformatted:
                 dt = {}

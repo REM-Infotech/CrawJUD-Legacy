@@ -16,7 +16,8 @@ def formata_string(string: str) -> str:
         string (str): Texto a ser formatado.
 
     Returns:
-        str: Texto formatado em caixa alta e seguro para nomes de arquivo.
+        str: Texto formatado em caixa alta e seguro para nomes
+            de arquivo.
 
     """
     normalized_string = "".join([

@@ -8,7 +8,7 @@ from celery import Celery
 from dotenv import load_dotenv
 from minio import Minio as MinioClient
 
-from bots.resources._formatadores import formata_string
+from bots.resources.formatadores import formata_string
 from config import config
 from constants import WORKDIR
 
@@ -49,11 +49,13 @@ class FileManager(MinioClient):
             ):
                 file_path = str(
                     self.bot.output_dir_path.joinpath(
-                        formata_string(Path(item.object_name).name)
+                        formata_string(Path(item.object_name).name),
                     ),
                 )
                 _obj = self.fget_object(
-                    item.bucket_name, item.object_name, file_path
+                    item.bucket_name,
+                    item.object_name,
+                    file_path,
                 )
 
     def upload_file(self) -> str:
@@ -62,7 +64,9 @@ class FileManager(MinioClient):
         self.fput_object("outputexec-bots", zipfile.name, str(zipfile))
 
         return self.get_presigned_url(
-            "GET", "outputexec-bots", object_name=zipfile.name
+            "GET",
+            "outputexec-bots",
+            object_name=zipfile.name,
         )
 
     def __zip_result(self) -> Path:

@@ -3,12 +3,12 @@
 Contém arquivos e utilitários de recursos compartilhados.
 """
 
-from ._formatadores import formata_string
 from .auth._autenticador import AutenticadorPJe
+from .formatadores import formata_string
 from .iterators.pje import RegioesIterator
 
 __all__ = [
-    "RegioesIterator",
     "AutenticadorPJe",
+    "RegioesIterator",
     "formata_string",
 ]
