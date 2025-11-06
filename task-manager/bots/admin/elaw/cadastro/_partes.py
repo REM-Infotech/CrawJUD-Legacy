@@ -131,7 +131,7 @@ class ElawPartesPrincipais(ElawBot):
             filter(
                 lambda x: str.isdigit(x),
                 ",".join(
-                    self.bot_data.get("DOC_PARTE_CONTRARIA")
+                    self.bot_data.get("DOC_PARTE_CONTRARIA"),
                 ).split(","),
             ),
         )
@@ -251,7 +251,7 @@ class ElawPartesPrincipais(ElawBot):
                 filter(
                     lambda x: str.isdigit(x),
                     ",".join(bot_data.get("DOC_PARTE_CONTRARIA")).split(
-                        ","
+                        ",",
                     ),
                 ),
             )

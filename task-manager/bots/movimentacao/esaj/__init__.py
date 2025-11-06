@@ -95,9 +95,7 @@ class Movimentacao(ESajBot):
                     self.message_type = "info"
                     self.append_success([data], msg, file_name_save)
 
-            elif (
-                len(self.appends) == 0 and len(self.another_append) == 0
-            ):
+            elif len(self.appends) == 0 and len(self.another_append) == 0:
                 self.message = "Nenhuma movimentação encontrada"
                 self.message_type = "error"
                 self.prt()
@@ -334,7 +332,9 @@ class Movimentacao(ESajBot):
             if key not in message_:
                 message_.append(f"{_msg_}\n")
             if idx + 1 == len(args):
-                _msg_ += "\n====================================================\n"
+                _msg_ += (
+                    "\n====================================================\n"
+                )
                 message_.append(_msg_)
         self.message = "".join(message_)
         self.message_type = "info"
@@ -354,14 +354,12 @@ class Movimentacao(ESajBot):
 
         """
         save_another_file = (
-            str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper()
-            == "SIM"
+            str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
         )
         mov = ""
         mov_chk = False
         trazer_teor = (
-            str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper()
-            == "SIM"
+            str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
         )
         patterns = [
             r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
@@ -372,9 +370,7 @@ class Movimentacao(ESajBot):
             if match is not None:
                 mov = str(match)
                 mov_chk = True
-        use_gpt = (
-            str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
-        )
+        use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
         return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
 
     def _process_single_move(
@@ -421,11 +417,7 @@ class Movimentacao(ESajBot):
                     )
             elif self.movecontainsdoc(move):
                 mov_texdoc = self.getdocmove(move, save_another_file)
-            if (
-                mov_texdoc is not None
-                and mov_texdoc != ""
-                and use_gpt is True
-            ):
+            if mov_texdoc is not None and mov_texdoc != "" and use_gpt is True:
                 mov_texdoc = self.gpt_chat(mov_texdoc)
         data = {
             "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
@@ -530,9 +522,7 @@ class Movimentacao(ESajBot):
             termos = palavra_chave.replace(", ", ",").split(",")
 
         for termo in termos:
-            self.message = (
-                f'Buscando movimentações que contenham "{termo}"'
-            )
+            self.message = f'Buscando movimentações que contenham "{termo}"'
             self.message_type = "log"
 
             for item in itens:
@@ -550,9 +540,7 @@ class Movimentacao(ESajBot):
                             ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                     name_mov = mov.split("\n")[0]
-                    text_mov = (
-                        td_tr[2].find_element(By.TAG_NAME, "span").text
-                    )
+                    text_mov = td_tr[2].find_element(By.TAG_NAME, "span").text
                     self.appends.append([
                         self.bot_data.get("NUMERO_PROCESSO"),
                         data_mov,

@@ -30,7 +30,6 @@ class HabilitiacaoPJe(PjeBot):
         bot_data: dict,
         regiao: str,
     ) -> None:
-        """Empty."""
         link_habilitacao = (
             f"https://pje.trt{regiao}.jus.br/pjekz/habilitacao-autos"
         )
@@ -89,7 +88,6 @@ class HabilitiacaoPJe(PjeBot):
         btn_prosseguir.click()
 
     def __selecionar_parte(self) -> None:
-        """Empty."""
         tag_tables_pje = "pje-habilitacao-partes-grid"
 
         bot_data = self.bot_data
@@ -177,7 +175,6 @@ class HabilitiacaoPJe(PjeBot):
         """
 
     def __peticao_principal(self) -> None:
-        """Empty."""
         sleep(0.5)
         bot_data = self.bot_data
         wait = WebDriverWait(driver=self.driver, timeout=10)
@@ -207,7 +204,6 @@ class HabilitiacaoPJe(PjeBot):
         salvar_arquivo.click()
 
     def __anexos_peticao(self) -> None:
-        """Empty."""
         sleep(0.5)
         bot_data = self.bot_data
         wait = WebDriverWait(driver=self.driver, timeout=10)
@@ -231,11 +227,7 @@ class HabilitiacaoPJe(PjeBot):
         sleep(0.5)
         anexos_data = bot_data["ANEXOS"]
         tipo_anexos_data = bot_data["TIPO_ANEXOS"]
-        anexos = (
-            anexos_data.split(",")
-            if "," in anexos_data
-            else [anexos_data]
-        )
+        anexos = anexos_data.split(",") if "," in anexos_data else [anexos_data]
         sleep(0.5)
         tipo_anexos = (
             tipo_anexos_data.split(",")
@@ -266,7 +258,6 @@ class HabilitiacaoPJe(PjeBot):
             sleep(0.5)
 
     def __assinar_salvar_comprovante(self) -> None:
-        """Empty."""
         sleep(0.5)
         bot_data = self.bot_data
         wait = WebDriverWait(driver=self.driver, timeout=30)
@@ -290,9 +281,7 @@ class HabilitiacaoPJe(PjeBot):
         sleep(0.5)
         processo = bot_data["NUMERO_PROCESSO"]
         pid = self.pid
-        nome_comprovante = (
-            f"Comprovante Protocolo - {processo} - {pid}.png"
-        )
+        nome_comprovante = f"Comprovante Protocolo - {processo} - {pid}.png"
         path_comprovante = self.output_dir_path.joinpath(
             nome_comprovante,
         )

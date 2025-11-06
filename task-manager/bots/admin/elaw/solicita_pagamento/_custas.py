@@ -105,10 +105,7 @@ class ElawCustas(ElawBot):
                 break
 
         solicitante = str(self.bot_data.get("SOLICITANTE")).lower()
-        if (
-            solicitante == "monitoria"
-            or solicitante.lower() == "monitória"
-        ):
+        if solicitante == "monitoria" or solicitante.lower() == "monitória":
             desc_pgto: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,

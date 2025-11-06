@@ -1,3 +1,7 @@
+"""Automações para processos judiciais no Projudi."""
+
+from typing import TYPE_CHECKING
+
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -6,13 +10,22 @@ from app.interfaces.projudi import (
     PartesProjudiDict,
     RepresentantesProjudiDict,
 )
-from app.types import Dict
 from bots.controller.projudi import ProjudiBot
 from bots.resources.elements import projudi as el
 from constants import INTIMACAO_ELETRONICA
 
+if TYPE_CHECKING:
+    from app.types import Dict
+
 
 class PrimeiraInstancia(ProjudiBot):
+    """Automações para processos de 1ª instância no Projudi.
+
+    Esta classe herda de ProjudiBot e contém métodos para extrair
+    informações gerais, processuais e das partes de processos judiciais
+    no sistema Projudi.
+    """
+
     def _informacoes_gerais_primeiro_grau(self) -> None:
         wait = self.wait
         search_by = (

@@ -121,9 +121,7 @@ class Provisao(ElawBot):
         ])
 
         if is_valores_and_possivel:
-            message = (
-                "Aviso: Já existe uma provisão possível cadastrada."
-            )
+            message = "Aviso: Já existe uma provisão possível cadastrada."
             message_type = "info"
             self.print_message(
                 message=message,
@@ -147,10 +145,7 @@ class Provisao(ElawBot):
                 self.informar_datas,
             ])
 
-        elif (
-            verifica_valores == "Contém valores"
-            or verifica_valores == "-"
-        ):
+        elif verifica_valores == "Contém valores" or verifica_valores == "-":
             calls.extend([
                 self.edita_provisao,
                 self.verifica_classe_risco,
@@ -187,9 +182,7 @@ class Provisao(ElawBot):
         for item in check_exists_provisao:
             item = item
             _item_text = str(item.text).split("\n")
-            valueprovisao = item.find_elements(By.TAG_NAME, "td")[
-                0
-            ].text
+            valueprovisao = item.find_elements(By.TAG_NAME, "td")[0].text
             with suppress(NoSuchElementException):
                 valueprovisao = item.find_element(
                     By.CSS_SELECTOR,

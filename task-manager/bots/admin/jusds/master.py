@@ -62,9 +62,7 @@ class JusdsBot(CrawJUD):
             bool: Boleano da busca processual
 
         """
-        message = (
-            f"Buscando processo {self.bot_data['NUMERO_PROCESSO']}"
-        )
+        message = f"Buscando processo {self.bot_data['NUMERO_PROCESSO']}"
         message_type = "log"
 
         self.print_message(
@@ -82,9 +80,7 @@ class JusdsBot(CrawJUD):
 
             if not_mainwindow:
                 self.driver.switch_to.window(not_mainwindow[0])
-                self.window_busca_processo = (
-                    self.driver.current_window_handle
-                )
+                self.window_busca_processo = self.driver.current_window_handle
 
         elif self.window_busca_processo:
             self.driver.switch_to.window(self.window_busca_processo)
@@ -194,11 +190,9 @@ class JusdsBot(CrawJUD):
 
     def print_comprovante(self, message: str) -> None:
         numero_processo = self.bot_data.get("NUMERO_PROCESSO")
-        name_comprovante = (
-            f"Comprovante - {numero_processo} - {self.pid}.png"
-        )
+        name_comprovante = f"Comprovante - {numero_processo} - {self.pid}.png"
         savecomprovante = self.output_dir_path.joinpath(
-            name_comprovante
+            name_comprovante,
         )
 
         with savecomprovante.open("wb") as fp:

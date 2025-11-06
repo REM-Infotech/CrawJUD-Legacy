@@ -58,9 +58,7 @@ get_page_custas_pagas = (
 consultaproc_grau1 = "https://consultasaj.tjam.jus.br/cpopg/open.do"
 consultaproc_grau2 = "https://consultasaj.tjam.jus.br/cposgcr/open.do"
 url_login = "https://consultasaj.tjam.jus.br/sajcas/login"
-url_login_cert = (
-    "https://consultasaj.tjam.jus.br/sajcas/login#aba-certificado"
-)
+url_login_cert = "https://consultasaj.tjam.jus.br/sajcas/login#aba-certificado"
 
 campo_username = 'input[id="usernameForm"]'
 campo_2_login = 'input[id="passwordForm"]'  # nosec: B105
@@ -143,4 +141,6 @@ botao_protocolar = '//*[@id="botaoProtocolar"]'
 botao_confirmar = "div.popover-content button.confirm-button"
 botao_recibo = 'button[ng-click="consultarReciboPeticao(peticao)"]'
 
-table_moves = './/tr[contains(@class, "fundoClaro") or contains(@class, "fundoEscuro")]'
+table_moves = (
+    './/tr[contains(@class, "fundoClaro") or contains(@class, "fundoEscuro")]'
+)

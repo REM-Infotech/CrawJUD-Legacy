@@ -47,7 +47,7 @@ class BotDriver:
         options.add_experimental_option("prefs", preferences)
 
         for root, _, files in WORKDIR.joinpath(
-            "chrome-extensions"
+            "chrome-extensions",
         ).walk():
             for file in filter(lambda x: x.endswith(".crx"), files):
                 options.add_extension(str(root.joinpath(file)))
@@ -55,7 +55,7 @@ class BotDriver:
         if bot.config.get("sistema") != "pje":
             cache_manager = DriverCacheManager()
             driver_manager = ChromeDriverManager(
-                cache_manager=cache_manager
+                cache_manager=cache_manager,
             )
             service = Service(executable_path=driver_manager.install())
             self.driver = Chrome(options=options, service=service)

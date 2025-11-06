@@ -5,9 +5,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from bots.controller.esaj import ESajBot
 from bots.resources.elements import projudi as el
 
-type ListPartes = list[
-    tuple[list[dict[str, str]], list[dict[str, str]]]
-]
+type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
 
 
 class SegundaInstancia(ESajBot):
@@ -63,7 +61,8 @@ class SegundaInstancia(ESajBot):
         )
 
         for table in grouptable_partes.find_elements(
-            By.TAG_NAME, "table"
+            By.TAG_NAME,
+            "table",
         ):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
@@ -73,7 +72,9 @@ class SegundaInstancia(ESajBot):
             )
 
     def _partes_extract_segundo_grau(
-        self, html: str, processo: str
+        self,
+        html: str,
+        processo: str,
     ) -> None:
         """Extraia informações das partes do processo na tabela do Projudi.
 
@@ -115,7 +116,7 @@ class SegundaInstancia(ESajBot):
                     )
                     if endereco_div:
                         endereco = str(
-                            endereco_div.get_text(" ", strip=True)
+                            endereco_div.get_text(" ", strip=True),
                         )
 
             if ":" not in nome:
@@ -145,5 +146,6 @@ class SegundaInstancia(ESajBot):
 
         self.append_success(worksheet="Partes", data_save=partes)
         self.append_success(
-            worksheet="Representantes", data_save=advogados
+            worksheet="Representantes",
+            data_save=advogados,
         )

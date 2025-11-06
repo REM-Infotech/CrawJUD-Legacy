@@ -147,7 +147,9 @@ class Download(ElawBot):
                 if str(termo).lower() in get_name_file.lower():
                     sleep(1)
 
-                    self.message = f'Arquivo com termo de busca "{termo}" encontrado!'
+                    self.message = (
+                        f'Arquivo com termo de busca "{termo}" encontrado!'
+                    )
                     self.message_type = "log"
                     self.prt()
 

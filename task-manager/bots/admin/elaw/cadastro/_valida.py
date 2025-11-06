@@ -118,7 +118,8 @@ class ElawValidacao(ElawBot):
     def validar_advs_participantes(self) -> None:
         data_bot = self.bot_data
         adv_name = data_bot.get(
-            "ADVOGADO_INTERNO", self.validar_advogado()
+            "ADVOGADO_INTERNO",
+            self.validar_advogado(),
         )
 
         if not adv_name.strip():

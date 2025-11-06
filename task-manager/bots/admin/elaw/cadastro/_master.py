@@ -43,13 +43,11 @@ class ElawCadastro(
     def confirm_save(self) -> bool:
         wait = self.wait
         driver = self.driver
-        msg_erro = (
-            "Cadastro do processo nao finalizado, verificar manualmente"
-        )
+        msg_erro = "Cadastro do processo nao finalizado, verificar manualmente"
         with suppress(TimeoutException):
             WebDriverWait(driver, 20).until(
                 ec.url_to_be(
-                    "https://amazonas.elaw.com.br/processoView.elaw"
+                    "https://amazonas.elaw.com.br/processoView.elaw",
                 ),
                 message="Erro ao encontrar elemento",
             )

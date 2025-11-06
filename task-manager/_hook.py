@@ -95,12 +95,14 @@ class JSONFinder(importlib.abc.MetaPathFinder):
 
         if fullname == "blinker._saferef":
             return importlib.util.spec_from_loader(
-                fullname, loader=Legacy()
+                fullname,
+                loader=Legacy(),
             )
 
         if fullname.startswith("pkg_resources"):
             return importlib.util.spec_from_loader(
-                fullname, loader=Legacy()
+                fullname,
+                loader=Legacy(),
             )
 
         return None

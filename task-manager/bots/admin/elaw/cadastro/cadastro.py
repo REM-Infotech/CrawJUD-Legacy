@@ -45,9 +45,7 @@ class Cadastro(ElawCadastro):
                 self.print_comprovante(message=message)
                 return
 
-            message = (
-                "Processo não encontrado, inicializando cadastro..."
-            )
+            message = "Processo não encontrado, inicializando cadastro..."
             message_type = "log"
             self.print_message(
                 message=message,

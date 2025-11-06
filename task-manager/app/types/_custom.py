@@ -28,11 +28,11 @@ class StrProcessoCNJ(UserString):
         )
 
     def __validate_str__(
-        self, seq: str, pattern_list: list[Pattern]
+        self,
+        seq: str,
+        pattern_list: list[Pattern],
     ) -> bool:
-        validate_seq = any(
-            re.match(pattern, seq) for pattern in pattern_list
-        )
+        validate_seq = any(re.match(pattern, seq) for pattern in pattern_list)
 
         if not validate_seq:
             self.__raise_value_error__()

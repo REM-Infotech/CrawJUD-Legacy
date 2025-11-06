@@ -31,7 +31,7 @@ class ElawValores(ElawBot):
         data_distribuicao.clear()
 
         data_distribuicao.send_keys(
-            self.bot_data.get("DATA_DISTRIBUICAO")
+            self.bot_data.get("DATA_DISTRIBUICAO"),
         )
         data_distribuicao.send_keys(Keys.TAB)
         self.sleep_load('div[id="j_id_4p"]')

@@ -189,9 +189,7 @@ class Intimacoes(ProjudiBot):
                 ),
             )
 
-            self.message = (
-                f"Intimação do processo {itens[0]} encontrada!"
-            )
+            self.message = f"Intimação do processo {itens[0]} encontrada!"
             self.message_type = "log"
             self.prt()
 

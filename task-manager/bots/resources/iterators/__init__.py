@@ -38,9 +38,7 @@ class BotIterator:
 
             data_bot: list[BotData] = []
             to_dict = df.to_dict(orient="records")
-            unformatted = [
-                BotData(list(item.items())) for item in to_dict
-            ]
+            unformatted = [BotData(list(item.items())) for item in to_dict]
 
             for item in unformatted:
                 dt = {}

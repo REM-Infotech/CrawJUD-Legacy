@@ -11,7 +11,9 @@ XPATH_ROWS_VALORES_TABELA = './/tr[contains(@class, "ui-datatable-odd") or conta
 CSS_SELETOR_FILTRA_RISCO = 'select[id="{id_selector}"]'
 
 CSS_BTN_SALVAR = 'button[id="salvarBtn"]'
-CSS_DATA_CORRECAO = 'input[id*="processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'
+CSS_DATA_CORRECAO = (
+    'input[id*="processoAmountObjetoDt:dataBaseCorrecaoTodosField_input"]'
+)
 CSS_DATA_JUROS = (
     'input[id*="jprocessoAmountObjetoDt:dataBaseJurosTodosField_input"]'
 )
@@ -24,25 +26,27 @@ CSS_LABEL_TIPO_RISCO = 'span[id*=":provisaoTipoPedidoCombo_label"]'
 CSS_SELETOR_TIPO_RISCO = 'select[id*=":provisaoTipoPedidoCombo_input"]'
 
 # ANDAMENTOS
-botao_andamento = 'button[id="tabViewProcesso:j_id_i1_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
+botao_andamento = (
+    'button[id="tabViewProcesso:j_id_i1_4_1_3_ae:novoAndamentoPrimeiraBtn"]'
+)
 input_data = 'input[id="j_id_2n:j_id_2r_2_9_input"]'
 inpt_ocorrencia = 'textarea[id="j_id_2n:txtOcorrenciaAndamento"]'
 inpt_obs = 'textarea[id="j_id_2n:txtObsAndamento"]'
 botao_salvar_andamento = "btnSalvarAndamentoProcesso"
 
 # Robô Lançar Audiências
-switch_pautaandamento = (
-    'a[href="#tabViewProcesso:agendamentosAndamentos"]'
-)
+switch_pautaandamento = 'a[href="#tabViewProcesso:agendamentosAndamentos"]'
 btn_novaaudiencia = 'button[id="tabViewProcesso:novaAudienciaBtn"]'
 selectortipoaudiencia = 'select[id="j_id_2l:comboTipoAudiencia_input"]'
-DataAudiencia = (
-    'input[id="j_id_2l:j_id_2p_2_8_8:dataAudienciaField_input"]'
-)
+DataAudiencia = 'input[id="j_id_2l:j_id_2p_2_8_8:dataAudienciaField_input"]'
 btn_salvar = 'button[id="btnSalvarNovaAudiencia"]'
-tableprazos = 'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
+tableprazos = (
+    'tbody[id="tabViewProcesso:j_id_i1_4_1_3_d:dtAgendamentoResults_data"]'
+)
 
-tipo_polo = "//*[contains(@id, 'fieldid_13755typeSelectField1CombosCombo_input')]"
+tipo_polo = (
+    "//*[contains(@id, 'fieldid_13755typeSelectField1CombosCombo_input')]"
+)
 
 # CADASTRO
 input_localidade = "//input[contains(@id, 'fieldid_13351fieldText')]"
@@ -54,18 +58,14 @@ xpath_checkadvinterno = (
     "//*[contains(@id, 'j_id_4c_1:autoCompleteLawyer_item')]"
 )
 
-label_esfera = (
-    'span[id="j_id_4c_1:j_id_4c_5_2_2_1_9_t_1:comboRito_label"]'
-)
+label_esfera = 'span[id="j_id_4c_1:j_id_4c_5_2_2_1_9_t_1:comboRito_label"]'
 
 css_esfera_judge = '//select[contains(@id, "comboRito_input")]'
 estado_input = "//select[contains(@id, 'comboEstadoVara_input')]"
 comarca_input = "//select[contains(@id, 'comboComarcaVara_input')]"
 foro_input = "//select[contains(@id, 'comboForoTribunal_input')]"
 vara_input = "//select[contains(@id, 'comboVara_input')]"
-empresa_input = (
-    "//select[contains(@id, 'comboClientProcessoParte_input')]"
-)
+empresa_input = "//select[contains(@id, 'comboClientProcessoParte_input')]"
 XPATH_CLASSIFICACAO_EMPRESA = (
     '//select[contains(@id, "j_id_4c_5_2_2_4_9_2_6_input")]'
 )
@@ -75,15 +75,15 @@ XPATH_TIPO_PARTE_CONTRARIA = (
 select_tipo_doc = "//select[contains(@id, 'tipoDocumentoInput_input')]"
 combo_rito = '//select[contains(@id, "comboRito_input")]'
 
-numero_processo = (
-    "input[id='j_id_4c_1:j_id_4c_5_2_2_2_9_f_2:txtNumeroMask']"
+numero_processo = "input[id='j_id_4c_1:j_id_4c_5_2_2_2_9_f_2:txtNumeroMask']"
+css_campo_doc = 'input[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:cpfCnpjInput"]'
+css_search_button = (
+    'button[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:j_id_4c_5_2_2_5_9_9_4_2_f"]'
 )
-css_campo_doc = (
-    'input[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:cpfCnpjInput"]'
-)
-css_search_button = 'button[id="j_id_4c_1:j_id_4c_5_2_2_5_9_9_1:j_id_4c_5_2_2_5_9_9_4_2_f"]'
 
-select_uf_proc = "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
+select_uf_proc = (
+    "//select[contains(@id, 'fieldid_9240pgTypeSelectField1CombosCombo_input')]"
+)
 select_field = 'div[id="j_id_4c_1:j_id_4c_5_2_2_9_9_44_2:j_id_4c_5_2_2_9_9_44_3_1_2_2_2_1:fieldid_9240pgTypeSelectField1CombosCombo_panel"]'
 css_other_location = 'input[id="j_id_4c_1:j_id_4c_5_2_2_9_9_46_2:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_1:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_2_1_c:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_2_1_f:0:j_id_4c_5_2_2_9_9_46_3_1_2_2_2_2_1_1g:fieldText"]'
 combo_processo_tipo = 'div[id="j_id_4c_1:combo_processo_tipo"]'
@@ -97,15 +97,11 @@ css_input_select_adv = (
     'input[id="j_id_4c_1:comboAdvogadoResponsavelProcesso_filter"]'
 )
 css_input_adv = 'input[id*="autoCompleteLawyerOutraParte_input"]'
-css_check_adv = (
-    '//*[contains(@id, "autoCompleteLawyerOutraParte_item")]'
-)
+css_check_adv = '//*[contains(@id, "autoCompleteLawyerOutraParte_item")]'
 valor_causa = "//input[contains(@id, 'amountCase_input')]"
 escritrorio_externo = '//div[contains(@id, "comboEscritorio")]'
 select_escritorio = "//select[contains(@id, 'comboEscritorio_input')]"
-contingencia = (
-    "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
-)
+contingencia = "//*[contains(@id, 'processoContingenciaTipoCombo_input')]"
 contigencia_panel = 'div[id="j_id_4c_1:j_id_4c_5_2_2_s_9_n_1:processoContingenciaTipoCombo_panel"]'
 css_add_adv = 'button[id="j_id_4c_1:lawyerOutraParteNovoButtom"]'
 iframe_cadastro_parte_contraria = (
@@ -128,9 +124,7 @@ css_naoinfomadoc = 'input[id="cpfCnpjNoGrid-lawyerOutraParte:0"]'
 botao_continuar = 'button[id="j_id_1e"]'
 css_input_nomeadv = 'input[id="j_id_1h:j_id_1k_2_5"]'
 salvarcss = 'button[id="lawyerOutraParteButtom"]'
-parte_contraria = (
-    "//button[contains(@id, 'parteContrariaMainGridBtnNovo')]"
-)
+parte_contraria = "//button[contains(@id, 'parteContrariaMainGridBtnNovo')]"
 
 cpf_cnpj = 'table[id="registrationCpfCnpjChooseGrid-"]'
 botao_radio_widget = 'div[class="ui-radiobutton ui-widget"]'
@@ -147,15 +141,23 @@ div_messageerro_css = 'div[id="messages"]'
 # COMPLEMENTAR
 botao_editar_complementar = 'button[id="dtProcessoResults:0:btnEditar"]'
 css_input_uc = "//textarea[contains(@id, 'fieldid_9236fieldTextarea')]"
-divisao_select = "//*[contains(@id, 'fieldid_9241typeSelectField1CombosCombo_input')]"
+divisao_select = (
+    "//*[contains(@id, 'fieldid_9241typeSelectField1CombosCombo_input')]"
+)
 data_citacao = "//input[contains(@id, 'dataRecebimento_input')]"
 bairro_input = "//input[contains(@id, 'fieldid_9237fieldText')]"
 fase_input = '//select[contains(@id, "processoFaseCombo_input")]'
-provimento_input = '//select[contains(@id, "fieldid_8401typeSelectField1CombosCombo_input")]'
-fato_gerador_input = '//select[contains(@id, "fieldid_9239typeSelectField1CombosCombo_input")]'
+provimento_input = (
+    '//select[contains(@id, "fieldid_8401typeSelectField1CombosCombo_input")]'
+)
+fato_gerador_input = (
+    '//select[contains(@id, "fieldid_9239typeSelectField1CombosCombo_input")]'
+)
 
 input_descobjeto = "//*[contains(@id, 'fieldid_9844fieldTextarea')]"
-objeto_input = "//select[contains(@id, 'fieldid_8405typeSelectField1CombosCombo_input')]"
+objeto_input = (
+    "//select[contains(@id, 'fieldid_8405typeSelectField1CombosCombo_input')]"
+)
 
 # DOWNLOAD
 anexosbutton_css = 'a[href="#tabViewProcesso:files"]'
@@ -191,9 +193,7 @@ boleto = 'li[id*="pvpEFSpgTypeSelectField1CombosCombo_1"]'
 css_cod_bars = 'input[id*="j_id_3e_1_i_8_1_9_29_1_2_c_1w"]'
 css_centro_custas = 'input[id*="pvpEFBfieldText"]'
 css_div_conta_debito = 'div[id="processoValorPagamentoEditForm:pvp:j_id_3e_1_i_a_1_9_29_1_1_1:pvpEFBtypeSelectField1CombosCombo"]'
-valor_guia = (
-    'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
-)
+valor_guia = 'input[id="processoValorPagamentoEditForm:pvp:valorField_input"]'
 css_gru = 'li[id*="eFileTipoCombo_35"]'
 editar_pagamentofile = 'div[id*="gedEFileDataTable"]'
 css_tipocusta = 'div[id*="pvpEFBtypeSelectField1CombosCombo"]'
@@ -224,14 +224,14 @@ itens_obj_div_css = 'div[id="selectManyObjetoAdicionarList_panel"]'
 checkbox = 'div[class="ui-chkbox ui-widget"]'
 botao_adicionar = 'button[id="adicionarObjetoBtn"]'
 botao_editar = 'button[id*="editarFasePedidoBtn"]'
-css_val_inpt = 'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
+css_val_inpt = (
+    'input[id*="processoAmountObjetoDt:0:amountValor_input"][type="text"]'
+)
 css_risk = "/html/body/div[1]/div[4]/div[1]/div/div[2]/form[2]/table/tbody/tr[2]/td/div/div/table[2]/tbody/tr[2]/td/span/div/div/div/div[1]/div/table/tbody/tr[1]/td[7]/div"
 processo_objt = 'ul[id*="j_id_3g_2e:processoAmountObjetoDt:0:j_id_32_2j_4_1_6_3_k_2_2_1_items"]'
 botao_salvar_id = 'button[id="salvarBtn"]'
 
-texto_motivo = (
-    'textarea[id="j_id_3d:j_id_3g_2e:j_id_3g_2j_7:j_id_3g_2j_i"]'
-)
+texto_motivo = 'textarea[id="j_id_3d:j_id_3g_2e:j_id_3g_2j_7:j_id_3g_2j_i"]'
 
 type_risk_label = 'span[id*="provisaoTipoPedidoCombo_label"]'
 type_risk_select = 'select[id*="provisaoTipoPedidoCombo_input"]'

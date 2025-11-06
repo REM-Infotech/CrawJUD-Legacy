@@ -113,7 +113,9 @@ class Tjdft(CrawJUD):
             if check_cookies:
                 sleep(2)
 
-                aceitar_cookies_css = 'button[class="btn btn-primary btn-sm acceptcookies"]'
+                aceitar_cookies_css = (
+                    'button[class="btn btn-primary btn-sm acceptcookies"]'
+                )
                 aceitar_cookies = self.driver.find_element(
                     By.CSS_SELECTOR,
                     aceitar_cookies_css,
@@ -138,9 +140,7 @@ class Tjdft(CrawJUD):
             self.message = "Informando numero do processo"
             self.message_type = "log"
             self.prt()
-            css_input_numproc = (
-                'input[id="num_processo"][name="num_processo"]'
-            )
+            css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
             get_input_process = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
@@ -173,9 +173,7 @@ class Tjdft(CrawJUD):
         """
         try:
             sleep(2)
-            css_name_requerente = (
-                'input[name="requerente"][id="requerente"]'
-            )
+            css_name_requerente = 'input[name="requerente"][id="requerente"]'
             self.message = "Informando requerente"
             self.message_type = "log"
             self.prt()
@@ -208,9 +206,7 @@ class Tjdft(CrawJUD):
         """
         try:
             sleep(2)
-            css_name_requerido = (
-                'input[name="requerido"][id="requerido"]'
-            )
+            css_name_requerido = 'input[name="requerido"][id="requerido"]'
             self.message = "Informado requerido"
             self.message_type = "log"
             self.prt()
@@ -240,9 +236,7 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            self.message = (
-                "Informando incidencia de juros e data de incidencia"
-            )
+            self.message = "Informando incidencia de juros e data de incidencia"
             self.message_type = "log"
             self.prt()
 
@@ -274,9 +268,7 @@ class Tjdft(CrawJUD):
 
             elif juros_percent != "1":
                 percent = juros_percent
-                percent = (
-                    f"{percent},00" if "," not in percent else percent
-                )
+                percent = f"{percent},00" if "," not in percent else percent
 
                 self.interact.click(
                     self.driver.find_element(
@@ -295,9 +287,7 @@ class Tjdft(CrawJUD):
                 )
 
             if juros_partir != "VENCIMENTO":
-                css_data_incide = (
-                    'input[name="juros_data"][id="juros_data"]'
-                )
+                css_data_incide = 'input[name="juros_data"][id="juros_data"]'
                 self.interact.send_keys(
                     self.driver.find_element(
                         By.CSS_SELECTOR,
@@ -337,9 +327,7 @@ class Tjdft(CrawJUD):
             )
 
             sleep(2)
-            css_valor_devido = (
-                'input[id="valor-0"][name="parcela_valor:list"]'
-            )
+            css_valor_devido = 'input[id="valor-0"][name="parcela_valor:list"]'
             self.message = "Informando valor devido"
             self.message_type = "log"
             self.prt()
@@ -470,9 +458,7 @@ class Tjdft(CrawJUD):
                 multa_percentual.click()
 
                 percent = str(self.bot_data.get("MULTA_PERCENTUAL"))
-                percent = (
-                    f"{percent},00" if "," not in percent else percent
-                )
+                percent = f"{percent},00" if "," not in percent else percent
                 multa_percentual.send_keys(percent)
 
             if self.bot_data.get("MULTA_DATA", None):
@@ -511,7 +497,9 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            css_honorario_sucumb = 'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
+            css_honorario_sucumb = (
+                'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
+            )
             self.message = "Informando Honorários de Sucumbência"
             self.message_type = "log"
             self.prt()
@@ -529,9 +517,7 @@ class Tjdft(CrawJUD):
                 percent = str(
                     self.bot_data.get("HONORARIO_SUCUMB_PERCENT"),
                 )
-                percent = (
-                    f"{percent},00" if "," not in percent else percent
-                )
+                percent = f"{percent},00" if "," not in percent else percent
 
                 honorario_sucumb.send_keys(percent)
                 self.driver.execute_script(
@@ -574,9 +560,7 @@ class Tjdft(CrawJUD):
                     self.bot_data.get("HONORARIO_SUCUMB_PARTIR"),
                 )
 
-            self.message = (
-                "Percentual Honorários de Sucumbência informado"
-            )
+            self.message = "Percentual Honorários de Sucumbência informado"
             self.message_type = "log"
             self.prt()
 
@@ -633,9 +617,7 @@ class Tjdft(CrawJUD):
                 percent = str(
                     self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"),
                 )
-                percent = (
-                    f"{percent},00" if "," not in percent else percent
-                )
+                percent = f"{percent},00" if "," not in percent else percent
 
                 honorario_exec.send_keys(percent)
                 self.driver.execute_script(

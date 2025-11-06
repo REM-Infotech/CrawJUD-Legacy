@@ -153,10 +153,7 @@ class Emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_tribunal:
             item = item
-            if (
-                str(self.bot_data.get("TRIBUNAL")).lower()
-                in item.text.lower()
-            ):
+            if str(self.bot_data.get("TRIBUNAL")).lower() in item.text.lower():
                 item.click()
                 break
 
@@ -174,10 +171,7 @@ class Emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_comarca:
             item = item
-            if (
-                str(self.bot_data.get("COMARCA")).lower()
-                in item.text.lower()
-            ):
+            if str(self.bot_data.get("COMARCA")).lower() in item.text.lower():
                 item.click()
                 break
 
@@ -193,10 +187,7 @@ class Emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_vara:
             item = item
-            if (
-                str(self.bot_data.get("VARA")).lower()
-                in item.text.lower()
-            ):
+            if str(self.bot_data.get("VARA")).lower() in item.text.lower():
                 item.click()
                 break
 
@@ -212,10 +203,7 @@ class Emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
         for item in lista_agencia:
             item = item
-            if (
-                str(self.bot_data.get("AGENCIA")).lower()
-                in item.text.lower()
-            ):
+            if str(self.bot_data.get("AGENCIA")).lower() in item.text.lower():
                 item.click()
                 break
 
@@ -226,7 +214,9 @@ class Emissor(CrawJUD):
         and default deposit nature.
         """
         numprocess = self.bot_data.get("NUMERO_PROCESSO").split(".")
-        numproc_formated = f"{numprocess[0]}.{numprocess[1]}.{numprocess[3]}.{numprocess[4]}"
+        numproc_formated = (
+            f"{numprocess[0]}.{numprocess[1]}.{numprocess[3]}.{numprocess[4]}"
+        )
 
         self.interact.wait_caixa()
         self.message = "Informando numero do processo"
@@ -252,10 +242,7 @@ class Emissor(CrawJUD):
         ).find_elements(By.TAG_NAME, "option")
         for item in list_type_acao_process:
             item = item
-            if (
-                str(self.bot_data.get("TIPO_ACAO")).lower()
-                in item.text.lower()
-            ):
+            if str(self.bot_data.get("TIPO_ACAO")).lower() in item.text.lower():
                 item.click()
                 break
 
@@ -476,7 +463,9 @@ class Emissor(CrawJUD):
         numeros_encontrados = []
 
         # Expressão regular para encontrar números nesse formato
-        pattern = r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+        pattern = (
+            r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+        )
 
         pdf_file = path_pdf
         read = PdfReader(pdf_file)
@@ -495,9 +484,7 @@ class Emissor(CrawJUD):
         for numero in numeros_encontrados:
             numero = str(numero)
             bar_code = (
-                numero.replace("  ", "")
-                .replace(" ", "")
-                .replace(".", " ")
+                numero.replace("  ", "").replace(" ", "").replace(".", " ")
             )
 
         return [

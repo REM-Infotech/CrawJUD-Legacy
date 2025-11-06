@@ -6,7 +6,9 @@ de documentos no Projudi.
 
 """
 
-url_login = "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
+url_login = (
+    "https://projudi.tjam.jus.br/projudi/usuario/logon.do?actionType=inicio"
+)
 # Elementos Projudi
 XPATH_RADIO_POLO_PARTE = "//input[@type='radio'][following-sibling::text()[contains(., '{POLO_PARTE}')]]"
 XPATH_CHECKBOX_PARTE = "//input[@type='checkbox'][following-sibling::text()[contains(., '{NOME_PARTE}')]]"
@@ -17,12 +19,8 @@ CSS_BTN_ENTRAR_TELA_ARQUIVOS = 'input[value="Adicionar"]'
 XPATH_CHECK_CONTAINS_FILES = "//td[contains(@colspan, '3')]"
 CSS_TABLE_ARQUIVOS = 'table[class="resultTable"] > tbody'
 CSS_SENHA_CERTIFICADO = 'input[name="senhaCertificado"]'
-CSS_BTN_CONFIRMA_INCLUSAO = (
-    'input#closeButton[value="Confirmar Inclusão"]'
-)
-CSS_BTN_CONCLUIR_MOVIMENTO = (
-    'input#editButton[value="Concluir Movimento"]'
-)
+CSS_BTN_CONFIRMA_INCLUSAO = 'input#closeButton[value="Confirmar Inclusão"]'
+CSS_BTN_CONCLUIR_MOVIMENTO = 'input#editButton[value="Concluir Movimento"]'
 CSS_BTN_REMOVE_ARQUIVO = 'input[name="deleteButton"]'
 # Elementos Projudi
 
@@ -33,23 +31,19 @@ btn_entrar = "#btEntrar"
 chk_login = 'iframe[name="userMainFrame"]'
 
 
-INFORMACAO_PROCESSO = (
-    "table#informacoesProcessuais > tbody > tr > td > a"
-)
+INFORMACAO_PROCESSO = "table#informacoesProcessuais > tbody > tr > td > a"
 # Capa
 # - Primeira Instancia
 info_geral_table_primeiro_grau = (
     '//div[@id="includeContent"]/fieldset/table/tbody'
 )
-info_processual_primeiro_grau = (
-    '//table[@id="informacoesProcessuais"]/tbody'
-)
+info_processual_primeiro_grau = '//table[@id="informacoesProcessuais"]/tbody'
 
 # - Segunta Instancia
-info_geral_table_segundo_grau = (
-    '//div[@id="tabprefix0"]/fieldset/table/tbody'
+info_geral_table_segundo_grau = '//div[@id="tabprefix0"]/fieldset/table/tbody'
+info_processual_segundo_grau = (
+    '//*[@id="recursoForm"]/fieldset/table[1]/tbody/tr/td[1]/table/tbody'
 )
-info_processual_segundo_grau = '//*[@id="recursoForm"]/fieldset/table[1]/tbody/tr/td[1]/table/tbody'
 
 partes_projudi = '//*[@id="includeContent"]'
 
@@ -92,9 +86,7 @@ MOV_COM_ARQUIVO = '//tr[(contains(@class, "even") or contains(@class, "odd")) an
 
 
 primeira_instform1 = "#informacoesProcessuais"
-primeira_instform2 = (
-    "#tabprefix0 > #container > #includeContent > fieldset"
-)
+primeira_instform2 = "#tabprefix0 > #container > #includeContent > fieldset"
 
 segunda_instform = "#recursoForm > fieldset"
 

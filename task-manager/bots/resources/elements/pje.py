@@ -29,17 +29,15 @@ LINK_AUTENTICACAO_SSO = (
     "https://pje.trt{regiao}.jus.br/primeirograu/authenticateSSO.seam"
 )
 OL_LIST_ANEXOS = '//*[@id="cdk-drop-list-3"]'
-XPATH_BTN_ASSINAR = '//*[contains(@aria-label, "Assinar documento e juntar ao processo")]'
-
-XPATH_DIALOG_COMPROVANTE = (
-    '//*[@id="mat-dialog-6"]/ng-component/div/div[2]'
+XPATH_BTN_ASSINAR = (
+    '//*[contains(@aria-label, "Assinar documento e juntar ao processo")]'
 )
+
+XPATH_DIALOG_COMPROVANTE = '//*[@id="mat-dialog-6"]/ng-component/div/div[2]'
 
 TAG_LIST_ANEXOS = "pje-item-lista-anexo-pdf"
 XPATH_COLUNA_CAMPOS = '//*[contains(@class, "coluna-2")]'
-XPATH_INPUT_TIPO_ANEXO = (
-    '//*[contains(@aria-label,"Tipo de Documento")]'
-)
+XPATH_INPUT_TIPO_ANEXO = '//*[contains(@aria-label,"Tipo de Documento")]'
 XPATH_INPUT_ANEXOS = '//*[@id="upload-anexo-1"]'
 XPATH_BTN_TAB_ANEXOS = '//*[@id="mat-tab-label-0-1"]'
 XPATH_BTN_ADICIONAR_ADVOGADO = '//*[@id="cdk-step-content-0-2"]/div/pje-habilitacao-advogados-grid/div/mat-card/mat-card-content/pje-data-table/div[1]/table/thead/tr/th[4]/div/div/div/button'

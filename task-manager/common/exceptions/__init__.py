@@ -129,7 +129,7 @@ class ExecutionError(BaseCrawJUDError):
 
         if message == "Erro ao executar operaçao: " and exc:
             self.message = message + "\n".join(
-                traceback.format_exception(exc)
+                traceback.format_exception(exc),
             )
 
         super().__init__(message)

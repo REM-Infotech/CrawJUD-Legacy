@@ -1,5 +1,4 @@
-"""
-<Breve descrição da função.>
+"""<Breve descrição da função.>
 
 Args:
     <param1> (<type>): <descrição>

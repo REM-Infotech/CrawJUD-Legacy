@@ -85,7 +85,8 @@ class ElawBot(CrawJUD):
             message = "Processo não encontrado!"
             message_type = "error"
             self.print_message(
-                message=message, message_type=message_type
+                message=message,
+                message_type=message_type,
             )
             return False
 
@@ -122,13 +123,12 @@ class ElawBot(CrawJUD):
         dict_data = data.copy()
         for key in dict_data:
             value = dict_data[key]
-            if (
-                isinstance(value, str) and not value.strip()
-            ) or value is None:
+            if (isinstance(value, str) and not value.strip()) or value is None:
                 data.pop(key)
 
     def _update_tipo_parte_contraria(
-        self, data: dict[str, str]
+        self,
+        data: dict[str, str],
     ) -> None:
         """Atualiza 'TIPO_PARTE_CONTRARIA' se 'TIPO_EMPRESA' for 'RÉU'."""
         tipo_empresa = data.get("TIPO_EMPRESA", "").upper()
@@ -208,7 +208,8 @@ class ElawBot(CrawJUD):
             progress_bar = None
 
             div0progress_bar = super().find_element(
-                By.CSS_SELECTOR, div0
+                By.CSS_SELECTOR,
+                div0,
             )
             div1progress_bar = div0progress_bar.find_element(
                 By.CSS_SELECTOR,
@@ -225,7 +226,9 @@ class ElawBot(CrawJUD):
                 break
 
     def screenshot_iframe(
-        self, url_page: str, path_comprovante: Path
+        self,
+        url_page: str,
+        path_comprovante: Path,
     ) -> None:
         driver = self.driver
         main_window = driver.current_window_handle
@@ -252,10 +255,7 @@ class ElawBot(CrawJUD):
             )),
         )
         if self.config["categoria"].upper() != "CADASTRO":
-            if (
-                self.config["categoria"].upper()
-                == "COMPLEMENTAR_CADASTRO"
-            ):
+            if self.config["categoria"].upper() == "COMPLEMENTAR_CADASTRO":
                 open_proc = self.driver.find_element(
                     By.ID,
                     "dtProcessoResults:0:btnEditar",

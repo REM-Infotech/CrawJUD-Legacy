@@ -56,9 +56,7 @@ class CrawJUD:
             return
 
         name_bot = "_".join(
-            module_split[1:]
-            if len(module_split) == 3
-            else module_split[2:],
+            module_split[1:] if len(module_split) == 3 else module_split[2:],
         )
         if "__" in name_bot:
             return

@@ -1,5 +1,3 @@
-"""Empty."""
-
 import base64
 import secrets
 from pathlib import Path
@@ -42,7 +40,8 @@ class AutenticadorPJe:
 
         if isinstance(senha_certificado, str):
             senha_certificado = bytes(
-                senha_certificado, encoding="utf8"
+                senha_certificado,
+                encoding="utf8",
             )
 
         tuple_load_pkcs12 = pkcs12.load_key_and_certificates(
@@ -69,7 +68,9 @@ class AutenticadorPJe:
             raise ValueError("Algoritmo não suportado: " + "MD5withRSA")
 
         self._assinatura = self.key.sign(
-            valor, padding.PKCS1v15(), digest
+            valor,
+            padding.PKCS1v15(),
+            digest,
         )
 
         return self
@@ -119,7 +120,8 @@ class AutenticadorPJe:
         return None, None
 
     def generate_pkipath_java(
-        self, cert_chain: list[Certificate]
+        self,
+        cert_chain: list[Certificate],
     ) -> str:
         """Gera um PKIPath (DER e Base64) chamando o código Java nativo via JPype.
 

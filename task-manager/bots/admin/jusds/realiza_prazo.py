@@ -1,7 +1,6 @@
-"""empty."""
-
 from contextlib import suppress
 from time import sleep
+from typing import TYPE_CHECKING
 
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -9,17 +8,17 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import jusds as el
 from bots.resources.formatadores import formata_string
 from common.exceptions import ExecutionError
 
 from .master import JusdsBot
 
+if TYPE_CHECKING:
+    from bots.resources.driver.web_element import WebElementBot
+
 
 class RealizaPrazos(JusdsBot):
-    """empty."""
-
     def execution(self) -> None:
         frame = self.frame
         self.total_rows = len(frame)
@@ -120,9 +119,7 @@ class RealizaPrazos(JusdsBot):
                 prazo.scroll_to_element()
                 prazo.find_elements(By.TAG_NAME, "td")[0].scroll_to()
 
-                id_prazo_jusds = prazo.find_elements(By.TAG_NAME, "td")[
-                    1
-                ].text
+                id_prazo_jusds = prazo.find_elements(By.TAG_NAME, "td")[1].text
                 if id_prazo_jusds == str(id_prazo):
                     return prazo
 

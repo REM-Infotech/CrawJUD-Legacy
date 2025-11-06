@@ -5,6 +5,7 @@ Automatiza o protocolo de processos no sistema Projudi.
 
 from contextlib import suppress
 from time import sleep
+from typing import TYPE_CHECKING
 
 from PIL import Image
 from selenium.common.exceptions import TimeoutException
@@ -17,11 +18,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from app.interfaces import DataSucesso
 from bots.controller.projudi import ProjudiBot
-from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import projudi as el
 from bots.resources.formatadores import formata_string
 from common import raise_password_token
-from common.exceptions import FileError
+from common.exceptions import ExecutionError, FileError
+
+if TYPE_CHECKING:
+    from bots.resources.driver.web_element import WebElementBot
 
 
 class Protocolo(ProjudiBot):
@@ -31,6 +34,7 @@ class Protocolo(ProjudiBot):
     """
 
     def execution(self) -> None:
+        """Execute o protocolo dos processos no Projudi."""
         frame = self.frame
         self.total_rows = len(frame)
 
@@ -49,6 +53,7 @@ class Protocolo(ProjudiBot):
         self.finalizar_execucao()
 
     def queue(self) -> None:
+        """Realize o protocolo de um processo no Projudi."""
         data: DataSucesso = {}
 
         try:
@@ -72,7 +77,7 @@ class Protocolo(ProjudiBot):
             if self.__confirma_protocolo():
                 data = self.__screenshot_sucesso()
 
-        except Exception as e:
+        except ExecutionError as e:
             message_error = str(e)
 
             self.print_message(
@@ -87,7 +92,6 @@ class Protocolo(ProjudiBot):
             self.append_success(data)
 
     def __entra_pagina_protocolo(self) -> None:
-        """Empty."""
         self.print_message(
             message="Inicializando Protocolo",
             message_type="log",
@@ -105,7 +109,6 @@ class Protocolo(ProjudiBot):
         btn_peticionar.click()
 
     def __informa_tipo_protocolo(self) -> None:
-        """Empty."""
         bot_data = self.bot_data
 
         self.print_message(
@@ -130,7 +133,6 @@ class Protocolo(ProjudiBot):
         sleep(0.5)
 
     def __seleciona_parte_interessada(self) -> None:
-        """Empty."""
         self.print_message(
             message="Selecionando parte representada",
             message_type="log",
@@ -163,7 +165,6 @@ class Protocolo(ProjudiBot):
         checkbox_parte.click()
 
     def __adicionar_arquivos(self) -> None:
-        """Empty."""
         bot_data = self.bot_data
         self.print_message(
             message="Adicionando arquivos...",
@@ -200,7 +201,6 @@ class Protocolo(ProjudiBot):
         self.driver.switch_to.window(main_window)
 
     def __check_contains_files(self) -> None:
-        """Empty."""
         contem_arquivos = True
         wait = WebDriverWait(self.driver, 10)
         table_arquivos = wait.until(
@@ -236,7 +236,6 @@ class Protocolo(ProjudiBot):
                     Alert(self.driver).accept()
 
     def __peticao_principal(self) -> None:
-        """Empty."""
         bot_data = self.bot_data
         self.print_message(
             message="Enviando petição principal.",
@@ -257,7 +256,6 @@ class Protocolo(ProjudiBot):
         )
 
     def __anexos_adicionais(self) -> None:
-        """Empty."""
         self.print_message(
             message="Enviando anexos...",
             message_type="log",
@@ -265,11 +263,7 @@ class Protocolo(ProjudiBot):
         bot_data = self.bot_data
         anexos_data = bot_data["ANEXOS"]
         tipo_anexos_data = bot_data["TIPO_ANEXOS"]
-        anexos = (
-            anexos_data.split(",")
-            if "," in anexos_data
-            else [anexos_data]
-        )
+        anexos = anexos_data.split(",") if "," in anexos_data else [anexos_data]
         tipo_anexos = (
             tipo_anexos_data.split(",")
             if "," in tipo_anexos_data
@@ -477,9 +471,7 @@ class Protocolo(ProjudiBot):
         bot_data = self.bot_data
         numero_processo = bot_data["NUMERO_PROCESSO"]
 
-        comprovante1_name = (
-            f"COMPROVANTE - {numero_processo} - {pid}.png"
-        )
+        comprovante1_name = f"COMPROVANTE - {numero_processo} - {pid}.png"
         path_comprovante1 = out_dir.joinpath(comprovante1_name)
 
         comprovante2_name = f"Protocolo - {numero_processo} - {pid}.png"

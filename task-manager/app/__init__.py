@@ -18,9 +18,7 @@ def make_celery() -> Celery:
 
     """
     app = Celery(__name__)
-    dict_config = {
-        k.lower(): v for k, v in list(config.as_dict().items())
-    }
+    dict_config = {k.lower(): v for k, v in list(config.as_dict().items())}
     app.config_from_object(dict_config)
     importlib.import_module("tasks", __package__)
 

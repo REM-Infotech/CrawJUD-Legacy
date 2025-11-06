@@ -124,7 +124,7 @@ class ElawRepresentantes(ElawBot):
         )
 
         id_input_adv = input_adv_responsavel.get_attribute(
-            "id"
+            "id",
         ).replace(
             "_input",
             "_panel",
@@ -145,7 +145,7 @@ class ElawRepresentantes(ElawBot):
             wait_adv.click()
         elif not wait_adv:
             raise_execution_error(
-                message="Advogado interno não encontrado"
+                message="Advogado interno não encontrado",
             )
 
         self.sleep_load('div[id="j_id_4p"]')

@@ -58,9 +58,7 @@ class ESajBot(CrawJUD):
                 entrar.click()
                 sleep(2)
 
-                user_accept_cert_dir = (
-                    Path(self.path_accepted) / "ACCEPTED"
-                )
+                user_accept_cert_dir = Path(self.path_accepted) / "ACCEPTED"
                 if not user_accept_cert_dir.exists():
                     self.accept_cert(user_accept_cert_dir)
 

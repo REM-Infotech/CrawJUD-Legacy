@@ -1,13 +1,14 @@
-"""Module: capa.
+"""Extração de informações de processos no Projudi.
 
-Extract and manage process details from Projudi by scraping and formatting data.
+Este pacote contém classes e funções para automatizar a
+coleta de dados processuais do sistema Projudi.
 """
 
 import shutil
 import time
 from contextlib import suppress
-from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -16,18 +17,22 @@ from app.interfaces.projudi import CapaProjudiDict
 from common import raise_execution_error
 from common.exceptions import ExecutionError
 
-from ._1 import PrimeiraInstancia
 from ._2 import SegundaInstancia
+from .primeira import PrimeiraInstancia
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class Capa(PrimeiraInstancia, SegundaInstancia):
-    """Extract process information from Projudi and populate structured data.
+    """Implemente automação para extrair dados do Projudi.
 
-    This class extends CrawJUD to click through information panels,
-    extract process data and participant details, and format them accordingly.
+    Esta classe reúne métodos para coletar informações
+    processuais de diferentes instâncias do sistema Projudi.
     """
 
     def execution(self) -> None:
+        """Execute a extração de dados dos processos do Projudi."""
         for pos, value in enumerate(self.frame):
             if self.bot_stopped.is_set():
                 break

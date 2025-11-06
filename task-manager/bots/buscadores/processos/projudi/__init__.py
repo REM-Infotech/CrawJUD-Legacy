@@ -140,9 +140,7 @@ class ProcParte(ProjudiBot):
         """
         self.data_append.clear()
         for processo in list_processos:
-            numero_processo = processo.find_elements(By.TAG_NAME, "td")[
-                1
-            ].text
+            numero_processo = processo.find_elements(By.TAG_NAME, "td")[1].text
 
             polo_ativo = "Não consta ou processo em sigilo"
             polo_passivo = "Não consta ou processo em sigilo"
@@ -167,9 +165,7 @@ class ProcParte(ProjudiBot):
                 )[7].text
 
             with suppress(Exception):
-                juizo = processo.find_elements(By.TAG_NAME, "td")[
-                    9
-                ].text
+                juizo = processo.find_elements(By.TAG_NAME, "td")[9].text
 
             self.data_append.append(
                 {

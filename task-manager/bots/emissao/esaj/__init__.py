@@ -378,7 +378,9 @@ class Emissao(ESajBot):
             numeros_encontrados = []
 
             # Expressão regular para encontrar números nesse formato
-            pattern = r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+            pattern = (
+                r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
+            )
 
             pdf_file = self.path_pdf
             read = PdfReader(pdf_file)

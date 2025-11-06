@@ -1,5 +1,3 @@
-"""empty."""
-
 from typing import NoReturn
 
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
@@ -21,8 +19,6 @@ def raise_error(message: str) -> NoReturn:
 
 
 class Andamentos(JusdsBot):
-    """empty."""
-
     def execution(self) -> None:
         frame = self.frame
         self.total_rows = len(frame)

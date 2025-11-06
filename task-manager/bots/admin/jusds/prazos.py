@@ -1,5 +1,3 @@
-"""empty."""
-
 from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
@@ -15,8 +13,6 @@ from .master import JusdsBot
 
 
 class Prazos(JusdsBot):
-    """empty."""
-
     def execution(self) -> None:
         frame = self.frame
         self.total_rows = len(frame)
@@ -136,10 +132,7 @@ class Prazos(JusdsBot):
                 data = current_time.strftime("%d/%m/%Y")
 
             if data:
-                if (
-                    "valor" not in campo_nome
-                    or "data" not in campo_nome
-                ):
+                if "valor" not in campo_nome or "data" not in campo_nome:
                     data = data.upper()
 
                 elemento.send_keys(data)

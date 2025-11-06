@@ -246,11 +246,9 @@ class Protocolo(ESajBot):
                     el.select_categoria,
                 )),
             )
-            select_categoria_peticao = (
-                select_categoria_peticao.find_element(
-                    By.CSS_SELECTOR,
-                    el.toggle,
-                )
+            select_categoria_peticao = select_categoria_peticao.find_element(
+                By.CSS_SELECTOR,
+                el.toggle,
             )
             self.interact.click(select_categoria_peticao)
 
@@ -311,9 +309,7 @@ class Protocolo(ESajBot):
                 file = file.replace("_", "")
 
             file = unicodedata.normalize("NFKD", file)
-            file = "".join([
-                c for c in file if not unicodedata.combining(c)
-            ])
+            file = "".join([c for c in file if not unicodedata.combining(c)])
 
             input_file.send_keys(file)
 
@@ -351,9 +347,7 @@ class Protocolo(ESajBot):
         """
         try:
             parte_peticao = (
-                self.bot_data.get("PARTE_PETICIONANTE")
-                .__str__()
-                .lower()
+                self.bot_data.get("PARTE_PETICIONANTE").__str__().lower()
             )
             self.prt.print_log("log", "Vinculando parte a petição...")
             partes = self.wait.until(

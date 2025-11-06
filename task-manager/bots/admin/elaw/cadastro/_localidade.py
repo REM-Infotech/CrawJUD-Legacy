@@ -189,10 +189,7 @@ class ElawLocalidade(ElawBot):
 
         self.sleep_load('div[id="j_id_4p"]')
 
-        if (
-            str(self.bot_data.get("CAPITAL_INTERIOR")).lower()
-            == "outro estado"
-        ):
+        if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
             other_location: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,

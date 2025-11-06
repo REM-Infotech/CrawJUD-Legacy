@@ -173,9 +173,7 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         )
 
         codigo_barras_planilha = str(
-            self.bot_data.get("COD_BARRAS")
-            .replace(".", "")
-            .replace(" ", ""),
+            self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", ""),
         )
         tipo_condenacao_xls = str(
             self.bot_data.get("TIPO_CONDENACAO", ""),
@@ -203,21 +201,16 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
                 self.__informacoes_para_comparar()
             )
 
-            check_codigo_barras = (
-                codigo_de_barras == codigo_barras_planilha
-            )
+            check_codigo_barras = codigo_de_barras == codigo_barras_planilha
 
             if namedef == "condenacao":
                 match_condenacao = (
-                    tipo_condenacao_xls.lower()
-                    == tipo_condenacao.lower()
+                    tipo_condenacao_xls.lower() == tipo_condenacao.lower()
                 )
                 matchs = all([match_condenacao, check_codigo_barras])
 
             elif namedef == "custas":
-                match_custa = (
-                    tipo_custa_xls.lower() == tipo_custa.lower()
-                )
+                match_custa = tipo_custa_xls.lower() == tipo_custa.lower()
                 matchs = all([match_custa, check_codigo_barras])
 
             if matchs:

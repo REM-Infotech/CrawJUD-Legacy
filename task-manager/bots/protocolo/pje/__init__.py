@@ -92,10 +92,7 @@ class Protocolo(HabilitiacaoPJe):
                     if self.bot_stopped.is_set():
                         return
 
-                    row = (
-                        self.posicoes_processos[data["NUMERO_PROCESSO"]]
-                        + 1
-                    )
+                    row = self.posicoes_processos[data["NUMERO_PROCESSO"]] + 1
                     self.row = row
                     tipo_protocolo = data["TIPO_PROTOCOLO"]
 

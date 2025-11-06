@@ -1,5 +1,3 @@
-"""Empty."""
-
 import time
 
 from selenium.webdriver.common.by import By
@@ -13,8 +11,6 @@ type_doc = {11: "cpf", 14: "cnpj"}
 
 
 class Complementar(ElawCadastro):
-    """Empty."""
-
     def execution(self) -> None:
         frame = self.frame
         self.total_rows = len(frame)
@@ -60,10 +56,7 @@ class Complementar(ElawCadastro):
             )
             esfera_xls = self.bot_data.get("ESFERA")
 
-            if (
-                esfera_xls
-                and check_esfera.text.lower() != esfera_xls.lower()
-            ):
+            if esfera_xls and check_esfera.text.lower() != esfera_xls.lower():
                 self.esfera(esfera_xls)
 
             for item in lista1:

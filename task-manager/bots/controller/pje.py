@@ -158,18 +158,16 @@ class PjeBot(CrawJUD):
             url = el.LINK_AUTENTICACAO_SSO.format(regiao=self.regiao)
             self.driver.get(url)
 
-            if (
-                "https://sso.cloud.pje.jus.br/"
-                not in self.driver.current_url
-            ):
+            if "https://sso.cloud.pje.jus.br/" not in self.driver.current_url:
                 return True
 
             path_certificado = Path(environ.get("CERTIFICADO_PFX"))
             senha_certificado = environ.get(
-                "CERTIFICADO_PASSWORD"
+                "CERTIFICADO_PASSWORD",
             ).encode()
             autenticador = AutenticadorPJe(
-                path_certificado, senha_certificado
+                path_certificado,
+                senha_certificado,
             )
 
             self.wait.until(
@@ -187,7 +185,9 @@ class PjeBot(CrawJUD):
             uuid_sessao = autenticado[1]
 
             self.driver.execute_script(
-                el.COMMAND, el.ID_INPUT_DESAFIO, desafio
+                el.COMMAND,
+                el.ID_INPUT_DESAFIO,
+                desafio,
             )
             self.driver.execute_script(
                 el.COMMAND,

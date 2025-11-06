@@ -33,7 +33,8 @@ class QueryProperty[T]:
         cls = cast("Model", owner)
         if "sqlalchemy" in app.extensions:
             cls.__fsa__ = cast(
-                "SQLAlchemy", app.extensions["sqlalchemy"]
+                "SQLAlchemy",
+                app.extensions["sqlalchemy"],
             )  # pyright: ignore[reportAttributeAccessIssue]
 
         _owner = owner
