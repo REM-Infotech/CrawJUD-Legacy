@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 from dotenv import load_dotenv
 
-from app.bots.head import CrawJUD
+from app.controllers.head import CrawJUD
 from app.resources import RegioesIterator
 from app.resources.auth._pje import AutenticadorPJe
 from app.resources.search.pje import PjeSeach

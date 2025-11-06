@@ -15,7 +15,7 @@ from app.types import MessageLog, MessageType
 from config import config
 
 if TYPE_CHECKING:
-    from app.bots.head import CrawJUD
+    from app.controllers.head import CrawJUD
 
 load_dotenv()
 

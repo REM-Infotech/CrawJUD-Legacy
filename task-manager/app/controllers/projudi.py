@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup
 
-from app.bots.head import CrawJUD
+from app.controllers.head import CrawJUD
 from app.resources import value_check
 from app.resources.auth._projudi import AutenticadorProjudi
 from app.resources.formatadores import formata_string, normalizar

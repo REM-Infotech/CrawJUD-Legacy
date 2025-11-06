@@ -16,7 +16,7 @@ from constants.webdriver import ARGUMENTS, PREFERENCES, SETTINGS
 from .web_element import WebElementBot
 
 if TYPE_CHECKING:
-    from app.bots.head import CrawJUD
+    from app.controllers.head import CrawJUD
 
 
 class BotDriver:

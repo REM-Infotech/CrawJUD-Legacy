@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.bots.head import CrawJUD
+    from app.controllers.head import CrawJUD
 
 
 class CredencialManager:

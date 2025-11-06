@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.head import CrawJUD
+from app.controllers.head import CrawJUD
 from app.interfaces import DataSucesso
 from app.resources.elements import jusds as el
 

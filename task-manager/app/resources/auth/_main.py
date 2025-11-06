@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.support.wait import WebDriverWait
     from seleniumwire.webdriver import Chrome
 
-    from app.bots.head import CrawJUD
+    from app.controllers.head import CrawJUD
     from app.resources.managers.credencial_manager import CredencialManager
     from app.resources.queues.print_message import PrintMessage
 

@@ -15,7 +15,7 @@ from app.resources.queues.file_operation._main import FileOperator
 DATASAVE = []
 
 if TYPE_CHECKING:
-    from app.bots.head import CrawJUD
+    from app.controllers.head import CrawJUD
 
 
 class SaveSuccess(FileOperator):

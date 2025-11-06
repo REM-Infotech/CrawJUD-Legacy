@@ -16,7 +16,7 @@ load_dotenv()
 if TYPE_CHECKING:
     from celery import Celery
 
-    from app.bots.head import CrawJUD
+    from app.controllers.head import CrawJUD
 
 
 class FileManager(MinioClient):
