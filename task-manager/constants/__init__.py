@@ -31,7 +31,7 @@ PADRAO_DATA: list[Pattern] = [
 
 MAIOR_60_ANOS = "Maior que 60 anos (conforme Lei 10.741/2003)"
 VER_RECURSO = "Clique aqui para visualizar os recursos relacionados"
-
+INTIMACAO_ELETRONICA = "Sistema de Citação e Intimação Eletrônica"
 COLORS_DICT: ColorsDict = {
     "info": "cyan",
     "log": "yellow",

@@ -9,6 +9,7 @@ from app.interfaces.projudi import (
 from app.types import Dict
 from bots.controller.projudi import ProjudiBot
 from bots.resources.elements import projudi as el
+from constants import INTIMACAO_ELETRONICA
 
 
 class PrimeiraInstancia(ProjudiBot):
@@ -49,7 +50,8 @@ class PrimeiraInstancia(ProjudiBot):
         self,
         numero_processo: str,
     ) -> tuple[
-        list[PartesProjudiDict], list[RepresentantesProjudiDict]
+        list[PartesProjudiDict],
+        list[RepresentantesProjudiDict],
     ]:
         wait = self.wait
 
@@ -72,7 +74,8 @@ class PrimeiraInstancia(ProjudiBot):
         advogados: list[Dict] = []
 
         for table in grouptable_partes.find_elements(
-            By.TAG_NAME, "table"
+            By.TAG_NAME,
+            "table",
         ):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
@@ -91,7 +94,8 @@ class PrimeiraInstancia(ProjudiBot):
         html: str,
         processo: str,
     ) -> tuple[
-        list[PartesProjudiDict], list[RepresentantesProjudiDict]
+        list[PartesProjudiDict],
+        list[RepresentantesProjudiDict],
     ]:
         """Extraia informações das partes do processo na tabela do Projudi.
 
@@ -136,7 +140,7 @@ class PrimeiraInstancia(ProjudiBot):
                     )
                     if endereco_div:
                         endereco = str(
-                            endereco_div.get_text(" ", strip=True)
+                            endereco_div.get_text(" ", strip=True),
                         )
 
             if nome_parte != "Descrição:":
@@ -144,15 +148,15 @@ class PrimeiraInstancia(ProjudiBot):
                     advogado_e_oab = " ".join(
                         str(li.get_text(" ", strip=True)).split(),
                     ).split(" - ")
-
-                    advogados.append(
-                        RepresentantesProjudiDict(
-                            NUMERO_PROCESSO=processo,
-                            NOME=advogado_e_oab[1],
-                            OAB=advogado_e_oab[0],
-                            REPRESENTADO=nome_parte,
-                        ),
-                    )
+                    if advogado_e_oab[1] != INTIMACAO_ELETRONICA:
+                        advogados.append(
+                            RepresentantesProjudiDict(
+                                NUMERO_PROCESSO=processo,
+                                NOME=advogado_e_oab[1],
+                                OAB=advogado_e_oab[0],
+                                REPRESENTADO=nome_parte,
+                            ),
+                        )
 
                 partes.append(
                     PartesProjudiDict(

@@ -1,69 +1,71 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from "vue";
 import { Doughnut } from "vue-chartjs";
-const chartData = ref([40, 20, 12]);
 
 const LogsSocket = socketio.socket("/bot_logs");
 
 const itemLog = ref<HTMLElement | null>(null); // Ref para o ul
-let pid: string;
-onMounted(() => {
-  const route = useRoute();
-  const pid_param: string = route.params.pid as string;
+const pid = ref("");
+const link_arquivo = ref("");
+const listLogs = computed(() => receivedLogs.value);
 
-  if (pid_param) {
-    pid = pid_param;
-    sessionStorage.setItem("pid", pid);
-  } else if (!pid_param) {
-    pid = sessionStorage.getItem("pid") as string;
-  }
-
-  LogsSocket.connect();
-  LogsSocket.emit("join_room", { room: pid });
-});
-
-LogsSocket.on("logbot", async (data) => {
-  receivedLogs.value.push(data);
-
-  Contagem.value = [data.remaining_count, data.success_count, data.error_count];
-  await nextTick();
-
-  contador_reativo.total = data.total;
-  contador_reativo.sucessos = data.success_count;
-  contador_reativo.erros = data.error_count;
-  contador_reativo.restantes = data.remaining_count;
-
-  if (itemLog.value) {
-    itemLog.value.scrollTop = itemLog.value.scrollHeight;
-  }
-});
-
-const Contagem = ref([0.1, 0.1, 0.1]);
-
-const contador_reativo = reactive({
+const Contagem: Record<keyof ValoresContador, number> = reactive({
   total: 0,
   sucessos: 0,
   erros: 0,
   restantes: 0,
 });
-
-const Contador = computed(() => Contagem.value);
-
+const Contador = computed(() => [Contagem.restantes, Contagem.sucessos, Contagem.erros]);
 const receivedLogs = ref([
   {
     message: "Carregando",
     message_type: "info",
   },
 ]);
-const listLogs = computed(() => receivedLogs.value);
+
+onMounted(() => {
+  const route = useRoute();
+  const pid_param: string = route.params.pid as string;
+
+  if (pid_param) {
+    pid.value = pid_param;
+    sessionStorage.setItem("pid", pid.value);
+  } else if (!pid_param) {
+    pid.value = sessionStorage.getItem("pid") as string;
+  }
+
+  LogsSocket.connect();
+  LogsSocket.emit("join_room", { room: pid.value });
+});
+
+LogsSocket.on("logbot", async (data: Message) => {
+  receivedLogs.value.push(data);
+  await nextTick();
+  Object.entries(Contagem).forEach(([key, _]) => {
+    if (key as keyof ValoresContador) {
+      Contagem[key as keyof ValoresContador] = data[key as keyof ValoresContador];
+    }
+  });
+
+  if (data.link) {
+    link_arquivo.value = data.link;
+  }
+
+  if (itemLog.value) {
+    itemLog.value.scrollTop = itemLog.value.scrollHeight;
+  }
+});
 </script>
 
 <template>
   <div class="card">
     <div class="card-header">
-      <BButton variant="danger" @click="() => LogsSocket.emit('bot_stop', { pid: pid })">
-        Parar Execução
-      </BButton>
+      <div class="d-flex">
+        <BButton variant="danger" @click="() => LogsSocket.emit('bot_stop', { pid: pid })">
+          Parar Execução
+        </BButton>
+        <a v-if="link_arquivo" class="btn btn-danger" :href="link_arquivo"> Baixar Arquivo </a>
+      </div>
     </div>
     <div class="card-body">
       <BRow>
@@ -97,8 +99,8 @@ const listLogs = computed(() => receivedLogs.value);
         <div class="col-6">
           <div class="card">
             <div class="card-header">
-              <span class="fw-semibold"
-                >Logs Execução: <strong>{{ pid }}</strong>
+              <span class="fw-semibold">
+                Logs Execução: <strong>{{ pid }}</strong>
               </span>
             </div>
             <div
@@ -126,10 +128,10 @@ const listLogs = computed(() => receivedLogs.value);
       </BRow>
     </div>
     <div class="card-footer">
-      <span> Total: {{ contador_reativo.total }}</span>
-      <span> Sucessos: {{ contador_reativo.sucessos }}</span>
-      <span> Erros: {{ contador_reativo.erros }}</span>
-      <span> Restantes: {{ contador_reativo.restantes }}</span>
+      <span> Total: {{ Contagem.total }}</span>
+      <span> Sucessos: {{ Contagem.sucessos }}</span>
+      <span> Erros: {{ Contagem.erros }}</span>
+      <span> Restantes: {{ Contagem.restantes }}</span>
     </div>
   </div>
 </template>

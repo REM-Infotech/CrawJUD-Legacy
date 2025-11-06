@@ -21,7 +21,6 @@ class FormManager extends FileUploader {
 
   public async HandleSubmit(ev: Event, form: FormBot) {
     ev.preventDefault();
-    console.log(form);
     const { $router: router } = useNuxtApp();
     const { bot } = storeToRefs(botStore());
 

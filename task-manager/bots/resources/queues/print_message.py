@@ -23,9 +23,9 @@ load_dotenv()
 class Count(TypedDict):
     """Dicionario de contagem."""
 
-    success_count: int = 0
+    sucessos: int = 0
     remainign_count: int = 0
-    error_count: int = 0
+    erros: int = 0
 
 
 class PrintMessage:
@@ -41,7 +41,7 @@ class PrintMessage:
         self.thread_print_bot = Thread(target=self.print_msg)
         self.thread_print_bot.start()
         self.succcess_count = 0
-        self.error_count = 0
+        self.erros = 0
 
     def __call__(
         self,
@@ -77,9 +77,9 @@ class PrintMessage:
             message_type=message_type,
             status="Em Execução",
             total=self.bot.total_rows,
-            success_count=self.calc_success(message_type),
-            error_count=self.calc_error(message_type),
-            remaining_count=self.calc_remaining(message_type),
+            sucessos=self.calc_success(message_type),
+            erros=self.calc_error(message_type),
+            restantes=self.calc_remaining(message_type),
             link=link,
         )
         self.queue_print_bot.put_nowait(msg)
@@ -110,9 +110,9 @@ class PrintMessage:
 
         """
         if message_type == "error":
-            self.error_count += 1
+            self.erros += 1
 
-        return self.error_count
+        return self.erros
 
     def calc_remaining(self, message_type: MessageType) -> int:
         """Calcula o total de registros restantes.

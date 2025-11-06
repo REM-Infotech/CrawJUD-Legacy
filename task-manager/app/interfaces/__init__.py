@@ -36,9 +36,9 @@ class Message(TypedDict, total=False):
     start_time: str
     row: int
     total: int
-    error_count: int
-    success_count: int
-    remaining_count: int
+    erros: int
+    sucessos: int
+    restantes: int
     link: str
 
 
