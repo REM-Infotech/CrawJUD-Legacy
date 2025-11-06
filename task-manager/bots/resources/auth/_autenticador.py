@@ -7,7 +7,6 @@ from uuid import uuid4
 
 import jpype
 import requests
-from app.types import StrPath
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.serialization import (
@@ -18,6 +17,8 @@ from cryptography.x509 import Certificate
 
 # Importa classes Java
 from jpype import JArray, JByte, JClass
+
+from app.types import StrPath
 
 if not jpype.isJVMStarted():
     jpype.startJVM()
@@ -40,10 +41,13 @@ class AutenticadorPJe:
                 bytes_cert = fp.read()
 
         if isinstance(senha_certificado, str):
-            senha_certificado = bytes(senha_certificado, encoding="utf8")
+            senha_certificado = bytes(
+                senha_certificado, encoding="utf8"
+            )
 
         tuple_load_pkcs12 = pkcs12.load_key_and_certificates(
-            bytes_cert, senha_certificado
+            bytes_cert,
+            senha_certificado,
         )
 
         self.key = tuple_load_pkcs12[0]
@@ -64,7 +68,9 @@ class AutenticadorPJe:
         if not digest:
             raise ValueError("Algoritmo não suportado: " + "MD5withRSA")
 
-        self._assinatura = self.key.sign(valor, padding.PKCS1v15(), digest)
+        self._assinatura = self.key.sign(
+            valor, padding.PKCS1v15(), digest
+        )
 
         return self
 
@@ -112,7 +118,9 @@ class AutenticadorPJe:
 
         return None, None
 
-    def generate_pkipath_java(self, cert_chain: list[Certificate]) -> str:
+    def generate_pkipath_java(
+        self, cert_chain: list[Certificate]
+    ) -> str:
         """Gera um PKIPath (DER e Base64) chamando o código Java nativo via JPype.
 
         cert_chain: lista de x509.Certificate (cryptography)
