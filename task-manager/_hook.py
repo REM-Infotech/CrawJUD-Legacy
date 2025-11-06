@@ -5,11 +5,10 @@ import mimetypes
 import sys
 import weakref
 from pathlib import Path
+from types import MethodType
 from typing import Any
 
 from packaging.version import parse
-
-from app.types import MethodType
 
 type ModuleType = sys
 type MyAny = Any
