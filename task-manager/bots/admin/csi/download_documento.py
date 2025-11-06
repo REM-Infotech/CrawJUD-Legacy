@@ -3,13 +3,13 @@
 from contextlib import suppress
 
 import httpx
-from app.types import AnyType
 from dotenv import load_dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
+from app.types import AnyType
 from bots.controller.csi import CsiBot
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import csi as el
@@ -35,7 +35,7 @@ class DownloadDocumento(CsiBot):
             self.row = pos + 1
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
@@ -82,7 +82,10 @@ class DownloadDocumento(CsiBot):
 
         input_numero_chamado.send_keys(numero_chamado)
         btn_buscar = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_BUSCAR)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_BTN_BUSCAR,
+            )),
         )
         btn_buscar.click()
 
@@ -105,7 +108,8 @@ class DownloadDocumento(CsiBot):
         self.swtich_iframe_anexos(wait)
 
         cookies = {
-            item["name"]: item["value"] for item in self.driver.get_cookies()
+            item["name"]: item["value"]
+            for item in self.driver.get_cookies()
         }
 
         out_dir = self.output_dir_path
@@ -124,7 +128,9 @@ class DownloadDocumento(CsiBot):
                 td_anexo = anexo.find_elements(By.TAG_NAME, "td")[0]
                 anexo_info = td_anexo.find_element(By.TAG_NAME, "a")
 
-                nome_anexo = f"{self.pid} - {chamado} - {anexo_info.text}"
+                nome_anexo = (
+                    f"{self.pid} - {chamado} - {anexo_info.text}"
+                )
                 path_anexo = out_dir.joinpath(nome_anexo)
                 link_anexo = anexo_info.get_attribute("href")
 

@@ -8,13 +8,13 @@ tratamento de contexto e execução assíncrona de tarefas.
 
 from time import sleep
 
-from app.types import AnyType
 from dotenv import load_dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
+from app.types import AnyType
 from bots.controller.csi import CsiBot
 from bots.resources.elements import csi as el
 
