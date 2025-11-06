@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, TypedDict
+from typing import TypedDict
+
+from app.interfaces.pje.payload import ProcessoJudicialDict
 
 from .assuntos import AssuntoDict, ItemAssuntoDict
 from .audiencias import AudienciaDict, TipoAudienciaDict
@@ -16,9 +18,6 @@ from .worksheet import (
     Partes,
     Representantes,
 )
-
-if TYPE_CHECKING:
-    from app.interfaces.pje.payload import ProcessoJudicialDict
 
 
 class DictResults(TypedDict):
@@ -52,6 +51,7 @@ __all__ = [
     "PartesJsonDict",
     "PessoaFisicaDict",
     "PessoaJuridicaDict",
+    "ProcessoJudicialDict",
     "Representantes",
     "TipoAudienciaDict",
 ]
