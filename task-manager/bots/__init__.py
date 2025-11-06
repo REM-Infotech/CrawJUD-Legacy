@@ -5,6 +5,8 @@ operações automatizadas, como administração, busca,
 cálculo, capa, emissão, intimações, movimentação e protocolo.
 """
 
+import _hook
+
 from . import (
     admin,
     buscadores,
@@ -17,6 +19,7 @@ from . import (
 )
 
 __all__ = [
+    "_hook",
     "admin",
     "buscadores",
     "calculadoras",
