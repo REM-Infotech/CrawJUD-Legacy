@@ -57,7 +57,7 @@ class Emissao(ESajBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Queue emission tasks by generating docs and processing PDF barcodes.
@@ -98,7 +98,10 @@ class Emissao(ESajBot):
         self.prt()
 
         set_foro = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.ome_foro)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.ome_foro,
+            )),
         )
         set_foro.send_keys(self.bot_data.get("FORO"))
 
@@ -114,7 +117,10 @@ class Emissao(ESajBot):
         )
         semprecível.click()
 
-        val_acao = self.driver.find_element(By.CSS_SELECTOR, el.valor_acao)
+        val_acao = self.driver.find_element(
+            By.CSS_SELECTOR,
+            el.valor_acao,
+        )
         val_acao.send_keys(self.bot_data.get("VALOR_CAUSA"))
 
         nameinteressado = self.driver.find_element(
@@ -123,7 +129,9 @@ class Emissao(ESajBot):
         )
         nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
 
-        elements = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+        elements = el.type_docscss.get(
+            self.bot_data.get("TIPO_GUIA"),
+        ).get(
             self.count_doc(self.bot_data.get("CPF_CNPJ")),
         )
         set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
@@ -146,7 +154,10 @@ class Emissao(ESajBot):
         with suppress(TimeoutException):
             css_val_doc = el.css_val_doc_custas_ini
             self.valor_doc = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_val_doc,
+                )),
             ).text
 
     def preparo_ri(self) -> None:
@@ -179,13 +190,20 @@ class Emissao(ESajBot):
                 By.CSS_SELECTOR,
                 el.interessado,
             )
-            nameinteressado.send_keys(self.bot_data.get("NOME_INTERESSADO"))
+            nameinteressado.send_keys(
+                self.bot_data.get("NOME_INTERESSADO"),
+            )
 
-            elements = el.type_docscss.get(self.bot_data.get("TIPO_GUIA")).get(
+            elements = el.type_docscss.get(
+                self.bot_data.get("TIPO_GUIA"),
+            ).get(
                 self.count_doc(self.bot_data.get("CPF_CNPJ")),
             )
 
-            set_doc = self.driver.find_element(By.CSS_SELECTOR, elements[0])
+            set_doc = self.driver.find_element(
+                By.CSS_SELECTOR,
+                elements[0],
+            )
             set_doc.click()
             sleep(0.5)
             setcpf_cnpj = self.driver.find_element(
@@ -223,7 +241,10 @@ class Emissao(ESajBot):
             sleep(1)
             css_val_doc = "body > table:nth-child(4) > tbody > tr > td > table:nth-child(10) > tbody > tr:nth-child(3) > td:nth-child(3) > strong"
             self.valor_doc = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_val_doc)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_val_doc,
+                )),
             ).text
 
         elif portal == "não informado":
@@ -266,7 +287,10 @@ class Emissao(ESajBot):
             self.driver.current_window_handle
         )
         generatepdf = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.boleto)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.boleto,
+            )),
         )
         onclick_value = generatepdf.get_attribute("onclick")
         url_start = onclick_value.find("'") + 1
@@ -354,9 +378,7 @@ class Emissao(ESajBot):
             numeros_encontrados = []
 
             # Expressão regular para encontrar números nesse formato
-            pattern = (
-                r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
-            )
+            pattern = r"\b\d{5}\.\d{5}\s*\d{5}\.\d{6}\s*\d{5}\.\d{6}\s*\d\s*\d{14}\b"
 
             pdf_file = self.path_pdf
             read = PdfReader(pdf_file)
