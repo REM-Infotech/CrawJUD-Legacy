@@ -128,7 +128,9 @@ class ExecutionError(BaseCrawJUDError):
         self.message = message + formata_msg(exc)
 
         if message == "Erro ao executar operaçao: " and exc:
-            self.message = message + "\n".join(traceback.format_exception(exc))
+            self.message = message + "\n".join(
+                traceback.format_exception(exc)
+            )
 
         super().__init__(message)
 
@@ -395,10 +397,10 @@ class PasswordTokenError(BaseCrawJUDError):
 
 
 __all__ = [
-    "ExecutionError",
-    "DriverNotCreatedError",
     "AuthenticationError",
-    "BotNotFoundError",
     "BaseCrawJUDError",
     "BaseExceptionCeleryAppError",
+    "BotNotFoundError",
+    "DriverNotCreatedError",
+    "ExecutionError",
 ]

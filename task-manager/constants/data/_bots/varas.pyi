@@ -6,9 +6,15 @@ varas_pje = TypedDict(
         "1ª Vara do Trabalho de Boa Vista": Literal["#VTBV1-1"],
         "2ª Vara do Trabalho de Boa Vista": Literal["#VTBV2-1"],
         "3ª Vara do Trabalho de Boa Vista": Literal["#VTBV3-1"],
-        "51ª Vara Digital do Núcleo de Justiça 4.0 - RR": Literal["#51VDRR-1"],
-        "52ª Vara Digital do Núcleo de Justiça 4.0 - RR": Literal["#52VDRR-1"],
-        "53ª Vara Digital do Núcleo de Justiça 4.0 - RR": Literal["#53VDRR-1"],
+        "51ª Vara Digital do Núcleo de Justiça 4.0 - RR": Literal[
+            "#51VDRR-1"
+        ],
+        "52ª Vara Digital do Núcleo de Justiça 4.0 - RR": Literal[
+            "#52VDRR-1"
+        ],
+        "53ª Vara Digital do Núcleo de Justiça 4.0 - RR": Literal[
+            "#53VDRR-1"
+        ],
         "CEJUSC - BOA VISTA": Literal["#CBV-1"],
         "1ª Vara do Trabalho de Coari": Literal["#1VTC-1"],
         "1ª Vara do Trabalho de Eirunepé": Literal["#VTE-1"],
@@ -35,25 +41,63 @@ varas_pje = TypedDict(
         "17ª Vara do Trabalho de Manaus": Literal["#VT17-1"],
         "18ª Vara do Trabalho de Manaus": Literal["#VT18-1"],
         "19ª Vara do Trabalho de Manaus": Literal["#VT19-1"],
-        "1ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["1VDAM-1"],
-        "2ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["2VDAM-1"],
-        "3ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["3VDAM-1"],
-        "4ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["4VDAM-1"],
-        "5ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["5VDAM-1"],
-        "6ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["6VDAM-1"],
-        "7ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["7VDAM-1"],
-        "8ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["8VDAM-1"],
-        "9ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["9VDAM-1"],
-        "10ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["10VDAM-1"],
-        "11ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["11VDAM-1"],
-        "12ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["12VDAM-1"],
-        "13ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["13VDAM-1"],
-        "14ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["14VDAM-1"],
-        "15ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["15VDAM-1"],
-        "16ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["16VDAM-1"],
-        "17ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["17VDAM-1"],
-        "18ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["18VDAM-1"],
-        "19ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal["19VDAM-1"],
+        "1ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "1VDAM-1"
+        ],
+        "2ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "2VDAM-1"
+        ],
+        "3ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "3VDAM-1"
+        ],
+        "4ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "4VDAM-1"
+        ],
+        "5ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "5VDAM-1"
+        ],
+        "6ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "6VDAM-1"
+        ],
+        "7ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "7VDAM-1"
+        ],
+        "8ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "8VDAM-1"
+        ],
+        "9ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "9VDAM-1"
+        ],
+        "10ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "10VDAM-1"
+        ],
+        "11ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "11VDAM-1"
+        ],
+        "12ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "12VDAM-1"
+        ],
+        "13ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "13VDAM-1"
+        ],
+        "14ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "14VDAM-1"
+        ],
+        "15ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "15VDAM-1"
+        ],
+        "16ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "16VDAM-1"
+        ],
+        "17ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "17VDAM-1"
+        ],
+        "18ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "18VDAM-1"
+        ],
+        "19ª Vara Digital do Núcleo de Justiça 4.0 - AM": Literal[
+            "19VDAM-1"
+        ],
         "Secretaria de Execução da Fazenda Pública": Literal["#SP-1"],
         "SEÇÃO DE HASTAS PÚBLICAS- SEHASP": Literal["#DIHASP-1"],
         "CEJUSC-JT 1º grau": Literal["#CEJUSC1-1"],
@@ -62,7 +106,9 @@ varas_pje = TypedDict(
         "Projeto Garimpo - 1º Grau": Literal["#PG-1"],
         "Corregedoria-Geral;": Literal["#CNAC-1"],
         "1ª Vara do Trabalho de Parintins": Literal["#VTP-1"],
-        "1ª Vara do Trabalho de Presidente Figueiredo": Literal["#1VTPF-1"],
+        "1ª Vara do Trabalho de Presidente Figueiredo": Literal[
+            "#1VTPF-1"
+        ],
         "1ª Vara do Trabalho de Tabatinga": Literal["#1VTT-1"],
         "1ª Vara do Trabalho de Tefé": Literal["#1VTTF-1"],
     },

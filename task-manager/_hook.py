@@ -57,7 +57,7 @@ class JSONLoader(importlib.abc.SourceLoader):
 
         if "." in module.__spec__.name:
             path = path.parent.joinpath(
-                *module.__spec__.name.split(".")
+                *module.__spec__.name.split("."),
             ).with_suffix(".json")
 
         data = json.loads(path.read_text())
@@ -88,14 +88,20 @@ class JSONFinder(importlib.abc.MetaPathFinder):
 
         if path_mod.exists() and self.guess(path_mod):
             return importlib.util.spec_from_file_location(
-                fullname, filename, loader=JSONLoader()
+                fullname,
+                filename,
+                loader=JSONLoader(),
             )
 
         if fullname == "blinker._saferef":
-            return importlib.util.spec_from_loader(fullname, loader=Legacy())
+            return importlib.util.spec_from_loader(
+                fullname, loader=Legacy()
+            )
 
         if fullname.startswith("pkg_resources"):
-            return importlib.util.spec_from_loader(fullname, loader=Legacy())
+            return importlib.util.spec_from_loader(
+                fullname, loader=Legacy()
+            )
 
         return None
 

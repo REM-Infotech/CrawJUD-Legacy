@@ -5,4 +5,4 @@ from ._bots import (
     varas,  # pyright: ignore[reportMissingModuleSource]
 )
 
-__all__ = ["varas", "cidades"]
+__all__ = ["cidades", "varas"]

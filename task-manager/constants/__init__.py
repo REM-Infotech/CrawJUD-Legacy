@@ -1,9 +1,12 @@
 """Constantes do gerenciador de tarefas."""
 
 from pathlib import Path
-from re import Pattern
+from typing import TYPE_CHECKING
 
-from app.interfaces import ColorsDict
+if TYPE_CHECKING:
+    from re import Pattern
+
+    from app.interfaces import ColorsDict
 
 WORKDIR = Path(__file__).cwd()
 
