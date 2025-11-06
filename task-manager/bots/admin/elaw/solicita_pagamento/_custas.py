@@ -19,9 +19,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.controller.elaw import ElawBot
-from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
+from bots.resources.formatadores import formata_string
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -38,7 +38,10 @@ class ElawCustas(ElawBot):
         valor_doc = self.bot_data.get("VALOR_GUIA").replace(".", ",")
 
         element: WebElementBot = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.valor_guia)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.valor_guia,
+            )),
         )
         element.click()
         element.send_keys(Keys.CONTROL, "a")
@@ -54,7 +57,10 @@ class ElawCustas(ElawBot):
         sleep(0.5)
 
         list_tipo_doc: WebElementBot = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.type_doc_css)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.type_doc_css,
+            )),
         )
         list_tipo_doc.click()
         sleep(1)
@@ -99,7 +105,10 @@ class ElawCustas(ElawBot):
                 break
 
         solicitante = str(self.bot_data.get("SOLICITANTE")).lower()
-        if solicitante == "monitoria" or solicitante.lower() == "monitória":
+        if (
+            solicitante == "monitoria"
+            or solicitante.lower() == "monitória"
+        ):
             desc_pgto: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
@@ -161,7 +170,10 @@ class ElawCustas(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
 
         campo_cod_barras: WebElementBot = self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.css_cod_bars)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.css_cod_bars,
+            )),
         )
         campo_cod_barras.click()
         sleep(0.5)

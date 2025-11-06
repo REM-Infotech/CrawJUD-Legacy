@@ -19,9 +19,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bots.controller.elaw import ElawBot
-from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
+from bots.resources.formatadores import formata_string
 
 type_doc = {11: "cpf", 14: "cnpj"}
 
@@ -37,7 +37,10 @@ class ElawCondenacao(ElawBot):
 
         text = self.bot_data.get("VALOR_GUIA")
         element: WebElementBot = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_element)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_element,
+            )),
         )
 
         sleep(0.5)
@@ -51,7 +54,10 @@ class ElawCondenacao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
 
         div_type_doc: WebElementBot = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.type_doc_css)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.type_doc_css,
+            )),
         )
         div_type_doc.click()
         sleep(0.5)
@@ -144,7 +150,10 @@ class ElawCondenacao(ElawBot):
         desc_pagamento = str(self.bot_data.get("DESC_PAGAMENTO"))
 
         desc_pgto: WebElementBot = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_desc_pgto)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_desc_pgto,
+            )),
         )
         desc_pgto.click()
         if "\n" in desc_pagamento:
@@ -184,7 +193,10 @@ class ElawCondenacao(ElawBot):
             message_type=message_type,
         )
 
-        input_favorecido: WebElementBot = WebDriverWait(self.driver, 10).until(
+        input_favorecido: WebElementBot = WebDriverWait(
+            self.driver,
+            10,
+        ).until(
             ec.element_to_be_clickable((
                 By.CSS_SELECTOR,
                 el.css_inputfavorecido,
@@ -198,7 +210,10 @@ class ElawCondenacao(ElawBot):
             self.bot_data.get("CNPJ_FAVORECIDO", "00.360.305/0001-04"),
         )
 
-        result_favorecido: WebElementBot = WebDriverWait(self.driver, 10).until(
+        result_favorecido: WebElementBot = WebDriverWait(
+            self.driver,
+            10,
+        ).until(
             ec.presence_of_element_located((
                 By.CSS_SELECTOR,
                 el.resultado_favorecido,
@@ -227,7 +242,10 @@ class ElawCondenacao(ElawBot):
         self.interact.sleep_load('div[id="j_id_2x"]')
 
         campo_cod_barras: WebElementBot = self.wait.until(
-            ec.element_to_be_clickable((By.CSS_SELECTOR, el.css_cod_bars)),
+            ec.element_to_be_clickable((
+                By.CSS_SELECTOR,
+                el.css_cod_bars,
+            )),
         )
         campo_cod_barras.click()
         sleep(0.5)

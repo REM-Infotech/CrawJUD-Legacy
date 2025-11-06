@@ -15,15 +15,15 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from app.interfaces import DataSucesso
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from bots.resources._formatadores import formata_string
+from app.interfaces import DataSucesso
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import elaw as el
+from bots.resources.formatadores import formata_string
 from common import raise_execution_error
 from common.exceptions import ExecutionError
 
@@ -106,7 +106,9 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
                         item.click()
                         return
 
-        raise_execution_error(message="Tipo de Pagamento não encontrado")
+        raise_execution_error(
+            message="Tipo de Pagamento não encontrado",
+        )
 
     def save_changes(self) -> None:
         try:
@@ -159,17 +161,25 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
         name_comprovante1 = (
             f"COMPROVANTE 1 {numero_processo} - {self.pid} - {now}.png"
         )
-        path_comprovante1 = self.output_dir_path.joinpath(name_comprovante1)
+        path_comprovante1 = self.output_dir_path.joinpath(
+            name_comprovante1,
+        )
 
         name_comprovante2 = (
             f"COMPROVANTE 2 {numero_processo} - {self.pid} - {now}.png"
         )
-        path_comprovante2 = self.output_dir_path.joinpath(name_comprovante2)
+        path_comprovante2 = self.output_dir_path.joinpath(
+            name_comprovante2,
+        )
 
         codigo_barras_planilha = str(
-            self.bot_data.get("COD_BARRAS").replace(".", "").replace(" ", ""),
+            self.bot_data.get("COD_BARRAS")
+            .replace(".", "")
+            .replace(" ", ""),
         )
-        tipo_condenacao_xls = str(self.bot_data.get("TIPO_CONDENACAO", ""))
+        tipo_condenacao_xls = str(
+            self.bot_data.get("TIPO_CONDENACAO", ""),
+        )
         tipo_custa_xls = str(self.bot_data.get("TIPO_GUIA", ""))
         namedef = formata_string(
             self.bot_data.get("TIPO_PAGAMENTO"),
@@ -181,7 +191,10 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
 
             id_task = item.find_elements(By.TAG_NAME, "td")[2].text
 
-            open_details = item.find_element(By.CSS_SELECTOR, el.botao_ver)
+            open_details = item.find_element(
+                By.CSS_SELECTOR,
+                el.botao_ver,
+            )
             open_details.click()
 
             frame_pgto, close_context = self.__get_frame_pgto(pos)
@@ -190,16 +203,21 @@ class ElawPagamentos(ElawCustas, ElawCondenacao):
                 self.__informacoes_para_comparar()
             )
 
-            check_codigo_barras = codigo_de_barras == codigo_barras_planilha
+            check_codigo_barras = (
+                codigo_de_barras == codigo_barras_planilha
+            )
 
             if namedef == "condenacao":
                 match_condenacao = (
-                    tipo_condenacao_xls.lower() == tipo_condenacao.lower()
+                    tipo_condenacao_xls.lower()
+                    == tipo_condenacao.lower()
                 )
                 matchs = all([match_condenacao, check_codigo_barras])
 
             elif namedef == "custas":
-                match_custa = tipo_custa_xls.lower() == tipo_custa.lower()
+                match_custa = (
+                    tipo_custa_xls.lower() == tipo_custa.lower()
+                )
                 matchs = all([match_custa, check_codigo_barras])
 
             if matchs:

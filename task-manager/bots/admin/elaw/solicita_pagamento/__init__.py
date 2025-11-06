@@ -13,7 +13,7 @@ Attributes:
 
 from typing import TYPE_CHECKING
 
-from bots.resources._formatadores import formata_string
+from bots.resources.formatadores import formata_string
 from common._raises import raise_execution_error
 
 from ._master import ElawPagamentos
@@ -46,15 +46,19 @@ class SolicitaPgto(ElawPagamentos):
 
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
             search = self.search()
 
             if not search:
-                raise_execution_error(message="Processo não encontrado!")
-            namedef = formata_string(self.bot_data.get("TIPO_PAGAMENTO"))
+                raise_execution_error(
+                    message="Processo não encontrado!",
+                )
+            namedef = formata_string(
+                self.bot_data.get("TIPO_PAGAMENTO"),
+            )
             self.novo_pagamento()
             self.seleciona_tipo_pagamento(namedef)
             pgto: Callable[..., None] = getattr(self, namedef.lower())
