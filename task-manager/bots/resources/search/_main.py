@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.support.wait import WebDriverWait
     from seleniumwire.webdriver import Chrome
 
+    from app.interfaces import BotData
     from bots.head import CrawJUD
     from bots.resources.queues.print_message import PrintMessage
 
@@ -26,5 +27,5 @@ class SearchBot:
         return self.bot.print_message
 
     @property
-    def bot_data[T](self) -> T:
+    def bot_data(self) -> BotData:
         return self.bot.bot_data

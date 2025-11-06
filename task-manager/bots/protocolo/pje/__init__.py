@@ -9,13 +9,15 @@ seleção de tipo de protocolo, upload de documentos e tratamento de erros.
 import traceback
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
+from typing import TYPE_CHECKING
 
 import dotenv
 from httpx import Client
 
-from app.interfaces import BotData
-
 from .habilitacao import HabilitiacaoPJe
+
+if TYPE_CHECKING:
+    from app.interfaces import BotData
 
 dotenv.load_dotenv()
 

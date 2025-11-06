@@ -32,6 +32,7 @@ from constants import NO_CONTENT_STATUS
 
 if TYPE_CHECKING:
     from cryptography.x509 import Certificate
+    from seleniumwire.request import Request
 
     from bots.controller.pje import PjeBot
 
@@ -205,6 +206,35 @@ class AutenticadorPJe(AutenticadorBot):
         pkipath_bytes = cert_path.getEncoded("PkiPath")
 
         return base64.b64encode(bytes(pkipath_bytes)).decode("utf-8")
+
+    def get_headers_cookies(self) -> tuple[dict[str, str], dict[str, str]]:
+        return (
+            self._header_to_dict(),
+            self._cookie_to_dict(),
+        )
+
+    def _header_to_dict(self) -> dict[str, str]:
+        request = self._filter_request()
+
+        return {
+            str(header): str(value) for header, value in request.headers.items()
+        }
+
+    def _cookie_to_dict(self) -> dict[str, str]:
+        cookies_driver = self.driver.get_cookies()
+        return {
+            str(cookie["name"]): str(cookie["value"])
+            for cookie in cookies_driver
+        }
+
+    def _filter_request(self) -> Request:
+        return list(
+            filter(
+                lambda item: f"https://pje.trt{self.regiao}.jus.br/pje-comum-api/"
+                in item.url,
+                self.driver.requests,
+            ),
+        )[-1]
 
 
 def _get_otp_uri() -> str:
