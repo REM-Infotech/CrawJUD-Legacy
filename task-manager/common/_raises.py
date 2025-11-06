@@ -15,3 +15,7 @@ def raise_password_token() -> NoReturn:
 
 def raise_execution_error(message: str) -> NoReturn:
     raise ExecutionError(message=message)
+
+
+def auth_error() -> NoReturn:
+    raise ExecutionError(message="Erro de autenticacao")

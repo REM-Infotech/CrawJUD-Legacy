@@ -2,48 +2,26 @@
 
 import json.decoder
 from contextlib import suppress
-from os import environ
-from pathlib import Path
 from threading import Lock
 from typing import TYPE_CHECKING, ClassVar
 
-import pyotp
 from dotenv import load_dotenv
-from pykeepass import PyKeePass
-from selenium.common.exceptions import (
-    UnexpectedAlertPresentException,
-)
-from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.wait import WebDriverWait
 
-from app.interfaces import BotData
 from app.interfaces._pje import DictResults, DictSeparaRegiao
-from app.types import AnyType, Dict
 from app.types._custom import StrProcessoCNJ
 from bots.head import CrawJUD
-from bots.resources import AutenticadorPJe, RegioesIterator
+from bots.resources import RegioesIterator
 from bots.resources.elements import pje as el
 from common.exceptions.validacao import ValidacaoStringError
+from constants import HTTP_OK_STATUS
 
 load_dotenv()
 
 if TYPE_CHECKING:
     from httpx import Client
 
-
-def _get_otp_uri() -> str:
-    file_db = str(Path(environ.get("KBDX_PATH")))
-    file_pw = environ.get("KBDX_PASSWORD")
-    kp = PyKeePass(filename=file_db, password=file_pw)
-
-    return kp.find_entries(
-        otp=".*",
-        url="https://sso.cloud.pje.jus.br/",
-        regex=True,
-        first=True,
-    ).otp
+    from app.interfaces import BotData
+    from app.types import AnyType, Dict
 
 
 class PjeBot(CrawJUD):
@@ -112,7 +90,7 @@ class PjeBot(CrawJUD):
 
         response = client.get(url=link)
 
-        if response.status_code != 200:
+        if response.status_code != HTTP_OK_STATUS:
             self.print_message(
                 message="Nenhum processo encontrado",
                 message_type="error",
@@ -152,79 +130,6 @@ class PjeBot(CrawJUD):
             id_processo=id_processo,
             data_request=result.json(),
         )
-
-    def auth(self) -> bool:
-        try:
-            url = el.LINK_AUTENTICACAO_SSO.format(regiao=self.regiao)
-            self.driver.get(url)
-
-            if "https://sso.cloud.pje.jus.br/" not in self.driver.current_url:
-                return True
-
-            path_certificado = Path(environ.get("CERTIFICADO_PFX"))
-            senha_certificado = environ.get(
-                "CERTIFICADO_PASSWORD",
-            ).encode()
-            autenticador = AutenticadorPJe(
-                path_certificado,
-                senha_certificado,
-            )
-
-            self.wait.until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    el.CSS_FORM_LOGIN,
-                )),
-            )
-
-            autenticado = autenticador.autenticar()
-            if not autenticado:
-                raise
-
-            desafio = autenticado[0]
-            uuid_sessao = autenticado[1]
-
-            self.driver.execute_script(
-                el.COMMAND,
-                el.ID_INPUT_DESAFIO,
-                desafio,
-            )
-            self.driver.execute_script(
-                el.COMMAND,
-                el.ID_CODIGO_PJE,
-                uuid_sessao,
-            )
-
-            self.driver.execute_script("document.forms[0].submit()")
-
-            otp_uri = _get_otp_uri()
-            otp = str(pyotp.parse_uri(uri=otp_uri).now())
-
-            input_otp = WebDriverWait(self.driver, 60).until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    'input[id="otp"]',
-                )),
-            )
-
-            input_otp.send_keys(otp)
-            input_otp.send_keys(Keys.ENTER)
-
-            WebDriverWait(
-                driver=self.driver,
-                timeout=10,
-                poll_frequency=0.3,
-                ignored_exceptions=(UnexpectedAlertPresentException),
-            ).until(ec.url_contains("pjekz"))
-
-        except Exception:
-            self.print_message(
-                message="Erro ao realizar autenticação",
-                message_type="error",
-            )
-            return False
-
-        return True
 
     pje_classes: ClassVar[dict[str, type[PjeBot]]] = {}
     subclasses_search: ClassVar[dict[str, type[PjeBot]]] = {}
@@ -316,22 +221,3 @@ class PjeBot(CrawJUD):
             "regioes": regioes_dict,
             "position_process": position_process,
         }
-
-    def formata_url_pje(
-        self,
-        regiao: str,
-        _format: str = "login",
-    ) -> str:
-        """Formata a URL no padrão esperado pelo PJe.
-
-        Returns:
-            str: URL formatada.
-
-        """
-        formats = {
-            "login": f"https://pje.trt{regiao}.jus.br/primeirograu/login.seam",
-            "validate_login": f"https://pje.trt{regiao}.jus.br/pjekz/",
-            "search": f"https://pje.trt{regiao}.jus.br/consultaprocessual/",
-        }
-
-        return formats[_format]

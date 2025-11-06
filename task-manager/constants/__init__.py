@@ -40,5 +40,7 @@ COLORS_DICT: ColorsDict = {
     "success": "green",
 }
 
+HTTP_OK_STATUS = 200
+NO_CONTENT_STATUS = 204
 
 MESSAGE = "[({pid}, {typ}, {row}, {dt})> {msg}]"
