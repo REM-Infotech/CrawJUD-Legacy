@@ -69,10 +69,10 @@ class JSONFinder(importlib.abc.MetaPathFinder):
     def find_spec(
         self,
         fullname: str,
-        path: str,
-        target: MyAny = None,
+        _path: str,
+        _target: MyAny = None,
     ) -> ModuleType | None:  # pyright: ignore[reportInvalidTypeForm]
-        filename = fullname.split(".")[-1] + ".json"
+        filename = fullname.rsplit(".", maxsplit=1)[-1] + ".json"
 
         path_mod = Path(filename)
         if not path_mod.exists():
@@ -111,11 +111,6 @@ class JSONFinder(importlib.abc.MetaPathFinder):
         return mimetypes.guess_type(path)[0] == "application/json"
 
 
-# Insere o JSONFinder na primeira posição do sys.meta_path para interceptar
-# todas as tentativas de importação antes dos outros finders padrão do Python.
-# Isso garante que até instruções como "from module import object" sejam capturadas.
 sys.meta_path.insert(0, JSONFinder())
 sys.meta_path.insert(1, JSONFinder())
-# Limpa o cache de importação para garantir que as alterações no meta_path sejam
-# reconhecidas imediatamente.
 importlib.invalidate_caches()
