@@ -52,7 +52,7 @@ class Download(ElawBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Handle the download queue processing.
@@ -147,9 +147,7 @@ class Download(ElawBot):
                 if str(termo).lower() in get_name_file.lower():
                     sleep(1)
 
-                    self.message = (
-                        f'Arquivo com termo de busca "{termo}" encontrado!'
-                    )
+                    self.message = f'Arquivo com termo de busca "{termo}" encontrado!'
                     self.message_type = "log"
                     self.prt()
 
@@ -177,7 +175,10 @@ class Download(ElawBot):
         while True:
             for _, __, files in Path(self.output_dir_path).walk():
                 for file in files:
-                    if file.replace(" ", "") == namefile.replace(" ", ""):
+                    if file.replace(" ", "") == namefile.replace(
+                        " ",
+                        "",
+                    ):
                         filedownloaded = True
                         namefile = file
                         break

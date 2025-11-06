@@ -42,7 +42,7 @@ class Andamentos(ElawBot):
 
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Handle the andamento queue processing.
@@ -223,7 +223,9 @@ class Andamentos(ElawBot):
             ) from e
 
         check_save = WebDriverWait(self.driver, 10).until(
-            ec.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
+            ec.url_to_be(
+                "https://amazonas.elaw.com.br/processoView.elaw",
+            ),
         )
         if check_save:
             sleep(3)

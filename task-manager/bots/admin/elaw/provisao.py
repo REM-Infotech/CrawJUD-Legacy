@@ -15,7 +15,10 @@ from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -49,7 +52,7 @@ class Provisao(ElawBot):
 
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
@@ -118,7 +121,9 @@ class Provisao(ElawBot):
         ])
 
         if is_valores_and_possivel:
-            message = "Aviso: Já existe uma provisão possível cadastrada."
+            message = (
+                "Aviso: Já existe uma provisão possível cadastrada."
+            )
             message_type = "info"
             self.print_message(
                 message=message,
@@ -142,7 +147,10 @@ class Provisao(ElawBot):
                 self.informar_datas,
             ])
 
-        elif verifica_valores == "Contém valores" or verifica_valores == "-":
+        elif (
+            verifica_valores == "Contém valores"
+            or verifica_valores == "-"
+        ):
             calls.extend([
                 self.edita_provisao,
                 self.verifica_classe_risco,
@@ -179,7 +187,9 @@ class Provisao(ElawBot):
         for item in check_exists_provisao:
             item = item
             _item_text = str(item.text).split("\n")
-            valueprovisao = item.find_elements(By.TAG_NAME, "td")[0].text
+            valueprovisao = item.find_elements(By.TAG_NAME, "td")[
+                0
+            ].text
             with suppress(NoSuchElementException):
                 valueprovisao = item.find_element(
                     By.CSS_SELECTOR,
@@ -252,9 +262,10 @@ class Provisao(ElawBot):
         )
 
         for row_valor in self.__tabela_valores():
-            campo_valor_dml = row_valor.find_elements(By.TAG_NAME, "td")[
-                9
-            ].find_element(
+            campo_valor_dml = row_valor.find_elements(
+                By.TAG_NAME,
+                "td",
+            )[9].find_element(
                 By.CSS_SELECTOR,
                 'input[id*="_input"]',
             )
@@ -269,7 +280,10 @@ class Provisao(ElawBot):
                 valor_informar = str(valor_informar) + ",00"
 
             elif isinstance(valor_informar, float):
-                valor_informar = f"{valor_informar:.2f}".replace(".", ",")
+                valor_informar = f"{valor_informar:.2f}".replace(
+                    ".",
+                    ",",
+                )
 
             campo_valor_dml.send_keys(valor_informar)
 
@@ -301,7 +315,10 @@ class Provisao(ElawBot):
             )
 
             element_select: WebElementBot = self.wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, css_element)),
+                ec.presence_of_element_located((
+                    By.CSS_SELECTOR,
+                    css_element,
+                )),
             )
 
             provisao_from_xlsx = (
@@ -327,7 +344,9 @@ class Provisao(ElawBot):
         data_base_juros = self.bot_data.get("DATA_BASE_JUROS")
         if data_base_correcao is not None:
             if isinstance(data_base_correcao, datetime):
-                data_base_correcao = data_base_correcao.strftime("%d/%m/%Y")
+                data_base_correcao = data_base_correcao.strftime(
+                    "%d/%m/%Y",
+                )
 
             self.set_data_correcao(data_base_correcao)
 
@@ -363,7 +382,9 @@ class Provisao(ElawBot):
         informa_justificativa.send_keys(
             self.bot_data.get("OBSERVACAO", "Atualização de provisão"),
         )
-        id_informa_justificativa = informa_justificativa.get_attribute("id")
+        id_informa_justificativa = informa_justificativa.get_attribute(
+            "id",
+        )
         self.driver.execute_script(
             f"document.getElementById('{id_informa_justificativa}').blur()",
         )
@@ -386,7 +407,9 @@ class Provisao(ElawBot):
             )
 
         if not check_provisao_atualizada:
-            raise ExecutionError(message="Não foi possivel atualizar provisão")
+            raise ExecutionError(
+                message="Não foi possivel atualizar provisão",
+            )
 
         message = "Provisão atualizada com sucesso!"
         self.print_comprovante(message=message)
