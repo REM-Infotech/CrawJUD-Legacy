@@ -57,42 +57,6 @@ extend-select = [
     "RUF",
 ]
 
-ignore = [
-    "I001",
-    "ARG002",
-    "FBT003",
-    "RUF022",
-    "D203",
-    "D213",
-    "TC",
-    "FA102",
-    "F821",
-    "COM812",
-]
-
-[lint.extend-per-file-ignores]
-"**/{tests,docs,tools}/*" = ["E402", "S", "D100", "D104", "ANN", "D417", "N818"]
-"*" = [
-    "RUF009",
-    "B026",
-    "FIX",
-    "D102",
-    "ARG001",
-    "ANN003",
-    "ANN002",
-    "E501",
-    "BLE001",
-    "SLF001",
-    "N815",
-    "S603",
-    "S404",
-    "PTH107",
-    "PERF203",
-]
-
-"*/_hook.py" = ["INP001"]
-
-
 [format]
 # Like Black, use double quotes for strings.
 quote-style = "double"
