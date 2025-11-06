@@ -145,7 +145,7 @@ class PrintMessage:
 
         sio.on(
             "bot_stop",
-            lambda: self.bot.bot_stopped.set(),
+            self.bot.bot_stopped.set,
             namespace="/bot_logs",
         )
         sio.connect(url=socketio_server, namespaces=["/bot_logs"])
