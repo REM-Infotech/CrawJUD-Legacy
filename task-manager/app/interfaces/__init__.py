@@ -39,7 +39,7 @@ class Message(TypedDict, total=False):
     error_count: int
     success_count: int
     remaining_count: int
-    url_arquivo: str
+    link: str
 
 
 class ColorsDict(TypedDict):

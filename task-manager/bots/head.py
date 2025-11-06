@@ -109,12 +109,12 @@ class CrawJUD:
                 self.driver.quit()
 
         message = "Fim da execução"
-        self.print_message(message=message, message_type="success")
-
         link = self.file_manager.upload_file()
-
-        message = f"Baixe os resultados aqui: {link}"
-        self.print_message(message=message, message_type="info")
+        self.print_message(
+            message=message,
+            message_type="success",
+            link=link,
+        )
 
         sleep(5)
 

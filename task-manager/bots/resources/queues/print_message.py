@@ -48,6 +48,7 @@ class PrintMessage:
         message: str,
         message_type: MessageType,
         row: int = 0,
+        link: str | None = None,
     ) -> None:
         """Envie mensagem formatada para a fila de logs.
 
@@ -55,6 +56,7 @@ class PrintMessage:
             message (str): Mensagem a ser enviada.
             message_type (MessageType): Tipo da mensagem.
             row (int): Linha do registro.
+            link (str): Link do resultado (apenas no fim da execução)
 
         """
         mini_pid = self.bot.pid[:6].upper()
@@ -78,6 +80,7 @@ class PrintMessage:
             success_count=self.calc_success(message_type),
             error_count=self.calc_error(message_type),
             remaining_count=self.calc_remaining(message_type),
+            link=link,
         )
         self.queue_print_bot.put_nowait(msg)
 
