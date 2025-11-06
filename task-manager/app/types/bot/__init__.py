@@ -24,15 +24,27 @@ class MessageLog(UserString):
         message_type: MessageType,
         row: int,
     ) -> Self:
-        # Extrai os primeiros 6 caracteres do PID e converte para maiúsculo
+        """Formata mensagem de log com PID, tipo, linha e horário.
+
+        Args:
+            pid (str): Identificador do processo.
+            message_type (MessageType): Tipo da mensagem.
+            row (int): Linha do evento.
+
+        Returns:
+            Self: Instância atual com mensagem formatada.
+
+        """
+        # Extrai os primeiros 6 caracteres do PID
+        # e converte para maiúsculo
         mini_pid = pid[:6].upper()
         # Define o fuso horário para São Paulo
         tz = ZoneInfo("America/Sao_Paulo")
         # Obtém o horário atual formatado
-        time_exec = datetime.now(tz=tz).strftime("%H:%M:%S")
+        time_ = datetime.now(tz=tz).strftime("%H:%M:%S")
 
         # Monta a mensagem de log formatada
-        msg = f"[({mini_pid}, {message_type}, {row}, {time_exec})> {self}]"
+        msg = f"[({mini_pid}, {message_type}, {row}, {time_})> {self}]"
 
         # Atualiza o atributo data da UserString
         self.data = msg

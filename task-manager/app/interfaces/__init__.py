@@ -1,16 +1,18 @@
 """Módulo de interfaces do task manager."""
 
-from typing import Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
-from app.types import MessageType, PolosProcessuais, StatusBot
+if TYPE_CHECKING:
+    from app.types import MessageType, PolosProcessuais, StatusBot
 
 
 class DataSave(TypedDict):
-    """Estrutura para salvar dados do bot em planilhas específicas do sistema.
+    """Estrutura para salvar dados do bot em planilhas do sistema.
 
     Args:
         worksheet (str): Nome da planilha onde os dados serão salvos.
-        data_save (list[BotData]): Lista de dados do bot a serem armazenados.
+        data_save (list[BotData]): Lista de dados do bot a serem
+            armazenados.
 
     Returns:
         TypedDict: Estrutura contendo nome da planilha e dados do bot.
@@ -24,28 +26,8 @@ class DataSave(TypedDict):
     data_save: list[BotData]
 
 
-class Message(TypedDict):
-    """Estrutura de mensagem do bot para rastrear status e informações.
-
-    Args:
-        pid (str): Identificador do processo.
-        message (str): Texto da mensagem.
-        message_type (MessageType): Tipo da mensagem.
-        status (StatusBot): Status atual do bot.
-        start_time (str): Horário de início do processo.
-        row (int): Linha atual do processamento.
-        total (int): Total de itens a processar.
-        error_count (int): Quantidade de erros ocorridos.
-        success_count (int): Quantidade de sucessos.
-        remaining_count (int): Quantidade restante para processar.
-
-    Returns:
-        TypedDict: Estrutura contendo informações detalhadas da mensagem.
-
-    Raises:
-        KeyError: Se uma das chaves obrigatórias estiver ausente.
-
-    """
+class Message(TypedDict, total=False):
+    """Defina estrutura para mensagens do bot."""
 
     pid: str
     message: str
@@ -57,6 +39,7 @@ class Message(TypedDict):
     error_count: int
     success_count: int
     remaining_count: int
+    url_arquivo: str
 
 
 class ColorsDict(TypedDict):
@@ -70,7 +53,8 @@ class ColorsDict(TypedDict):
         success (Literal["green"]): Cor para mensagens de sucesso.
 
     Returns:
-        TypedDict: Estrutura contendo os tipos de cores para cada mensagem.
+        TypedDict: Estrutura contendo os tipos de cores para cada
+            mensagem.
 
     Raises:
         KeyError: Se uma das chaves obrigatórias estiver ausente.
@@ -85,19 +69,13 @@ class ColorsDict(TypedDict):
 
 
 class DataSucesso(TypedDict):
-    """Defina estrutura para dados de sucesso do bot em operações judiciais específicas.
+    """Defina estrutura para dados de sucesso do bot.
 
     Args:
-        NUMERO_PROCESSO (str): Número do processo judicial.
-        MENSAGEM (str): Mensagem de sucesso associada ao processo.
-        NOME_COMPROVANTE (str): Nome do comprovante principal gerado.
-        NOME_COMPROVANTE_2 (str): Nome do segundo comprovante, se houver.
-
-    Returns:
-        TypedDict: Estrutura contendo dados de sucesso do bot.
-
-    Raises:
-        KeyError: Se uma das chaves obrigatórias estiver ausente.
+        NUMERO_PROCESSO (str): Número do processo.
+        MENSAGEM (str): Mensagem de sucesso.
+        NOME_COMPROVANTE (str): Nome do comprovante.
+        NOME_COMPROVANTE_2 (str): Nome do segundo comprovante.
 
     """
 

@@ -27,8 +27,12 @@ class StrProcessoCNJ(UserString):
             message="Valor informado não corresponde ao valor esperado",
         )
 
-    def __validate_str__(self, seq: str, pattern_list: list[Pattern]) -> bool:
-        validate_seq = any(re.match(pattern, seq) for pattern in pattern_list)
+    def __validate_str__(
+        self, seq: str, pattern_list: list[Pattern]
+    ) -> bool:
+        validate_seq = any(
+            re.match(pattern, seq) for pattern in pattern_list
+        )
 
         if not validate_seq:
             self.__raise_value_error__()
