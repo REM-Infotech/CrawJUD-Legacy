@@ -61,7 +61,7 @@ class Movimentacao(ProjudiBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Gerencie a fila de operações de movimentação e realize a raspagem de dados.
@@ -161,12 +161,16 @@ class Movimentacao(ProjudiBot):
 
             """
             return any(
-                elemento.find_elements(By.TAG_NAME, "td")[3].text.lower()
+                elemento.find_elements(By.TAG_NAME, "td")[
+                    3
+                ].text.lower()
                 == termo.lower()
                 for termo in termos
             ) or any(
                 termo.lower()
-                in elemento.find_elements(By.TAG_NAME, "td")[3].text.lower()
+                in elemento.find_elements(By.TAG_NAME, "td")[
+                    3
+                ].text.lower()
                 for termo in termos
             )
 
@@ -229,7 +233,9 @@ class Movimentacao(ProjudiBot):
         if qtd_movimentacoes > 0:
             self.movimentacao_encontrada = True
 
-            message = f"Foram encontradas {qtd_movimentacoes} movimentações!"
+            message = (
+                f"Foram encontradas {qtd_movimentacoes} movimentações!"
+            )
 
             if com_documento:
                 message = f"Foram encontradas {qtd_movimentacoes} movimentações com arquivos!"
@@ -246,7 +252,8 @@ class Movimentacao(ProjudiBot):
                 [
                     com_documento,
                     "TRAZER_ARQUIVO_MOVIMENTACAO" in bot_data,
-                    bot_data["TRAZER_ARQUIVO_MOVIMENTACAO"].lower() == "sim",
+                    bot_data["TRAZER_ARQUIVO_MOVIMENTACAO"].lower()
+                    == "sim",
                 ],
             ):
                 self._extrair_arquivos_movimentacao(
@@ -283,7 +290,10 @@ class Movimentacao(ProjudiBot):
         )
 
         sleep(3)
-        table_files = arquivo_movimentacao.find_element(By.TAG_NAME, "table")
+        table_files = arquivo_movimentacao.find_element(
+            By.TAG_NAME,
+            "table",
+        )
 
         cookies = {
             str(cookie["name"]): str(cookie["value"])
@@ -326,7 +336,9 @@ class Movimentacao(ProjudiBot):
             pdf_out_name = pdf_out_name.split("\n")[0]
 
         pdf_out_name = " ".join(pdf_out_name.split())
-        pdf_name = f"{numero_processo} - {pdf_out_name} - {self.pid}.pdf"
+        pdf_name = (
+            f"{numero_processo} - {pdf_out_name} - {self.pid}.pdf"
+        )
 
         path_pdf = self.output_dir_path.joinpath(pdf_name)
         with path_pdf.open("wb") as fp:
@@ -376,7 +388,9 @@ class Movimentacao(ProjudiBot):
 
             dados.update({
                 "Evento": " ".join(evento_e_descricaco[0].split()),
-                "Descrição Evento": " ".join(evento_e_descricaco[1].split()),
+                "Descrição Evento": " ".join(
+                    evento_e_descricaco[1].split(),
+                ),
             })
 
         self.list_movimentacoes_extraidas.append(dados)

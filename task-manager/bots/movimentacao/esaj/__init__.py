@@ -54,7 +54,7 @@ class Movimentacao(ESajBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Manage queuing of movement operations and scrape required data.
@@ -76,7 +76,9 @@ class Movimentacao(ESajBot):
             search = self.search()
 
             if search is not True:
-                raise_execution_error(message="Processo não encontrado!")
+                raise_execution_error(
+                    message="Processo não encontrado!",
+                )
 
             self.message = "Buscando movimentações"
             self.message_type = "log"
@@ -93,7 +95,9 @@ class Movimentacao(ESajBot):
                     self.message_type = "info"
                     self.append_success([data], msg, file_name_save)
 
-            elif len(self.appends) == 0 and len(self.another_append) == 0:
+            elif (
+                len(self.appends) == 0 and len(self.another_append) == 0
+            ):
                 self.message = "Nenhuma movimentação encontrada"
                 self.message_type = "error"
                 self.prt()
@@ -133,7 +137,9 @@ class Movimentacao(ESajBot):
             encontrado = self.scrap_moves(keyword)
 
         if encontrado is False:
-            raise ExecutionError(message="Nenhuma movimentação encontrada")
+            raise ExecutionError(
+                message="Nenhuma movimentação encontrada",
+            )
 
     def filter_moves(self, move: WebElementBot) -> bool:
         """Filtra um elemento de movimentação com base em critérios de data e palavra-chave.
@@ -195,7 +201,10 @@ class Movimentacao(ESajBot):
         for format_d, pattern in patterns:
             match_ = re.match(pattern, data_mov)
             if match_ is not None:
-                data_mov_dt = datetime.strptime(data_mov, format_d).replace(
+                data_mov_dt = datetime.strptime(
+                    data_mov,
+                    format_d,
+                ).replace(
                     tzinfo=ZoneInfo("America/Manaus"),
                 )
                 break
@@ -226,7 +235,10 @@ class Movimentacao(ESajBot):
                     ).replace(tzinfo=ZoneInfo("America/Manaus"))
                     break
 
-        return all([data_mov_dt >= data_inicio, data_mov_dt <= data_fim])
+        return all([
+            data_mov_dt >= data_inicio,
+            data_mov_dt <= data_fim,
+        ])
 
     def _text_check(self, text_mov: str, keyword: str) -> bool:
         """Verifica se o texto da movimentação atende aos critérios de palavra-chave.
@@ -322,9 +334,7 @@ class Movimentacao(ESajBot):
             if key not in message_:
                 message_.append(f"{_msg_}\n")
             if idx + 1 == len(args):
-                _msg_ += (
-                    "\n====================================================\n"
-                )
+                _msg_ += "\n====================================================\n"
                 message_.append(_msg_)
         self.message = "".join(message_)
         self.message_type = "info"
@@ -344,12 +354,14 @@ class Movimentacao(ESajBot):
 
         """
         save_another_file = (
-            str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper() == "SIM"
+            str(self.bot_data.get("DOC_SEPARADO", "SIM")).upper()
+            == "SIM"
         )
         mov = ""
         mov_chk = False
         trazer_teor = (
-            str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper() == "SIM"
+            str(self.bot_data.get("TRAZER_TEOR", "NÃO")).upper()
+            == "SIM"
         )
         patterns = [
             r"Referente ao evento (.+?) \((\d{2}/\d{2}/\d{4})\)",
@@ -360,10 +372,16 @@ class Movimentacao(ESajBot):
             if match is not None:
                 mov = str(match)
                 mov_chk = True
-        use_gpt = str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
+        use_gpt = (
+            str(self.bot_data.get("USE_GPT", "NÃO").upper()) == "SIM"
+        )
         return (mov_chk, trazer_teor, mov, use_gpt, save_another_file)
 
-    def _process_single_move(self, move: WebElementBot, keyword: str) -> None:
+    def _process_single_move(
+        self,
+        move: WebElementBot,
+        keyword: str,
+    ) -> None:
         """Processa uma única movimentação filtrada.
 
         Args:
@@ -397,10 +415,17 @@ class Movimentacao(ESajBot):
             if mov_chk:
                 move_doct = self.get_another_move(mov_name)
                 for sub_mov in move_doct:
-                    mov_texdoc = self.getdocmove(sub_mov, save_another_file)
+                    mov_texdoc = self.getdocmove(
+                        sub_mov,
+                        save_another_file,
+                    )
             elif self.movecontainsdoc(move):
                 mov_texdoc = self.getdocmove(move, save_another_file)
-            if mov_texdoc is not None and mov_texdoc != "" and use_gpt is True:
+            if (
+                mov_texdoc is not None
+                and mov_texdoc != ""
+                and use_gpt is True
+            ):
                 mov_texdoc = self.gpt_chat(mov_texdoc)
         data = {
             "NUMERO_PROCESSO": self.bot_data.get("NUMERO_PROCESSO"),
@@ -505,7 +530,9 @@ class Movimentacao(ESajBot):
             termos = palavra_chave.replace(", ", ",").split(",")
 
         for termo in termos:
-            self.message = f'Buscando movimentações que contenham "{termo}"'
+            self.message = (
+                f'Buscando movimentações que contenham "{termo}"'
+            )
             self.message_type = "log"
 
             for item in itens:
@@ -523,7 +550,9 @@ class Movimentacao(ESajBot):
                             ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                     name_mov = mov.split("\n")[0]
-                    text_mov = td_tr[2].find_element(By.TAG_NAME, "span").text
+                    text_mov = (
+                        td_tr[2].find_element(By.TAG_NAME, "span").text
+                    )
                     self.appends.append([
                         self.bot_data.get("NUMERO_PROCESSO"),
                         data_mov,
