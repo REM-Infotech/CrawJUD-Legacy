@@ -14,9 +14,7 @@ btn_acao = 'button[id="botao-acao"]'
 
 campo_tipo_protocolo = 'mat-select[formcontrolname="idTipoDocumento"]'
 tipos_protocolos = '//*[@id="mat-select-0-panel"]/mat-option'
-campo_arquivo_principal = (
-    '//*[@id="document_list_upload"]/div[1]/div/custom-file-upload/input'
-)
+campo_arquivo_principal = '//*[@id="document_list_upload"]/div[1]/div/custom-file-upload/input'
 
 campo_tipo_documento = 'mat-select[id="mat-select-2"]'
 options_tipo_documento = '//*[@id="mat-select-2-panel"]/mat-option'
