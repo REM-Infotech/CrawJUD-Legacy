@@ -1,12 +1,13 @@
 import re
 from collections import UserString
 from contextlib import suppress
-from re import Pattern
-from typing import NoReturn
+from typing import TYPE_CHECKING
 
-from app.types import AnyType
-from common.exceptions.validacao import ValidacaoStringError
+from common._raises import value_error
 from constants import PADRAO_CNJ
+
+if TYPE_CHECKING:
+    from app.types import AnyType
 
 
 class StrProcessoCNJ(UserString):
@@ -22,24 +23,10 @@ class StrProcessoCNJ(UserString):
 
     """
 
-    def __raise_value_error__(self) -> NoReturn:
-        raise ValidacaoStringError(
-            message="Valor informado não corresponde ao valor esperado",
-        )
-
-    def __validate_str__(
-        self,
-        seq: str,
-        pattern_list: list[Pattern],
-    ) -> bool:
-        validate_seq = any(re.match(pattern, seq) for pattern in pattern_list)
-
-        if not validate_seq:
-            self.__raise_value_error__()
-
     def __init__(self, seq: str) -> None:
         """Inicializa a classe StrTime."""
-        self.__validate_str__(seq, PADRAO_CNJ)
+        super().__init__(seq)
+        self.__validate_str()
 
         seq = re.sub(
             r"(\d{7})(\d{2})(\d{4})(\d)(\d{2})(\d{4})",
@@ -47,7 +34,10 @@ class StrProcessoCNJ(UserString):
             seq,
         )
 
-        super().__init__(seq)
+    def __validate_str(self) -> bool:
+        matches = [re.match(pattern, self.data) for pattern in PADRAO_CNJ]
+
+        return any(matches) or value_error()
 
     @property
     def tj(self) -> str:
@@ -60,7 +50,7 @@ class StrProcessoCNJ(UserString):
         to_return = None
         match_ = re.search(r"\.(\d)\.(\d{1,2})\.", self.data)
         if not match_:
-            self.__raise_value_error__()
+            value_error()
 
         to_return: str = match_.group(2)
         if to_return.startswith("0"):
@@ -77,15 +67,6 @@ class StrProcessoCNJ(UserString):
         """
         return self.data
 
-    def __repr__(self) -> str:
-        """Retorne a representação formal da instância StrTime.
-
-        Returns:
-            str: Representação formal da instância.
-
-        """
-        return self
-
     def __instancecheck__(self, instance: AnyType) -> bool:
         """Verifique se a instância corresponde a padrões de string CNJ.
 
@@ -97,6 +78,7 @@ class StrProcessoCNJ(UserString):
 
         """
         with suppress(ValueError):
-            return self.__validate_str__(instance, PADRAO_CNJ)
+            matches = [re.match(pattern, instance) for pattern in PADRAO_CNJ]
+            return any(matches) or value_error()
 
         return False

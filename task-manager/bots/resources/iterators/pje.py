@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from app.types._custom import StrProcessoCNJ, ValidacaoStringError
+from app.types._custom import StrProcessoCNJ
+from common.exceptions.validacao import ValidacaoStringError
 
 if TYPE_CHECKING:
     from app.interfaces import BotData

@@ -31,6 +31,7 @@ from bots.resources.auth._main import AutenticadorBot
 from bots.resources.elements import pje as el
 from common import auth_error
 from constants import NO_CONTENT_STATUS
+from constants.pje import ENDPOINT_DESAFIO
 
 if TYPE_CHECKING:
     from cryptography.x509 import Certificate
@@ -49,6 +50,25 @@ ArrayList = JClass("java.util.ArrayList")
 
 class AutenticadorPJe(AutenticadorBot):
     _chain: list[Certificate]
+    bot: PjeBot
+
+    @property
+    def assinatura_base64(self) -> str | None:
+        if self._assinatura:
+            return base64.b64encode(self._assinatura).decode()
+
+        return None
+
+    @property
+    def cadeia_certificado_b64(self) -> str | None:
+        if self._chain:
+            return self.generate_pkipath_java()
+
+        return None
+
+    @property
+    def regiao(self) -> str:
+        return self.bot.regiao
 
     def __init__(self, bot: PjeBot) -> None:
         path_certificado = Path(environ.get("CERTIFICADO_PFX"))
@@ -156,20 +176,6 @@ class AutenticadorPJe(AutenticadorBot):
 
         return self
 
-    @property
-    def assinatura_base64(self) -> str | None:
-        if self._assinatura:
-            return base64.b64encode(self._assinatura).decode()
-
-        return None
-
-    @property
-    def cadeia_certificado_b64(self) -> str | None:
-        if self._chain:
-            return self.generate_pkipath_java()
-
-        return None
-
     def autenticar(self) -> tuple[str, str] | None:
         # enviar diretamente ao endpoint PJe (exemplo)
         desafio = self.random_base36()
@@ -182,8 +188,7 @@ class AutenticadorPJe(AutenticadorBot):
             "certChain": self.cadeia_certificado_b64,
         }
 
-        endpoint = "https://sso.cloud.pje.jus.br/auth/realms/pje/pjeoffice-rest"
-        resp = requests.post(endpoint, json=ssopayload, timeout=30)
+        resp = requests.post(ENDPOINT_DESAFIO, json=ssopayload, timeout=30)
 
         if resp.status_code == NO_CONTENT_STATUS:
             return desafio, uuid_tarefa
