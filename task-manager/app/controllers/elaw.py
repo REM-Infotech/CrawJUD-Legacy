@@ -6,7 +6,6 @@ from time import sleep
 
 from selenium.common.exceptions import (
     NoSuchElementException,
-    StaleElementReferenceException,
     TimeoutException,
 )
 from selenium.webdriver.common.by import By
@@ -14,85 +13,18 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.controllers.head import CrawJUD
-from app.resources.driver.web_element import WebElementBot
-from app.resources.elements import elaw as el
+from app.resources.auth import AutenticadorElaw
+from app.resources.search import ElawSearch
 from constants.data._bots.cidades import cidades_amazonas
 
 
 class ElawBot(CrawJUD):
     """Classe de controle para robôs do Elaw."""
 
-    def auth(self) -> bool:
-        self.driver.get("https://amazonas.elaw.com.br/login")
-
-        # wait until page load
-        username = self.wait.until(
-            ec.presence_of_element_located((By.ID, "username")),
-        )
-        username.send_keys(self.credenciais.username)
-
-        password = self.wait.until(
-            ec.presence_of_element_located((
-                By.CSS_SELECTOR,
-                "#authKey",
-            )),
-        )
-        password.send_keys(self.credenciais.password)
-
-        entrar = self.wait.until(
-            ec.presence_of_element_located((By.ID, "j_id_c_1_5_f")),
-        )
-        entrar.click()
-
-        sleep(7)
-
-        url = self.driver.current_url
-        return url != "https://amazonas.elaw.com.br/login"
-
-    def search(self, bot_data: dict[str, str]) -> bool:
-        wait = self.wait
-        bot_data = self.bot_data
-
-        numero_processo = bot_data.get("NUMERO_PROCESSO")
-
-        message = f"Buscando processo {numero_processo}"
-        message_type = "log"
-        self.print_message(
-            message=message,
-            message_type=message_type,
-        )
-
-        self.driver.implicitly_wait(5)
-
-        if self.driver.current_url != el.LINK_PROCESSO_LIST:
-            self.driver.get(el.LINK_PROCESSO_LIST)
-
-        campo_numproc: WebElementBot = wait.until(
-            ec.presence_of_element_located((
-                By.ID,
-                "tabSearchTab:txtSearch",
-            )),
-        )
-        campo_numproc.clear()
-        sleep(0.15)
-        campo_numproc.send_keys(numero_processo)
-        self.driver.find_element(By.ID, "btnPesquisar").click()
-
-        try:
-            return self.open_proc()
-
-        except TimeoutException:
-            message = "Processo não encontrado!"
-            message_type = "error"
-            self.print_message(
-                message=message,
-                message_type=message_type,
-            )
-            return False
-
-        except StaleElementReferenceException:
-            sleep(5)
-            return self.open_proc()
+    def __init__(self) -> None:
+        """Inicialize o robô Elaw."""
+        self.search = ElawSearch(self)
+        self.auth = AutenticadorElaw(self)
 
     def elaw_formats(
         self,
@@ -246,28 +178,3 @@ class ElawBot(CrawJUD):
         self.driver.close()
 
         self.driver.switch_to.window(main_window)
-
-    def open_proc(self) -> bool:
-        open_proc = WebDriverWait(self.driver, 10).until(
-            ec.presence_of_element_located((
-                By.ID,
-                "dtProcessoResults:0:btnProcesso",
-            )),
-        )
-        if self.config["categoria"].upper() != "CADASTRO":
-            if self.config["categoria"].upper() == "COMPLEMENTAR_CADASTRO":
-                open_proc = self.driver.find_element(
-                    By.ID,
-                    "dtProcessoResults:0:btnEditar",
-                )
-
-            open_proc.click()
-
-        message = "Processo encontrado!"
-        message_type = "info"
-        self.print_message(
-            message=message,
-            message_type=message_type,
-        )
-
-        return True

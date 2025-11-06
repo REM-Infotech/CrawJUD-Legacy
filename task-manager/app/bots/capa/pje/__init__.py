@@ -12,7 +12,7 @@ from httpx import Client, Response
 from tqdm import tqdm
 
 from app.controllers.pje import PjeBot
-from app.interfaces._pje import (
+from app.interfaces.pje import (
     AssuntosProcessoPJeDict,
     AudienciaProcessoPjeDict,
     CapaProcessualPJeDict,
@@ -24,9 +24,9 @@ from app.resources.elements import pje as el
 
 if TYPE_CHECKING:
     from app.interfaces import BotData
-    from app.interfaces._pje.assuntos import ItemAssuntoDict
-    from app.interfaces._pje.audiencias import AudienciaDict
-    from app.interfaces._pje.partes import ParteDict, PartesJsonDict
+    from app.interfaces.pje.assuntos import ItemAssuntoDict
+    from app.interfaces.pje.audiencias import AudienciaDict
+    from app.interfaces.pje.partes import ParteDict, PartesJsonDict
     from app.types import AnyType
 
 
@@ -379,6 +379,6 @@ class Capa(PjeBot):
             SIGLA_ORGAO_JULGADOR=result["orgaoJulgador"]["sigla"],
             DATA_DISTRIBUICAO=result.get("distribuidoEm", ""),
             STATUS_PROCESSO=result["labelStatusProcesso"],
-            SEGREDO_JUSTIÇA=result["segredoDeJustica"],
+            SEGREDO_JUSTICA=result["segredoDeJustica"],
             VALOR_CAUSA=result["valorDaCausa"],
         )

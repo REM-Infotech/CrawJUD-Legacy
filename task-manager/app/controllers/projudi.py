@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from app.controllers.head import CrawJUD
 from app.resources import value_check
-from app.resources.auth._projudi import AutenticadorProjudi
+from app.resources.auth.projudi import AutenticadorProjudi
 from app.resources.formatadores import formata_string, normalizar
 from app.resources.search.projudi import ProjudiSearch
 

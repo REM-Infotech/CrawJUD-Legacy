@@ -5,7 +5,7 @@ Contém arquivos e utilitários de recursos compartilhados.
 
 from constants import MAIOR_60_ANOS, VER_RECURSO
 
-from .auth._pje import AutenticadorPJe
+from .auth.pje import AutenticadorPJe
 from .formatadores import formata_string
 from .iterators.pje import RegioesIterator
 

@@ -1,6 +1,6 @@
 """Módulo de agrupamento de Iterators para o CrawJUD."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from common.exceptions.validacao import ValidacaoStringError
 
@@ -9,7 +9,19 @@ from app.types.bot import ProcessoCNJ
 if TYPE_CHECKING:
     from app.controllers.pje import PjeBot
     from app.interfaces import BotData
-    from app.interfaces._pje import DictSeparaRegiao
+
+
+class DictSeparaRegiao(TypedDict):
+    """Define o dicionário que separa regiões e posições de processos.
+
+    Args:
+        regioes (dict[str, list[BotData]]): Dicionário de regiões e bots.
+        position_process (dict[str, int]): Posição dos processos por região.
+
+    """
+
+    regioes: dict[str, list[BotData]]
+    position_process: dict[ProcessoCNJ, int]
 
 
 class RegioesIterator:

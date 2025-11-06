@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from app.controllers.head import CrawJUD
 from app.resources import RegioesIterator
-from app.resources.auth._pje import AutenticadorPJe
+from app.resources.auth.pje import AutenticadorPJe
 from app.resources.search.pje import PjeSeach
 
 load_dotenv()

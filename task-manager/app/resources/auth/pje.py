@@ -1,3 +1,5 @@
+"""Autenticador PJe."""
+
 import base64
 from contextlib import suppress
 from os import environ
@@ -51,24 +53,6 @@ ArrayList = JClass("java.util.ArrayList")
 class AutenticadorPJe(AutenticadorBot):
     _chain: list[Certificate]
     bot: PjeBot
-
-    @property
-    def assinatura_base64(self) -> str | None:
-        if self._assinatura:
-            return base64.b64encode(self._assinatura).decode()
-
-        return None
-
-    @property
-    def cadeia_certificado_b64(self) -> str | None:
-        if self._chain:
-            return self.generate_pkipath_java()
-
-        return None
-
-    @property
-    def regiao(self) -> str:
-        return self.bot.regiao
 
     def __init__(self, bot: PjeBot) -> None:
         path_certificado = Path(environ.get("CERTIFICADO_PFX"))
@@ -249,6 +233,24 @@ class AutenticadorPJe(AutenticadorBot):
                 self.driver.requests,
             ),
         )[-1]
+
+    @property
+    def assinatura_base64(self) -> str | None:
+        if self._assinatura:
+            return base64.b64encode(self._assinatura).decode()
+
+        return None
+
+    @property
+    def cadeia_certificado_b64(self) -> str | None:
+        if self._chain:
+            return self.generate_pkipath_java()
+
+        return None
+
+    @property
+    def regiao(self) -> str:
+        return self.bot.regiao
 
 
 def _get_otp_uri() -> str:

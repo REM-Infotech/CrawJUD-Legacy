@@ -2,7 +2,7 @@ from contextlib import suppress
 from json.decoder import JSONDecodeError
 from typing import TYPE_CHECKING
 
-from app.interfaces._pje import DictResults
+from app.interfaces.pje import DictResults
 from app.resources.elements import pje as el
 from app.resources.search._main import SearchBot
 from constants import HTTP_OK_STATUS

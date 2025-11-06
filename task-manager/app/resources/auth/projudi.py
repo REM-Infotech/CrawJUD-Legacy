@@ -1,4 +1,4 @@
-"""Módulo para a classe de controle dos robôs PROJUDI."""
+"""Autenticador PROJUDI."""
 
 from contextlib import suppress
 from time import sleep
@@ -13,7 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from app.resources.auth._pje import AutenticadorBot
+from app.resources.auth.pje import AutenticadorBot
 from app.resources.elements import projudi as el
 
 if TYPE_CHECKING:
