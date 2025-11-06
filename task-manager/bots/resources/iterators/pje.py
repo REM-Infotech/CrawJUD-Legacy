@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from app.types._custom import StrProcessoCNJ
+from app.types.bot import ProcessoCNJ
 from common.exceptions.validacao import ValidacaoStringError
 
 if TYPE_CHECKING:
@@ -87,7 +87,7 @@ class RegioesIterator:
 
         for item in self.frame:
             try:
-                numero_processo = StrProcessoCNJ(
+                numero_processo = ProcessoCNJ(
                     item["NUMERO_PROCESSO"],
                 )
 
