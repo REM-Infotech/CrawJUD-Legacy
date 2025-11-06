@@ -5,7 +5,7 @@ from common._raises import raise_execution_error
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from app.bots.controller.elaw import ElawBot
+from app.controllers.elaw import ElawBot
 from app.resources.elements import elaw as el
 
 type ListStr = list[str]

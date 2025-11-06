@@ -16,7 +16,7 @@ from app.resources.search._main import SearchBot
 from constants import CSS_INPUT_PROCESSO
 
 if TYPE_CHECKING:
-    from app.bots.controller.projudi import ProjudiBot
+    from app.controllers.projudi import ProjudiBot
     from app.interfaces import BotData
     from app.resources.driver.web_element import WebElementBot
 

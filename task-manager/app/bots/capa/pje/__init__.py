@@ -11,7 +11,7 @@ from common.exceptions import ExecutionError
 from httpx import Client, Response
 from tqdm import tqdm
 
-from app.bots.controller.pje import PjeBot
+from app.controllers.pje import PjeBot
 from app.interfaces._pje import (
     AssuntosProcessoPJeDict,
     AudienciaProcessoPjeDict,

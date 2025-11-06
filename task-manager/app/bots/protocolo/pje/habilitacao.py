@@ -15,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.controller.pje import PjeBot
+from app.controllers.pje import PjeBot
 from app.resources.elements import pje as el
 from app.resources.formatadores import formata_string
 

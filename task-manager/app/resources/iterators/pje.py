@@ -2,11 +2,12 @@
 
 from typing import TYPE_CHECKING
 
-from app.types.bot import ProcessoCNJ
 from common.exceptions.validacao import ValidacaoStringError
 
+from app.types.bot import ProcessoCNJ
+
 if TYPE_CHECKING:
-    from app.bots.controller.pje import PjeBot
+    from app.controllers.pje import PjeBot
     from app.interfaces import BotData
     from app.interfaces._pje import DictSeparaRegiao
 

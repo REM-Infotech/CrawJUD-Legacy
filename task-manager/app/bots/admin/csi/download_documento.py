@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-from app.bots.controller.csi import CsiBot
+from app.controllers.csi import CsiBot
 from app.resources.driver.web_element import WebElementBot
 from app.resources.elements import csi as el
 from app.types import AnyType

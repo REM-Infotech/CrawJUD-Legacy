@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from app.bots.controller.esaj import ESajBot
+from app.controllers.esaj import ESajBot
 from app.resources.elements import projudi as el
 
 type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]

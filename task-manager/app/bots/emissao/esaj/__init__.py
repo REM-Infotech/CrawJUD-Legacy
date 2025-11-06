@@ -19,7 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.controller.esaj import ESajBot
+from app.controllers.esaj import ESajBot
 from app.resources.elements import esaj as el
 
 

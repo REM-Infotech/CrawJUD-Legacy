@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from cryptography.x509 import Certificate
     from seleniumwire.request import Request
 
-    from app.bots.controller.pje import PjeBot
+    from app.controllers.pje import PjeBot
 
 if not jpype.isJVMStarted():
     jpype.startJVM()

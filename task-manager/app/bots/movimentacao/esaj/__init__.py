@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from app.bots.controller.esaj import ESajBot
+from app.controllers.esaj import ESajBot
 from app.resources.driver.web_element import WebElementBot
 from app.resources.elements import esaj as el
 

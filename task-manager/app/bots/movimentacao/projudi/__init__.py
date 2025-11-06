@@ -15,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
-from app.bots.controller.projudi import ProjudiBot
+from app.controllers.projudi import ProjudiBot
 from app.resources.driver.web_element import WebElementBot
 from app.resources.elements import projudi as el
 

@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.controller.elaw import ElawBot
+from app.controllers.elaw import ElawBot
 from app.resources.elements import elaw as el
 
 

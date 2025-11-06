@@ -10,7 +10,7 @@ from common.exceptions import ExecutionError
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-from app.bots.controller.projudi import ProjudiBot
+from app.controllers.projudi import ProjudiBot
 from app.resources.driver.web_element import (
     WebElementBot as WebElement,
 )

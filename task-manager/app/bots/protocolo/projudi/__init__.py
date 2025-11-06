@@ -18,7 +18,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.controller.projudi import ProjudiBot
+from app.controllers.projudi import ProjudiBot
 from app.interfaces import DataSucesso
 from app.resources.elements import projudi as el
 from app.resources.formatadores import formata_string

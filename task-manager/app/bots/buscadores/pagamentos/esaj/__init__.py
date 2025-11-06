@@ -12,7 +12,7 @@ from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from app.bots.controller.esaj import ESajBot
+from app.controllers.esaj import ESajBot
 from app.resources.elements import esaj as el
 
 if TYPE_CHECKING:
