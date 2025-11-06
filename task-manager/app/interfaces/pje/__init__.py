@@ -9,6 +9,13 @@ from .partes import (
     PessoaFisicaDict,
     PessoaJuridicaDict,
 )
+from .worksheet import (
+    Assuntos,
+    AudienciasProcessos,
+    CapaPJe,
+    Partes,
+    Representantes,
+)
 
 if TYPE_CHECKING:
     from app.interfaces.pje.payload import ProcessoJudicialDict
@@ -34,12 +41,17 @@ class DictResults(TypedDict):
 
 __all__ = [
     "AssuntoDict",
+    "Assuntos",
     "AudienciaDict",
+    "AudienciasProcessos",
+    "CapaPJe",
     "ItemAssuntoDict",
     "PaisDict",
     "ParteDict",
+    "Partes",
     "PartesJsonDict",
     "PessoaFisicaDict",
     "PessoaJuridicaDict",
+    "Representantes",
     "TipoAudienciaDict",
 ]
