@@ -20,7 +20,8 @@ class ESajBot(CrawJUD):
     def auth(self) -> bool:
         loginuser = "".join(
             filter(
-                lambda x: x not in string.punctuation, self.credenciais.username
+                lambda x: x not in string.punctuation,
+                self.credenciais.username,
             ),
         )
         passuser = self.credenciais.password
@@ -57,7 +58,9 @@ class ESajBot(CrawJUD):
                 entrar.click()
                 sleep(2)
 
-                user_accept_cert_dir = Path(self.path_accepted) / "ACCEPTED"
+                user_accept_cert_dir = (
+                    Path(self.path_accepted) / "ACCEPTED"
+                )
                 if not user_accept_cert_dir.exists():
                     self.accept_cert(user_accept_cert_dir)
 

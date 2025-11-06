@@ -51,7 +51,9 @@ class PjeBot(CrawJUD):
 
     posicoes_processos: ClassVar[Dict] = {}
 
-    def get_headers_cookies(self) -> tuple[dict[str, str], dict[str, str]]:
+    def get_headers_cookies(
+        self,
+    ) -> tuple[dict[str, str], dict[str, str]]:
         cookies_driver = self.driver.get_cookies()
         har_data_ = self.driver.requests
 
@@ -60,7 +62,7 @@ class PjeBot(CrawJUD):
                 lambda item: f"https://pje.trt{self.regiao}.jus.br/pje-comum-api/"
                 in item.url,
                 har_data_,
-            )
+            ),
         )[-1]
 
         return (
@@ -156,18 +158,25 @@ class PjeBot(CrawJUD):
             url = el.LINK_AUTENTICACAO_SSO.format(regiao=self.regiao)
             self.driver.get(url)
 
-            if "https://sso.cloud.pje.jus.br/" not in self.driver.current_url:
+            if (
+                "https://sso.cloud.pje.jus.br/"
+                not in self.driver.current_url
+            ):
                 return True
 
             path_certificado = Path(environ.get("CERTIFICADO_PFX"))
-            senha_certificado = environ.get("CERTIFICADO_PASSWORD").encode()
-            autenticador = AutenticadorPJe(path_certificado, senha_certificado)
+            senha_certificado = environ.get(
+                "CERTIFICADO_PASSWORD"
+            ).encode()
+            autenticador = AutenticadorPJe(
+                path_certificado, senha_certificado
+            )
 
             self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     el.CSS_FORM_LOGIN,
-                ))
+                )),
             )
 
             autenticado = autenticador.autenticar()
@@ -177,9 +186,13 @@ class PjeBot(CrawJUD):
             desafio = autenticado[0]
             uuid_sessao = autenticado[1]
 
-            self.driver.execute_script(el.COMMAND, el.ID_INPUT_DESAFIO, desafio)
             self.driver.execute_script(
-                el.COMMAND, el.ID_CODIGO_PJE, uuid_sessao
+                el.COMMAND, el.ID_INPUT_DESAFIO, desafio
+            )
+            self.driver.execute_script(
+                el.COMMAND,
+                el.ID_CODIGO_PJE,
+                uuid_sessao,
             )
 
             self.driver.execute_script("document.forms[0].submit()")
@@ -191,7 +204,7 @@ class PjeBot(CrawJUD):
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
                     'input[id="otp"]',
-                ))
+                )),
             )
 
             input_otp.send_keys(otp)

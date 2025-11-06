@@ -7,7 +7,10 @@ from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 from bs4.element import PageElement
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -15,8 +18,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from bots.head import CrawJUD
-from bots.resources._formatadores import formata_string
 from bots.resources.elements import projudi as el
+from bots.resources.formatadores import formata_string
 from common.exceptions import (
     ExecutionError,
     LoginSystemError,
@@ -92,10 +95,17 @@ class ProjudiBot(CrawJUD):
 
             inputproc.send_keys(numero_processo)
             sleep(1)
-            consultar = driver.find_element(By.CSS_SELECTOR, "#pesquisar")
+            consultar = driver.find_element(
+                By.CSS_SELECTOR,
+                "#pesquisar",
+            )
             consultar.click()
 
-            with suppress(TimeoutException, NoSuchElementException, Exception):
+            with suppress(
+                TimeoutException,
+                NoSuchElementException,
+                Exception,
+            ):
                 WebDriverWait(driver, 5).until(
                     ec.presence_of_element_located((
                         By.XPATH,
@@ -116,7 +126,8 @@ class ProjudiBot(CrawJUD):
                     allow_access(driver=driver)
 
                     self.print_message(
-                        "Processo Encontrado!", message_type="info"
+                        "Processo Encontrado!",
+                        message_type="info",
                     )
 
                     return True
@@ -159,7 +170,10 @@ class ProjudiBot(CrawJUD):
             data_inicio_xls = data_inicio_xls.strftime("%d/%m/%Y")
 
         if type(data_fim_xls) is str:
-            data_fim_xls = datetime.strptime(data_fim_xls, "%Y-%m-%d").replace(
+            data_fim_xls = datetime.strptime(
+                data_fim_xls,
+                "%Y-%m-%d",
+            ).replace(
                 tzinfo=ZoneInfo("America/Manaus"),
             )
             data_fim_xls = data_fim_xls.strftime("%d/%m/%Y")
@@ -174,7 +188,10 @@ class ProjudiBot(CrawJUD):
             alljudge.click()
 
         elif self.vara != "TODAS AS COMARCAS":
-            search_vara = self.driver.find_element(By.ID, "descricaoVara")
+            search_vara = self.driver.find_element(
+                By.ID,
+                "descricaoVara",
+            )
             search_vara.click()
             search_vara.send_keys(self.vara)
             sleep(3)
@@ -273,7 +290,10 @@ class ProjudiBot(CrawJUD):
 
             alert = None
             with suppress(TimeoutException, Exception):
-                alert: type[Alert] = WebDriverWait(self.driver, 5).until(
+                alert: type[Alert] = WebDriverWait(
+                    self.driver,
+                    5,
+                ).until(
                     ec.alert_is_present(),
                 )
 
