@@ -58,7 +58,7 @@ class Tjdft(CrawJUD):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Handle the calculation queue processing.
@@ -113,9 +113,7 @@ class Tjdft(CrawJUD):
             if check_cookies:
                 sleep(2)
 
-                aceitar_cookies_css = (
-                    'button[class="btn btn-primary btn-sm acceptcookies"]'
-                )
+                aceitar_cookies_css = 'button[class="btn btn-primary btn-sm acceptcookies"]'
                 aceitar_cookies = self.driver.find_element(
                     By.CSS_SELECTOR,
                     aceitar_cookies_css,
@@ -140,7 +138,9 @@ class Tjdft(CrawJUD):
             self.message = "Informando numero do processo"
             self.message_type = "log"
             self.prt()
-            css_input_numproc = 'input[id="num_processo"][name="num_processo"]'
+            css_input_numproc = (
+                'input[id="num_processo"][name="num_processo"]'
+            )
             get_input_process = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
@@ -148,7 +148,9 @@ class Tjdft(CrawJUD):
                 )),
             )
             get_input_process.click()
-            get_input_process.send_keys(self.bot_data.get("NUMERO_PROCESSO"))
+            get_input_process.send_keys(
+                self.bot_data.get("NUMERO_PROCESSO"),
+            )
 
             self.message = "numero do processo informado"
             self.message_type = "log"
@@ -171,7 +173,9 @@ class Tjdft(CrawJUD):
         """
         try:
             sleep(2)
-            css_name_requerente = 'input[name="requerente"][id="requerente"]'
+            css_name_requerente = (
+                'input[name="requerente"][id="requerente"]'
+            )
             self.message = "Informando requerente"
             self.message_type = "log"
             self.prt()
@@ -182,7 +186,9 @@ class Tjdft(CrawJUD):
                 )),
             )
             get_name_requerente.click()
-            get_name_requerente.send_keys(self.bot_data.get("REQUERENTE"))
+            get_name_requerente.send_keys(
+                self.bot_data.get("REQUERENTE"),
+            )
 
             self.message = "Nome do requerente informado"
             self.message_type = "log"
@@ -202,7 +208,9 @@ class Tjdft(CrawJUD):
         """
         try:
             sleep(2)
-            css_name_requerido = 'input[name="requerido"][id="requerido"]'
+            css_name_requerido = (
+                'input[name="requerido"][id="requerido"]'
+            )
             self.message = "Informado requerido"
             self.message_type = "log"
             self.prt()
@@ -232,11 +240,15 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            self.message = "Informando incidencia de juros e data de incidencia"
+            self.message = (
+                "Informando incidencia de juros e data de incidencia"
+            )
             self.message_type = "log"
             self.prt()
 
-            juros_partir = str(self.bot_data.get("JUROS_PARTIR")).upper()
+            juros_partir = str(
+                self.bot_data.get("JUROS_PARTIR"),
+            ).upper()
 
             css_select_juros = (
                 'select[id="juros_partir"][class="select-consultas"]'
@@ -262,7 +274,9 @@ class Tjdft(CrawJUD):
 
             elif juros_percent != "1":
                 percent = juros_percent
-                percent = f"{percent},00" if "," not in percent else percent
+                percent = (
+                    f"{percent},00" if "," not in percent else percent
+                )
 
                 self.interact.click(
                     self.driver.find_element(
@@ -281,9 +295,14 @@ class Tjdft(CrawJUD):
                 )
 
             if juros_partir != "VENCIMENTO":
-                css_data_incide = 'input[name="juros_data"][id="juros_data"]'
+                css_data_incide = (
+                    'input[name="juros_data"][id="juros_data"]'
+                )
                 self.interact.send_keys(
-                    self.driver.find_element(By.CSS_SELECTOR, css_data_incide),
+                    self.driver.find_element(
+                        By.CSS_SELECTOR,
+                        css_data_incide,
+                    ),
                     self.bot_data.get("DATA_INCIDENCIA"),
                 )
 
@@ -313,10 +332,14 @@ class Tjdft(CrawJUD):
                 )),
             )
             data_valor_devido.click()
-            data_valor_devido.send_keys(self.bot_data.get("DATA_CALCULO"))
+            data_valor_devido.send_keys(
+                self.bot_data.get("DATA_CALCULO"),
+            )
 
             sleep(2)
-            css_valor_devido = 'input[id="valor-0"][name="parcela_valor:list"]'
+            css_valor_devido = (
+                'input[id="valor-0"][name="parcela_valor:list"]'
+            )
             self.message = "Informando valor devido"
             self.message_type = "log"
             self.prt()
@@ -372,7 +395,10 @@ class Tjdft(CrawJUD):
             css_calcular = (
                 'input[type="submit"][value="Calcular"][id="calcular"]'
             )
-            calcular = self.driver.find_element(By.CSS_SELECTOR, css_calcular)
+            calcular = self.driver.find_element(
+                By.CSS_SELECTOR,
+                css_calcular,
+            )
             calcular.click()
 
             table_valorcalc = self.wait.until(
@@ -405,7 +431,11 @@ class Tjdft(CrawJUD):
             with path_pdf.open("wb") as file:
                 file.write(pdf_bytes)
 
-            data = [self.bot_data.get("NUMERO_PROCESSO"), pdf_name, valor_doc]
+            data = [
+                self.bot_data.get("NUMERO_PROCESSO"),
+                pdf_name,
+                valor_doc,
+            ]
 
             self.append_success(data)
 
@@ -440,7 +470,9 @@ class Tjdft(CrawJUD):
                 multa_percentual.click()
 
                 percent = str(self.bot_data.get("MULTA_PERCENTUAL"))
-                percent = f"{percent},00" if "," not in percent else percent
+                percent = (
+                    f"{percent},00" if "," not in percent else percent
+                )
                 multa_percentual.send_keys(percent)
 
             if self.bot_data.get("MULTA_DATA", None):
@@ -479,9 +511,7 @@ class Tjdft(CrawJUD):
 
         """
         try:
-            css_honorario_sucumb = (
-                'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
-            )
+            css_honorario_sucumb = 'input[name="honor_sucumb_percent"][id="honor_sucumb_percent"]'
             self.message = "Informando Honorários de Sucumbência"
             self.message_type = "log"
             self.prt()
@@ -496,8 +526,12 @@ class Tjdft(CrawJUD):
                     )),
                 )
                 honorario_sucumb.click()
-                percent = str(self.bot_data.get("HONORARIO_SUCUMB_PERCENT"))
-                percent = f"{percent},00" if "," not in percent else percent
+                percent = str(
+                    self.bot_data.get("HONORARIO_SUCUMB_PERCENT"),
+                )
+                percent = (
+                    f"{percent},00" if "," not in percent else percent
+                )
 
                 honorario_sucumb.send_keys(percent)
                 self.driver.execute_script(
@@ -540,7 +574,9 @@ class Tjdft(CrawJUD):
                     self.bot_data.get("HONORARIO_SUCUMB_PARTIR"),
                 )
 
-            self.message = "Percentual Honorários de Sucumbência informado"
+            self.message = (
+                "Percentual Honorários de Sucumbência informado"
+            )
             self.message_type = "log"
             self.prt()
 
@@ -597,7 +633,9 @@ class Tjdft(CrawJUD):
                 percent = str(
                     self.bot_data.get("HONORARIO_CUMPRIMENTO_PERCENT"),
                 )
-                percent = f"{percent},00" if "," not in percent else percent
+                percent = (
+                    f"{percent},00" if "," not in percent else percent
+                )
 
                 honorario_exec.send_keys(percent)
                 self.driver.execute_script(
@@ -627,7 +665,9 @@ class Tjdft(CrawJUD):
                     'input[id="honor_exec_juros_partir"]',
                 )
 
-                valor = str(self.bot_data.get("HONORARIO_CUMPRIMENTO_VALOR"))
+                valor = str(
+                    self.bot_data.get("HONORARIO_CUMPRIMENTO_VALOR"),
+                )
                 valor = f"{valor},00" if "," not in valor else valor
 
                 self.interact.send_keys(
