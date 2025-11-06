@@ -13,12 +13,12 @@ from tqdm import tqdm
 
 from app.controllers.pje import PjeBot
 from app.interfaces.pje import (
-    AssuntosProcessoPJeDict,
-    AudienciaProcessoPjeDict,
-    CapaProcessualPJeDict,
-    PartesProcessoPJeDict,
+    Assuntos,
+    AudienciasProcessos,
+    CapaPJe,
+    Partes,
     ProcessoJudicialDict,
-    RepresentantePartesPJeDict,
+    Representantes,
 )
 from app.resources.elements import pje as el
 
@@ -154,10 +154,10 @@ class Capa(PjeBot):
         client: Client,
         id_processo: str,
     ) -> tuple[
-        list[PartesProcessoPJeDict],
-        list[AssuntosProcessoPJeDict],
-        list[AudienciaProcessoPjeDict],
-        list[RepresentantePartesPJeDict],
+        list[Partes],
+        list[Assuntos],
+        list[AudienciasProcessos],
+        list[Representantes],
     ]:
         """Extraia partes, assuntos, audiências e representantes.
 
@@ -174,10 +174,10 @@ class Capa(PjeBot):
         request_assuntos: Response = None
         request_audiencias: Response = None
 
-        data_partes: list[PartesProcessoPJeDict] = []
-        data_assuntos: list[AssuntosProcessoPJeDict] = []
-        data_audiencias: list[AudienciaProcessoPjeDict] = []
-        data_representantes: list[RepresentantePartesPJeDict] = []
+        data_partes: list[Partes] = []
+        data_assuntos: list[Assuntos] = []
+        data_audiencias: list[AudienciasProcessos] = []
+        data_representantes: list[Representantes] = []
 
         link_partes = el.LINK_CONSULTA_PARTES.format(
             trt_id=self.regiao,
@@ -230,9 +230,9 @@ class Capa(PjeBot):
         self,
         processo: str,
         data_audiencia: list[AudienciaDict],
-    ) -> list[AudienciaProcessoPjeDict]:
+    ) -> list[AudienciasProcessos]:
         return [
-            AudienciaProcessoPjeDict(
+            AudienciasProcessos(
                 ID_PJE=audiencia["id"],
                 processo=processo,
                 TIPO_AUDIENCIA=audiencia["tipo"]["descricao"],
@@ -251,9 +251,9 @@ class Capa(PjeBot):
         self,
         processo: str,
         data_assuntos: list[ItemAssuntoDict],
-    ) -> list[AssuntosProcessoPJeDict]:
+    ) -> list[Assuntos]:
         return [
-            AssuntosProcessoPJeDict(
+            Assuntos(
                 ID_PJE=assunto["id"],
                 PROCESSO=processo,
                 ASSUNTO_COMPLETO=assunto["assunto"]["assuntoCompleto"],
@@ -267,17 +267,17 @@ class Capa(PjeBot):
         processo: str,
         data_partes: PartesJsonDict,
     ) -> tuple[
-        list[PartesProcessoPJeDict],
-        list[RepresentantePartesPJeDict],
+        list[Partes],
+        list[Representantes],
     ]:
-        partes: list[PartesProcessoPJeDict] = []
-        representantes: list[RepresentantePartesPJeDict] = []
+        partes: list[Partes] = []
+        representantes: list[Representantes] = []
         for v in data_partes.values():
             list_partes_request: list[ParteDict] = v
 
             for parte in list_partes_request:
                 partes.append(
-                    PartesProcessoPJeDict(
+                    Partes(
                         ID_PJE=parte.get("id"),
                         NOME=parte.get("nome"),
                         DOCUMENTO=parte.get(
@@ -312,7 +312,7 @@ class Capa(PjeBot):
         self,
         parte: PartesJsonDict,
         processo: str,
-    ) -> list[RepresentantePartesPJeDict]:
+    ) -> list[Representantes]:
         def __formata_numero_representante(
             representante: AnyType,
         ) -> str:
@@ -327,7 +327,7 @@ class Capa(PjeBot):
             return ""
 
         return [
-            RepresentantePartesPJeDict(
+            Representantes(
                 ID_PJE=representante.get("id", ""),
                 PROCESSO=processo,
                 NOME=representante.get("nome", ""),
@@ -358,18 +358,18 @@ class Capa(PjeBot):
     def capa_processual(
         self,
         result: ProcessoJudicialDict,
-    ) -> CapaProcessualPJeDict:
+    ) -> CapaPJe:
         """Gere a capa processual do processo judicial PJE.
 
         Args:
             result (ProcessoJudicialDict): Dados do processo judicial.
 
         Returns:
-            CapaProcessualPJeDict: Dados da capa processual gerados.
+            CapaPJe: Dados da capa processual gerados.
 
         """
         link_consulta = f"https://pje.trt{self.regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
-        return CapaProcessualPJeDict(
+        return CapaPJe(
             ID_PJE=result["id"],
             LINK_CONSULTA=link_consulta,
             processo=result["numero"],

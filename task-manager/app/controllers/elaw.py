@@ -1,8 +1,8 @@
 """Módulo para a classe de controle dos robôs Elaw."""
 
 from contextlib import suppress
-from pathlib import Path
 from time import sleep
+from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -16,6 +16,9 @@ from app.controllers.head import CrawJUD
 from app.resources.auth import AutenticadorElaw
 from app.resources.search import ElawSearch
 from constants.data._bots.cidades import cidades_amazonas
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class ElawBot(CrawJUD):

@@ -1,8 +1,6 @@
-from typing import TYPE_CHECKING, TypedDict
+"""Classes de representação dos playloads da api PJe."""
 
-if TYPE_CHECKING:
-    from app.interfaces import BotData as BotData
-    from app.types import Dict as Dict
+from typing import TypedDict
 
 
 class ClasseJudicialDict(TypedDict):

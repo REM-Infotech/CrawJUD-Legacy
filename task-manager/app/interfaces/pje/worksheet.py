@@ -1,10 +1,12 @@
+"""Dicionários para salvamento em planilha."""
+
 from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
-class CapaProcessualPJeDict(TypedDict):
+class CapaPJe(TypedDict):
     """Defina o dicionário para salvar dados da planilha de processos PJE.
 
     Args:
@@ -18,7 +20,7 @@ class CapaProcessualPJeDict(TypedDict):
         SEGREDO_JUSTICA (str): Indica se o processo está em segredo de justiça.
 
     Returns:
-        CapaProcessualPJeDict: Dicionário tipado com os dados do processo.
+        CapaPJe: Dicionário tipado com os dados do processo.
 
     """
 
@@ -34,7 +36,7 @@ class CapaProcessualPJeDict(TypedDict):
     SEGREDO_JUSTICA: str
 
 
-class AudienciaProcessoPjeDict(TypedDict):
+class AudienciasProcessos(TypedDict):
     """Defina os campos das audiências do processo judicial no padrão PJe.
 
     Args:
@@ -45,7 +47,7 @@ class AudienciaProcessoPjeDict(TypedDict):
         STATUS (str): Status da audiência.
 
     Returns:
-        AudienciaProcessoPjeDict: Dicionário tipado com os dados da audiência.
+        AudienciasProcessos: Dicionário tipado com os dados da audiência.
 
     """
 
@@ -59,7 +61,7 @@ class AudienciaProcessoPjeDict(TypedDict):
     DATA_MARCACAO: str
 
 
-class PartesProcessoPJeDict(TypedDict):
+class Partes(TypedDict):
     """Defina os campos das partes do processo judicial no padrão PJe.
 
     Args:
@@ -73,7 +75,7 @@ class PartesProcessoPJeDict(TypedDict):
         TIPO_PARTE (str): Tipo da parte no processo.
 
     Returns:
-        PartesProcessoPJeDict: Dicionário tipado com os dados da parte.
+        Partes: Dicionário tipado com os dados da parte.
 
     """
 
@@ -88,7 +90,7 @@ class PartesProcessoPJeDict(TypedDict):
     PARTE_PRINCIPAL: bool
 
 
-class RepresentantePartesPJeDict(TypedDict):
+class Representantes(TypedDict):
     """Defina os campos dos representantes das partes do processo judicial no padrão PJe.
 
     Args:
@@ -105,7 +107,7 @@ class RepresentantePartesPJeDict(TypedDict):
         TELEFONE (str): Telefone do representante.
 
     Returns:
-        RepresentantePartesPJeDict: Dicionário tipado com os dados do representante.
+        Representantes: Dicionário tipado com os dados do representante.
 
     """
 
@@ -123,7 +125,7 @@ class RepresentantePartesPJeDict(TypedDict):
     TELEFONE: str
 
 
-class AssuntosProcessoPJeDict(TypedDict):
+class Assuntos(TypedDict):
     """Defina os campos dos assuntos do processo judicial no padrão PJe.
 
     Args:
@@ -133,7 +135,7 @@ class AssuntosProcessoPJeDict(TypedDict):
         ASSUNTO_RESUMIDO (str): Descrição resumida do assunto.
 
     Returns:
-        AssuntosProcessoPJeDict: Dicionário tipado com os dados dos assuntos.
+        Assuntos: Dicionário tipado com os dados dos assuntos.
 
     """
 
