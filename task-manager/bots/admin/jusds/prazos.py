@@ -25,7 +25,7 @@ class Prazos(JusdsBot):
             self.row = pos + 1
             self.bot_data = value
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
@@ -106,13 +106,25 @@ class Prazos(JusdsBot):
             "tipo": campos[0].find_element(By.TAG_NAME, "input"),
             "subtipo": campos[1].find_element(By.TAG_NAME, "input"),
             "descricao": campos[2].find_element(By.TAG_NAME, "input"),
-            "atribuir_para": campos[3].find_element(By.TAG_NAME, "input"),
-            "situacao_execucao": campos[6].find_element(By.TAG_NAME, "input"),
+            "atribuir_para": campos[3].find_element(
+                By.TAG_NAME,
+                "input",
+            ),
+            "situacao_execucao": campos[6].find_element(
+                By.TAG_NAME,
+                "input",
+            ),
             "data_inicio": campos[7].find_element(By.TAG_NAME, "input"),
             "data_fim": campos[9].find_element(By.TAG_NAME, "input"),
-            "valor_multa": campos[12].find_element(By.TAG_NAME, "input"),
+            "valor_multa": campos[12].find_element(
+                By.TAG_NAME,
+                "input",
+            ),
             "valor_pgto": campos[13].find_element(By.TAG_NAME, "input"),
-            "data_atualizacao": campos[14].find_element(By.TAG_NAME, "input"),
+            "data_atualizacao": campos[14].find_element(
+                By.TAG_NAME,
+                "input",
+            ),
         }
 
         current_time = datetime.now(ZoneInfo("America/Manaus"))
@@ -124,7 +136,10 @@ class Prazos(JusdsBot):
                 data = current_time.strftime("%d/%m/%Y")
 
             if data:
-                if "valor" not in campo_nome or "data" not in campo_nome:
+                if (
+                    "valor" not in campo_nome
+                    or "data" not in campo_nome
+                ):
                     data = data.upper()
 
                 elemento.send_keys(data)

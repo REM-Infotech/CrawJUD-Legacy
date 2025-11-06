@@ -31,7 +31,7 @@ class Andamentos(JusdsBot):
             self.row = pos + 1
             self.bot_data = value
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         pass

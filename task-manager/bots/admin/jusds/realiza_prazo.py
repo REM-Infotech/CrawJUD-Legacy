@@ -9,9 +9,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-from bots.resources._formatadores import formata_string
 from bots.resources.driver.web_element import WebElementBot
 from bots.resources.elements import jusds as el
+from bots.resources.formatadores import formata_string
 from common.exceptions import ExecutionError
 
 from .master import JusdsBot
@@ -30,7 +30,7 @@ class RealizaPrazos(JusdsBot):
             self.queue()
             tqdm.write("ok")
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
@@ -109,7 +109,10 @@ class RealizaPrazos(JusdsBot):
         btn_pagina_compromissos.click()
 
         prazos_list: list[WebElementBot] = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.XPATH_TABLE_PRAZOS)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_TABLE_PRAZOS,
+            )),
         ).find_elements(By.TAG_NAME, "tr")
 
         for prazo in prazos_list:
@@ -117,7 +120,9 @@ class RealizaPrazos(JusdsBot):
                 prazo.scroll_to_element()
                 prazo.find_elements(By.TAG_NAME, "td")[0].scroll_to()
 
-                id_prazo_jusds = prazo.find_elements(By.TAG_NAME, "td")[1].text
+                id_prazo_jusds = prazo.find_elements(By.TAG_NAME, "td")[
+                    1
+                ].text
                 if id_prazo_jusds == str(id_prazo):
                     return prazo
 
@@ -128,12 +133,18 @@ class RealizaPrazos(JusdsBot):
         bot_data = self.bot_data
 
         btn_anexos = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_ANEXOS)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_BTN_ANEXOS,
+            )),
         )
         btn_anexos.click()
 
         btn_add_anexo = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.XPATH_BTN_ADD_ANEXO)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_BTN_ADD_ANEXO,
+            )),
         )
 
         btn_add_anexo.click()
@@ -146,7 +157,10 @@ class RealizaPrazos(JusdsBot):
         )
 
         wait.until(
-            ec.frame_to_be_available_and_switch_to_it((By.TAG_NAME, "iframe")),
+            ec.frame_to_be_available_and_switch_to_it((
+                By.TAG_NAME,
+                "iframe",
+            )),
         )
 
         campo_tipo_anexo: WebElementBot = wait.until(
@@ -180,10 +194,15 @@ class RealizaPrazos(JusdsBot):
         )
 
         nome_anexo_normalizado = formata_string(anexo_nome)
-        path_file = self.output_dir_path.joinpath(nome_anexo_normalizado)
+        path_file = self.output_dir_path.joinpath(
+            nome_anexo_normalizado,
+        )
 
         input_file: WebElementBot = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.XPATH_INPUT_FILE)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.XPATH_INPUT_FILE,
+            )),
         )
         input_file.send_file(str(path_file))
 
@@ -194,7 +213,9 @@ class RealizaPrazos(JusdsBot):
             )),
         ).click()
 
-        WebDriverWait(self.driver, 10).until(ec.alert_is_present()).accept()
+        WebDriverWait(self.driver, 10).until(
+            ec.alert_is_present(),
+        ).accept()
 
         self.driver.switch_to.default_content()
 
@@ -225,7 +246,9 @@ class RealizaPrazos(JusdsBot):
         )
 
         if option_status:
-            select_status.select_item(option_status[0].get_attribute("value"))
+            select_status.select_item(
+                option_status[0].get_attribute("value"),
+            )
 
         btn_salva = wait.until(
             ec.presence_of_element_located((
