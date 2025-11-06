@@ -1,4 +1,4 @@
-<div align="center"><img src="./crawjud/logo.png" alt="" height="150"></div>
+<div align="center"><img src="./img/logo.png" alt="" height="150"></div>
 
 # CrawJUD Automação Jurídica
 
