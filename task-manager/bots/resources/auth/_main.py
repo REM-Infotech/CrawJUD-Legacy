@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from seleniumwire.webdriver import Chrome
 
     from bots.head import CrawJUD
+    from bots.resources.managers.credencial_manager import CredencialManager
     from bots.resources.queues.print_message import PrintMessage
 
 
@@ -28,3 +29,7 @@ class AutenticadorBot:
     @property
     def bot_data[T](self) -> T:
         return self.bot.bot_data
+
+    @property
+    def credenciais(self) -> CredencialManager:
+        return self.bot.credenciais

@@ -1,4 +1,5 @@
 import base64
+from contextlib import suppress
 from os import environ
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -17,6 +18,7 @@ from cryptography.hazmat.primitives.serialization.pkcs12 import load_pkcs12
 # Importa classes Java
 from jpype import JArray, JByte, JClass
 from pykeepass import PyKeePass
+from selenium.common import TimeoutException
 from selenium.common.exceptions import (
     UnexpectedAlertPresentException,
 )
@@ -69,12 +71,14 @@ class AutenticadorPJe(AutenticadorBot):
         super().__init__(bot=bot)
 
     def __call__(self) -> bool:
+        sucesso_login = False
         try:
             url = el.LINK_AUTENTICACAO_SSO.format(regiao=self.regiao)
             self.driver.get(url)
 
             if "https://sso.cloud.pje.jus.br/" not in self.driver.current_url:
                 return True
+
             self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
@@ -82,40 +86,9 @@ class AutenticadorPJe(AutenticadorBot):
                 )),
             )
 
-            autenticado = self.autenticar()
-            if not autenticado:
-                auth_error()
-
-            desafio = autenticado[0]
-            uuid_sessao = autenticado[1]
-
-            self.driver.execute_script(
-                el.COMMAND,
-                el.ID_INPUT_DESAFIO,
-                desafio,
-            )
-            self.driver.execute_script(
-                el.COMMAND,
-                el.ID_CODIGO_PJE,
-                uuid_sessao,
-            )
-
-            self.driver.execute_script("document.forms[0].submit()")
-
-            otp_uri = _get_otp_uri()
-            otp = str(pyotp.parse_uri(uri=otp_uri).now())
-
-            input_otp = WebDriverWait(self.driver, 60).until(
-                ec.presence_of_element_located((
-                    By.CSS_SELECTOR,
-                    'input[id="otp"]',
-                )),
-            )
-
-            input_otp.send_keys(otp)
-            input_otp.send_keys(Keys.ENTER)
-
-            WebDriverWait(
+            self._login_certificado()
+            self._desafio_duplo_fato()
+            sucesso_login = WebDriverWait(
                 driver=self.driver,
                 timeout=10,
                 poll_frequency=0.3,
@@ -127,9 +100,45 @@ class AutenticadorPJe(AutenticadorBot):
                 message="Erro ao realizar autenticação",
                 message_type="error",
             )
-            return False
 
-        return True
+        return sucesso_login
+
+    def _login_certificado(self) -> None:
+        autenticado = self.autenticar()
+        if not autenticado:
+            auth_error()
+
+        desafio = autenticado[0]
+        uuid_sessao = autenticado[1]
+
+        self.driver.execute_script(el.COMMAND, el.ID_INPUT_DESAFIO, desafio)
+        self.driver.execute_script(el.COMMAND, el.ID_CODIGO_PJE, uuid_sessao)
+        self.driver.execute_script("document.forms[0].submit()")
+
+    def _desafio_duplo_fato(self) -> None:
+        otp_uri = _get_otp_uri()
+        otp = str(pyotp.parse_uri(uri=otp_uri).now())
+
+        input_otp = WebDriverWait(self.driver, 60).until(
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'input[id="otp"]',
+            )),
+        )
+
+        input_otp.send_keys(otp)
+        input_otp.send_keys(Keys.ENTER)
+
+    def _confirmar_login(self) -> bool:
+        with suppress(TimeoutException):
+            return WebDriverWait(
+                driver=self.driver,
+                timeout=10,
+                poll_frequency=0.3,
+                ignored_exceptions=(UnexpectedAlertPresentException),
+            ).until(ec.url_contains("pjekz"))
+
+        return False
 
     def assinar(self, valor: bytes | str) -> None:
         if isinstance(valor, str):

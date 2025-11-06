@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
+from bots.resources.auth._pje import AutenticadorBot
 from bots.resources.elements import projudi as el
 from common.exceptions import (
     ExecutionError,
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
     from selenium.webdriver.common.alert import Alert
 
 
-class AutenticadorProjudi:
+class AutenticadorProjudi(AutenticadorBot):
     def __call__(self) -> bool:
         """Autentique usuário no sistema PROJUDI.
 
