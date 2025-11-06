@@ -8,10 +8,10 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.common.exceptions import ExecutionError
 from app.controllers.esaj import ESajBot
 from app.resources.elements import esaj as el
 

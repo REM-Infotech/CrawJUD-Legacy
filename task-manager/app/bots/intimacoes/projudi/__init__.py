@@ -6,11 +6,11 @@ Extract and manage process intimation information from the Projudi system.
 import time
 from contextlib import suppress
 
-from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
+from app.common.exceptions import ExecutionError
 from app.controllers.projudi import ProjudiBot
 from app.resources.driver.web_element import (
     WebElementBot as WebElement,

@@ -2,7 +2,6 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common.exceptions import ExecutionError
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -11,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
+from app.common.exceptions import ExecutionError
 from app.resources.elements import projudi as el
 from app.resources.search._main import SearchBot
 from constants import CSS_INPUT_PROCESSO

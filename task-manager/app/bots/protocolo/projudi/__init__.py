@@ -7,8 +7,6 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common import raise_password_token
-from common.exceptions import ExecutionError, FileError
 from PIL import Image
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -18,6 +16,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
+from app.common import raise_password_token
+from app.common.exceptions import ExecutionError, FileError
 from app.controllers.projudi import ProjudiBot
 from app.interfaces import DataSucesso
 from app.resources.elements import projudi as el

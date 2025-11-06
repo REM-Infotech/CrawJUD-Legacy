@@ -10,7 +10,6 @@ from uuid import uuid4
 import jpype
 import pyotp
 import requests
-from common import auth_error
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.serialization import (
@@ -30,6 +29,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from app.common import auth_error
 from app.resources.auth._main import AutenticadorBot
 from app.resources.elements import pje as el
 from constants import NO_CONTENT_STATUS

@@ -9,8 +9,6 @@ from contextlib import suppress
 from pathlib import Path
 from time import sleep
 
-from common._raises import raise_execution_error
-from common.exceptions import ExecutionError
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -20,6 +18,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from app.common._raises import raise_execution_error
+from app.common.exceptions import ExecutionError
 from app.controllers.esaj import ESajBot
 from app.resources.elements import esaj as el
 

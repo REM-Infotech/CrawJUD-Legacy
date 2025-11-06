@@ -9,11 +9,11 @@ import shutil
 from contextlib import suppress
 from time import sleep
 
-from common.exceptions import ExecutionError
 from pypdf import PdfReader
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.common.exceptions import ExecutionError
 from app.controllers.head import CrawJUD
 
 

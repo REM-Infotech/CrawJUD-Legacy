@@ -1,6 +1,6 @@
 from typing import NoReturn
 
-from common.exceptions.validacao import ValidacaoStringError
+from app.common.exceptions.validacao import ValidacaoStringError
 
 from .exceptions import ExecutionError, PasswordTokenError
 

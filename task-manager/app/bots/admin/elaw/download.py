@@ -12,10 +12,10 @@ import shutil
 from pathlib import Path
 from time import sleep
 
-from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.common.exceptions import ExecutionError
 from app.controllers.elaw import ElawBot
 from app.resources.elements import elaw as el
 

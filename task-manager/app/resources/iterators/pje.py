@@ -2,8 +2,7 @@
 
 from typing import TYPE_CHECKING, TypedDict
 
-from common.exceptions.validacao import ValidacaoStringError
-
+from app.common.exceptions.validacao import ValidacaoStringError
 from app.types.bot import ProcessoCNJ
 
 if TYPE_CHECKING:

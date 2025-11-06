@@ -2,13 +2,13 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common.exceptions import ExecutionError
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
+from app.common.exceptions import ExecutionError
 from app.resources.elements import jusds as el
 from app.resources.formatadores import formata_string
 

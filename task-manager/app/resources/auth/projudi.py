@@ -4,15 +4,15 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common.exceptions import (
-    ExecutionError,
-    LoginSystemError,
-)
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
+from app.common.exceptions import (
+    ExecutionError,
+    LoginSystemError,
+)
 from app.resources.auth.pje import AutenticadorBot
 from app.resources.elements import projudi as el
 

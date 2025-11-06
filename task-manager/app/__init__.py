@@ -4,10 +4,10 @@ import importlib
 
 from celery import Celery
 
-import _hook
+import _hook as hook
 from config import config
 
-__all__ = ["_hook"]
+__all__ = ["hook"]
 
 
 def make_celery() -> Celery:
@@ -20,7 +20,7 @@ def make_celery() -> Celery:
     app = Celery(__name__)
     dict_config = {k.lower(): v for k, v in list(config.as_dict().items())}
     app.config_from_object(dict_config)
-    importlib.import_module("tasks", __package__)
+    importlib.import_module("app.tasks", __package__)
 
     return app
 

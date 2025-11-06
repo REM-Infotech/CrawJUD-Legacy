@@ -1,6 +1,6 @@
 """Exception classes for mail-related errors."""
 
-from common.exceptions import BaseExceptionCeleryAppError
+from app.common.exceptions import BaseExceptionCeleryAppError
 
 
 class MailError(BaseExceptionCeleryAppError):

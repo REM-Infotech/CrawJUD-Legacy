@@ -6,10 +6,10 @@ Manage participant processing in the Projudi system by interacting with process 
 from contextlib import suppress
 from pathlib import Path
 
-from common.exceptions import ExecutionError
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
+from app.common.exceptions import ExecutionError
 from app.controllers.projudi import ProjudiBot
 from app.resources.driver.web_element import (
     WebElementBot as WebElement,

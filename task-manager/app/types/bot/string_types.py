@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Literal, Self
 from zoneinfo import ZoneInfo
 
-from common._raises import value_error
+from app.common._raises import value_error
 from constants import PADRAO_CNJ
 
 if TYPE_CHECKING:

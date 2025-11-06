@@ -15,13 +15,13 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common import raise_execution_error
-from common.exceptions import ExecutionError
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from app.common import raise_execution_error
+from app.common.exceptions import ExecutionError
 from app.interfaces import DataSucesso
 from app.resources.driver.web_element import WebElementBot
 from app.resources.elements import elaw as el

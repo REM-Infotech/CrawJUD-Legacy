@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 from os import PathLike
 from typing import Any, Literal, ParamSpec, TypeVar
 
-from .bot import MessageLog, MessageType
+from .bot import MessageLog
+from .bot.string_types import MessageType
 
 type AnyType = Any
 

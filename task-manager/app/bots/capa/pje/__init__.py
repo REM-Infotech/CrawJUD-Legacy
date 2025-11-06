@@ -7,10 +7,10 @@ from queue import Queue
 from time import sleep
 from typing import TYPE_CHECKING
 
-from common.exceptions import ExecutionError
 from httpx import Client, Response
 from tqdm import tqdm
 
+from app.common.exceptions import ExecutionError
 from app.controllers.pje import PjeBot
 from app.interfaces.pje import (
     Assuntos,

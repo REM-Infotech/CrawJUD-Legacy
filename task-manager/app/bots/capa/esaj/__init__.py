@@ -12,9 +12,9 @@ from pathlib import Path
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.common import raise_execution_error
+from app.common.exceptions import ExecutionError
 from app.types import Dict
-from common import raise_execution_error
-from common.exceptions import ExecutionError
 
 from ._1 import PrimeiraInstancia
 from ._2 import SegundaInstancia
