@@ -25,15 +25,18 @@ class Minio(MinioClient):
                     access_key=app.config.get("MINIO_ACCESS_KEY", None),
                     secret_key=app.config.get("MINIO_SECRET_KEY", None),
                     session_token=app.config.get(
-                        "MINIO_SESSION_TOKEN", None
+                        "MINIO_SESSION_TOKEN",
+                        None,
                     ),
                     secure=app.config.get("MINIO_SECURE", True),
                     region=app.config.get("MINIO_REGION", None),
                     http_client=app.config.get(
-                        "MINIO_HTTP_CLIENT", None
+                        "MINIO_HTTP_CLIENT",
+                        None,
                     ),
                     credentials=app.config.get(
-                        "MINIO_CREDENTIALS", None
+                        "MINIO_CREDENTIALS",
+                        None,
                     ),
                     cert_check=app.config.get("MINIO_CERT_CHECK", True),
                 )
@@ -52,7 +55,8 @@ class Minio(MinioClient):
                 access_key=app.config.get("MINIO_ACCESS_KEY", None),
                 secret_key=app.config.get("MINIO_SECRET_KEY", None),
                 session_token=app.config.get(
-                    "MINIO_SESSION_TOKEN", None
+                    "MINIO_SESSION_TOKEN",
+                    None,
                 ),
                 secure=app.config.get("MINIO_SECURE", False),
                 region=app.config.get("MINIO_REGION", None),

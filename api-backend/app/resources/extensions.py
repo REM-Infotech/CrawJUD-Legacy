@@ -23,7 +23,7 @@ io = SocketIO()
 cors = CORS()
 storage = Minio()
 
-__all__ = ["db", "cors", "jwt", "mail", "start_extensions"]
+__all__ = ["cors", "db", "jwt", "mail", "start_extensions"]
 
 
 def start_extensions(app: Flask) -> None:

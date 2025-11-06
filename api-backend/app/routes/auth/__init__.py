@@ -49,24 +49,29 @@ def login() -> Response:
             .first()
         )
         authenticated = User.authenticate(
-            data["login"], data["password"]
+            data["login"],
+            data["password"],
         )
         if not authenticated:
             return make_response(
-                jsonify({"message": "Credenciais inválidas"}), 401
+                jsonify({"message": "Credenciais inválidas"}),
+                401,
             )
 
         if not user:
             return make_response(
-                jsonify({"message": "Usuário não encontrado."}), 401
+                jsonify({"message": "Usuário não encontrado."}),
+                401,
             )
 
         response = make_response(
-            jsonify(message="Login efetuado com sucesso!"), 200
+            jsonify(message="Login efetuado com sucesso!"),
+            200,
         )
         access_token = create_access_token(identity=str(user.Id))
         set_access_cookies(
-            response=response, encoded_access_token=access_token
+            response=response,
+            encoded_access_token=access_token,
         )
 
     except Exception as e:
@@ -85,7 +90,7 @@ def logout() -> Response:
 
     """
     response = make_response(
-        jsonify(message="Logout efetuado com sucesso!")
+        jsonify(message="Logout efetuado com sucesso!"),
     )
     unset_jwt_cookies(response)
     return response

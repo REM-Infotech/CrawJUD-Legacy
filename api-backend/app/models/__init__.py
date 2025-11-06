@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from __types import Dict
 from flask import Flask
 
+from __types import Dict
 from app.models._bot import Bots, CredenciaisRobo, ExecucoesBot
 from app.models._users import LicenseUser, User
 from app.resources.extensions import db
@@ -15,12 +15,12 @@ from app.resources.extensions import db
 from ._jwt import TokenBlocklist
 
 __all__ = [
-    "LicenseUser",
-    "User",
-    "TokenBlocklist",
     "Bots",
-    "ExecucoesBot",
     "CredenciaisRobo",
+    "ExecucoesBot",
+    "LicenseUser",
+    "TokenBlocklist",
+    "User",
 ]
 
 
@@ -89,7 +89,7 @@ def create_bots(app: Flask) -> None:
 
 def load_credentials(app: Flask) -> None:
     path_credentials = Path(__file__).parent.joinpath(
-        "credentials.json"
+        "credentials.json",
     )
 
     if path_credentials.exists():

@@ -20,10 +20,14 @@ class Bots(db.Model):
     sistema: str = Column(String(16), nullable=False)
     categoria: str = Column(String(32), nullable=False)
     configuracao_form: str = Column(
-        String(64), nullable=False, default=""
+        String(64),
+        nullable=False,
+        default="",
     )
     descricao: str = Column(
-        "descricao", String(length=256), nullable=False
+        "descricao",
+        String(length=256),
+        nullable=False,
     )
 
     license_id: int = Column(Integer, db.ForeignKey("licenses.id"))
@@ -53,7 +57,9 @@ class CredenciaisRobo(db.Model):
     __tablename__ = "credenciais_robo"
     Id: int = Column("id", Integer, primary_key=True)
     nome_credencial: str = Column(
-        "nome_credencial", String(length=64), nullable=False
+        "nome_credencial",
+        String(length=64),
+        nullable=False,
     )
     sistema: str = Column("sistema", String(length=64), nullable=False)
     login: str = Column("login", String(length=64))

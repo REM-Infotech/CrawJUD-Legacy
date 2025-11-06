@@ -93,7 +93,7 @@ class TokenBlocklist(db.Model):
         DateTime,
         default=lambda: datetime.now(ZoneInfo("America/Manaus")),
         server_default=datetime.now(
-            ZoneInfo("America/Manaus")
+            ZoneInfo("America/Manaus"),
         ).isoformat(),
         nullable=False,
     )

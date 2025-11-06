@@ -42,7 +42,7 @@ def listagem() -> Response:
                     "descricao": bot.descricao,
                 }
                 for bot in user.license_.bots
-            ]
+            ],
         }),
         200,
     )
@@ -64,12 +64,13 @@ def provide_credentials(sistema: Sistemas) -> Response:
                 filter(
                     lambda credential: credential.sistema == system,
                     lic.credenciais,
-                )
+                ),
             )
         ])
 
     return make_response(
-        jsonify({"credenciais": list_credentials}), 200
+        jsonify({"credenciais": list_credentials}),
+        200,
     )
 
 
@@ -94,7 +95,8 @@ def run_bot(sistema: Sistemas) -> Response:
             }
 
             form = FormBot.load_form(
-                request_data["configuracao_form"], data
+                request_data["configuracao_form"],
+                data,
             )
 
             pid_exec = uuid4().hex.upper()

@@ -117,7 +117,8 @@ class CrossDomain:
         return _wrapped
 
     def _normalize_methods(
-        self, methods: list[Methods] | None
+        self,
+        methods: list[Methods] | None,
     ) -> str | None:
         """Normaliza os métodos HTTP para cabeçalho CORS.
 
@@ -135,7 +136,8 @@ class CrossDomain:
         )
 
     def _normalize_headers(
-        self, headers: list[str] | None
+        self,
+        headers: list[str] | None,
     ) -> str | None:
         """Normaliza os cabeçalhos para CORS.
 
@@ -221,7 +223,8 @@ class CrossDomain:
                 "JWT_ACCESS_CSRF_COOKIE_NAME",
             )
             header_xsrf_name = current_app.config.get(
-                "JWT_ACCESS_CSRF_HEADER_NAME", "X-Xsrf-Token"
+                "JWT_ACCESS_CSRF_HEADER_NAME",
+                "X-Xsrf-Token",
             )
             xsrf_token = None
             if isinstance(cookie_xsrf_name, str):
@@ -231,7 +234,7 @@ class CrossDomain:
 
             else:
                 request.headers.environ.update({
-                    f"HTTP_{header_xsrf_name.replace('-', '_')}".upper(): xsrf_token
+                    f"HTTP_{header_xsrf_name.replace('-', '_')}".upper(): xsrf_token,
                 })
         return make_response(f(*args, **kwargs))
 

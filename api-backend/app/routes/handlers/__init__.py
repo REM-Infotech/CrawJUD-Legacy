@@ -31,7 +31,10 @@ def log_bot(data: Message) -> None:
     """Log bot."""
     tqdm.write(data["message"])
     io.emit(
-        "logbot", data=data, room=data["pid"], namespace="/bot_logs"
+        "logbot",
+        data=data,
+        room=data["pid"],
+        namespace="/bot_logs",
     )
 
 
@@ -43,7 +46,9 @@ def add_file(data: MyAny = None) -> None:
         bucket_name = current_app.config["MINIO_BUCKET_NAME"]
         sid = request.sid
         path_file = Path.cwd().joinpath(
-            "output", sid, secure_filename(data["name"])
+            "output",
+            sid,
+            secure_filename(data["name"]),
         )
         path_file.parent.mkdir(exist_ok=True, parents=True)
 

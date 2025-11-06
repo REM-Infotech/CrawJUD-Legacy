@@ -1,7 +1,6 @@
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, ClassVar, Self, cast
 
-from __types import MyAny, T
 from flask import abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.pagination import Pagination as FSAPagination
@@ -14,6 +13,8 @@ from sqlalchemy.sql._typing import (
     _ColumnExpressionArgument,
     _ColumnsClauseArgument,
 )
+
+from __types import MyAny, T
 
 _Entities = (
     _ColumnsClauseArgument[T] | Sequence[_ColumnsClauseArgument[T]]
@@ -31,7 +32,9 @@ class QueryProperty[T]:
 
         cls = cast("Model", owner)
         if "sqlalchemy" in app.extensions:
-            cls.__fsa__ = cast(SQLAlchemy, app.extensions["sqlalchemy"])  # pyright: ignore[reportAttributeAccessIssue]
+            cls.__fsa__ = cast(
+                "SQLAlchemy", app.extensions["sqlalchemy"]
+            )  # pyright: ignore[reportAttributeAccessIssue]
 
         _owner = owner
 
@@ -80,7 +83,9 @@ class Query[T](SAQuery):
         return all_results
 
     def get_or_404(
-        self, ident: MyAny, description: str | None = None
+        self,
+        ident: MyAny,
+        description: str | None = None,
     ) -> T:
         """Results or 404.
 
@@ -184,7 +189,7 @@ class Query[T](SAQuery):
 
         """
         return cast(
-            QueryPagination[Self],
+            "QueryPagination[Self]",
             QueryPagination(
                 query=self,
                 page=page,

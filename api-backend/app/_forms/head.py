@@ -46,7 +46,7 @@ class FormBot:
                 lambda key: not key.startswith("_")
                 and not callable(getattr(self, key, None)),
                 dir(self),
-            )
+            ),
         )
 
         for key in keys:
@@ -66,14 +66,14 @@ class FormBot:
                     filter(
                         lambda x: x.Id == int(value),
                         lic.credenciais,
-                    )
+                    ),
                 )[-1]
 
                 data.update({
                     "credenciais": {
                         "username": credencial.login,
                         "password": credencial.password,
-                    }
+                    },
                 })
                 continue
 

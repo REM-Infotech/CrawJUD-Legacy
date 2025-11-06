@@ -1,10 +1,10 @@
 from contextlib import suppress
 from typing import ClassVar, Self, cast
 
-from __types import MyAny
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model as FSA_Model
 
+from __types import MyAny
 from app.resources import camel_to_snake
 
 from ._query import Query, QueryProperty
@@ -48,6 +48,6 @@ class FSATableName:
 
 
 class Model(FSA_Model):
-    query: ClassVar[Query[Self]] = cast(Query[Self], QueryProperty())  # pyright: ignore[reportIncompatibleVariableOverride]
-    __fsa__: ClassVar[SQLAlchemy] = cast(SQLAlchemy, FSAProperty())
+    query: ClassVar[Query[Self]] = cast("Query[Self]", QueryProperty())  # pyright: ignore[reportIncompatibleVariableOverride]
+    __fsa__: ClassVar[SQLAlchemy] = cast("SQLAlchemy", FSAProperty())
     __tablename__: ClassVar[str] = FSAProperty()

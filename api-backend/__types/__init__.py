@@ -17,7 +17,12 @@ type Sistemas = Literal[
 ]
 type MessageType = Literal["info", "log", "error", "warning", "success"]
 type Methods = Literal[
-    "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "PATCH",
+    "OPTIONS",
 ]
 type ConfigNames = Literal[
     "DevelopmentConfig",

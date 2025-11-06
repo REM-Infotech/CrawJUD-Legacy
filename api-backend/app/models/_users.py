@@ -31,10 +31,14 @@ class LicenseUser(db.Model):
     __tablename__ = "licenses"
     Id: int = Column("id", Integer, primary_key=True, nullable=False)
     ProductKey: str = Column(
-        "product_key", String(35), default=_generate_key
+        "product_key",
+        String(35),
+        default=_generate_key,
     )
     descricao: int = Column(
-        "descricao", String(length=256), nullable=False
+        "descricao",
+        String(length=256),
+        nullable=False,
     )
     Nome: str = Column("nome", String(64))
 
@@ -54,7 +58,7 @@ class LicenseUser(db.Model):
     bots: Mapped[list[Bots]] = rel(back_populates="license_")
     usuarios: Mapped[list[User]] = rel(back_populates="license_")
     credenciais: Mapped[list[CredenciaisRobo]] = rel(
-        back_populates="license_"
+        back_populates="license_",
     )
 
 
@@ -62,21 +66,31 @@ class User(db.Model):
     __tablename__ = "users"
     Id: int = Column("id", Integer, primary_key=True)
     login: str = Column(
-        "username", String(length=30), nullable=False, unique=True
+        "username",
+        String(length=30),
+        nullable=False,
+        unique=True,
     )
     nome_usuario: str = Column(
-        "display_name", String(length=64), nullable=False
+        "display_name",
+        String(length=64),
+        nullable=False,
     )
     email: str = Column(
-        "email", String(length=50), nullable=False, unique=True
+        "email",
+        String(length=50),
+        nullable=False,
+        unique=True,
     )
     password: str = Column(
-        "password", String(length=64), nullable=False
+        "password",
+        String(length=64),
+        nullable=False,
     )
     admin: bool = Column("admin", Boolean, default=False)
 
     execucoes: Mapped[list[ExecucoesBot]] = rel(
-        back_populates="usuario"
+        back_populates="usuario",
     )
 
     license_id: int = Column(Integer, ForeignKey("licenses.id"))
@@ -99,7 +113,9 @@ class User(db.Model):
 
     def check_password(self, senha_texto_claro: str) -> bool:
         valid_hash = crypt_context.verify(
-            senha_texto_claro, self.password, scheme="argon2"
+            senha_texto_claro,
+            self.password,
+            scheme="argon2",
         )
 
         if valid_hash:
