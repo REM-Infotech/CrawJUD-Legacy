@@ -97,7 +97,7 @@ class RegioesIterator:
         regioes_dict: dict[str, list[BotData]] = {}
         position_process: dict[str, int] = {}
 
-        for item in self.frame:
+        for item in self._bot.frame:
             try:
                 numero_processo = ProcessoCNJ(
                     item["NUMERO_PROCESSO"],
