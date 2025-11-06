@@ -69,7 +69,7 @@ class BuscaPags(ESajBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Queue page search tasks.
@@ -137,21 +137,28 @@ class BuscaPags(ESajBot):
                     'table[class="spwTabelaGrid"]',
                 )
 
-                tr_rows = find_table_pgmt.find_elements(By.TAG_NAME, "tr")
+                tr_rows = find_table_pgmt.find_elements(
+                    By.TAG_NAME,
+                    "tr",
+                )
                 self.roleta = 0
 
                 for rows in tr_rows:
                     with suppress(Exception):
                         checkifclass = rows.get_attribute("class")
                         if checkifclass == "":
-                            tipo_custa = rows.find_elements(By.TAG_NAME, "td")[
-                                0
-                            ].text
-                            emissor = rows.find_elements(By.TAG_NAME, "td")[
-                                1
-                            ].text
+                            tipo_custa = rows.find_elements(
+                                By.TAG_NAME,
+                                "td",
+                            )[0].text
+                            emissor = rows.find_elements(
+                                By.TAG_NAME,
+                                "td",
+                            )[1].text
                             data_calculo = str(
-                                rows.find_elements(By.TAG_NAME, "td")[2].text,
+                                rows.find_elements(By.TAG_NAME, "td")[
+                                    2
+                                ].text,
                             )
 
                             data_calculo = datetime.strptime(
@@ -161,9 +168,10 @@ class BuscaPags(ESajBot):
 
                             valor_custa = (
                                 str(
-                                    rows.find_elements(By.TAG_NAME, "td")[
-                                        3
-                                    ].text,
+                                    rows.find_elements(
+                                        By.TAG_NAME,
+                                        "td",
+                                    )[3].text,
                                 )
                                 .replace(".", "")
                                 .replace(",", ".")
@@ -172,7 +180,9 @@ class BuscaPags(ESajBot):
                             valor_custa = float(valor_custa)
 
                             cód_guia = str(
-                                rows.find_elements(By.TAG_NAME, "td")[4].text,
+                                rows.find_elements(By.TAG_NAME, "td")[
+                                    4
+                                ].text,
                             )
                             parcelaguia = rows.find_elements(
                                 By.TAG_NAME,
@@ -180,7 +190,9 @@ class BuscaPags(ESajBot):
                             )[5].text
 
                             data_pagamento = str(
-                                rows.find_elements(By.TAG_NAME, "td")[6].text,
+                                rows.find_elements(By.TAG_NAME, "td")[
+                                    6
+                                ].text,
                             )
 
                             data_pagamento = datetime.strptime(
@@ -207,8 +219,12 @@ class BuscaPags(ESajBot):
 
                         continue
 
-                    tipo_custa = rows.find_elements(By.TAG_NAME, "td")[0].text
-                    emissor = rows.find_elements(By.TAG_NAME, "td")[1].text
+                    tipo_custa = rows.find_elements(By.TAG_NAME, "td")[
+                        0
+                    ].text
+                    emissor = rows.find_elements(By.TAG_NAME, "td")[
+                        1
+                    ].text
                     data_calculo = str(
                         rows.find_elements(By.TAG_NAME, "td")[2].text,
                     )
@@ -227,9 +243,15 @@ class BuscaPags(ESajBot):
                     cód_guia = str(
                         rows.find_elemens(By.TAG_NAME, "td")[4].text,
                     )
-                    parcelaguia = rows.find_elements(By.TAG_NAME, "td")[5].text
+                    parcelaguia = rows.find_elements(By.TAG_NAME, "td")[
+                        5
+                    ].text
                     data_pagamento = datetime.strptime(
-                        str(rows.find_elements(By.TAG_NAME, "td")[6].text),
+                        str(
+                            rows.find_elements(By.TAG_NAME, "td")[
+                                6
+                            ].text,
+                        ),
                     ).replace(tzinfo=ZoneInfo("America/Manaus"))
 
                     data_pagamento = datetime.strptime(
@@ -254,7 +276,9 @@ class BuscaPags(ESajBot):
             elif "Lista de custas pagas" not in nomediv:
                 continue
 
-            file_name_save = f"Total - {self.pid} - {self.datetimeNOW}.xlsx"
+            file_name_save = (
+                f"Total - {self.pid} - {self.datetimeNOW}.xlsx"
+            )
             self.append_success(
                 [self.bot_data.get("NUMERO_PROCESSO"), total],
                 file_name_save=file_name_save,

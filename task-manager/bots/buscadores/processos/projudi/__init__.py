@@ -10,7 +10,9 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from bots.controller.projudi import ProjudiBot
-from bots.resources.driver.web_element import WebElementBot as WebElement
+from bots.resources.driver.web_element import (
+    WebElementBot as WebElement,
+)
 from bots.resources.elements import projudi as el
 from common.exceptions import ExecutionError
 
@@ -47,7 +49,7 @@ class ProcParte(ProjudiBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Manage the participant processing queue and handle varas search."""
@@ -126,7 +128,10 @@ class ProcParte(ProjudiBot):
         except ExecutionError as e:
             raise ExecutionError(exc=e) from e
 
-    def use_list_process(self, list_processos: list[WebElement]) -> None:
+    def use_list_process(
+        self,
+        list_processos: list[WebElement],
+    ) -> None:
         """Extract and log details from each process element in the provided list.
 
         Args:
@@ -135,7 +140,9 @@ class ProcParte(ProjudiBot):
         """
         self.data_append.clear()
         for processo in list_processos:
-            numero_processo = processo.find_elements(By.TAG_NAME, "td")[1].text
+            numero_processo = processo.find_elements(By.TAG_NAME, "td")[
+                1
+            ].text
 
             polo_ativo = "Não consta ou processo em sigilo"
             polo_passivo = "Não consta ou processo em sigilo"
@@ -154,10 +161,15 @@ class ProcParte(ProjudiBot):
                 )
 
             with suppress(Exception):
-                polo_passivo = processo.find_elements(By.TAG_NAME, "td")[7].text
+                polo_passivo = processo.find_elements(
+                    By.TAG_NAME,
+                    "td",
+                )[7].text
 
             with suppress(Exception):
-                juizo = processo.find_elements(By.TAG_NAME, "td")[9].text
+                juizo = processo.find_elements(By.TAG_NAME, "td")[
+                    9
+                ].text
 
             self.data_append.append(
                 {
