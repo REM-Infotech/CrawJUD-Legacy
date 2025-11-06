@@ -11,7 +11,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from bots.controller.projudi import ProjudiBot
-from bots.resources.driver.web_element import WebElementBot as WebElement
+from bots.resources.driver.web_element import (
+    WebElementBot as WebElement,
+)
 from bots.resources.elements import projudi as el
 from common.exceptions import ExecutionError
 
@@ -58,7 +60,7 @@ class Intimacoes(ProjudiBot):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def enter_intimacoes(self) -> None:
         """Enter the 'intimações' tab in the Projudi system via script execution."""
@@ -135,8 +137,14 @@ class Intimacoes(ProjudiBot):
             name_colunas, intimacoes = self.get_intimacoes(
                 self.aba_initmacoes(),
             )
-            data = self.get_intimacao_information(name_colunas, intimacoes)
-            self.append_success(data, "Intimações extraídas com sucesso!")
+            data = self.get_intimacao_information(
+                name_colunas,
+                intimacoes,
+            )
+            self.append_success(
+                data,
+                "Intimações extraídas com sucesso!",
+            )
 
             if self.total_rows > 1:
                 self.driver.find_element(
@@ -166,16 +174,24 @@ class Intimacoes(ProjudiBot):
         for item in intimacoes:
             data: dict[str, str] = {}
             itens: tuple[str] = tuple(
-                item.find_elements(By.TAG_NAME, "td")[0].text.split("\n"),
+                item.find_elements(By.TAG_NAME, "td")[0].text.split(
+                    "\n",
+                ),
             )
             itens2: tuple[str] = tuple(
-                item.find_elements(By.TAG_NAME, "td")[1].text.split("\n"),
+                item.find_elements(By.TAG_NAME, "td")[1].text.split(
+                    "\n",
+                ),
             )
             itens3: tuple[str] = tuple(
-                item.find_elements(By.TAG_NAME, "td")[2].text.split("\n"),
+                item.find_elements(By.TAG_NAME, "td")[2].text.split(
+                    "\n",
+                ),
             )
 
-            self.message = f"Intimação do processo {itens[0]} encontrada!"
+            self.message = (
+                f"Intimação do processo {itens[0]} encontrada!"
+            )
             self.message_type = "log"
             self.prt()
 
