@@ -1,13 +1,15 @@
 """Iterator para os dados inputados na planilha."""
 
-from datetime import datetime
 from typing import TYPE_CHECKING, Self
 
-from pandas import Timestamp, read_excel
+from pandas import read_excel
 
 from app.interfaces import BotData
-from app.types import AnyType
-from bots.resources.formatadores import formata_string
+from bots.resources.formatadores import (
+    format_data,
+    format_float,
+    formata_string,
+)
 
 if TYPE_CHECKING:
     from bots.head import CrawJUD
@@ -31,10 +33,10 @@ class BotIterator:
             df.columns = df.columns.str.upper()
 
             for col in df.columns:
-                df[col] = df[col].apply(self.format_data)
+                df[col] = df[col].apply(format_data)
 
             for col in df.select_dtypes(include=["float"]).columns:
-                df[col] = df[col].apply(self.format_float)
+                df[col] = df[col].apply(format_float)
 
             data_bot: list[BotData] = []
             to_dict = df.to_dict(orient="records")
@@ -77,15 +79,3 @@ class BotIterator:
         data = self._frame[self._index]
         self._index += 1
         return data
-
-    def format_data(self, x: AnyType) -> str:
-        if str(x) == "NaT" or str(x) == "nan":
-            return ""
-
-        if isinstance(x, (datetime, Timestamp)):
-            return x.strftime("%d/%m/%Y")
-
-        return x
-
-    def format_float(self, x: AnyType) -> str:
-        return f"{x:.2f}".replace(".", ",")

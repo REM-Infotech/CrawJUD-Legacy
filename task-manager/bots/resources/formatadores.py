@@ -5,9 +5,15 @@ especiais, tornando textos seguros para nomes de arquivos.
 """
 
 import secrets
+from datetime import datetime
+from typing import TYPE_CHECKING
 from unicodedata import combining, normalize
 
+from pandas import Timestamp
 from werkzeug.utils import secure_filename
+
+if TYPE_CHECKING:
+    from app.types import AnyType
 
 
 def formata_string(string: str) -> str:
@@ -41,3 +47,17 @@ def random_base36() -> str:
 
 def normalizar(txt: str) -> str:
     return " ".join(txt.split())
+
+
+def format_data(x: AnyType) -> str:
+    if str(x) == "NaT" or str(x) == "nan":
+        return ""
+
+    if isinstance(x, (datetime, Timestamp)):
+        return x.strftime("%d/%m/%Y")
+
+    return x
+
+
+def format_float(x: AnyType) -> str:
+    return f"{x:.2f}".replace(".", ",")
