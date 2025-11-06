@@ -27,6 +27,8 @@ if TYPE_CHECKING:
 
     from app.types import Dict
 
+MODULE_SPLIT_SIZE = 3
+
 
 class CrawJUD:
     """Implemente a abstração do bot CrawJUD."""
@@ -53,7 +55,9 @@ class CrawJUD:
             return
 
         name_bot = "_".join(
-            module_split[1:] if len(module_split) == 3 else module_split[2:],
+            module_split[1:]
+            if len(module_split) == MODULE_SPLIT_SIZE
+            else module_split[2:],
         )
         if "__" in name_bot:
             return
