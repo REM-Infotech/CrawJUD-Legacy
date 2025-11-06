@@ -7,13 +7,13 @@ from zoneinfo import ZoneInfo
 from pandas import DataFrame
 
 from app.interfaces import DataSave
-from app.types import Dict
 from bots.resources.iterators.queue import QueueIterator
 from bots.resources.queues.file_operation._main import FileOperator
 
 DATASAVE = []
 
 if TYPE_CHECKING:
+    from app.types import Dict
     from bots.head import CrawJUD
 
 

@@ -38,20 +38,38 @@ class PrintMessage:
         """Instancia da queue de salvamento de sucessos."""
         self.bot = bot
         self.queue_print_bot = Queue()
-        self.thread_print_bot = Thread(target=self.print_msg, daemon=True)
+        self.thread_print_bot = Thread(
+            target=self.print_msg,
+            daemon=True,
+        )
         self.thread_print_bot.start()
         self.succcess_count = 0
         self.error_count = 0
 
     def __call__(
-        self, message: str, message_type: MessageType, row: int = 0
+        self,
+        message: str,
+        message_type: MessageType,
+        row: int = 0,
     ) -> None:
+        """Envie mensagem formatada para a fila de logs.
+
+        Args:
+            message (str): Mensagem a ser enviada.
+            message_type (MessageType): Tipo da mensagem.
+            row (int): Linha do registro.
+
+        """
         mini_pid = self.bot.pid[:6].upper()
 
         if not row or row == 0:
             row = self.bot.row
 
-        message = MessageLog(message).format(mini_pid, message_type, row)
+        message = MessageLog(message).format(
+            mini_pid,
+            message_type,
+            row,
+        )
 
         msg = Message(
             pid=self.bot.pid,
@@ -67,18 +85,45 @@ class PrintMessage:
         self.queue_print_bot.put_nowait(msg)
 
     def calc_success(self, message_type: MessageType) -> int:
+        """Calcula o total de mensagens de sucesso.
+
+        Args:
+            message_type (MessageType): Tipo da mensagem.
+
+        Returns:
+            int: Quantidade de mensagens de sucesso.
+
+        """
         if message_type == "success":
             self.succcess_count += 1
 
         return self.succcess_count
 
     def calc_error(self, message_type: MessageType) -> int:
+        """Calcula o total de mensagens de erro.
+
+        Args:
+            message_type (MessageType): Tipo da mensagem.
+
+        Returns:
+            int: Quantidade de mensagens de erro.
+
+        """
         if message_type == "error":
             self.error_count += 1
 
         return self.error_count
 
     def calc_remaining(self, message_type: MessageType) -> int:
+        """Calcula o total de registros restantes.
+
+        Args:
+            message_type (MessageType): Tipo da mensagem.
+
+        Returns:
+            int: Quantidade de registros restantes.
+
+        """
         check_msg_type = any([
             message_type == "success",
             message_type == "error",
@@ -89,6 +134,12 @@ class PrintMessage:
         return self.bot.remaining
 
     def print_msg(self) -> None:
+        """Envie mensagens de log para o servidor via socket.
+
+        Esta função conecta ao servidor socketio e envia mensagens
+        presentes na fila para o FrontEnd.
+
+        """
         socketio_server = config.get("SOCKETIO_SERVER")
         sio = Client()
 
@@ -99,7 +150,9 @@ class PrintMessage:
         )
         sio.connect(url=socketio_server, namespaces=["/bot_logs"])
         sio.emit(
-            "join_room", data={"room": self.bot.pid}, namespace="/bot_logs"
+            "join_room",
+            data={"room": self.bot.pid},
+            namespace="/bot_logs",
         )
 
         for data in QueueIterator[Message](self.queue_print_bot):

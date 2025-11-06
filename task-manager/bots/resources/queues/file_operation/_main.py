@@ -1,11 +1,14 @@
 from contextlib import suppress
-from pathlib import Path
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
-from openpyxl import Workbook
 from pandas import DataFrame, ExcelWriter, concat, read_excel
 
-from app.interfaces import DataSave
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from openpyxl import Workbook
+
+    from app.interfaces import DataSave
 
 
 class FileOperator:
@@ -24,7 +27,7 @@ class FileOperator:
         with suppress(Exception):
             df = DataFrame(data["data_save"])
             writer = self.load_writer(arquivo_xlsx)
-            wb = cast(Workbook, writer.book)
+            wb = cast("Workbook", writer.book)
 
             # Verifica se a worksheet já existe
             if data["worksheet"] in wb.sheetnames:

@@ -41,7 +41,8 @@ class SaveSuccess(FileOperator):
         tz = ZoneInfo("America/Sao_Paulo")
         now = datetime.now(tz=tz).strftime("%d-%m-%Y %H-%M-%S")
         nome_arquivo = f"Sucessos - PID {self.bot.pid} - {now}.xlsx"
-        arquivo_sucesso = self.bot.output_dir_path.joinpath(nome_arquivo)
+        out_dir = self.bot.output_dir_path
+        arquivo_sucesso = out_dir.joinpath(nome_arquivo)
 
         for data in QueueIterator[DataSave](self.queue_save):
             if data and len(data["data_save"] > 0):
