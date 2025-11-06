@@ -50,35 +50,40 @@ class SaveSuccess:
 
             if data:
                 with suppress(Exception):
-                    df = DataFrame(data["data_save"])
-                    if arquivo_sucesso.exists():
-                        wb = openpyxl.load_workbook(str(arquivo_sucesso))
-                        writer = ExcelWriter(
-                            arquivo_sucesso,
-                            engine="openpyxl",
-                            mode="a",
-                            if_sheet_exists="replace",
-                        )
-                        # Verifica se a worksheet já existe
-                        if data["work_sheet"] in wb.sheetnames:
-                            df_xlsx = read_excel(
+                    if len(data["data_save"] > 0):
+                        df = DataFrame(data["data_save"])
+                        if arquivo_sucesso.exists():
+                            wb = openpyxl.load_workbook(str(arquivo_sucesso))
+                            writer = ExcelWriter(
                                 arquivo_sucesso,
                                 engine="openpyxl",
-                                sheet_name=data["work_sheet"],
+                                mode="a",
+                                if_sheet_exists="replace",
                             )
-                            df = concat([
-                                DataFrame(df_xlsx.to_dict(orient="records")),
-                                DataFrame(data["data_save"]),
-                            ])
-                    else:
-                        writer = ExcelWriter(arquivo_sucesso, engine="openpyxl")
+                            # Verifica se a worksheet já existe
+                            if data["work_sheet"] in wb.sheetnames:
+                                df_xlsx = read_excel(
+                                    arquivo_sucesso,
+                                    engine="openpyxl",
+                                    sheet_name=data["work_sheet"],
+                                )
+                                df = concat([
+                                    DataFrame(
+                                        df_xlsx.to_dict(orient="records")
+                                    ),
+                                    DataFrame(data["data_save"]),
+                                ])
+                        else:
+                            writer = ExcelWriter(
+                                arquivo_sucesso, engine="openpyxl"
+                            )
 
-                    df.to_excel(
-                        excel_writer=writer,
-                        sheet_name=data["work_sheet"],
-                        index=False,
-                    )
-                    writer.close()
+                        df.to_excel(
+                            excel_writer=writer,
+                            sheet_name=data["work_sheet"],
+                            index=False,
+                        )
+                        writer.close()
 
 
 class SaveError:
@@ -110,32 +115,37 @@ class SaveError:
 
             if data:
                 with suppress(Exception):
-                    df = DataFrame(data["data_save"])
-                    if arquivo_sucesso.exists():
-                        wb = openpyxl.load_workbook(str(arquivo_sucesso))
-                        writer = ExcelWriter(
-                            arquivo_sucesso,
-                            engine="openpyxl",
-                            mode="a",
-                            if_sheet_exists="replace",
-                        )
-                        # Verifica se a worksheet já existe
-                        if data["work_sheet"] in wb.sheetnames:
-                            df_xlsx = read_excel(
+                    if len(data["data_save"] > 0):
+                        df = DataFrame(data["data_save"])
+                        if arquivo_sucesso.exists():
+                            wb = openpyxl.load_workbook(str(arquivo_sucesso))
+                            writer = ExcelWriter(
                                 arquivo_sucesso,
                                 engine="openpyxl",
-                                sheet_name=data["work_sheet"],
+                                mode="a",
+                                if_sheet_exists="replace",
                             )
-                            df = concat([
-                                DataFrame(df_xlsx.to_dict(orient="records")),
-                                DataFrame(data["data_save"]),
-                            ])
-                    else:
-                        writer = ExcelWriter(arquivo_sucesso, engine="openpyxl")
+                            # Verifica se a worksheet já existe
+                            if data["work_sheet"] in wb.sheetnames:
+                                df_xlsx = read_excel(
+                                    arquivo_sucesso,
+                                    engine="openpyxl",
+                                    sheet_name=data["work_sheet"],
+                                )
+                                df = concat([
+                                    DataFrame(
+                                        df_xlsx.to_dict(orient="records")
+                                    ),
+                                    DataFrame(data["data_save"]),
+                                ])
+                        else:
+                            writer = ExcelWriter(
+                                arquivo_sucesso, engine="openpyxl"
+                            )
 
-                    df.to_excel(
-                        excel_writer=writer,
-                        sheet_name=data["work_sheet"],
-                        index=False,
-                    )
-                    writer.close()
+                        df.to_excel(
+                            excel_writer=writer,
+                            sheet_name=data["work_sheet"],
+                            index=False,
+                        )
+                        writer.close()

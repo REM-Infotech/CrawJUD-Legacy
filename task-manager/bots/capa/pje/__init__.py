@@ -94,7 +94,7 @@ class Capa(PjeBot):
     def queue_regiao(self, data: list[BotData]) -> None:
         headers, cookies = self.get_headers_cookies()
         client_context = Client(cookies=cookies, headers=headers)
-        executor = ThreadPoolExecutor(16)
+        executor = ThreadPoolExecutor(4)
 
         with client_context as client, executor as pool:
             futures: list[Future[None]] = []
@@ -103,7 +103,7 @@ class Capa(PjeBot):
                 futures.append(
                     pool.submit(self.queue, item=item, client=client)
                 )
-                sleep(1.5)
+                sleep(0.5)
             _results = [future.result() for future in futures]
 
     def queue(self, item: BotData, client: Client) -> None:
