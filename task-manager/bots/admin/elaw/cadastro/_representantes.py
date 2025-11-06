@@ -1,7 +1,10 @@
 from contextlib import suppress
 from time import sleep
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -120,7 +123,9 @@ class ElawRepresentantes(ElawBot):
             bot_data.get("ADVOGADO_INTERNO"),
         )
 
-        id_input_adv = input_adv_responsavel.get_attribute("id").replace(
+        id_input_adv = input_adv_responsavel.get_attribute(
+            "id"
+        ).replace(
             "_input",
             "_panel",
         )
@@ -139,7 +144,9 @@ class ElawRepresentantes(ElawBot):
         if wait_adv:
             wait_adv.click()
         elif not wait_adv:
-            raise_execution_error(message="Advogado interno não encontrado")
+            raise_execution_error(
+                message="Advogado interno não encontrado"
+            )
 
         self.sleep_load('div[id="j_id_4p"]')
 

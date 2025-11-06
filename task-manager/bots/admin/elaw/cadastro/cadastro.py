@@ -33,7 +33,7 @@ class Cadastro(ElawCadastro):
             self.bot_data = self.elaw_formats(value)
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
@@ -45,9 +45,14 @@ class Cadastro(ElawCadastro):
                 self.print_comprovante(message=message)
                 return
 
-            message = "Processo não encontrado, inicializando cadastro..."
+            message = (
+                "Processo não encontrado, inicializando cadastro..."
+            )
             message_type = "log"
-            self.print_message(message=message, message_type=message_type)
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             btn_newproc = driver.find_element(
                 By.CSS_SELECTOR,
@@ -86,7 +91,10 @@ class Cadastro(ElawCadastro):
 
             message = f"Formulário preenchido em {minutes} minutos e {seconds} segundos"
             message_type = "log"
-            self.print_message(message=message, message_type=message_type)
+            self.print_message(
+                message=message,
+                message_type=message_type,
+            )
 
             self.salvar_tudo()
 

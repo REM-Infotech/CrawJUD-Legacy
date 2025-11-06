@@ -1,6 +1,9 @@
 from contextlib import suppress
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -40,15 +43,20 @@ class ElawCadastro(
     def confirm_save(self) -> bool:
         wait = self.wait
         driver = self.driver
-        msg_erro = "Cadastro do processo nao finalizado, verificar manualmente"
+        msg_erro = (
+            "Cadastro do processo nao finalizado, verificar manualmente"
+        )
         with suppress(TimeoutException):
             WebDriverWait(driver, 20).until(
-                ec.url_to_be("https://amazonas.elaw.com.br/processoView.elaw"),
+                ec.url_to_be(
+                    "https://amazonas.elaw.com.br/processoView.elaw"
+                ),
                 message="Erro ao encontrar elemento",
             )
 
             self.print_message(
-                message="Processo salvo com sucesso!", message_type="log"
+                message="Processo salvo com sucesso!",
+                message_type="log",
             )
             return True
 

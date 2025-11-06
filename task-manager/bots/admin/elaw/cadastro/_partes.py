@@ -2,7 +2,10 @@ from contextlib import suppress
 from time import sleep
 from traceback import format_exception_only
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -19,7 +22,10 @@ class ElawPartesPrincipais(ElawBot):
     def empresa(self) -> None:
         text = self.bot_data.get("EMPRESA")
         element_select: WebElementBot = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.empresa_input)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.empresa_input,
+            )),
         )
 
         message = "Informando Empresa"
@@ -124,12 +130,17 @@ class ElawPartesPrincipais(ElawBot):
         doc_to_list = list(
             filter(
                 lambda x: str.isdigit(x),
-                ",".join(self.bot_data.get("DOC_PARTE_CONTRARIA")).split(","),
+                ",".join(
+                    self.bot_data.get("DOC_PARTE_CONTRARIA")
+                ).split(","),
             ),
         )
         tipo_doc = type_doc.get(str(len(doc_to_list)))
         select_tipo_doc: WebElementBot = wait.until(
-            ec.presence_of_element_located((By.XPATH, el.select_tipo_doc)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.select_tipo_doc,
+            )),
         )
         select_tipo_doc.select2(tipo_doc)
 
@@ -239,13 +250,18 @@ class ElawPartesPrincipais(ElawBot):
             doc_to_list = list(
                 filter(
                     lambda x: str.isdigit(x),
-                    ",".join(bot_data.get("DOC_PARTE_CONTRARIA")).split(","),
+                    ",".join(bot_data.get("DOC_PARTE_CONTRARIA")).split(
+                        ","
+                    ),
                 ),
             )
             tipo_doc = type_doc.get(str(len(doc_to_list)), "cpf")
             select_tipo_doc = el.tipo_cpf_cnpj
             element_select: WebElementBot = wait.until(
-                ec.presence_of_element_located((By.XPATH, select_tipo_doc)),
+                ec.presence_of_element_located((
+                    By.XPATH,
+                    select_tipo_doc,
+                )),
             )
             element_select.select2(tipo_doc.upper())
 

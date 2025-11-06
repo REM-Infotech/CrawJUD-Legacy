@@ -51,7 +51,10 @@ class ElawInformacaoInterna(ElawBot):
         sleep(0.5)
         text = str(self.bot_data.get("DIVISAO"))
         element_select = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.divisao_select)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.divisao_select,
+            )),
         )
         element_select.select2(text)
 

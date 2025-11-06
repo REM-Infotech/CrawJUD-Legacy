@@ -125,7 +125,10 @@ class ElawInformacoesProcesso(ElawBot):
     def provimento(self) -> None:
         text = self.bot_data.get("PROVIMENTO")
         element_select = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.provimento_input)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.provimento_input,
+            )),
         )
 
         message = "Informando provimento antecipatório"
@@ -154,7 +157,10 @@ class ElawInformacoesProcesso(ElawBot):
         )
 
         element_select = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.fato_gerador_input)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.fato_gerador_input,
+            )),
         )
 
         text = self.bot_data.get("FATO_GERADOR")

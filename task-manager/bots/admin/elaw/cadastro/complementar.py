@@ -29,7 +29,7 @@ class Complementar(ElawCadastro):
 
             self.queue()
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         try:
@@ -60,7 +60,10 @@ class Complementar(ElawCadastro):
             )
             esfera_xls = self.bot_data.get("ESFERA")
 
-            if esfera_xls and check_esfera.text.lower() != esfera_xls.lower():
+            if (
+                esfera_xls
+                and check_esfera.text.lower() != esfera_xls.lower()
+            ):
                 self.esfera(esfera_xls)
 
             for item in lista1:

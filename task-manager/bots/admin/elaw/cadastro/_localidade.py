@@ -53,7 +53,10 @@ class ElawLocalidade(ElawBot):
         )
 
         element_select: WebElementBot = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.css_esfera_judge)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.css_esfera_judge,
+            )),
         )
 
         element_select.select2(text)
@@ -99,7 +102,10 @@ class ElawLocalidade(ElawBot):
         message_type = "log"
 
         element_select: WebElementBot = self.wait.until(
-            ec.presence_of_element_located((By.XPATH, el.comarca_input)),
+            ec.presence_of_element_located((
+                By.XPATH,
+                el.comarca_input,
+            )),
         )
         self.print_message(
             message=message,
@@ -183,7 +189,10 @@ class ElawLocalidade(ElawBot):
 
         self.sleep_load('div[id="j_id_4p"]')
 
-        if str(self.bot_data.get("CAPITAL_INTERIOR")).lower() == "outro estado":
+        if (
+            str(self.bot_data.get("CAPITAL_INTERIOR")).lower()
+            == "outro estado"
+        ):
             other_location: WebElementBot = self.wait.until(
                 ec.presence_of_element_located((
                     By.CSS_SELECTOR,
