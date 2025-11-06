@@ -8,6 +8,7 @@ from pathlib import Path
 from time import sleep
 from typing import ClassVar
 
+from common.exceptions import ExecutionError
 from httpx import Client
 from pypdf import PdfReader, PdfWriter
 from selenium.webdriver.common.by import By
@@ -15,9 +16,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 
 from app.bots.controller.projudi import ProjudiBot
-from app.bots.resources.driver.web_element import WebElementBot
-from app.bots.resources.elements import projudi as el
-from common.exceptions import ExecutionError
+from app.resources.driver.web_element import WebElementBot
+from app.resources.elements import projudi as el
 
 
 class Movimentacao(ProjudiBot):

@@ -7,11 +7,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from app.bots.controller.projudi import ProjudiBot
-from app.bots.resources.elements import projudi as el
 from app.interfaces.projudi import (
     PartesProjudiDict,
     RepresentantesProjudiDict,
 )
+from app.resources.elements import projudi as el
 from constants import INTIMACAO_ELETRONICA
 
 if TYPE_CHECKING:

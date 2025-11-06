@@ -1,9 +1,9 @@
 from typing import NoReturn
 
+from common.exceptions import ExecutionError
 from selenium.webdriver.support.wait import WebDriverWait  # noqa: F401
 
-from app.bots.resources.elements import jusds as el  # noqa: F401
-from common.exceptions import ExecutionError
+from app.resources.elements import jusds as el  # noqa: F401
 
 from .master import JusdsBot
 

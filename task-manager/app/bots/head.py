@@ -10,12 +10,12 @@ from typing import TYPE_CHECKING, ClassVar, Self
 
 from celery import shared_task
 
-from app.bots.resources.driver import BotDriver
-from app.bots.resources.iterators import BotIterator
-from app.bots.resources.managers.credencial_manager import CredencialManager
-from app.bots.resources.managers.file_manager import FileManager
-from app.bots.resources.queues.file_operation import SaveError, SaveSuccess
-from app.bots.resources.queues.print_message import PrintMessage
+from app.resources.driver import BotDriver
+from app.resources.iterators import BotIterator
+from app.resources.managers.credencial_manager import CredencialManager
+from app.resources.managers.file_manager import FileManager
+from app.resources.queues.file_operation import SaveError, SaveSuccess
+from app.resources.queues.print_message import PrintMessage
 from constants import WORKDIR
 
 if TYPE_CHECKING:

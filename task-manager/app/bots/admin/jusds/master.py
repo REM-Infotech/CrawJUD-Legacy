@@ -8,8 +8,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.bots.head import CrawJUD
-from app.bots.resources.elements import jusds as el
 from app.interfaces import DataSucesso
+from app.resources.elements import jusds as el
 
 
 class JusdsBot(CrawJUD):

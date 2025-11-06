@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 from socketio import Client
 from tqdm import tqdm
 
-from app.bots.resources.iterators.queue import QueueIterator
 from app.interfaces import Message
+from app.resources.iterators.queue import QueueIterator
 from app.types import MessageLog, MessageType
 from config import config
 

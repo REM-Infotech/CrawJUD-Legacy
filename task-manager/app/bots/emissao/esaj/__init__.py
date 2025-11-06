@@ -11,6 +11,8 @@ from pathlib import Path
 from time import sleep
 
 import requests
+from common._raises import raise_execution_error
+from common.exceptions import ExecutionError
 from pypdf import PdfReader
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -18,9 +20,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.bots.controller.esaj import ESajBot
-from app.bots.resources.elements import esaj as el
-from common._raises import raise_execution_error
-from common.exceptions import ExecutionError
+from app.resources.elements import esaj as el
 
 
 class Emissao(ESajBot):

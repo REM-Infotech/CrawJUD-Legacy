@@ -7,11 +7,11 @@ from queue import Queue
 from time import sleep
 from typing import TYPE_CHECKING
 
+from common.exceptions import ExecutionError
 from httpx import Client, Response
 from tqdm import tqdm
 
 from app.bots.controller.pje import PjeBot
-from app.bots.resources.elements import pje as el
 from app.interfaces._pje import (
     AssuntosProcessoPJeDict,
     AudienciaProcessoPjeDict,
@@ -20,7 +20,7 @@ from app.interfaces._pje import (
     ProcessoJudicialDict,
     RepresentantePartesPJeDict,
 )
-from common.exceptions import ExecutionError
+from app.resources.elements import pje as el
 
 if TYPE_CHECKING:
     from app.interfaces import BotData

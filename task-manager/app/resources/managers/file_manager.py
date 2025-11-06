@@ -7,7 +7,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 from dotenv import load_dotenv
 from minio import Minio as MinioClient
 
-from app.bots.resources.formatadores import formata_string
+from app.resources.formatadores import formata_string
 from config import config
 from constants import WORKDIR
 

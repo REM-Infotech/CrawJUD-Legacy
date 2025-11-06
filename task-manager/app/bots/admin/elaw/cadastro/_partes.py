@@ -2,6 +2,7 @@ from contextlib import suppress
 from time import sleep
 from traceback import format_exception_only
 
+from common._raises import raise_execution_error
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -11,9 +12,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.bots.controller.elaw import ElawBot
-from app.bots.resources.driver.web_element import WebElementBot
-from app.bots.resources.elements import elaw as el
-from common._raises import raise_execution_error
+from app.resources.driver.web_element import WebElementBot
+from app.resources.elements import elaw as el
 
 type_doc = {"11": "cpf", "14": "cnpj"}
 

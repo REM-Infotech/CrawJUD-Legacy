@@ -2,6 +2,7 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
+from common.exceptions import ExecutionError
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -10,15 +11,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from app.bots.resources.elements import projudi as el
-from app.bots.resources.search._main import SearchBot
-from common.exceptions import ExecutionError
+from app.resources.elements import projudi as el
+from app.resources.search._main import SearchBot
 from constants import CSS_INPUT_PROCESSO
 
 if TYPE_CHECKING:
     from app.bots.controller.projudi import ProjudiBot
-    from app.bots.resources.driver.web_element import WebElementBot
     from app.interfaces import BotData
+    from app.resources.driver.web_element import WebElementBot
 
 
 GRAU_PRIMEIRA_INSTANCIA = 1

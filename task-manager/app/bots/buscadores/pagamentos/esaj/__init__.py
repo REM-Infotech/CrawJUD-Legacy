@@ -8,12 +8,12 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
+from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from app.bots.controller.esaj import ESajBot
-from app.bots.resources.elements import esaj as el
-from common.exceptions import ExecutionError
+from app.resources.elements import esaj as el
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webelement import WebElement

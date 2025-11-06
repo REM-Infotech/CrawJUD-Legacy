@@ -3,7 +3,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from app.bots.resources.elements import elaw as el
+from app.resources.elements import elaw as el
 
 from ._master import ElawCadastro
 

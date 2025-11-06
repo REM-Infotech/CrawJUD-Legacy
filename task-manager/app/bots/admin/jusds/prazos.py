@@ -2,12 +2,12 @@ from datetime import datetime
 from time import sleep
 from zoneinfo import ZoneInfo
 
+from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.resources.elements import jusds as el
-from common.exceptions import ExecutionError
+from app.resources.elements import jusds as el
 
 from .master import JusdsBot
 

@@ -15,17 +15,17 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
+from common import raise_execution_error
+from common.exceptions import ExecutionError
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from app.bots.resources.driver.web_element import WebElementBot
-from app.bots.resources.elements import elaw as el
-from app.bots.resources.formatadores import formata_string
 from app.interfaces import DataSucesso
-from common import raise_execution_error
-from common.exceptions import ExecutionError
+from app.resources.driver.web_element import WebElementBot
+from app.resources.elements import elaw as el
+from app.resources.formatadores import formata_string
 
 from ._condenacao import ElawCondenacao
 from ._custas import ElawCustas

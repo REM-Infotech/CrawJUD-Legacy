@@ -2,20 +2,20 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
+from common.exceptions import ExecutionError
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
-from app.bots.resources.elements import jusds as el
-from app.bots.resources.formatadores import formata_string
-from common.exceptions import ExecutionError
+from app.resources.elements import jusds as el
+from app.resources.formatadores import formata_string
 
 from .master import JusdsBot
 
 if TYPE_CHECKING:
-    from app.bots.resources.driver.web_element import WebElementBot
+    from app.resources.driver.web_element import WebElementBot
 
 
 class RealizaPrazos(JusdsBot):

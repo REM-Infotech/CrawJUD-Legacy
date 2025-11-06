@@ -12,12 +12,12 @@ import shutil
 from pathlib import Path
 from time import sleep
 
+from common.exceptions import ExecutionError
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from app.bots.controller.elaw import ElawBot
-from app.bots.resources.elements import elaw as el
-from common.exceptions import ExecutionError
+from app.resources.elements import elaw as el
 
 
 class Download(ElawBot):

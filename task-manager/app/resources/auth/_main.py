@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from seleniumwire.webdriver import Chrome
 
     from app.bots.head import CrawJUD
-    from app.bots.resources.managers.credencial_manager import CredencialManager
-    from app.bots.resources.queues.print_message import PrintMessage
+    from app.resources.managers.credencial_manager import CredencialManager
+    from app.resources.queues.print_message import PrintMessage
 
 
 class AutenticadorBot:

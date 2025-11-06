@@ -14,8 +14,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.bots.head import CrawJUD
-from app.bots.resources.driver.web_element import WebElementBot
-from app.bots.resources.elements import elaw as el
+from app.resources.driver.web_element import WebElementBot
+from app.resources.elements import elaw as el
 from constants.data._bots.cidades import cidades_amazonas
 
 

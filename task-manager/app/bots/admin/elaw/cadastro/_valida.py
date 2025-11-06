@@ -1,12 +1,12 @@
 from contextlib import suppress
 from time import sleep
 
+from common._raises import raise_execution_error
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from app.bots.controller.elaw import ElawBot
-from app.bots.resources.elements import elaw as el
-from common._raises import raise_execution_error
+from app.resources.elements import elaw as el
 
 type ListStr = list[str]
 campos_validar: ListStr = [

@@ -19,9 +19,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.bots.controller.elaw import ElawBot
-from app.bots.resources.driver.web_element import WebElementBot
-from app.bots.resources.elements import elaw as el
-from app.bots.resources.formatadores import formata_string
+from app.resources.driver.web_element import WebElementBot
+from app.resources.elements import elaw as el
+from app.resources.formatadores import formata_string
 
 type_doc = {11: "cpf", 14: "cnpj"}
 

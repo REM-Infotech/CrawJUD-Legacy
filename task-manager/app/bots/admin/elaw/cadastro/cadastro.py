@@ -4,7 +4,7 @@ import time
 
 from selenium.webdriver.common.by import By
 
-from app.bots.resources.elements import elaw as el
+from app.resources.elements import elaw as el
 
 from ._master import ElawCadastro
 

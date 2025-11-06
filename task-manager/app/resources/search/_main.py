@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from seleniumwire.webdriver import Chrome
 
     from app.bots.head import CrawJUD
-    from app.bots.resources.queues.print_message import PrintMessage
     from app.interfaces import BotData
+    from app.resources.queues.print_message import PrintMessage
 
 
 class SearchBot:

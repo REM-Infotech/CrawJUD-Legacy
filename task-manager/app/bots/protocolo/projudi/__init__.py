@@ -7,6 +7,8 @@ from contextlib import suppress
 from time import sleep
 from typing import TYPE_CHECKING
 
+from common import raise_password_token
+from common.exceptions import ExecutionError, FileError
 from PIL import Image
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Keys
@@ -17,14 +19,12 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.bots.controller.projudi import ProjudiBot
-from app.bots.resources.elements import projudi as el
-from app.bots.resources.formatadores import formata_string
 from app.interfaces import DataSucesso
-from common import raise_password_token
-from common.exceptions import ExecutionError, FileError
+from app.resources.elements import projudi as el
+from app.resources.formatadores import formata_string
 
 if TYPE_CHECKING:
-    from app.bots.resources.driver.web_element import WebElementBot
+    from app.resources.driver.web_element import WebElementBot
 
 
 class Protocolo(ProjudiBot):

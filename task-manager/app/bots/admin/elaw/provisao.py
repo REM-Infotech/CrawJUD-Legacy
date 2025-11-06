@@ -15,6 +15,7 @@ from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
+from common.exceptions import ExecutionError
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
@@ -24,9 +25,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from app.bots.controller.elaw import ElawBot
-from app.bots.resources.driver.web_element import WebElementBot
-from app.bots.resources.elements import elaw as el
-from common.exceptions import ExecutionError
+from app.resources.driver.web_element import WebElementBot
+from app.resources.elements import elaw as el
 
 
 class Provisao(ElawBot):

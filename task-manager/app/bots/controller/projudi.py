@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING
 from bs4 import BeautifulSoup
 
 from app.bots.head import CrawJUD
-from app.bots.resources import value_check
-from app.bots.resources.auth._projudi import AutenticadorProjudi
-from app.bots.resources.formatadores import formata_string, normalizar
-from app.bots.resources.search.projudi import ProjudiSearch
+from app.resources import value_check
+from app.resources.auth._projudi import AutenticadorProjudi
+from app.resources.formatadores import formata_string, normalizar
+from app.resources.search.projudi import ProjudiSearch
 
 if TYPE_CHECKING:
     from bs4._typing import _SomeTags

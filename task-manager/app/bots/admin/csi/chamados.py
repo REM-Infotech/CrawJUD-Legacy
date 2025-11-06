@@ -15,7 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
 from app.bots.controller.csi import CsiBot
-from app.bots.resources.elements import csi as el
+from app.resources.elements import csi as el
 from app.types import AnyType
 
 load_dotenv()

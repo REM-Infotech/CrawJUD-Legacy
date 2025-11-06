@@ -13,8 +13,9 @@ Attributes:
 
 from typing import TYPE_CHECKING
 
-from app.bots.resources.formatadores import formata_string
 from common._raises import raise_execution_error
+
+from app.resources.formatadores import formata_string
 
 from ._master import ElawPagamentos
 

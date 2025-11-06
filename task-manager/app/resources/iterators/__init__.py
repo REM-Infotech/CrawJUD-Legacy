@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING, Self
 
 from pandas import read_excel
 
-from app.bots.resources.formatadores import (
+from app.interfaces import BotData
+from app.resources.formatadores import (
     format_data,
     format_float,
     formata_string,
 )
-from app.interfaces import BotData
 
 if TYPE_CHECKING:
     from app.bots.head import CrawJUD
