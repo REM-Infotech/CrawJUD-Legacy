@@ -1,17 +1,13 @@
-"""Module for handling Caixa AM elements.
+"""Defina elementos e funcionalidades relacionados à Caixa.
 
-Configure and manage elements for Caixa-related processes.
+Este módulo contém classes e métodos para operar elementos
+da Caixa.
 """
 
 
 class CaixaAm:
-    """Represent Caixa AM elements.
+    """Defina funcionalidades para operar elementos da Caixa AM.
 
-    Provide methods and attributes to operate Caixa AM related functionality.
-
-    Attributes:
-        # Define attributes here as needed.
-
+    Esta classe representa operações e atributos relacionados
+    à Caixa AM.
     """
-
-    # Elementos Caixa

@@ -94,7 +94,7 @@ class Capa(PjeBot):
     def queue_regiao(self, data: list[BotData]) -> None:
         headers, cookies = self.get_headers_cookies()
         client_context = Client(cookies=cookies, headers=headers)
-        executor = ThreadPoolExecutor(4)
+        executor = ThreadPoolExecutor(1)
 
         with client_context as client, executor as pool:
             futures: list[Future[None]] = []
@@ -140,7 +140,7 @@ class Capa(PjeBot):
                         (representantes, "Representantes"),
                     ]:
                         self.append_success(
-                            work_sheet=sheet_name, data_save=to_save
+                            worksheet=sheet_name, data_save=to_save
                         )
 
                     message_type = "success"

@@ -122,7 +122,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         ]
 
         for item in to_add:
-            self.append_success(work_sheet=item[0], data_save=item[1])
+            self.append_success(worksheet=item[0], data_save=item[1])
 
     def segundo_grau(self, numero_processo: str) -> None:
         process_info = CapaProjudiDict(NUMERO_PROCESSO=numero_processo)
@@ -154,7 +154,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         ]
 
         for item in to_add:
-            self.append_success(work_sheet=item[0], data_save=item[1])
+            self.append_success(worksheet=item[0], data_save=item[1])
 
     def copia_pdf(
         self,

@@ -1,6 +1,6 @@
 preview = true
 extend-include = ["*.ipynb"]
-line-length = 80
+line-length = 72
 indent-width = 4
 
 [lint]

@@ -9,10 +9,10 @@ from contextlib import suppress
 from datetime import datetime
 from pathlib import Path
 
-from app.types import Dict
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.types import Dict
 from common import raise_execution_error
 from common.exceptions import ExecutionError
 
@@ -128,9 +128,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(self._info_processual_primeiro_grau())
 
         self._partes_primeiro_grau(numero_processo=numero_processo)
-        self.append_success(
-            work_sheet="Primeiro Grau", data_save=[process_info]
-        )
+        self.append_success(worksheet="Primeiro Grau", data_save=[process_info])
 
     def segundo_grau(self, numero_processo: str) -> None:
         process_info: Dict = {"Número do processo": numero_processo}
@@ -138,9 +136,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(self._info_processual_segundo_grau())
 
         self._partes_segundo_grau(numero_processo=numero_processo)
-        self.append_success(
-            work_sheet="Primeiro Grau", data_save=[process_info]
-        )
+        self.append_success(worksheet="Primeiro Grau", data_save=[process_info])
 
     def copia_pdf(
         self,

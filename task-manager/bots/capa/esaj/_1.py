@@ -129,5 +129,5 @@ class PrimeiraInstancia(ESajBot):
                     "Endereco": endereco,
                 })
 
-        self.append_success(work_sheet="Partes", data_save=partes)
-        self.append_success(work_sheet="Representantes", data_save=advogados)
+        self.append_success(worksheet="Partes", data_save=partes)
+        self.append_success(worksheet="Representantes", data_save=advogados)

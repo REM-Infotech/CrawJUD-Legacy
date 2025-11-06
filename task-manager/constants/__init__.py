@@ -36,3 +36,6 @@ COLORS_DICT: ColorsDict = {
     "warning": "magenta",
     "success": "green",
 }
+
+
+MESSAGE = "[({pid}, {typ}, {row}, {dt})> {msg}]"
