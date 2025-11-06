@@ -1,8 +1,11 @@
-from app.interfaces.projudi import PartesProjudiDict, RepresentantesProjudiDict
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.interfaces.projudi import (
+    PartesProjudiDict,
+    RepresentantesProjudiDict,
+)
 from app.types import Dict
 from bots.controller.projudi import ProjudiBot
 from bots.resources.elements import projudi as el
@@ -43,12 +46,18 @@ class PrimeiraInstancia(ProjudiBot):
         return self.parse_data(inner_html=inner_html)
 
     def _partes_primeiro_grau(
-        self, numero_processo: str
-    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
+        self,
+        numero_processo: str,
+    ) -> tuple[
+        list[PartesProjudiDict], list[RepresentantesProjudiDict]
+    ]:
         wait = self.wait
 
         btn_partes = wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.btn_partes)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.btn_partes,
+            )),
         )
 
         btn_partes.click()
@@ -62,7 +71,9 @@ class PrimeiraInstancia(ProjudiBot):
         partes: list[Dict] = []
         advogados: list[Dict] = []
 
-        for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
+        for table in grouptable_partes.find_elements(
+            By.TAG_NAME, "table"
+        ):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
             parte, advogado = self._partes_extract_primeiro_grau(
@@ -76,8 +87,12 @@ class PrimeiraInstancia(ProjudiBot):
         return partes, advogados
 
     def _partes_extract_primeiro_grau(
-        self, html: str, processo: str
-    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
+        self,
+        html: str,
+        processo: str,
+    ) -> tuple[
+        list[PartesProjudiDict], list[RepresentantesProjudiDict]
+    ]:
         """Extraia informações das partes do processo na tabela do Projudi.
 
         Args:
@@ -120,7 +135,9 @@ class PrimeiraInstancia(ProjudiBot):
                         class_="extendedinfo",
                     )
                     if endereco_div:
-                        endereco = str(endereco_div.get_text(" ", strip=True))
+                        endereco = str(
+                            endereco_div.get_text(" ", strip=True)
+                        )
 
             if nome_parte != "Descrição:":
                 for li in tds[5].find_all("li"):
@@ -134,7 +151,7 @@ class PrimeiraInstancia(ProjudiBot):
                             NOME=advogado_e_oab[1],
                             OAB=advogado_e_oab[0],
                             REPRESENTADO=nome_parte,
-                        )
+                        ),
                     )
 
                 partes.append(
@@ -145,7 +162,7 @@ class PrimeiraInstancia(ProjudiBot):
                         CPF_CNPJ=cpf_cnpj_parte,
                         ADVOGADOS=advogados_parte,
                         ENDERECO=endereco,
-                    )
+                    ),
                 )
 
         return partes, advogados

@@ -5,7 +5,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from bots.controller.esaj import ESajBot
 from bots.resources.elements import projudi as el
 
-type ListPartes = list[tuple[list[dict[str, str]], list[dict[str, str]]]]
+type ListPartes = list[
+    tuple[list[dict[str, str]], list[dict[str, str]]]
+]
 
 
 class PrimeiraInstancia(ESajBot):
@@ -46,7 +48,10 @@ class PrimeiraInstancia(ESajBot):
         wait = self.wait
 
         btn_partes = wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, el.btn_partes)),
+            ec.presence_of_element_located((
+                By.CSS_SELECTOR,
+                el.btn_partes,
+            )),
         )
 
         btn_partes.click()
@@ -57,7 +62,9 @@ class PrimeiraInstancia(ESajBot):
             )),
         )
 
-        for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
+        for table in grouptable_partes.find_elements(
+            By.TAG_NAME, "table"
+        ):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
             self._partes_extract_primeiro_grau(
@@ -65,7 +72,9 @@ class PrimeiraInstancia(ESajBot):
                 processo=numero_processo,
             )
 
-    def _partes_extract_primeiro_grau(self, html: str, processo: str) -> None:
+    def _partes_extract_primeiro_grau(
+        self, html: str, processo: str
+    ) -> None:
         """Extraia informações das partes do processo na tabela do Projudi.
 
         Args:
@@ -105,7 +114,9 @@ class PrimeiraInstancia(ESajBot):
                         class_="extendedinfo",
                     )
                     if endereco_div:
-                        endereco = str(endereco_div.get_text(" ", strip=True))
+                        endereco = str(
+                            endereco_div.get_text(" ", strip=True)
+                        )
 
             if nome != "Descrição:":
                 for li in tds[5].find_all("li"):
@@ -130,4 +141,6 @@ class PrimeiraInstancia(ESajBot):
                 })
 
         self.append_success(worksheet="Partes", data_save=partes)
-        self.append_success(worksheet="Representantes", data_save=advogados)
+        self.append_success(
+            worksheet="Representantes", data_save=advogados
+        )

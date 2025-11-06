@@ -1,8 +1,11 @@
-from app.interfaces.projudi import PartesProjudiDict, RepresentantesProjudiDict
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from app.interfaces.projudi import (
+    PartesProjudiDict,
+    RepresentantesProjudiDict,
+)
 from bots.controller.projudi import ProjudiBot
 from bots.resources.elements import projudi as el
 
@@ -46,8 +49,11 @@ class SegundaInstancia(ProjudiBot):
         return self.parse_data(inner_html=inner_html)
 
     def _partes_segundo_grau(
-        self, numero_processo: str
-    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
+        self,
+        numero_processo: str,
+    ) -> tuple[
+        list[PartesProjudiDict], list[RepresentantesProjudiDict]
+    ]:
         wait = self.wait
 
         btn_partes = wait.until(
@@ -68,7 +74,9 @@ class SegundaInstancia(ProjudiBot):
         partes = []
         advogados = []
 
-        for table in grouptable_partes.find_elements(By.TAG_NAME, "table"):
+        for table in grouptable_partes.find_elements(
+            By.TAG_NAME, "table"
+        ):
             tbody_table = table.find_element(By.TAG_NAME, "tbody")
             inner_html = tbody_table.get_attribute("innerHTML")
             parte, advogado = self._partes_extract_segundo_grau(
@@ -82,8 +90,12 @@ class SegundaInstancia(ProjudiBot):
         return partes, advogados
 
     def _partes_extract_segundo_grau(
-        self, html: str, processo: str
-    ) -> tuple[list[PartesProjudiDict], list[RepresentantesProjudiDict]]:
+        self,
+        html: str,
+        processo: str,
+    ) -> tuple[
+        list[PartesProjudiDict], list[RepresentantesProjudiDict]
+    ]:
         """Extraia informações das partes do processo na tabela do Projudi.
 
         Returns:
@@ -122,7 +134,9 @@ class SegundaInstancia(ProjudiBot):
                         class_="extendedinfo",
                     )
                     if endereco_div:
-                        endereco = str(endereco_div.get_text(" ", strip=True))
+                        endereco = str(
+                            endereco_div.get_text(" ", strip=True)
+                        )
 
             if ":" not in nome:
                 for li in tds[5].find_all("li"):
@@ -136,7 +150,7 @@ class SegundaInstancia(ProjudiBot):
                             NOME=advogado_e_oab[1],
                             OAB=advogado_e_oab[0],
                             REPRESENTADO=nome,
-                        )
+                        ),
                     )
 
                 partes.append(
@@ -147,7 +161,7 @@ class SegundaInstancia(ProjudiBot):
                         CPF_CNPJ=limpa_campo(cpf),
                         ADVOGADOS=advs,
                         ENDERECO=limpa_campo(endereco),
-                    )
+                    ),
                 )
 
         return partes, advogados

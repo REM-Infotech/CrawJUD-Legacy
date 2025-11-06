@@ -1,21 +1,15 @@
-"""Executa o processamento da capa dos processos PJE.
-
-Este módulo contém a classe Capa responsável por autenticar, enfileirar e
-processar processos judiciais, além de realizar o download da cópia integral
-dos processos e salvar os resultados no storage.
-
-"""
+"""Módulo do robô de capa do PJe."""
 
 import traceback
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import suppress
 from queue import Queue
 from time import sleep
+from typing import TYPE_CHECKING
 
 from httpx import Client, Response
 from tqdm import tqdm
 
-from app.interfaces import BotData
 from app.interfaces._pje import (
     AssuntosProcessoPJeDict,
     AudienciaProcessoPjeDict,
@@ -24,51 +18,25 @@ from app.interfaces._pje import (
     ProcessoJudicialDict,
     RepresentantePartesPJeDict,
 )
-from app.interfaces._pje import (
-    DictResults as DictResults,
-)
-from app.interfaces._pje import audiencias as audiencias
-from app.interfaces._pje.assuntos import AssuntoDict as AssuntoDict
-from app.interfaces._pje.assuntos import ItemAssuntoDict
-from app.interfaces._pje.audiencias import AudienciaDict
-from app.interfaces._pje.partes import ParteDict, PartesJsonDict
-from app.types import Dict as Dict
 from bots.controller.pje import PjeBot
 from bots.resources.elements import pje as el
-from common.exceptions import (
-    ExecutionError as ExecutionError,
-)
-from common.exceptions import (
-    FileUploadError as FileUploadError,
-)
-from constants import WORKDIR as WORKDIR
+from common.exceptions import ExecutionError
 
-SENTINELA = None
+if TYPE_CHECKING:
+    from app.interfaces import BotData
+    from app.interfaces._pje.assuntos import ItemAssuntoDict
+    from app.interfaces._pje.audiencias import AudienciaDict
+    from app.interfaces._pje.partes import ParteDict, PartesJsonDict
+    from app.types import AnyType
 
 
 class Capa(PjeBot):
-    """Gerencia autenticação, enfileiramento e processamento de processos PJE.
-
-    Esta classe executa autenticação, enfileiramento, processamento e download
-    da cópia integral dos processos judiciais no sistema PJE, salvando os
-    resultados no armazenamento definido.
-
-    """
+    """Gerencie autenticação e processamento de processos PJE."""
 
     queue_files: Queue
 
     def execution(self) -> None:
-        """Executa o fluxo principal de processamento da capa dos processos PJE.
-
-        Args:
-            name (str | None): Nome do bot.
-            system (str | None): Sistema do bot.
-            current_task (ContextTask): Tarefa atual do Celery.
-            storage_folder_name (str): Nome da pasta de armazenamento.
-            *args: Argumentos variáveis.
-            **kwargs: Argumentos nomeados variáveis.
-
-        """
+        """Execute o processamento dos processos judiciais PJE."""
         self.queue_files = Queue()
         self.to_add_processos = []
         self.to_add_audiencias = []
@@ -89,9 +57,15 @@ class Capa(PjeBot):
                 continue
             self.queue_regiao(data=data_regiao)
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue_regiao(self, data: list[BotData]) -> None:
+        """Enfileire processos judiciais para processamento.
+
+        Args:
+            data (list[BotData]): Lista de dados dos processos.
+
+        """
         headers, cookies = self.get_headers_cookies()
         client_context = Client(cookies=cookies, headers=headers)
         executor = ThreadPoolExecutor(1)
@@ -101,18 +75,31 @@ class Capa(PjeBot):
 
             for item in data:
                 futures.append(
-                    pool.submit(self.queue, item=item, client=client)
+                    pool.submit(self.queue, item=item, client=client),
                 )
                 sleep(0.5)
             _results = [future.result() for future in futures]
 
     def queue(self, item: BotData, client: Client) -> None:
+        """Enfileire e processe um processo judicial PJE.
+
+        Args:
+            item (BotData): Dados do processo.
+            client (Client): Cliente HTTP autenticado.
+
+        """
         if not self.bot_stopped.is_set():
             sleep(0.5)
-            row = int(self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1)
+            row = int(
+                self.posicoes_processos[item["NUMERO_PROCESSO"]] + 1,
+            )
             processo = item["NUMERO_PROCESSO"]
             try:
-                resultados = self.search(data=item, row=row, client=client)
+                resultados = self.search(
+                    data=item,
+                    row=row,
+                    client=client,
+                )
                 if resultados:
                     self.print_message(
                         message="Processo encontrado!",
@@ -121,7 +108,7 @@ class Capa(PjeBot):
                     )
 
                     capa = self.capa_processual(
-                        result=resultados["data_request"]
+                        result=resultados["data_request"],
                     )
                     sleep(0.5)
                     partes, assuntos, audiencias, representantes = (
@@ -140,7 +127,8 @@ class Capa(PjeBot):
                         (representantes, "Representantes"),
                     ]:
                         self.append_success(
-                            worksheet=sheet_name, data_save=to_save
+                            worksheet=sheet_name,
+                            data_save=to_save,
                         )
 
                     message_type = "success"
@@ -151,7 +139,7 @@ class Capa(PjeBot):
                         row=row,
                     )
 
-            except Exception as e:
+            except ExecutionError as e:
                 exc = "\n".join(traceback.format_exception(e))
                 tqdm.write(exc)
                 self.print_message(
@@ -171,6 +159,17 @@ class Capa(PjeBot):
         list[AudienciaProcessoPjeDict],
         list[RepresentantePartesPJeDict],
     ]:
+        """Extraia partes, assuntos, audiências e representantes.
+
+        Args:
+            processo (str): Número do processo.
+            client (Client): Cliente HTTP autenticado.
+            id_processo (str): Identificador do processo.
+
+        Returns:
+            tuple: partes, assuntos, audiências e representantes.
+
+        """
         request_partes: Response = None
         request_assuntos: Response = None
         request_audiencias: Response = None
@@ -220,10 +219,17 @@ class Capa(PjeBot):
                     data_audiencia=request_audiencias.json(),
                 )
 
-        return data_partes, data_assuntos, data_audiencias, data_representantes
+        return (
+            data_partes,
+            data_assuntos,
+            data_audiencias,
+            data_representantes,
+        )
 
     def _salva_audiencias(
-        self, processo: str, data_audiencia: list[AudienciaDict]
+        self,
+        processo: str,
+        data_audiencia: list[AudienciaDict],
     ) -> list[AudienciaProcessoPjeDict]:
         return [
             AudienciaProcessoPjeDict(
@@ -260,7 +266,10 @@ class Capa(PjeBot):
         self,
         processo: str,
         data_partes: PartesJsonDict,
-    ) -> tuple[list[PartesProcessoPJeDict], list[RepresentantePartesPJeDict]]:
+    ) -> tuple[
+        list[PartesProcessoPJeDict],
+        list[RepresentantePartesPJeDict],
+    ]:
         partes: list[PartesProcessoPJeDict] = []
         representantes: list[RepresentantePartesPJeDict] = []
         for v in data_partes.values():
@@ -271,7 +280,10 @@ class Capa(PjeBot):
                     PartesProcessoPJeDict(
                         ID_PJE=parte.get("id"),
                         NOME=parte.get("nome"),
-                        DOCUMENTO=parte.get("documento", "000.000.000-00"),
+                        DOCUMENTO=parte.get(
+                            "documento",
+                            "000.000.000-00",
+                        ),
                         TIPO_DOCUMENTO=parte.get(
                             "tipoDocumento",
                             "Não Informado",
@@ -288,41 +300,74 @@ class Capa(PjeBot):
 
                 if "representantes" in parte:
                     representantes.extend(
-                        [
-                            RepresentantePartesPJeDict(
-                                ID_PJE=representante.get("id", ""),
-                                PROCESSO=processo,
-                                NOME=representante.get("nome", ""),
-                                DOCUMENTO=representante.get(
-                                    "documento",
-                                    "",
-                                ),
-                                TIPO_DOCUMENTO=representante.get(
-                                    "tipoDocumento",
-                                    "",
-                                ),
-                                REPRESENTADO=parte["nome"],
-                                TIPO_PARTE=representante["polo"],
-                                TIPO_PESSOA=representante["tipoPessoa"],
-                                POLO=representante["polo"],
-                                OAB=representante.get("numeroOab", "0000"),
-                                EMAILS=",".join(
-                                    representante.get("emails", []),
-                                ),
-                                TELEFONE=f"({representante.get('dddCelular')}) {representante.get('numeroCelular')}"
-                                if "dddCelular" in representante
-                                and "numeroCelular" in representante
-                                else "",
-                            )
-                            for representante in parte["representantes"]
-                        ],
+                        self.__formata_representante(
+                            parte=parte,
+                            processo=processo,
+                        ),
                     )
 
         return partes, representantes
 
+    def __formata_representante(
+        self,
+        parte: PartesJsonDict,
+        processo: str,
+    ) -> list[RepresentantePartesPJeDict]:
+        def __formata_numero_representante(
+            representante: AnyType,
+        ) -> str:
+            if (
+                "dddCelular" in representante
+                and "numeroCelular" in representante
+            ):
+                numero = representante.get("numeroCelular")
+                ddd = representante.get("dddCelular")
+                return f"({ddd}) {numero}"
+
+            return ""
+
+        return [
+            RepresentantePartesPJeDict(
+                ID_PJE=representante.get("id", ""),
+                PROCESSO=processo,
+                NOME=representante.get("nome", ""),
+                DOCUMENTO=representante.get(
+                    "documento",
+                    "",
+                ),
+                TIPO_DOCUMENTO=representante.get(
+                    "tipoDocumento",
+                    "",
+                ),
+                REPRESENTADO=parte["nome"],
+                TIPO_PARTE=representante["polo"],
+                TIPO_PESSOA=representante["tipoPessoa"],
+                POLO=representante["polo"],
+                OAB=representante.get(
+                    "numeroOab",
+                    "0000",
+                ),
+                EMAILS=",".join(
+                    representante.get("emails", []),
+                ),
+                TELEFONE=__formata_numero_representante(representante),
+            )
+            for representante in parte["representantes"]
+        ]
+
     def capa_processual(
-        self, result: ProcessoJudicialDict
+        self,
+        result: ProcessoJudicialDict,
     ) -> CapaProcessualPJeDict:
+        """Gere a capa processual do processo judicial PJE.
+
+        Args:
+            result (ProcessoJudicialDict): Dados do processo judicial.
+
+        Returns:
+            CapaProcessualPJeDict: Dados da capa processual gerados.
+
+        """
         link_consulta = f"https://pje.trt{self.regiao}.jus.br/pjekz/processo/{result['id']}/detalhe"
         return CapaProcessualPJeDict(
             ID_PJE=result["id"],

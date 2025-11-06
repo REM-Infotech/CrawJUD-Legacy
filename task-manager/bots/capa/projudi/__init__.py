@@ -75,7 +75,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def get_process_informations(self) -> None:
         """Extrai informações detalhadas do processo da página atual do Projudi."""
@@ -83,7 +83,10 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             bot_data = self.bot_data
             numero_processo = bot_data.get("NUMERO_PROCESSO")
 
-            callables = {"1": self.primeiro_grau, "2": self.segundo_grau}
+            callables = {
+                "1": self.primeiro_grau,
+                "2": self.segundo_grau,
+            }
 
             callables[str(bot_data.get("GRAU", "1"))](
                 numero_processo=numero_processo,
@@ -112,7 +115,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(informacao_processo)
 
         partes, advogados = self._partes_primeiro_grau(
-            numero_processo=numero_processo
+            numero_processo=numero_processo,
         )
 
         to_add = [
@@ -144,7 +147,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(informacao_processo)
 
         partes, advogados = self._partes_segundo_grau(
-            numero_processo=numero_processo
+            numero_processo=numero_processo,
         )
 
         to_add = [

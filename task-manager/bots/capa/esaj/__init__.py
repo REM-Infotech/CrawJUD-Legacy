@@ -61,7 +61,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 self.bot_data.update({"MOTIVO_ERRO": message_error})
                 self.append_error(data_save=[self.bot_data])
 
-        self.finalize_execution()
+        self.finalizar_execucao()
 
     def queue(self) -> None:
         """Handle the process information extraction queue by refreshing the driver.
@@ -113,7 +113,10 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
             bot_data = self.bot_data
             numero_processo = bot_data.get("NUMERO_PROCESSO")
 
-            callables = {"1": self.primeiro_grau, "2": self.segundo_grau}
+            callables = {
+                "1": self.primeiro_grau,
+                "2": self.segundo_grau,
+            }
 
             callables[str(bot_data.get("GRAU", "1"))](
                 numero_processo=numero_processo,
@@ -128,7 +131,10 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(self._info_processual_primeiro_grau())
 
         self._partes_primeiro_grau(numero_processo=numero_processo)
-        self.append_success(worksheet="Primeiro Grau", data_save=[process_info])
+        self.append_success(
+            worksheet="Primeiro Grau",
+            data_save=[process_info],
+        )
 
     def segundo_grau(self, numero_processo: str) -> None:
         process_info: Dict = {"Número do processo": numero_processo}
@@ -136,7 +142,10 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
         process_info.update(self._info_processual_segundo_grau())
 
         self._partes_segundo_grau(numero_processo=numero_processo)
-        self.append_success(worksheet="Primeiro Grau", data_save=[process_info])
+        self.append_success(
+            worksheet="Primeiro Grau",
+            data_save=[process_info],
+        )
 
     def copia_pdf(
         self,
