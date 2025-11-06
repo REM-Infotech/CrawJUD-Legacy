@@ -1,0 +1,49 @@
+"""Operações de planilhas."""
+
+from datetime import datetime
+from queue import Queue
+from threading import Thread
+from typing import TYPE_CHECKING, NoReturn
+from zoneinfo import ZoneInfo
+
+from pandas import DataFrame
+
+from app.bots.resources.iterators.queue import QueueIterator
+from app.bots.resources.queues.file_operation._main import FileOperator
+from app.interfaces import DataSave
+
+DATASAVE = []
+
+if TYPE_CHECKING:
+    from app.bots.head import CrawJUD
+
+
+class SaveSuccess(FileOperator):
+    """Controle da Queue de salvamento de sucessos."""
+
+    bot: CrawJUD
+
+    def __init__(self, bot: CrawJUD) -> None:
+        """Instancia da queue de salvamento de erros."""
+        self.bot = bot
+
+        self.queue_save = Queue()
+        self.thead_save = Thread(target=self.save_success, daemon=True)
+        self.thead_save.start()
+
+    def __call__(self, worksheet: str, data_save: str) -> None:
+        self.queue_save.put_nowait({
+            "worksheet": worksheet,
+            "data_save": DataFrame(data_save).to_dict(orient="records"),
+        })
+
+    def save_success(self) -> NoReturn:
+        tz = ZoneInfo("America/Sao_Paulo")
+        now = datetime.now(tz=tz).strftime("%d-%m-%Y %H-%M-%S")
+        nome_arquivo = f"Sucessos - PID {self.bot.pid} - {now}.xlsx"
+        out_dir = self.bot.output_dir_path
+        arquivo_sucesso = out_dir.joinpath(nome_arquivo)
+
+        for data in QueueIterator[DataSave](self.queue_save):
+            if data and len(data["data_save"]) > 0:
+                self.save_file(data, arquivo_sucesso)
