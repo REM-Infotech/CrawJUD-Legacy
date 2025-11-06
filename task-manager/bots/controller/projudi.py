@@ -3,17 +3,15 @@
 from contextlib import suppress
 from datetime import datetime
 from time import sleep
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
-from bs4.element import PageElement
 from selenium.common.exceptions import (
     NoSuchElementException,
     TimeoutException,
 )
-from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -24,13 +22,19 @@ from common.exceptions import (
     ExecutionError,
     LoginSystemError,
 )
-from constants import CSS_INPUT_PROCESSO, MAIOR_60_ANOS
+from constants import CSS_INPUT_PROCESSO, MAIOR_60_ANOS, VER_RECURSO
+
+if TYPE_CHECKING:
+    from bs4._typing import _SomeTags
+    from selenium.webdriver.common.alert import Alert
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 
 class ProjudiBot(CrawJUD):
     """Classe de controle para robôs do PROJUDI."""
 
     url_segunda_instancia: str = None
+    rows_data: _SomeTags
 
     def search(self) -> bool:
         """Procura processos no PROJUDI.
@@ -57,7 +61,7 @@ class ProjudiBot(CrawJUD):
 
         driver.get(url_search)
 
-        if self.config["categoria"] != "proc_parte":
+        if self.config.get("categoria") != "proc_parte":
             return self.search_proc()
 
         return self.search_proc_parte()
@@ -252,6 +256,15 @@ class ProjudiBot(CrawJUD):
         return enterproc is not None
 
     def auth(self) -> bool:
+        """Autentique usuário no sistema PROJUDI.
+
+        Returns:
+            bool: True se login bem-sucedido, False caso contrário.
+
+        Raises:
+            LoginSystemError: Se ocorrer erro na autenticação.
+
+        """
         check_login = None
         try:
             self.driver.get(el.url_login)
@@ -305,51 +318,55 @@ class ProjudiBot(CrawJUD):
 
         return check_login is not None
 
-    def parse_data(self, inner_html: str) -> dict[str, str]:  # noqa: C901
+    def parse_data(self, inner_html: str) -> dict[str, str]:
+        """Extrai dados do HTML do processo.
+
+        Args:
+            inner_html (str): HTML da página do processo.
+
+        Returns:
+            dict[str, str]: Dados extraídos do processo.
+
+        """
         soup = BeautifulSoup(inner_html, "html.parser")
         dados = {}
         # percorre todas as linhas <tr>
 
-        def normalize(txt: str) -> str:
-            # Junta quebras de linha/tabs/múltiplos espaços em espaço simples
-            return " ".join(txt.split())
+        self.rows_data = []
+        for table_row in soup.find_all("tr"):
+            table_row_data = table_row.find_all("td")
+            self.rows_data.extend(table_row_data)
 
-        def get_text(td: PageElement) -> str:
-            # Usa separador " " para não colar palavras; strip nas bordas
-            return normalize(td.get_text(" ", strip=True))
+        for pos, td in enumerate(self.rows_data):
+            lbl_tag = td.find("label")
+            if lbl_tag:
+                label = self.__normalize(lbl_tag.get_text().rstrip(":"))
+                valor = self.__get_text(pos)
 
-        for tr in soup.find_all("tr"):
-            tds = tr.find_all("td")
-            i = 0
-            while i < len(tds):
-                td = tds[i]
-                lbl_tag = td.find("label")
-                if lbl_tag:
-                    label = normalize(lbl_tag.get_text().rstrip(":"))
-                    # avançar para o próximo td que tenha conteúdo real (pule espaçadores)
-                    j = i + 1
-                    valor = ""
-                    while j < len(tds):
-                        texto = get_text(tds[j])
-                        # considera vazio se for "&nbsp;" ou string vazia
-                        if texto and texto != " ":  # &nbsp; vira U+00A0
-                            valor = texto
-                            break
-                        j += 1
-                    if label and valor and ":" not in valor:
-                        if " " in label:
-                            label = "_".join(label.split(" "))
-
-                        if valor == MAIOR_60_ANOS:
-                            continue
-
-                        dados[formata_string(label.upper())] = valor
-                    # continue a partir do td seguinte ao que usamos como valor
-                    i = j + 1
-                else:
-                    i += 1
+                if self.__value_check(label, valor):
+                    dados[formata_string(label)] = valor
 
         return dados
+
+    def __value_check(self, label: str, valor: str) -> bool:
+        if label and valor and ":" not in valor:
+            return valor != MAIOR_60_ANOS and valor != VER_RECURSO
+
+        return False
+
+    def __get_text(self, pos: int) -> str:
+        i = pos + 1
+        while i < len(self.rows_data):
+            valor = self.__normalize(
+                self.rows_data[i].get_text(" ", strip=True),
+            )
+            if valor and valor != " ":
+                return valor
+            i += 1
+        return None
+
+    def __normalize(self, txt: str) -> str:
+        return " ".join(txt.split())
 
 
 def detect_intimacao(driver: WebDriver) -> None:
@@ -398,28 +415,29 @@ def allow_access(driver: WebDriver) -> None:
 
 
 def get_link_grau2(wait: WebDriverWait) -> str | None:
-    """Recupera link para acessar processos em segundo grau.
+    """Retorne link de recursos do grau 2 do processo.
 
-    Filtra elemento com "Clique aqui para visualizar os recursos relacionados".
+    Args:
+        wait (WebDriverWait): Espera explícita do Selenium.
 
     Returns:
-        str | None: link ou None.
+        str | None: Link encontrado ou None.
 
     """
     with suppress(Exception, TimeoutException, NoSuchElementException):
+        btn_txt = "Clique aqui para visualizar os recursos relacionados"
         info_proc = wait.until(
             ec.presence_of_all_elements_located(
                 (
                     By.CSS_SELECTOR,
-                    "table#informacoesProcessuais > tbody > tr > td > a",
+                    el.INFORMACAO_PROCESSO,
                 ),
             ),
         )
 
         info_proc = list(
             filter(
-                lambda x: "Clique aqui para visualizar os recursos relacionados"
-                in x.text,
+                lambda x: btn_txt in x.text,
                 info_proc,
             ),
         )[-1]

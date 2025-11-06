@@ -10,6 +10,8 @@ onBeforeMount(FormManager.RetrieveCredentials);
 useHead({
   title: bot.value?.display_name,
 });
+
+onUnmounted(() => (btnConfirm.value = false));
 </script>
 
 <template>

@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from celery import Celery
 from dotenv import load_dotenv
 from minio import Minio as MinioClient
 
@@ -15,6 +14,8 @@ from constants import WORKDIR
 load_dotenv()
 
 if TYPE_CHECKING:
+    from celery import Celery
+
     from bots.head import CrawJUD
 
 
@@ -24,7 +25,12 @@ class FileManager(MinioClient):
     celery_app: Celery
 
     def __init__(self, bot: CrawJUD) -> None:
-        """Instancia o gerenciador de arquivos recebidos para a execução do robô."""
+        """Inicialize o gerenciador com o bot informado.
+
+        Args:
+            bot (CrawJUD): Instância do robô principal.
+
+        """
         dict_config = dict(list(config.as_dict().items()))
         super().__init__(
             endpoint=dict_config["MINIO_ENDPOINT"],
@@ -41,6 +47,7 @@ class FileManager(MinioClient):
         self.bot = bot
 
     def download_files(self) -> None:
+        """Baixe arquivos do Minio para o diretório de saída do robô."""
         if self.bot.config.get("folder_objeto_minio"):
             for item in self.list_objects(
                 "outputexec-bots",
@@ -59,6 +66,12 @@ class FileManager(MinioClient):
                 )
 
     def upload_file(self) -> str:
+        """Gere e envie arquivo zip ao Minio, retornando URL.
+
+        Returns:
+            str: URL para download do arquivo zip enviado.
+
+        """
         zipfile = self.__zip_result()
 
         self.fput_object("outputexec-bots", zipfile.name, str(zipfile))

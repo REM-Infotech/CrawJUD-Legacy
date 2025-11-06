@@ -40,5 +40,5 @@ class SaveError(FileOperator):
         arquivo_erro = self.bot.output_dir_path.joinpath(nome_arquivo)
 
         for data in QueueIterator[DataSave](self.queue_save):
-            if data and len(data["data_save"] > 0):
+            if data and len(data["data_save"]) > 0:
                 self.save_file(data=data, arquivo_xlsx=arquivo_erro)

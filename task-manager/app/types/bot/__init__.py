@@ -37,14 +37,14 @@ class MessageLog(UserString):
         """
         # Extrai os primeiros 6 caracteres do PID
         # e converte para maiúsculo
-        mini_pid = pid[:6].upper()
+        pid = pid[:6].upper()
         # Define o fuso horário para São Paulo
         tz = ZoneInfo("America/Sao_Paulo")
         # Obtém o horário atual formatado
         time_ = datetime.now(tz=tz).strftime("%H:%M:%S")
 
         # Monta a mensagem de log formatada
-        msg = f"[({mini_pid}, {message_type}, {row}, {time_})> {self}]"
+        msg = f"[({pid}, {message_type}, {row}, {time_})> {self.data}]"
 
         # Atualiza o atributo data da UserString
         self.data = msg

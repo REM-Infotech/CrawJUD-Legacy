@@ -32,6 +32,10 @@ campo_2_login = "#senha"  # nosec: B105
 btn_entrar = "#btEntrar"
 chk_login = 'iframe[name="userMainFrame"]'
 
+
+INFORMACAO_PROCESSO = (
+    "table#informacoesProcessuais > tbody > tr > td > a"
+)
 # Capa
 # - Primeira Instancia
 info_geral_table_primeiro_grau = (
@@ -83,8 +87,8 @@ expand_btn_projudi = 'a[href="javascript://nop/"]'
 table_mov = './/tr[contains(@class, "odd") or contains(@class, "even")][not(@style="display:none;")]'
 
 table_moves = '//div[@id="includeContent"]/table/tbody'
-list_moves_semarquivo = '//tr[(contains(@class, "even") or contains(@class, "odd")) and contains(@id, "SEMARQUIVO")][not(@style="display:none")]'
-list_moves_comarquivo = '//tr[(contains(@class, "even") or contains(@class, "odd")) and not(contains(@id, "SEMARQUIVO"))][not(@style="display:none")]'
+MOV_SEM_ARQUIVO = '//tr[(contains(@class, "even") or contains(@class, "odd")) and contains(@id, "SEMARQUIVO")][not(@style="display:none")]'
+MOV_COM_ARQUIVO = '//tr[(contains(@class, "even") or contains(@class, "odd")) and not(contains(@id, "SEMARQUIVO"))][not(@style="display:none")]'
 
 
 primeira_instform1 = "#informacoesProcessuais"

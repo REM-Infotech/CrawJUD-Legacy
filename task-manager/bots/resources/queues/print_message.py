@@ -1,6 +1,6 @@
 """Sistema de envio de logs para o ClientUI."""
 
-from contextlib import suppress
+import traceback
 from queue import Queue
 from threading import Thread
 from typing import TYPE_CHECKING, TypedDict
@@ -38,10 +38,7 @@ class PrintMessage:
         """Instancia da queue de salvamento de sucessos."""
         self.bot = bot
         self.queue_print_bot = Queue()
-        self.thread_print_bot = Thread(
-            target=self.print_msg,
-            daemon=True,
-        )
+        self.thread_print_bot = Thread(target=self.print_msg)
         self.thread_print_bot.start()
         self.succcess_count = 0
         self.error_count = 0
@@ -74,7 +71,7 @@ class PrintMessage:
         msg = Message(
             pid=self.bot.pid,
             row=row,
-            message=message,
+            message=str(message),
             message_type=message_type,
             status="Em Execução",
             total=self.bot.total_rows,
@@ -157,6 +154,9 @@ class PrintMessage:
 
         for data in QueueIterator[Message](self.queue_print_bot):
             if data:
-                with suppress(Exception):
+                try:
                     sio.emit("logbot", data=data, namespace="/bot_logs")
                     tqdm.write(data["message"])
+                except Exception as e:
+                    exc = "\n".join(traceback.format_exception(e))
+                    tqdm.write(exc)

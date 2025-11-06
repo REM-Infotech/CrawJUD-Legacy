@@ -182,7 +182,7 @@ class Movimentacao(ProjudiBot):
                     filtrar,
                     table_movimentacoes.find_elements(
                         By.XPATH,
-                        el.list_moves_comarquivo,
+                        el.MOV_COM_ARQUIVO,
                     ),
                 ),
             ),
@@ -194,7 +194,7 @@ class Movimentacao(ProjudiBot):
                     filtrar,
                     table_movimentacoes.find_elements(
                         By.XPATH,
-                        el.list_moves_semarquivo,
+                        el.MOV_COM_ARQUIVO,
                     ),
                 ),
             ),

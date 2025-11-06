@@ -6,7 +6,7 @@ from abc import abstractmethod
 from contextlib import suppress
 from threading import Event
 from time import sleep
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, ClassVar, Self
 
 from celery import shared_task
 
@@ -30,6 +30,11 @@ if TYPE_CHECKING:
 
 class CrawJUD:
     """Implemente a abstração do bot CrawJUD."""
+
+    bots: ClassVar[dict[str, type[Self]]] = {}
+    row: int = 0
+    _total_rows: int = 0
+    remaining: int = 0
 
     def __init__(self) -> None:
         """Inicializa o CrawJUD."""
@@ -96,6 +101,8 @@ class CrawJUD:
     def finalizar_execucao(self) -> None:
         """Finalize a execução do bot e faça upload dos resultados."""
         with suppress(Exception):
+            self.append_success.queue_save.shutdown()
+            self.append_error.queue_save.shutdown()
             window_handles = self.driver.window_handles
             if window_handles:
                 self.driver.delete_all_cookies()

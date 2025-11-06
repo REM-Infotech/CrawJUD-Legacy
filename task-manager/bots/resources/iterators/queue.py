@@ -44,11 +44,14 @@ class QueueIterator[T]:
             StopIteration: Se a fila estiver encerrada.
 
         """
+        data = None
         try:
-            return self._queue.get_nowait()
+            data = self._queue.get_nowait()
 
         except Empty:
-            return None
+            data = None
 
         except ShutDown:
             raise StopIteration from None
+
+        return data

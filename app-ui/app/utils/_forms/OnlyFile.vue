@@ -26,6 +26,7 @@ watch(OnlyFile, (newValue) => (botForm.value = newValue));
             size="lg"
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             required
+            :disabled="progressBar > 0"
           />
         </BFormGroup>
         <Transition name="page" mode="in-out">
