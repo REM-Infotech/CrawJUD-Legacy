@@ -4,10 +4,10 @@ import importlib
 
 from celery import Celery
 
-import _hook as _
+import _hook
 from config import config
 
-__all__ = ["_"]
+__all__ = ["_hook"]
 
 
 def make_celery() -> Celery:
