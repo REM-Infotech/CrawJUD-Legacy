@@ -23,6 +23,8 @@ from .primeira import PrimeiraInstancia
 if TYPE_CHECKING:
     from datetime import datetime
 
+CONTAGEM = 300
+
 
 class Capa(PrimeiraInstancia, SegundaInstancia):
     """Implemente automação para extrair dados do Projudi.
@@ -239,7 +241,7 @@ class Capa(PrimeiraInstancia, SegundaInstancia):
                 f"{id_proc}.pdf",
             ).resolve()
 
-            while count <= 300:
+            while count <= CONTAGEM:
                 if path_copia.exists():
                     break
 

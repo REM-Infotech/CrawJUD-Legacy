@@ -10,10 +10,10 @@ const link_arquivo = ref("");
 const listLogs = computed(() => receivedLogs.value);
 
 const Contagem: Record<keyof ValoresContador, number> = reactive({
-  total: 0,
-  sucessos: 0,
-  erros: 0,
-  restantes: 0,
+  total: 0.1,
+  sucessos: 0.1,
+  erros: 0.1,
+  restantes: 0.1,
 });
 const Contador = computed(() => [Contagem.restantes, Contagem.sucessos, Contagem.erros]);
 const receivedLogs = ref([
@@ -41,11 +41,13 @@ onMounted(() => {
 LogsSocket.on("logbot", async (data: Message) => {
   receivedLogs.value.push(data);
   await nextTick();
-  Object.entries(Contagem).forEach(([key, _]) => {
-    if (key as keyof ValoresContador) {
-      Contagem[key as keyof ValoresContador] = data[key as keyof ValoresContador];
-    }
-  });
+  if (data.total > 0) {
+    Object.entries(Contagem).forEach(([key, _]) => {
+      if (key as keyof ValoresContador) {
+        Contagem[key as keyof ValoresContador] = data[key as keyof ValoresContador];
+      }
+    });
+  }
 
   if (data.link) {
     link_arquivo.value = data.link;
@@ -64,7 +66,7 @@ LogsSocket.on("logbot", async (data: Message) => {
         <BButton variant="danger" @click="() => LogsSocket.emit('bot_stop', { pid: pid })">
           Parar Execução
         </BButton>
-        <a v-if="link_arquivo" class="btn btn-danger" :href="link_arquivo"> Baixar Arquivo </a>
+        <a v-if="link_arquivo" class="btn btn-success" :href="link_arquivo"> Baixar Arquivo </a>
       </div>
     </div>
     <div class="card-body">

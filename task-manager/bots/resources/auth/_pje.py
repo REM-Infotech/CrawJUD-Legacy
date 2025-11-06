@@ -1,6 +1,6 @@
 import base64
-import secrets
 from pathlib import Path
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import jpype
@@ -11,12 +11,15 @@ from cryptography.hazmat.primitives.serialization import (
     Encoding,
     pkcs12,
 )
-from cryptography.x509 import Certificate
 
 # Importa classes Java
 from jpype import JArray, JByte, JClass
 
-from app.types import StrPath
+if TYPE_CHECKING:
+    from cryptography.x509 import Certificate
+
+    from app.types import StrPath
+
 
 if not jpype.isJVMStarted():
     jpype.startJVM()
@@ -28,6 +31,8 @@ ArrayList = JClass("java.util.ArrayList")
 
 
 class AutenticadorPJe:
+    _chain: list[Certificate]
+
     def __init__(
         self,
         bytes_ou_caminho_cert: bytes | StrPath,
@@ -85,19 +90,9 @@ class AutenticadorPJe:
     @property
     def cadeia_certificado_b64(self) -> str | None:
         if self._chain:
-            return self.generate_pkipath_java(self._chain)
+            return self.generate_pkipath_java()
 
         return None
-
-    def random_base36(self) -> str:
-        # Gera um número aleatório de 52 bits (mesma entropia de Math.random)
-        n = secrets.randbits(52)
-        chars = "0123456789abcdefghijklmnopqrstuvwxyz"
-        s = ""
-        while n:
-            n, r = divmod(n, 36)
-            s = chars[r] + s
-        return "0." + s or "0.0"
 
     def autenticar(self) -> tuple[str, str] | None:
         # enviar diretamente ao endpoint PJe (exemplo)
@@ -119,10 +114,7 @@ class AutenticadorPJe:
 
         return None, None
 
-    def generate_pkipath_java(
-        self,
-        cert_chain: list[Certificate],
-    ) -> str:
+    def generate_pkipath_java(self) -> str:
         """Gera um PKIPath (DER e Base64) chamando o código Java nativo via JPype.
 
         cert_chain: lista de x509.Certificate (cryptography)
@@ -134,7 +126,7 @@ class AutenticadorPJe:
         cf = CertificateFactory.getInstance("X.509")
         java_chain = ArrayList()
 
-        for cert in cert_chain:
+        for cert in self._chain:
             # converte o certificado DER em InputStream Java
             der = cert.public_bytes(Encoding.DER)
             der_array = JArray(JByte)(der)

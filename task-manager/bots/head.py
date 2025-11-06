@@ -36,9 +36,6 @@ class CrawJUD:
     _total_rows: int = 0
     remaining: int = 0
 
-    def __init__(self) -> None:
-        """Inicializa o CrawJUD."""
-
     def __init_subclass__(cls) -> None:
         """Inicialize subclasses do CrawJUD e registre bots.
 
@@ -82,6 +79,8 @@ class CrawJUD:
         self.file_manager = FileManager(self)
         self.bot_driver = BotDriver(self)
 
+        self.print_message("Robô inicializado!", message_type="success")
+
         if config.get("credenciais"):
             self.credenciais.load_credenciais(
                 self.config.get("credenciais"),
@@ -117,11 +116,6 @@ class CrawJUD:
         sleep(5)
 
         self.print_message.queue_print_bot.shutdown()
-
-    @abstractmethod
-    def auth(self) -> bool:
-        """Autenticação no sistema."""
-        ...
 
     @abstractmethod
     def execution(self) -> None:
