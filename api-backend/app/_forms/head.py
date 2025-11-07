@@ -4,9 +4,9 @@ from typing import ClassVar, Self
 from flask_jwt_extended import get_current_user
 from tqdm import tqdm
 
-from __types import Dict
 from app.models import LicenseUser, User, db
 from app.resources import camel_to_snake
+from app.types import Dict
 
 
 class FormBot:
@@ -23,11 +23,7 @@ class FormBot:
 
             kwargs = self.to_dict()
             kwargs["pid"] = pid_exec
-            bot = (
-                db.session.query(Bots)
-                .filter(Bots.Id == self.bot_id)
-                .first()
-            )
+            bot = db.session.query(Bots).filter(Bots.Id == self.bot_id).first()
 
             kwargs["sistema"] = bot.sistema.lower()
             kwargs["categoria"] = bot.categoria.lower()

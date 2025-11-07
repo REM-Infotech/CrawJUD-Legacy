@@ -14,11 +14,9 @@ from sqlalchemy.sql._typing import (
     _ColumnsClauseArgument,
 )
 
-from __types import MyAny, T
+from app.types import MyAny, T
 
-_Entities = (
-    _ColumnsClauseArgument[T] | Sequence[_ColumnsClauseArgument[T]]
-)
+_Entities = _ColumnsClauseArgument[T] | Sequence[_ColumnsClauseArgument[T]]
 if TYPE_CHECKING:
     from ._model import Model
 

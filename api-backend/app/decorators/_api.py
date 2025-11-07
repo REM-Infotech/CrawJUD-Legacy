@@ -14,12 +14,12 @@ from flask import (
     request,
 )
 
-from __types import MyAny
+from app.types import MyAny
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from __types import Methods, P
+    from app.types import Methods, P
 
 
 class CrossDomain:
@@ -130,9 +130,7 @@ class CrossDomain:
 
         """
         return (
-            ", ".join(sorted(x.upper() for x in methods))
-            if methods
-            else None
+            ", ".join(sorted(x.upper() for x in methods)) if methods else None
         )
 
     def _normalize_headers(

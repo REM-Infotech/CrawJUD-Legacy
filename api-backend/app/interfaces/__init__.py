@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from __types import MessageType, StatusBot
+from app.types import MessageType, StatusBot
 
 
 class Message(TypedDict, total=False):

@@ -12,10 +12,10 @@ from flask import (
 from flask_jwt_extended import get_current_user, jwt_required
 from tqdm import tqdm
 
-from __types import Dict, Sistemas
 from app._forms.head import FormBot
 from app.decorators import CrossDomain
 from app.models import User
+from app.types import Dict, Sistemas
 from constants import SISTEMAS
 
 bots = Blueprint("bots", __name__, url_prefix="/bot")

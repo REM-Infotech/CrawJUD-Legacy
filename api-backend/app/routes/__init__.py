@@ -16,9 +16,9 @@ from flask import (
     url_for,
 )
 
-from __types import HealtCheck
 from app import app
 from app.resources.extensions import db
+from app.types import HealtCheck
 
 from . import _bots, auth, handlers
 

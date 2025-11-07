@@ -4,8 +4,8 @@ from typing import ClassVar, Self, cast
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model as FSA_Model
 
-from __types import MyAny
 from app.resources import camel_to_snake
+from app.types import MyAny
 
 from ._query import Query, QueryProperty
 

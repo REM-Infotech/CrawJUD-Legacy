@@ -8,8 +8,8 @@ from flask import Flask
 from passlib.context import CryptContext
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from __types import MyAny as MyAny
 from app.settings import settings
+from app.types import MyAny as MyAny
 
 app = Flask(__name__)
 load_dotenv()

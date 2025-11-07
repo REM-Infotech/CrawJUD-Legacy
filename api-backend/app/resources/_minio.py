@@ -6,7 +6,7 @@ from flask import Flask
 from minio import Minio as MinioClient
 from minio.credentials.providers import EnvMinioProvider
 
-from __types import P
+from app.types import P
 
 load_dotenv()
 

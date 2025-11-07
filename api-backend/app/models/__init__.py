@@ -7,10 +7,10 @@ from pathlib import Path
 
 from flask import Flask
 
-from __types import Dict
 from app.models._bot import Bots, CredenciaisRobo, ExecucoesBot
 from app.models._users import LicenseUser, User
 from app.resources.extensions import db
+from app.types import Dict
 
 from ._jwt import TokenBlocklist
 

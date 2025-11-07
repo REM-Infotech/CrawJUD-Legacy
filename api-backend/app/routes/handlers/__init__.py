@@ -9,9 +9,9 @@ from flask_socketio import join_room
 from tqdm import tqdm
 from werkzeug.utils import secure_filename
 
-from __types import MyAny
-from _interfaces import Message
+from app.interfaces import Message
 from app.resources.extensions import io, storage
+from app.types import MyAny
 
 
 @io.on("connect", namespace="/")
