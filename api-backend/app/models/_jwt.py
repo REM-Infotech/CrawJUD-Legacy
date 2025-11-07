@@ -4,19 +4,19 @@ from __future__ import annotations
 
 from contextlib import suppress
 from datetime import datetime
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-import bcrypt
 from flask_jwt_extended import get_current_user
 from sqlalchemy import Column, DateTime, Integer, String
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped  # noqa: TC002
 
 from app.resources.extensions import db, jwt
-from app.types import MyAny
 
 from ._users import User
 
-salt = bcrypt.gensalt()
+if TYPE_CHECKING:
+    from app.types import MyAny
 
 
 @jwt.user_identity_loader

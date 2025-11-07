@@ -4,15 +4,18 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-
-from flask import Flask
+from typing import TYPE_CHECKING
 
 from app.models._bot import Bots, CredenciaisRobo, ExecucoesBot
 from app.models._users import LicenseUser, User
 from app.resources.extensions import db
-from app.types import Dict
 
 from ._jwt import TokenBlocklist
+
+if TYPE_CHECKING:
+    from flask import Flask
+
+    from app.types import Dict
 
 __all__ = [
     "Bots",

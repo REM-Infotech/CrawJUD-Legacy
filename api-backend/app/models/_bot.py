@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped  # noqa: TC002
 
 from app.resources.extensions import db
 

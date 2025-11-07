@@ -5,16 +5,15 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped  # noqa: TC002
 
 from app import crypt_context
 from app.resources.extensions import db
 
-from ._bot import Bots, CredenciaisRobo
-
 if TYPE_CHECKING:
     from app.models._bot import ExecucoesBot
 
+    from ._bot import Bots, CredenciaisRobo
 
 rel = db.relationship
 
@@ -28,7 +27,7 @@ def _generate_key() -> str:
 
 
 class LicenseUser(db.Model):
-    __tablename__ = "licenses"
+    __tablename__ = "licencas"
     Id: int = Column("id", Integer, primary_key=True, nullable=False)
     ProductKey: str = Column(
         "product_key",
@@ -63,7 +62,7 @@ class LicenseUser(db.Model):
 
 
 class User(db.Model):
-    __tablename__ = "users"
+    __tablename__ = "usuarios_sistema"
     Id: int = Column("id", Integer, primary_key=True)
     login: str = Column(
         "username",
@@ -98,9 +97,7 @@ class User(db.Model):
 
     @classmethod
     def authenticate(cls, username: str, password: str) -> bool:
-        user = (
-            db.session.query(cls).filter(cls.login == username).first()
-        )
+        user = db.session.query(cls).filter(cls.login == username).first()
         return user is not None and user.check_password(password)
 
     @property
