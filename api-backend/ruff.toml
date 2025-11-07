@@ -6,6 +6,7 @@ indent-width = 4
 [lint.extend-per-file-ignores]
 "**/{tests,docs,tools}/*" = ["E402", "S", "D100", "D104", "ANN", "D417", "N818"]
 "*" = [
+    "PLC2701",
     "RUF009",
     "B026",
     "FIX",
