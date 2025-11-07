@@ -14,12 +14,12 @@ from flask import (
     request,
 )
 
-from app.types import MyAny
-
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from app.types import Methods, P
+    from app.types import Methods, MyAny, P
+
+MAX_AGE = 21600
 
 
 class CrossDomain:
@@ -34,7 +34,7 @@ class CrossDomain:
         origin: str | None = None,
         methods: list[Methods] | None = None,
         headers: list[str] | None = None,
-        max_age: int = 21600,
+        _max_age: int = MAX_AGE,
         *,
         attach_to_all: bool = True,
         automatic_options: bool = True,
@@ -116,8 +116,9 @@ class CrossDomain:
 
         return _wrapped
 
+    @classmethod
     def _normalize_methods(
-        self,
+        cls,
         methods: list[Methods] | None,
     ) -> str | None:
         """Normaliza os métodos HTTP para cabeçalho CORS.
@@ -133,8 +134,9 @@ class CrossDomain:
             ", ".join(sorted(x.upper() for x in methods)) if methods else None
         )
 
+    @classmethod
     def _normalize_headers(
-        self,
+        cls,
         headers: list[str] | None,
     ) -> str | None:
         """Normaliza os cabeçalhos para CORS.
@@ -150,7 +152,8 @@ class CrossDomain:
             return ", ".join(x.upper() for x in headers)
         return None
 
-    def _normalize_origin(self, origin: str | None) -> str | None:
+    @classmethod
+    def _normalize_origin(cls, origin: str | None) -> str | None:
         """Normaliza a origem para CORS.
 
         Args:
@@ -166,7 +169,8 @@ class CrossDomain:
             return ", ".join(origin)
         return None
 
-    def _normalize_max_age(self, max_age: int | timedelta) -> int:
+    @classmethod
+    def _normalize_max_age(cls, max_age: int | timedelta) -> int:
         """Normaliza o tempo máximo de cache para CORS.
 
         Args:
@@ -182,7 +186,8 @@ class CrossDomain:
             else max_age
         )
 
-    def _get_methods(self, normalized_methods: str | None) -> str:
+    @classmethod
+    def _get_methods(cls, normalized_methods: str | None) -> str:
         """Obtém os métodos permitidos para CORS.
 
         Returns:
@@ -194,7 +199,8 @@ class CrossDomain:
         options_resp = current_app.make_default_options_response()
         return options_resp.headers["allow"]
 
-    def _handle_options(self) -> Response:
+    @classmethod
+    def _handle_options(cls) -> Response:
         """Gera resposta para método OPTIONS.
 
         Returns:

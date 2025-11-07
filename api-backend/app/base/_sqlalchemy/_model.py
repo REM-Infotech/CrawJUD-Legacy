@@ -1,13 +1,16 @@
 from contextlib import suppress
-from typing import ClassVar, Self, cast
+from typing import TYPE_CHECKING, ClassVar, Self, cast
 
+from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model as FSA_Model
 
 from app.resources import camel_to_snake
-from app.types import MyAny
 
 from ._query import Query, QueryProperty
+
+if TYPE_CHECKING:
+    from app.types import MyAny
 
 
 class FSAProperty:
@@ -18,8 +21,7 @@ class FSAProperty:
 
     def __get__(self, *args, **kwargs) -> SQLAlchemy:
         with suppress(KeyError):
-            from app import app
-
+            app = current_app
             with app.app_context():
                 if "sqlalchemy" in app.extensions:
                     db: SQLAlchemy = app.extensions["sqlalchemy"]

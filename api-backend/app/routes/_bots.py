@@ -1,5 +1,6 @@
 import json
 import traceback
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from flask import (
@@ -14,9 +15,11 @@ from tqdm import tqdm
 
 from app._forms.head import FormBot
 from app.decorators import CrossDomain
-from app.models import User
-from app.types import Dict, Sistemas
 from constants import SISTEMAS
+
+if TYPE_CHECKING:
+    from app.models import User
+    from app.types import Dict, Sistemas
 
 bots = Blueprint("bots", __name__, url_prefix="/bot")
 
