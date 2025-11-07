@@ -1,0 +1,9 @@
+[run]
+omit =
+    bot/*
+    utils/*
+    app/routes/*
+    asgi.py
+    beat.py
+    run.py
+    worker.py

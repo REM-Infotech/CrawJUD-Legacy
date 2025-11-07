@@ -1,0 +1,96 @@
+<div id="layoutSidenav_nav">
+  <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <div class="sb-sidenav-menu">
+      <div class="nav">
+        <div class="sb-sidenav-menu-heading mt-3">Core</div>
+        <a class="nav-link" href="{{ url_for('dash.dashboard') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fas fa-tachometer-alt"></i>
+            </span>
+          </div>
+          <span class="text">Dashboard</span>
+        </a>
+        <a class="nav-link" href="{{ url_for('exe.executions') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fa-solid fa-table"></i>
+            </span>
+          </div>
+          <span class="text">Execuções</span>
+        </a>
+        <a class="nav-link" href="{{ url_for('exe.schedules') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fa-solid fa-list-check"></i>
+            </span>
+          </div>
+          <span class="text">Tarefas Agendadas</span>
+        </a>
+        <div class="sb-sidenav-menu-heading">Interface</div>
+        <a class="nav-link" href="{{ url_for('bot.dashboard') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fa-solid fa-robot"></i>
+            </span>
+          </div>
+          <span class="text">Robôs</span>
+        </a>
+        <a class="nav-link" href="{{ url_for('creds.credentials') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fa-solid fa-key"></i>
+            </span>
+          </div>
+          <span class="text">Credenciais</span>
+        </a>
+        {% if current_user.is_authenticated and admin_cookie %}
+        <a class="nav-link" href="{{ url_for('admin.users') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fa-solid fa-gear"></i>
+            </span>
+          </div>
+          <span class="text">Config. Usuários</span>
+        </a>
+        {% endif %}
+        {% if current_user.is_authenticated and supersu_cookie %}
+        <a class="nav-link" href="{{ url_for('supersu.config') }}">
+          <div class="sb-nav-link-icon">
+            <span class="icon text-white-50">
+              <i class="fa-solid fa-user-gear"></i>
+            </span>
+          </div>
+          <span class="text">Admin. Licenças</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="sb-sidenav-footer">
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          {% set usr = session.get("login") %}
+          {% if "robotz" in usr %}
+          <img id="ProfilePIC" src="https://avatars.githubusercontent.com/u/108819185" alt="" width="32" height="32"
+            class="rounded-circle me-2">
+          <strong>{{ session["nome_usuario"] }}</strong>
+          {% elif "robotz" not in usr %}
+          <img id="ProfilePIC" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif"
+            alt="" width="32" height="32" class="rounded-circle me-2">
+          {% set img_src = url_for('serve_profile', user=usr) %}
+          <span id="urlProfile" style="display: none;">{{ img_src }}</span>
+          <strong>{{ session["nome_usuario"] }}</strong>
+          {% endif %}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+          <li><a class="dropdown-item" href="{{ url_for('usr.profile_config') }}">Profile</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Sign out</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,99 @@
+<div class="container-fluid px-4">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <form class="card border-0 shadow rounded-3 my-5" action="{{ url }}" method="POST" enctype="multipart/form-data">
+        <h4 class="card-header p-4">{{ display_name }}</h4>
+        {% if form %}
+        <div class="card-body bg-warning bg-opacity-75 p-4 p-sm-5">
+          {{ form.hidden_tag() }}
+          <div class="row g-3 rounded justify-content-center p-3">
+            {% for field in form %}
+            {% if field.name == "data_inicio" or field.name == "doc_parte" or
+            field.name == "data_fim" or field.name == "parte_name"%}
+            <div class="col-md-5 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              {{ field.label(class="form-label") }}
+              {{ field(class="form-control", id=field.id, **{"data-placeholder": field.label.text}) }}
+            </div>
+            {% elif field.type == "BooleanField" and field.name != "periodic_task" %}
+            <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              <div class="form-check">
+                {{ field(class="form-check-input") }}
+                {{ field.label(class="form-check-label", for=field.id) }}
+              </div>
+            </div>
+            {% elif field.type == "BooleanField" and field.name == "periodic_task" %}
+            <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              <div class="form-check form-switch">
+                {{ field(class="form-check-input", role="switch") }}
+                {{ field.label(class="form-check-label", for=field.id) }}
+              </div>
+            </div>
+
+            {% elif field.name == "periodic_task_group" %}
+            <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded" id="periodic_task_group"
+              style="display: none;">
+              {% for pform in field %}
+              {{ pform.hidden_tag() }}
+              <div>
+                <div class="col-md-12 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+                  {{ pform.task_name.label(class="form-label") }}
+                  {{ pform.task_name(class="form-control", id=pform.task_name.id, **{"data-placeholder": pform.task_name.text}) }}
+                </div>
+                <div class="col-md-12 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+                  {{ pform.hour_minute.label(class="form-label") }}
+                  {{ pform.hour_minute(
+                      class="form-control", id=pform.hour_minute.id,
+                       **{"data-placeholder": pform.hour_minute.label.text}) }}
+                </div>
+                <div class="col-md-12 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+                  <span class="tex">{{ pform.days.label(class="form-label") }}</span>
+                  <hr>
+                  <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                    {% for subfield in pform.days %}
+                    <input type="checkbox" class="btn-check" id="{{ subfield.id }}" name="{{ pform.days.name }}"
+                      value="{{ subfield.data }}" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="col-md-12 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+                  {{ pform.email_notify.label(class="form-label") }}
+                  {{ pform.email_notify(class="form-control", id=pform.email_notify.id, **{"data-placeholder": pform.email_notify.label.text}) }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="col-md-10 mb-3 border border-secondary p-2 border-2 rounded bg-white">
+              {{ field.label(class="form-label") }}
+              {{ field(class="form-control", id=field.id, **{"data-placeholder": field.label.text}) }}
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer d-grid gap-2">
+          {{ form.submit(class="btn btn btn-outline-success btn-login fw-semibold", onclick="showLoad()") }}
+          {% set url_model = url_for('bot.get_model', id_=id, system=system, typebot=typebot,
+          filename=model_name) %}
+          <a class="btn btn-outline-primary fw-semibold" href="{{ url_model }}">Gerar Modelo</a>
+        </div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+
+  $("input[name='periodic_task']").on("change", function () {
+    const periodic_task_true = $("input[name='periodic_task']:checked").val();
+    let periodic_task_group = document.querySelector('div[id="periodic_task_group"]');
+    if (periodic_task_true) {
+      periodic_task_group.style.display = "block";
+    } else {
+      periodic_task_group.style.display = "none";
+    }
+  });
+
+
+</script>

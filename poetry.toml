@@ -1,0 +1,6 @@
+package-mode = false
+
+[virtualenvs]
+create = true
+in-project = true
+prompt = ".venv"
